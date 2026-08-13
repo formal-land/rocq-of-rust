@@ -3488,6 +3488,7 @@ Module collections.
                           "alloc::collections::btree::navigate::LazyLeafHandle::Root",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let root :=
                         M.alloc (|
                           Ty.apply
@@ -3504,7 +3505,7 @@ Module collections.
                                   Ty.path "alloc::collections::btree::node::marker::LeafOrInternal"
                                 ]
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       Value.StructTuple
                         "alloc::collections::btree::navigate::LazyLeafHandle::Root"
@@ -3520,6 +3521,7 @@ Module collections.
                           "alloc::collections::btree::navigate::LazyLeafHandle::Edge",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let edge :=
                         M.alloc (|
                           Ty.apply
@@ -3542,7 +3544,7 @@ Module collections.
                                   Ty.path "alloc::collections::btree::node::marker::Edge"
                                 ]
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       Value.StructTuple
                         "alloc::collections::btree::navigate::LazyLeafHandle::Edge"
@@ -3618,6 +3620,7 @@ Module collections.
                           "alloc::collections::btree::navigate::LazyLeafHandle::Root",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let root :=
                         M.alloc (|
                           Ty.apply
@@ -3634,7 +3637,7 @@ Module collections.
                                   Ty.path "alloc::collections::btree::node::marker::LeafOrInternal"
                                 ]
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       Value.StructTuple
                         "alloc::collections::btree::navigate::LazyLeafHandle::Root"
@@ -3677,6 +3680,7 @@ Module collections.
                           "alloc::collections::btree::navigate::LazyLeafHandle::Edge",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let edge :=
                         M.alloc (|
                           Ty.apply
@@ -3699,7 +3703,7 @@ Module collections.
                                   Ty.path "alloc::collections::btree::node::marker::Edge"
                                 ]
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       Value.StructTuple
                         "alloc::collections::btree::navigate::LazyLeafHandle::Edge"
@@ -4510,6 +4514,7 @@ Module collections.
                               "alloc::collections::btree::navigate::LazyLeafHandle::Root",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let root :=
                             M.alloc (|
                               Ty.apply
@@ -4527,7 +4532,7 @@ Module collections.
                                         "alloc::collections::btree::node::marker::LeafOrInternal"
                                     ]
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
@@ -4754,6 +4759,7 @@ Module collections.
                               "alloc::collections::btree::navigate::LazyLeafHandle::Edge",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let edge :=
                             M.alloc (|
                               Ty.apply
@@ -4776,7 +4782,7 @@ Module collections.
                                       Ty.path "alloc::collections::btree::node::marker::Edge"
                                     ]
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.MutRef, γ2_0 |)
                             |) in
                           Value.StructTuple
                             "core::option::Option::Some"
@@ -4926,6 +4932,7 @@ Module collections.
                               "alloc::collections::btree::navigate::LazyLeafHandle::Root",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let root :=
                             M.alloc (|
                               Ty.apply
@@ -4943,7 +4950,7 @@ Module collections.
                                         "alloc::collections::btree::node::marker::LeafOrInternal"
                                     ]
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
@@ -5170,6 +5177,7 @@ Module collections.
                               "alloc::collections::btree::navigate::LazyLeafHandle::Edge",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let edge :=
                             M.alloc (|
                               Ty.apply
@@ -5192,7 +5200,7 @@ Module collections.
                                       Ty.path "alloc::collections::btree::node::marker::Edge"
                                     ]
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.MutRef, γ2_0 |)
                             |) in
                           Value.StructTuple
                             "core::option::Option::Some"

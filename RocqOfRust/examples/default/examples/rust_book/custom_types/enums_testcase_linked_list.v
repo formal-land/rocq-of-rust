@@ -140,6 +140,7 @@ Module Impl_enums_testcase_linked_list_List.
                     "enums_testcase_linked_list::List::Cons",
                     1
                   |) in
+                let _ := M.read (| γ0_1 |) in
                 let tail :=
                   M.alloc (|
                     Ty.apply
@@ -154,7 +155,7 @@ Module Impl_enums_testcase_linked_list_List.
                             Ty.path "alloc::alloc::Global"
                           ]
                       ],
-                    γ0_1
+                    M.borrow (| Pointer.Kind.Ref, γ0_1 |)
                   |) in
                 M.call_closure (|
                   Ty.path "u32",
@@ -234,6 +235,7 @@ Module Impl_enums_testcase_linked_list_List.
                     1
                   |) in
                 let head := M.copy (| Ty.path "u32", γ0_0 |) in
+                let _ := M.read (| γ0_1 |) in
                 let tail :=
                   M.alloc (|
                     Ty.apply
@@ -248,7 +250,7 @@ Module Impl_enums_testcase_linked_list_List.
                             Ty.path "alloc::alloc::Global"
                           ]
                       ],
-                    γ0_1
+                    M.borrow (| Pointer.Kind.Ref, γ0_1 |)
                   |) in
                 M.call_closure (|
                   Ty.path "alloc::string::String",

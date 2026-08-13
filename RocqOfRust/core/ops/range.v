@@ -4446,7 +4446,12 @@ Module ops.
                         "core::ops::range::Bound::Included",
                         0
                       |) in
-                    let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                    let _ := M.read (| γ1_0 |) in
+                    let __self_0 :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     Value.StructTuple
                       "core::ops::range::Bound::Included"
                       []
@@ -4467,7 +4472,12 @@ Module ops.
                         "core::ops::range::Bound::Excluded",
                         0
                       |) in
-                    let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                    let _ := M.read (| γ1_0 |) in
+                    let __self_0 :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     Value.StructTuple
                       "core::ops::range::Bound::Excluded"
                       []
@@ -4627,7 +4637,12 @@ Module ops.
                                 "core::ops::range::Bound::Included",
                                 0
                               |) in
-                            let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                            let _ := M.read (| γ2_0 |) in
+                            let __self_0 :=
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ T ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
                               M.SubPointer.get_struct_tuple_field (|
@@ -4635,7 +4650,12 @@ Module ops.
                                 "core::ops::range::Bound::Included",
                                 0
                               |) in
-                            let __arg1_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                            let _ := M.read (| γ2_0 |) in
+                            let __arg1_0 :=
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ T ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             M.call_closure (|
                               Ty.path "bool",
                               M.get_trait_method (|
@@ -4663,7 +4683,12 @@ Module ops.
                                 "core::ops::range::Bound::Excluded",
                                 0
                               |) in
-                            let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                            let _ := M.read (| γ2_0 |) in
+                            let __self_0 :=
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ T ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
                               M.SubPointer.get_struct_tuple_field (|
@@ -4671,7 +4696,12 @@ Module ops.
                                 "core::ops::range::Bound::Excluded",
                                 0
                               |) in
-                            let __arg1_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                            let _ := M.read (| γ2_0 |) in
+                            let __arg1_0 :=
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ T ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             M.call_closure (|
                               Ty.path "bool",
                               M.get_trait_method (|
@@ -4752,7 +4782,12 @@ Module ops.
                         "core::ops::range::Bound::Included",
                         0
                       |) in
-                    let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                    let _ := M.read (| γ1_0 |) in
+                    let __self_0 :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     M.call_closure (|
                       Ty.apply
                         (Ty.path "core::result::Result")
@@ -4794,7 +4829,12 @@ Module ops.
                         "core::ops::range::Bound::Excluded",
                         0
                       |) in
-                    let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                    let _ := M.read (| γ1_0 |) in
+                    let __self_0 :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     M.call_closure (|
                       Ty.apply
                         (Ty.path "core::result::Result")
@@ -4923,7 +4963,12 @@ Module ops.
                             "core::ops::range::Bound::Included",
                             0
                           |) in
-                        let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                        let _ := M.read (| γ1_0 |) in
+                        let __self_0 :=
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ T ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                          |) in
                         M.call_closure (|
                           Ty.tuple [],
                           M.get_trait_method (|
@@ -4949,7 +4994,12 @@ Module ops.
                             "core::ops::range::Bound::Excluded",
                             0
                           |) in
-                        let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                        let _ := M.read (| γ1_0 |) in
+                        let __self_0 :=
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ T ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                          |) in
                         M.call_closure (|
                           Ty.tuple [],
                           M.get_trait_method (|
@@ -5018,7 +5068,12 @@ Module ops.
                         "core::ops::range::Bound::Included",
                         0
                       |) in
-                    let x := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_0 |) in
+                    let _ := M.read (| γ0_0 |) in
+                    let x :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                      |) in
                     Value.StructTuple
                       "core::ops::range::Bound::Included"
                       []
@@ -5032,7 +5087,12 @@ Module ops.
                         "core::ops::range::Bound::Excluded",
                         0
                       |) in
-                    let x := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_0 |) in
+                    let _ := M.read (| γ0_0 |) in
+                    let x :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                      |) in
                     Value.StructTuple
                       "core::ops::range::Bound::Excluded"
                       []
@@ -5095,7 +5155,12 @@ Module ops.
                         "core::ops::range::Bound::Included",
                         0
                       |) in
-                    let x := M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ0_0 |) in
+                    let _ := M.read (| γ0_0 |) in
+                    let x :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&mut") [] [ T ],
+                        M.borrow (| Pointer.Kind.MutRef, γ0_0 |)
+                      |) in
                     Value.StructTuple
                       "core::ops::range::Bound::Included"
                       []
@@ -5109,7 +5174,12 @@ Module ops.
                         "core::ops::range::Bound::Excluded",
                         0
                       |) in
-                    let x := M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ0_0 |) in
+                    let _ := M.read (| γ0_0 |) in
+                    let x :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&mut") [] [ T ],
+                        M.borrow (| Pointer.Kind.MutRef, γ0_0 |)
+                      |) in
                     Value.StructTuple
                       "core::ops::range::Bound::Excluded"
                       []
@@ -7420,7 +7490,12 @@ Module ops.
                         "core::ops::range::Bound::Included",
                         0
                       |) in
-                    let start := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                    let _ := M.read (| γ1_0 |) in
+                    let start :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     Value.StructTuple
                       "core::ops::range::Bound::Included"
                       []
@@ -7436,7 +7511,12 @@ Module ops.
                         "core::ops::range::Bound::Excluded",
                         0
                       |) in
-                    let start := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                    let _ := M.read (| γ1_0 |) in
+                    let start :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     Value.StructTuple
                       "core::ops::range::Bound::Excluded"
                       []
@@ -7499,7 +7579,12 @@ Module ops.
                         "core::ops::range::Bound::Included",
                         0
                       |) in
-                    let end_ := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                    let _ := M.read (| γ1_0 |) in
+                    let end_ :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     Value.StructTuple
                       "core::ops::range::Bound::Included"
                       []
@@ -7515,7 +7600,12 @@ Module ops.
                         "core::ops::range::Bound::Excluded",
                         0
                       |) in
-                    let end_ := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                    let _ := M.read (| γ1_0 |) in
+                    let end_ :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     Value.StructTuple
                       "core::ops::range::Bound::Excluded"
                       []

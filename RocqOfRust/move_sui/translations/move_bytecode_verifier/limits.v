@@ -3179,6 +3179,7 @@ Module limits.
                                                             "move_binary_format::file_format::StructFieldInformation::Declared",
                                                             0
                                                           |) in
+                                                        let _ := M.read (| γ1_0 |) in
                                                         let fdefs :=
                                                           M.alloc (|
                                                             Ty.apply
@@ -3194,7 +3195,7 @@ Module limits.
                                                                     Ty.path "alloc::alloc::Global"
                                                                   ]
                                                               ],
-                                                            γ1_0
+                                                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                           |) in
                                                         M.read (|
                                                           M.use
@@ -3714,8 +3715,12 @@ Module limits.
                               "core::option::Option::Some",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let max :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                            |) in
                           M.read (|
                             let~ size : Ty.path "usize" := Value.Integer IntegerKind.Usize 0 in
                             let~ _ : Ty.tuple [] :=
@@ -4608,6 +4613,7 @@ Module limits.
                                                                     "move_binary_format::file_format::StructFieldInformation::Declared",
                                                                     0
                                                                   |) in
+                                                                let _ := M.read (| γ1_0 |) in
                                                                 let fields :=
                                                                   M.alloc (|
                                                                     Ty.apply
@@ -4625,7 +4631,10 @@ Module limits.
                                                                               "alloc::alloc::Global"
                                                                           ]
                                                                       ],
-                                                                    γ1_0
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      γ1_0
+                                                                    |)
                                                                   |) in
                                                                 M.match_operator (|
                                                                   Ty.tuple [],

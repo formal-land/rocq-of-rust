@@ -3116,6 +3116,7 @@ Module Impl_revm_precompile_Precompiles.
                     "revm_precompile::Precompiles",
                     "inner"
                   |) in
+                let _ := M.read (| γ1_0 |) in
                 let inner :=
                   M.alloc (|
                     Ty.apply
@@ -3131,7 +3132,7 @@ Module Impl_revm_precompile_Precompiles.
                             Ty.path "std::hash::random::RandomState"
                           ]
                       ],
-                    γ1_0
+                    M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                   |) in
                 M.read (|
                   let~ inner :
@@ -3490,6 +3491,7 @@ Module Impl_revm_precompile_Precompiles.
                                                     M.SubPointer.get_tuple_field (| γ, 0 |) in
                                                   let γ1_1 :=
                                                     M.SubPointer.get_tuple_field (| γ, 1 |) in
+                                                  let _ := M.read (| γ1_0 |) in
                                                   let a :=
                                                     M.alloc (|
                                                       Ty.apply
@@ -3504,7 +3506,7 @@ Module Impl_revm_precompile_Precompiles.
                                                                 "alloy_primitives::bits::address::Address"
                                                             ]
                                                         ],
-                                                      γ1_0
+                                                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                     |) in
                                                   M.call_closure (|
                                                     Ty.path "bool",
@@ -3855,6 +3857,7 @@ Module Impl_revm_precompile_Precompiles.
                     "revm_precompile::Precompiles",
                     "inner"
                   |) in
+                let _ := M.read (| γ1_0 |) in
                 let inner :=
                   M.alloc (|
                     Ty.apply
@@ -3870,7 +3873,7 @@ Module Impl_revm_precompile_Precompiles.
                             Ty.path "std::hash::random::RandomState"
                           ]
                       ],
-                    γ1_0
+                    M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                   |) in
                 M.read (|
                   let~ inner :
@@ -4229,6 +4232,7 @@ Module Impl_revm_precompile_Precompiles.
                                                     M.SubPointer.get_tuple_field (| γ, 0 |) in
                                                   let γ1_1 :=
                                                     M.SubPointer.get_tuple_field (| γ, 1 |) in
+                                                  let _ := M.read (| γ1_0 |) in
                                                   let a :=
                                                     M.alloc (|
                                                       Ty.apply
@@ -4243,7 +4247,7 @@ Module Impl_revm_precompile_Precompiles.
                                                                 "alloy_primitives::bits::address::Address"
                                                             ]
                                                         ],
-                                                      γ1_0
+                                                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                     |) in
                                                   M.call_closure (|
                                                     Ty.path "bool",

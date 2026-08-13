@@ -1,6 +1,8 @@
 Require Import simulate.RocqOfRust.
+Require Import alloy_primitives.bytes.simulate.mod.
 Require Import alloy_primitives.links.aliases.
 Require Import core.links.array.
+Require Import core.ops.simulate.range.
 Require Import revm.revm_interpreter.gas.simulate.constants.
 Require Import revm.revm_interpreter.interpreter_action.simulate.call_inputs.
 Require Import revm.revm_interpreter.instructions.simulate.system.memory_resize.
@@ -73,4 +75,61 @@ Lemma calldatacopy_eq
       )
     }}.
 Proof.
-Admitted.
+Opaque memory_resize.
+  with_strategy transparent [run_calldatacopy] unfold calldatacopy, run_calldatacopy; cbn.
+  popn_macro_eq InterpreterTypesEq.
+  match goal with
+  | array : array.t aliases.U256.t _ |- _ =>
+    destruct array as [[memory_offset [data_offset [len []]]]]
+  end.
+  as_usize_or_fail_macro_eq InterpreterTypesEq.
+  s. {
+    apply memory_resize_eq.
+  }
+  rename interpreter into initial_interpreter.
+  destruct memory_resize as [[?memory_offset|] ?interpreter]; cbn. 2: {
+    s.
+  }
+  eapply Run.Let with (result := (Output.Success (as_usize_saturated_macro data_offset), _)). {
+    as_usize_saturated_macro_eq.
+  }
+  s. {
+    apply InterpreterTypesEq.
+  }
+  destruct
+    (IInterpreterTypes.(InterpreterTypes.InputsTrait_for_Input).(InputTraits.input)
+      .(RefStub.projection) interpreter.(Interpreter.input)) as [range | bytes]
+      eqn:H_input; cbn.
+  - r.
+    rewrite H_input; cbn.
+    r.
+    rewrite H_input; cbn.
+    r.
+    s. {
+      apply Impl_Clone_for_Range.clone_eq.
+      unshelve eapply CanRead.Mutable.
+      - cbn; repeat constructor.
+      - cbn; rewrite H_input; reflexivity.
+    }
+    cbn.
+    eapply Run.Call. {
+      s_apply InterpreterTypesEq.
+    }
+    cbn; s.
+  - r.
+    rewrite H_input; cbn.
+    r.
+    s. {
+      apply alloy_primitives.bytes.simulate.mod.Impl_AsRef_slice_u8_for_Bytes.as_ref_eq
+        with (self := bytes).
+      unshelve eapply CanRead.Mutable.
+      - cbn; repeat constructor.
+      - cbn; rewrite H_input; reflexivity.
+    }
+    cbn.
+    eapply Run.Call. {
+      s_apply InterpreterTypesEq.
+      cbn; rewrite H_input; reflexivity.
+    }
+    cbn; s.
+Qed.

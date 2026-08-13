@@ -5256,6 +5256,7 @@ Module bn254.
                                                   M.SubPointer.get_tuple_field (| γ0_0, 0 |) in
                                                 let γ2_1 :=
                                                   M.SubPointer.get_tuple_field (| γ0_0, 1 |) in
+                                                let _ := M.read (| γ2_0 |) in
                                                 let g1_bytes :=
                                                   M.alloc (|
                                                     Ty.apply
@@ -5272,8 +5273,9 @@ Module bn254.
                                                               [ Ty.path "u8" ]
                                                           ]
                                                       ],
-                                                    γ2_0
+                                                    M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                                   |) in
+                                                let _ := M.read (| γ2_1 |) in
                                                 let g2_bytes :=
                                                   M.alloc (|
                                                     Ty.apply
@@ -5290,7 +5292,7 @@ Module bn254.
                                                               [ Ty.path "u8" ]
                                                           ]
                                                       ],
-                                                    γ2_1
+                                                    M.borrow (| Pointer.Kind.Ref, γ2_1 |)
                                                   |) in
                                                 M.read (|
                                                   let~ g1 :

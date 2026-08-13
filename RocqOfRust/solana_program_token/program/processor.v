@@ -9067,10 +9067,11 @@ Module processor.
                               "solana_program_option::COption::Some",
                               0
                             |) in
+                          let _ := M.read (| γ0_0 |) in
                           let delegate :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                              γ0_0
+                              M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                             |) in
                           let γ :=
                             M.alloc (|
@@ -23376,13 +23377,14 @@ Module processor.
                                       "solana_program_option::COption::Some",
                                       0
                                     |) in
+                                  let _ := M.read (| γ0_0 |) in
                                   let delegate :=
                                     M.alloc (|
                                       Ty.apply
                                         (Ty.path "&")
                                         []
                                         [ Ty.path "solana_address::Address" ],
-                                      γ0_0
+                                      M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                                     |) in
                                   let γ :=
                                     M.alloc (|

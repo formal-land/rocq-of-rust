@@ -123,7 +123,12 @@ Module option.
                   (let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "core::option::Option::Some", 0 |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -232,7 +237,12 @@ Module option.
                           "core::option::Option::Some",
                           0
                         |) in
-                      let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                      let _ := M.read (| γ1_0 |) in
+                      let __self_0 :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ T ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
                       M.call_closure (|
                         Ty.tuple [],
                         M.get_trait_method (| "core::hash::Hash", T, [], [], "hash", [], [ __H ] |),
@@ -472,7 +482,12 @@ Module option.
                 ltac:(M.monadic
                   (let γ0_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "core::option::Option::Some", 0 |) in
-                  let x := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_0 |) in
+                  let _ := M.read (| γ0_0 |) in
+                  let x :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                    |) in
                   Value.StructTuple
                     "core::option::Option::Some"
                     []
@@ -524,7 +539,12 @@ Module option.
                 ltac:(M.monadic
                   (let γ0_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "core::option::Option::Some", 0 |) in
-                  let x := M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ0_0 |) in
+                  let _ := M.read (| γ0_0 |) in
+                  let x :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&mut") [] [ T ],
+                      M.borrow (| Pointer.Kind.MutRef, γ0_0 |)
+                    |) in
                   Value.StructTuple
                     "core::option::Option::Some"
                     []
@@ -1463,7 +1483,12 @@ Module option.
                           "core::option::Option::Some",
                           0
                         |) in
-                      let x := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_0 |) in
+                      let _ := M.read (| γ0_0 |) in
+                      let x :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ T ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                        |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
                           M.call_closure (|
@@ -3739,7 +3764,12 @@ Module option.
                   (let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "core::option::Option::Some", 0 |) in
-                  let x := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let x :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "core::option::Option::Some"
                     []
@@ -3809,7 +3839,12 @@ Module option.
                       "core::option::Option::Some",
                       0
                     |) in
-                  let to := M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ2_0 |) in
+                  let _ := M.read (| γ2_0 |) in
+                  let to :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&mut") [] [ T ],
+                      M.borrow (| Pointer.Kind.MutRef, γ2_0 |)
+                    |) in
                   let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                   let γ2_0 :=
                     M.SubPointer.get_struct_tuple_field (|
@@ -3817,7 +3852,12 @@ Module option.
                       "core::option::Option::Some",
                       0
                     |) in
-                  let from := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                  let _ := M.read (| γ2_0 |) in
+                  let from :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.tuple [],
                     M.get_trait_method (| "core::clone::Clone", T, [], [], "clone_from", [], [] |),
@@ -4263,7 +4303,12 @@ Module option.
                       "core::option::Option::Some",
                       0
                     |) in
-                  let l := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                  let _ := M.read (| γ2_0 |) in
+                  let l :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                    |) in
                   let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                   let γ2_0 :=
                     M.SubPointer.get_struct_tuple_field (|
@@ -4271,7 +4316,12 @@ Module option.
                       "core::option::Option::Some",
                       0
                     |) in
-                  let r := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                  let _ := M.read (| γ2_0 |) in
+                  let r :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.path "bool",
                     M.get_trait_method (| "core::cmp::PartialEq", T, [], [ T ], "eq", [], [] |),
@@ -4382,7 +4432,12 @@ Module option.
                       "core::option::Option::Some",
                       0
                     |) in
-                  let l := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                  let _ := M.read (| γ2_0 |) in
+                  let l :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                    |) in
                   let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                   let γ2_0 :=
                     M.SubPointer.get_struct_tuple_field (|
@@ -4390,7 +4445,12 @@ Module option.
                       "core::option::Option::Some",
                       0
                     |) in
-                  let r := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                  let _ := M.read (| γ2_0 |) in
+                  let r :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
                     M.get_trait_method (|
@@ -4521,7 +4581,12 @@ Module option.
                       "core::option::Option::Some",
                       0
                     |) in
-                  let l := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                  let _ := M.read (| γ2_0 |) in
+                  let l :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                    |) in
                   let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                   let γ2_0 :=
                     M.SubPointer.get_struct_tuple_field (|
@@ -4529,7 +4594,12 @@ Module option.
                       "core::option::Option::Some",
                       0
                     |) in
-                  let r := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                  let _ := M.read (| γ2_0 |) in
+                  let r :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.path "core::cmp::Ordering",
                     M.get_trait_method (| "core::cmp::Ord", T, [], [], "cmp", [], [] |),

@@ -82,13 +82,14 @@ Module errors.
                       "move_binary_format::errors::Location::Module",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_core_types::language_storage::ModuleId" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::errors::Location::Module"
@@ -175,13 +176,14 @@ Module errors.
                       "move_binary_format::errors::Location::Module",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_core_types::language_storage::ModuleId" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -372,13 +374,14 @@ Module errors.
                                   "move_binary_format::errors::Location::Module",
                                   0
                                 |) in
+                              let _ := M.read (| γ2_0 |) in
                               let __self_0 :=
                                 M.alloc (|
                                   Ty.apply
                                     (Ty.path "&")
                                     []
                                     [ Ty.path "move_core_types::language_storage::ModuleId" ],
-                                  γ2_0
+                                  M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                 |) in
                               let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                               let γ2_0 :=
@@ -387,13 +390,14 @@ Module errors.
                                   "move_binary_format::errors::Location::Module",
                                   0
                                 |) in
+                              let _ := M.read (| γ2_0 |) in
                               let __arg1_0 :=
                                 M.alloc (|
                                   Ty.apply
                                     (Ty.path "&")
                                     []
                                     [ Ty.path "move_core_types::language_storage::ModuleId" ],
-                                  γ2_0
+                                  M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                 |) in
                               M.call_closure (|
                                 Ty.path "core::cmp::Ordering",
@@ -530,13 +534,14 @@ Module errors.
                               "move_binary_format::errors::Location::Module",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_core_types::language_storage::ModuleId" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -545,13 +550,14 @@ Module errors.
                               "move_binary_format::errors::Location::Module",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_core_types::language_storage::ModuleId" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -658,13 +664,14 @@ Module errors.
                           "move_binary_format::errors::Location::Module",
                           0
                         |) in
+                      let _ := M.read (| γ2_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_core_types::language_storage::ModuleId" ],
-                          γ2_0
+                          M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                         |) in
                       let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                       let γ2_0 :=
@@ -673,13 +680,14 @@ Module errors.
                           "move_binary_format::errors::Location::Module",
                           0
                         |) in
+                      let _ := M.read (| γ2_0 |) in
                       let __arg1_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_core_types::language_storage::ModuleId" ],
-                          γ2_0
+                          M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -4395,22 +4403,25 @@ Module errors.
                       "move_binary_format::errors::VMError_",
                       "offsets"
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let major_status :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_core_types::vm_status::StatusCode" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
+                  let _ := M.read (| γ1_1 |) in
                   let sub_status :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ] ],
-                      γ1_1
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                     |) in
+                  let _ := M.read (| γ1_2 |) in
                   let message :=
                     M.alloc (|
                       Ty.apply
@@ -4422,8 +4433,9 @@ Module errors.
                             []
                             [ Ty.path "alloc::string::String" ]
                         ],
-                      γ1_2
+                      M.borrow (| Pointer.Kind.Ref, γ1_2 |)
                     |) in
+                  let _ := M.read (| γ1_3 |) in
                   let exec_state :=
                     M.alloc (|
                       Ty.apply
@@ -4435,13 +4447,15 @@ Module errors.
                             []
                             [ Ty.path "move_binary_format::errors::ExecutionState" ]
                         ],
-                      γ1_3
+                      M.borrow (| Pointer.Kind.Ref, γ1_3 |)
                     |) in
+                  let _ := M.read (| γ1_4 |) in
                   let location :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "move_binary_format::errors::Location" ],
-                      γ1_4
+                      M.borrow (| Pointer.Kind.Ref, γ1_4 |)
                     |) in
+                  let _ := M.read (| γ1_5 |) in
                   let indices :=
                     M.alloc (|
                       Ty.apply
@@ -4456,8 +4470,9 @@ Module errors.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_5
+                      M.borrow (| Pointer.Kind.Ref, γ1_5 |)
                     |) in
+                  let _ := M.read (| γ1_6 |) in
                   let offsets :=
                     M.alloc (|
                       Ty.apply
@@ -4477,7 +4492,7 @@ Module errors.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_6
+                      M.borrow (| Pointer.Kind.Ref, γ1_6 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -6860,13 +6875,14 @@ Module errors.
                       "move_binary_format::errors::Location::Module",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let id :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_core_types::language_storage::ModuleId" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -7356,10 +7372,11 @@ Module errors.
                           "core::option::Option::Some",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let msg :=
                         M.alloc (|
                           Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
@@ -7666,18 +7683,20 @@ Module errors.
                                               M.SubPointer.get_tuple_field (| γ0_0, 0 |) in
                                             let γ2_1 :=
                                               M.SubPointer.get_tuple_field (| γ0_0, 1 |) in
+                                            let _ := M.read (| γ2_0 |) in
                                             let kind :=
                                               M.alloc (|
                                                 Ty.apply
                                                   (Ty.path "&")
                                                   []
                                                   [ Ty.path "move_binary_format::IndexKind" ],
-                                                γ2_0
+                                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                               |) in
+                                            let _ := M.read (| γ2_1 |) in
                                             let index :=
                                               M.alloc (|
                                                 Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
-                                                γ2_1
+                                                M.borrow (| Pointer.Kind.Ref, γ2_1 |)
                                               |) in
                                             M.read (|
                                               let~ _ : Ty.tuple [] :=
@@ -8108,6 +8127,7 @@ Module errors.
                                               M.SubPointer.get_tuple_field (| γ0_0, 0 |) in
                                             let γ2_1 :=
                                               M.SubPointer.get_tuple_field (| γ0_0, 1 |) in
+                                            let _ := M.read (| γ2_0 |) in
                                             let fdef :=
                                               M.alloc (|
                                                 Ty.apply
@@ -8117,12 +8137,13 @@ Module errors.
                                                     Ty.path
                                                       "move_binary_format::file_format::FunctionDefinitionIndex"
                                                   ],
-                                                γ2_0
+                                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                               |) in
+                                            let _ := M.read (| γ2_1 |) in
                                             let code_offset :=
                                               M.alloc (|
                                                 Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
-                                                γ2_1
+                                                M.borrow (| Pointer.Kind.Ref, γ2_1 |)
                                               |) in
                                             M.read (|
                                               let~ _ : Ty.tuple [] :=
@@ -8998,10 +9019,11 @@ Module errors.
                           "core::option::Option::Some",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let msg :=
                         M.alloc (|
                           Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
@@ -9308,18 +9330,20 @@ Module errors.
                                               M.SubPointer.get_tuple_field (| γ0_0, 0 |) in
                                             let γ2_1 :=
                                               M.SubPointer.get_tuple_field (| γ0_0, 1 |) in
+                                            let _ := M.read (| γ2_0 |) in
                                             let kind :=
                                               M.alloc (|
                                                 Ty.apply
                                                   (Ty.path "&")
                                                   []
                                                   [ Ty.path "move_binary_format::IndexKind" ],
-                                                γ2_0
+                                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                               |) in
+                                            let _ := M.read (| γ2_1 |) in
                                             let index :=
                                               M.alloc (|
                                                 Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
-                                                γ2_1
+                                                M.borrow (| Pointer.Kind.Ref, γ2_1 |)
                                               |) in
                                             M.read (|
                                               let~ _ : Ty.tuple [] :=
@@ -9750,6 +9774,7 @@ Module errors.
                                               M.SubPointer.get_tuple_field (| γ0_0, 0 |) in
                                             let γ2_1 :=
                                               M.SubPointer.get_tuple_field (| γ0_0, 1 |) in
+                                            let _ := M.read (| γ2_0 |) in
                                             let fdef :=
                                               M.alloc (|
                                                 Ty.apply
@@ -9759,12 +9784,13 @@ Module errors.
                                                     Ty.path
                                                       "move_binary_format::file_format::FunctionDefinitionIndex"
                                                   ],
-                                                γ2_0
+                                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                               |) in
+                                            let _ := M.read (| γ2_1 |) in
                                             let code_offset :=
                                               M.alloc (|
                                                 Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
-                                                γ2_1
+                                                M.borrow (| Pointer.Kind.Ref, γ2_1 |)
                                               |) in
                                             M.read (|
                                               let~ _ : Ty.tuple [] :=
@@ -10873,22 +10899,25 @@ Module errors.
                       "move_binary_format::errors::PartialVMError_",
                       "offsets"
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let major_status :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_core_types::vm_status::StatusCode" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
+                  let _ := M.read (| γ1_1 |) in
                   let sub_status :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ] ],
-                      γ1_1
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                     |) in
+                  let _ := M.read (| γ1_2 |) in
                   let message :=
                     M.alloc (|
                       Ty.apply
@@ -10900,8 +10929,9 @@ Module errors.
                             []
                             [ Ty.path "alloc::string::String" ]
                         ],
-                      γ1_2
+                      M.borrow (| Pointer.Kind.Ref, γ1_2 |)
                     |) in
+                  let _ := M.read (| γ1_3 |) in
                   let exec_state :=
                     M.alloc (|
                       Ty.apply
@@ -10913,8 +10943,9 @@ Module errors.
                             []
                             [ Ty.path "move_binary_format::errors::ExecutionState" ]
                         ],
-                      γ1_3
+                      M.borrow (| Pointer.Kind.Ref, γ1_3 |)
                     |) in
+                  let _ := M.read (| γ1_4 |) in
                   let indices :=
                     M.alloc (|
                       Ty.apply
@@ -10929,8 +10960,9 @@ Module errors.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_4
+                      M.borrow (| Pointer.Kind.Ref, γ1_4 |)
                     |) in
+                  let _ := M.read (| γ1_5 |) in
                   let offsets :=
                     M.alloc (|
                       Ty.apply
@@ -10950,7 +10982,7 @@ Module errors.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_5
+                      M.borrow (| Pointer.Kind.Ref, γ1_5 |)
                     |) in
                   M.call_closure (|
                     Ty.apply

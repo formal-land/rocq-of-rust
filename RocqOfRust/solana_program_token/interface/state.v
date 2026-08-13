@@ -1803,6 +1803,7 @@ Module state.
                                   "spl_token_interface::state::Mint",
                                   "freeze_authority"
                                 |) in
+                              let _ := M.read (| γ1_0 |) in
                               let mint_authority :=
                                 M.alloc (|
                                   Ty.apply
@@ -1814,11 +1815,12 @@ Module state.
                                         []
                                         [ Ty.path "solana_address::Address" ]
                                     ],
-                                  γ1_0
+                                  M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                 |) in
                               let supply := M.copy (| Ty.path "u64", γ1_1 |) in
                               let decimals := M.copy (| Ty.path "u8", γ1_2 |) in
                               let is_initialized := M.copy (| Ty.path "bool", γ1_3 |) in
+                              let _ := M.read (| γ1_4 |) in
                               let freeze_authority :=
                                 M.alloc (|
                                   Ty.apply
@@ -1830,7 +1832,7 @@ Module state.
                                         []
                                         [ Ty.path "solana_address::Address" ]
                                     ],
-                                  γ1_4
+                                  M.borrow (| Pointer.Kind.Ref, γ1_4 |)
                                 |) in
                               M.read (|
                                 let~ _ : Ty.tuple [] :=
@@ -4908,17 +4910,20 @@ Module state.
                                   "spl_token_interface::state::Account",
                                   "close_authority"
                                 |) in
+                              let _ := M.read (| γ1_0 |) in
                               let mint :=
                                 M.alloc (|
                                   Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                                  γ1_0
+                                  M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                 |) in
+                              let _ := M.read (| γ1_1 |) in
                               let owner :=
                                 M.alloc (|
                                   Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                                  γ1_1
+                                  M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                                 |) in
                               let amount := M.copy (| Ty.path "u64", γ1_2 |) in
+                              let _ := M.read (| γ1_3 |) in
                               let delegate :=
                                 M.alloc (|
                                   Ty.apply
@@ -4930,13 +4935,14 @@ Module state.
                                         []
                                         [ Ty.path "solana_address::Address" ]
                                     ],
-                                  γ1_3
+                                  M.borrow (| Pointer.Kind.Ref, γ1_3 |)
                                 |) in
                               let state :=
                                 M.copy (|
                                   Ty.path "spl_token_interface::state::AccountState",
                                   γ1_4
                                 |) in
+                              let _ := M.read (| γ1_5 |) in
                               let is_native :=
                                 M.alloc (|
                                   Ty.apply
@@ -4948,9 +4954,10 @@ Module state.
                                         []
                                         [ Ty.path "u64" ]
                                     ],
-                                  γ1_5
+                                  M.borrow (| Pointer.Kind.Ref, γ1_5 |)
                                 |) in
                               let delegated_amount := M.copy (| Ty.path "u64", γ1_6 |) in
+                              let _ := M.read (| γ1_7 |) in
                               let close_authority :=
                                 M.alloc (|
                                   Ty.apply
@@ -4962,7 +4969,7 @@ Module state.
                                         []
                                         [ Ty.path "solana_address::Address" ]
                                     ],
-                                  γ1_7
+                                  M.borrow (| Pointer.Kind.Ref, γ1_7 |)
                                 |) in
                               M.read (|
                                 let~ _ : Ty.tuple [] :=
@@ -8310,10 +8317,11 @@ Module state.
                             "solana_program_option::COption::Some",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let key :=
                           M.alloc (|
                             Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -8825,8 +8833,12 @@ Module state.
                             "solana_program_option::COption::Some",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let amount :=
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                          |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
                             M.write (|

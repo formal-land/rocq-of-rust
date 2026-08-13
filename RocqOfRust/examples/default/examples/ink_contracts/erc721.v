@@ -2543,6 +2543,7 @@ Module Impl_erc721_Erc721.
                         "erc721::Erc721",
                         "owned_tokens_count"
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let token_owner :=
                       M.alloc (|
                         Ty.apply
@@ -2554,8 +2555,9 @@ Module Impl_erc721_Erc721.
                               []
                               [ Ty.path "u32"; Ty.path "erc721::AccountId" ]
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                       |) in
+                    let _ := M.read (| γ1_1 |) in
                     let owned_tokens_count :=
                       M.alloc (|
                         Ty.apply
@@ -2567,7 +2569,7 @@ Module Impl_erc721_Erc721.
                               []
                               [ Ty.path "erc721::AccountId"; Ty.path "u32" ]
                           ],
-                        γ1_1
+                        M.borrow (| Pointer.Kind.MutRef, γ1_1 |)
                       |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
@@ -2944,6 +2946,7 @@ Module Impl_erc721_Erc721.
                         "erc721::Erc721",
                         "owned_tokens_count"
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let token_owner :=
                       M.alloc (|
                         Ty.apply
@@ -2955,8 +2958,9 @@ Module Impl_erc721_Erc721.
                               []
                               [ Ty.path "u32"; Ty.path "erc721::AccountId" ]
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                       |) in
+                    let _ := M.read (| γ1_1 |) in
                     let owned_tokens_count :=
                       M.alloc (|
                         Ty.apply
@@ -2968,7 +2972,7 @@ Module Impl_erc721_Erc721.
                               []
                               [ Ty.path "erc721::AccountId"; Ty.path "u32" ]
                           ],
-                        γ1_1
+                        M.borrow (| Pointer.Kind.MutRef, γ1_1 |)
                       |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
@@ -4402,6 +4406,7 @@ Module Impl_erc721_Erc721.
                             "erc721::Erc721",
                             "owned_tokens_count"
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let token_owner :=
                           M.alloc (|
                             Ty.apply
@@ -4413,8 +4418,9 @@ Module Impl_erc721_Erc721.
                                   []
                                   [ Ty.path "u32"; Ty.path "erc721::AccountId" ]
                               ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                           |) in
+                        let _ := M.read (| γ1_1 |) in
                         let owned_tokens_count :=
                           M.alloc (|
                             Ty.apply
@@ -4426,7 +4432,7 @@ Module Impl_erc721_Erc721.
                                   []
                                   [ Ty.path "erc721::AccountId"; Ty.path "u32" ]
                               ],
-                            γ1_1
+                            M.borrow (| Pointer.Kind.MutRef, γ1_1 |)
                           |) in
                         M.read (|
                           let~ owner : Ty.path "erc721::AccountId" :=

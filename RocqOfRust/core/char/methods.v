@@ -3429,8 +3429,12 @@ Module char.
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 := M.SubPointer.get_slice_index (| γ0_1, 0 |) in
                           let γ2_rest := M.SubPointer.get_slice_rest (| γ0_1, 1, 0 |) in
+                          let _ := M.read (| γ2_0 |) in
                           let a :=
-                            M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "u16" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&mut") [] [ Ty.path "u16" ],
+                              M.borrow (| Pointer.Kind.MutRef, γ2_0 |)
+                            |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
                               M.write (|
@@ -3452,10 +3456,18 @@ Module char.
                           let γ2_0 := M.SubPointer.get_slice_index (| γ0_1, 0 |) in
                           let γ2_1 := M.SubPointer.get_slice_index (| γ0_1, 1 |) in
                           let γ2_rest := M.SubPointer.get_slice_rest (| γ0_1, 2, 0 |) in
+                          let _ := M.read (| γ2_0 |) in
                           let a :=
-                            M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "u16" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&mut") [] [ Ty.path "u16" ],
+                              M.borrow (| Pointer.Kind.MutRef, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
                           let b :=
-                            M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "u16" ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&mut") [] [ Ty.path "u16" ],
+                              M.borrow (| Pointer.Kind.MutRef, γ2_1 |)
+                            |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
                               let β := code in

@@ -1808,6 +1808,7 @@ Module journal.
                         "revm_context::journal::inner::JournalInner",
                         "warm_addresses"
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let state :=
                       M.alloc (|
                         Ty.apply
@@ -1823,8 +1824,9 @@ Module journal.
                                 Ty.path "std::hash::random::RandomState"
                               ]
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                       |) in
+                    let _ := M.read (| γ1_1 |) in
                     let transient_storage :=
                       M.alloc (|
                         Ty.apply
@@ -1856,8 +1858,9 @@ Module journal.
                                 Ty.path "std::hash::random::RandomState"
                               ]
                           ],
-                        γ1_1
+                        M.borrow (| Pointer.Kind.MutRef, γ1_1 |)
                       |) in
+                    let _ := M.read (| γ1_2 |) in
                     let logs :=
                       M.alloc (|
                         Ty.apply
@@ -1875,10 +1878,15 @@ Module journal.
                                 Ty.path "alloc::alloc::Global"
                               ]
                           ],
-                        γ1_2
+                        M.borrow (| Pointer.Kind.MutRef, γ1_2 |)
                       |) in
+                    let _ := M.read (| γ1_3 |) in
                     let depth :=
-                      M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "usize" ], γ1_3 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&mut") [] [ Ty.path "usize" ],
+                        M.borrow (| Pointer.Kind.MutRef, γ1_3 |)
+                      |) in
+                    let _ := M.read (| γ1_4 |) in
                     let journal :=
                       M.alloc (|
                         Ty.apply
@@ -1890,25 +1898,31 @@ Module journal.
                               []
                               [ ENTRY; Ty.path "alloc::alloc::Global" ]
                           ],
-                        γ1_4
+                        M.borrow (| Pointer.Kind.MutRef, γ1_4 |)
                       |) in
+                    let _ := M.read (| γ1_5 |) in
                     let transaction_id :=
-                      M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "usize" ], γ1_5 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&mut") [] [ Ty.path "usize" ],
+                        M.borrow (| Pointer.Kind.MutRef, γ1_5 |)
+                      |) in
+                    let _ := M.read (| γ1_6 |) in
                     let spec :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&mut")
                           []
                           [ Ty.path "revm_primitives::hardfork::SpecId" ],
-                        γ1_6
+                        M.borrow (| Pointer.Kind.MutRef, γ1_6 |)
                       |) in
+                    let _ := M.read (| γ1_7 |) in
                     let warm_addresses :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&mut")
                           []
                           [ Ty.path "revm_context::journal::warm_addresses::WarmAddresses" ],
-                        γ1_7
+                        M.borrow (| Pointer.Kind.MutRef, γ1_7 |)
                       |) in
                     M.match_operator (|
                       Ty.tuple [],
@@ -2157,6 +2171,7 @@ Module journal.
                         "revm_context::journal::inner::JournalInner",
                         "warm_addresses"
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let state :=
                       M.alloc (|
                         Ty.apply
@@ -2172,8 +2187,9 @@ Module journal.
                                 Ty.path "std::hash::random::RandomState"
                               ]
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                       |) in
+                    let _ := M.read (| γ1_1 |) in
                     let transient_storage :=
                       M.alloc (|
                         Ty.apply
@@ -2205,8 +2221,9 @@ Module journal.
                                 Ty.path "std::hash::random::RandomState"
                               ]
                           ],
-                        γ1_1
+                        M.borrow (| Pointer.Kind.MutRef, γ1_1 |)
                       |) in
+                    let _ := M.read (| γ1_2 |) in
                     let logs :=
                       M.alloc (|
                         Ty.apply
@@ -2224,10 +2241,15 @@ Module journal.
                                 Ty.path "alloc::alloc::Global"
                               ]
                           ],
-                        γ1_2
+                        M.borrow (| Pointer.Kind.MutRef, γ1_2 |)
                       |) in
+                    let _ := M.read (| γ1_3 |) in
                     let depth :=
-                      M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "usize" ], γ1_3 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&mut") [] [ Ty.path "usize" ],
+                        M.borrow (| Pointer.Kind.MutRef, γ1_3 |)
+                      |) in
+                    let _ := M.read (| γ1_4 |) in
                     let journal :=
                       M.alloc (|
                         Ty.apply
@@ -2239,25 +2261,31 @@ Module journal.
                               []
                               [ ENTRY; Ty.path "alloc::alloc::Global" ]
                           ],
-                        γ1_4
+                        M.borrow (| Pointer.Kind.MutRef, γ1_4 |)
                       |) in
+                    let _ := M.read (| γ1_5 |) in
                     let transaction_id :=
-                      M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "usize" ], γ1_5 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&mut") [] [ Ty.path "usize" ],
+                        M.borrow (| Pointer.Kind.MutRef, γ1_5 |)
+                      |) in
+                    let _ := M.read (| γ1_6 |) in
                     let spec :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&mut")
                           []
                           [ Ty.path "revm_primitives::hardfork::SpecId" ],
-                        γ1_6
+                        M.borrow (| Pointer.Kind.MutRef, γ1_6 |)
                       |) in
+                    let _ := M.read (| γ1_7 |) in
                     let warm_addresses :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&mut")
                           []
                           [ Ty.path "revm_context::journal::warm_addresses::WarmAddresses" ],
-                        γ1_7
+                        M.borrow (| Pointer.Kind.MutRef, γ1_7 |)
                       |) in
                     M.read (|
                       let~ is_spurious_dragon_enabled : Ty.path "bool" :=
@@ -2651,6 +2679,7 @@ Module journal.
                         "revm_context::journal::inner::JournalInner",
                         "warm_addresses"
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let state :=
                       M.alloc (|
                         Ty.apply
@@ -2666,8 +2695,9 @@ Module journal.
                                 Ty.path "std::hash::random::RandomState"
                               ]
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                       |) in
+                    let _ := M.read (| γ1_1 |) in
                     let transient_storage :=
                       M.alloc (|
                         Ty.apply
@@ -2699,8 +2729,9 @@ Module journal.
                                 Ty.path "std::hash::random::RandomState"
                               ]
                           ],
-                        γ1_1
+                        M.borrow (| Pointer.Kind.MutRef, γ1_1 |)
                       |) in
+                    let _ := M.read (| γ1_2 |) in
                     let logs :=
                       M.alloc (|
                         Ty.apply
@@ -2718,10 +2749,15 @@ Module journal.
                                 Ty.path "alloc::alloc::Global"
                               ]
                           ],
-                        γ1_2
+                        M.borrow (| Pointer.Kind.MutRef, γ1_2 |)
                       |) in
+                    let _ := M.read (| γ1_3 |) in
                     let depth :=
-                      M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "usize" ], γ1_3 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&mut") [] [ Ty.path "usize" ],
+                        M.borrow (| Pointer.Kind.MutRef, γ1_3 |)
+                      |) in
+                    let _ := M.read (| γ1_4 |) in
                     let journal :=
                       M.alloc (|
                         Ty.apply
@@ -2733,25 +2769,31 @@ Module journal.
                               []
                               [ ENTRY; Ty.path "alloc::alloc::Global" ]
                           ],
-                        γ1_4
+                        M.borrow (| Pointer.Kind.MutRef, γ1_4 |)
                       |) in
+                    let _ := M.read (| γ1_5 |) in
                     let transaction_id :=
-                      M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "usize" ], γ1_5 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&mut") [] [ Ty.path "usize" ],
+                        M.borrow (| Pointer.Kind.MutRef, γ1_5 |)
+                      |) in
+                    let _ := M.read (| γ1_6 |) in
                     let spec :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&mut")
                           []
                           [ Ty.path "revm_primitives::hardfork::SpecId" ],
-                        γ1_6
+                        M.borrow (| Pointer.Kind.MutRef, γ1_6 |)
                       |) in
+                    let _ := M.read (| γ1_7 |) in
                     let warm_addresses :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&mut")
                           []
                           [ Ty.path "revm_context::journal::warm_addresses::WarmAddresses" ],
-                        γ1_7
+                        M.borrow (| Pointer.Kind.MutRef, γ1_7 |)
                       |) in
                     M.match_operator (|
                       Ty.apply
@@ -3611,13 +3653,14 @@ Module journal.
                                 "revm_bytecode::bytecode::Bytecode::Eip7702",
                                 0
                               |) in
+                            let _ := M.read (| γ1_0 |) in
                             let eip7702_bytecode :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "revm_bytecode::eip7702::Eip7702Bytecode" ],
-                                γ1_0
+                                M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                               |) in
                             M.match_operator (|
                               Ty.tuple [],
@@ -9271,13 +9314,14 @@ Module journal.
                                 "revm_bytecode::bytecode::Bytecode::Eip7702",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let code :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "revm_bytecode::eip7702::Eip7702Bytecode" ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             M.read (|
                               let~ address : Ty.path "alloy_primitives::bits::address::Address" :=

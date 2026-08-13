@@ -9020,13 +9020,14 @@ Module num.
                                   M.read (| γ1_0 |),
                                   Value.Integer IntegerKind.U8 43
                                 |) in
+                              let _ := M.read (| γ1_rest |) in
                               let rest :=
                                 M.alloc (|
                                   Ty.apply
                                     (Ty.path "&")
                                     []
                                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                  γ1_rest
+                                  M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                 |) in
                               Value.Tuple [ Value.Bool true; M.read (| rest |) ]));
                           fun γ =>
@@ -9039,13 +9040,14 @@ Module num.
                                   M.read (| γ1_0 |),
                                   Value.Integer IntegerKind.U8 45
                                 |) in
+                              let _ := M.read (| γ1_rest |) in
                               let rest :=
                                 M.alloc (|
                                   Ty.apply
                                     (Ty.path "&")
                                     []
                                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                  γ1_rest
+                                  M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                 |) in
                               let γ := is_signed_ty in
                               let _ :=
@@ -9145,14 +9147,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -9164,7 +9171,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ _ : Ty.tuple [] :=
@@ -9346,14 +9356,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -9365,7 +9380,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ _ : Ty.tuple [] :=
@@ -9565,14 +9583,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -9584,7 +9607,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ mul :
@@ -9914,14 +9940,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -9933,7 +9964,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ mul :
@@ -19298,13 +19332,14 @@ Module num.
                                   M.read (| γ1_0 |),
                                   Value.Integer IntegerKind.U8 43
                                 |) in
+                              let _ := M.read (| γ1_rest |) in
                               let rest :=
                                 M.alloc (|
                                   Ty.apply
                                     (Ty.path "&")
                                     []
                                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                  γ1_rest
+                                  M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                 |) in
                               Value.Tuple [ Value.Bool true; M.read (| rest |) ]));
                           fun γ =>
@@ -19317,13 +19352,14 @@ Module num.
                                   M.read (| γ1_0 |),
                                   Value.Integer IntegerKind.U8 45
                                 |) in
+                              let _ := M.read (| γ1_rest |) in
                               let rest :=
                                 M.alloc (|
                                   Ty.apply
                                     (Ty.path "&")
                                     []
                                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                  γ1_rest
+                                  M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                 |) in
                               let γ := is_signed_ty in
                               let _ :=
@@ -19423,14 +19459,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -19442,7 +19483,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ _ : Ty.tuple [] :=
@@ -19624,14 +19668,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -19643,7 +19692,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ _ : Ty.tuple [] :=
@@ -19843,14 +19895,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -19862,7 +19919,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ mul :
@@ -20192,14 +20252,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -20211,7 +20276,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ mul :
@@ -29576,13 +29644,14 @@ Module num.
                                   M.read (| γ1_0 |),
                                   Value.Integer IntegerKind.U8 43
                                 |) in
+                              let _ := M.read (| γ1_rest |) in
                               let rest :=
                                 M.alloc (|
                                   Ty.apply
                                     (Ty.path "&")
                                     []
                                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                  γ1_rest
+                                  M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                 |) in
                               Value.Tuple [ Value.Bool true; M.read (| rest |) ]));
                           fun γ =>
@@ -29595,13 +29664,14 @@ Module num.
                                   M.read (| γ1_0 |),
                                   Value.Integer IntegerKind.U8 45
                                 |) in
+                              let _ := M.read (| γ1_rest |) in
                               let rest :=
                                 M.alloc (|
                                   Ty.apply
                                     (Ty.path "&")
                                     []
                                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                  γ1_rest
+                                  M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                 |) in
                               let γ := is_signed_ty in
                               let _ :=
@@ -29701,14 +29771,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -29720,7 +29795,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ _ : Ty.tuple [] :=
@@ -29902,14 +29980,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -29921,7 +30004,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ _ : Ty.tuple [] :=
@@ -30121,14 +30207,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -30140,7 +30231,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ mul :
@@ -30470,14 +30564,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -30489,7 +30588,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ mul :
@@ -39910,13 +40012,14 @@ Module num.
                                   M.read (| γ1_0 |),
                                   Value.Integer IntegerKind.U8 43
                                 |) in
+                              let _ := M.read (| γ1_rest |) in
                               let rest :=
                                 M.alloc (|
                                   Ty.apply
                                     (Ty.path "&")
                                     []
                                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                  γ1_rest
+                                  M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                 |) in
                               Value.Tuple [ Value.Bool true; M.read (| rest |) ]));
                           fun γ =>
@@ -39929,13 +40032,14 @@ Module num.
                                   M.read (| γ1_0 |),
                                   Value.Integer IntegerKind.U8 45
                                 |) in
+                              let _ := M.read (| γ1_rest |) in
                               let rest :=
                                 M.alloc (|
                                   Ty.apply
                                     (Ty.path "&")
                                     []
                                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                  γ1_rest
+                                  M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                 |) in
                               let γ := is_signed_ty in
                               let _ :=
@@ -40035,14 +40139,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -40054,7 +40163,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ _ : Ty.tuple [] :=
@@ -40236,14 +40348,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -40255,7 +40372,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ _ : Ty.tuple [] :=
@@ -40455,14 +40575,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -40474,7 +40599,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ mul :
@@ -40804,14 +40932,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -40823,7 +40956,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ mul :
@@ -50258,13 +50394,14 @@ Module num.
                                   M.read (| γ1_0 |),
                                   Value.Integer IntegerKind.U8 43
                                 |) in
+                              let _ := M.read (| γ1_rest |) in
                               let rest :=
                                 M.alloc (|
                                   Ty.apply
                                     (Ty.path "&")
                                     []
                                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                  γ1_rest
+                                  M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                 |) in
                               Value.Tuple [ Value.Bool true; M.read (| rest |) ]));
                           fun γ =>
@@ -50277,13 +50414,14 @@ Module num.
                                   M.read (| γ1_0 |),
                                   Value.Integer IntegerKind.U8 45
                                 |) in
+                              let _ := M.read (| γ1_rest |) in
                               let rest :=
                                 M.alloc (|
                                   Ty.apply
                                     (Ty.path "&")
                                     []
                                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                  γ1_rest
+                                  M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                 |) in
                               let γ := is_signed_ty in
                               let _ :=
@@ -50383,14 +50521,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -50402,7 +50545,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ _ : Ty.tuple [] :=
@@ -50584,14 +50730,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -50603,7 +50754,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ _ : Ty.tuple [] :=
@@ -50803,14 +50957,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -50822,7 +50981,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ mul :
@@ -51152,14 +51314,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -51171,7 +51338,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ mul :
@@ -60655,13 +60825,14 @@ Module num.
                                   M.read (| γ1_0 |),
                                   Value.Integer IntegerKind.U8 43
                                 |) in
+                              let _ := M.read (| γ1_rest |) in
                               let rest :=
                                 M.alloc (|
                                   Ty.apply
                                     (Ty.path "&")
                                     []
                                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                  γ1_rest
+                                  M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                 |) in
                               Value.Tuple [ Value.Bool true; M.read (| rest |) ]));
                           fun γ =>
@@ -60674,13 +60845,14 @@ Module num.
                                   M.read (| γ1_0 |),
                                   Value.Integer IntegerKind.U8 45
                                 |) in
+                              let _ := M.read (| γ1_rest |) in
                               let rest :=
                                 M.alloc (|
                                   Ty.apply
                                     (Ty.path "&")
                                     []
                                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                  γ1_rest
+                                  M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                 |) in
                               let γ := is_signed_ty in
                               let _ :=
@@ -60780,14 +60952,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -60799,7 +60976,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ _ : Ty.tuple [] :=
@@ -60981,14 +61161,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -61000,7 +61185,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ _ : Ty.tuple [] :=
@@ -61200,14 +61388,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -61219,7 +61412,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ mul :
@@ -61549,14 +61745,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -61568,7 +61769,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ mul :
@@ -72043,13 +72247,14 @@ Module num.
                                   M.read (| γ1_0 |),
                                   Value.Integer IntegerKind.U8 43
                                 |) in
+                              let _ := M.read (| γ1_rest |) in
                               let rest :=
                                 M.alloc (|
                                   Ty.apply
                                     (Ty.path "&")
                                     []
                                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                  γ1_rest
+                                  M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                 |) in
                               Value.Tuple [ Value.Bool true; M.read (| rest |) ]));
                           fun γ =>
@@ -72062,13 +72267,14 @@ Module num.
                                   M.read (| γ1_0 |),
                                   Value.Integer IntegerKind.U8 45
                                 |) in
+                              let _ := M.read (| γ1_rest |) in
                               let rest :=
                                 M.alloc (|
                                   Ty.apply
                                     (Ty.path "&")
                                     []
                                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                  γ1_rest
+                                  M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                 |) in
                               let γ := is_signed_ty in
                               let _ :=
@@ -72168,14 +72374,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -72187,7 +72398,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ _ : Ty.tuple [] :=
@@ -72369,14 +72583,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -72388,7 +72607,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ _ : Ty.tuple [] :=
@@ -72588,14 +72810,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -72607,7 +72834,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ mul :
@@ -72937,14 +73167,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -72956,7 +73191,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ mul :
@@ -82255,13 +82493,14 @@ Module num.
                                   M.read (| γ1_0 |),
                                   Value.Integer IntegerKind.U8 43
                                 |) in
+                              let _ := M.read (| γ1_rest |) in
                               let rest :=
                                 M.alloc (|
                                   Ty.apply
                                     (Ty.path "&")
                                     []
                                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                  γ1_rest
+                                  M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                 |) in
                               Value.Tuple [ Value.Bool true; M.read (| rest |) ]));
                           fun γ =>
@@ -82274,13 +82513,14 @@ Module num.
                                   M.read (| γ1_0 |),
                                   Value.Integer IntegerKind.U8 45
                                 |) in
+                              let _ := M.read (| γ1_rest |) in
                               let rest :=
                                 M.alloc (|
                                   Ty.apply
                                     (Ty.path "&")
                                     []
                                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                  γ1_rest
+                                  M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                 |) in
                               let γ := is_signed_ty in
                               let _ :=
@@ -82380,14 +82620,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -82399,7 +82644,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ _ : Ty.tuple [] :=
@@ -82581,14 +82829,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -82600,7 +82853,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ _ : Ty.tuple [] :=
@@ -82800,14 +83056,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -82819,7 +83080,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ mul :
@@ -83149,14 +83413,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -83168,7 +83437,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ mul :
@@ -92424,13 +92696,14 @@ Module num.
                                   M.read (| γ1_0 |),
                                   Value.Integer IntegerKind.U8 43
                                 |) in
+                              let _ := M.read (| γ1_rest |) in
                               let rest :=
                                 M.alloc (|
                                   Ty.apply
                                     (Ty.path "&")
                                     []
                                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                  γ1_rest
+                                  M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                 |) in
                               Value.Tuple [ Value.Bool true; M.read (| rest |) ]));
                           fun γ =>
@@ -92443,13 +92716,14 @@ Module num.
                                   M.read (| γ1_0 |),
                                   Value.Integer IntegerKind.U8 45
                                 |) in
+                              let _ := M.read (| γ1_rest |) in
                               let rest :=
                                 M.alloc (|
                                   Ty.apply
                                     (Ty.path "&")
                                     []
                                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                  γ1_rest
+                                  M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                 |) in
                               let γ := is_signed_ty in
                               let _ :=
@@ -92549,14 +92823,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -92568,7 +92847,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ _ : Ty.tuple [] :=
@@ -92746,14 +93028,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -92765,7 +93052,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ _ : Ty.tuple [] :=
@@ -92961,14 +93251,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -92980,7 +93275,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ mul :
@@ -93319,14 +93617,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -93338,7 +93641,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ mul :
@@ -102599,13 +102905,14 @@ Module num.
                                   M.read (| γ1_0 |),
                                   Value.Integer IntegerKind.U8 43
                                 |) in
+                              let _ := M.read (| γ1_rest |) in
                               let rest :=
                                 M.alloc (|
                                   Ty.apply
                                     (Ty.path "&")
                                     []
                                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                  γ1_rest
+                                  M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                 |) in
                               Value.Tuple [ Value.Bool true; M.read (| rest |) ]));
                           fun γ =>
@@ -102618,13 +102925,14 @@ Module num.
                                   M.read (| γ1_0 |),
                                   Value.Integer IntegerKind.U8 45
                                 |) in
+                              let _ := M.read (| γ1_rest |) in
                               let rest :=
                                 M.alloc (|
                                   Ty.apply
                                     (Ty.path "&")
                                     []
                                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                  γ1_rest
+                                  M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                 |) in
                               let γ := is_signed_ty in
                               let _ :=
@@ -102724,14 +103032,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -102743,7 +103056,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ _ : Ty.tuple [] :=
@@ -102925,14 +103241,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -102944,7 +103265,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ _ : Ty.tuple [] :=
@@ -103144,14 +103468,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -103163,7 +103492,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ mul :
@@ -103493,14 +103825,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -103512,7 +103849,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ mul :
@@ -112784,13 +113124,14 @@ Module num.
                                   M.read (| γ1_0 |),
                                   Value.Integer IntegerKind.U8 43
                                 |) in
+                              let _ := M.read (| γ1_rest |) in
                               let rest :=
                                 M.alloc (|
                                   Ty.apply
                                     (Ty.path "&")
                                     []
                                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                  γ1_rest
+                                  M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                 |) in
                               Value.Tuple [ Value.Bool true; M.read (| rest |) ]));
                           fun γ =>
@@ -112803,13 +113144,14 @@ Module num.
                                   M.read (| γ1_0 |),
                                   Value.Integer IntegerKind.U8 45
                                 |) in
+                              let _ := M.read (| γ1_rest |) in
                               let rest :=
                                 M.alloc (|
                                   Ty.apply
                                     (Ty.path "&")
                                     []
                                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                  γ1_rest
+                                  M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                 |) in
                               let γ := is_signed_ty in
                               let _ :=
@@ -112909,14 +113251,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -112928,7 +113275,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ _ : Ty.tuple [] :=
@@ -113110,14 +113460,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -113129,7 +113484,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ _ : Ty.tuple [] :=
@@ -113329,14 +113687,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -113348,7 +113711,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ mul :
@@ -113678,14 +114044,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -113697,7 +114068,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ mul :
@@ -123131,13 +123505,14 @@ Module num.
                                   M.read (| γ1_0 |),
                                   Value.Integer IntegerKind.U8 43
                                 |) in
+                              let _ := M.read (| γ1_rest |) in
                               let rest :=
                                 M.alloc (|
                                   Ty.apply
                                     (Ty.path "&")
                                     []
                                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                  γ1_rest
+                                  M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                 |) in
                               Value.Tuple [ Value.Bool true; M.read (| rest |) ]));
                           fun γ =>
@@ -123150,13 +123525,14 @@ Module num.
                                   M.read (| γ1_0 |),
                                   Value.Integer IntegerKind.U8 45
                                 |) in
+                              let _ := M.read (| γ1_rest |) in
                               let rest :=
                                 M.alloc (|
                                   Ty.apply
                                     (Ty.path "&")
                                     []
                                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                  γ1_rest
+                                  M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                 |) in
                               let γ := is_signed_ty in
                               let _ :=
@@ -123256,14 +123632,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -123275,7 +123656,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ _ : Ty.tuple [] :=
@@ -123457,14 +123841,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -123476,7 +123865,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ _ : Ty.tuple [] :=
@@ -123676,14 +124068,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -123695,7 +124092,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ mul :
@@ -124025,14 +124425,19 @@ Module num.
                                                                       1,
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let c :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
+                                                                  let _ := M.read (| γ1_rest |) in
                                                                   let rest :=
                                                                     M.alloc (|
                                                                       Ty.apply
@@ -124044,7 +124449,10 @@ Module num.
                                                                             []
                                                                             [ Ty.path "u8" ]
                                                                         ],
-                                                                      γ1_rest
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_rest
+                                                                      |)
                                                                     |) in
                                                                   M.read (|
                                                                     let~ mul :

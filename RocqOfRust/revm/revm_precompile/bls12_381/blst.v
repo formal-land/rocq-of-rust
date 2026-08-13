@@ -2540,15 +2540,17 @@ Module bls12_381.
                           (let γ := M.deref (| M.read (| γ |) |) in
                           let γ1_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                           let γ1_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                          let _ := M.read (| γ1_0 |) in
                           let first_g1 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "blst::blst_p1_affine" ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                             |) in
+                          let _ := M.read (| γ1_1 |) in
                           let first_g2 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "blst::blst_p2_affine" ],
-                              γ1_1
+                              M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                             |) in
                           M.read (|
                             let~ acc : Ty.path "blst::blst_fp12" :=
@@ -2838,6 +2840,7 @@ Module bls12_381.
                                                                 γ0_0,
                                                                 1
                                                               |) in
+                                                            let _ := M.read (| γ2_0 |) in
                                                             let g1 :=
                                                               M.alloc (|
                                                                 Ty.apply
@@ -2845,8 +2848,12 @@ Module bls12_381.
                                                                   []
                                                                   [ Ty.path "blst::blst_p1_affine"
                                                                   ],
-                                                                γ2_0
+                                                                M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  γ2_0
+                                                                |)
                                                               |) in
+                                                            let _ := M.read (| γ2_1 |) in
                                                             let g2 :=
                                                               M.alloc (|
                                                                 Ty.apply
@@ -2854,7 +2861,10 @@ Module bls12_381.
                                                                   []
                                                                   [ Ty.path "blst::blst_p2_affine"
                                                                   ],
-                                                                γ2_1
+                                                                M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  γ2_1
+                                                                |)
                                                               |) in
                                                             M.read (|
                                                               let~ ml : Ty.path "blst::blst_fp12" :=
@@ -11675,6 +11685,7 @@ Module bls12_381.
                                                   M.SubPointer.get_tuple_field (| γ2_0, 0 |) in
                                                 let γ3_1 :=
                                                   M.SubPointer.get_tuple_field (| γ2_0, 1 |) in
+                                                let _ := M.read (| γ3_0 |) in
                                                 let g1_x :=
                                                   M.alloc (|
                                                     Ty.apply
@@ -11686,8 +11697,9 @@ Module bls12_381.
                                                           [ Value.Integer IntegerKind.Usize 48 ]
                                                           [ Ty.path "u8" ]
                                                       ],
-                                                    γ3_0
+                                                    M.borrow (| Pointer.Kind.Ref, γ3_0 |)
                                                   |) in
+                                                let _ := M.read (| γ3_1 |) in
                                                 let g1_y :=
                                                   M.alloc (|
                                                     Ty.apply
@@ -11699,7 +11711,7 @@ Module bls12_381.
                                                           [ Value.Integer IntegerKind.Usize 48 ]
                                                           [ Ty.path "u8" ]
                                                       ],
-                                                    γ3_1
+                                                    M.borrow (| Pointer.Kind.Ref, γ3_1 |)
                                                   |) in
                                                 let γ3_0 :=
                                                   M.SubPointer.get_tuple_field (| γ2_1, 0 |) in
@@ -11709,6 +11721,7 @@ Module bls12_381.
                                                   M.SubPointer.get_tuple_field (| γ2_1, 2 |) in
                                                 let γ3_3 :=
                                                   M.SubPointer.get_tuple_field (| γ2_1, 3 |) in
+                                                let _ := M.read (| γ3_0 |) in
                                                 let g2_x_0 :=
                                                   M.alloc (|
                                                     Ty.apply
@@ -11720,8 +11733,9 @@ Module bls12_381.
                                                           [ Value.Integer IntegerKind.Usize 48 ]
                                                           [ Ty.path "u8" ]
                                                       ],
-                                                    γ3_0
+                                                    M.borrow (| Pointer.Kind.Ref, γ3_0 |)
                                                   |) in
+                                                let _ := M.read (| γ3_1 |) in
                                                 let g2_x_1 :=
                                                   M.alloc (|
                                                     Ty.apply
@@ -11733,8 +11747,9 @@ Module bls12_381.
                                                           [ Value.Integer IntegerKind.Usize 48 ]
                                                           [ Ty.path "u8" ]
                                                       ],
-                                                    γ3_1
+                                                    M.borrow (| Pointer.Kind.Ref, γ3_1 |)
                                                   |) in
+                                                let _ := M.read (| γ3_2 |) in
                                                 let g2_y_0 :=
                                                   M.alloc (|
                                                     Ty.apply
@@ -11746,8 +11761,9 @@ Module bls12_381.
                                                           [ Value.Integer IntegerKind.Usize 48 ]
                                                           [ Ty.path "u8" ]
                                                       ],
-                                                    γ3_2
+                                                    M.borrow (| Pointer.Kind.Ref, γ3_2 |)
                                                   |) in
+                                                let _ := M.read (| γ3_3 |) in
                                                 let g2_y_1 :=
                                                   M.alloc (|
                                                     Ty.apply
@@ -11759,7 +11775,7 @@ Module bls12_381.
                                                           [ Value.Integer IntegerKind.Usize 48 ]
                                                           [ Ty.path "u8" ]
                                                       ],
-                                                    γ3_3
+                                                    M.borrow (| Pointer.Kind.Ref, γ3_3 |)
                                                   |) in
                                                 M.read (|
                                                   let~ g1_is_zero : Ty.path "bool" :=

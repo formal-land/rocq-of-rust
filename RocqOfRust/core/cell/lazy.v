@@ -273,7 +273,12 @@ Module cell.
                             "core::cell::lazy::State::Init",
                             0
                           |) in
-                        let data := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                        let _ := M.read (| γ1_0 |) in
+                        let data :=
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ T ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                          |) in
                         M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |)));
                     fun γ =>
                       ltac:(M.monadic
@@ -437,8 +442,12 @@ Module cell.
                                     "core::cell::lazy::State::Init",
                                     0
                                   |) in
+                                let _ := M.read (| γ1_0 |) in
                                 let data :=
-                                  M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ1_0 |) in
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "&mut") [] [ T ],
+                                    M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
+                                  |) in
                                 M.borrow (|
                                   Pointer.Kind.MutRef,
                                   M.deref (| M.read (| data |) |)
@@ -730,8 +739,12 @@ Module cell.
                                         "core::cell::lazy::State::Init",
                                         0
                                       |) in
+                                    let _ := M.read (| γ1_0 |) in
                                     let data :=
-                                      M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                                      M.alloc (|
+                                        Ty.apply (Ty.path "&") [] [ T ],
+                                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                                      |) in
                                     M.borrow (|
                                       Pointer.Kind.Ref,
                                       M.deref (| M.read (| data |) |)
@@ -838,7 +851,12 @@ Module cell.
                             "core::cell::lazy::State::Init",
                             0
                           |) in
-                        let data := M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ1_0 |) in
+                        let _ := M.read (| γ1_0 |) in
+                        let data :=
+                          M.alloc (|
+                            Ty.apply (Ty.path "&mut") [] [ T ],
+                            M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
+                          |) in
                         Value.StructTuple
                           "core::option::Option::Some"
                           []
@@ -942,7 +960,12 @@ Module cell.
                             "core::cell::lazy::State::Init",
                             0
                           |) in
-                        let data := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                        let _ := M.read (| γ1_0 |) in
+                        let data :=
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ T ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                          |) in
                         Value.StructTuple
                           "core::option::Option::Some"
                           []

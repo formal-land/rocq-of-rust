@@ -133,7 +133,7 @@ Rust source: [`../system.rs`](../system.rs)
 | Instruction | Status |
 |---|:---:|
 | [address](system/address.v) | ✓ |
-| [calldatacopy](system/calldatacopy.v) | ✗ |
+| [calldatacopy](system/calldatacopy.v) | ✓ |
 | [calldataload](system/calldataload.v) | ✗ |
 | [calldatasize](system/calldatasize.v) | ✓ |
 | [caller](system/caller.v) | ✓ |

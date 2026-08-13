@@ -341,7 +341,12 @@ Module slice.
                   let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
                   let γ1_rest := M.SubPointer.get_slice_rest (| γ, 1, 0 |) in
-                  let first := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let first :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "core::option::Option::Some"
                     []
@@ -391,7 +396,12 @@ Module slice.
                   let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
                   let γ1_rest := M.SubPointer.get_slice_rest (| γ, 1, 0 |) in
-                  let first := M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let first :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&mut") [] [ T ],
+                      M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "core::option::Option::Some"
                     []
@@ -447,11 +457,17 @@ Module slice.
                   let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
                   let γ1_rest := M.SubPointer.get_slice_rest (| γ, 1, 0 |) in
-                  let first := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let first :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_rest |) in
                   let tail :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                      γ1_rest
+                      M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                     |) in
                   Value.StructTuple
                     "core::option::Option::Some"
@@ -534,11 +550,17 @@ Module slice.
                   let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
                   let γ1_rest := M.SubPointer.get_slice_rest (| γ, 1, 0 |) in
-                  let first := M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let first :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&mut") [] [ T ],
+                      M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_rest |) in
                   let tail :=
                     M.alloc (|
                       Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                      γ1_rest
+                      M.borrow (| Pointer.Kind.MutRef, γ1_rest |)
                     |) in
                   Value.StructTuple
                     "core::option::Option::Some"
@@ -613,12 +635,18 @@ Module slice.
                   let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_rest := M.SubPointer.get_slice_rest (| γ, 0, 1 |) in
                   let γ1_rev0 := M.SubPointer.get_slice_rev_index (| γ, 0 |) in
+                  let _ := M.read (| γ1_rest |) in
                   let init :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                      γ1_rest
+                      M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                     |) in
-                  let last := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_rev0 |) in
+                  let _ := M.read (| γ1_rev0 |) in
+                  let last :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_rev0 |)
+                    |) in
                   Value.StructTuple
                     "core::option::Option::Some"
                     []
@@ -700,12 +728,18 @@ Module slice.
                   let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_rest := M.SubPointer.get_slice_rest (| γ, 0, 1 |) in
                   let γ1_rev0 := M.SubPointer.get_slice_rev_index (| γ, 0 |) in
+                  let _ := M.read (| γ1_rest |) in
                   let init :=
                     M.alloc (|
                       Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                      γ1_rest
+                      M.borrow (| Pointer.Kind.MutRef, γ1_rest |)
                     |) in
-                  let last := M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ1_rev0 |) in
+                  let _ := M.read (| γ1_rev0 |) in
+                  let last :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&mut") [] [ T ],
+                      M.borrow (| Pointer.Kind.MutRef, γ1_rev0 |)
+                    |) in
                   Value.StructTuple
                     "core::option::Option::Some"
                     []
@@ -770,7 +804,12 @@ Module slice.
                   let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_rest := M.SubPointer.get_slice_rest (| γ, 0, 1 |) in
                   let γ1_rev0 := M.SubPointer.get_slice_rev_index (| γ, 0 |) in
-                  let last := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_rev0 |) in
+                  let _ := M.read (| γ1_rev0 |) in
+                  let last :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_rev0 |)
+                    |) in
                   Value.StructTuple
                     "core::option::Option::Some"
                     []
@@ -820,7 +859,12 @@ Module slice.
                   let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_rest := M.SubPointer.get_slice_rest (| γ, 0, 1 |) in
                   let γ1_rev0 := M.SubPointer.get_slice_rev_index (| γ, 0 |) in
-                  let last := M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ1_rev0 |) in
+                  let _ := M.read (| γ1_rev0 |) in
+                  let last :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&mut") [] [ T ],
+                      M.borrow (| Pointer.Kind.MutRef, γ1_rev0 |)
+                    |) in
                   Value.StructTuple
                     "core::option::Option::Some"
                     []
@@ -14632,8 +14676,18 @@ Module slice.
                                 (let γ := M.deref (| M.read (| γ |) |) in
                                 let γ1_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
                                 let γ1_1 := M.SubPointer.get_slice_index (| γ, 1 |) in
-                                let a := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
-                                let b := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_1 |) in
+                                let _ := M.read (| γ1_0 |) in
+                                let a :=
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "&") [] [ T ],
+                                    M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                                  |) in
+                                let _ := M.read (| γ1_1 |) in
+                                let b :=
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "&") [] [ T ],
+                                    M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                                  |) in
                                 M.call_closure (|
                                   Ty.path "bool",
                                   M.get_trait_method (|

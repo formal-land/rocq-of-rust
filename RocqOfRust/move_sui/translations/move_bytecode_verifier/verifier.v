@@ -299,13 +299,14 @@ Module verifier.
                                             "core::result::Result::Err",
                                             0
                                           |) in
+                                        let _ := M.read (| γ1_0 |) in
                                         let e :=
                                           M.alloc (|
                                             Ty.apply
                                               (Ty.path "&")
                                               []
                                               [ Ty.path "move_binary_format::errors::VMError" ],
-                                            γ1_0
+                                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                           |) in
                                         M.call_closure (|
                                           Ty.path "alloc::string::String",

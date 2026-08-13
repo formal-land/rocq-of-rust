@@ -1310,6 +1310,7 @@ Module precompile_provider.
                                           "revm_interpreter::interpreter_action::call_inputs::CallInput::SharedBuffer",
                                           0
                                         |) in
+                                      let _ := M.read (| γ1_0 |) in
                                       let range :=
                                         M.alloc (|
                                           Ty.apply
@@ -1321,7 +1322,7 @@ Module precompile_provider.
                                                 []
                                                 [ Ty.path "usize" ]
                                             ],
-                                          γ1_0
+                                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                         |) in
                                       M.match_operator (|
                                         Ty.apply
@@ -1581,13 +1582,14 @@ Module precompile_provider.
                                           "revm_interpreter::interpreter_action::call_inputs::CallInput::Bytes",
                                           0
                                         |) in
+                                      let _ := M.read (| γ1_0 |) in
                                       let bytes :=
                                         M.alloc (|
                                           Ty.apply
                                             (Ty.path "&")
                                             []
                                             [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                                          γ1_0
+                                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                         |) in
                                       M.borrow (|
                                         Pointer.Kind.Ref,

@@ -1186,13 +1186,18 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                                     let γ0_0 := M.deref (| M.read (| γ0_0 |) |) in
                                     let γ2_0 := M.SubPointer.get_tuple_field (| γ0_0, 0 |) in
                                     let γ2_1 := M.SubPointer.get_tuple_field (| γ0_0, 1 |) in
+                                    let _ := M.read (| γ2_0 |) in
                                     let count :=
                                       M.alloc (|
                                         Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ],
-                                        γ2_0
+                                        M.borrow (| Pointer.Kind.MutRef, γ2_0 |)
                                       |) in
+                                    let _ := M.read (| γ2_1 |) in
                                     let last_item :=
-                                      M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ2_1 |) in
+                                      M.alloc (|
+                                        Ty.apply (Ty.path "&mut") [] [ T ],
+                                        M.borrow (| Pointer.Kind.MutRef, γ2_1 |)
+                                      |) in
                                     let γ :=
                                       M.alloc (|
                                         Ty.path "bool",
@@ -1659,9 +1664,18 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                         (let γ := M.deref (| M.read (| γ |) |) in
                         let γ1_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                         let γ1_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                        let _ := M.read (| γ1_0 |) in
                         let count :=
-                          M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ], γ1_0 |) in
-                        let last := M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ1_1 |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ],
+                            M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
+                          |) in
+                        let _ := M.read (| γ1_1 |) in
+                        let last :=
+                          M.alloc (|
+                            Ty.apply (Ty.path "&mut") [] [ T ],
+                            M.borrow (| Pointer.Kind.MutRef, γ1_1 |)
+                          |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
                             M.match_operator (|
@@ -2160,13 +2174,18 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                                         (let γ := M.deref (| M.read (| γ |) |) in
                                         let γ1_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                                         let γ1_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                                        let _ := M.read (| γ1_0 |) in
                                         let count :=
                                           M.alloc (|
                                             Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ],
-                                            γ1_0
+                                            M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                                           |) in
+                                        let _ := M.read (| γ1_1 |) in
                                         let _last :=
-                                          M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ1_1 |) in
+                                          M.alloc (|
+                                            Ty.apply (Ty.path "&mut") [] [ T ],
+                                            M.borrow (| Pointer.Kind.MutRef, γ1_1 |)
+                                          |) in
                                         M.read (|
                                           let~ _ : Ty.tuple [] :=
                                             M.match_operator (|

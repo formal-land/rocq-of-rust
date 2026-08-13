@@ -284,7 +284,12 @@ Module future.
                                 "core::future::join::MaybeDone::Future",
                                 0
                               |) in
-                            let f := M.alloc (| Ty.apply (Ty.path "&mut") [] [ F ], γ0_0 |) in
+                            let _ := M.read (| γ0_0 |) in
+                            let f :=
+                              M.alloc (|
+                                Ty.apply (Ty.path "&mut") [] [ F ],
+                                M.borrow (| Pointer.Kind.MutRef, γ0_0 |)
+                              |) in
                             M.read (|
                               let~ val :
                                   Ty.associated_in_trait

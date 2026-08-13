@@ -1803,7 +1803,12 @@ Module journaled_state.
                       "revm_context_interface::journaled_state::JournalLoadError::DBError",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ E ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "revm_context_interface::journaled_state::JournalLoadError::DBError"
                     []
@@ -1884,7 +1889,12 @@ Module journaled_state.
                       "revm_context_interface::journaled_state::JournalLoadError::DBError",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ E ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -2086,7 +2096,12 @@ Module journaled_state.
                               "revm_context_interface::journaled_state::JournalLoadError::DBError",
                               0
                             |) in
-                          let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ2_0 |) in
+                          let _ := M.read (| γ2_0 |) in
+                          let __self_0 :=
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ E ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -2094,7 +2109,12 @@ Module journaled_state.
                               "revm_context_interface::journaled_state::JournalLoadError::DBError",
                               0
                             |) in
-                          let __arg1_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ2_0 |) in
+                          let _ := M.read (| γ2_0 |) in
+                          let __arg1_0 :=
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ E ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -2253,7 +2273,12 @@ Module journaled_state.
                           "revm_context_interface::journaled_state::JournalLoadError::DBError",
                           0
                         |) in
-                      let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ1_0 |) in
+                      let _ := M.read (| γ1_0 |) in
+                      let __self_0 :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ E ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
                       M.call_closure (|
                         Ty.tuple [],
                         M.get_trait_method (| "core::hash::Hash", E, [], [], "hash", [], [ __H ] |),
