@@ -2619,15 +2619,20 @@ Module entrypoint.
                     (let γ := M.deref (| M.read (| γ |) |) in
                     let γ1_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
                     let γ1_rest := M.SubPointer.get_slice_rest (| γ, 1, 0 |) in
+                    let _ := M.read (| γ1_0 |) in
                     let discriminator :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
+                    let _ := M.read (| γ1_rest |) in
                     let remaining :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                        γ1_rest
+                        M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                       |) in
                     M.read (|
                       let~ result :
@@ -2923,15 +2928,20 @@ Module entrypoint.
                     (let γ := M.deref (| M.read (| γ |) |) in
                     let γ1_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
                     let γ1_rest := M.SubPointer.get_slice_rest (| γ, 1, 0 |) in
+                    let _ := M.read (| γ1_0 |) in
                     let discriminator :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
+                    let _ := M.read (| γ1_rest |) in
                     let instruction_data :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                        γ1_rest
+                        M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                       |) in
                     M.match_operator (|
                       Ty.apply

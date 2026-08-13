@@ -5839,6 +5839,10 @@ Module pre_execution.
                                                                                       "core::option::Option::Some",
                                                                                       0
                                                                                     |) in
+                                                                                  let _ :=
+                                                                                    M.read (|
+                                                                                      γ1_0
+                                                                                    |) in
                                                                                   let bytecode :=
                                                                                     M.alloc (|
                                                                                       Ty.apply
@@ -5849,7 +5853,10 @@ Module pre_execution.
                                                                                           Ty.path
                                                                                             "revm_bytecode::bytecode::Bytecode"
                                                                                         ],
-                                                                                      γ1_0
+                                                                                      M.borrow (|
+                                                                                        Pointer.Kind.Ref,
+                                                                                        γ1_0
+                                                                                      |)
                                                                                     |) in
                                                                                   M.match_operator (|
                                                                                     Ty.tuple [],

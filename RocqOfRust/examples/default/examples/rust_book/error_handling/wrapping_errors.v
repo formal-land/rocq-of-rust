@@ -71,10 +71,11 @@ Module Impl_core_fmt_Debug_for_wrapping_errors_DoubleError.
                     "wrapping_errors::DoubleError::Parse",
                     0
                   |) in
+                let _ := M.read (| γ1_0 |) in
                 let __self_0 :=
                   M.alloc (|
                     Ty.apply (Ty.path "&") [] [ Ty.path "core::num::error::ParseIntError" ],
-                    γ1_0
+                    M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                   |) in
                 M.call_closure (|
                   Ty.apply
@@ -271,10 +272,11 @@ Module Impl_core_error_Error_for_wrapping_errors_DoubleError.
                     "wrapping_errors::DoubleError::Parse",
                     0
                   |) in
+                let _ := M.read (| γ0_0 |) in
                 let e :=
                   M.alloc (|
                     Ty.apply (Ty.path "&") [] [ Ty.path "core::num::error::ParseIntError" ],
-                    γ0_0
+                    M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                   |) in
                 Value.StructTuple
                   "core::option::Option::Some"

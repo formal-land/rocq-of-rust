@@ -52,13 +52,14 @@ Module bytecode.
                       "revm_bytecode::bytecode::Bytecode::Eip7702",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_bytecode::eip7702::Eip7702Bytecode" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "revm_bytecode::bytecode::Bytecode::Eip7702"
@@ -88,13 +89,14 @@ Module bytecode.
                       "revm_bytecode::bytecode::Bytecode::LegacyAnalyzed",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "revm_bytecode::bytecode::Bytecode::LegacyAnalyzed"
@@ -160,13 +162,14 @@ Module bytecode.
                       "revm_bytecode::bytecode::Bytecode::Eip7702",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_bytecode::eip7702::Eip7702Bytecode" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -217,13 +220,14 @@ Module bytecode.
                       "revm_bytecode::bytecode::Bytecode::LegacyAnalyzed",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -362,13 +366,14 @@ Module bytecode.
                               "revm_bytecode::bytecode::Bytecode::Eip7702",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "revm_bytecode::eip7702::Eip7702Bytecode" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -377,13 +382,14 @@ Module bytecode.
                               "revm_bytecode::bytecode::Bytecode::Eip7702",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "revm_bytecode::eip7702::Eip7702Bytecode" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -420,6 +426,7 @@ Module bytecode.
                               "revm_bytecode::bytecode::Bytecode::LegacyAnalyzed",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
@@ -427,7 +434,7 @@ Module bytecode.
                                 []
                                 [ Ty.path "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -436,6 +443,7 @@ Module bytecode.
                               "revm_bytecode::bytecode::Bytecode::LegacyAnalyzed",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
@@ -443,7 +451,7 @@ Module bytecode.
                                 []
                                 [ Ty.path "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -602,13 +610,14 @@ Module bytecode.
                           "revm_bytecode::bytecode::Bytecode::Eip7702",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "revm_bytecode::eip7702::Eip7702Bytecode" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -635,13 +644,14 @@ Module bytecode.
                           "revm_bytecode::bytecode::Bytecode::LegacyAnalyzed",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -775,13 +785,14 @@ Module bytecode.
                                   "revm_bytecode::bytecode::Bytecode::Eip7702",
                                   0
                                 |) in
+                              let _ := M.read (| γ2_0 |) in
                               let __self_0 :=
                                 M.alloc (|
                                   Ty.apply
                                     (Ty.path "&")
                                     []
                                     [ Ty.path "revm_bytecode::eip7702::Eip7702Bytecode" ],
-                                  γ2_0
+                                  M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                 |) in
                               let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                               let γ2_0 :=
@@ -790,13 +801,14 @@ Module bytecode.
                                   "revm_bytecode::bytecode::Bytecode::Eip7702",
                                   0
                                 |) in
+                              let _ := M.read (| γ2_0 |) in
                               let __arg1_0 :=
                                 M.alloc (|
                                   Ty.apply
                                     (Ty.path "&")
                                     []
                                     [ Ty.path "revm_bytecode::eip7702::Eip7702Bytecode" ],
-                                  γ2_0
+                                  M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                 |) in
                               M.call_closure (|
                                 Ty.path "core::cmp::Ordering",
@@ -831,6 +843,7 @@ Module bytecode.
                                   "revm_bytecode::bytecode::Bytecode::LegacyAnalyzed",
                                   0
                                 |) in
+                              let _ := M.read (| γ2_0 |) in
                               let __self_0 :=
                                 M.alloc (|
                                   Ty.apply
@@ -840,7 +853,7 @@ Module bytecode.
                                       Ty.path
                                         "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode"
                                     ],
-                                  γ2_0
+                                  M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                 |) in
                               let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                               let γ2_0 :=
@@ -849,6 +862,7 @@ Module bytecode.
                                   "revm_bytecode::bytecode::Bytecode::LegacyAnalyzed",
                                   0
                                 |) in
+                              let _ := M.read (| γ2_0 |) in
                               let __arg1_0 :=
                                 M.alloc (|
                                   Ty.apply
@@ -858,7 +872,7 @@ Module bytecode.
                                       Ty.path
                                         "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode"
                                     ],
-                                  γ2_0
+                                  M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                 |) in
                               M.call_closure (|
                                 Ty.path "core::cmp::Ordering",
@@ -976,13 +990,14 @@ Module bytecode.
                           "revm_bytecode::bytecode::Bytecode::Eip7702",
                           0
                         |) in
+                      let _ := M.read (| γ2_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "revm_bytecode::eip7702::Eip7702Bytecode" ],
-                          γ2_0
+                          M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                         |) in
                       let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                       let γ2_0 :=
@@ -991,13 +1006,14 @@ Module bytecode.
                           "revm_bytecode::bytecode::Bytecode::Eip7702",
                           0
                         |) in
+                      let _ := M.read (| γ2_0 |) in
                       let __arg1_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "revm_bytecode::eip7702::Eip7702Bytecode" ],
-                          γ2_0
+                          M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -1029,13 +1045,14 @@ Module bytecode.
                           "revm_bytecode::bytecode::Bytecode::LegacyAnalyzed",
                           0
                         |) in
+                      let _ := M.read (| γ2_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode" ],
-                          γ2_0
+                          M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                         |) in
                       let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                       let γ2_0 :=
@@ -1044,13 +1061,14 @@ Module bytecode.
                           "revm_bytecode::bytecode::Bytecode::LegacyAnalyzed",
                           0
                         |) in
+                      let _ := M.read (| γ2_0 |) in
                       let __arg1_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode" ],
-                          γ2_0
+                          M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -1269,13 +1287,14 @@ Module bytecode.
                       "revm_bytecode::bytecode::Bytecode::LegacyAnalyzed",
                       0
                     |) in
+                  let _ := M.read (| γ2_0 |) in
                   let analyzed :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode" ],
-                      γ2_0
+                      M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                     |) in
                   Value.StructTuple
                     "core::option::Option::Some"
@@ -2039,13 +2058,14 @@ Module bytecode.
                           "revm_bytecode::bytecode::Bytecode::LegacyAnalyzed",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let analyzed :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -2071,13 +2091,14 @@ Module bytecode.
                           "revm_bytecode::bytecode::Bytecode::Eip7702",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let code :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "revm_bytecode::eip7702::Eip7702Bytecode" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -2282,13 +2303,14 @@ Module bytecode.
                           "revm_bytecode::bytecode::Bytecode::LegacyAnalyzed",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let analyzed :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -2314,13 +2336,14 @@ Module bytecode.
                           "revm_bytecode::bytecode::Bytecode::Eip7702",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let code :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "revm_bytecode::eip7702::Eip7702Bytecode" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -2457,13 +2480,14 @@ Module bytecode.
                       "revm_bytecode::bytecode::Bytecode::LegacyAnalyzed",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let analyzed :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.path "alloy_primitives::bytes_::Bytes",
@@ -2484,13 +2508,14 @@ Module bytecode.
                       "revm_bytecode::bytecode::Bytecode::Eip7702",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let eip7702 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_bytecode::eip7702::Eip7702Bytecode" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.path "alloy_primitives::bytes_::Bytes",
@@ -2564,13 +2589,14 @@ Module bytecode.
                           "revm_bytecode::bytecode::Bytecode::LegacyAnalyzed",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let analyzed :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -2599,13 +2625,14 @@ Module bytecode.
                           "revm_bytecode::bytecode::Bytecode::Eip7702",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let eip7702 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "revm_bytecode::eip7702::Eip7702Bytecode" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,

@@ -7,6 +7,14 @@ use serde::Serialize;
 use std::rc::Rc;
 use std::vec;
 
+/// Whether a binding is by reference (`ref x`, or match ergonomics on a
+/// reference scrutinee), keeping the mutability of the reference.
+#[derive(Clone, Copy, Debug, Serialize)]
+pub(crate) enum ByRef {
+    No,
+    Yes { is_mut: bool },
+}
+
 /// This enum represents the patterns which can be matched
 #[derive(Debug, Serialize)]
 pub(crate) enum Pattern {
@@ -14,7 +22,7 @@ pub(crate) enum Pattern {
     Binding {
         name: String,
         ty: Rc<RocqType>,
-        is_with_ref: bool,
+        by_ref: ByRef,
         is_with_mutability: bool,
         pattern: Option<Rc<Pattern>>,
     },
@@ -50,10 +58,14 @@ impl Pattern {
                     ty: RocqType::path(&[
                         "Type for variables in patterns in function parameters is not handled",
                     ]),
-                    is_with_ref: matches!(
-                        binding_annotation,
-                        rustc_hir::BindingMode(rustc_hir::ByRef::Yes(..), _)
-                    ),
+                    by_ref: match binding_annotation {
+                        rustc_hir::BindingMode(rustc_hir::ByRef::No, _) => ByRef::No,
+                        rustc_hir::BindingMode(rustc_hir::ByRef::Yes(_, mutability), _) => {
+                            ByRef::Yes {
+                                is_mut: matches!(mutability, rustc_hir::Mutability::Mut),
+                            }
+                        }
+                    },
                     is_with_mutability: matches!(
                         binding_annotation,
                         rustc_hir::BindingMode(_, rustc_hir::Mutability::Mut)
@@ -141,7 +153,7 @@ impl Pattern {
             Pattern::Binding {
                 name,
                 ty,
-                is_with_ref: _,
+                by_ref: _,
                 is_with_mutability: _,
                 pattern,
             } => {

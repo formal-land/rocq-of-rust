@@ -1,4 +1,5 @@
 Require Import links.RocqOfRust.
+Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.links.aliases.
 Require Import alloy_primitives.bits.links.address.
 Require Import alloy_primitives.bits.links.fixed.
@@ -50,7 +51,7 @@ Proof.
   destruct run_InputsTrait_for_Input.
   destruct Impl_TryFrom_u64_for_usize.run.
   destruct (Impl_Clone_for_Range.run usize).
+  destruct Impl_AsRef_slice_u8_for_Bytes.run.
   run_symbolic.
-  all: admit.
-Admitted.
+Defined.
 Global Opaque run_calldatacopy.

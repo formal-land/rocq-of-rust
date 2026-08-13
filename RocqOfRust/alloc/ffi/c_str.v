@@ -834,8 +834,12 @@ Module ffi.
                         "alloc::ffi::c_str::FromBytesWithNulErrorKind::InteriorNul",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     Value.StructTuple
                       "alloc::ffi::c_str::FromBytesWithNulErrorKind::InteriorNul"
                       []
@@ -976,8 +980,12 @@ Module ffi.
                                 "alloc::ffi::c_str::FromBytesWithNulErrorKind::InteriorNul",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ2_0 |) in
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
                               M.SubPointer.get_struct_tuple_field (|
@@ -985,8 +993,12 @@ Module ffi.
                                 "alloc::ffi::c_str::FromBytesWithNulErrorKind::InteriorNul",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ2_0 |) in
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             M.call_closure (|
                               Ty.path "bool",
                               M.get_trait_method (|
@@ -1093,8 +1105,12 @@ Module ffi.
                         "alloc::ffi::c_str::FromBytesWithNulErrorKind::InteriorNul",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     M.call_closure (|
                       Ty.apply
                         (Ty.path "core::result::Result")

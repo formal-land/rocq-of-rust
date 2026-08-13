@@ -998,14 +998,16 @@ Module collections.
                           "alloc::collections::btree::set::DifferenceInner::Stitch",
                           "other_iter"
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let self_iter :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ] ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
+                      let _ := M.read (| γ1_1 |) in
                       let other_iter :=
                         M.alloc (|
                           Ty.apply
@@ -1018,7 +1020,7 @@ Module collections.
                                 [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ]
                                 ]
                             ],
-                          γ1_1
+                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -1179,14 +1181,16 @@ Module collections.
                           "alloc::collections::btree::set::DifferenceInner::Search",
                           "other_set"
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let self_iter :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ] ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
+                      let _ := M.read (| γ1_1 |) in
                       let other_set :=
                         M.alloc (|
                           Ty.apply
@@ -1203,7 +1207,7 @@ Module collections.
                                     [ T; A ]
                                 ]
                             ],
-                          γ1_1
+                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -1358,13 +1362,14 @@ Module collections.
                           "alloc::collections::btree::set::DifferenceInner::Iterate",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let x :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ] ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -1859,21 +1864,23 @@ Module collections.
                           "alloc::collections::btree::set::IntersectionInner::Stitch",
                           "b"
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let a :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ] ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
+                      let _ := M.read (| γ1_1 |) in
                       let b :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ] ],
-                          γ1_1
+                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -2022,14 +2029,16 @@ Module collections.
                           "alloc::collections::btree::set::IntersectionInner::Search",
                           "large_set"
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let small_iter :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ] ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
+                      let _ := M.read (| γ1_1 |) in
                       let large_set :=
                         M.alloc (|
                           Ty.apply
@@ -2046,7 +2055,7 @@ Module collections.
                                     [ T; A ]
                                 ]
                             ],
-                          γ1_1
+                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -2201,6 +2210,7 @@ Module collections.
                           "alloc::collections::btree::set::IntersectionInner::Answer",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let x :=
                         M.alloc (|
                           Ty.apply
@@ -2212,7 +2222,7 @@ Module collections.
                                 []
                                 [ Ty.apply (Ty.path "&") [] [ T ] ]
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -11568,6 +11578,7 @@ Module collections.
                                 "alloc::collections::btree::set::DifferenceInner::Stitch",
                                 "other_iter"
                               |) in
+                            let _ := M.read (| γ1_0 |) in
                             let self_iter :=
                               M.alloc (|
                                 Ty.apply
@@ -11579,8 +11590,9 @@ Module collections.
                                       []
                                       [ T ]
                                   ],
-                                γ1_0
+                                M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                               |) in
+                            let _ := M.read (| γ1_1 |) in
                             let other_iter :=
                               M.alloc (|
                                 Ty.apply
@@ -11597,7 +11609,7 @@ Module collections.
                                           [ T ]
                                       ]
                                   ],
-                                γ1_1
+                                M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                               |) in
                             Value.mkStructRecord
                               "alloc::collections::btree::set::DifferenceInner::Stitch"
@@ -11680,6 +11692,7 @@ Module collections.
                                 "alloc::collections::btree::set::DifferenceInner::Search",
                                 "other_set"
                               |) in
+                            let _ := M.read (| γ1_0 |) in
                             let self_iter :=
                               M.alloc (|
                                 Ty.apply
@@ -11691,8 +11704,9 @@ Module collections.
                                       []
                                       [ T ]
                                   ],
-                                γ1_0
+                                M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                               |) in
+                            let _ := M.read (| γ1_1 |) in
                             let other_set :=
                               M.alloc (|
                                 Ty.apply
@@ -11709,7 +11723,7 @@ Module collections.
                                           [ T; A ]
                                       ]
                                   ],
-                                γ1_1
+                                M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                               |) in
                             Value.mkStructRecord
                               "alloc::collections::btree::set::DifferenceInner::Search"
@@ -11756,6 +11770,7 @@ Module collections.
                                 "alloc::collections::btree::set::DifferenceInner::Iterate",
                                 0
                               |) in
+                            let _ := M.read (| γ1_0 |) in
                             let iter :=
                               M.alloc (|
                                 Ty.apply
@@ -11767,7 +11782,7 @@ Module collections.
                                       []
                                       [ T ]
                                   ],
-                                γ1_0
+                                M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                               |) in
                             Value.StructTuple
                               "alloc::collections::btree::set::DifferenceInner::Iterate"
@@ -11905,6 +11920,7 @@ Module collections.
                               "alloc::collections::btree::set::DifferenceInner::Stitch",
                               "other_iter"
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let self_iter :=
                             M.alloc (|
                               Ty.apply
@@ -11912,8 +11928,9 @@ Module collections.
                                 []
                                 [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ]
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                             |) in
+                          let _ := M.read (| γ1_1 |) in
                           let other_iter :=
                             M.alloc (|
                               Ty.apply
@@ -11930,7 +11947,7 @@ Module collections.
                                         [ T ]
                                     ]
                                 ],
-                              γ1_1
+                              M.borrow (| Pointer.Kind.MutRef, γ1_1 |)
                             |) in
                           M.read (|
                             let~ self_next : Ty.apply (Ty.path "&") [] [ T ] :=
@@ -12534,6 +12551,7 @@ Module collections.
                               "alloc::collections::btree::set::DifferenceInner::Search",
                               "other_set"
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let self_iter :=
                             M.alloc (|
                               Ty.apply
@@ -12541,8 +12559,9 @@ Module collections.
                                 []
                                 [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ]
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                             |) in
+                          let _ := M.read (| γ1_1 |) in
                           let other_set :=
                             M.alloc (|
                               Ty.apply
@@ -12559,7 +12578,7 @@ Module collections.
                                         [ T; A ]
                                     ]
                                 ],
-                              γ1_1
+                              M.borrow (| Pointer.Kind.MutRef, γ1_1 |)
                             |) in
                           M.never_to_any (|
                             M.read (|
@@ -12782,6 +12801,7 @@ Module collections.
                               "alloc::collections::btree::set::DifferenceInner::Iterate",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let iter :=
                             M.alloc (|
                               Ty.apply
@@ -12789,7 +12809,7 @@ Module collections.
                                 []
                                 [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ]
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                             |) in
                           M.call_closure (|
                             Ty.apply
@@ -12888,6 +12908,7 @@ Module collections.
                               "alloc::collections::btree::set::DifferenceInner::Stitch",
                               "other_iter"
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let self_iter :=
                             M.alloc (|
                               Ty.apply
@@ -12895,8 +12916,9 @@ Module collections.
                                 []
                                 [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ]
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                             |) in
+                          let _ := M.read (| γ1_1 |) in
                           let other_iter :=
                             M.alloc (|
                               Ty.apply
@@ -12913,7 +12935,7 @@ Module collections.
                                         [ T ]
                                     ]
                                 ],
-                              γ1_1
+                              M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                             |) in
                           Value.Tuple
                             [
@@ -12980,6 +13002,7 @@ Module collections.
                               "alloc::collections::btree::set::DifferenceInner::Search",
                               "other_set"
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let self_iter :=
                             M.alloc (|
                               Ty.apply
@@ -12987,8 +13010,9 @@ Module collections.
                                 []
                                 [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ]
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                             |) in
+                          let _ := M.read (| γ1_1 |) in
                           let other_set :=
                             M.alloc (|
                               Ty.apply
@@ -13005,7 +13029,7 @@ Module collections.
                                         [ T; A ]
                                     ]
                                 ],
-                              γ1_1
+                              M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                             |) in
                           Value.Tuple
                             [
@@ -13058,6 +13082,7 @@ Module collections.
                               "alloc::collections::btree::set::DifferenceInner::Iterate",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let iter :=
                             M.alloc (|
                               Ty.apply
@@ -13065,7 +13090,7 @@ Module collections.
                                 []
                                 [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ]
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                             |) in
                           Value.Tuple
                             [
@@ -13714,6 +13739,7 @@ Module collections.
                                 "alloc::collections::btree::set::IntersectionInner::Stitch",
                                 "b"
                               |) in
+                            let _ := M.read (| γ1_0 |) in
                             let a :=
                               M.alloc (|
                                 Ty.apply
@@ -13725,8 +13751,9 @@ Module collections.
                                       []
                                       [ T ]
                                   ],
-                                γ1_0
+                                M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                               |) in
+                            let _ := M.read (| γ1_1 |) in
                             let b :=
                               M.alloc (|
                                 Ty.apply
@@ -13738,7 +13765,7 @@ Module collections.
                                       []
                                       [ T ]
                                   ],
-                                γ1_1
+                                M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                               |) in
                             Value.mkStructRecord
                               "alloc::collections::btree::set::IntersectionInner::Stitch"
@@ -13803,6 +13830,7 @@ Module collections.
                                 "alloc::collections::btree::set::IntersectionInner::Search",
                                 "large_set"
                               |) in
+                            let _ := M.read (| γ1_0 |) in
                             let small_iter :=
                               M.alloc (|
                                 Ty.apply
@@ -13814,8 +13842,9 @@ Module collections.
                                       []
                                       [ T ]
                                   ],
-                                γ1_0
+                                M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                               |) in
+                            let _ := M.read (| γ1_1 |) in
                             let large_set :=
                               M.alloc (|
                                 Ty.apply
@@ -13832,7 +13861,7 @@ Module collections.
                                           [ T; A ]
                                       ]
                                   ],
-                                γ1_1
+                                M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                               |) in
                             Value.mkStructRecord
                               "alloc::collections::btree::set::IntersectionInner::Search"
@@ -13879,6 +13908,7 @@ Module collections.
                                 "alloc::collections::btree::set::IntersectionInner::Answer",
                                 0
                               |) in
+                            let _ := M.read (| γ1_0 |) in
                             let answer :=
                               M.alloc (|
                                 Ty.apply
@@ -13890,7 +13920,7 @@ Module collections.
                                       []
                                       [ Ty.apply (Ty.path "&") [] [ T ] ]
                                   ],
-                                γ1_0
+                                M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                               |) in
                             Value.StructTuple
                               "alloc::collections::btree::set::IntersectionInner::Answer"
@@ -14004,6 +14034,7 @@ Module collections.
                               "alloc::collections::btree::set::IntersectionInner::Stitch",
                               "b"
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let a :=
                             M.alloc (|
                               Ty.apply
@@ -14011,8 +14042,9 @@ Module collections.
                                 []
                                 [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ]
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                             |) in
+                          let _ := M.read (| γ1_1 |) in
                           let b :=
                             M.alloc (|
                               Ty.apply
@@ -14020,7 +14052,7 @@ Module collections.
                                 []
                                 [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ]
                                 ],
-                              γ1_1
+                              M.borrow (| Pointer.Kind.MutRef, γ1_1 |)
                             |) in
                           M.read (|
                             let~ a_next : Ty.apply (Ty.path "&") [] [ T ] :=
@@ -14707,6 +14739,7 @@ Module collections.
                               "alloc::collections::btree::set::IntersectionInner::Search",
                               "large_set"
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let small_iter :=
                             M.alloc (|
                               Ty.apply
@@ -14714,8 +14747,9 @@ Module collections.
                                 []
                                 [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ]
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                             |) in
+                          let _ := M.read (| γ1_1 |) in
                           let large_set :=
                             M.alloc (|
                               Ty.apply
@@ -14732,7 +14766,7 @@ Module collections.
                                         [ T; A ]
                                     ]
                                 ],
-                              γ1_1
+                              M.borrow (| Pointer.Kind.MutRef, γ1_1 |)
                             |) in
                           M.never_to_any (|
                             M.read (|
@@ -14949,6 +14983,7 @@ Module collections.
                               "alloc::collections::btree::set::IntersectionInner::Answer",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let answer :=
                             M.alloc (|
                               Ty.apply
@@ -14960,7 +14995,7 @@ Module collections.
                                     []
                                     [ Ty.apply (Ty.path "&") [] [ T ] ]
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                             |) in
                           M.call_closure (|
                             Ty.apply
@@ -15055,21 +15090,23 @@ Module collections.
                           "alloc::collections::btree::set::IntersectionInner::Stitch",
                           "b"
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let a :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ] ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
+                      let _ := M.read (| γ1_1 |) in
                       let b :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ] ],
-                          γ1_1
+                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                         |) in
                       Value.Tuple
                         [
@@ -15130,13 +15167,14 @@ Module collections.
                           "alloc::collections::btree::set::IntersectionInner::Search",
                           "small_iter"
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let small_iter :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ] ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       Value.Tuple
                         [

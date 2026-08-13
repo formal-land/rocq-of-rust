@@ -138,7 +138,12 @@ Module base_convert.
                       "ruint::base_convert::BaseConvertError::InvalidBase",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -189,8 +194,18 @@ Module base_convert.
                       "ruint::base_convert::BaseConvertError::InvalidDigit",
                       1
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -339,8 +354,12 @@ Module base_convert.
                               "ruint::base_convert::BaseConvertError::InvalidBase",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -348,8 +367,12 @@ Module base_convert.
                               "ruint::base_convert::BaseConvertError::InvalidBase",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -383,10 +406,18 @@ Module base_convert.
                               "ruint::base_convert::BaseConvertError::InvalidDigit",
                               1
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __self_1 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -400,10 +431,18 @@ Module base_convert.
                               "ruint::base_convert::BaseConvertError::InvalidDigit",
                               1
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __arg1_1 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           LogicalOp.and (|
                             M.call_closure (|
                               Ty.path "bool",
@@ -571,7 +610,12 @@ Module base_convert.
                       "ruint::base_convert::BaseConvertError::InvalidBase",
                       0
                     |) in
-                  let base := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let base :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -715,8 +759,18 @@ Module base_convert.
                       "ruint::base_convert::BaseConvertError::InvalidDigit",
                       1
                     |) in
-                  let digit := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
-                  let base := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let digit :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let base :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")

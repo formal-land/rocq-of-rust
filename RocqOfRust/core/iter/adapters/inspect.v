@@ -169,6 +169,7 @@ Module iter.
                               "core::option::Option::Some",
                               0
                             |) in
+                          let _ := M.read (| γ0_0 |) in
                           let a :=
                             M.alloc (|
                               Ty.apply
@@ -182,7 +183,7 @@ Module iter.
                                     I
                                     "Item"
                                 ],
-                              γ0_0
+                              M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                             |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=

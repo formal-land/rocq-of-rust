@@ -5393,6 +5393,7 @@ Module handler.
                                                       "revm_bytecode::bytecode::Bytecode::Eip7702",
                                                       0
                                                     |) in
+                                                  let _ := M.read (| γ2_0 |) in
                                                   let eip7702_bytecode :=
                                                     M.alloc (|
                                                       Ty.apply
@@ -5402,7 +5403,7 @@ Module handler.
                                                           Ty.path
                                                             "revm_bytecode::eip7702::Eip7702Bytecode"
                                                         ],
-                                                      γ2_0
+                                                      M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                                     |) in
                                                   M.read (|
                                                     let~ delegated_address :

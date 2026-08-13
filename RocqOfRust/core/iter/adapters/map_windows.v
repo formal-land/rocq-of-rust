@@ -660,6 +660,7 @@ Module iter.
                                   "core::option::Option::Some",
                                   0
                                 |) in
+                              let _ := M.read (| γ0_0 |) in
                               let buffer :=
                                 M.alloc (|
                                   Ty.apply
@@ -678,7 +679,7 @@ Module iter.
                                             "Item"
                                         ]
                                     ],
-                                  γ0_0
+                                  M.borrow (| Pointer.Kind.MutRef, γ0_0 |)
                                 |) in
                               M.match_operator (|
                                 Ty.tuple [],
@@ -1143,7 +1144,12 @@ Module iter.
                               "core::option::Option::Some",
                               0
                             |) in
-                          let iter := M.alloc (| Ty.apply (Ty.path "&") [] [ I ], γ0_0 |) in
+                          let _ := M.read (| γ0_0 |) in
+                          let iter :=
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ I ],
+                              M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                            |) in
                           M.match_operator (|
                             Ty.tuple
                               [

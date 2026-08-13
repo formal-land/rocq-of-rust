@@ -361,10 +361,11 @@ Module frame_data.
                       "revm_handler::frame_data::FrameData::Call",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "revm_handler::frame_data::CallFrame" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -415,10 +416,11 @@ Module frame_data.
                       "revm_handler::frame_data::FrameData::Create",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "revm_handler::frame_data::CreateFrame" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -500,10 +502,11 @@ Module frame_data.
                       "revm_handler::frame_data::FrameData::Call",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "revm_handler::frame_data::CallFrame" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "revm_handler::frame_data::FrameData::Call"
@@ -533,10 +536,11 @@ Module frame_data.
                       "revm_handler::frame_data::FrameData::Create",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "revm_handler::frame_data::CreateFrame" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "revm_handler::frame_data::FrameData::Create"
@@ -630,6 +634,7 @@ Module frame_data.
                       "revm_handler::frame_data::FrameResult::Call",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
@@ -637,7 +642,7 @@ Module frame_data.
                         []
                         [ Ty.path "revm_interpreter::interpreter_action::call_outcome::CallOutcome"
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -691,6 +696,7 @@ Module frame_data.
                       "revm_handler::frame_data::FrameResult::Create",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
@@ -700,7 +706,7 @@ Module frame_data.
                           Ty.path
                             "revm_interpreter::interpreter_action::create_outcome::CreateOutcome"
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -785,6 +791,7 @@ Module frame_data.
                       "revm_handler::frame_data::FrameResult::Call",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
@@ -792,7 +799,7 @@ Module frame_data.
                         []
                         [ Ty.path "revm_interpreter::interpreter_action::call_outcome::CallOutcome"
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "revm_handler::frame_data::FrameResult::Call"
@@ -822,6 +829,7 @@ Module frame_data.
                       "revm_handler::frame_data::FrameResult::Create",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
@@ -831,7 +839,7 @@ Module frame_data.
                           Ty.path
                             "revm_interpreter::interpreter_action::create_outcome::CreateOutcome"
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "revm_handler::frame_data::FrameResult::Create"
@@ -970,6 +978,7 @@ Module frame_data.
                       "revm_handler::frame_data::FrameResult::Call",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let outcome :=
                     M.alloc (|
                       Ty.apply
@@ -977,7 +986,7 @@ Module frame_data.
                         []
                         [ Ty.path "revm_interpreter::interpreter_action::call_outcome::CallOutcome"
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "revm_context_interface::result::Output::Call"
@@ -1020,6 +1029,7 @@ Module frame_data.
                       "revm_handler::frame_data::FrameResult::Create",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let outcome :=
                     M.alloc (|
                       Ty.apply
@@ -1029,7 +1039,7 @@ Module frame_data.
                           Ty.path
                             "revm_interpreter::interpreter_action::create_outcome::CreateOutcome"
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "revm_context_interface::result::Output::Create"
@@ -1112,6 +1122,7 @@ Module frame_data.
                           "revm_handler::frame_data::FrameResult::Call",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let outcome :=
                         M.alloc (|
                           Ty.apply
@@ -1121,7 +1132,7 @@ Module frame_data.
                               Ty.path
                                 "revm_interpreter::interpreter_action::call_outcome::CallOutcome"
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -1149,6 +1160,7 @@ Module frame_data.
                           "revm_handler::frame_data::FrameResult::Create",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let outcome :=
                         M.alloc (|
                           Ty.apply
@@ -1158,7 +1170,7 @@ Module frame_data.
                               Ty.path
                                 "revm_interpreter::interpreter_action::create_outcome::CreateOutcome"
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -1224,6 +1236,7 @@ Module frame_data.
                               "revm_handler::frame_data::FrameResult::Call",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let outcome :=
                             M.alloc (|
                               Ty.apply
@@ -1233,7 +1246,7 @@ Module frame_data.
                                   Ty.path
                                     "revm_interpreter::interpreter_action::call_outcome::CallOutcome"
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                             |) in
                           M.borrow (|
                             Pointer.Kind.MutRef,
@@ -1261,6 +1274,7 @@ Module frame_data.
                               "revm_handler::frame_data::FrameResult::Create",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let outcome :=
                             M.alloc (|
                               Ty.apply
@@ -1270,7 +1284,7 @@ Module frame_data.
                                   Ty.path
                                     "revm_interpreter::interpreter_action::create_outcome::CreateOutcome"
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                             |) in
                           M.borrow (|
                             Pointer.Kind.MutRef,
@@ -1338,6 +1352,7 @@ Module frame_data.
                           "revm_handler::frame_data::FrameResult::Call",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let outcome :=
                         M.alloc (|
                           Ty.apply
@@ -1347,7 +1362,7 @@ Module frame_data.
                               Ty.path
                                 "revm_interpreter::interpreter_action::call_outcome::CallOutcome"
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -1371,6 +1386,7 @@ Module frame_data.
                           "revm_handler::frame_data::FrameResult::Create",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let outcome :=
                         M.alloc (|
                           Ty.apply
@@ -1380,7 +1396,7 @@ Module frame_data.
                               Ty.path
                                 "revm_interpreter::interpreter_action::create_outcome::CreateOutcome"
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -1446,6 +1462,7 @@ Module frame_data.
                               "revm_handler::frame_data::FrameResult::Call",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let outcome :=
                             M.alloc (|
                               Ty.apply
@@ -1455,7 +1472,7 @@ Module frame_data.
                                   Ty.path
                                     "revm_interpreter::interpreter_action::call_outcome::CallOutcome"
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                             |) in
                           M.borrow (|
                             Pointer.Kind.MutRef,
@@ -1479,6 +1496,7 @@ Module frame_data.
                               "revm_handler::frame_data::FrameResult::Create",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let outcome :=
                             M.alloc (|
                               Ty.apply
@@ -1488,7 +1506,7 @@ Module frame_data.
                                   Ty.path
                                     "revm_interpreter::interpreter_action::create_outcome::CreateOutcome"
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                             |) in
                           M.borrow (|
                             Pointer.Kind.MutRef,
@@ -1729,10 +1747,11 @@ Module frame_data.
                       "revm_handler::frame_data::FrameData::Create",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let create_frame :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "revm_handler::frame_data::CreateFrame" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "core::option::Option::Some"

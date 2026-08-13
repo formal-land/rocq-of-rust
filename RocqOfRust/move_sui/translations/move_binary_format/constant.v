@@ -225,6 +225,7 @@ Module constant.
                         "move_binary_format::file_format::SignatureToken::Vector",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let v :=
                       M.alloc (|
                         Ty.apply
@@ -239,7 +240,7 @@ Module constant.
                                 Ty.path "alloc::alloc::Global"
                               ]
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     Value.StructTuple
                       "core::option::Option::Some"
@@ -722,6 +723,7 @@ Module constant.
                         "move_core_types::runtime_value::MoveTypeLayout::Vector",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let v :=
                       M.alloc (|
                         Ty.apply
@@ -736,7 +738,7 @@ Module constant.
                                 Ty.path "alloc::alloc::Global"
                               ]
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     Value.StructTuple
                       "core::option::Option::Some"

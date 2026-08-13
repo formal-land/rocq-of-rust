@@ -451,7 +451,12 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveValue::U8",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -493,7 +498,12 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveValue::U64",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -538,8 +548,12 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveValue::U128",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], γ1_0 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u128" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -584,8 +598,12 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveValue::Bool",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], γ1_0 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -630,13 +648,14 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveValue::Address",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_core_types::account_address::AccountAddress" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -687,6 +706,7 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveValue::Vector",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
@@ -701,7 +721,7 @@ Module runtime_value.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -760,13 +780,14 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveValue::Struct",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_core_types::runtime_value::MoveStruct" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -817,13 +838,14 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveValue::Signer",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_core_types::account_address::AccountAddress" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -874,7 +896,12 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveValue::U16",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -919,7 +946,12 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveValue::U32",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -964,10 +996,11 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveValue::U256",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::u256::U256" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -1106,8 +1139,12 @@ Module runtime_value.
                               "move_core_types::runtime_value::MoveValue::U8",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -1115,8 +1152,12 @@ Module runtime_value.
                               "move_core_types::runtime_value::MoveValue::U8",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -1144,8 +1185,12 @@ Module runtime_value.
                               "move_core_types::runtime_value::MoveValue::U64",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -1153,8 +1198,12 @@ Module runtime_value.
                               "move_core_types::runtime_value::MoveValue::U64",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -1182,8 +1231,12 @@ Module runtime_value.
                               "move_core_types::runtime_value::MoveValue::U128",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u128" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -1191,8 +1244,12 @@ Module runtime_value.
                               "move_core_types::runtime_value::MoveValue::U128",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u128" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -1220,8 +1277,12 @@ Module runtime_value.
                               "move_core_types::runtime_value::MoveValue::Bool",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -1229,8 +1290,12 @@ Module runtime_value.
                               "move_core_types::runtime_value::MoveValue::Bool",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -1258,13 +1323,14 @@ Module runtime_value.
                               "move_core_types::runtime_value::MoveValue::Address",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_core_types::account_address::AccountAddress" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -1273,13 +1339,14 @@ Module runtime_value.
                               "move_core_types::runtime_value::MoveValue::Address",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_core_types::account_address::AccountAddress" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -1316,6 +1383,7 @@ Module runtime_value.
                               "move_core_types::runtime_value::MoveValue::Vector",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
@@ -1330,7 +1398,7 @@ Module runtime_value.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -1339,6 +1407,7 @@ Module runtime_value.
                               "move_core_types::runtime_value::MoveValue::Vector",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
@@ -1353,7 +1422,7 @@ Module runtime_value.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -1406,13 +1475,14 @@ Module runtime_value.
                               "move_core_types::runtime_value::MoveValue::Struct",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_core_types::runtime_value::MoveStruct" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -1421,13 +1491,14 @@ Module runtime_value.
                               "move_core_types::runtime_value::MoveValue::Struct",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_core_types::runtime_value::MoveStruct" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -1464,13 +1535,14 @@ Module runtime_value.
                               "move_core_types::runtime_value::MoveValue::Signer",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_core_types::account_address::AccountAddress" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -1479,13 +1551,14 @@ Module runtime_value.
                               "move_core_types::runtime_value::MoveValue::Signer",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_core_types::account_address::AccountAddress" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -1522,8 +1595,12 @@ Module runtime_value.
                               "move_core_types::runtime_value::MoveValue::U16",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -1531,8 +1608,12 @@ Module runtime_value.
                               "move_core_types::runtime_value::MoveValue::U16",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -1560,8 +1641,12 @@ Module runtime_value.
                               "move_core_types::runtime_value::MoveValue::U32",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -1569,8 +1654,12 @@ Module runtime_value.
                               "move_core_types::runtime_value::MoveValue::U32",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -1598,10 +1687,11 @@ Module runtime_value.
                               "move_core_types::runtime_value::MoveValue::U256",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::u256::U256" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -1610,10 +1700,11 @@ Module runtime_value.
                               "move_core_types::runtime_value::MoveValue::U256",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::u256::U256" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -1796,7 +1887,12 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveValue::U8",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "move_core_types::runtime_value::MoveValue::U8"
                     []
@@ -1825,7 +1921,12 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveValue::U64",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "move_core_types::runtime_value::MoveValue::U64"
                     []
@@ -1854,8 +1955,12 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveValue::U128",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], γ1_0 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u128" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "move_core_types::runtime_value::MoveValue::U128"
                     []
@@ -1884,8 +1989,12 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveValue::Bool",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], γ1_0 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "move_core_types::runtime_value::MoveValue::Bool"
                     []
@@ -1914,13 +2023,14 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveValue::Address",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_core_types::account_address::AccountAddress" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_core_types::runtime_value::MoveValue::Address"
@@ -1950,6 +2060,7 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveValue::Vector",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
@@ -1964,7 +2075,7 @@ Module runtime_value.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_core_types::runtime_value::MoveValue::Vector"
@@ -2006,13 +2117,14 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveValue::Struct",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_core_types::runtime_value::MoveStruct" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_core_types::runtime_value::MoveValue::Struct"
@@ -2042,13 +2154,14 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveValue::Signer",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_core_types::account_address::AccountAddress" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_core_types::runtime_value::MoveValue::Signer"
@@ -2078,7 +2191,12 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveValue::U16",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "move_core_types::runtime_value::MoveValue::U16"
                     []
@@ -2107,7 +2225,12 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveValue::U32",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "move_core_types::runtime_value::MoveValue::U32"
                     []
@@ -2136,10 +2259,11 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveValue::U256",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::u256::U256" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_core_types::runtime_value::MoveValue::U256"
@@ -2744,6 +2868,7 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveTypeLayout::Vector",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
@@ -2758,7 +2883,7 @@ Module runtime_value.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -2817,13 +2942,14 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveTypeLayout::Struct",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_core_types::runtime_value::MoveStructLayout" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -3065,6 +3191,7 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveTypeLayout::Vector",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
@@ -3079,7 +3206,7 @@ Module runtime_value.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_core_types::runtime_value::MoveTypeLayout::Vector"
@@ -3121,13 +3248,14 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveTypeLayout::Struct",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_core_types::runtime_value::MoveStructLayout" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_core_types::runtime_value::MoveTypeLayout::Struct"
@@ -3405,6 +3533,7 @@ Module runtime_value.
                         "move_core_types::runtime_value::MoveTypeLayout::Vector",
                         0
                       |) in
+                    let _ := M.read (| γ0_0 |) in
                     let __field0 :=
                       M.alloc (|
                         Ty.apply
@@ -3419,7 +3548,7 @@ Module runtime_value.
                                 Ty.path "alloc::alloc::Global"
                               ]
                           ],
-                        γ0_0
+                        M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -3462,13 +3591,14 @@ Module runtime_value.
                         "move_core_types::runtime_value::MoveTypeLayout::Struct",
                         0
                       |) in
+                    let _ := M.read (| γ0_0 |) in
                     let __field0 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "move_core_types::runtime_value::MoveStructLayout" ],
-                        γ0_0
+                        M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -4728,13 +4858,14 @@ Module runtime_value.
                       "move_core_types::annotated_value::MoveTypeLayout::Struct",
                       0
                     |) in
+                  let _ := M.read (| γ2_0 |) in
                   let l :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_core_types::annotated_value::MoveStructLayout" ],
-                      γ2_0
+                      M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                     |) in
                   Value.StructTuple
                     "move_core_types::annotated_value::MoveValue::Struct"
@@ -4783,6 +4914,7 @@ Module runtime_value.
                       "move_core_types::annotated_value::MoveTypeLayout::Vector",
                       0
                     |) in
+                  let _ := M.read (| γ2_0 |) in
                   let t :=
                     M.alloc (|
                       Ty.apply
@@ -4797,7 +4929,7 @@ Module runtime_value.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ2_0
+                      M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                     |) in
                   Value.StructTuple
                     "move_core_types::annotated_value::MoveValue::Vector"
@@ -5655,14 +5787,16 @@ Module runtime_value.
                               "move_core_types::annotated_value::MoveStructLayout",
                               "fields"
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let type_ :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_core_types::language_storage::StructTag" ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                             |) in
+                          let _ := M.read (| γ1_1 |) in
                           let fields :=
                             M.alloc (|
                               Ty.apply
@@ -5677,7 +5811,7 @@ Module runtime_value.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ1_1
+                              M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                             |) in
                           Value.mkStructRecord
                             "move_core_types::annotated_value::MoveStruct"
@@ -6936,13 +7070,14 @@ Module runtime_value.
                           "move_core_types::runtime_value::MoveTypeLayout::Struct",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let ty :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_core_types::runtime_value::MoveStructLayout" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       Value.StructTuple
                         "core::result::Result::Ok"
@@ -7165,6 +7300,7 @@ Module runtime_value.
                           "move_core_types::runtime_value::MoveTypeLayout::Vector",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let layout :=
                         M.alloc (|
                           Ty.apply
@@ -7179,7 +7315,7 @@ Module runtime_value.
                                   Ty.path "alloc::alloc::Global"
                                 ]
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       Value.StructTuple
                         "core::result::Result::Ok"
@@ -9169,13 +9305,14 @@ Module runtime_value.
                           "move_core_types::runtime_value::MoveValue::Struct",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let s :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_core_types::runtime_value::MoveStruct" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -9208,7 +9345,12 @@ Module runtime_value.
                           "move_core_types::runtime_value::MoveValue::Bool",
                           0
                         |) in
-                      let b := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], γ1_0 |) in
+                      let _ := M.read (| γ1_0 |) in
+                      let b :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
                       M.call_closure (|
                         Ty.apply
                           (Ty.path "core::result::Result")
@@ -9237,7 +9379,12 @@ Module runtime_value.
                           "move_core_types::runtime_value::MoveValue::U8",
                           0
                         |) in
-                      let i := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                      let _ := M.read (| γ1_0 |) in
+                      let i :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
                       M.call_closure (|
                         Ty.apply
                           (Ty.path "core::result::Result")
@@ -9266,7 +9413,12 @@ Module runtime_value.
                           "move_core_types::runtime_value::MoveValue::U16",
                           0
                         |) in
-                      let i := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_0 |) in
+                      let _ := M.read (| γ1_0 |) in
+                      let i :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
                       M.call_closure (|
                         Ty.apply
                           (Ty.path "core::result::Result")
@@ -9295,7 +9447,12 @@ Module runtime_value.
                           "move_core_types::runtime_value::MoveValue::U32",
                           0
                         |) in
-                      let i := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], γ1_0 |) in
+                      let _ := M.read (| γ1_0 |) in
+                      let i :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
                       M.call_closure (|
                         Ty.apply
                           (Ty.path "core::result::Result")
@@ -9324,7 +9481,12 @@ Module runtime_value.
                           "move_core_types::runtime_value::MoveValue::U64",
                           0
                         |) in
-                      let i := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                      let _ := M.read (| γ1_0 |) in
+                      let i :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
                       M.call_closure (|
                         Ty.apply
                           (Ty.path "core::result::Result")
@@ -9353,7 +9515,12 @@ Module runtime_value.
                           "move_core_types::runtime_value::MoveValue::U128",
                           0
                         |) in
-                      let i := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], γ1_0 |) in
+                      let _ := M.read (| γ1_0 |) in
+                      let i :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u128" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
                       M.call_closure (|
                         Ty.apply
                           (Ty.path "core::result::Result")
@@ -9382,10 +9549,11 @@ Module runtime_value.
                           "move_core_types::runtime_value::MoveValue::U256",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let i :=
                         M.alloc (|
                           Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::u256::U256" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -9418,13 +9586,14 @@ Module runtime_value.
                           "move_core_types::runtime_value::MoveValue::Address",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let a :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_core_types::account_address::AccountAddress" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -9457,13 +9626,14 @@ Module runtime_value.
                           "move_core_types::runtime_value::MoveValue::Signer",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let a :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_core_types::account_address::AccountAddress" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -9496,6 +9666,7 @@ Module runtime_value.
                           "move_core_types::runtime_value::MoveValue::Vector",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let v :=
                         M.alloc (|
                           Ty.apply
@@ -9510,7 +9681,7 @@ Module runtime_value.
                                   Ty.path "alloc::alloc::Global"
                                 ]
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.read (|
                         let~ t :
@@ -11242,6 +11413,7 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveTypeLayout::Vector",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let typ :=
                     M.alloc (|
                       Ty.apply
@@ -11256,7 +11428,7 @@ Module runtime_value.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   let γ :=
                     M.alloc (|
@@ -11407,6 +11579,7 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveTypeLayout::Vector",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let typ :=
                     M.alloc (|
                       Ty.apply
@@ -11421,7 +11594,7 @@ Module runtime_value.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -11540,13 +11713,14 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveTypeLayout::Struct",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let s :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_core_types::runtime_value::MoveStructLayout" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   let γ :=
                     M.alloc (|
@@ -11656,13 +11830,14 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveTypeLayout::Struct",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let s :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_core_types::runtime_value::MoveStructLayout" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -12660,7 +12835,12 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveValue::U8",
                       0
                     |) in
-                  let u := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let u :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -12744,7 +12924,12 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveValue::U16",
                       0
                     |) in
-                  let u := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let u :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -12828,7 +13013,12 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveValue::U32",
                       0
                     |) in
-                  let u := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let u :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -12912,7 +13102,12 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveValue::U64",
                       0
                     |) in
-                  let u := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let u :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -12996,7 +13191,12 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveValue::U128",
                       0
                     |) in
-                  let u := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let u :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u128" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -13080,10 +13280,11 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveValue::U256",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let u :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::u256::U256" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -13248,13 +13449,14 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveValue::Address",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let a :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_core_types::account_address::AccountAddress" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -13353,13 +13555,14 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveValue::Signer",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let a :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_core_types::account_address::AccountAddress" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -13464,6 +13667,7 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveValue::Vector",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let v :=
                     M.alloc (|
                       Ty.apply
@@ -13478,7 +13682,7 @@ Module runtime_value.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -13523,13 +13727,14 @@ Module runtime_value.
                       "move_core_types::runtime_value::MoveValue::Struct",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let s :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_core_types::runtime_value::MoveStruct" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply

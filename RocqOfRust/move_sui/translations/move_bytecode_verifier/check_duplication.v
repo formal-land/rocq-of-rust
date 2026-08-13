@@ -4450,6 +4450,7 @@ Module check_duplication.
                                                                 "move_binary_format::file_format::StructFieldInformation::Declared",
                                                                 0
                                                               |) in
+                                                            let _ := M.read (| γ1_0 |) in
                                                             let fields :=
                                                               M.alloc (|
                                                                 Ty.apply
@@ -4466,7 +4467,10 @@ Module check_duplication.
                                                                           "alloc::alloc::Global"
                                                                       ]
                                                                   ],
-                                                                γ1_0
+                                                                M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  γ1_0
+                                                                |)
                                                               |) in
                                                             M.read (| fields |)))
                                                       ]

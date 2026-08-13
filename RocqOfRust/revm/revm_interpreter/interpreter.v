@@ -1477,60 +1477,72 @@ Module interpreter.
                       "revm_interpreter::interpreter::Interpreter",
                       "extend"
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let bytecode_ref :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&mut")
                         []
                         [ Ty.path "revm_interpreter::interpreter::ext_bytecode::ExtBytecode" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                     |) in
+                  let _ := M.read (| γ1_1 |) in
                   let gas :=
                     M.alloc (|
                       Ty.apply (Ty.path "&mut") [] [ Ty.path "revm_interpreter::gas::Gas" ],
-                      γ1_1
+                      M.borrow (| Pointer.Kind.MutRef, γ1_1 |)
                     |) in
+                  let _ := M.read (| γ1_2 |) in
                   let stack :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&mut")
                         []
                         [ Ty.path "revm_interpreter::interpreter::stack::Stack" ],
-                      γ1_2
+                      M.borrow (| Pointer.Kind.MutRef, γ1_2 |)
                     |) in
+                  let _ := M.read (| γ1_3 |) in
                   let return_data :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&mut")
                         []
                         [ Ty.path "revm_interpreter::interpreter::return_data::ReturnDataImpl" ],
-                      γ1_3
+                      M.borrow (| Pointer.Kind.MutRef, γ1_3 |)
                     |) in
+                  let _ := M.read (| γ1_4 |) in
                   let memory_ref :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&mut")
                         []
                         [ Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory" ],
-                      γ1_4
+                      M.borrow (| Pointer.Kind.MutRef, γ1_4 |)
                     |) in
+                  let _ := M.read (| γ1_5 |) in
                   let input_ref :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&mut")
                         []
                         [ Ty.path "revm_interpreter::interpreter::input::InputsImpl" ],
-                      γ1_5
+                      M.borrow (| Pointer.Kind.MutRef, γ1_5 |)
                     |) in
+                  let _ := M.read (| γ1_6 |) in
                   let runtime_flag :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&mut")
                         []
                         [ Ty.path "revm_interpreter::interpreter::runtime_flags::RuntimeFlags" ],
-                      γ1_6
+                      M.borrow (| Pointer.Kind.MutRef, γ1_6 |)
                     |) in
-                  let extend := M.alloc (| Ty.apply (Ty.path "&mut") [] [ EXT ], γ1_7 |) in
+                  let _ := M.read (| γ1_7 |) in
+                  let extend :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&mut") [] [ EXT ],
+                      M.borrow (| Pointer.Kind.MutRef, γ1_7 |)
+                    |) in
                   M.read (|
                     let~ _ : Ty.tuple [] :=
                       M.write (|

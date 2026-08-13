@@ -531,6 +531,7 @@ Module language_storage.
                         "move_core_types::language_storage::TypeTag::Vector",
                         0
                       |) in
+                    let _ := M.read (| γ0_0 |) in
                     let __field0 :=
                       M.alloc (|
                         Ty.apply
@@ -545,7 +546,7 @@ Module language_storage.
                                 Ty.path "alloc::alloc::Global"
                               ]
                           ],
-                        γ0_0
+                        M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -588,6 +589,7 @@ Module language_storage.
                         "move_core_types::language_storage::TypeTag::Struct",
                         0
                       |) in
+                    let _ := M.read (| γ0_0 |) in
                     let __field0 :=
                       M.alloc (|
                         Ty.apply
@@ -602,7 +604,7 @@ Module language_storage.
                                 Ty.path "alloc::alloc::Global"
                               ]
                           ],
-                        γ0_0
+                        M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -985,6 +987,7 @@ Module language_storage.
                       "move_core_types::language_storage::TypeTag::Vector",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
@@ -999,7 +1002,7 @@ Module language_storage.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -1058,6 +1061,7 @@ Module language_storage.
                       "move_core_types::language_storage::TypeTag::Struct",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
@@ -1072,7 +1076,7 @@ Module language_storage.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -1287,6 +1291,7 @@ Module language_storage.
                               "move_core_types::language_storage::TypeTag::Vector",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
@@ -1301,7 +1306,7 @@ Module language_storage.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -1310,6 +1315,7 @@ Module language_storage.
                               "move_core_types::language_storage::TypeTag::Vector",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
@@ -1324,7 +1330,7 @@ Module language_storage.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -1377,6 +1383,7 @@ Module language_storage.
                               "move_core_types::language_storage::TypeTag::Struct",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
@@ -1391,7 +1398,7 @@ Module language_storage.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -1400,6 +1407,7 @@ Module language_storage.
                               "move_core_types::language_storage::TypeTag::Struct",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
@@ -1414,7 +1422,7 @@ Module language_storage.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -1534,6 +1542,7 @@ Module language_storage.
                           "move_core_types::language_storage::TypeTag::Vector",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
@@ -1548,7 +1557,7 @@ Module language_storage.
                                   Ty.path "alloc::alloc::Global"
                                 ]
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -1581,6 +1590,7 @@ Module language_storage.
                           "move_core_types::language_storage::TypeTag::Struct",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
@@ -1595,7 +1605,7 @@ Module language_storage.
                                   Ty.path "alloc::alloc::Global"
                                 ]
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -1751,6 +1761,7 @@ Module language_storage.
                       "move_core_types::language_storage::TypeTag::Vector",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
@@ -1765,7 +1776,7 @@ Module language_storage.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_core_types::language_storage::TypeTag::Vector"
@@ -1807,6 +1818,7 @@ Module language_storage.
                       "move_core_types::language_storage::TypeTag::Struct",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
@@ -1821,7 +1833,7 @@ Module language_storage.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_core_types::language_storage::TypeTag::Struct"
@@ -1955,6 +1967,7 @@ Module language_storage.
                           "move_core_types::language_storage::TypeTag::Vector",
                           0
                         |) in
+                      let _ := M.read (| γ2_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
@@ -1969,7 +1982,7 @@ Module language_storage.
                                   Ty.path "alloc::alloc::Global"
                                 ]
                             ],
-                          γ2_0
+                          M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                         |) in
                       let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                       let γ2_0 :=
@@ -1978,6 +1991,7 @@ Module language_storage.
                           "move_core_types::language_storage::TypeTag::Vector",
                           0
                         |) in
+                      let _ := M.read (| γ2_0 |) in
                       let __arg1_0 :=
                         M.alloc (|
                           Ty.apply
@@ -1992,7 +2006,7 @@ Module language_storage.
                                   Ty.path "alloc::alloc::Global"
                                 ]
                             ],
-                          γ2_0
+                          M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -2038,6 +2052,7 @@ Module language_storage.
                           "move_core_types::language_storage::TypeTag::Struct",
                           0
                         |) in
+                      let _ := M.read (| γ2_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
@@ -2052,7 +2067,7 @@ Module language_storage.
                                   Ty.path "alloc::alloc::Global"
                                 ]
                             ],
-                          γ2_0
+                          M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                         |) in
                       let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                       let γ2_0 :=
@@ -2061,6 +2076,7 @@ Module language_storage.
                           "move_core_types::language_storage::TypeTag::Struct",
                           0
                         |) in
+                      let _ := M.read (| γ2_0 |) in
                       let __arg1_0 :=
                         M.alloc (|
                           Ty.apply
@@ -2075,7 +2091,7 @@ Module language_storage.
                                   Ty.path "alloc::alloc::Global"
                                 ]
                             ],
-                          γ2_0
+                          M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -2253,6 +2269,7 @@ Module language_storage.
                                   "move_core_types::language_storage::TypeTag::Vector",
                                   0
                                 |) in
+                              let _ := M.read (| γ2_0 |) in
                               let __self_0 :=
                                 M.alloc (|
                                   Ty.apply
@@ -2267,7 +2284,7 @@ Module language_storage.
                                           Ty.path "alloc::alloc::Global"
                                         ]
                                     ],
-                                  γ2_0
+                                  M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                 |) in
                               let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                               let γ2_0 :=
@@ -2276,6 +2293,7 @@ Module language_storage.
                                   "move_core_types::language_storage::TypeTag::Vector",
                                   0
                                 |) in
+                              let _ := M.read (| γ2_0 |) in
                               let __arg1_0 :=
                                 M.alloc (|
                                   Ty.apply
@@ -2290,7 +2308,7 @@ Module language_storage.
                                           Ty.path "alloc::alloc::Global"
                                         ]
                                     ],
-                                  γ2_0
+                                  M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                 |) in
                               M.call_closure (|
                                 Ty.path "core::cmp::Ordering",
@@ -2331,6 +2349,7 @@ Module language_storage.
                                   "move_core_types::language_storage::TypeTag::Struct",
                                   0
                                 |) in
+                              let _ := M.read (| γ2_0 |) in
                               let __self_0 :=
                                 M.alloc (|
                                   Ty.apply
@@ -2345,7 +2364,7 @@ Module language_storage.
                                           Ty.path "alloc::alloc::Global"
                                         ]
                                     ],
-                                  γ2_0
+                                  M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                 |) in
                               let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                               let γ2_0 :=
@@ -2354,6 +2373,7 @@ Module language_storage.
                                   "move_core_types::language_storage::TypeTag::Struct",
                                   0
                                 |) in
+                              let _ := M.read (| γ2_0 |) in
                               let __arg1_0 :=
                                 M.alloc (|
                                   Ty.apply
@@ -2368,7 +2388,7 @@ Module language_storage.
                                           Ty.path "alloc::alloc::Global"
                                         ]
                                     ],
-                                  γ2_0
+                                  M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                 |) in
                               M.call_closure (|
                                 Ty.path "core::cmp::Ordering",
@@ -2797,6 +2817,7 @@ Module language_storage.
                           "move_core_types::language_storage::TypeTag::Vector",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let x :=
                         M.alloc (|
                           Ty.apply
@@ -2811,7 +2832,7 @@ Module language_storage.
                                   Ty.path "alloc::alloc::Global"
                                 ]
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -2840,6 +2861,7 @@ Module language_storage.
                           "move_core_types::language_storage::TypeTag::Struct",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let y :=
                         M.alloc (|
                           Ty.apply
@@ -2854,7 +2876,7 @@ Module language_storage.
                                   Ty.path "alloc::alloc::Global"
                                 ]
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -10920,6 +10942,7 @@ Module language_storage.
                       "move_core_types::language_storage::TypeTag::Struct",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let s :=
                     M.alloc (|
                       Ty.apply
@@ -10934,7 +10957,7 @@ Module language_storage.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -11045,6 +11068,7 @@ Module language_storage.
                       "move_core_types::language_storage::TypeTag::Vector",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let ty :=
                     M.alloc (|
                       Ty.apply
@@ -11059,7 +11083,7 @@ Module language_storage.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply

@@ -19019,11 +19019,12 @@ Module collections.
               [
                 fun γ =>
                   ltac:(M.monadic
-                    (let other :=
+                    (let _ := M.read (| γ |) in
+                    let other :=
                       M.alloc (|
                         Ty.path
                           "Type for variables in patterns in function parameters is not handled",
-                        γ
+                        M.borrow (| Pointer.Kind.MutRef, γ |)
                       |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=

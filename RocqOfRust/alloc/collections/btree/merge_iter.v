@@ -82,6 +82,7 @@ Module collections.
                           "alloc::collections::btree::merge_iter::Peeked::A",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
@@ -95,7 +96,7 @@ Module collections.
                                 I
                                 "Item"
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       Value.StructTuple
                         "alloc::collections::btree::merge_iter::Peeked::A"
@@ -135,6 +136,7 @@ Module collections.
                           "alloc::collections::btree::merge_iter::Peeked::B",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
@@ -148,7 +150,7 @@ Module collections.
                                 I
                                 "Item"
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       Value.StructTuple
                         "alloc::collections::btree::merge_iter::Peeked::B"
@@ -230,6 +232,7 @@ Module collections.
                           "alloc::collections::btree::merge_iter::Peeked::A",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
@@ -243,7 +246,7 @@ Module collections.
                                 I
                                 "Item"
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -304,6 +307,7 @@ Module collections.
                           "alloc::collections::btree::merge_iter::Peeked::B",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
@@ -317,7 +321,7 @@ Module collections.
                                 I
                                 "Item"
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -1174,6 +1178,7 @@ Module collections.
                               "core::option::Option::Some",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let a1 :=
                             M.alloc (|
                               Ty.apply
@@ -1187,7 +1192,7 @@ Module collections.
                                     I
                                     "Item"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -1196,6 +1201,7 @@ Module collections.
                               "core::option::Option::Some",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let b1 :=
                             M.alloc (|
                               Ty.apply
@@ -1209,7 +1215,7 @@ Module collections.
                                     I
                                     "Item"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.match_operator (|
                             Ty.tuple [],

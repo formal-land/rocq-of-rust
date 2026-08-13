@@ -813,22 +813,25 @@ Module processor.
                               let γ1_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
                               let γ1_1 := M.SubPointer.get_slice_index (| γ, 1 |) in
                               let γ1_rest := M.SubPointer.get_slice_rest (| γ, 2, 0 |) in
+                              let _ := M.read (| γ1_0 |) in
                               let account_info :=
                                 M.alloc (|
                                   Ty.apply
                                     (Ty.path "&")
                                     []
                                     [ Ty.path "pinocchio::account_info::AccountInfo" ],
-                                  γ1_0
+                                  M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                 |) in
+                              let _ := M.read (| γ1_1 |) in
                               let authority_info :=
                                 M.alloc (|
                                   Ty.apply
                                     (Ty.path "&")
                                     []
                                     [ Ty.path "pinocchio::account_info::AccountInfo" ],
-                                  γ1_1
+                                  M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                                 |) in
+                              let _ := M.read (| γ1_rest |) in
                               let remaining :=
                                 M.alloc (|
                                   Ty.apply
@@ -840,7 +843,7 @@ Module processor.
                                         []
                                         [ Ty.path "pinocchio::account_info::AccountInfo" ]
                                     ],
-                                  γ1_rest
+                                  M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                 |) in
                               M.read (|
                                 let~ _ : Ty.tuple [] :=

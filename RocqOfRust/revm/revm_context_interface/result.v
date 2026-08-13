@@ -629,16 +629,28 @@ Module result.
                       "revm_context_interface::result::ExecutionResult::Success",
                       "output"
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_context_interface::result::SuccessReason" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
-                  let __self_2 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_2 |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
+                  let _ := M.read (| γ1_2 |) in
+                  let __self_2 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_2 |)
+                    |) in
+                  let _ := M.read (| γ1_3 |) in
                   let __self_3 :=
                     M.alloc (|
                       Ty.apply
@@ -656,15 +668,16 @@ Module result.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_3
+                      M.borrow (| Pointer.Kind.Ref, γ1_3 |)
                     |) in
+                  let _ := M.read (| γ1_4 |) in
                   let __self_4 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_context_interface::result::Output" ],
-                      γ1_4
+                      M.borrow (| Pointer.Kind.Ref, γ1_4 |)
                     |) in
                   Value.mkStructRecord
                     "revm_context_interface::result::ExecutionResult::Success"
@@ -775,11 +788,17 @@ Module result.
                       "revm_context_interface::result::ExecutionResult::Revert",
                       "output"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
                   let __self_1 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                      γ1_1
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                     |) in
                   Value.mkStructRecord
                     "revm_context_interface::result::ExecutionResult::Revert"
@@ -830,8 +849,18 @@ Module result.
                       "revm_context_interface::result::ExecutionResult::Halt",
                       "gas_used"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ HaltReasonTy ], γ1_0 |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ HaltReasonTy ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   Value.mkStructRecord
                     "revm_context_interface::result::ExecutionResult::Halt"
                     []
@@ -951,16 +980,28 @@ Module result.
                       "revm_context_interface::result::ExecutionResult::Success",
                       "output"
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_context_interface::result::SuccessReason" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
-                  let __self_2 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_2 |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
+                  let _ := M.read (| γ1_2 |) in
+                  let __self_2 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_2 |)
+                    |) in
+                  let _ := M.read (| γ1_3 |) in
                   let __self_3 :=
                     M.alloc (|
                       Ty.apply
@@ -978,15 +1019,16 @@ Module result.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_3
+                      M.borrow (| Pointer.Kind.Ref, γ1_3 |)
                     |) in
+                  let _ := M.read (| γ1_4 |) in
                   let __self_4 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_context_interface::result::Output" ],
-                      γ1_4
+                      M.borrow (| Pointer.Kind.Ref, γ1_4 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -1109,11 +1151,17 @@ Module result.
                       "revm_context_interface::result::ExecutionResult::Revert",
                       "output"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
                   let __self_1 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                      γ1_1
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -1183,8 +1231,18 @@ Module result.
                       "revm_context_interface::result::ExecutionResult::Halt",
                       "gas_used"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ HaltReasonTy ], γ1_0 |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ HaltReasonTy ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -1400,18 +1458,28 @@ Module result.
                               "revm_context_interface::result::ExecutionResult::Success",
                               "output"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "revm_context_interface::result::SuccessReason" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __self_1 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
+                          let _ := M.read (| γ2_2 |) in
                           let __self_2 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_2 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_2 |)
+                            |) in
+                          let _ := M.read (| γ2_3 |) in
                           let __self_3 :=
                             M.alloc (|
                               Ty.apply
@@ -1429,15 +1497,16 @@ Module result.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ2_3
+                              M.borrow (| Pointer.Kind.Ref, γ2_3 |)
                             |) in
+                          let _ := M.read (| γ2_4 |) in
                           let __self_4 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "revm_context_interface::result::Output" ],
-                              γ2_4
+                              M.borrow (| Pointer.Kind.Ref, γ2_4 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -1470,18 +1539,28 @@ Module result.
                               "revm_context_interface::result::ExecutionResult::Success",
                               "output"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "revm_context_interface::result::SuccessReason" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __arg1_1 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
+                          let _ := M.read (| γ2_2 |) in
                           let __arg1_2 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_2 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_2 |)
+                            |) in
+                          let _ := M.read (| γ2_3 |) in
                           let __arg1_3 :=
                             M.alloc (|
                               Ty.apply
@@ -1499,15 +1578,16 @@ Module result.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ2_3
+                              M.borrow (| Pointer.Kind.Ref, γ2_3 |)
                             |) in
+                          let _ := M.read (| γ2_4 |) in
                           let __arg1_4 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "revm_context_interface::result::Output" ],
-                              γ2_4
+                              M.borrow (| Pointer.Kind.Ref, γ2_4 |)
                             |) in
                           LogicalOp.and (|
                             LogicalOp.and (|
@@ -1665,15 +1745,20 @@ Module result.
                               "revm_context_interface::result::ExecutionResult::Revert",
                               "output"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __self_1 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                              γ2_1
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -1688,15 +1773,20 @@ Module result.
                               "revm_context_interface::result::ExecutionResult::Revert",
                               "output"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __arg1_1 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                              γ2_1
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
                             |) in
                           LogicalOp.and (|
                             M.call_closure (|
@@ -1758,10 +1848,18 @@ Module result.
                               "revm_context_interface::result::ExecutionResult::Halt",
                               "gas_used"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ HaltReasonTy ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ HaltReasonTy ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __self_1 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_record_field (|
@@ -1775,10 +1873,18 @@ Module result.
                               "revm_context_interface::result::ExecutionResult::Halt",
                               "gas_used"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ HaltReasonTy ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ HaltReasonTy ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __arg1_1 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           LogicalOp.and (|
                             M.call_closure (|
                               Ty.path "bool",
@@ -2036,18 +2142,28 @@ Module result.
                           "revm_context_interface::result::ExecutionResult::Success",
                           "output"
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "revm_context_interface::result::SuccessReason" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
+                      let _ := M.read (| γ1_1 |) in
                       let __self_1 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                        |) in
+                      let _ := M.read (| γ1_2 |) in
                       let __self_2 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_2 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_2 |)
+                        |) in
+                      let _ := M.read (| γ1_3 |) in
                       let __self_3 :=
                         M.alloc (|
                           Ty.apply
@@ -2065,15 +2181,16 @@ Module result.
                                   Ty.path "alloc::alloc::Global"
                                 ]
                             ],
-                          γ1_3
+                          M.borrow (| Pointer.Kind.Ref, γ1_3 |)
                         |) in
+                      let _ := M.read (| γ1_4 |) in
                       let __self_4 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "revm_context_interface::result::Output" ],
-                          γ1_4
+                          M.borrow (| Pointer.Kind.Ref, γ1_4 |)
                         |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
@@ -2188,12 +2305,17 @@ Module result.
                           "revm_context_interface::result::ExecutionResult::Revert",
                           "output"
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
+                      let _ := M.read (| γ1_1 |) in
                       let __self_1 :=
                         M.alloc (|
                           Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                          γ1_1
+                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                         |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
@@ -2248,10 +2370,18 @@ Module result.
                           "revm_context_interface::result::ExecutionResult::Halt",
                           "gas_used"
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ HaltReasonTy ], γ1_0 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ HaltReasonTy ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
+                      let _ := M.read (| γ1_1 |) in
                       let __self_1 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                        |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
                           M.call_closure (|
@@ -2593,13 +2723,14 @@ Module result.
                       "revm_context_interface::result::ExecutionResult::Success",
                       "output"
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let output :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_context_interface::result::Output" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -2760,13 +2891,14 @@ Module result.
                       "revm_context_interface::result::ExecutionResult::Success",
                       "output"
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let output :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_context_interface::result::Output" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "core::option::Option::Some"
@@ -2798,10 +2930,11 @@ Module result.
                       "revm_context_interface::result::ExecutionResult::Revert",
                       "output"
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let output :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "core::option::Option::Some"
@@ -2978,6 +3111,7 @@ Module result.
                           "revm_context_interface::result::ExecutionResult::Success",
                           "logs"
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let logs :=
                         M.alloc (|
                           Ty.apply
@@ -2995,7 +3129,7 @@ Module result.
                                   Ty.path "alloc::alloc::Global"
                                 ]
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -3374,10 +3508,11 @@ Module result.
                       "revm_context_interface::result::Output::Call",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -3434,11 +3569,13 @@ Module result.
                       "revm_context_interface::result::Output::Create",
                       1
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
+                  let _ := M.read (| γ1_1 |) in
                   let __self_1 :=
                     M.alloc (|
                       Ty.apply
@@ -3450,7 +3587,7 @@ Module result.
                             []
                             [ Ty.path "alloy_primitives::bits::address::Address" ]
                         ],
-                      γ1_1
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -3548,10 +3685,11 @@ Module result.
                       "revm_context_interface::result::Output::Call",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "revm_context_interface::result::Output::Call"
@@ -3587,11 +3725,13 @@ Module result.
                       "revm_context_interface::result::Output::Create",
                       1
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
+                  let _ := M.read (| γ1_1 |) in
                   let __self_1 :=
                     M.alloc (|
                       Ty.apply
@@ -3603,7 +3743,7 @@ Module result.
                             []
                             [ Ty.path "alloy_primitives::bits::address::Address" ]
                         ],
-                      γ1_1
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                     |) in
                   Value.StructTuple
                     "revm_context_interface::result::Output::Create"
@@ -3745,13 +3885,14 @@ Module result.
                               "revm_context_interface::result::Output::Call",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -3760,13 +3901,14 @@ Module result.
                               "revm_context_interface::result::Output::Call",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -3809,14 +3951,16 @@ Module result.
                               "revm_context_interface::result::Output::Create",
                               1
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __self_1 :=
                             M.alloc (|
                               Ty.apply
@@ -3828,7 +3972,7 @@ Module result.
                                     []
                                     [ Ty.path "alloy_primitives::bits::address::Address" ]
                                 ],
-                              γ2_1
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -3843,14 +3987,16 @@ Module result.
                               "revm_context_interface::result::Output::Create",
                               1
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __arg1_1 :=
                             M.alloc (|
                               Ty.apply
@@ -3862,7 +4008,7 @@ Module result.
                                     []
                                     [ Ty.path "alloy_primitives::bits::address::Address" ]
                                 ],
-                              γ2_1
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
                             |) in
                           LogicalOp.and (|
                             M.call_closure (|
@@ -4054,10 +4200,11 @@ Module result.
                           "revm_context_interface::result::Output::Call",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -4090,11 +4237,13 @@ Module result.
                           "revm_context_interface::result::Output::Create",
                           1
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
+                      let _ := M.read (| γ1_1 |) in
                       let __self_1 :=
                         M.alloc (|
                           Ty.apply
@@ -4106,7 +4255,7 @@ Module result.
                                 []
                                 [ Ty.path "alloy_primitives::bits::address::Address" ]
                             ],
-                          γ1_1
+                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                         |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
@@ -4254,10 +4403,11 @@ Module result.
                           "revm_context_interface::result::Output::Call",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let data :=
                         M.alloc (|
                           Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |)));
                   fun γ =>
@@ -4275,10 +4425,11 @@ Module result.
                           "revm_context_interface::result::Output::Create",
                           1
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let data :=
                         M.alloc (|
                           Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |)))
                 ]
@@ -4350,6 +4501,7 @@ Module result.
                       "revm_context_interface::result::Output::Create",
                       1
                     |) in
+                  let _ := M.read (| γ1_1 |) in
                   let address :=
                     M.alloc (|
                       Ty.apply
@@ -4361,7 +4513,7 @@ Module result.
                             []
                             [ Ty.path "alloy_primitives::bits::address::Address" ]
                         ],
-                      γ1_1
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -4479,8 +4631,12 @@ Module result.
                       "revm_context_interface::result::EVMError::Transaction",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ TransactionError ], γ1_0 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ TransactionError ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -4525,13 +4681,14 @@ Module result.
                       "revm_context_interface::result::EVMError::Header",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_context_interface::result::InvalidHeader" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -4582,7 +4739,12 @@ Module result.
                       "revm_context_interface::result::EVMError::Database",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ DBError ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ DBError ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -4624,10 +4786,11 @@ Module result.
                       "revm_context_interface::result::EVMError::Custom",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -4726,8 +4889,12 @@ Module result.
                       "revm_context_interface::result::EVMError::Transaction",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ TransactionError ], γ1_0 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ TransactionError ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "revm_context_interface::result::EVMError::Transaction"
                     []
@@ -4756,13 +4923,14 @@ Module result.
                       "revm_context_interface::result::EVMError::Header",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_context_interface::result::InvalidHeader" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "revm_context_interface::result::EVMError::Header"
@@ -4792,7 +4960,12 @@ Module result.
                       "revm_context_interface::result::EVMError::Database",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ DBError ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ DBError ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "revm_context_interface::result::EVMError::Database"
                     []
@@ -4821,10 +4994,11 @@ Module result.
                       "revm_context_interface::result::EVMError::Custom",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "revm_context_interface::result::EVMError::Custom"
@@ -4999,8 +5173,12 @@ Module result.
                               "revm_context_interface::result::EVMError::Transaction",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ TransactionError ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ TransactionError ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -5008,8 +5186,12 @@ Module result.
                               "revm_context_interface::result::EVMError::Transaction",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ TransactionError ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ TransactionError ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -5037,13 +5219,14 @@ Module result.
                               "revm_context_interface::result::EVMError::Header",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "revm_context_interface::result::InvalidHeader" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -5052,13 +5235,14 @@ Module result.
                               "revm_context_interface::result::EVMError::Header",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "revm_context_interface::result::InvalidHeader" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -5095,8 +5279,12 @@ Module result.
                               "revm_context_interface::result::EVMError::Database",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ DBError ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ DBError ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -5104,8 +5292,12 @@ Module result.
                               "revm_context_interface::result::EVMError::Database",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ DBError ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ DBError ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -5133,10 +5325,11 @@ Module result.
                               "revm_context_interface::result::EVMError::Custom",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -5145,10 +5338,11 @@ Module result.
                               "revm_context_interface::result::EVMError::Custom",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -5669,8 +5863,12 @@ Module result.
                       "revm_context_interface::result::EVMError::Transaction",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let e :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ TransactionValidationErrorT ], γ1_0 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ TransactionValidationErrorT ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "core::option::Option::Some"
                     []
@@ -5697,13 +5895,14 @@ Module result.
                       "revm_context_interface::result::EVMError::Header",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let e :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_context_interface::result::InvalidHeader" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "core::option::Option::Some"
@@ -5734,7 +5933,12 @@ Module result.
                       "revm_context_interface::result::EVMError::Database",
                       0
                     |) in
-                  let e := M.alloc (| Ty.apply (Ty.path "&") [] [ DBError ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let e :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ DBError ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "core::option::Option::Some"
                     []
@@ -5840,8 +6044,12 @@ Module result.
                       "revm_context_interface::result::EVMError::Transaction",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let e :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ TransactionValidationErrorT ], γ1_0 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ TransactionValidationErrorT ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -5965,13 +6173,14 @@ Module result.
                       "revm_context_interface::result::EVMError::Header",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let e :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_context_interface::result::InvalidHeader" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -6101,7 +6310,12 @@ Module result.
                       "revm_context_interface::result::EVMError::Database",
                       0
                     |) in
-                  let e := M.alloc (| Ty.apply (Ty.path "&") [] [ DBError ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let e :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ DBError ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -6207,10 +6421,11 @@ Module result.
                       "revm_context_interface::result::EVMError::Custom",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let e :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -6698,8 +6913,18 @@ Module result.
                       "revm_context_interface::result::InvalidTransaction::CallGasCostMoreThanGasLimit",
                       "gas_limit"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -6766,8 +6991,18 @@ Module result.
                       "revm_context_interface::result::InvalidTransaction::GasFloorMoreThanGasLimit",
                       "gas_limit"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -6861,6 +7096,7 @@ Module result.
                       "revm_context_interface::result::InvalidTransaction::LackOfFundForMaxFee",
                       "balance"
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
@@ -6881,8 +7117,9 @@ Module result.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
+                  let _ := M.read (| γ1_1 |) in
                   let __self_1 :=
                     M.alloc (|
                       Ty.apply
@@ -6903,7 +7140,7 @@ Module result.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_1
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -7061,8 +7298,18 @@ Module result.
                       "revm_context_interface::result::InvalidTransaction::NonceTooHigh",
                       "state"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -7126,8 +7373,18 @@ Module result.
                       "revm_context_interface::result::InvalidTransaction::NonceTooLow",
                       "state"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -7266,8 +7523,18 @@ Module result.
                       "revm_context_interface::result::InvalidTransaction::TxGasLimitGreaterThanCap",
                       "cap"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -7415,10 +7682,18 @@ Module result.
                       "revm_context_interface::result::InvalidTransaction::BlobGasPriceGreaterThanMax",
                       "tx_max_fee_per_blob_gas"
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], γ1_0 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u128" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
                   let __self_1 :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], γ1_1 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u128" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -7542,10 +7817,18 @@ Module result.
                       "revm_context_interface::result::InvalidTransaction::TooManyBlobs",
                       "have"
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
                   let __self_1 :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_1 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -7873,13 +8156,14 @@ Module result.
                       "revm_context_interface::result::InvalidTransaction::Str",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -8009,8 +8293,18 @@ Module result.
                       "revm_context_interface::result::InvalidTransaction::CallGasCostMoreThanGasLimit",
                       "gas_limit"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   Value.mkStructRecord
                     "revm_context_interface::result::InvalidTransaction::CallGasCostMoreThanGasLimit"
                     []
@@ -8060,8 +8354,18 @@ Module result.
                       "revm_context_interface::result::InvalidTransaction::GasFloorMoreThanGasLimit",
                       "gas_limit"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   Value.mkStructRecord
                     "revm_context_interface::result::InvalidTransaction::GasFloorMoreThanGasLimit"
                     []
@@ -8124,6 +8428,7 @@ Module result.
                       "revm_context_interface::result::InvalidTransaction::LackOfFundForMaxFee",
                       "balance"
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
@@ -8144,8 +8449,9 @@ Module result.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
+                  let _ := M.read (| γ1_1 |) in
                   let __self_1 :=
                     M.alloc (|
                       Ty.apply
@@ -8166,7 +8472,7 @@ Module result.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_1
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                     |) in
                   Value.mkStructRecord
                     "revm_context_interface::result::InvalidTransaction::LackOfFundForMaxFee"
@@ -8291,8 +8597,18 @@ Module result.
                       "revm_context_interface::result::InvalidTransaction::NonceTooHigh",
                       "state"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   Value.mkStructRecord
                     "revm_context_interface::result::InvalidTransaction::NonceTooHigh"
                     []
@@ -8342,8 +8658,18 @@ Module result.
                       "revm_context_interface::result::InvalidTransaction::NonceTooLow",
                       "state"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   Value.mkStructRecord
                     "revm_context_interface::result::InvalidTransaction::NonceTooLow"
                     []
@@ -8432,8 +8758,18 @@ Module result.
                       "revm_context_interface::result::InvalidTransaction::TxGasLimitGreaterThanCap",
                       "cap"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   Value.mkStructRecord
                     "revm_context_interface::result::InvalidTransaction::TxGasLimitGreaterThanCap"
                     []
@@ -8522,10 +8858,18 @@ Module result.
                       "revm_context_interface::result::InvalidTransaction::BlobGasPriceGreaterThanMax",
                       "tx_max_fee_per_blob_gas"
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], γ1_0 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u128" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
                   let __self_1 :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], γ1_1 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u128" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   Value.mkStructRecord
                     "revm_context_interface::result::InvalidTransaction::BlobGasPriceGreaterThanMax"
                     []
@@ -8601,10 +8945,18 @@ Module result.
                       "revm_context_interface::result::InvalidTransaction::TooManyBlobs",
                       "have"
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
                   let __self_1 :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_1 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   Value.mkStructRecord
                     "revm_context_interface::result::InvalidTransaction::TooManyBlobs"
                     []
@@ -8778,13 +9130,14 @@ Module result.
                       "revm_context_interface::result::InvalidTransaction::Str",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "revm_context_interface::result::InvalidTransaction::Str"
@@ -8919,10 +9272,18 @@ Module result.
                               "revm_context_interface::result::InvalidTransaction::CallGasCostMoreThanGasLimit",
                               "gas_limit"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __self_1 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_record_field (|
@@ -8936,10 +9297,18 @@ Module result.
                               "revm_context_interface::result::InvalidTransaction::CallGasCostMoreThanGasLimit",
                               "gas_limit"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __arg1_1 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           LogicalOp.and (|
                             M.call_closure (|
                               Ty.path "bool",
@@ -8992,10 +9361,18 @@ Module result.
                               "revm_context_interface::result::InvalidTransaction::GasFloorMoreThanGasLimit",
                               "gas_limit"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __self_1 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_record_field (|
@@ -9009,10 +9386,18 @@ Module result.
                               "revm_context_interface::result::InvalidTransaction::GasFloorMoreThanGasLimit",
                               "gas_limit"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __arg1_1 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           LogicalOp.and (|
                             M.call_closure (|
                               Ty.path "bool",
@@ -9065,6 +9450,7 @@ Module result.
                               "revm_context_interface::result::InvalidTransaction::LackOfFundForMaxFee",
                               "balance"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
@@ -9085,8 +9471,9 @@ Module result.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __self_1 :=
                             M.alloc (|
                               Ty.apply
@@ -9107,7 +9494,7 @@ Module result.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ2_1
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -9122,6 +9509,7 @@ Module result.
                               "revm_context_interface::result::InvalidTransaction::LackOfFundForMaxFee",
                               "balance"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
@@ -9142,8 +9530,9 @@ Module result.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __arg1_1 :=
                             M.alloc (|
                               Ty.apply
@@ -9164,7 +9553,7 @@ Module result.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ2_1
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
                             |) in
                           LogicalOp.and (|
                             M.call_closure (|
@@ -9290,10 +9679,18 @@ Module result.
                               "revm_context_interface::result::InvalidTransaction::NonceTooHigh",
                               "state"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __self_1 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_record_field (|
@@ -9307,10 +9704,18 @@ Module result.
                               "revm_context_interface::result::InvalidTransaction::NonceTooHigh",
                               "state"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __arg1_1 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           LogicalOp.and (|
                             M.call_closure (|
                               Ty.path "bool",
@@ -9363,10 +9768,18 @@ Module result.
                               "revm_context_interface::result::InvalidTransaction::NonceTooLow",
                               "state"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __self_1 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_record_field (|
@@ -9380,10 +9793,18 @@ Module result.
                               "revm_context_interface::result::InvalidTransaction::NonceTooLow",
                               "state"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __arg1_1 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           LogicalOp.and (|
                             M.call_closure (|
                               Ty.path "bool",
@@ -9436,10 +9857,18 @@ Module result.
                               "revm_context_interface::result::InvalidTransaction::TxGasLimitGreaterThanCap",
                               "cap"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __self_1 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_record_field (|
@@ -9453,10 +9882,18 @@ Module result.
                               "revm_context_interface::result::InvalidTransaction::TxGasLimitGreaterThanCap",
                               "cap"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __arg1_1 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           LogicalOp.and (|
                             M.call_closure (|
                               Ty.path "bool",
@@ -9509,10 +9946,18 @@ Module result.
                               "revm_context_interface::result::InvalidTransaction::BlobGasPriceGreaterThanMax",
                               "tx_max_fee_per_blob_gas"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u128" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __self_1 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u128" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_record_field (|
@@ -9526,10 +9971,18 @@ Module result.
                               "revm_context_interface::result::InvalidTransaction::BlobGasPriceGreaterThanMax",
                               "tx_max_fee_per_blob_gas"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u128" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __arg1_1 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u128" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           LogicalOp.and (|
                             M.call_closure (|
                               Ty.path "bool",
@@ -9582,10 +10035,18 @@ Module result.
                               "revm_context_interface::result::InvalidTransaction::TooManyBlobs",
                               "have"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __self_1 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_record_field (|
@@ -9599,10 +10060,18 @@ Module result.
                               "revm_context_interface::result::InvalidTransaction::TooManyBlobs",
                               "have"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __arg1_1 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           LogicalOp.and (|
                             M.call_closure (|
                               Ty.path "bool",
@@ -9649,13 +10118,14 @@ Module result.
                               "revm_context_interface::result::InvalidTransaction::Str",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -9664,13 +10134,14 @@ Module result.
                               "revm_context_interface::result::InvalidTransaction::Str",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -9862,10 +10333,18 @@ Module result.
                           "revm_context_interface::result::InvalidTransaction::CallGasCostMoreThanGasLimit",
                           "gas_limit"
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
+                      let _ := M.read (| γ1_1 |) in
                       let __self_1 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                        |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
                           M.call_closure (|
@@ -9919,10 +10398,18 @@ Module result.
                           "revm_context_interface::result::InvalidTransaction::GasFloorMoreThanGasLimit",
                           "gas_limit"
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
+                      let _ := M.read (| γ1_1 |) in
                       let __self_1 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                        |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
                           M.call_closure (|
@@ -9976,6 +10463,7 @@ Module result.
                           "revm_context_interface::result::InvalidTransaction::LackOfFundForMaxFee",
                           "balance"
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
@@ -9996,8 +10484,9 @@ Module result.
                                   Ty.path "alloc::alloc::Global"
                                 ]
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
+                      let _ := M.read (| γ1_1 |) in
                       let __self_1 :=
                         M.alloc (|
                           Ty.apply
@@ -10018,7 +10507,7 @@ Module result.
                                   Ty.path "alloc::alloc::Global"
                                 ]
                             ],
-                          γ1_1
+                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                         |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
@@ -10097,10 +10586,18 @@ Module result.
                           "revm_context_interface::result::InvalidTransaction::NonceTooHigh",
                           "state"
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
+                      let _ := M.read (| γ1_1 |) in
                       let __self_1 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                        |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
                           M.call_closure (|
@@ -10154,10 +10651,18 @@ Module result.
                           "revm_context_interface::result::InvalidTransaction::NonceTooLow",
                           "state"
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
+                      let _ := M.read (| γ1_1 |) in
                       let __self_1 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                        |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
                           M.call_closure (|
@@ -10211,10 +10716,18 @@ Module result.
                           "revm_context_interface::result::InvalidTransaction::TxGasLimitGreaterThanCap",
                           "cap"
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
+                      let _ := M.read (| γ1_1 |) in
                       let __self_1 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                        |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
                           M.call_closure (|
@@ -10268,10 +10781,18 @@ Module result.
                           "revm_context_interface::result::InvalidTransaction::BlobGasPriceGreaterThanMax",
                           "tx_max_fee_per_blob_gas"
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], γ1_0 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u128" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
+                      let _ := M.read (| γ1_1 |) in
                       let __self_1 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], γ1_1 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u128" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                        |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
                           M.call_closure (|
@@ -10325,10 +10846,18 @@ Module result.
                           "revm_context_interface::result::InvalidTransaction::TooManyBlobs",
                           "have"
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
+                      let _ := M.read (| γ1_1 |) in
                       let __self_1 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_1 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                        |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
                           M.call_closure (|
@@ -10376,13 +10905,14 @@ Module result.
                           "revm_context_interface::result::InvalidTransaction::Str",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -10677,9 +11207,18 @@ Module result.
                       "revm_context_interface::result::InvalidTransaction::TxGasLimitGreaterThanCap",
                       "cap"
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let gas_limit :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
-                  let cap := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let cap :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -10858,10 +11397,18 @@ Module result.
                       "revm_context_interface::result::InvalidTransaction::CallGasCostMoreThanGasLimit",
                       "gas_limit"
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let initial_gas :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
                   let gas_limit :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -11030,10 +11577,18 @@ Module result.
                       "revm_context_interface::result::InvalidTransaction::GasFloorMoreThanGasLimit",
                       "gas_limit"
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let gas_floor :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
                   let gas_limit :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -11231,6 +11786,7 @@ Module result.
                       "revm_context_interface::result::InvalidTransaction::LackOfFundForMaxFee",
                       "balance"
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let fee :=
                     M.alloc (|
                       Ty.apply
@@ -11251,8 +11807,9 @@ Module result.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
+                  let _ := M.read (| γ1_1 |) in
                   let balance :=
                     M.alloc (|
                       Ty.apply
@@ -11273,7 +11830,7 @@ Module result.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_1
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -11575,8 +12132,18 @@ Module result.
                       "revm_context_interface::result::InvalidTransaction::NonceTooHigh",
                       "state"
                     |) in
-                  let tx := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
-                  let state := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let tx :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let state :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -11729,8 +12296,18 @@ Module result.
                       "revm_context_interface::result::InvalidTransaction::NonceTooLow",
                       "state"
                     |) in
-                  let tx := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
-                  let state := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let tx :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let state :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -12080,10 +12657,18 @@ Module result.
                       "revm_context_interface::result::InvalidTransaction::BlobGasPriceGreaterThanMax",
                       "tx_max_fee_per_blob_gas"
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let block_blob_gas_price :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], γ1_0 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u128" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
                   let tx_max_fee_per_blob_gas :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], γ1_1 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u128" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -12334,8 +12919,18 @@ Module result.
                       "revm_context_interface::result::InvalidTransaction::TooManyBlobs",
                       "have"
                     |) in
-                  let max := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
-                  let have := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_1 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let max :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let have :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -12813,13 +13408,14 @@ Module result.
                       "revm_context_interface::result::InvalidTransaction::Str",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let msg :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -13769,13 +14365,14 @@ Module result.
                       "revm_context_interface::result::HaltReason::OutOfGas",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_context_interface::result::OutOfGasError" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -14042,10 +14639,11 @@ Module result.
                       "revm_context_interface::result::HaltReason::PrecompileErrorWithContext",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -14356,13 +14954,14 @@ Module result.
                       "revm_context_interface::result::HaltReason::OutOfGas",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_context_interface::result::OutOfGasError" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "revm_context_interface::result::HaltReason::OutOfGas"
@@ -14509,10 +15108,11 @@ Module result.
                       "revm_context_interface::result::HaltReason::PrecompileErrorWithContext",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "revm_context_interface::result::HaltReason::PrecompileErrorWithContext"
@@ -14752,13 +15352,14 @@ Module result.
                               "revm_context_interface::result::HaltReason::OutOfGas",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "revm_context_interface::result::OutOfGasError" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -14767,13 +15368,14 @@ Module result.
                               "revm_context_interface::result::HaltReason::OutOfGas",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "revm_context_interface::result::OutOfGasError" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -14810,10 +15412,11 @@ Module result.
                               "revm_context_interface::result::HaltReason::PrecompileErrorWithContext",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -14822,10 +15425,11 @@ Module result.
                               "revm_context_interface::result::HaltReason::PrecompileErrorWithContext",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -14964,13 +15568,14 @@ Module result.
                           "revm_context_interface::result::HaltReason::OutOfGas",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "revm_context_interface::result::OutOfGasError" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -14997,10 +15602,11 @@ Module result.
                           "revm_context_interface::result::HaltReason::PrecompileErrorWithContext",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],

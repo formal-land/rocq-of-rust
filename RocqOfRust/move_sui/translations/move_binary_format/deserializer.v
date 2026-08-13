@@ -9090,22 +9090,54 @@ Module deserializer.
                         "move_binary_format::binary_config::TableConfig",
                         "friend_decls"
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let module_handles_max :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_0 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
+                    let _ := M.read (| γ1_1 |) in
                     let struct_handles_max :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_1 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                      |) in
+                    let _ := M.read (| γ1_2 |) in
                     let function_handles_max :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_2 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_2 |)
+                      |) in
+                    let _ := M.read (| γ1_3 |) in
                     let function_instantiations_max :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_3 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_3 |)
+                      |) in
+                    let _ := M.read (| γ1_4 |) in
                     let signatures_max :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_4 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_4 |)
+                      |) in
+                    let _ := M.read (| γ1_5 |) in
                     let constant_pool_max :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_5 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_5 |)
+                      |) in
+                    let _ := M.read (| γ1_6 |) in
                     let identifiers_max :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_6 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_6 |)
+                      |) in
+                    let _ := M.read (| γ1_7 |) in
                     let address_identifiers_max :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_7 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_7 |)
+                      |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
                         M.read (|
@@ -15511,18 +15543,42 @@ Module deserializer.
                         "move_binary_format::binary_config::TableConfig",
                         "friend_decls"
                       |) in
+                    let _ := M.read (| γ1_8 |) in
                     let struct_defs_max :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_8 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_8 |)
+                      |) in
+                    let _ := M.read (| γ1_9 |) in
                     let struct_def_instantiations_max :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_9 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_9 |)
+                      |) in
+                    let _ := M.read (| γ1_10 |) in
                     let function_defs_max :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_10 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_10 |)
+                      |) in
+                    let _ := M.read (| γ1_11 |) in
                     let field_handles_max :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_11 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_11 |)
+                      |) in
+                    let _ := M.read (| γ1_12 |) in
                     let field_instantiations_max :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_12 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_12 |)
+                      |) in
+                    let _ := M.read (| γ1_13 |) in
                     let friend_decls_max :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_13 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_13 |)
+                      |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
                         M.read (|

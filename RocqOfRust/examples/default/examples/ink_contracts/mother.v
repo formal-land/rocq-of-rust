@@ -918,8 +918,12 @@ Module Impl_core_cmp_PartialEq_mother_Status_for_mother_Status.
                             "mother::Status::EndingPeriod",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __self_0 :=
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], γ2_0 |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                          |) in
                         let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                         let γ2_0 :=
                           M.SubPointer.get_struct_tuple_field (|
@@ -927,8 +931,12 @@ Module Impl_core_cmp_PartialEq_mother_Status_for_mother_Status.
                             "mother::Status::EndingPeriod",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __arg1_0 :=
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], γ2_0 |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                          |) in
                         M.call_closure (|
                           Ty.path "bool",
                           M.get_trait_method (|
@@ -956,10 +964,11 @@ Module Impl_core_cmp_PartialEq_mother_Status_for_mother_Status.
                             "mother::Status::Ended",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __self_0 :=
                           M.alloc (|
                             Ty.apply (Ty.path "&") [] [ Ty.path "mother::Outline" ],
-                            γ2_0
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                           |) in
                         let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                         let γ2_0 :=
@@ -968,10 +977,11 @@ Module Impl_core_cmp_PartialEq_mother_Status_for_mother_Status.
                             "mother::Status::Ended",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __arg1_0 :=
                           M.alloc (|
                             Ty.apply (Ty.path "&") [] [ Ty.path "mother::Outline" ],
-                            γ2_0
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                           |) in
                         M.call_closure (|
                           Ty.path "bool",
@@ -1000,8 +1010,12 @@ Module Impl_core_cmp_PartialEq_mother_Status_for_mother_Status.
                             "mother::Status::RfDelay",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __self_0 :=
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], γ2_0 |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                          |) in
                         let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                         let γ2_0 :=
                           M.SubPointer.get_struct_tuple_field (|
@@ -1009,8 +1023,12 @@ Module Impl_core_cmp_PartialEq_mother_Status_for_mother_Status.
                             "mother::Status::RfDelay",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __arg1_0 :=
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], γ2_0 |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                          |) in
                         M.call_closure (|
                           Ty.path "bool",
                           M.get_trait_method (|
@@ -1112,7 +1130,12 @@ Module Impl_core_clone_Clone_for_mother_Status.
                 (let γ := M.deref (| M.read (| γ |) |) in
                 let γ1_0 :=
                   M.SubPointer.get_struct_tuple_field (| γ, "mother::Status::EndingPeriod", 0 |) in
-                let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], γ1_0 |) in
+                let _ := M.read (| γ1_0 |) in
+                let __self_0 :=
+                  M.alloc (|
+                    Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                    M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                  |) in
                 Value.StructTuple
                   "mother::Status::EndingPeriod"
                   []
@@ -1137,8 +1160,12 @@ Module Impl_core_clone_Clone_for_mother_Status.
                 (let γ := M.deref (| M.read (| γ |) |) in
                 let γ1_0 :=
                   M.SubPointer.get_struct_tuple_field (| γ, "mother::Status::Ended", 0 |) in
+                let _ := M.read (| γ1_0 |) in
                 let __self_0 :=
-                  M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "mother::Outline" ], γ1_0 |) in
+                  M.alloc (|
+                    Ty.apply (Ty.path "&") [] [ Ty.path "mother::Outline" ],
+                    M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                  |) in
                 Value.StructTuple
                   "mother::Status::Ended"
                   []
@@ -1163,7 +1190,12 @@ Module Impl_core_clone_Clone_for_mother_Status.
                 (let γ := M.deref (| M.read (| γ |) |) in
                 let γ1_0 :=
                   M.SubPointer.get_struct_tuple_field (| γ, "mother::Status::RfDelay", 0 |) in
-                let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], γ1_0 |) in
+                let _ := M.read (| γ1_0 |) in
+                let __self_0 :=
+                  M.alloc (|
+                    Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                    M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                  |) in
                 Value.StructTuple
                   "mother::Status::RfDelay"
                   []
@@ -2028,10 +2060,11 @@ Module Impl_core_cmp_PartialEq_mother_Failure_for_mother_Failure.
                             "mother::Failure::Revert",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __self_0 :=
                           M.alloc (|
                             Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                            γ2_0
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                           |) in
                         let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                         let γ2_0 :=
@@ -2040,10 +2073,11 @@ Module Impl_core_cmp_PartialEq_mother_Failure_for_mother_Failure.
                             "mother::Failure::Revert",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __arg1_0 :=
                           M.alloc (|
                             Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                            γ2_0
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                           |) in
                         M.call_closure (|
                           Ty.path "bool",

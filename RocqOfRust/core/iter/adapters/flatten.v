@@ -2966,7 +2966,12 @@ Module iter.
                                   "core::option::Option::Some",
                                   0
                                 |) in
-                              let iter := M.alloc (| Ty.apply (Ty.path "&mut") [] [ U ], γ1_0 |) in
+                              let _ := M.read (| γ1_0 |) in
+                              let iter :=
+                                M.alloc (|
+                                  Ty.apply (Ty.path "&mut") [] [ U ],
+                                  M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
+                                |) in
                               M.read (|
                                 let~ _ : Ty.tuple [] :=
                                   M.write (|
@@ -3301,7 +3306,12 @@ Module iter.
                                   "core::option::Option::Some",
                                   0
                                 |) in
-                              let iter := M.alloc (| Ty.apply (Ty.path "&mut") [] [ U ], γ1_0 |) in
+                              let _ := M.read (| γ1_0 |) in
+                              let iter :=
+                                M.alloc (|
+                                  Ty.apply (Ty.path "&mut") [] [ U ],
+                                  M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
+                                |) in
                               M.read (|
                                 let~ _ : Ty.tuple [] :=
                                   M.write (|
@@ -3736,7 +3746,12 @@ Module iter.
                                   "core::option::Option::Some",
                                   0
                                 |) in
-                              let iter := M.alloc (| Ty.apply (Ty.path "&mut") [] [ U ], γ1_0 |) in
+                              let _ := M.read (| γ1_0 |) in
+                              let iter :=
+                                M.alloc (|
+                                  Ty.apply (Ty.path "&mut") [] [ U ],
+                                  M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
+                                |) in
                               M.read (|
                                 let~ _ : Ty.tuple [] :=
                                   M.write (|
@@ -4071,7 +4086,12 @@ Module iter.
                                   "core::option::Option::Some",
                                   0
                                 |) in
-                              let iter := M.alloc (| Ty.apply (Ty.path "&mut") [] [ U ], γ1_0 |) in
+                              let _ := M.read (| γ1_0 |) in
+                              let iter :=
+                                M.alloc (|
+                                  Ty.apply (Ty.path "&mut") [] [ U ],
+                                  M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
+                                |) in
                               M.read (|
                                 let~ _ : Ty.tuple [] :=
                                   M.write (|

@@ -3255,8 +3255,12 @@ Module string.
                     |) in
                   let γ1_2 := M.deref (| M.read (| γ1_2 |) |) in
                   let γ3_0 := M.SubPointer.get_slice_index (| γ1_2, 0 |) in
+                  let _ := M.read (| γ3_0 |) in
                   let _remainder :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ3_0 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ3_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.path "alloc::string::String",
                     M.get_trait_method (|
@@ -4610,8 +4614,12 @@ Module string.
                     |) in
                   let γ1_2 := M.deref (| M.read (| γ1_2 |) |) in
                   let γ3_0 := M.SubPointer.get_slice_index (| γ1_2, 0 |) in
+                  let _ := M.read (| γ3_0 |) in
                   let _remainder :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ3_0 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ3_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.path "alloc::string::String",
                     M.get_trait_method (|

@@ -1743,7 +1743,12 @@ Module annotated_visitor.
                       "move_core_types::annotated_visitor::Error::UnexpectedByte",
                       0
                     |) in
-                  let _0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let _0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -1875,7 +1880,12 @@ Module annotated_visitor.
                       "move_core_types::annotated_visitor::Error::TrailingBytes",
                       0
                     |) in
-                  let _0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let _0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -2088,7 +2098,12 @@ Module annotated_visitor.
                       "move_core_types::annotated_visitor::Error::UnexpectedByte",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -2130,8 +2145,12 @@ Module annotated_visitor.
                       "move_core_types::annotated_visitor::Error::TrailingBytes",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -6341,6 +6360,7 @@ Module annotated_visitor.
                         "move_core_types::annotated_value::MoveTypeLayout::Vector",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let l :=
                       M.alloc (|
                         Ty.apply
@@ -6355,7 +6375,7 @@ Module annotated_visitor.
                                 Ty.path "alloc::alloc::Global"
                               ]
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.read (|
                       let~ len : Ty.path "u64" :=
@@ -7095,13 +7115,14 @@ Module annotated_visitor.
                         "move_core_types::annotated_value::MoveTypeLayout::Struct",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let l :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "move_core_types::annotated_value::MoveStructLayout" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply

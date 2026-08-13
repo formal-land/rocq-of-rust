@@ -92,6 +92,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                       "age"
                     |) in
                   let name := M.copy (| Ty.path "alloc::string::String", γ0_0 |) in
+                  let _ := M.read (| γ0_1 |) in
                   let age :=
                     M.alloc (|
                       Ty.apply
@@ -103,7 +104,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                             []
                             [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
                         ],
-                      γ0_1
+                      M.borrow (| Pointer.Kind.Ref, γ0_1 |)
                     |) in
                   M.read (|
                     let~ _ : Ty.tuple [] :=

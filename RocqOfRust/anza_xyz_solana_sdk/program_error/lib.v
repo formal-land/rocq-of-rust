@@ -756,7 +756,12 @@ Module Impl_core_clone_Clone_for_solana_program_error_ProgramError.
                     "solana_program_error::ProgramError::Custom",
                     0
                   |) in
-                let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], γ1_0 |) in
+                let _ := M.read (| γ1_0 |) in
+                let __self_0 :=
+                  M.alloc (|
+                    Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                    M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                  |) in
                 Value.StructTuple
                   "solana_program_error::ProgramError::Custom"
                   []
@@ -1103,7 +1108,12 @@ Module Impl_core_fmt_Debug_for_solana_program_error_ProgramError.
                     "solana_program_error::ProgramError::Custom",
                     0
                   |) in
-                let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], γ1_0 |) in
+                let _ := M.read (| γ1_0 |) in
+                let __self_0 :=
+                  M.alloc (|
+                    Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                    M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                  |) in
                 M.call_closure (|
                   Ty.apply
                     (Ty.path "core::result::Result")
@@ -1888,8 +1898,12 @@ Module Impl_core_cmp_PartialEq_solana_program_error_ProgramError_for_solana_prog
                             "solana_program_error::ProgramError::Custom",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __self_0 :=
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], γ2_0 |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                          |) in
                         let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                         let γ2_0 :=
                           M.SubPointer.get_struct_tuple_field (|
@@ -1897,8 +1911,12 @@ Module Impl_core_cmp_PartialEq_solana_program_error_ProgramError_for_solana_prog
                             "solana_program_error::ProgramError::Custom",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __arg1_0 :=
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], γ2_0 |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                          |) in
                         M.call_closure (|
                           Ty.path "bool",
                           M.get_trait_method (|
@@ -2027,7 +2045,12 @@ Module Impl_core_fmt_Display_for_solana_program_error_ProgramError.
                     "solana_program_error::ProgramError::Custom",
                     0
                   |) in
-                let num := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], γ1_0 |) in
+                let _ := M.read (| γ1_0 |) in
+                let num :=
+                  M.alloc (|
+                    Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                    M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                  |) in
                 M.call_closure (|
                   Ty.apply
                     (Ty.path "core::result::Result")
@@ -2905,7 +2928,12 @@ Module Impl_solana_program_error_ProgramError.
                     "solana_program_error::ProgramError::Custom",
                     0
                   |) in
-                let error := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], γ1_0 |) in
+                let _ := M.read (| γ1_0 |) in
+                let error :=
+                  M.alloc (|
+                    Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                    M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                  |) in
                 M.match_operator (|
                   Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
                   M.alloc (| Ty.tuple [], Value.Tuple [] |),

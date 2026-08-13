@@ -58,7 +58,12 @@ Module ops.
                         "core::ops::control_flow::ControlFlow::Continue",
                         0
                       |) in
-                    let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ C ], γ1_0 |) in
+                    let _ := M.read (| γ1_0 |) in
+                    let __self_0 :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ C ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     Value.StructTuple
                       "core::ops::control_flow::ControlFlow::Continue"
                       []
@@ -79,7 +84,12 @@ Module ops.
                         "core::ops::control_flow::ControlFlow::Break",
                         0
                       |) in
-                    let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ B ], γ1_0 |) in
+                    let _ := M.read (| γ1_0 |) in
+                    let __self_0 :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ B ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     Value.StructTuple
                       "core::ops::control_flow::ControlFlow::Break"
                       []
@@ -214,7 +224,12 @@ Module ops.
                                 "core::ops::control_flow::ControlFlow::Continue",
                                 0
                               |) in
-                            let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ C ], γ2_0 |) in
+                            let _ := M.read (| γ2_0 |) in
+                            let __self_0 :=
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ C ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
                               M.SubPointer.get_struct_tuple_field (|
@@ -222,7 +237,12 @@ Module ops.
                                 "core::ops::control_flow::ControlFlow::Continue",
                                 0
                               |) in
-                            let __arg1_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ C ], γ2_0 |) in
+                            let _ := M.read (| γ2_0 |) in
+                            let __arg1_0 :=
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ C ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             M.call_closure (|
                               Ty.path "bool",
                               M.get_trait_method (|
@@ -250,7 +270,12 @@ Module ops.
                                 "core::ops::control_flow::ControlFlow::Break",
                                 0
                               |) in
-                            let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ B ], γ2_0 |) in
+                            let _ := M.read (| γ2_0 |) in
+                            let __self_0 :=
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ B ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
                               M.SubPointer.get_struct_tuple_field (|
@@ -258,7 +283,12 @@ Module ops.
                                 "core::ops::control_flow::ControlFlow::Break",
                                 0
                               |) in
-                            let __arg1_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ B ], γ2_0 |) in
+                            let _ := M.read (| γ2_0 |) in
+                            let __arg1_0 :=
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ B ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             M.call_closure (|
                               Ty.path "bool",
                               M.get_trait_method (|
@@ -404,7 +434,12 @@ Module ops.
                         "core::ops::control_flow::ControlFlow::Continue",
                         0
                       |) in
-                    let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ C ], γ1_0 |) in
+                    let _ := M.read (| γ1_0 |) in
+                    let __self_0 :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ C ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     M.call_closure (|
                       Ty.apply
                         (Ty.path "core::result::Result")
@@ -446,7 +481,12 @@ Module ops.
                         "core::ops::control_flow::ControlFlow::Break",
                         0
                       |) in
-                    let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ B ], γ1_0 |) in
+                    let _ := M.read (| γ1_0 |) in
+                    let __self_0 :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ B ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     M.call_closure (|
                       Ty.apply
                         (Ty.path "core::result::Result")
@@ -559,7 +599,12 @@ Module ops.
                             "core::ops::control_flow::ControlFlow::Continue",
                             0
                           |) in
-                        let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ C ], γ1_0 |) in
+                        let _ := M.read (| γ1_0 |) in
+                        let __self_0 :=
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ C ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                          |) in
                         M.call_closure (|
                           Ty.tuple [],
                           M.get_trait_method (|
@@ -585,7 +630,12 @@ Module ops.
                             "core::ops::control_flow::ControlFlow::Break",
                             0
                           |) in
-                        let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ B ], γ1_0 |) in
+                        let _ := M.read (| γ1_0 |) in
+                        let __self_0 :=
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ B ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                          |) in
                         M.call_closure (|
                           Ty.tuple [],
                           M.get_trait_method (|

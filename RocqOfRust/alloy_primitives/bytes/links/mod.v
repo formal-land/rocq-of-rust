@@ -14,7 +14,12 @@ Module Bytes.
     value : bytes.Bytes.t;
   }.
 
-  Parameter to_value : t -> Value.t.
+  Definition to_value (x : t) : Value.t :=
+    Value.StructTuple
+      "alloy_primitives::bytes_::Bytes"
+      []
+      []
+      [φ x.(value)].
 
   Instance IsLink : Link t := {
     Φ := Ty.path "alloy_primitives::bytes_::Bytes";
@@ -26,6 +31,41 @@ Module Bytes.
     eapply OfTy.Make with (A := t); reflexivity.
   Defined.
   Smpl Add apply of_ty : of_ty.
+
+  Lemma of_value_with (value : bytes.Bytes.t) (value' : Value.t) :
+    value' = φ value ->
+    Value.StructTuple "alloy_primitives::bytes_::Bytes" [] [] [value'] =
+    φ (Build_t value).
+  Proof.
+    now intros; subst.
+  Qed.
+  Smpl Add apply of_value_with : of_value.
+
+  Definition of_value (value' : Value.t) (value : bytes.Bytes.t) :
+    value' = φ value ->
+    OfValue.t (Value.StructTuple "alloy_primitives::bytes_::Bytes" [] [] [value']).
+  Proof.
+    intros.
+    eapply OfValue.Make with (A := t) (value := Build_t value).
+    now subst.
+  Defined.
+  Smpl Add apply of_value : of_value.
+
+  Module SubPointer.
+    Definition get_0 : SubPointer.Runner.t t
+        (Pointer.Index.StructTuple "alloy_primitives::bytes_::Bytes" 0) :=
+      {|
+        SubPointer.Runner.projection x := Some x.(value);
+        SubPointer.Runner.injection x y := Some (x <| value := y |>);
+      |}.
+
+    Lemma get_0_is_valid :
+      SubPointer.Runner.Valid.t get_0.
+    Proof.
+      now constructor.
+    Qed.
+    Smpl Add apply get_0_is_valid : run_sub_pointer.
+  End SubPointer.
 End Bytes.
 Export (hints) Bytes.
 
@@ -109,7 +149,11 @@ Module Impl_AsRef_slice_u8_for_Bytes.
     Run.Trait
       bytes_.Impl_core_convert_AsRef_slice_u8_for_alloy_primitives_bytes__Bytes.as_ref
       [] [] [φ self] ('& (list u8)).
-  Admitted.
+  Proof.
+    constructor.
+    destruct bytes.links.bytes.Impl_AsRef_slice_u8_for_Bytes.run.
+    run_symbolic.
+  Defined.
   Global Opaque run_as_ref.
 
   Instance method_as_ref : AsRef.Method_as_ref Self (list u8).

@@ -65,9 +65,18 @@ Module from.
                       "ruint::from::ToUintError::ValueTooLarge",
                       1
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_1 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   Value.StructTuple
                     "ruint::from::ToUintError::ValueTooLarge"
                     []
@@ -107,9 +116,18 @@ Module from.
                       "ruint::from::ToUintError::ValueNegative",
                       1
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_1 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   Value.StructTuple
                     "ruint::from::ToUintError::ValueNegative"
                     []
@@ -143,8 +161,12 @@ Module from.
                       "ruint::from::ToUintError::NotANumber",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "ruint::from::ToUintError::NotANumber"
                     []
@@ -230,9 +252,18 @@ Module from.
                       "ruint::from::ToUintError::ValueTooLarge",
                       1
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_1 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -291,9 +322,18 @@ Module from.
                       "ruint::from::ToUintError::ValueNegative",
                       1
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_1 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -346,8 +386,12 @@ Module from.
                       "ruint::from::ToUintError::NotANumber",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -540,9 +584,18 @@ Module from.
                               "ruint::from::ToUintError::ValueTooLarge",
                               1
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ2_0 |) in
-                          let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
+                          let __self_1 :=
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ T ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -556,9 +609,18 @@ Module from.
                               "ruint::from::ToUintError::ValueTooLarge",
                               1
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ2_0 |) in
-                          let __arg1_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
+                          let __arg1_1 :=
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ T ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           LogicalOp.and (|
                             M.call_closure (|
                               Ty.path "bool",
@@ -611,9 +673,18 @@ Module from.
                               "ruint::from::ToUintError::ValueNegative",
                               1
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ2_0 |) in
-                          let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
+                          let __self_1 :=
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ T ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -627,9 +698,18 @@ Module from.
                               "ruint::from::ToUintError::ValueNegative",
                               1
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ2_0 |) in
-                          let __arg1_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
+                          let __arg1_1 :=
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ T ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           LogicalOp.and (|
                             M.call_closure (|
                               Ty.path "bool",
@@ -676,8 +756,12 @@ Module from.
                               "ruint::from::ToUintError::NotANumber",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -685,8 +769,12 @@ Module from.
                               "ruint::from::ToUintError::NotANumber",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -797,9 +885,18 @@ Module from.
                           "ruint::from::ToUintError::ValueTooLarge",
                           1
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
-                      let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_1 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
+                      let _ := M.read (| γ1_1 |) in
+                      let __self_1 :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ T ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                        |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
                           M.call_closure (|
@@ -853,9 +950,18 @@ Module from.
                           "ruint::from::ToUintError::ValueNegative",
                           1
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
-                      let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_1 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
+                      let _ := M.read (| γ1_1 |) in
+                      let __self_1 :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ T ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                        |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
                           M.call_closure (|
@@ -903,8 +1009,12 @@ Module from.
                           "ruint::from::ToUintError::NotANumber",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
                       M.call_closure (|
                         Ty.tuple [],
                         M.get_trait_method (|
@@ -1004,7 +1114,12 @@ Module from.
                       "ruint::from::ToUintError::ValueTooLarge",
                       1
                     |) in
-                  let bits := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let bits :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -1134,7 +1249,12 @@ Module from.
                       "ruint::from::ToUintError::ValueNegative",
                       1
                     |) in
-                  let bits := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let bits :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -1276,7 +1396,12 @@ Module from.
                       "ruint::from::ToUintError::NotANumber",
                       0
                     |) in
-                  let bits := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let bits :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -1489,10 +1614,24 @@ Module from.
                       "ruint::from::FromUintError::Overflow",
                       2
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_1 |) in
-                  let __self_2 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_2 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
+                  let _ := M.read (| γ1_2 |) in
+                  let __self_2 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_2 |)
+                    |) in
                   Value.StructTuple
                     "ruint::from::FromUintError::Overflow"
                     []
@@ -1597,10 +1736,24 @@ Module from.
                       "ruint::from::FromUintError::Overflow",
                       2
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_1 |) in
-                  let __self_2 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_2 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
+                  let _ := M.read (| γ1_2 |) in
+                  let __self_2 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_2 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -1748,10 +1901,24 @@ Module from.
                       "ruint::from::FromUintError::Overflow",
                       2
                     |) in
+                  let _ := M.read (| γ2_0 |) in
                   let __self_0 :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ2_0 |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_1 |) in
-                  let __self_2 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_2 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                      M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                    |) in
+                  let _ := M.read (| γ2_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                    |) in
+                  let _ := M.read (| γ2_2 |) in
+                  let __self_2 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ2_2 |)
+                    |) in
                   let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                   let γ2_0 :=
                     M.SubPointer.get_struct_tuple_field (|
@@ -1771,10 +1938,24 @@ Module from.
                       "ruint::from::FromUintError::Overflow",
                       2
                     |) in
+                  let _ := M.read (| γ2_0 |) in
                   let __arg1_0 :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ2_0 |) in
-                  let __arg1_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_1 |) in
-                  let __arg1_2 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_2 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                      M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                    |) in
+                  let _ := M.read (| γ2_1 |) in
+                  let __arg1_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                    |) in
+                  let _ := M.read (| γ2_2 |) in
+                  let __arg1_2 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ2_2 |)
+                    |) in
                   LogicalOp.and (|
                     LogicalOp.and (|
                       M.call_closure (|
@@ -1936,10 +2117,24 @@ Module from.
                       "ruint::from::FromUintError::Overflow",
                       2
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_1 |) in
-                  let __self_2 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_2 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
+                  let _ := M.read (| γ1_2 |) in
+                  let __self_2 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_2 |)
+                    |) in
                   M.read (|
                     let~ _ : Ty.tuple [] :=
                       M.call_closure (|
@@ -2052,7 +2247,12 @@ Module from.
                       "ruint::from::FromUintError::Overflow",
                       0
                     |) in
-                  let bits := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let bits :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")

@@ -94,6 +94,7 @@ Module interpreter_action.
                       "revm_interpreter::interpreter_action::FrameInput::Call",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
@@ -109,7 +110,7 @@ Module interpreter_action.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "revm_interpreter::interpreter_action::FrameInput::Call"
@@ -152,6 +153,7 @@ Module interpreter_action.
                       "revm_interpreter::interpreter_action::FrameInput::Create",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
@@ -167,7 +169,7 @@ Module interpreter_action.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "revm_interpreter::interpreter_action::FrameInput::Create"
@@ -274,6 +276,7 @@ Module interpreter_action.
                       "revm_interpreter::interpreter_action::FrameInput::Call",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
@@ -289,7 +292,7 @@ Module interpreter_action.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -349,6 +352,7 @@ Module interpreter_action.
                       "revm_interpreter::interpreter_action::FrameInput::Create",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
@@ -364,7 +368,7 @@ Module interpreter_action.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -523,6 +527,7 @@ Module interpreter_action.
                               "revm_interpreter::interpreter_action::FrameInput::Call",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
@@ -538,7 +543,7 @@ Module interpreter_action.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -547,6 +552,7 @@ Module interpreter_action.
                               "revm_interpreter::interpreter_action::FrameInput::Call",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
@@ -562,7 +568,7 @@ Module interpreter_action.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -617,6 +623,7 @@ Module interpreter_action.
                               "revm_interpreter::interpreter_action::FrameInput::Create",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
@@ -632,7 +639,7 @@ Module interpreter_action.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -641,6 +648,7 @@ Module interpreter_action.
                               "revm_interpreter::interpreter_action::FrameInput::Create",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
@@ -656,7 +664,7 @@ Module interpreter_action.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -1307,13 +1315,14 @@ Module interpreter_action.
                       "revm_interpreter::interpreter_action::InterpreterAction::NewFrame",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_interpreter::interpreter_action::FrameInput" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "revm_interpreter::interpreter_action::InterpreterAction::NewFrame"
@@ -1343,13 +1352,14 @@ Module interpreter_action.
                       "revm_interpreter::interpreter_action::InterpreterAction::Return",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_interpreter::interpreter::InterpreterResult" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "revm_interpreter::interpreter_action::InterpreterAction::Return"
@@ -1418,13 +1428,14 @@ Module interpreter_action.
                       "revm_interpreter::interpreter_action::InterpreterAction::NewFrame",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_interpreter::interpreter_action::FrameInput" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -1475,13 +1486,14 @@ Module interpreter_action.
                       "revm_interpreter::interpreter_action::InterpreterAction::Return",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_interpreter::interpreter::InterpreterResult" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -1631,13 +1643,14 @@ Module interpreter_action.
                               "revm_interpreter::interpreter_action::InterpreterAction::NewFrame",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "revm_interpreter::interpreter_action::FrameInput" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -1646,13 +1659,14 @@ Module interpreter_action.
                               "revm_interpreter::interpreter_action::InterpreterAction::NewFrame",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "revm_interpreter::interpreter_action::FrameInput" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -1689,13 +1703,14 @@ Module interpreter_action.
                               "revm_interpreter::interpreter_action::InterpreterAction::Return",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "revm_interpreter::interpreter::InterpreterResult" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -1704,13 +1719,14 @@ Module interpreter_action.
                               "revm_interpreter::interpreter_action::InterpreterAction::Return",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "revm_interpreter::interpreter::InterpreterResult" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -1982,13 +1998,14 @@ Module interpreter_action.
                       "revm_interpreter::interpreter_action::InterpreterAction::Return",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let result :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&mut")
                         []
                         [ Ty.path "revm_interpreter::interpreter::InterpreterResult" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "core::option::Option::Some"
@@ -2114,13 +2131,14 @@ Module interpreter_action.
                       "revm_interpreter::interpreter_action::InterpreterAction::Return",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let result :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_interpreter::interpreter::InterpreterResult" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "core::option::Option::Some"

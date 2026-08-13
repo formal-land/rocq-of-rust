@@ -4531,13 +4531,14 @@ Module num.
                                       "core::num::flt2dec::decoder::FullDecoded::Finite",
                                       0
                                     |) in
+                                  let _ := M.read (| γ0_0 |) in
                                   let decoded :=
                                     M.alloc (|
                                       Ty.apply
                                         (Ty.path "&")
                                         []
                                         [ Ty.path "core::num::flt2dec::decoder::Decoded" ],
-                                      γ0_0
+                                      M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                                     |) in
                                   M.match_operator (|
                                     Ty.path "core::num::fmt::Formatted",
@@ -5738,13 +5739,14 @@ Module num.
                                       "core::num::flt2dec::decoder::FullDecoded::Finite",
                                       0
                                     |) in
+                                  let _ := M.read (| γ0_0 |) in
                                   let decoded :=
                                     M.alloc (|
                                       Ty.apply
                                         (Ty.path "&")
                                         []
                                         [ Ty.path "core::num::flt2dec::decoder::Decoded" ],
-                                      γ0_0
+                                      M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                                     |) in
                                   M.match_operator (|
                                     Ty.path "core::num::fmt::Formatted",
@@ -7365,13 +7367,14 @@ Module num.
                                       "core::num::flt2dec::decoder::FullDecoded::Finite",
                                       0
                                     |) in
+                                  let _ := M.read (| γ0_0 |) in
                                   let decoded :=
                                     M.alloc (|
                                       Ty.apply
                                         (Ty.path "&")
                                         []
                                         [ Ty.path "core::num::flt2dec::decoder::Decoded" ],
-                                      γ0_0
+                                      M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                                     |) in
                                   M.read (|
                                     let~ maxlen : Ty.path "usize" :=
@@ -8794,13 +8797,14 @@ Module num.
                                       "core::num::flt2dec::decoder::FullDecoded::Finite",
                                       0
                                     |) in
+                                  let _ := M.read (| γ0_0 |) in
                                   let decoded :=
                                     M.alloc (|
                                       Ty.apply
                                         (Ty.path "&")
                                         []
                                         [ Ty.path "core::num::flt2dec::decoder::Decoded" ],
-                                      γ0_0
+                                      M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                                     |) in
                                   M.read (|
                                     let~ maxlen : Ty.path "usize" :=

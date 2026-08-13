@@ -792,6 +792,7 @@ Module processor.
                                             let γ1_1 := M.SubPointer.get_slice_index (| γ, 1 |) in
                                             let γ1_rest :=
                                               M.SubPointer.get_slice_rest (| γ, 2, 0 |) in
+                                            let _ := M.read (| γ1_0 |) in
                                             let mint_info :=
                                               M.alloc (|
                                                 Ty.apply
@@ -799,8 +800,9 @@ Module processor.
                                                   []
                                                   [ Ty.path "pinocchio::account_info::AccountInfo"
                                                   ],
-                                                γ1_0
+                                                M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                               |) in
+                                            let _ := M.read (| γ1_1 |) in
                                             let rent_sysvar_info :=
                                               M.alloc (|
                                                 Ty.apply
@@ -808,8 +810,9 @@ Module processor.
                                                   []
                                                   [ Ty.path "pinocchio::account_info::AccountInfo"
                                                   ],
-                                                γ1_1
+                                                M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                                               |) in
+                                            let _ := M.read (| γ1_rest |) in
                                             let _remaining :=
                                               M.alloc (|
                                                 Ty.apply
@@ -824,7 +827,7 @@ Module processor.
                                                           "pinocchio::account_info::AccountInfo"
                                                       ]
                                                   ],
-                                                γ1_rest
+                                                M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                               |) in
                                             Value.Tuple
                                               [
@@ -892,6 +895,7 @@ Module processor.
                                             let γ1_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
                                             let γ1_rest :=
                                               M.SubPointer.get_slice_rest (| γ, 1, 0 |) in
+                                            let _ := M.read (| γ1_0 |) in
                                             let mint_info :=
                                               M.alloc (|
                                                 Ty.apply
@@ -899,8 +903,9 @@ Module processor.
                                                   []
                                                   [ Ty.path "pinocchio::account_info::AccountInfo"
                                                   ],
-                                                γ1_0
+                                                M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                               |) in
+                                            let _ := M.read (| γ1_rest |) in
                                             let _remaining :=
                                               M.alloc (|
                                                 Ty.apply
@@ -915,7 +920,7 @@ Module processor.
                                                           "pinocchio::account_info::AccountInfo"
                                                       ]
                                                   ],
-                                                γ1_rest
+                                                M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                               |) in
                                             Value.Tuple
                                               [

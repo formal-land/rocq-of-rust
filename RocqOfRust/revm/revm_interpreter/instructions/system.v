@@ -3360,6 +3360,7 @@ Module instructions.
                                                       "revm_interpreter::interpreter_action::call_inputs::CallInput::Bytes",
                                                       0
                                                     |) in
+                                                  let _ := M.read (| γ1_0 |) in
                                                   let bytes :=
                                                     M.alloc (|
                                                       Ty.apply
@@ -3367,7 +3368,7 @@ Module instructions.
                                                         []
                                                         [ Ty.path "alloy_primitives::bytes_::Bytes"
                                                         ],
-                                                      γ1_0
+                                                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                     |) in
                                                   M.read (|
                                                     let~ _ : Ty.tuple [] :=
@@ -3587,6 +3588,7 @@ Module instructions.
                                                       "revm_interpreter::interpreter_action::call_inputs::CallInput::SharedBuffer",
                                                       0
                                                     |) in
+                                                  let _ := M.read (| γ1_0 |) in
                                                   let range :=
                                                     M.alloc (|
                                                       Ty.apply
@@ -3598,7 +3600,7 @@ Module instructions.
                                                             []
                                                             [ Ty.path "usize" ]
                                                         ],
-                                                      γ1_0
+                                                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                     |) in
                                                   M.read (|
                                                     let~ input_slice :
@@ -4954,13 +4956,14 @@ Module instructions.
                                                   "revm_interpreter::interpreter_action::call_inputs::CallInput::Bytes",
                                                   0
                                                 |) in
+                                              let _ := M.read (| γ1_0 |) in
                                               let bytes :=
                                                 M.alloc (|
                                                   Ty.apply
                                                     (Ty.path "&")
                                                     []
                                                     [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                                                  γ1_0
+                                                  M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                 |) in
                                               M.read (|
                                                 let~ _ : Ty.tuple [] :=
@@ -5050,6 +5053,7 @@ Module instructions.
                                                   "revm_interpreter::interpreter_action::call_inputs::CallInput::SharedBuffer",
                                                   0
                                                 |) in
+                                              let _ := M.read (| γ1_0 |) in
                                               let range :=
                                                 M.alloc (|
                                                   Ty.apply
@@ -5061,7 +5065,7 @@ Module instructions.
                                                         []
                                                         [ Ty.path "usize" ]
                                                     ],
-                                                  γ1_0
+                                                  M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                 |) in
                                               M.read (|
                                                 let~ _ : Ty.tuple [] :=

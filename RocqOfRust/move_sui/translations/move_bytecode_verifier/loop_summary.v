@@ -1444,6 +1444,7 @@ Module loop_summary.
                                                           "move_bytecode_verifier::loop_summary::new::Exploration::InProgress",
                                                           0
                                                         |) in
+                                                      let _ := M.read (| γ1_0 |) in
                                                       let to_node :=
                                                         M.alloc (|
                                                           Ty.apply
@@ -1453,7 +1454,7 @@ Module loop_summary.
                                                               Ty.path
                                                                 "move_bytecode_verifier::loop_summary::NodeId"
                                                             ],
-                                                          γ1_0
+                                                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                         |) in
                                                       M.call_closure (|
                                                         Ty.tuple [],
@@ -1555,6 +1556,7 @@ Module loop_summary.
                                                           "move_bytecode_verifier::loop_summary::new::Exploration::Done",
                                                           0
                                                         |) in
+                                                      let _ := M.read (| γ1_0 |) in
                                                       let to_node :=
                                                         M.alloc (|
                                                           Ty.apply
@@ -1564,7 +1566,7 @@ Module loop_summary.
                                                               Ty.path
                                                                 "move_bytecode_verifier::loop_summary::NodeId"
                                                             ],
-                                                          γ1_0
+                                                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                         |) in
                                                       M.call_closure (|
                                                         Ty.tuple [],

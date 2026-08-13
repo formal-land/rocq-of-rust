@@ -143,10 +143,11 @@ Module signature.
                         "alloy_primitives::signature::error::SignatureError::FromBytes",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -197,10 +198,11 @@ Module signature.
                         "alloy_primitives::signature::error::SignatureError::FromHex",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "const_hex::error::FromHexError" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -251,8 +253,12 @@ Module signature.
                         "alloy_primitives::signature::error::SignatureError::InvalidParity",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     M.call_closure (|
                       Ty.apply
                         (Ty.path "core::result::Result")
@@ -373,10 +379,11 @@ Module signature.
                         "alloy_primitives::signature::error::SignatureError::FromHex",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let e :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "const_hex::error::FromHexError" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     Value.StructTuple
                       "core::option::Option::Some"
@@ -463,10 +470,11 @@ Module signature.
                         "alloy_primitives::signature::error::SignatureError::FromBytes",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let e :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -496,10 +504,11 @@ Module signature.
                         "alloy_primitives::signature::error::SignatureError::FromHex",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let e :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "const_hex::error::FromHexError" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -529,7 +538,12 @@ Module signature.
                         "alloy_primitives::signature::error::SignatureError::InvalidParity",
                         0
                       |) in
-                    let v := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                    let _ := M.read (| γ1_0 |) in
+                    let v :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     M.call_closure (|
                       Ty.apply
                         (Ty.path "core::result::Result")

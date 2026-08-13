@@ -52,13 +52,14 @@ Module abi.
                       "move_core_types::abi::ScriptABI::TransactionScript",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_core_types::abi::TransactionScriptABI" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_core_types::abi::ScriptABI::TransactionScript"
@@ -88,13 +89,14 @@ Module abi.
                       "move_core_types::abi::ScriptABI::ScriptFunction",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_core_types::abi::ScriptFunctionABI" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_core_types::abi::ScriptABI::ScriptFunction"
@@ -160,13 +162,14 @@ Module abi.
                       "move_core_types::abi::ScriptABI::TransactionScript",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_core_types::abi::TransactionScriptABI" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -220,13 +223,14 @@ Module abi.
                       "move_core_types::abi::ScriptABI::ScriptFunction",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_core_types::abi::ScriptFunctionABI" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -342,13 +346,14 @@ Module abi.
                           "move_core_types::abi::ScriptABI::TransactionScript",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_core_types::abi::TransactionScriptABI" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -375,13 +380,14 @@ Module abi.
                           "move_core_types::abi::ScriptABI::ScriptFunction",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_core_types::abi::ScriptFunctionABI" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -540,13 +546,14 @@ Module abi.
                               "move_core_types::abi::ScriptABI::TransactionScript",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_core_types::abi::TransactionScriptABI" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -555,13 +562,14 @@ Module abi.
                               "move_core_types::abi::ScriptABI::TransactionScript",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_core_types::abi::TransactionScriptABI" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -598,13 +606,14 @@ Module abi.
                               "move_core_types::abi::ScriptABI::ScriptFunction",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_core_types::abi::ScriptFunctionABI" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -613,13 +622,14 @@ Module abi.
                               "move_core_types::abi::ScriptABI::ScriptFunction",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_core_types::abi::ScriptFunctionABI" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -704,13 +714,14 @@ Module abi.
                         "move_core_types::abi::ScriptABI::TransactionScript",
                         0
                       |) in
+                    let _ := M.read (| γ0_0 |) in
                     let __field0 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "move_core_types::abi::TransactionScriptABI" ],
-                        γ0_0
+                        M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -745,13 +756,14 @@ Module abi.
                         "move_core_types::abi::ScriptABI::ScriptFunction",
                         0
                       |) in
+                    let _ := M.read (| γ0_0 |) in
                     let __field0 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "move_core_types::abi::ScriptFunctionABI" ],
-                        γ0_0
+                        M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -6736,13 +6748,14 @@ Module abi.
                           "move_core_types::abi::ScriptABI::TransactionScript",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let abi :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_core_types::abi::TransactionScriptABI" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -6768,13 +6781,14 @@ Module abi.
                           "move_core_types::abi::ScriptABI::ScriptFunction",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let abi :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_core_types::abi::ScriptFunctionABI" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -6835,13 +6849,14 @@ Module abi.
                           "move_core_types::abi::ScriptABI::TransactionScript",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let abi :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_core_types::abi::TransactionScriptABI" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -6867,13 +6882,14 @@ Module abi.
                           "move_core_types::abi::ScriptABI::ScriptFunction",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let abi :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_core_types::abi::ScriptFunctionABI" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -6942,13 +6958,14 @@ Module abi.
                           "move_core_types::abi::ScriptABI::TransactionScript",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let abi :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_core_types::abi::TransactionScriptABI" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -6982,13 +6999,14 @@ Module abi.
                           "move_core_types::abi::ScriptABI::ScriptFunction",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let abi :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_core_types::abi::ScriptFunctionABI" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -7060,13 +7078,14 @@ Module abi.
                           "move_core_types::abi::ScriptABI::TransactionScript",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let abi :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_core_types::abi::TransactionScriptABI" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -7100,13 +7119,14 @@ Module abi.
                           "move_core_types::abi::ScriptABI::ScriptFunction",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let abi :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_core_types::abi::ScriptFunctionABI" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,

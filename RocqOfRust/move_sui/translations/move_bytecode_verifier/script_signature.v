@@ -454,14 +454,16 @@ Module script_signature.
                                                       M.SubPointer.get_tuple_field (| γ, 0 |) in
                                                     let γ1_1 :=
                                                       M.SubPointer.get_tuple_field (| γ, 1 |) in
+                                                    let _ := M.read (| γ1_0 |) in
                                                     let _idx :=
                                                       M.alloc (|
                                                         Ty.apply
                                                           (Ty.path "&")
                                                           []
                                                           [ Ty.path "usize" ],
-                                                        γ1_0
+                                                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                       |) in
+                                                    let _ := M.read (| γ1_1 |) in
                                                     let fdef :=
                                                       M.alloc (|
                                                         Ty.apply
@@ -476,7 +478,7 @@ Module script_signature.
                                                                   "move_binary_format::file_format::FunctionDefinition"
                                                               ]
                                                           ],
-                                                        γ1_1
+                                                        M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                                                       |) in
                                                     M.read (|
                                                       M.SubPointer.get_struct_record_field (|
@@ -1112,6 +1114,7 @@ Module script_signature.
                                       (let γ := M.deref (| M.read (| γ |) |) in
                                       let γ1_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                                       let γ1_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                                      let _ := M.read (| γ1_1 |) in
                                       let fdef :=
                                         M.alloc (|
                                           Ty.apply
@@ -1126,7 +1129,7 @@ Module script_signature.
                                                     "move_binary_format::file_format::FunctionDefinition"
                                                 ]
                                             ],
-                                          γ1_1
+                                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                                         |) in
                                       M.call_closure (|
                                         Ty.path "bool",
@@ -2805,6 +2808,7 @@ Module script_signature.
                                                               "move_binary_format::file_format::SignatureToken::Reference",
                                                               0
                                                             |) in
+                                                          let _ := M.read (| γ2_0 |) in
                                                           let inner :=
                                                             M.alloc (|
                                                               Ty.apply
@@ -2820,7 +2824,7 @@ Module script_signature.
                                                                       Ty.path "alloc::alloc::Global"
                                                                     ]
                                                                 ],
-                                                              γ2_0
+                                                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                                             |) in
                                                           let γ :=
                                                             M.alloc (|

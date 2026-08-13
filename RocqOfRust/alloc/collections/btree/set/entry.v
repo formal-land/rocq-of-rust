@@ -93,6 +93,7 @@ Module collections.
                             "alloc::collections::btree::set::entry::Entry::Vacant",
                             0
                           |) in
+                        let _ := M.read (| γ0_0 |) in
                         let v :=
                           M.alloc (|
                             Ty.apply
@@ -104,7 +105,7 @@ Module collections.
                                   []
                                   [ T; A ]
                               ],
-                            γ0_0
+                            M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                           |) in
                         M.call_closure (|
                           Ty.apply
@@ -200,6 +201,7 @@ Module collections.
                             "alloc::collections::btree::set::entry::Entry::Occupied",
                             0
                           |) in
+                        let _ := M.read (| γ0_0 |) in
                         let o :=
                           M.alloc (|
                             Ty.apply
@@ -211,7 +213,7 @@ Module collections.
                                   []
                                   [ T; A ]
                               ],
-                            γ0_0
+                            M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                           |) in
                         M.call_closure (|
                           Ty.apply
@@ -836,6 +838,7 @@ Module collections.
                                 "alloc::collections::btree::set::entry::Entry::Occupied",
                                 0
                               |) in
+                            let _ := M.read (| γ0_0 |) in
                             let entry :=
                               M.alloc (|
                                 Ty.apply
@@ -848,7 +851,7 @@ Module collections.
                                       []
                                       [ T; A ]
                                   ],
-                                γ0_0
+                                M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                               |) in
                             M.borrow (|
                               Pointer.Kind.Ref,
@@ -882,6 +885,7 @@ Module collections.
                                 "alloc::collections::btree::set::entry::Entry::Vacant",
                                 0
                               |) in
+                            let _ := M.read (| γ0_0 |) in
                             let entry :=
                               M.alloc (|
                                 Ty.apply
@@ -893,7 +897,7 @@ Module collections.
                                       []
                                       [ T; A ]
                                   ],
-                                γ0_0
+                                M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                               |) in
                             M.borrow (|
                               Pointer.Kind.Ref,

@@ -1553,13 +1553,14 @@ Module code_unit_verifier.
                               "core::option::Option::Some",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let code :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_binary_format::file_format::CodeUnit" ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                             |) in
                           M.read (| code |)));
                       fun γ =>

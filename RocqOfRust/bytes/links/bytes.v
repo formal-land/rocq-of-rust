@@ -1,5 +1,6 @@
 Require Import links.RocqOfRust.
 Require Import bytes.bytes.
+Require Import core.convert.links.mod.
 Require Import core.ops.links.deref.
 
 (*
@@ -60,7 +61,52 @@ Module Impl_Deref_for_Bytes.
   Definition Self : Set :=
     Bytes.t.
 
-  Instance run : Deref.Run Self (list u8).
+  Instance run_deref (self : '& Self) :
+    Run.Trait
+      bytes.Impl_core_ops_deref_Deref_for_bytes_bytes_Bytes.deref
+      [] [] [φ self] ('& (list u8)).
   Admitted.
+  Global Opaque run_deref.
+
+  Instance method_deref : Deref.Method_deref Self (list u8).
+  Proof.
+    eexists.
+    { constructor.
+      eapply IsTraitMethod.Defined.
+      { apply bytes.Impl_core_ops_deref_Deref_for_bytes_bytes_Bytes.Implements. }
+      { reflexivity. }
+    }
+    { exact run_deref. }
+  Defined.
+
+  Instance run : Deref.Run Self (list u8) := {}.
 End Impl_Deref_for_Bytes.
 Export (hints) Impl_Deref_for_Bytes.
+
+Module Impl_AsRef_slice_u8_for_Bytes.
+  Definition Self : Set :=
+    Bytes.t.
+
+  Instance run_as_ref (self : '& Self) :
+    Run.Trait
+      bytes.Impl_core_convert_AsRef_slice_u8_for_bytes_bytes_Bytes.as_ref
+      [] [] [φ self] ('& (list u8)).
+  Proof.
+    exact (Impl_Deref_for_Bytes.run_deref self).
+  Defined.
+  Global Opaque run_as_ref.
+
+  Instance method_as_ref : AsRef.Method_as_ref Self (list u8).
+  Proof.
+    eexists.
+    { constructor.
+      eapply IsTraitMethod.Defined.
+      { apply bytes.Impl_core_convert_AsRef_slice_u8_for_bytes_bytes_Bytes.Implements. }
+      { reflexivity. }
+    }
+    { exact run_as_ref. }
+  Defined.
+
+  Instance run : AsRef.Run Self (list u8) := {}.
+End Impl_AsRef_slice_u8_for_Bytes.
+Export (hints) Impl_AsRef_slice_u8_for_Bytes.

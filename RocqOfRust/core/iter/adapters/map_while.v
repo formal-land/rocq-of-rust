@@ -604,8 +604,18 @@ Module iter.
                           "core::iter::adapters::map_while::MapWhile",
                           "predicate"
                         |) in
-                      let iter := M.alloc (| Ty.apply (Ty.path "&mut") [] [ I ], γ1_0 |) in
-                      let predicate := M.alloc (| Ty.apply (Ty.path "&mut") [] [ P ], γ1_1 |) in
+                      let _ := M.read (| γ1_0 |) in
+                      let iter :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&mut") [] [ I ],
+                          M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
+                        |) in
+                      let _ := M.read (| γ1_1 |) in
+                      let predicate :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&mut") [] [ P ],
+                          M.borrow (| Pointer.Kind.MutRef, γ1_1 |)
+                        |) in
                       M.call_closure (|
                         R,
                         M.get_associated_function (|

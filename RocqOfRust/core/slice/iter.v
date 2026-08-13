@@ -28132,10 +28132,18 @@ Module slice.
                                         let γ0_0 := M.deref (| M.read (| γ0_0 |) |) in
                                         let γ2_0 := M.SubPointer.get_slice_index (| γ0_0, 0 |) in
                                         let γ2_1 := M.SubPointer.get_slice_index (| γ0_0, 1 |) in
+                                        let _ := M.read (| γ2_0 |) in
                                         let l :=
-                                          M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                                          M.alloc (|
+                                            Ty.apply (Ty.path "&") [] [ T ],
+                                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                                          |) in
+                                        let _ := M.read (| γ2_1 |) in
                                         let r :=
-                                          M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_1 |) in
+                                          M.alloc (|
+                                            Ty.apply (Ty.path "&") [] [ T ],
+                                            M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                                          |) in
                                         M.match_operator (|
                                           Ty.tuple [],
                                           M.alloc (| Ty.tuple [], Value.Tuple [] |),
@@ -28648,10 +28656,18 @@ Module slice.
                                         let γ0_0 := M.deref (| M.read (| γ0_0 |) |) in
                                         let γ2_0 := M.SubPointer.get_slice_index (| γ0_0, 0 |) in
                                         let γ2_1 := M.SubPointer.get_slice_index (| γ0_0, 1 |) in
+                                        let _ := M.read (| γ2_0 |) in
                                         let l :=
-                                          M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                                          M.alloc (|
+                                            Ty.apply (Ty.path "&") [] [ T ],
+                                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                                          |) in
+                                        let _ := M.read (| γ2_1 |) in
                                         let r :=
-                                          M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_1 |) in
+                                          M.alloc (|
+                                            Ty.apply (Ty.path "&") [] [ T ],
+                                            M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                                          |) in
                                         M.match_operator (|
                                           Ty.tuple [],
                                           M.alloc (| Ty.tuple [], Value.Tuple [] |),
@@ -29304,10 +29320,18 @@ Module slice.
                                         let γ0_0 := M.deref (| M.read (| γ0_0 |) |) in
                                         let γ2_0 := M.SubPointer.get_slice_index (| γ0_0, 0 |) in
                                         let γ2_1 := M.SubPointer.get_slice_index (| γ0_0, 1 |) in
+                                        let _ := M.read (| γ2_0 |) in
                                         let l :=
-                                          M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                                          M.alloc (|
+                                            Ty.apply (Ty.path "&") [] [ T ],
+                                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                                          |) in
+                                        let _ := M.read (| γ2_1 |) in
                                         let r :=
-                                          M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_1 |) in
+                                          M.alloc (|
+                                            Ty.apply (Ty.path "&") [] [ T ],
+                                            M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                                          |) in
                                         M.match_operator (|
                                           Ty.tuple [],
                                           M.alloc (| Ty.tuple [], Value.Tuple [] |),
@@ -29848,10 +29872,18 @@ Module slice.
                                         let γ0_0 := M.deref (| M.read (| γ0_0 |) |) in
                                         let γ2_0 := M.SubPointer.get_slice_index (| γ0_0, 0 |) in
                                         let γ2_1 := M.SubPointer.get_slice_index (| γ0_0, 1 |) in
+                                        let _ := M.read (| γ2_0 |) in
                                         let l :=
-                                          M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                                          M.alloc (|
+                                            Ty.apply (Ty.path "&") [] [ T ],
+                                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                                          |) in
+                                        let _ := M.read (| γ2_1 |) in
                                         let r :=
-                                          M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_1 |) in
+                                          M.alloc (|
+                                            Ty.apply (Ty.path "&") [] [ T ],
+                                            M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                                          |) in
                                         M.match_operator (|
                                           Ty.tuple [],
                                           M.alloc (| Ty.tuple [], Value.Tuple [] |),

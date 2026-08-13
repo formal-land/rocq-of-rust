@@ -140,13 +140,14 @@ Module reference_safety.
                         "move_bytecode_verifier::reference_safety::abstract_state::AbstractValue::Reference",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "move_borrow_graph::references::RefID" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -382,13 +383,14 @@ Module reference_safety.
                                 "move_bytecode_verifier::reference_safety::abstract_state::AbstractValue::Reference",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "move_borrow_graph::references::RefID" ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
@@ -397,13 +399,14 @@ Module reference_safety.
                                 "move_bytecode_verifier::reference_safety::abstract_state::AbstractValue::Reference",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "move_borrow_graph::references::RefID" ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             M.call_closure (|
                               Ty.path "bool",
@@ -592,13 +595,14 @@ Module reference_safety.
                         "move_bytecode_verifier::reference_safety::abstract_state::AbstractValue::Reference",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let id :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "move_borrow_graph::references::RefID" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     Value.StructTuple
                       "core::option::Option::Some"
@@ -689,8 +693,12 @@ Module reference_safety.
                         "move_bytecode_verifier::reference_safety::abstract_state::Label::Local",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     Value.StructTuple
                       "move_bytecode_verifier::reference_safety::abstract_state::Label::Local"
                       []
@@ -719,13 +727,14 @@ Module reference_safety.
                         "move_bytecode_verifier::reference_safety::abstract_state::Label::Global",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "move_binary_format::file_format::StructDefinitionIndex" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     Value.StructTuple
                       "move_bytecode_verifier::reference_safety::abstract_state::Label::Global"
@@ -755,13 +764,14 @@ Module reference_safety.
                         "move_bytecode_verifier::reference_safety::abstract_state::Label::Field",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "move_binary_format::file_format::FieldHandleIndex" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     Value.StructTuple
                       "move_bytecode_verifier::reference_safety::abstract_state::Label::Field"
@@ -831,8 +841,12 @@ Module reference_safety.
                         "move_bytecode_verifier::reference_safety::abstract_state::Label::Local",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     M.call_closure (|
                       Ty.apply
                         (Ty.path "core::result::Result")
@@ -877,13 +891,14 @@ Module reference_safety.
                         "move_bytecode_verifier::reference_safety::abstract_state::Label::Global",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "move_binary_format::file_format::StructDefinitionIndex" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -935,13 +950,14 @@ Module reference_safety.
                         "move_bytecode_verifier::reference_safety::abstract_state::Label::Field",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "move_binary_format::file_format::FieldHandleIndex" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -1165,8 +1181,12 @@ Module reference_safety.
                                     "move_bytecode_verifier::reference_safety::abstract_state::Label::Local",
                                     0
                                   |) in
+                                let _ := M.read (| γ2_0 |) in
                                 let __self_0 :=
-                                  M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_0 |) in
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                                    M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                                  |) in
                                 let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                                 let γ2_0 :=
                                   M.SubPointer.get_struct_tuple_field (|
@@ -1174,8 +1194,12 @@ Module reference_safety.
                                     "move_bytecode_verifier::reference_safety::abstract_state::Label::Local",
                                     0
                                   |) in
+                                let _ := M.read (| γ2_0 |) in
                                 let __arg1_0 :=
-                                  M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_0 |) in
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                                    M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                                  |) in
                                 M.call_closure (|
                                   Ty.path "core::cmp::Ordering",
                                   M.get_trait_method (|
@@ -1209,6 +1233,7 @@ Module reference_safety.
                                     "move_bytecode_verifier::reference_safety::abstract_state::Label::Global",
                                     0
                                   |) in
+                                let _ := M.read (| γ2_0 |) in
                                 let __self_0 :=
                                   M.alloc (|
                                     Ty.apply
@@ -1218,7 +1243,7 @@ Module reference_safety.
                                         Ty.path
                                           "move_binary_format::file_format::StructDefinitionIndex"
                                       ],
-                                    γ2_0
+                                    M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                   |) in
                                 let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                                 let γ2_0 :=
@@ -1227,6 +1252,7 @@ Module reference_safety.
                                     "move_bytecode_verifier::reference_safety::abstract_state::Label::Global",
                                     0
                                   |) in
+                                let _ := M.read (| γ2_0 |) in
                                 let __arg1_0 :=
                                   M.alloc (|
                                     Ty.apply
@@ -1236,7 +1262,7 @@ Module reference_safety.
                                         Ty.path
                                           "move_binary_format::file_format::StructDefinitionIndex"
                                       ],
-                                    γ2_0
+                                    M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                   |) in
                                 M.call_closure (|
                                   Ty.path "core::cmp::Ordering",
@@ -1272,6 +1298,7 @@ Module reference_safety.
                                     "move_bytecode_verifier::reference_safety::abstract_state::Label::Field",
                                     0
                                   |) in
+                                let _ := M.read (| γ2_0 |) in
                                 let __self_0 :=
                                   M.alloc (|
                                     Ty.apply
@@ -1279,7 +1306,7 @@ Module reference_safety.
                                       []
                                       [ Ty.path "move_binary_format::file_format::FieldHandleIndex"
                                       ],
-                                    γ2_0
+                                    M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                   |) in
                                 let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                                 let γ2_0 :=
@@ -1288,6 +1315,7 @@ Module reference_safety.
                                     "move_bytecode_verifier::reference_safety::abstract_state::Label::Field",
                                     0
                                   |) in
+                                let _ := M.read (| γ2_0 |) in
                                 let __arg1_0 :=
                                   M.alloc (|
                                     Ty.apply
@@ -1295,7 +1323,7 @@ Module reference_safety.
                                       []
                                       [ Ty.path "move_binary_format::file_format::FieldHandleIndex"
                                       ],
-                                    γ2_0
+                                    M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                   |) in
                                 M.call_closure (|
                                   Ty.path "core::cmp::Ordering",
@@ -1452,8 +1480,12 @@ Module reference_safety.
                                 "move_bytecode_verifier::reference_safety::abstract_state::Label::Local",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_0 |) in
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
                               M.SubPointer.get_struct_tuple_field (|
@@ -1461,8 +1493,12 @@ Module reference_safety.
                                 "move_bytecode_verifier::reference_safety::abstract_state::Label::Local",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_0 |) in
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             M.call_closure (|
                               Ty.path "bool",
                               M.get_trait_method (|
@@ -1490,6 +1526,7 @@ Module reference_safety.
                                 "move_bytecode_verifier::reference_safety::abstract_state::Label::Global",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
                               M.alloc (|
                                 Ty.apply
@@ -1497,7 +1534,7 @@ Module reference_safety.
                                   []
                                   [ Ty.path "move_binary_format::file_format::StructDefinitionIndex"
                                   ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
@@ -1506,6 +1543,7 @@ Module reference_safety.
                                 "move_bytecode_verifier::reference_safety::abstract_state::Label::Global",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
                               M.alloc (|
                                 Ty.apply
@@ -1513,7 +1551,7 @@ Module reference_safety.
                                   []
                                   [ Ty.path "move_binary_format::file_format::StructDefinitionIndex"
                                   ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             M.call_closure (|
                               Ty.path "bool",
@@ -1554,13 +1592,14 @@ Module reference_safety.
                                 "move_bytecode_verifier::reference_safety::abstract_state::Label::Field",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "move_binary_format::file_format::FieldHandleIndex" ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
@@ -1569,13 +1608,14 @@ Module reference_safety.
                                 "move_bytecode_verifier::reference_safety::abstract_state::Label::Field",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "move_binary_format::file_format::FieldHandleIndex" ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             M.call_closure (|
                               Ty.path "bool",
@@ -1710,8 +1750,12 @@ Module reference_safety.
                             "move_bytecode_verifier::reference_safety::abstract_state::Label::Local",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __self_0 :=
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_0 |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                          |) in
                         let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                         let γ2_0 :=
                           M.SubPointer.get_struct_tuple_field (|
@@ -1719,8 +1763,12 @@ Module reference_safety.
                             "move_bytecode_verifier::reference_safety::abstract_state::Label::Local",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __arg1_0 :=
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_0 |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                          |) in
                         M.call_closure (|
                           Ty.apply
                             (Ty.path "core::option::Option")
@@ -1751,13 +1799,14 @@ Module reference_safety.
                             "move_bytecode_verifier::reference_safety::abstract_state::Label::Global",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __self_0 :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "move_binary_format::file_format::StructDefinitionIndex" ],
-                            γ2_0
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                           |) in
                         let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                         let γ2_0 :=
@@ -1766,13 +1815,14 @@ Module reference_safety.
                             "move_bytecode_verifier::reference_safety::abstract_state::Label::Global",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __arg1_0 :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "move_binary_format::file_format::StructDefinitionIndex" ],
-                            γ2_0
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                           |) in
                         M.call_closure (|
                           Ty.apply
@@ -1804,13 +1854,14 @@ Module reference_safety.
                             "move_bytecode_verifier::reference_safety::abstract_state::Label::Field",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __self_0 :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "move_binary_format::file_format::FieldHandleIndex" ],
-                            γ2_0
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                           |) in
                         let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                         let γ2_0 :=
@@ -1819,13 +1870,14 @@ Module reference_safety.
                             "move_bytecode_verifier::reference_safety::abstract_state::Label::Field",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __arg1_0 :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "move_binary_format::file_format::FieldHandleIndex" ],
-                            γ2_0
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                           |) in
                         M.call_closure (|
                           Ty.apply
@@ -1933,7 +1985,12 @@ Module reference_safety.
                         "move_bytecode_verifier::reference_safety::abstract_state::Label::Local",
                         0
                       |) in
-                    let i := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                    let _ := M.read (| γ1_0 |) in
+                    let i :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     M.call_closure (|
                       Ty.apply
                         (Ty.path "core::result::Result")
@@ -2021,13 +2078,14 @@ Module reference_safety.
                         "move_bytecode_verifier::reference_safety::abstract_state::Label::Global",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let i :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "move_binary_format::file_format::StructDefinitionIndex" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -2134,13 +2192,14 @@ Module reference_safety.
                         "move_bytecode_verifier::reference_safety::abstract_state::Label::Field",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let i :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "move_binary_format::file_format::FieldHandleIndex" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -7164,13 +7223,14 @@ Module reference_safety.
                             "move_bytecode_verifier::reference_safety::abstract_state::AbstractValue::Reference",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let id :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "move_borrow_graph::references::RefID" ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.read (|
                           let~ id : Ty.path "move_borrow_graph::references::RefID" :=
@@ -13846,6 +13906,7 @@ Module reference_safety.
                                                               "move_bytecode_verifier::reference_safety::abstract_state::AbstractValue::Reference",
                                                               0
                                                             |) in
+                                                          let _ := M.read (| γ1_0 |) in
                                                           let id :=
                                                             M.alloc (|
                                                               Ty.apply
@@ -13855,7 +13916,7 @@ Module reference_safety.
                                                                   Ty.path
                                                                     "move_borrow_graph::references::RefID"
                                                                 ],
-                                                              γ1_0
+                                                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                             |) in
                                                           M.read (|
                                                             let~ _ : Ty.path "bool" :=
@@ -14974,6 +15035,7 @@ Module reference_safety.
                                                       "move_bytecode_verifier::reference_safety::abstract_state::AbstractValue::Reference",
                                                       0
                                                     |) in
+                                                  let _ := M.read (| γ1_0 |) in
                                                   let old_id :=
                                                     M.alloc (|
                                                       Ty.apply
@@ -14983,7 +15045,7 @@ Module reference_safety.
                                                           Ty.path
                                                             "move_borrow_graph::references::RefID"
                                                         ],
-                                                      γ1_0
+                                                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                     |) in
                                                   M.read (|
                                                     let~ new_id :
@@ -16731,6 +16793,7 @@ Module reference_safety.
                                                       "move_bytecode_verifier::reference_safety::abstract_state::AbstractValue::Reference",
                                                       0
                                                     |) in
+                                                  let _ := M.read (| γ2_0 |) in
                                                   let id :=
                                                     M.alloc (|
                                                       Ty.apply
@@ -16740,7 +16803,7 @@ Module reference_safety.
                                                           Ty.path
                                                             "move_borrow_graph::references::RefID"
                                                         ],
-                                                      γ2_0
+                                                      M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                                     |) in
                                                   let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                                                   let _ :=
@@ -16803,6 +16866,7 @@ Module reference_safety.
                                                       "move_bytecode_verifier::reference_safety::abstract_state::AbstractValue::Reference",
                                                       0
                                                     |) in
+                                                  let _ := M.read (| γ2_0 |) in
                                                   let id :=
                                                     M.alloc (|
                                                       Ty.apply
@@ -16812,7 +16876,7 @@ Module reference_safety.
                                                           Ty.path
                                                             "move_borrow_graph::references::RefID"
                                                         ],
-                                                      γ2_0
+                                                      M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                                     |) in
                                                   M.read (|
                                                     let~ _ : Ty.tuple [] :=

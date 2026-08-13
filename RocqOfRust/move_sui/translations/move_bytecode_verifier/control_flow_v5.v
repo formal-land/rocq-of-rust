@@ -1629,13 +1629,14 @@ Module control_flow_v5.
                                                               "move_binary_format::file_format::Bytecode::Branch",
                                                               0
                                                             |) in
+                                                          let _ := M.read (| γ1_0 |) in
                                                           let prev :=
                                                             M.alloc (|
                                                               Ty.apply
                                                                 (Ty.path "&")
                                                                 []
                                                                 [ Ty.path "u16" ],
-                                                              γ1_0
+                                                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                             |) in
                                                           Value.Tuple [ prev ]));
                                                       fun γ =>
@@ -1647,13 +1648,14 @@ Module control_flow_v5.
                                                               "move_binary_format::file_format::Bytecode::BrTrue",
                                                               0
                                                             |) in
+                                                          let _ := M.read (| γ1_0 |) in
                                                           let prev :=
                                                             M.alloc (|
                                                               Ty.apply
                                                                 (Ty.path "&")
                                                                 []
                                                                 [ Ty.path "u16" ],
-                                                              γ1_0
+                                                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                             |) in
                                                           Value.Tuple [ prev ]));
                                                       fun γ =>
@@ -1665,13 +1667,14 @@ Module control_flow_v5.
                                                               "move_binary_format::file_format::Bytecode::BrFalse",
                                                               0
                                                             |) in
+                                                          let _ := M.read (| γ1_0 |) in
                                                           let prev :=
                                                             M.alloc (|
                                                               Ty.apply
                                                                 (Ty.path "&")
                                                                 []
                                                                 [ Ty.path "u16" ],
-                                                              γ1_0
+                                                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                             |) in
                                                           Value.Tuple [ prev ]))
                                                     ],
@@ -2774,13 +2777,14 @@ Module control_flow_v5.
                                                               "move_bytecode_verifier::control_flow_v5::Label::Loop",
                                                               "last_continue"
                                                             |) in
+                                                          let _ := M.read (| γ1_0 |) in
                                                           let last_continue :=
                                                             M.alloc (|
                                                               Ty.apply
                                                                 (Ty.path "&")
                                                                 []
                                                                 [ Ty.path "u16" ],
-                                                              γ1_0
+                                                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                             |) in
                                                           M.read (|
                                                             let~ _ : Ty.tuple [] :=
@@ -3061,13 +3065,17 @@ Module control_flow_v5.
                                                                       "move_binary_format::file_format::Bytecode::Branch",
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let target :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u16" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
                                                                   Value.Tuple [ target ]));
                                                               fun γ =>
@@ -3080,13 +3088,17 @@ Module control_flow_v5.
                                                                       "move_binary_format::file_format::Bytecode::BrTrue",
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let target :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u16" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
                                                                   Value.Tuple [ target ]));
                                                               fun γ =>
@@ -3099,13 +3111,17 @@ Module control_flow_v5.
                                                                       "move_binary_format::file_format::Bytecode::BrFalse",
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let target :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u16" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
                                                                   Value.Tuple [ target ]))
                                                             ],
@@ -3606,21 +3622,31 @@ Module control_flow_v5.
                                                                                 γ,
                                                                                 1
                                                                               |) in
+                                                                            let _ :=
+                                                                              M.read (| γ1_0 |) in
                                                                             let _cur_loop_head :=
                                                                               M.alloc (|
                                                                                 Ty.apply
                                                                                   (Ty.path "&")
                                                                                   []
                                                                                   [ Ty.path "u16" ],
-                                                                                γ1_0
+                                                                                M.borrow (|
+                                                                                  Pointer.Kind.Ref,
+                                                                                  γ1_0
+                                                                                |)
                                                                               |) in
+                                                                            let _ :=
+                                                                              M.read (| γ1_1 |) in
                                                                             let last_continue :=
                                                                               M.alloc (|
                                                                                 Ty.apply
                                                                                   (Ty.path "&")
                                                                                   []
                                                                                   [ Ty.path "u16" ],
-                                                                                γ1_1
+                                                                                M.borrow (|
+                                                                                  Pointer.Kind.Ref,
+                                                                                  γ1_1
+                                                                                |)
                                                                               |) in
                                                                             M.match_operator (|
                                                                               Ty.tuple [],
@@ -3994,13 +4020,17 @@ Module control_flow_v5.
                                                                   "move_binary_format::file_format::Bytecode::Branch",
                                                                   0
                                                                 |) in
+                                                              let _ := M.read (| γ1_0 |) in
                                                               let target :=
                                                                 M.alloc (|
                                                                   Ty.apply
                                                                     (Ty.path "&")
                                                                     []
                                                                     [ Ty.path "u16" ],
-                                                                  γ1_0
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    γ1_0
+                                                                  |)
                                                                 |) in
                                                               Value.Tuple [ target ]));
                                                           fun γ =>
@@ -4013,13 +4043,17 @@ Module control_flow_v5.
                                                                   "move_binary_format::file_format::Bytecode::BrTrue",
                                                                   0
                                                                 |) in
+                                                              let _ := M.read (| γ1_0 |) in
                                                               let target :=
                                                                 M.alloc (|
                                                                   Ty.apply
                                                                     (Ty.path "&")
                                                                     []
                                                                     [ Ty.path "u16" ],
-                                                                  γ1_0
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    γ1_0
+                                                                  |)
                                                                 |) in
                                                               Value.Tuple [ target ]));
                                                           fun γ =>
@@ -4032,13 +4066,17 @@ Module control_flow_v5.
                                                                   "move_binary_format::file_format::Bytecode::BrFalse",
                                                                   0
                                                                 |) in
+                                                              let _ := M.read (| γ1_0 |) in
                                                               let target :=
                                                                 M.alloc (|
                                                                   Ty.apply
                                                                     (Ty.path "&")
                                                                     []
                                                                     [ Ty.path "u16" ],
-                                                                  γ1_0
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    γ1_0
+                                                                  |)
                                                                 |) in
                                                               Value.Tuple [ target ]))
                                                         ],
@@ -4540,21 +4578,31 @@ Module control_flow_v5.
                                                                             γ,
                                                                             1
                                                                           |) in
+                                                                        let _ :=
+                                                                          M.read (| γ1_0 |) in
                                                                         let cur_loop_head :=
                                                                           M.alloc (|
                                                                             Ty.apply
                                                                               (Ty.path "&")
                                                                               []
                                                                               [ Ty.path "u16" ],
-                                                                            γ1_0
+                                                                            M.borrow (|
+                                                                              Pointer.Kind.Ref,
+                                                                              γ1_0
+                                                                            |)
                                                                           |) in
+                                                                        let _ :=
+                                                                          M.read (| γ1_1 |) in
                                                                         let _last_continue :=
                                                                           M.alloc (|
                                                                             Ty.apply
                                                                               (Ty.path "&")
                                                                               []
                                                                               [ Ty.path "u16" ],
-                                                                            γ1_1
+                                                                            M.borrow (|
+                                                                              Pointer.Kind.Ref,
+                                                                              γ1_1
+                                                                            |)
                                                                           |) in
                                                                         M.match_operator (|
                                                                           Ty.apply
@@ -4914,13 +4962,17 @@ Module control_flow_v5.
                                                                   "move_binary_format::file_format::Bytecode::Branch",
                                                                   0
                                                                 |) in
+                                                              let _ := M.read (| γ1_0 |) in
                                                               let target :=
                                                                 M.alloc (|
                                                                   Ty.apply
                                                                     (Ty.path "&")
                                                                     []
                                                                     [ Ty.path "u16" ],
-                                                                  γ1_0
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    γ1_0
+                                                                  |)
                                                                 |) in
                                                               Value.Tuple [ target ]));
                                                           fun γ =>
@@ -4933,13 +4985,17 @@ Module control_flow_v5.
                                                                   "move_binary_format::file_format::Bytecode::BrTrue",
                                                                   0
                                                                 |) in
+                                                              let _ := M.read (| γ1_0 |) in
                                                               let target :=
                                                                 M.alloc (|
                                                                   Ty.apply
                                                                     (Ty.path "&")
                                                                     []
                                                                     [ Ty.path "u16" ],
-                                                                  γ1_0
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    γ1_0
+                                                                  |)
                                                                 |) in
                                                               Value.Tuple [ target ]));
                                                           fun γ =>
@@ -4952,13 +5008,17 @@ Module control_flow_v5.
                                                                   "move_binary_format::file_format::Bytecode::BrFalse",
                                                                   0
                                                                 |) in
+                                                              let _ := M.read (| γ1_0 |) in
                                                               let target :=
                                                                 M.alloc (|
                                                                   Ty.apply
                                                                     (Ty.path "&")
                                                                     []
                                                                     [ Ty.path "u16" ],
-                                                                  γ1_0
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    γ1_0
+                                                                  |)
                                                                 |) in
                                                               Value.Tuple [ target ]))
                                                         ],
@@ -5141,21 +5201,31 @@ Module control_flow_v5.
                                                                             γ0_0,
                                                                             1
                                                                           |) in
+                                                                        let _ :=
+                                                                          M.read (| γ2_0 |) in
                                                                         let _cur_loop_head :=
                                                                           M.alloc (|
                                                                             Ty.apply
                                                                               (Ty.path "&")
                                                                               []
                                                                               [ Ty.path "u16" ],
-                                                                            γ2_0
+                                                                            M.borrow (|
+                                                                              Pointer.Kind.Ref,
+                                                                              γ2_0
+                                                                            |)
                                                                           |) in
+                                                                        let _ :=
+                                                                          M.read (| γ2_1 |) in
                                                                         let last_continue :=
                                                                           M.alloc (|
                                                                             Ty.apply
                                                                               (Ty.path "&")
                                                                               []
                                                                               [ Ty.path "u16" ],
-                                                                            γ2_1
+                                                                            M.borrow (|
+                                                                              Pointer.Kind.Ref,
+                                                                              γ2_1
+                                                                            |)
                                                                           |) in
                                                                         let γ :=
                                                                           M.alloc (|
@@ -5579,15 +5649,17 @@ Module control_flow_v5.
                                                 M.SubPointer.get_tuple_field (| γ0_0, 0 |) in
                                               let γ2_1 :=
                                                 M.SubPointer.get_tuple_field (| γ0_0, 1 |) in
+                                              let _ := M.read (| γ2_0 |) in
                                               let _cur_loop_head :=
                                                 M.alloc (|
                                                   Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
-                                                  γ2_0
+                                                  M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                                 |) in
+                                              let _ := M.read (| γ2_1 |) in
                                               let last_continue :=
                                                 M.alloc (|
                                                   Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
-                                                  γ2_1
+                                                  M.borrow (| Pointer.Kind.Ref, γ2_1 |)
                                                 |) in
                                               M.call_closure (|
                                                 Ty.path "bool",
@@ -5773,13 +5845,17 @@ Module control_flow_v5.
                                                                       "move_binary_format::file_format::Bytecode::Branch",
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let j :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u16" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
                                                                   Value.Tuple [ j ]));
                                                               fun γ =>
@@ -5792,13 +5868,17 @@ Module control_flow_v5.
                                                                       "move_binary_format::file_format::Bytecode::BrTrue",
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let j :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u16" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
                                                                   Value.Tuple [ j ]));
                                                               fun γ =>
@@ -5811,13 +5891,17 @@ Module control_flow_v5.
                                                                       "move_binary_format::file_format::Bytecode::BrFalse",
                                                                       0
                                                                     |) in
+                                                                  let _ := M.read (| γ1_0 |) in
                                                                   let j :=
                                                                     M.alloc (|
                                                                       Ty.apply
                                                                         (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u16" ],
-                                                                      γ1_0
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        γ1_0
+                                                                      |)
                                                                     |) in
                                                                   Value.Tuple [ j ]))
                                                             ],
@@ -6748,10 +6832,11 @@ Module control_flow_v5.
                                                   "move_bytecode_verifier::control_flow_v5::Label::Loop",
                                                   "last_continue"
                                                 |) in
+                                              let _ := M.read (| γ1_0 |) in
                                               let last_continue :=
                                                 M.alloc (|
                                                   Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
-                                                  γ1_0
+                                                  M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                 |) in
                                               Value.StructTuple
                                                 "core::option::Option::Some"
