@@ -162,29 +162,6 @@ Module Impl_AsRef_slice_u8_for_Bytes.
     s.
   Qed.
 
-  Lemma can_read_as_ref
-      (ref_self : '& Self)
-      (stack : Stack.t)
-      (self : Self) :
-    CanRead.t stack self ref_self ->
-    CanRead.t
-      stack
-      self.(bytes.links.mod.Bytes.value).(bytes.Bytes.value)
-      (as_ref ref_self).
-  Proof.
-    intros H_read.
-    destruct H_read.
-    - unfold as_ref; cbn.
-      constructor.
-    - destruct run.
-      unfold as_ref; cbn.
-      unshelve eapply CanRead.Mutable.
-      + constructor.
-        exact nth.
-      + cbn.
-        cbn in H.
-        now rewrite H.
-  Qed.
 End Impl_AsRef_slice_u8_for_Bytes.
 Export (hints) Impl_AsRef_slice_u8_for_Bytes.
 

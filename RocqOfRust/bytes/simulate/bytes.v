@@ -78,14 +78,7 @@ Module Impl_AsRef_slice_u8_for_Bytes.
         [bytes.links.bytes.Impl_AsRef_slice_u8_for_Bytes.run_as_ref]
         unfold bytes.links.bytes.Impl_AsRef_slice_u8_for_Bytes.run_as_ref.
       exact
-        (@Deref.Eq.deref
-          Self
-          (list u8)
-          _
-          _
-          bytes.links.bytes.Impl_Deref_for_Bytes.run
-          Impl_Deref_for_Bytes.I
-          Impl_Deref_for_Bytes.Eq.I
+        (Impl_Deref_for_Bytes.Eq.I.(Deref.Eq.deref)
           ref_self
           stack).
     Qed.
