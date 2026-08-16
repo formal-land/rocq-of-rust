@@ -104,7 +104,7 @@ Module Impl_Deref_for_Bytes.
 
   Definition deref : RefStub.t Self bytes.Bytes.t := {|
     RefStub.path := [
-      Pointer.Index.Array 0
+      Pointer.Index.StructTuple "alloy_primitives::bytes_::Bytes" 0
     ];
     RefStub.projection self := self.(bytes.links.mod.Bytes.value);
     RefStub.injection self value := {| bytes.links.mod.Bytes.value := value |};
@@ -199,7 +199,7 @@ Module Impl_DerefMut_for_Bytes.
 
   Definition deref_mut : RefStub.t Self bytes.Bytes.t := {|
     RefStub.path := [
-      Pointer.Index.Array 0
+      Pointer.Index.StructTuple "alloy_primitives::bytes_::Bytes" 0
     ];
     RefStub.projection self := self.(bytes.links.mod.Bytes.value);
     RefStub.injection self value := {| bytes.links.mod.Bytes.value := value |};
