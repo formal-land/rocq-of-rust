@@ -35,6 +35,7 @@ Module bytes.
     Global Instance AssociatedConstant_value_BYTES :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "BYTES" (value_BYTES BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_BYTES.
     
@@ -130,6 +131,7 @@ Module bytes.
     Global Instance AssociatedFunction_as_le_slice :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "as_le_slice" (as_le_slice BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_le_slice.
     
@@ -242,6 +244,7 @@ Module bytes.
     Global Instance AssociatedFunction_as_le_slice_mut :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "as_le_slice_mut" (as_le_slice_mut BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_le_slice_mut.
     
@@ -320,6 +323,7 @@ Module bytes.
     Global Instance AssociatedFunction_as_le_bytes :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "as_le_bytes" (as_le_bytes BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_le_bytes.
     
@@ -475,6 +479,7 @@ Module bytes.
         (Self BITS LIMBS)
         "as_le_bytes_trimmed"
         (as_le_bytes_trimmed BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_le_bytes_trimmed.
     
@@ -638,6 +643,7 @@ Module bytes.
     Global Instance AssociatedFunction_to_le_bytes :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "to_le_bytes" (to_le_bytes BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_le_bytes.
     
@@ -697,6 +703,7 @@ Module bytes.
     Global Instance AssociatedFunction_to_le_bytes_vec :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "to_le_bytes_vec" (to_le_bytes_vec BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_le_bytes_vec.
     
@@ -759,6 +766,7 @@ Module bytes.
         (Self BITS LIMBS)
         "to_le_bytes_trimmed_vec"
         (to_le_bytes_trimmed_vec BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_le_bytes_trimmed_vec.
     
@@ -944,6 +952,7 @@ Module bytes.
     Global Instance AssociatedFunction_to_be_bytes :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "to_be_bytes" (to_be_bytes BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_be_bytes.
     
@@ -1032,6 +1041,7 @@ Module bytes.
     Global Instance AssociatedFunction_to_be_bytes_vec :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "to_be_bytes_vec" (to_be_bytes_vec BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_be_bytes_vec.
     
@@ -1123,6 +1133,7 @@ Module bytes.
         (Self BITS LIMBS)
         "to_be_bytes_trimmed_vec"
         (to_be_bytes_trimmed_vec BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_be_bytes_trimmed_vec.
     
@@ -1239,6 +1250,7 @@ Module bytes.
     Global Instance AssociatedFunction_from_be_bytes :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "from_be_bytes" (from_be_bytes BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_be_bytes.
     
@@ -1323,6 +1335,7 @@ Module bytes.
     Global Instance AssociatedFunction_from_be_slice :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "from_be_slice" (from_be_slice BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_be_slice.
     
@@ -1968,6 +1981,7 @@ Module bytes.
     Global Instance AssociatedFunction_try_from_be_slice :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "try_from_be_slice" (try_from_be_slice BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque try_from_be_slice.
     
@@ -2084,6 +2098,7 @@ Module bytes.
     Global Instance AssociatedFunction_from_le_bytes :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "from_le_bytes" (from_le_bytes BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_le_bytes.
     
@@ -2168,6 +2183,7 @@ Module bytes.
     Global Instance AssociatedFunction_from_le_slice :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "from_le_slice" (from_le_slice BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_le_slice.
     
@@ -2778,6 +2794,7 @@ Module bytes.
     Global Instance AssociatedFunction_try_from_le_slice :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "try_from_le_slice" (try_from_le_slice BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque try_from_le_slice.
   End Impl_ruint_Uint_BITS_LIMBS.
@@ -2808,6 +2825,7 @@ Module bytes.
     end.
   
   Global Instance Instance_IsFunction_nbytes : M.IsFunction.C "ruint::bytes::nbytes" nbytes.
+  Proof.
   Admitted.
   Global Typeclasses Opaque nbytes.
 End bytes.

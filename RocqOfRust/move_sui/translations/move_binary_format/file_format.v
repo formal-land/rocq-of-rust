@@ -431,6 +431,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_move_binary_format_file_format_ModuleHandleIndex.
@@ -1141,6 +1142,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_move_binary_format_file_format_StructHandleIndex.
@@ -1851,6 +1853,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_move_binary_format_file_format_FunctionHandleIndex.
@@ -2563,6 +2566,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_move_binary_format_file_format_FieldHandleIndex.
@@ -3283,6 +3287,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_move_binary_format_file_format_StructDefInstantiationIndex.
@@ -4009,6 +4014,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_move_binary_format_file_format_FunctionInstantiationIndex.
@@ -4731,6 +4737,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_move_binary_format_file_format_FieldInstantiationIndex.
@@ -5448,6 +5455,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_move_binary_format_file_format_IdentifierIndex.
@@ -6156,6 +6164,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_move_binary_format_file_format_AddressIdentifierIndex.
@@ -6871,6 +6880,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_move_binary_format_file_format_ConstantPoolIndex.
@@ -7579,6 +7589,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_move_binary_format_file_format_SignatureIndex.
@@ -8286,6 +8297,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_move_binary_format_file_format_StructDefinitionIndex.
@@ -9000,6 +9012,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_move_binary_format_file_format_FunctionDefinitionIndex.
@@ -9367,6 +9380,7 @@ Module file_format.
   
   Global Instance Instance_IsFunction_self_module_name :
     M.IsFunction.C "move_binary_format::file_format::self_module_name" self_module_name.
+  Proof.
   Admitted.
   Global Typeclasses Opaque self_module_name.
   
@@ -9383,6 +9397,7 @@ Module file_format.
   
   Global Instance Instance_IsConstant_value_NO_TYPE_ARGUMENTS :
     M.IsFunction.C "move_binary_format::file_format::NO_TYPE_ARGUMENTS" value_NO_TYPE_ARGUMENTS.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_NO_TYPE_ARGUMENTS.
   
@@ -11549,6 +11564,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_type_param_constraints :
       M.IsAssociatedFunction.C Self "type_param_constraints" type_param_constraints.
+    Proof.
     Admitted.
     Global Typeclasses Opaque type_param_constraints.
   End Impl_move_binary_format_file_format_StructHandle.
@@ -16450,6 +16466,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_declared_field_count :
       M.IsAssociatedFunction.C Self "declared_field_count" declared_field_count.
+    Proof.
     Admitted.
     Global Typeclasses Opaque declared_field_count.
     
@@ -16603,6 +16620,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_field : M.IsAssociatedFunction.C Self "field" field.
+    Proof.
     Admitted.
     Global Typeclasses Opaque field.
     
@@ -16758,6 +16776,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_fields : M.IsAssociatedFunction.C Self "fields" fields.
+    Proof.
     Admitted.
     Global Typeclasses Opaque fields.
   End Impl_move_binary_format_file_format_StructDefinition.
@@ -17773,6 +17792,7 @@ Module file_format.
     
     Global Instance AssociatedConstant_value_DEPRECATED_SCRIPT :
       M.IsAssociatedFunction.C Self "DEPRECATED_SCRIPT" value_DEPRECATED_SCRIPT.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_DEPRECATED_SCRIPT.
   End Impl_move_binary_format_file_format_Visibility.
@@ -18830,6 +18850,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_is_native :
       M.IsAssociatedFunction.C Self "is_native" is_native.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_native.
     
@@ -18844,6 +18865,7 @@ Module file_format.
     
     Global Instance AssociatedConstant_value_DEPRECATED_PUBLIC_BIT :
       M.IsAssociatedFunction.C Self "DEPRECATED_PUBLIC_BIT" value_DEPRECATED_PUBLIC_BIT.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_DEPRECATED_PUBLIC_BIT.
     
@@ -18854,6 +18876,7 @@ Module file_format.
     
     Global Instance AssociatedConstant_value_NATIVE :
       M.IsAssociatedFunction.C Self "NATIVE" value_NATIVE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_NATIVE.
     
@@ -18864,6 +18887,7 @@ Module file_format.
     
     Global Instance AssociatedConstant_value_ENTRY :
       M.IsAssociatedFunction.C Self "ENTRY" value_ENTRY.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ENTRY.
   End Impl_move_binary_format_file_format_FunctionDefinition.
@@ -20555,6 +20579,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_len : M.IsAssociatedFunction.C Self "len" len.
+    Proof.
     Admitted.
     Global Typeclasses Opaque len.
     
@@ -20601,6 +20626,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_is_empty : M.IsAssociatedFunction.C Self "is_empty" is_empty.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_empty.
   End Impl_move_binary_format_file_format_Signature.
@@ -21173,6 +21199,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_from_u8 : M.IsAssociatedFunction.C Self "from_u8" from_u8.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_u8.
     
@@ -21221,6 +21248,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_requires : M.IsAssociatedFunction.C Self "requires" requires.
+    Proof.
     Admitted.
     Global Typeclasses Opaque requires.
     
@@ -21358,6 +21386,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_required_by :
       M.IsAssociatedFunction.C Self "required_by" required_by.
+    Proof.
     Admitted.
     Global Typeclasses Opaque required_by.
   End Impl_move_binary_format_file_format_Ability.
@@ -21843,6 +21872,7 @@ Module file_format.
     
     Global Instance AssociatedConstant_value_EMPTY :
       M.IsAssociatedFunction.C Self "EMPTY" value_EMPTY.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_EMPTY.
     
@@ -21922,6 +21952,7 @@ Module file_format.
     
     Global Instance AssociatedConstant_value_PRIMITIVES :
       M.IsAssociatedFunction.C Self "PRIMITIVES" value_PRIMITIVES.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PRIMITIVES.
     
@@ -21977,6 +22008,7 @@ Module file_format.
     
     Global Instance AssociatedConstant_value_REFERENCES :
       M.IsAssociatedFunction.C Self "REFERENCES" value_REFERENCES.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_REFERENCES.
     
@@ -22011,6 +22043,7 @@ Module file_format.
     
     Global Instance AssociatedConstant_value_SIGNER :
       M.IsAssociatedFunction.C Self "SIGNER" value_SIGNER.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SIGNER.
     
@@ -22090,6 +22123,7 @@ Module file_format.
     
     Global Instance AssociatedConstant_value_VECTOR :
       M.IsAssociatedFunction.C Self "VECTOR" value_VECTOR.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_VECTOR.
     
@@ -22194,6 +22228,7 @@ Module file_format.
         |))).
     
     Global Instance AssociatedConstant_value_ALL : M.IsAssociatedFunction.C Self "ALL" value_ALL.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ALL.
     
@@ -22218,6 +22253,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_singleton :
       M.IsAssociatedFunction.C Self "singleton" singleton.
+    Proof.
     Admitted.
     Global Typeclasses Opaque singleton.
     
@@ -22266,6 +22302,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_has_ability :
       M.IsAssociatedFunction.C Self "has_ability" has_ability.
+    Proof.
     Admitted.
     Global Typeclasses Opaque has_ability.
     
@@ -22296,6 +22333,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_has_copy : M.IsAssociatedFunction.C Self "has_copy" has_copy.
+    Proof.
     Admitted.
     Global Typeclasses Opaque has_copy.
     
@@ -22326,6 +22364,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_has_drop : M.IsAssociatedFunction.C Self "has_drop" has_drop.
+    Proof.
     Admitted.
     Global Typeclasses Opaque has_drop.
     
@@ -22357,6 +22396,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_has_store :
       M.IsAssociatedFunction.C Self "has_store" has_store.
+    Proof.
     Admitted.
     Global Typeclasses Opaque has_store.
     
@@ -22387,6 +22427,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_has_key : M.IsAssociatedFunction.C Self "has_key" has_key.
+    Proof.
     Admitted.
     Global Typeclasses Opaque has_key.
     
@@ -22430,6 +22471,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_remove : M.IsAssociatedFunction.C Self "remove" remove.
+    Proof.
     Admitted.
     Global Typeclasses Opaque remove.
     
@@ -22475,6 +22517,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_intersect :
       M.IsAssociatedFunction.C Self "intersect" intersect.
+    Proof.
     Admitted.
     Global Typeclasses Opaque intersect.
     
@@ -22519,6 +22562,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_union : M.IsAssociatedFunction.C Self "union" union.
+    Proof.
     Admitted.
     Global Typeclasses Opaque union.
     
@@ -22550,6 +22594,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_is_subset_bits :
       M.IsAssociatedFunction.C Self "is_subset_bits" is_subset_bits.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_subset_bits.
     
@@ -22594,6 +22639,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_is_subset :
       M.IsAssociatedFunction.C Self "is_subset" is_subset.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_subset.
     
@@ -23451,6 +23497,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_polymorphic_abilities :
       M.IsAssociatedFunction.C Self "polymorphic_abilities" polymorphic_abilities.
+    Proof.
     Admitted.
     Global Typeclasses Opaque polymorphic_abilities.
     
@@ -23533,6 +23580,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_from_u8 : M.IsAssociatedFunction.C Self "from_u8" from_u8.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_u8.
     
@@ -23557,6 +23605,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_into_u8 : M.IsAssociatedFunction.C Self "into_u8" into_u8.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_u8.
   End Impl_move_binary_format_file_format_AbilitySet.
@@ -30486,6 +30535,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_signature_token_kind :
       M.IsAssociatedFunction.C Self "signature_token_kind" signature_token_kind.
+    Proof.
     Admitted.
     Global Typeclasses Opaque signature_token_kind.
     
@@ -30696,6 +30746,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_is_integer :
       M.IsAssociatedFunction.C Self "is_integer" is_integer.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_integer.
     
@@ -30763,6 +30814,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_is_reference :
       M.IsAssociatedFunction.C Self "is_reference" is_reference.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_reference.
     
@@ -30807,6 +30859,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_is_mutable_reference :
       M.IsAssociatedFunction.C Self "is_mutable_reference" is_mutable_reference.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_mutable_reference.
     
@@ -30850,6 +30903,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_is_signer :
       M.IsAssociatedFunction.C Self "is_signer" is_signer.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_signer.
     
@@ -31089,6 +31143,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_is_valid_for_constant :
       M.IsAssociatedFunction.C Self "is_valid_for_constant" is_valid_for_constant.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_valid_for_constant.
     
@@ -31530,6 +31585,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_debug_set_sh_idx :
       M.IsAssociatedFunction.C Self "debug_set_sh_idx" debug_set_sh_idx.
+    Proof.
     Admitted.
     Global Typeclasses Opaque debug_set_sh_idx.
     
@@ -31697,6 +31753,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_preorder_traversal :
       M.IsAssociatedFunction.C Self "preorder_traversal" preorder_traversal.
+    Proof.
     Admitted.
     Global Typeclasses Opaque preorder_traversal.
     
@@ -31920,6 +31977,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_preorder_traversal_with_depth :
       M.IsAssociatedFunction.C Self "preorder_traversal_with_depth" preorder_traversal_with_depth.
+    Proof.
     Admitted.
     Global Typeclasses Opaque preorder_traversal_with_depth.
   End Impl_move_binary_format_file_format_SignatureToken.
@@ -36874,6 +36932,7 @@ Module file_format.
     
     Global Instance AssociatedConstant_value_VARIANT_COUNT :
       M.IsAssociatedFunction.C Self "VARIANT_COUNT" value_VARIANT_COUNT.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_VARIANT_COUNT.
     (*
@@ -36943,6 +37002,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_is_unconditional_branch :
       M.IsAssociatedFunction.C Self "is_unconditional_branch" is_unconditional_branch.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_unconditional_branch.
     
@@ -37005,6 +37065,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_is_conditional_branch :
       M.IsAssociatedFunction.C Self "is_conditional_branch" is_conditional_branch.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_conditional_branch.
     
@@ -37050,6 +37111,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_is_branch :
       M.IsAssociatedFunction.C Self "is_branch" is_branch.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_branch.
     
@@ -37148,6 +37210,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_offset : M.IsAssociatedFunction.C Self "offset" offset.
+    Proof.
     Admitted.
     Global Typeclasses Opaque offset.
     
@@ -37695,6 +37758,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_get_successors :
       M.IsAssociatedFunction.C Self "get_successors" get_successors.
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_successors.
   End Impl_move_binary_format_file_format_Bytecode.
@@ -50540,6 +50604,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_kind_count :
       M.IsAssociatedFunction.C Self "kind_count" kind_count.
+    Proof.
     Admitted.
     Global Typeclasses Opaque kind_count.
     
@@ -50572,6 +50637,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_self_handle_idx :
       M.IsAssociatedFunction.C Self "self_handle_idx" self_handle_idx.
+    Proof.
     Admitted.
     Global Typeclasses Opaque self_handle_idx.
     
@@ -50846,6 +50912,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_self_handle :
       M.IsAssociatedFunction.C Self "self_handle" self_handle.
+    Proof.
     Admitted.
     Global Typeclasses Opaque self_handle.
     
@@ -50908,6 +50975,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_name : M.IsAssociatedFunction.C Self "name" name.
+    Proof.
     Admitted.
     Global Typeclasses Opaque name.
     
@@ -50973,6 +51041,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_address : M.IsAssociatedFunction.C Self "address" address.
+    Proof.
     Admitted.
     Global Typeclasses Opaque address.
     
@@ -51077,6 +51146,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_struct_name :
       M.IsAssociatedFunction.C Self "struct_name" struct_name.
+    Proof.
     Admitted.
     Global Typeclasses Opaque struct_name.
     
@@ -51377,6 +51447,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_module_handle_at :
       M.IsAssociatedFunction.C Self "module_handle_at" module_handle_at.
+    Proof.
     Admitted.
     Global Typeclasses Opaque module_handle_at.
     
@@ -51571,6 +51642,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_struct_handle_at :
       M.IsAssociatedFunction.C Self "struct_handle_at" struct_handle_at.
+    Proof.
     Admitted.
     Global Typeclasses Opaque struct_handle_at.
     
@@ -51874,6 +51946,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_function_handle_at :
       M.IsAssociatedFunction.C Self "function_handle_at" function_handle_at.
+    Proof.
     Admitted.
     Global Typeclasses Opaque function_handle_at.
     
@@ -52068,6 +52141,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_field_handle_at :
       M.IsAssociatedFunction.C Self "field_handle_at" field_handle_at.
+    Proof.
     Admitted.
     Global Typeclasses Opaque field_handle_at.
     
@@ -52155,6 +52229,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_struct_instantiation_at :
       M.IsAssociatedFunction.C Self "struct_instantiation_at" struct_instantiation_at.
+    Proof.
     Admitted.
     Global Typeclasses Opaque struct_instantiation_at.
     
@@ -52246,6 +52321,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_function_instantiation_at :
       M.IsAssociatedFunction.C Self "function_instantiation_at" function_instantiation_at.
+    Proof.
     Admitted.
     Global Typeclasses Opaque function_instantiation_at.
     
@@ -52327,6 +52403,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_field_instantiation_at :
       M.IsAssociatedFunction.C Self "field_instantiation_at" field_instantiation_at.
+    Proof.
     Admitted.
     Global Typeclasses Opaque field_instantiation_at.
     
@@ -52407,6 +52484,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_signature_at :
       M.IsAssociatedFunction.C Self "signature_at" signature_at.
+    Proof.
     Admitted.
     Global Typeclasses Opaque signature_at.
     
@@ -52507,6 +52585,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_identifier_at :
       M.IsAssociatedFunction.C Self "identifier_at" identifier_at.
+    Proof.
     Admitted.
     Global Typeclasses Opaque identifier_at.
     
@@ -52588,6 +52667,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_address_identifier_at :
       M.IsAssociatedFunction.C Self "address_identifier_at" address_identifier_at.
+    Proof.
     Admitted.
     Global Typeclasses Opaque address_identifier_at.
     
@@ -52669,6 +52749,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_constant_at :
       M.IsAssociatedFunction.C Self "constant_at" constant_at.
+    Proof.
     Admitted.
     Global Typeclasses Opaque constant_at.
     
@@ -52750,6 +52831,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_struct_def_at :
       M.IsAssociatedFunction.C Self "struct_def_at" struct_def_at.
+    Proof.
     Admitted.
     Global Typeclasses Opaque struct_def_at.
     
@@ -53161,6 +53243,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_function_def_at :
       M.IsAssociatedFunction.C Self "function_def_at" function_def_at.
+    Proof.
     Admitted.
     Global Typeclasses Opaque function_def_at.
     
@@ -53232,6 +53315,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_module_handles :
       M.IsAssociatedFunction.C Self "module_handles" module_handles.
+    Proof.
     Admitted.
     Global Typeclasses Opaque module_handles.
     
@@ -53303,6 +53387,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_struct_handles :
       M.IsAssociatedFunction.C Self "struct_handles" struct_handles.
+    Proof.
     Admitted.
     Global Typeclasses Opaque struct_handles.
     
@@ -53374,6 +53459,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_function_handles :
       M.IsAssociatedFunction.C Self "function_handles" function_handles.
+    Proof.
     Admitted.
     Global Typeclasses Opaque function_handles.
     
@@ -53445,6 +53531,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_field_handles :
       M.IsAssociatedFunction.C Self "field_handles" field_handles.
+    Proof.
     Admitted.
     Global Typeclasses Opaque field_handles.
     
@@ -53516,6 +53603,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_struct_instantiations :
       M.IsAssociatedFunction.C Self "struct_instantiations" struct_instantiations.
+    Proof.
     Admitted.
     Global Typeclasses Opaque struct_instantiations.
     
@@ -53587,6 +53675,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_function_instantiations :
       M.IsAssociatedFunction.C Self "function_instantiations" function_instantiations.
+    Proof.
     Admitted.
     Global Typeclasses Opaque function_instantiations.
     
@@ -53658,6 +53747,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_field_instantiations :
       M.IsAssociatedFunction.C Self "field_instantiations" field_instantiations.
+    Proof.
     Admitted.
     Global Typeclasses Opaque field_instantiations.
     
@@ -53729,6 +53819,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_signatures :
       M.IsAssociatedFunction.C Self "signatures" signatures.
+    Proof.
     Admitted.
     Global Typeclasses Opaque signatures.
     
@@ -53800,6 +53891,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_constant_pool :
       M.IsAssociatedFunction.C Self "constant_pool" constant_pool.
+    Proof.
     Admitted.
     Global Typeclasses Opaque constant_pool.
     
@@ -53871,6 +53963,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_identifiers :
       M.IsAssociatedFunction.C Self "identifiers" identifiers.
+    Proof.
     Admitted.
     Global Typeclasses Opaque identifiers.
     
@@ -53942,6 +54035,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_address_identifiers :
       M.IsAssociatedFunction.C Self "address_identifiers" address_identifiers.
+    Proof.
     Admitted.
     Global Typeclasses Opaque address_identifiers.
     
@@ -54013,6 +54107,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_struct_defs :
       M.IsAssociatedFunction.C Self "struct_defs" struct_defs.
+    Proof.
     Admitted.
     Global Typeclasses Opaque struct_defs.
     
@@ -54084,6 +54179,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_function_defs :
       M.IsAssociatedFunction.C Self "function_defs" function_defs.
+    Proof.
     Admitted.
     Global Typeclasses Opaque function_defs.
     
@@ -54155,6 +54251,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_friend_decls :
       M.IsAssociatedFunction.C Self "friend_decls" friend_decls.
+    Proof.
     Admitted.
     Global Typeclasses Opaque friend_decls.
     
@@ -54186,6 +54283,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_version : M.IsAssociatedFunction.C Self "version" version.
+    Proof.
     Admitted.
     Global Typeclasses Opaque version.
     
@@ -54609,6 +54707,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_immediate_dependencies :
       M.IsAssociatedFunction.C Self "immediate_dependencies" immediate_dependencies.
+    Proof.
     Admitted.
     Global Typeclasses Opaque immediate_dependencies.
     
@@ -54814,6 +54913,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_immediate_friends :
       M.IsAssociatedFunction.C Self "immediate_friends" immediate_friends.
+    Proof.
     Admitted.
     Global Typeclasses Opaque immediate_friends.
     
@@ -54996,6 +55096,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_find_struct_def :
       M.IsAssociatedFunction.C Self "find_struct_def" find_struct_def.
+    Proof.
     Admitted.
     Global Typeclasses Opaque find_struct_def.
     
@@ -55256,6 +55357,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_find_struct_def_by_name :
       M.IsAssociatedFunction.C Self "find_struct_def_by_name" find_struct_def_by_name.
+    Proof.
     Admitted.
     Global Typeclasses Opaque find_struct_def_by_name.
     
@@ -56874,6 +56976,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_abilities :
       M.IsAssociatedFunction.C Self "abilities" abilities.
+    Proof.
     Admitted.
     Global Typeclasses Opaque abilities.
     
@@ -56985,6 +57088,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_module_id_for_handle :
       M.IsAssociatedFunction.C Self "module_id_for_handle" module_id_for_handle.
+    Proof.
     Admitted.
     Global Typeclasses Opaque module_id_for_handle.
     
@@ -57039,6 +57143,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_self_id : M.IsAssociatedFunction.C Self "self_id" self_id.
+    Proof.
     Admitted.
     Global Typeclasses Opaque self_id.
   End Impl_move_binary_format_file_format_CompiledModule.
@@ -57819,6 +57924,7 @@ Module file_format.
   
   Global Instance Instance_IsFunction_empty_module :
     M.IsFunction.C "move_binary_format::file_format::empty_module" empty_module.
+  Proof.
   Admitted.
   Global Typeclasses Opaque empty_module.
   
@@ -58710,6 +58816,7 @@ Module file_format.
   
   Global Instance Instance_IsFunction_basic_test_module :
     M.IsFunction.C "move_binary_format::file_format::basic_test_module" basic_test_module.
+  Proof.
   Admitted.
   Global Typeclasses Opaque basic_test_module.
 End file_format.

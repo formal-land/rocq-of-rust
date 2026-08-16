@@ -164,5 +164,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "if_let_dont_use_match::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

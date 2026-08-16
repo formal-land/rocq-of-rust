@@ -105,6 +105,7 @@ Module Impl_call_builder_Selector.
   Parameter new : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
 End Impl_call_builder_Selector.
 
@@ -136,27 +137,32 @@ Module Impl_call_builder_CallBuilderTest.
   Parameter new : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   
   Parameter call : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_call : M.IsAssociatedFunction.C Self "call" call.
+  Proof.
   Admitted.
   
   Parameter invoke : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_invoke : M.IsAssociatedFunction.C Self "invoke" invoke.
+  Proof.
   Admitted.
   
   Parameter call_instantiate : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_call_instantiate :
     M.IsAssociatedFunction.C Self "call_instantiate" call_instantiate.
+  Proof.
   Admitted.
   
   Parameter call_instantiate_fallible : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_call_instantiate_fallible :
     M.IsAssociatedFunction.C Self "call_instantiate_fallible" call_instantiate_fallible.
+  Proof.
   Admitted.
 End Impl_call_builder_CallBuilderTest.

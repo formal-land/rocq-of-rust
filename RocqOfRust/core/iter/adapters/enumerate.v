@@ -224,6 +224,7 @@ Module iter.
         Global Instance AssociatedFunction_new :
           forall (I : Ty.t),
           M.IsAssociatedFunction.C (Self I) "new" (new I).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new.
         
@@ -263,6 +264,7 @@ Module iter.
         Global Instance AssociatedFunction_next_index :
           forall (I : Ty.t),
           M.IsAssociatedFunction.C (Self I) "next_index" (next_index I).
+        Proof.
         Admitted.
         Global Typeclasses Opaque next_index.
       End Impl_core_iter_adapters_enumerate_Enumerate_I.

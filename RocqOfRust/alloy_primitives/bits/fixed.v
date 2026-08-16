@@ -6495,6 +6495,7 @@ Module bits.
       Global Instance AssociatedConstant_value_ZERO :
         forall (N : Value.t),
         M.IsAssociatedFunction.C (Self N) "ZERO" (value_ZERO N).
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_ZERO.
       
@@ -6520,6 +6521,7 @@ Module bits.
       Global Instance AssociatedFunction_new :
         forall (N : Value.t),
         M.IsAssociatedFunction.C (Self N) "new" (new N).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -6596,6 +6598,7 @@ Module bits.
       Global Instance AssociatedFunction_with_last_byte :
         forall (N : Value.t),
         M.IsAssociatedFunction.C (Self N) "with_last_byte" (with_last_byte N).
+      Proof.
       Admitted.
       Global Typeclasses Opaque with_last_byte.
       
@@ -6626,6 +6629,7 @@ Module bits.
       Global Instance AssociatedFunction_repeat_byte :
         forall (N : Value.t),
         M.IsAssociatedFunction.C (Self N) "repeat_byte" (repeat_byte N).
+      Proof.
       Admitted.
       Global Typeclasses Opaque repeat_byte.
       
@@ -6649,6 +6653,7 @@ Module bits.
       Global Instance AssociatedFunction_len_bytes :
         forall (N : Value.t),
         M.IsAssociatedFunction.C (Self N) "len_bytes" (len_bytes N).
+      Proof.
       Admitted.
       Global Typeclasses Opaque len_bytes.
       
@@ -6864,6 +6869,7 @@ Module bits.
       Global Instance AssociatedFunction_concat_const :
         forall (N : Value.t),
         M.IsAssociatedFunction.C (Self N) "concat_const" (concat_const N).
+      Proof.
       Admitted.
       Global Typeclasses Opaque concat_const.
       
@@ -7112,6 +7118,7 @@ Module bits.
       Global Instance AssociatedFunction_from_slice :
         forall (N : Value.t),
         M.IsAssociatedFunction.C (Self N) "from_slice" (from_slice N).
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_slice.
       
@@ -7395,6 +7402,7 @@ Module bits.
       Global Instance AssociatedFunction_left_padding_from :
         forall (N : Value.t),
         M.IsAssociatedFunction.C (Self N) "left_padding_from" (left_padding_from N).
+      Proof.
       Admitted.
       Global Typeclasses Opaque left_padding_from.
       
@@ -7667,6 +7675,7 @@ Module bits.
       Global Instance AssociatedFunction_right_padding_from :
         forall (N : Value.t),
         M.IsAssociatedFunction.C (Self N) "right_padding_from" (right_padding_from N).
+      Proof.
       Admitted.
       Global Typeclasses Opaque right_padding_from.
       
@@ -7716,6 +7725,7 @@ Module bits.
       Global Instance AssociatedFunction_as_slice :
         forall (N : Value.t),
         M.IsAssociatedFunction.C (Self N) "as_slice" (as_slice N).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_slice.
       
@@ -7781,6 +7791,7 @@ Module bits.
       Global Instance AssociatedFunction_as_mut_slice :
         forall (N : Value.t),
         M.IsAssociatedFunction.C (Self N) "as_mut_slice" (as_mut_slice N).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_mut_slice.
       
@@ -7853,6 +7864,7 @@ Module bits.
       Global Instance AssociatedFunction_covers :
         forall (N : Value.t),
         M.IsAssociatedFunction.C (Self N) "covers" (covers N).
+      Proof.
       Admitted.
       Global Typeclasses Opaque covers.
       
@@ -7921,6 +7933,7 @@ Module bits.
       Global Instance AssociatedFunction_const_covers :
         forall (N : Value.t),
         M.IsAssociatedFunction.C (Self N) "const_covers" (const_covers N).
+      Proof.
       Admitted.
       Global Typeclasses Opaque const_covers.
       
@@ -8072,6 +8085,7 @@ Module bits.
       Global Instance AssociatedFunction_const_eq :
         forall (N : Value.t),
         M.IsAssociatedFunction.C (Self N) "const_eq" (const_eq N).
+      Proof.
       Admitted.
       Global Typeclasses Opaque const_eq.
       
@@ -8122,6 +8136,7 @@ Module bits.
       Global Instance AssociatedFunction_is_zero :
         forall (N : Value.t),
         M.IsAssociatedFunction.C (Self N) "is_zero" (is_zero N).
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_zero.
       
@@ -8179,6 +8194,7 @@ Module bits.
       Global Instance AssociatedFunction_const_is_zero :
         forall (N : Value.t),
         M.IsAssociatedFunction.C (Self N) "const_is_zero" (const_is_zero N).
+      Proof.
       Admitted.
       Global Typeclasses Opaque const_is_zero.
       
@@ -8317,6 +8333,7 @@ Module bits.
       Global Instance AssociatedFunction_bit_and :
         forall (N : Value.t),
         M.IsAssociatedFunction.C (Self N) "bit_and" (bit_and N).
+      Proof.
       Admitted.
       Global Typeclasses Opaque bit_and.
       
@@ -8455,6 +8472,7 @@ Module bits.
       Global Instance AssociatedFunction_bit_or :
         forall (N : Value.t),
         M.IsAssociatedFunction.C (Self N) "bit_or" (bit_or N).
+      Proof.
       Admitted.
       Global Typeclasses Opaque bit_or.
       
@@ -8593,6 +8611,7 @@ Module bits.
       Global Instance AssociatedFunction_bit_xor :
         forall (N : Value.t),
         M.IsAssociatedFunction.C (Self N) "bit_xor" (bit_xor N).
+      Proof.
       Admitted.
       Global Typeclasses Opaque bit_xor.
       
@@ -8805,6 +8824,7 @@ Module bits.
       Global Instance AssociatedFunction_fmt_hex :
         forall (N : Value.t),
         M.IsAssociatedFunction.C (Self N) "fmt_hex" (fmt_hex N).
+      Proof.
       Admitted.
       Global Typeclasses Opaque fmt_hex.
     End Impl_alloy_primitives_bits_fixed_FixedBytes_N.

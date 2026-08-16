@@ -682,6 +682,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_len : M.IsAssociatedFunction.C Self "len" len.
+      Proof.
       Admitted.
       Global Typeclasses Opaque len.
       
@@ -1379,6 +1380,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_write : M.IsAssociatedFunction.C Self "write" write.
+      Proof.
       Admitted.
       Global Typeclasses Opaque write.
     End Impl_core_num_fmt_Part.
@@ -1673,6 +1675,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_len : M.IsAssociatedFunction.C Self "len" len.
+      Proof.
       Admitted.
       Global Typeclasses Opaque len.
       
@@ -2306,6 +2309,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_write : M.IsAssociatedFunction.C Self "write" write.
+      Proof.
       Admitted.
       Global Typeclasses Opaque write.
     End Impl_core_num_fmt_Formatted.

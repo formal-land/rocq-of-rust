@@ -24,4 +24,5 @@ End Impl_generics_where_clauses_PrintInOption_where_core_fmt_Debug_core_option_O
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "generics_where_clauses::main" main.
+Proof.
 Admitted.

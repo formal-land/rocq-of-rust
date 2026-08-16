@@ -5,16 +5,19 @@ Parameter value_NUM : PolymorphicFunction.t.
 
 Global Instance Instance_IsConstant_value_NUM :
   M.IsFunction.C "scoping_rules_lifetimes_reference_lifetime_static::NUM" value_NUM.
+Proof.
 Admitted.
 
 Parameter coerce_static : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_coerce_static :
   M.IsFunction.C "scoping_rules_lifetimes_reference_lifetime_static::coerce_static" coerce_static.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "scoping_rules_lifetimes_reference_lifetime_static::main" main.
+Proof.
 Admitted.

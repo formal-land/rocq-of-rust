@@ -697,6 +697,7 @@ Module control_flow.
   
   Global Instance Instance_IsFunction_verify_function :
     M.IsFunction.C "move_bytecode_verifier::control_flow::verify_function" verify_function.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_function.
   
@@ -993,6 +994,7 @@ Module control_flow.
   
   Global Instance Instance_IsFunction_verify_fallthrough :
     M.IsFunction.C "move_bytecode_verifier::control_flow::verify_fallthrough" verify_fallthrough.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_fallthrough.
   
@@ -2740,6 +2742,7 @@ Module control_flow.
   
   Global Instance Instance_IsFunction_verify_reducibility :
     M.IsFunction.C "move_bytecode_verifier::control_flow::verify_reducibility" verify_reducibility.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_reducibility.
 End control_flow.

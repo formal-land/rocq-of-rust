@@ -302,6 +302,7 @@ Module collections.
       end.
     
     Global Instance AssociatedFunction_kind : M.IsAssociatedFunction.C Self "kind" kind.
+    Proof.
     Admitted.
     Global Typeclasses Opaque kind.
   End Impl_alloc_collections_TryReserveError.

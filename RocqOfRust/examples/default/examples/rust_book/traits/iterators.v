@@ -118,6 +118,7 @@ Definition fibonacci (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : 
   end.
 
 Global Instance Instance_IsFunction_fibonacci : M.IsFunction.C "iterators::fibonacci" fibonacci.
+Proof.
 Admitted.
 Global Typeclasses Opaque fibonacci.
 
@@ -1675,5 +1676,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "iterators::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

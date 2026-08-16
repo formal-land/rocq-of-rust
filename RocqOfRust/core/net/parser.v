@@ -984,6 +984,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -1085,6 +1086,7 @@ Module net.
       
       Global Instance AssociatedFunction_read_atomically :
         M.IsAssociatedFunction.C Self "read_atomically" read_atomically.
+      Proof.
       Admitted.
       Global Typeclasses Opaque read_atomically.
       
@@ -1202,6 +1204,7 @@ Module net.
       
       Global Instance AssociatedFunction_parse_with :
         M.IsAssociatedFunction.C Self "parse_with" parse_with.
+      Proof.
       Admitted.
       Global Typeclasses Opaque parse_with.
       
@@ -1298,6 +1301,7 @@ Module net.
       
       Global Instance AssociatedFunction_peek_char :
         M.IsAssociatedFunction.C Self "peek_char" peek_char.
+      Proof.
       Admitted.
       Global Typeclasses Opaque peek_char.
       
@@ -1460,6 +1464,7 @@ Module net.
       
       Global Instance AssociatedFunction_read_char :
         M.IsAssociatedFunction.C Self "read_char" read_char.
+      Proof.
       Admitted.
       Global Typeclasses Opaque read_char.
       
@@ -1629,6 +1634,7 @@ Module net.
       
       Global Instance AssociatedFunction_read_given_char :
         M.IsAssociatedFunction.C Self "read_given_char" read_given_char.
+      Proof.
       Admitted.
       Global Typeclasses Opaque read_given_char.
       
@@ -1902,6 +1908,7 @@ Module net.
       
       Global Instance AssociatedFunction_read_separator :
         M.IsAssociatedFunction.C Self "read_separator" read_separator.
+      Proof.
       Admitted.
       Global Typeclasses Opaque read_separator.
       
@@ -3464,6 +3471,7 @@ Module net.
       
       Global Instance AssociatedFunction_read_number :
         M.IsAssociatedFunction.C Self "read_number" read_number.
+      Proof.
       Admitted.
       Global Typeclasses Opaque read_number.
       
@@ -4158,6 +4166,7 @@ Module net.
       
       Global Instance AssociatedFunction_read_ipv4_addr :
         M.IsAssociatedFunction.C Self "read_ipv4_addr" read_ipv4_addr.
+      Proof.
       Admitted.
       Global Typeclasses Opaque read_ipv4_addr.
       
@@ -5067,6 +5076,7 @@ Module net.
       
       Global Instance AssociatedFunction_read_ipv6_addr :
         M.IsAssociatedFunction.C Self "read_ipv6_addr" read_ipv6_addr.
+      Proof.
       Admitted.
       Global Typeclasses Opaque read_ipv6_addr.
       
@@ -5209,6 +5219,7 @@ Module net.
       
       Global Instance AssociatedFunction_read_ip_addr :
         M.IsAssociatedFunction.C Self "read_ip_addr" read_ip_addr.
+      Proof.
       Admitted.
       Global Typeclasses Opaque read_ip_addr.
       
@@ -5430,6 +5441,7 @@ Module net.
       
       Global Instance AssociatedFunction_read_port :
         M.IsAssociatedFunction.C Self "read_port" read_port.
+      Proof.
       Admitted.
       Global Typeclasses Opaque read_port.
       
@@ -5651,6 +5663,7 @@ Module net.
       
       Global Instance AssociatedFunction_read_scope_id :
         M.IsAssociatedFunction.C Self "read_scope_id" read_scope_id.
+      Proof.
       Admitted.
       Global Typeclasses Opaque read_scope_id.
       
@@ -6006,6 +6019,7 @@ Module net.
       
       Global Instance AssociatedFunction_read_socket_addr_v4 :
         M.IsAssociatedFunction.C Self "read_socket_addr_v4" read_socket_addr_v4.
+      Proof.
       Admitted.
       Global Typeclasses Opaque read_socket_addr_v4.
       
@@ -6654,6 +6668,7 @@ Module net.
       
       Global Instance AssociatedFunction_read_socket_addr_v6 :
         M.IsAssociatedFunction.C Self "read_socket_addr_v6" read_socket_addr_v6.
+      Proof.
       Admitted.
       Global Typeclasses Opaque read_socket_addr_v6.
       
@@ -6801,6 +6816,7 @@ Module net.
       
       Global Instance AssociatedFunction_read_socket_addr :
         M.IsAssociatedFunction.C Self "read_socket_addr" read_socket_addr.
+      Proof.
       Admitted.
       Global Typeclasses Opaque read_socket_addr.
     End Impl_core_net_parser_Parser.
@@ -6915,6 +6931,7 @@ Module net.
       
       Global Instance AssociatedFunction_parse_ascii :
         M.IsAssociatedFunction.C Self "parse_ascii" parse_ascii.
+      Proof.
       Admitted.
       Global Typeclasses Opaque parse_ascii.
     End Impl_core_net_ip_addr_IpAddr.
@@ -7145,6 +7162,7 @@ Module net.
       
       Global Instance AssociatedFunction_parse_ascii :
         M.IsAssociatedFunction.C Self "parse_ascii" parse_ascii.
+      Proof.
       Admitted.
       Global Typeclasses Opaque parse_ascii.
     End Impl_core_net_ip_addr_Ipv4Addr.
@@ -7317,6 +7335,7 @@ Module net.
       
       Global Instance AssociatedFunction_parse_ascii :
         M.IsAssociatedFunction.C Self "parse_ascii" parse_ascii.
+      Proof.
       Admitted.
       Global Typeclasses Opaque parse_ascii.
     End Impl_core_net_ip_addr_Ipv6Addr.
@@ -7489,6 +7508,7 @@ Module net.
       
       Global Instance AssociatedFunction_parse_ascii :
         M.IsAssociatedFunction.C Self "parse_ascii" parse_ascii.
+      Proof.
       Admitted.
       Global Typeclasses Opaque parse_ascii.
     End Impl_core_net_socket_addr_SocketAddrV4.
@@ -7661,6 +7681,7 @@ Module net.
       
       Global Instance AssociatedFunction_parse_ascii :
         M.IsAssociatedFunction.C Self "parse_ascii" parse_ascii.
+      Proof.
       Admitted.
       Global Typeclasses Opaque parse_ascii.
     End Impl_core_net_socket_addr_SocketAddrV6.
@@ -7833,6 +7854,7 @@ Module net.
       
       Global Instance AssociatedFunction_parse_ascii :
         M.IsAssociatedFunction.C Self "parse_ascii" parse_ascii.
+      Proof.
       Admitted.
       Global Typeclasses Opaque parse_ascii.
     End Impl_core_net_socket_addr_SocketAddr.

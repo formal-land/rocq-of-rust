@@ -65,6 +65,7 @@ Module mem.
       Global Instance AssociatedFunction_new :
         forall (T F : Ty.t),
         M.IsAssociatedFunction.C (Self T F) "new" (new T F).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -238,6 +239,7 @@ Module mem.
       Global Instance AssociatedFunction_dismiss :
         forall (T F : Ty.t),
         M.IsAssociatedFunction.C (Self T F) "dismiss" (dismiss T F).
+      Proof.
       Admitted.
       Global Typeclasses Opaque dismiss.
     End Impl_core_mem_drop_guard_DropGuard_T_F.

@@ -5,6 +5,7 @@ Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "inline_assembly_symbol_operands_and_abi_clobbers::main" main.
+Proof.
 Admitted.
 
 Module main.
@@ -12,11 +13,13 @@ Module main.
   
   Global Instance Instance_IsFunction_foo :
     M.IsFunction.C "inline_assembly_symbol_operands_and_abi_clobbers::main::foo" foo.
+  Proof.
   Admitted.
   
   Parameter call_foo : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance Instance_IsFunction_call_foo :
     M.IsFunction.C "inline_assembly_symbol_operands_and_abi_clobbers::main::call_foo" call_foo.
+  Proof.
   Admitted.
 End main.

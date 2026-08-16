@@ -897,6 +897,7 @@ Module ops.
       Global Instance AssociatedFunction_is_break :
         forall (B C : Ty.t),
         M.IsAssociatedFunction.C (Self B C) "is_break" (is_break B C).
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_break.
       
@@ -945,6 +946,7 @@ Module ops.
       Global Instance AssociatedFunction_is_continue :
         forall (B C : Ty.t),
         M.IsAssociatedFunction.C (Self B C) "is_continue" (is_continue B C).
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_continue.
       
@@ -1001,6 +1003,7 @@ Module ops.
       Global Instance AssociatedFunction_break_value :
         forall (B C : Ty.t),
         M.IsAssociatedFunction.C (Self B C) "break_value" (break_value B C).
+      Proof.
       Admitted.
       Global Typeclasses Opaque break_value.
       
@@ -1054,6 +1057,7 @@ Module ops.
       Global Instance AssociatedFunction_break_ok :
         forall (B C : Ty.t),
         M.IsAssociatedFunction.C (Self B C) "break_ok" (break_ok B C).
+      Proof.
       Admitted.
       Global Typeclasses Opaque break_ok.
       
@@ -1133,6 +1137,7 @@ Module ops.
       Global Instance AssociatedFunction_map_break :
         forall (B C : Ty.t),
         M.IsAssociatedFunction.C (Self B C) "map_break" (map_break B C).
+      Proof.
       Admitted.
       Global Typeclasses Opaque map_break.
       
@@ -1189,6 +1194,7 @@ Module ops.
       Global Instance AssociatedFunction_continue_value :
         forall (B C : Ty.t),
         M.IsAssociatedFunction.C (Self B C) "continue_value" (continue_value B C).
+      Proof.
       Admitted.
       Global Typeclasses Opaque continue_value.
       
@@ -1247,6 +1253,7 @@ Module ops.
       Global Instance AssociatedFunction_continue_ok :
         forall (B C : Ty.t),
         M.IsAssociatedFunction.C (Self B C) "continue_ok" (continue_ok B C).
+      Proof.
       Admitted.
       Global Typeclasses Opaque continue_ok.
       
@@ -1331,6 +1338,7 @@ Module ops.
       Global Instance AssociatedFunction_map_continue :
         forall (B C : Ty.t),
         M.IsAssociatedFunction.C (Self B C) "map_continue" (map_continue B C).
+      Proof.
       Admitted.
       Global Typeclasses Opaque map_continue.
     End Impl_core_ops_control_flow_ControlFlow_B_C.
@@ -1401,6 +1409,7 @@ Module ops.
       Global Instance AssociatedFunction_into_value :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "into_value" (into_value T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_value.
     End Impl_core_ops_control_flow_ControlFlow_T_T.
@@ -1511,6 +1520,7 @@ Module ops.
       Global Instance AssociatedFunction_from_try :
         forall (R : Ty.t),
         M.IsAssociatedFunction.C (Self R) "from_try" (from_try R).
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_try.
       
@@ -1583,6 +1593,7 @@ Module ops.
       Global Instance AssociatedFunction_into_try :
         forall (R : Ty.t),
         M.IsAssociatedFunction.C (Self R) "into_try" (into_try R).
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_try.
     End Impl_core_ops_control_flow_ControlFlow_R_associated_in_trait_core_ops_try_trait_Try___R_Output.

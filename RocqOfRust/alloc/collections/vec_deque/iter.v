@@ -43,6 +43,7 @@ Module collections.
         Global Instance AssociatedFunction_new :
           forall (T : Ty.t),
           M.IsAssociatedFunction.C (Self T) "new" (new T).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new.
         
@@ -121,6 +122,7 @@ Module collections.
         Global Instance AssociatedFunction_as_slices :
           forall (T : Ty.t),
           M.IsAssociatedFunction.C (Self T) "as_slices" (as_slices T).
+        Proof.
         Admitted.
         Global Typeclasses Opaque as_slices.
       End Impl_alloc_collections_vec_deque_iter_Iter_T.

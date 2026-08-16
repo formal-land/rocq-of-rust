@@ -361,6 +361,7 @@ Module interpreter.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -409,6 +410,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_new_with_hash :
         M.IsAssociatedFunction.C Self "new_with_hash" new_with_hash.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_with_hash.
       
@@ -479,6 +481,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_new_with_optional_hash :
         M.IsAssociatedFunction.C Self "new_with_optional_hash" new_with_optional_hash.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_with_optional_hash.
       
@@ -554,6 +557,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_calculate_hash :
         M.IsAssociatedFunction.C Self "calculate_hash" calculate_hash.
+      Proof.
       Admitted.
       Global Typeclasses Opaque calculate_hash.
       
@@ -585,6 +589,7 @@ Module interpreter.
         end.
       
       Global Instance AssociatedFunction_hash : M.IsAssociatedFunction.C Self "hash" hash.
+      Proof.
       Admitted.
       Global Typeclasses Opaque hash.
       
@@ -700,6 +705,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_get_or_calculate_hash :
         M.IsAssociatedFunction.C Self "get_or_calculate_hash" get_or_calculate_hash.
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_or_calculate_hash.
     End Impl_revm_interpreter_interpreter_ext_bytecode_ExtBytecode.

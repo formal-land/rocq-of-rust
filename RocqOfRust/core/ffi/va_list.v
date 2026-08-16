@@ -548,6 +548,7 @@ Module ffi.
         end.
       
       Global Instance AssociatedFunction_arg : M.IsAssociatedFunction.C Self "arg" arg.
+      Proof.
       Admitted.
       Global Typeclasses Opaque arg.
     End Impl_core_ffi_va_list_VaList.
@@ -698,6 +699,7 @@ Module ffi.
         end.
       
       Global Instance Instance_IsFunction_c : M.IsFunction.C "core::ffi::va_list::_::c" c.
+      Proof.
       Admitted.
       Global Typeclasses Opaque c.
     End underscore.

@@ -12,6 +12,7 @@ Module bits.
     
     Global Instance Instance_IsConstant_value_BLOOM_BITS_PER_ITEM :
       M.IsFunction.C "alloy_primitives::bits::bloom::BLOOM_BITS_PER_ITEM" value_BLOOM_BITS_PER_ITEM.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_BLOOM_BITS_PER_ITEM.
     
@@ -20,6 +21,7 @@ Module bits.
     
     Global Instance Instance_IsConstant_value_BLOOM_SIZE_BYTES :
       M.IsFunction.C "alloy_primitives::bits::bloom::BLOOM_SIZE_BYTES" value_BLOOM_SIZE_BYTES.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_BLOOM_SIZE_BYTES.
     
@@ -44,6 +46,7 @@ Module bits.
     
     Global Instance Instance_IsConstant_value_BLOOM_SIZE_BITS :
       M.IsFunction.C "alloy_primitives::bits::bloom::BLOOM_SIZE_BITS" value_BLOOM_SIZE_BITS.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_BLOOM_SIZE_BITS.
     
@@ -65,6 +68,7 @@ Module bits.
     
     Global Instance Instance_IsConstant_value_MASK :
       M.IsFunction.C "alloy_primitives::bits::bloom::MASK" value_MASK.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MASK.
     
@@ -104,6 +108,7 @@ Module bits.
     
     Global Instance Instance_IsConstant_value_ITEM_BYTES :
       M.IsFunction.C "alloy_primitives::bits::bloom::ITEM_BYTES" value_ITEM_BYTES.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ITEM_BYTES.
     
@@ -452,6 +457,7 @@ Module bits.
       
       Global Instance AssociatedFunction_into_hash :
         M.IsAssociatedFunction.C Self "into_hash" into_hash.
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_hash.
     End Impl_alloy_primitives_bits_bloom_BloomInput.
@@ -1382,6 +1388,7 @@ Module bits.
         end.
       
       Global Instance AssociatedFunction_data : M.IsAssociatedFunction.C Self "data" data.
+      Proof.
       Admitted.
       Global Typeclasses Opaque data.
       
@@ -1426,6 +1433,7 @@ Module bits.
       
       Global Instance AssociatedFunction_data_mut :
         M.IsAssociatedFunction.C Self "data_mut" data_mut.
+      Proof.
       Admitted.
       Global Typeclasses Opaque data_mut.
       
@@ -1485,6 +1493,7 @@ Module bits.
       
       Global Instance AssociatedFunction_contains_input :
         M.IsAssociatedFunction.C Self "contains_input" contains_input.
+      Proof.
       Admitted.
       Global Typeclasses Opaque contains_input.
       
@@ -1532,6 +1541,7 @@ Module bits.
       
       Global Instance AssociatedFunction_const_contains :
         M.IsAssociatedFunction.C Self "const_contains" const_contains.
+      Proof.
       Admitted.
       Global Typeclasses Opaque const_contains.
       
@@ -1594,6 +1604,7 @@ Module bits.
       
       Global Instance AssociatedFunction_contains :
         M.IsAssociatedFunction.C Self "contains" contains.
+      Proof.
       Admitted.
       Global Typeclasses Opaque contains.
       
@@ -2084,6 +2095,7 @@ Module bits.
         end.
       
       Global Instance AssociatedFunction_accrue : M.IsAssociatedFunction.C Self "accrue" accrue.
+      Proof.
       Admitted.
       Global Typeclasses Opaque accrue.
       
@@ -2131,6 +2143,7 @@ Module bits.
       
       Global Instance AssociatedFunction_accrue_bloom :
         M.IsAssociatedFunction.C Self "accrue_bloom" accrue_bloom.
+      Proof.
       Admitted.
       Global Typeclasses Opaque accrue_bloom.
       
@@ -2204,6 +2217,7 @@ Module bits.
         end.
       
       Global Instance AssociatedFunction_m3_2048 : M.IsAssociatedFunction.C Self "m3_2048" m3_2048.
+      Proof.
       Admitted.
       Global Typeclasses Opaque m3_2048.
       
@@ -2535,6 +2549,7 @@ Module bits.
       
       Global Instance AssociatedFunction_m3_2048_hashed :
         M.IsAssociatedFunction.C Self "m3_2048_hashed" m3_2048_hashed.
+      Proof.
       Admitted.
       Global Typeclasses Opaque m3_2048_hashed.
       
@@ -2884,6 +2899,7 @@ Module bits.
       
       Global Instance AssociatedFunction_accrue_raw_log :
         M.IsAssociatedFunction.C Self "accrue_raw_log" accrue_raw_log.
+      Proof.
       Admitted.
       Global Typeclasses Opaque accrue_raw_log.
       
@@ -2991,6 +3007,7 @@ Module bits.
       
       Global Instance AssociatedFunction_accrue_log :
         M.IsAssociatedFunction.C Self "accrue_log" accrue_log.
+      Proof.
       Admitted.
       Global Typeclasses Opaque accrue_log.
       
@@ -3085,6 +3102,7 @@ Module bits.
       
       Global Instance AssociatedFunction_contains_raw_log :
         M.IsAssociatedFunction.C Self "contains_raw_log" contains_raw_log.
+      Proof.
       Admitted.
       Global Typeclasses Opaque contains_raw_log.
       
@@ -3192,6 +3210,7 @@ Module bits.
       
       Global Instance AssociatedFunction_contains_log :
         M.IsAssociatedFunction.C Self "contains_log" contains_log.
+      Proof.
       Admitted.
       Global Typeclasses Opaque contains_log.
     End Impl_alloy_primitives_bits_bloom_Bloom.

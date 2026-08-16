@@ -137,6 +137,7 @@ Definition multiply (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M
 
 Global Instance Instance_IsFunction_multiply :
   M.IsFunction.C "map_in_result_via_combinators::multiply" multiply.
+Proof.
 Admitted.
 Global Typeclasses Opaque multiply.
 
@@ -322,6 +323,7 @@ Definition print (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 
 Global Instance Instance_IsFunction_print :
   M.IsFunction.C "map_in_result_via_combinators::print" print.
+Proof.
 Admitted.
 Global Typeclasses Opaque print.
 
@@ -392,5 +394,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "map_in_result_via_combinators::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

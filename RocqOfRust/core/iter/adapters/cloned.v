@@ -173,6 +173,7 @@ Module iter.
         Global Instance AssociatedFunction_new :
           forall (I : Ty.t),
           M.IsAssociatedFunction.C (Self I) "new" (new I).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new.
       End Impl_core_iter_adapters_cloned_Cloned_I.
@@ -255,6 +256,7 @@ Module iter.
       
       Global Instance Instance_IsFunction_clone_try_fold :
         M.IsFunction.C "core::iter::adapters::cloned::clone_try_fold" clone_try_fold.
+      Proof.
       Admitted.
       Global Typeclasses Opaque clone_try_fold.
       

@@ -445,5 +445,6 @@ Module TryFrom_Uint_for_u64.
         stack
       )
     }}.
+  Proof.
   Admitted.
 End TryFrom_Uint_for_u64.

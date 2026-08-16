@@ -101,6 +101,7 @@ Module Impl_mother_Mapping_K_V.
   Global Instance AssociatedFunction_get :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "get" (get K V).
+  Proof.
   Admitted.
   Global Typeclasses Opaque get.
   
@@ -134,6 +135,7 @@ Module Impl_mother_Mapping_K_V.
   Global Instance AssociatedFunction_insert :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "insert" (insert K V).
+  Proof.
   Admitted.
   Global Typeclasses Opaque insert.
 End Impl_mother_Mapping_K_V.
@@ -2159,6 +2161,7 @@ Module Impl_mother_Env.
     end.
   
   Global Instance AssociatedFunction_caller : M.IsAssociatedFunction.C Self "caller" caller.
+  Proof.
   Admitted.
   Global Typeclasses Opaque caller.
   
@@ -2185,6 +2188,7 @@ Module Impl_mother_Env.
   
   Global Instance AssociatedFunction_emit_event :
     M.IsAssociatedFunction.C Self "emit_event" emit_event.
+  Proof.
   Admitted.
   Global Typeclasses Opaque emit_event.
 End Impl_mother_Env.
@@ -2285,6 +2289,7 @@ Module Impl_mother_Mother.
     end.
   
   Global Instance AssociatedFunction_init_env : M.IsAssociatedFunction.C Self "init_env" init_env.
+  Proof.
   Admitted.
   Global Typeclasses Opaque init_env.
   
@@ -2307,6 +2312,7 @@ Module Impl_mother_Mother.
     end.
   
   Global Instance AssociatedFunction_env : M.IsAssociatedFunction.C Self "env" env.
+  Proof.
   Admitted.
   Global Typeclasses Opaque env.
   
@@ -2354,6 +2360,7 @@ Module Impl_mother_Mother.
     end.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new.
   
@@ -2384,6 +2391,7 @@ Module Impl_mother_Mother.
   
   Global Instance AssociatedFunction_new_default :
     M.IsAssociatedFunction.C Self "new_default" new_default.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new_default.
   
@@ -2470,6 +2478,7 @@ Module Impl_mother_Mother.
   
   Global Instance AssociatedFunction_failed_new :
     M.IsAssociatedFunction.C Self "failed_new" failed_new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque failed_new.
   
@@ -2540,6 +2549,7 @@ Module Impl_mother_Mother.
   
   Global Instance AssociatedFunction_echo_auction :
     M.IsAssociatedFunction.C Self "echo_auction" echo_auction.
+  Proof.
   Admitted.
   Global Typeclasses Opaque echo_auction.
   
@@ -2638,6 +2648,7 @@ Module Impl_mother_Mother.
   
   Global Instance AssociatedFunction_revert_or_trap :
     M.IsAssociatedFunction.C Self "revert_or_trap" revert_or_trap.
+  Proof.
   Admitted.
   Global Typeclasses Opaque revert_or_trap.
   
@@ -2747,6 +2758,7 @@ Module Impl_mother_Mother.
   
   Global Instance AssociatedFunction_debug_log :
     M.IsAssociatedFunction.C Self "debug_log" debug_log.
+  Proof.
   Admitted.
   Global Typeclasses Opaque debug_log.
 End Impl_mother_Mother.

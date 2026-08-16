@@ -5,6 +5,7 @@ Parameter function : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_function :
   M.IsFunction.C "the_use_as_declaration::function" function.
+Proof.
 Admitted.
 
 Module deeply.
@@ -13,6 +14,7 @@ Module deeply.
     
     Global Instance Instance_IsFunction_function :
       M.IsFunction.C "the_use_as_declaration::deeply::nested::function" function.
+    Proof.
     Admitted.
   End nested.
 End deeply.
@@ -20,4 +22,5 @@ End deeply.
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "the_use_as_declaration::main" main.
+Proof.
 Admitted.

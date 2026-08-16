@@ -339,6 +339,7 @@ Module iter.
         Global Instance AssociatedFunction_new :
           forall (I : Ty.t),
           M.IsAssociatedFunction.C (Self I) "new" (new I).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new.
         (*
@@ -553,6 +554,7 @@ Module iter.
         Global Instance AssociatedFunction_peek :
           forall (I : Ty.t),
           M.IsAssociatedFunction.C (Self I) "peek" (peek I).
+        Proof.
         Admitted.
         Global Typeclasses Opaque peek.
         
@@ -768,6 +770,7 @@ Module iter.
         Global Instance AssociatedFunction_peek_mut :
           forall (I : Ty.t),
           M.IsAssociatedFunction.C (Self I) "peek_mut" (peek_mut I).
+        Proof.
         Admitted.
         Global Typeclasses Opaque peek_mut.
         
@@ -1050,6 +1053,7 @@ Module iter.
         Global Instance AssociatedFunction_next_if :
           forall (I : Ty.t),
           M.IsAssociatedFunction.C (Self I) "next_if" (next_if I).
+        Proof.
         Admitted.
         Global Typeclasses Opaque next_if.
         
@@ -1189,6 +1193,7 @@ Module iter.
         Global Instance AssociatedFunction_next_if_eq :
           forall (I : Ty.t),
           M.IsAssociatedFunction.C (Self I) "next_if_eq" (next_if_eq I).
+        Proof.
         Admitted.
         Global Typeclasses Opaque next_if_eq.
         
@@ -1483,6 +1488,7 @@ Module iter.
         Global Instance AssociatedFunction_next_if_map :
           forall (I : Ty.t),
           M.IsAssociatedFunction.C (Self I) "next_if_map" (next_if_map I).
+        Proof.
         Admitted.
         Global Typeclasses Opaque next_if_map.
         
@@ -1753,6 +1759,7 @@ Module iter.
         Global Instance AssociatedFunction_next_if_map_mut :
           forall (I : Ty.t),
           M.IsAssociatedFunction.C (Self I) "next_if_map_mut" (next_if_map_mut I).
+        Proof.
         Admitted.
         Global Typeclasses Opaque next_if_map_mut.
       End Impl_core_iter_adapters_peekable_Peekable_I.

@@ -292,6 +292,7 @@ Module task.
     end.
   
   Global Instance Instance_IsFunction_raw_waker : M.IsFunction.C "alloc::task::raw_waker" raw_waker.
+  Proof.
   Admitted.
   Global Typeclasses Opaque raw_waker.
   
@@ -418,6 +419,7 @@ Module task.
     
     Global Instance Instance_IsFunction_clone_waker :
       M.IsFunction.C "alloc::task::raw_waker::clone_waker" clone_waker.
+    Proof.
     Admitted.
     Global Typeclasses Opaque clone_waker.
     
@@ -457,6 +459,7 @@ Module task.
       end.
     
     Global Instance Instance_IsFunction_wake : M.IsFunction.C "alloc::task::raw_waker::wake" wake.
+    Proof.
     Admitted.
     Global Typeclasses Opaque wake.
     
@@ -563,6 +566,7 @@ Module task.
     
     Global Instance Instance_IsFunction_wake_by_ref :
       M.IsFunction.C "alloc::task::raw_waker::wake_by_ref" wake_by_ref.
+    Proof.
     Admitted.
     Global Typeclasses Opaque wake_by_ref.
     
@@ -595,6 +599,7 @@ Module task.
     
     Global Instance Instance_IsFunction_drop_waker :
       M.IsFunction.C "alloc::task::raw_waker::drop_waker" drop_waker.
+    Proof.
     Admitted.
     Global Typeclasses Opaque drop_waker.
   End raw_waker.
@@ -888,6 +893,7 @@ Module task.
   
   Global Instance Instance_IsFunction_local_raw_waker :
     M.IsFunction.C "alloc::task::local_raw_waker" local_raw_waker.
+  Proof.
   Admitted.
   Global Typeclasses Opaque local_raw_waker.
   
@@ -1030,6 +1036,7 @@ Module task.
     
     Global Instance Instance_IsFunction_clone_waker :
       M.IsFunction.C "alloc::task::local_raw_waker::clone_waker" clone_waker.
+    Proof.
     Admitted.
     Global Typeclasses Opaque clone_waker.
     
@@ -1070,6 +1077,7 @@ Module task.
     
     Global Instance Instance_IsFunction_wake :
       M.IsFunction.C "alloc::task::local_raw_waker::wake" wake.
+    Proof.
     Admitted.
     Global Typeclasses Opaque wake.
     
@@ -1170,6 +1178,7 @@ Module task.
     
     Global Instance Instance_IsFunction_wake_by_ref :
       M.IsFunction.C "alloc::task::local_raw_waker::wake_by_ref" wake_by_ref.
+    Proof.
     Admitted.
     Global Typeclasses Opaque wake_by_ref.
     
@@ -1202,6 +1211,7 @@ Module task.
     
     Global Instance Instance_IsFunction_drop_waker :
       M.IsFunction.C "alloc::task::local_raw_waker::drop_waker" drop_waker.
+    Proof.
     Admitted.
     Global Typeclasses Opaque drop_waker.
   End local_raw_waker.

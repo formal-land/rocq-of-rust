@@ -37,6 +37,7 @@ Module Impl_Borrow_T_for_T.
     T.
 
   Instance run (T : Set) `{Link T} : Borrow.Run (Self T) T.
+  Proof.
   Admitted.
 End Impl_Borrow_T_for_T.
 Export (hints) Impl_Borrow_T_for_T.

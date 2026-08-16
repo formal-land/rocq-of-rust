@@ -56,6 +56,7 @@ Export (hints) TokenError.
 (* impl From<TokenError> for ProgramError *)
 Module Impl_From_TokenError_for_ProgramError.
   Instance run : From.Run ProgramError.t TokenError.t.
+  Proof.
   Admitted.
 End Impl_From_TokenError_for_ProgramError.
 Export (hints) Impl_From_TokenError_for_ProgramError.

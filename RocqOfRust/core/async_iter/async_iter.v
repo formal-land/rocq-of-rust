@@ -382,6 +382,7 @@ Module async_iter.
       Global Instance AssociatedFunction_async_gen_ready :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "async_gen_ready" (async_gen_ready T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque async_gen_ready.
       
@@ -413,6 +414,7 @@ Module async_iter.
       Global Instance AssociatedConstant_value_PENDING :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "PENDING" (value_PENDING T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_PENDING.
       
@@ -444,6 +446,7 @@ Module async_iter.
       Global Instance AssociatedConstant_value_FINISHED :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "FINISHED" (value_FINISHED T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_FINISHED.
     End Impl_core_task_poll_Poll_core_option_Option_T.

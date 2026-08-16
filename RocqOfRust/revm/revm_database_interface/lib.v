@@ -26,6 +26,7 @@ Definition value_FFADDRESS (ε : list Value.t) (τ : list Ty.t) (α : list Value
 
 Global Instance Instance_IsConstant_value_FFADDRESS :
   M.IsFunction.C "revm_database_interface::FFADDRESS" value_FFADDRESS.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_FFADDRESS.
 
@@ -38,6 +39,7 @@ Definition value_BENCH_TARGET (ε : list Value.t) (τ : list Ty.t) (α : list Va
 
 Global Instance Instance_IsConstant_value_BENCH_TARGET :
   M.IsFunction.C "revm_database_interface::BENCH_TARGET" value_BENCH_TARGET.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_BENCH_TARGET.
 
@@ -76,6 +78,7 @@ Definition value_TEST_BALANCE (ε : list Value.t) (τ : list Ty.t) (α : list Va
 
 Global Instance Instance_IsConstant_value_TEST_BALANCE :
   M.IsFunction.C "revm_database_interface::TEST_BALANCE" value_TEST_BALANCE.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_TEST_BALANCE.
 
@@ -91,6 +94,7 @@ Definition value_BENCH_TARGET_BALANCE (ε : list Value.t) (τ : list Ty.t) (α :
 
 Global Instance Instance_IsConstant_value_BENCH_TARGET_BALANCE :
   M.IsFunction.C "revm_database_interface::BENCH_TARGET_BALANCE" value_BENCH_TARGET_BALANCE.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_BENCH_TARGET_BALANCE.
 
@@ -119,6 +123,7 @@ Definition value_EEADDRESS (ε : list Value.t) (τ : list Ty.t) (α : list Value
 
 Global Instance Instance_IsConstant_value_EEADDRESS :
   M.IsFunction.C "revm_database_interface::EEADDRESS" value_EEADDRESS.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_EEADDRESS.
 
@@ -131,6 +136,7 @@ Definition value_BENCH_CALLER (ε : list Value.t) (τ : list Ty.t) (α : list Va
 
 Global Instance Instance_IsConstant_value_BENCH_CALLER :
   M.IsFunction.C "revm_database_interface::BENCH_CALLER" value_BENCH_CALLER.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_BENCH_CALLER.
 
@@ -146,6 +152,7 @@ Definition value_BENCH_CALLER_BALANCE (ε : list Value.t) (τ : list Ty.t) (α :
 
 Global Instance Instance_IsConstant_value_BENCH_CALLER_BALANCE :
   M.IsFunction.C "revm_database_interface::BENCH_CALLER_BALANCE" value_BENCH_CALLER_BALANCE.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_BENCH_CALLER_BALANCE.
 

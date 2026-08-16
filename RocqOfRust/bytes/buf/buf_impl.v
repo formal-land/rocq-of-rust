@@ -14254,6 +14254,7 @@ Module buf.
     
     Global Instance Instance_IsFunction__assert_trait_object :
       M.IsFunction.C "bytes::buf::buf_impl::_assert_trait_object" _assert_trait_object.
+    Proof.
     Admitted.
     Global Typeclasses Opaque _assert_trait_object.
   End buf_impl.

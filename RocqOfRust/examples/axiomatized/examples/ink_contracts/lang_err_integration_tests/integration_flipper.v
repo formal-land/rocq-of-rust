@@ -37,31 +37,37 @@ Module Impl_integration_flipper_Flipper.
   Parameter new : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   
   Parameter new_default : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_new_default :
     M.IsAssociatedFunction.C Self "new_default" new_default.
+  Proof.
   Admitted.
   
   Parameter try_new : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_try_new : M.IsAssociatedFunction.C Self "try_new" try_new.
+  Proof.
   Admitted.
   
   Parameter flip : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_flip : M.IsAssociatedFunction.C Self "flip" flip.
+  Proof.
   Admitted.
   
   Parameter get : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_get : M.IsAssociatedFunction.C Self "get" get.
+  Proof.
   Admitted.
   
   Parameter err_flip : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_err_flip : M.IsAssociatedFunction.C Self "err_flip" err_flip.
+  Proof.
   Admitted.
 End Impl_integration_flipper_Flipper.

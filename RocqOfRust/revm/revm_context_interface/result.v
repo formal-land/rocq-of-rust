@@ -506,6 +506,7 @@ Module result.
     Global Instance AssociatedFunction_new :
       forall (R S : Ty.t),
       M.IsAssociatedFunction.C (Self R S) "new" (new R S).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_revm_context_interface_result_ExecResultAndState_R_S.
@@ -2361,6 +2362,7 @@ Module result.
     Global Instance AssociatedFunction_is_success :
       forall (HaltReasonTy : Ty.t),
       M.IsAssociatedFunction.C (Self HaltReasonTy) "is_success" (is_success HaltReasonTy).
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_success.
     
@@ -2543,6 +2545,7 @@ Module result.
     Global Instance AssociatedFunction_map_haltreason :
       forall (HaltReasonTy : Ty.t),
       M.IsAssociatedFunction.C (Self HaltReasonTy) "map_haltreason" (map_haltreason HaltReasonTy).
+    Proof.
     Admitted.
     Global Typeclasses Opaque map_haltreason.
     
@@ -2656,6 +2659,7 @@ Module result.
     Global Instance AssociatedFunction_created_address :
       forall (HaltReasonTy : Ty.t),
       M.IsAssociatedFunction.C (Self HaltReasonTy) "created_address" (created_address HaltReasonTy).
+    Proof.
     Admitted.
     Global Typeclasses Opaque created_address.
     
@@ -2709,6 +2713,7 @@ Module result.
     Global Instance AssociatedFunction_is_halt :
       forall (HaltReasonTy : Ty.t),
       M.IsAssociatedFunction.C (Self HaltReasonTy) "is_halt" (is_halt HaltReasonTy).
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_halt.
     
@@ -2823,6 +2828,7 @@ Module result.
     Global Instance AssociatedFunction_output :
       forall (HaltReasonTy : Ty.t),
       M.IsAssociatedFunction.C (Self HaltReasonTy) "output" (output HaltReasonTy).
+    Proof.
     Admitted.
     Global Typeclasses Opaque output.
     
@@ -2915,6 +2921,7 @@ Module result.
     Global Instance AssociatedFunction_into_output :
       forall (HaltReasonTy : Ty.t),
       M.IsAssociatedFunction.C (Self HaltReasonTy) "into_output" (into_output HaltReasonTy).
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_output.
     
@@ -3114,6 +3121,7 @@ Module result.
     Global Instance AssociatedFunction_logs :
       forall (HaltReasonTy : Ty.t),
       M.IsAssociatedFunction.C (Self HaltReasonTy) "logs" (logs HaltReasonTy).
+    Proof.
     Admitted.
     Global Typeclasses Opaque logs.
     
@@ -3217,6 +3225,7 @@ Module result.
     Global Instance AssociatedFunction_into_logs :
       forall (HaltReasonTy : Ty.t),
       M.IsAssociatedFunction.C (Self HaltReasonTy) "into_logs" (into_logs HaltReasonTy).
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_logs.
     
@@ -3307,6 +3316,7 @@ Module result.
     Global Instance AssociatedFunction_gas_used :
       forall (HaltReasonTy : Ty.t),
       M.IsAssociatedFunction.C (Self HaltReasonTy) "gas_used" (gas_used HaltReasonTy).
+    Proof.
     Admitted.
     Global Typeclasses Opaque gas_used.
   End Impl_revm_context_interface_result_ExecutionResult_HaltReasonTy.
@@ -4218,6 +4228,7 @@ Module result.
     
     Global Instance AssociatedFunction_into_data :
       M.IsAssociatedFunction.C Self "into_data" into_data.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_data.
     
@@ -4289,6 +4300,7 @@ Module result.
       end.
     
     Global Instance AssociatedFunction_data : M.IsAssociatedFunction.C Self "data" data.
+    Proof.
     Admitted.
     Global Typeclasses Opaque data.
     
@@ -4390,6 +4402,7 @@ Module result.
       end.
     
     Global Instance AssociatedFunction_address : M.IsAssociatedFunction.C Self "address" address.
+    Proof.
     Admitted.
     Global Typeclasses Opaque address.
   End Impl_revm_context_interface_result_Output.
@@ -5609,6 +5622,7 @@ Module result.
         (Self DBError TransactionValidationErrorT)
         "map_db_err"
         (map_db_err DBError TransactionValidationErrorT).
+    Proof.
     Admitted.
     Global Typeclasses Opaque map_db_err.
   End Impl_revm_context_interface_result_EVMError_DBError_TransactionValidationErrorT.
@@ -15800,6 +15814,7 @@ Module result.
     Global Instance AssociatedFunction_new :
       forall (Error : Ty.t),
       M.IsAssociatedFunction.C (Self Error) "new" (new Error).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -15845,6 +15860,7 @@ Module result.
     Global Instance AssociatedFunction_error :
       forall (Error : Ty.t),
       M.IsAssociatedFunction.C (Self Error) "error" (error Error).
+    Proof.
     Admitted.
     Global Typeclasses Opaque error.
     
@@ -15884,6 +15900,7 @@ Module result.
     Global Instance AssociatedFunction_into_error :
       forall (Error : Ty.t),
       M.IsAssociatedFunction.C (Self Error) "into_error" (into_error Error).
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_error.
   End Impl_revm_context_interface_result_TransactionIndexedError_Error.

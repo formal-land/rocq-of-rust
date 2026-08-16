@@ -7,6 +7,7 @@ Module eip7823.
   
   Global Instance Instance_IsConstant_value_INPUT_SIZE_LIMIT :
     M.IsFunction.C "revm_primitives::eip7823::INPUT_SIZE_LIMIT" value_INPUT_SIZE_LIMIT.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_INPUT_SIZE_LIMIT.
 End eip7823.

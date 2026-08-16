@@ -681,6 +681,7 @@ Module gas_algebra.
   
   Global Instance Instance_IsConstant_value_BOX_ABSTRACT_SIZE :
     M.IsFunction.C "move_core_types::gas_algebra::BOX_ABSTRACT_SIZE" value_BOX_ABSTRACT_SIZE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_BOX_ABSTRACT_SIZE.
   
@@ -717,6 +718,7 @@ Module gas_algebra.
     M.IsFunction.C
       "move_core_types::gas_algebra::ENUM_BASE_ABSTRACT_SIZE"
       value_ENUM_BASE_ABSTRACT_SIZE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_ENUM_BASE_ABSTRACT_SIZE.
   
@@ -752,6 +754,7 @@ Module gas_algebra.
     Global Instance AssociatedFunction_new :
       forall (U : Ty.t),
       M.IsAssociatedFunction.C (Self U) "new" (new U).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -781,6 +784,7 @@ Module gas_algebra.
     Global Instance AssociatedFunction_zero :
       forall (U : Ty.t),
       M.IsAssociatedFunction.C (Self U) "zero" (zero U).
+    Proof.
     Admitted.
     Global Typeclasses Opaque zero.
     
@@ -810,6 +814,7 @@ Module gas_algebra.
     Global Instance AssociatedFunction_one :
       forall (U : Ty.t),
       M.IsAssociatedFunction.C (Self U) "one" (one U).
+    Proof.
     Admitted.
     Global Typeclasses Opaque one.
     
@@ -851,6 +856,7 @@ Module gas_algebra.
     Global Instance AssociatedFunction_is_zero :
       forall (U : Ty.t),
       M.IsAssociatedFunction.C (Self U) "is_zero" (is_zero U).
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_zero.
     (*
@@ -912,6 +918,7 @@ Module gas_algebra.
     Global Instance AssociatedFunction_cmp_impl :
       forall (U : Ty.t),
       M.IsAssociatedFunction.C (Self U) "cmp_impl" (cmp_impl U).
+    Proof.
     Admitted.
     Global Typeclasses Opaque cmp_impl.
     (*
@@ -985,6 +992,7 @@ Module gas_algebra.
     Global Instance AssociatedFunction_checked_sub :
       forall (U : Ty.t),
       M.IsAssociatedFunction.C (Self U) "checked_sub" (checked_sub U).
+    Proof.
     Admitted.
     Global Typeclasses Opaque checked_sub.
     
@@ -1053,6 +1061,7 @@ Module gas_algebra.
     Global Instance AssociatedFunction_saturating_sub :
       forall (U : Ty.t),
       M.IsAssociatedFunction.C (Self U) "saturating_sub" (saturating_sub U).
+    Proof.
     Admitted.
     Global Typeclasses Opaque saturating_sub.
     (*
@@ -1217,6 +1226,7 @@ Module gas_algebra.
     Global Instance AssociatedFunction_to_unit :
       forall (U : Ty.t),
       M.IsAssociatedFunction.C (Self U) "to_unit" (to_unit U).
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_unit.
     
@@ -1289,6 +1299,7 @@ Module gas_algebra.
     Global Instance AssociatedFunction_to_unit_round_down :
       forall (U : Ty.t),
       M.IsAssociatedFunction.C (Self U) "to_unit_round_down" (to_unit_round_down U).
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_unit_round_down.
     
@@ -1357,6 +1368,7 @@ Module gas_algebra.
     Global Instance AssociatedFunction_to_unit_round_up :
       forall (U : Ty.t),
       M.IsAssociatedFunction.C (Self U) "to_unit_round_up" (to_unit_round_up U).
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_unit_round_up.
     (*
@@ -1547,6 +1559,7 @@ Module gas_algebra.
     Global Instance AssociatedFunction_to_unit_with_params :
       forall (U : Ty.t),
       M.IsAssociatedFunction.C (Self U) "to_unit_with_params" (to_unit_with_params U).
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_unit_with_params.
     
@@ -1658,6 +1671,7 @@ Module gas_algebra.
         (Self U)
         "to_unit_round_down_with_params"
         (to_unit_round_down_with_params U).
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_unit_round_down_with_params.
     
@@ -1769,6 +1783,7 @@ Module gas_algebra.
         (Self U)
         "to_unit_round_up_with_params"
         (to_unit_round_up_with_params U).
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_unit_round_up_with_params.
   End Impl_move_core_types_gas_algebra_GasQuantity_U.
@@ -2554,6 +2569,7 @@ Module gas_algebra.
   
   Global Instance Instance_IsFunction_mul_impl :
     M.IsFunction.C "move_core_types::gas_algebra::mul_impl" mul_impl.
+  Proof.
   Admitted.
   Global Typeclasses Opaque mul_impl.
   
@@ -2932,6 +2948,7 @@ Module gas_algebra.
   
   Global Instance Instance_IsFunction_apply_ratio_round_down :
     M.IsFunction.C "move_core_types::gas_algebra::apply_ratio_round_down" apply_ratio_round_down.
+  Proof.
   Admitted.
   Global Typeclasses Opaque apply_ratio_round_down.
   
@@ -3236,6 +3253,7 @@ Module gas_algebra.
   
   Global Instance Instance_IsFunction_apply_ratio_round_up :
     M.IsFunction.C "move_core_types::gas_algebra::apply_ratio_round_up" apply_ratio_round_up.
+  Proof.
   Admitted.
   Global Typeclasses Opaque apply_ratio_round_up.
   

@@ -119,6 +119,7 @@ Definition foo (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_foo : M.IsFunction.C "macro_rules_designators::foo" foo.
+Proof.
 Admitted.
 Global Typeclasses Opaque foo.
 
@@ -240,6 +241,7 @@ Definition bar (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_bar : M.IsFunction.C "macro_rules_designators::bar" bar.
+Proof.
 Admitted.
 Global Typeclasses Opaque bar.
 
@@ -514,5 +516,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "macro_rules_designators::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

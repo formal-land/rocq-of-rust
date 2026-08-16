@@ -60,6 +60,7 @@ Module cell.
       Global Instance AssociatedFunction_new :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "new" (new T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -134,6 +135,7 @@ Module cell.
       Global Instance AssociatedFunction_get :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "get" (get T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque get.
       
@@ -202,6 +204,7 @@ Module cell.
       Global Instance AssociatedFunction_get_mut :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "get_mut" (get_mut T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut.
       
@@ -285,6 +288,7 @@ Module cell.
       Global Instance AssociatedFunction_set :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "set" (set T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque set.
       
@@ -469,6 +473,7 @@ Module cell.
       Global Instance AssociatedFunction_try_insert :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "try_insert" (try_insert T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque try_insert.
       
@@ -574,6 +579,7 @@ Module cell.
       Global Instance AssociatedFunction_get_or_init :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "get_or_init" (get_or_init T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_or_init.
       
@@ -704,6 +710,7 @@ Module cell.
       Global Instance AssociatedFunction_get_mut_or_init :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "get_mut_or_init" (get_mut_or_init T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut_or_init.
       
@@ -828,6 +835,7 @@ Module cell.
       Global Instance AssociatedFunction_get_or_try_init :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "get_or_try_init" (get_or_try_init T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_or_try_init.
       
@@ -1111,6 +1119,7 @@ Module cell.
       Global Instance AssociatedFunction_get_mut_or_try_init :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "get_mut_or_try_init" (get_mut_or_try_init T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut_or_try_init.
       
@@ -1347,6 +1356,7 @@ Module cell.
       Global Instance AssociatedFunction_try_init :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "try_init" (try_init T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque try_init.
       
@@ -1391,6 +1401,7 @@ Module cell.
       Global Instance AssociatedFunction_into_inner :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "into_inner" (into_inner T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_inner.
       
@@ -1438,6 +1449,7 @@ Module cell.
       Global Instance AssociatedFunction_take :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "take" (take T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque take.
     End Impl_core_cell_once_OnceCell_T.

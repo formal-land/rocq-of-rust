@@ -1541,6 +1541,7 @@ Module processor.
       M.IsFunction.C
         "pinocchio_token_program::processor::unwrap_lamports::process_unwrap_lamports"
         process_unwrap_lamports.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_unwrap_lamports.
   End unwrap_lamports.

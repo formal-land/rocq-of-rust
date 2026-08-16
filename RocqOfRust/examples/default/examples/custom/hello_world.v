@@ -6,6 +6,7 @@ Definition message (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M 
     (M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "str" ], mk_str (| "Hello, World!" |) |))).
 
 Global Instance Instance_IsConstant_message : M.IsFunction.C "hello_world::message" message.
+Proof.
 Admitted.
 Global Typeclasses Opaque message.
 
@@ -559,5 +560,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "hello_world::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

@@ -195,6 +195,7 @@ Module iter.
         Global Instance AssociatedFunction_new :
           forall (I : Ty.t),
           M.IsAssociatedFunction.C (Self I) "new" (new I).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new.
         
@@ -231,6 +232,7 @@ Module iter.
         Global Instance AssociatedFunction_into_inner :
           forall (I : Ty.t),
           M.IsAssociatedFunction.C (Self I) "into_inner" (into_inner I).
+        Proof.
         Admitted.
         Global Typeclasses Opaque into_inner.
       End Impl_core_iter_adapters_fuse_Fuse_I.
@@ -4443,6 +4445,7 @@ Module iter.
       
       Global Instance Instance_IsFunction_and_then_or_clear :
         M.IsFunction.C "core::iter::adapters::fuse::and_then_or_clear" and_then_or_clear.
+      Proof.
       Admitted.
       Global Typeclasses Opaque and_then_or_clear.
     End fuse.

@@ -5,9 +5,11 @@ Parameter read_lines : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_read_lines :
   M.IsFunction.C "file_io_read_lines::read_lines" read_lines.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "file_io_read_lines::main" main.
+Proof.
 Admitted.

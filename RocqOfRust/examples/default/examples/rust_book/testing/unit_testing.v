@@ -17,6 +17,7 @@ Definition add (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_add : M.IsFunction.C "unit_testing::add" add.
+Proof.
 Admitted.
 Global Typeclasses Opaque add.
 
@@ -36,6 +37,7 @@ Definition bad_add (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M 
   end.
 
 Global Instance Instance_IsFunction_bad_add : M.IsFunction.C "unit_testing::bad_add" bad_add.
+Proof.
 Admitted.
 Global Typeclasses Opaque bad_add.
 
@@ -168,6 +170,7 @@ Module tests.
   
   Global Instance Instance_IsFunction_test_add_1 :
     M.IsFunction.C "unit_testing::tests::test_add'1" test_add_1.
+  Proof.
   Admitted.
   Global Typeclasses Opaque test_add_1.
   
@@ -301,6 +304,7 @@ Module tests.
   
   Global Instance Instance_IsFunction_test_bad_add_1 :
     M.IsFunction.C "unit_testing::tests::test_bad_add'1" test_bad_add_1.
+  Proof.
   Admitted.
   Global Typeclasses Opaque test_bad_add_1.
 End tests.

@@ -16,6 +16,7 @@ Module slice.
     
     Global Instance Instance_IsConstant_value_LO_USIZE :
       M.IsFunction.C "core::slice::memchr::LO_USIZE" value_LO_USIZE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_LO_USIZE.
     
@@ -32,6 +33,7 @@ Module slice.
     
     Global Instance Instance_IsConstant_value_HI_USIZE :
       M.IsFunction.C "core::slice::memchr::HI_USIZE" value_HI_USIZE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_HI_USIZE.
     
@@ -48,6 +50,7 @@ Module slice.
     
     Global Instance Instance_IsConstant_value_USIZE_BYTES :
       M.IsFunction.C "core::slice::memchr::USIZE_BYTES" value_USIZE_BYTES.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_USIZE_BYTES.
     
@@ -97,6 +100,7 @@ Module slice.
     
     Global Instance Instance_IsFunction_contains_zero_byte :
       M.IsFunction.C "core::slice::memchr::contains_zero_byte" contains_zero_byte.
+    Proof.
     Admitted.
     Global Typeclasses Opaque contains_zero_byte.
     
@@ -205,6 +209,7 @@ Module slice.
     
     Global Instance Instance_IsFunction_memchr :
       M.IsFunction.C "core::slice::memchr::memchr" memchr.
+    Proof.
     Admitted.
     Global Typeclasses Opaque memchr.
     
@@ -363,6 +368,7 @@ Module slice.
     
     Global Instance Instance_IsFunction_memchr_naive :
       M.IsFunction.C "core::slice::memchr::memchr_naive" memchr_naive.
+    Proof.
     Admitted.
     Global Typeclasses Opaque memchr_naive.
     
@@ -472,6 +478,7 @@ Module slice.
     
     Global Instance Instance_IsFunction_memchr_aligned :
       M.IsFunction.C "core::slice::memchr::memchr_aligned" memchr_aligned.
+    Proof.
     Admitted.
     Global Typeclasses Opaque memchr_aligned.
     
@@ -1233,6 +1240,7 @@ Module slice.
     
     Global Instance Instance_IsFunction_memrchr :
       M.IsFunction.C "core::slice::memchr::memrchr" memrchr.
+    Proof.
     Admitted.
     Global Typeclasses Opaque memrchr.
     

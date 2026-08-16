@@ -19,6 +19,7 @@ Module Impl_Uint.
         stack
       )
     }}.
+  Proof.
   Admitted.
 
   Definition wrapping_neg {BITS LIMBS : usize} (x : lib.Uint.t BITS LIMBS) :
@@ -36,6 +37,7 @@ Module Impl_Uint.
         stack
       )
     }}.
+  Proof.
   Admitted.
 
   Definition wrapping_sub {BITS LIMBS : usize} (x1 x2 : lib.Uint.t BITS LIMBS) :
@@ -53,6 +55,7 @@ Module Impl_Uint.
         stack
       )
   }}.
+  Proof.
   Admitted.
 
   Definition checked_sub {BITS LIMBS : usize} (x1 x2 : lib.Uint.t BITS LIMBS) :
@@ -73,6 +76,7 @@ Module Impl_Uint.
         stack
       )
     }}.
+  Proof.
   Admitted.
 End Impl_Uint.
 
@@ -92,6 +96,7 @@ Module Impl_Add_for_Uint.
   Module Eq.
     Instance I {BITS LIMBS : usize} :
         Add.Eq.C (Self BITS LIMBS) (Self BITS LIMBS) (Self BITS LIMBS) I.
+    Proof.
     Admitted.
   End Eq.
   Export (hints) Eq.
@@ -114,6 +119,7 @@ Module Impl_Sub_for_Uint.
   Module Eq.
     Instance I {BITS LIMBS : usize} :
         Sub.Eq.C (Self BITS LIMBS) (Self BITS LIMBS) (Self BITS LIMBS) I.
+    Proof.
     Admitted.
   End Eq.
   Export (hints) Eq.

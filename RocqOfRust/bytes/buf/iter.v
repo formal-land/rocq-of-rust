@@ -113,6 +113,7 @@ Module buf.
       Global Instance AssociatedFunction_new :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "new" (new T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -137,6 +138,7 @@ Module buf.
       Global Instance AssociatedFunction_into_inner :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "into_inner" (into_inner T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_inner.
       
@@ -177,6 +179,7 @@ Module buf.
       Global Instance AssociatedFunction_get_ref :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "get_ref" (get_ref T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_ref.
       
@@ -222,6 +225,7 @@ Module buf.
       Global Instance AssociatedFunction_get_mut :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "get_mut" (get_mut T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut.
     End Impl_bytes_buf_iter_IntoIter_T.

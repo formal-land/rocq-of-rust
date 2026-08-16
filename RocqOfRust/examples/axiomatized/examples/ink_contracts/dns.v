@@ -36,6 +36,7 @@ Module Impl_dns_Mapping_K_V.
   Global Instance AssociatedFunction_contains :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "contains" (contains K V).
+  Proof.
   Admitted.
   
   Parameter get : forall (K V : Ty.t), (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -43,6 +44,7 @@ Module Impl_dns_Mapping_K_V.
   Global Instance AssociatedFunction_get :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "get" (get K V).
+  Proof.
   Admitted.
   
   Parameter insert : forall (K V : Ty.t), (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -50,6 +52,7 @@ Module Impl_dns_Mapping_K_V.
   Global Instance AssociatedFunction_insert :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "insert" (insert K V).
+  Proof.
   Admitted.
   
   Parameter new : forall (K V : Ty.t), (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -57,6 +60,7 @@ Module Impl_dns_Mapping_K_V.
   Global Instance AssociatedFunction_new :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "new" (new K V).
+  Proof.
   Admitted.
   
   Parameter remove : forall (K V : Ty.t), (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -64,6 +68,7 @@ Module Impl_dns_Mapping_K_V.
   Global Instance AssociatedFunction_remove :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "remove" (remove K V).
+  Proof.
   Admitted.
   
   Parameter size : forall (K V : Ty.t), (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -71,6 +76,7 @@ Module Impl_dns_Mapping_K_V.
   Global Instance AssociatedFunction_size :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "size" (size K V).
+  Proof.
   Admitted.
   
   Parameter take : forall (K V : Ty.t), (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -78,6 +84,7 @@ Module Impl_dns_Mapping_K_V.
   Global Instance AssociatedFunction_take :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "take" (take K V).
+  Proof.
   Admitted.
 End Impl_dns_Mapping_K_V.
 
@@ -272,12 +279,14 @@ Module Impl_dns_Env.
   Parameter caller : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_caller : M.IsAssociatedFunction.C Self "caller" caller.
+  Proof.
   Admitted.
   
   Parameter emit_event : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_emit_event :
     M.IsAssociatedFunction.C Self "emit_event" emit_event.
+  Proof.
   Admitted.
 End Impl_dns_Env.
 
@@ -311,6 +320,7 @@ End Impl_dns_Env.
 Parameter zero_address : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_zero_address : M.IsFunction.C "dns::zero_address" zero_address.
+Proof.
 Admitted.
 
 Module Impl_core_default_Default_for_dns_DomainNameService.
@@ -401,55 +411,65 @@ Module Impl_dns_DomainNameService.
   Parameter init_env : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_init_env : M.IsAssociatedFunction.C Self "init_env" init_env.
+  Proof.
   Admitted.
   
   Parameter env : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_env : M.IsAssociatedFunction.C Self "env" env.
+  Proof.
   Admitted.
   
   Parameter new : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   
   Parameter register : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_register : M.IsAssociatedFunction.C Self "register" register.
+  Proof.
   Admitted.
   
   Parameter get_owner_or_default : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_get_owner_or_default :
     M.IsAssociatedFunction.C Self "get_owner_or_default" get_owner_or_default.
+  Proof.
   Admitted.
   
   Parameter set_address : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_set_address :
     M.IsAssociatedFunction.C Self "set_address" set_address.
+  Proof.
   Admitted.
   
   Parameter transfer : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_transfer : M.IsAssociatedFunction.C Self "transfer" transfer.
+  Proof.
   Admitted.
   
   Parameter get_address_or_default : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_get_address_or_default :
     M.IsAssociatedFunction.C Self "get_address_or_default" get_address_or_default.
+  Proof.
   Admitted.
   
   Parameter get_address : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_get_address :
     M.IsAssociatedFunction.C Self "get_address" get_address.
+  Proof.
   Admitted.
   
   Parameter get_owner : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_get_owner :
     M.IsAssociatedFunction.C Self "get_owner" get_owner.
+  Proof.
   Admitted.
 End Impl_dns_DomainNameService.

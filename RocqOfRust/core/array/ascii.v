@@ -142,6 +142,7 @@ Module array.
       Global Instance AssociatedFunction_as_ascii :
         forall (N : Value.t),
         M.IsAssociatedFunction.C (Self N) "as_ascii" (as_ascii N).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_ascii.
       
@@ -220,6 +221,7 @@ Module array.
       Global Instance AssociatedFunction_as_ascii_unchecked :
         forall (N : Value.t),
         M.IsAssociatedFunction.C (Self N) "as_ascii_unchecked" (as_ascii_unchecked N).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_ascii_unchecked.
     End Impl_array_N_u8.

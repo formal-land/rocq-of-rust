@@ -67,6 +67,7 @@ Module deserializer.
     
     Global Instance AssociatedFunction_deserialize_with_defaults :
       M.IsAssociatedFunction.C Self "deserialize_with_defaults" deserialize_with_defaults.
+    Proof.
     Admitted.
     Global Typeclasses Opaque deserialize_with_defaults.
     
@@ -413,6 +414,7 @@ Module deserializer.
     
     Global Instance AssociatedFunction_deserialize_with_config :
       M.IsAssociatedFunction.C Self "deserialize_with_config" deserialize_with_config.
+    Proof.
     Admitted.
     Global Typeclasses Opaque deserialize_with_config.
     
@@ -477,6 +479,7 @@ Module deserializer.
     
     Global Instance AssociatedFunction_deserialize_no_check_bounds :
       M.IsAssociatedFunction.C Self "deserialize_no_check_bounds" deserialize_no_check_bounds.
+    Proof.
     Admitted.
     Global Typeclasses Opaque deserialize_no_check_bounds.
   End Impl_move_binary_format_file_format_CompiledModule.
@@ -763,6 +766,7 @@ Module deserializer.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_move_binary_format_deserializer_Table.
@@ -1050,6 +1054,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_read_u16_internal :
     M.IsFunction.C "move_binary_format::deserializer::read_u16_internal" read_u16_internal.
+  Proof.
   Admitted.
   Global Typeclasses Opaque read_u16_internal.
   
@@ -1336,6 +1341,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_read_u32_internal :
     M.IsFunction.C "move_binary_format::deserializer::read_u32_internal" read_u32_internal.
+  Proof.
   Admitted.
   Global Typeclasses Opaque read_u32_internal.
   
@@ -1622,6 +1628,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_read_u64_internal :
     M.IsFunction.C "move_binary_format::deserializer::read_u64_internal" read_u64_internal.
+  Proof.
   Admitted.
   Global Typeclasses Opaque read_u64_internal.
   
@@ -1908,6 +1915,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_read_u128_internal :
     M.IsFunction.C "move_binary_format::deserializer::read_u128_internal" read_u128_internal.
+  Proof.
   Admitted.
   Global Typeclasses Opaque read_u128_internal.
   
@@ -2215,6 +2223,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_read_u256_internal :
     M.IsFunction.C "move_binary_format::deserializer::read_u256_internal" read_u256_internal.
+  Proof.
   Admitted.
   Global Typeclasses Opaque read_u256_internal.
   
@@ -2710,6 +2719,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_read_uleb_internal :
     M.IsFunction.C "move_binary_format::deserializer::read_uleb_internal" read_uleb_internal.
+  Proof.
   Admitted.
   Global Typeclasses Opaque read_uleb_internal.
   
@@ -2907,6 +2917,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_signature_index :
     M.IsFunction.C "move_binary_format::deserializer::load_signature_index" load_signature_index.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_signature_index.
   
@@ -3108,6 +3119,7 @@ Module deserializer.
     M.IsFunction.C
       "move_binary_format::deserializer::load_module_handle_index"
       load_module_handle_index.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_module_handle_index.
   
@@ -3306,6 +3318,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_identifier_index :
     M.IsFunction.C "move_binary_format::deserializer::load_identifier_index" load_identifier_index.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_identifier_index.
   
@@ -3507,6 +3520,7 @@ Module deserializer.
     M.IsFunction.C
       "move_binary_format::deserializer::load_struct_handle_index"
       load_struct_handle_index.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_struct_handle_index.
   
@@ -3714,6 +3728,7 @@ Module deserializer.
     M.IsFunction.C
       "move_binary_format::deserializer::load_address_identifier_index"
       load_address_identifier_index.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_address_identifier_index.
   
@@ -3915,6 +3930,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_struct_def_index :
     M.IsFunction.C "move_binary_format::deserializer::load_struct_def_index" load_struct_def_index.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_struct_def_index.
   
@@ -4118,6 +4134,7 @@ Module deserializer.
     M.IsFunction.C
       "move_binary_format::deserializer::load_function_handle_index"
       load_function_handle_index.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_function_handle_index.
   
@@ -4318,6 +4335,7 @@ Module deserializer.
     M.IsFunction.C
       "move_binary_format::deserializer::load_field_handle_index"
       load_field_handle_index.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_field_handle_index.
   
@@ -4519,6 +4537,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_field_inst_index :
     M.IsFunction.C "move_binary_format::deserializer::load_field_inst_index" load_field_inst_index.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_field_inst_index.
   
@@ -4722,6 +4741,7 @@ Module deserializer.
     M.IsFunction.C
       "move_binary_format::deserializer::load_function_inst_index"
       load_function_inst_index.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_function_inst_index.
   
@@ -4925,6 +4945,7 @@ Module deserializer.
     M.IsFunction.C
       "move_binary_format::deserializer::load_struct_def_inst_index"
       load_struct_def_inst_index.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_struct_def_inst_index.
   
@@ -5126,6 +5147,7 @@ Module deserializer.
     M.IsFunction.C
       "move_binary_format::deserializer::load_constant_pool_index"
       load_constant_pool_index.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_constant_pool_index.
   
@@ -5171,6 +5193,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_bytecode_count :
     M.IsFunction.C "move_binary_format::deserializer::load_bytecode_count" load_bytecode_count.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_bytecode_count.
   
@@ -5216,6 +5239,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_bytecode_index :
     M.IsFunction.C "move_binary_format::deserializer::load_bytecode_index" load_bytecode_index.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_bytecode_index.
   
@@ -5261,6 +5285,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_acquires_count :
     M.IsFunction.C "move_binary_format::deserializer::load_acquires_count" load_acquires_count.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_acquires_count.
   
@@ -5306,6 +5331,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_field_count :
     M.IsFunction.C "move_binary_format::deserializer::load_field_count" load_field_count.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_field_count.
   
@@ -5353,6 +5379,7 @@ Module deserializer.
     M.IsFunction.C
       "move_binary_format::deserializer::load_type_parameter_count"
       load_type_parameter_count.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_type_parameter_count.
   
@@ -5398,6 +5425,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_signature_size :
     M.IsFunction.C "move_binary_format::deserializer::load_signature_size" load_signature_size.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_signature_size.
   
@@ -5443,6 +5471,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_constant_size :
     M.IsFunction.C "move_binary_format::deserializer::load_constant_size" load_constant_size.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_constant_size.
   
@@ -5490,6 +5519,7 @@ Module deserializer.
     M.IsFunction.C
       "move_binary_format::deserializer::load_metadata_key_size"
       load_metadata_key_size.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_metadata_key_size.
   
@@ -5537,6 +5567,7 @@ Module deserializer.
     M.IsFunction.C
       "move_binary_format::deserializer::load_metadata_value_size"
       load_metadata_value_size.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_metadata_value_size.
   
@@ -5582,6 +5613,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_identifier_size :
     M.IsFunction.C "move_binary_format::deserializer::load_identifier_size" load_identifier_size.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_identifier_size.
   
@@ -5629,6 +5661,7 @@ Module deserializer.
     M.IsFunction.C
       "move_binary_format::deserializer::load_type_parameter_index"
       load_type_parameter_index.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_type_parameter_index.
   
@@ -5674,6 +5707,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_field_offset :
     M.IsFunction.C "move_binary_format::deserializer::load_field_offset" load_field_offset.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_field_offset.
   
@@ -5719,6 +5753,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_table_count :
     M.IsFunction.C "move_binary_format::deserializer::load_table_count" load_table_count.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_table_count.
   
@@ -5764,6 +5799,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_table_offset :
     M.IsFunction.C "move_binary_format::deserializer::load_table_offset" load_table_offset.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_table_offset.
   
@@ -5809,6 +5845,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_table_size :
     M.IsFunction.C "move_binary_format::deserializer::load_table_size" load_table_size.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_table_size.
   
@@ -5854,6 +5891,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_local_index :
     M.IsFunction.C "move_binary_format::deserializer::load_local_index" load_local_index.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_local_index.
   
@@ -6389,6 +6427,7 @@ Module deserializer.
     M.IsFunction.C
       "move_binary_format::deserializer::deserialize_compiled_module"
       deserialize_compiled_module.
+  Proof.
   Admitted.
   Global Typeclasses Opaque deserialize_compiled_module.
   
@@ -6760,6 +6799,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_read_tables :
     M.IsFunction.C "move_binary_format::deserializer::read_tables" read_tables.
+  Proof.
   Admitted.
   Global Typeclasses Opaque read_tables.
   
@@ -7340,6 +7380,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_read_table :
     M.IsFunction.C "move_binary_format::deserializer::read_table" read_table.
+  Proof.
   Admitted.
   Global Typeclasses Opaque read_table.
   
@@ -8124,6 +8165,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_check_tables :
     M.IsFunction.C "move_binary_format::deserializer::check_tables" check_tables.
+  Proof.
   Admitted.
   Global Typeclasses Opaque check_tables.
   
@@ -8832,6 +8874,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_build_compiled_module :
     M.IsFunction.C "move_binary_format::deserializer::build_compiled_module" build_compiled_module.
+  Proof.
   Admitted.
   Global Typeclasses Opaque build_compiled_module.
   
@@ -15275,6 +15318,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_build_common_tables :
     M.IsFunction.C "move_binary_format::deserializer::build_common_tables" build_common_tables.
+  Proof.
   Admitted.
   Global Typeclasses Opaque build_common_tables.
   
@@ -19566,6 +19610,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_build_module_tables :
     M.IsFunction.C "move_binary_format::deserializer::build_module_tables" build_module_tables.
+  Proof.
   Admitted.
   Global Typeclasses Opaque build_module_tables.
   
@@ -20101,6 +20146,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_module_handles :
     M.IsFunction.C "move_binary_format::deserializer::load_module_handles" load_module_handles.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_module_handles.
   
@@ -21009,6 +21055,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_struct_handles :
     M.IsFunction.C "move_binary_format::deserializer::load_struct_handles" load_struct_handles.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_struct_handles.
   
@@ -22082,6 +22129,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_function_handles :
     M.IsFunction.C "move_binary_format::deserializer::load_function_handles" load_function_handles.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_function_handles.
   
@@ -22624,6 +22672,7 @@ Module deserializer.
     M.IsFunction.C
       "move_binary_format::deserializer::load_struct_instantiations"
       load_struct_instantiations.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_struct_instantiations.
   
@@ -23169,6 +23218,7 @@ Module deserializer.
     M.IsFunction.C
       "move_binary_format::deserializer::load_function_instantiations"
       load_function_instantiations.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_function_instantiations.
   
@@ -24025,6 +24075,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_identifiers :
     M.IsFunction.C "move_binary_format::deserializer::load_identifiers" load_identifiers.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_identifiers.
   
@@ -24606,6 +24657,7 @@ Module deserializer.
     M.IsFunction.C
       "move_binary_format::deserializer::load_address_identifiers"
       load_address_identifiers.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_address_identifiers.
   
@@ -24972,6 +25024,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_constant_pool :
     M.IsFunction.C "move_binary_format::deserializer::load_constant_pool" load_constant_pool.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_constant_pool.
   
@@ -25358,6 +25411,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_constant :
     M.IsFunction.C "move_binary_format::deserializer::load_constant" load_constant.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_constant.
   
@@ -25720,6 +25774,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_metadata :
     M.IsFunction.C "move_binary_format::deserializer::load_metadata" load_metadata.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_metadata.
   
@@ -26150,6 +26205,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_metadata_entry :
     M.IsFunction.C "move_binary_format::deserializer::load_metadata_entry" load_metadata_entry.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_metadata_entry.
   
@@ -26751,6 +26807,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_byte_blob :
     M.IsFunction.C "move_binary_format::deserializer::load_byte_blob" load_byte_blob.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_byte_blob.
   
@@ -27174,6 +27231,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_signatures :
     M.IsFunction.C "move_binary_format::deserializer::load_signatures" load_signatures.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_signatures.
   
@@ -27739,6 +27797,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_signature_tokens :
     M.IsFunction.C "move_binary_format::deserializer::load_signature_tokens" load_signature_tokens.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_signature_tokens.
   
@@ -30859,6 +30918,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_signature_token :
     M.IsFunction.C "move_binary_format::deserializer::load_signature_token" load_signature_token.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_signature_token.
   
@@ -31302,6 +31362,7 @@ Module deserializer.
         end.
       
       Global Instance AssociatedFunction_apply : M.IsAssociatedFunction.C Self "apply" apply.
+      Proof.
       Admitted.
       Global Typeclasses Opaque apply.
       
@@ -31344,6 +31405,7 @@ Module deserializer.
       
       Global Instance AssociatedFunction_is_saturated :
         M.IsAssociatedFunction.C Self "is_saturated" is_saturated.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_saturated.
       
@@ -31413,6 +31475,7 @@ Module deserializer.
       
       Global Instance AssociatedFunction_unwrap_saturated :
         M.IsAssociatedFunction.C Self "unwrap_saturated" unwrap_saturated.
+      Proof.
       Admitted.
       Global Typeclasses Opaque unwrap_saturated.
     End Impl_move_binary_format_deserializer_load_signature_token_TypeBuilder.
@@ -32766,6 +32829,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_ability_set :
     M.IsFunction.C "move_binary_format::deserializer::load_ability_set" load_ability_set.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_ability_set.
   
@@ -33338,6 +33402,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_ability_sets :
     M.IsFunction.C "move_binary_format::deserializer::load_ability_sets" load_ability_sets.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_ability_sets.
   
@@ -33917,6 +33982,7 @@ Module deserializer.
     M.IsFunction.C
       "move_binary_format::deserializer::load_struct_type_parameters"
       load_struct_type_parameters.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_struct_type_parameters.
   
@@ -34342,6 +34408,7 @@ Module deserializer.
     M.IsFunction.C
       "move_binary_format::deserializer::load_struct_type_parameter"
       load_struct_type_parameter.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_struct_type_parameter.
   
@@ -35269,6 +35336,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_struct_defs :
     M.IsFunction.C "move_binary_format::deserializer::load_struct_defs" load_struct_defs.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_struct_defs.
   
@@ -35835,6 +35903,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_field_defs :
     M.IsFunction.C "move_binary_format::deserializer::load_field_defs" load_field_defs.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_field_defs.
   
@@ -36188,6 +36257,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_field_def :
     M.IsFunction.C "move_binary_format::deserializer::load_field_def" load_field_def.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_field_def.
   
@@ -36568,6 +36638,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_function_defs :
     M.IsFunction.C "move_binary_format::deserializer::load_function_defs" load_function_defs.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_function_defs.
   
@@ -37077,6 +37148,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_field_handles :
     M.IsFunction.C "move_binary_format::deserializer::load_field_handles" load_field_handles.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_field_handles.
   
@@ -37592,6 +37664,7 @@ Module deserializer.
     M.IsFunction.C
       "move_binary_format::deserializer::load_field_instantiations"
       load_field_instantiations.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_field_instantiations.
   
@@ -40072,6 +40145,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_function_def :
     M.IsFunction.C "move_binary_format::deserializer::load_function_def" load_function_def.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_function_def.
   
@@ -40647,6 +40721,7 @@ Module deserializer.
     M.IsFunction.C
       "move_binary_format::deserializer::load_struct_definition_indices"
       load_struct_definition_indices.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_struct_definition_indices.
   
@@ -41025,6 +41100,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_code_unit :
     M.IsFunction.C "move_binary_format::deserializer::load_code_unit" load_code_unit.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_code_unit.
   
@@ -50963,6 +51039,7 @@ Module deserializer.
   
   Global Instance Instance_IsFunction_load_code :
     M.IsFunction.C "move_binary_format::deserializer::load_code" load_code.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_code.
   
@@ -51354,6 +51431,7 @@ Module deserializer.
       end.
     
     Global Instance AssociatedFunction_from_u8 : M.IsAssociatedFunction.C Self "from_u8" from_u8.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_u8.
   End Impl_move_binary_format_file_format_common_TableType.
@@ -51746,6 +51824,7 @@ Module deserializer.
       end.
     
     Global Instance AssociatedFunction_from_u8 : M.IsAssociatedFunction.C Self "from_u8" from_u8.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_u8.
   End Impl_move_binary_format_file_format_common_SerializedType.
@@ -52005,6 +52084,7 @@ Module deserializer.
       end.
     
     Global Instance AssociatedFunction_from_u8 : M.IsAssociatedFunction.C Self "from_u8" from_u8.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_u8.
   End Impl_move_binary_format_deserializer_DeprecatedNominalResourceFlag.
@@ -52163,6 +52243,7 @@ Module deserializer.
       end.
     
     Global Instance AssociatedFunction_from_u8 : M.IsAssociatedFunction.C Self "from_u8" from_u8.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_u8.
   End Impl_move_binary_format_deserializer_DeprecatedKind.
@@ -52270,6 +52351,7 @@ Module deserializer.
       end.
     
     Global Instance AssociatedFunction_from_u8 : M.IsAssociatedFunction.C Self "from_u8" from_u8.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_u8.
   End Impl_move_binary_format_file_format_common_SerializedNativeStructFlag.
@@ -54026,6 +54108,7 @@ Module deserializer.
       end.
     
     Global Instance AssociatedFunction_from_u8 : M.IsAssociatedFunction.C Self "from_u8" from_u8.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_u8.
   End Impl_move_binary_format_file_format_common_Opcodes.
@@ -56025,6 +56108,7 @@ Module deserializer.
     
     Global Instance AssociatedFunction_initialize :
       M.IsAssociatedFunction.C Self "initialize" initialize.
+    Proof.
     Admitted.
     Global Typeclasses Opaque initialize.
     
@@ -56056,6 +56140,7 @@ Module deserializer.
       end.
     
     Global Instance AssociatedFunction_version : M.IsAssociatedFunction.C Self "version" version.
+    Proof.
     Admitted.
     Global Typeclasses Opaque version.
     
@@ -56088,6 +56173,7 @@ Module deserializer.
     
     Global Instance AssociatedFunction_module_idx :
       M.IsAssociatedFunction.C Self "module_idx" module_idx.
+    Proof.
     Admitted.
     Global Typeclasses Opaque module_idx.
     
@@ -56120,6 +56206,7 @@ Module deserializer.
     
     Global Instance AssociatedFunction_binary_end_offset :
       M.IsAssociatedFunction.C Self "binary_end_offset" binary_end_offset.
+    Proof.
     Admitted.
     Global Typeclasses Opaque binary_end_offset.
     
@@ -56267,6 +56354,7 @@ Module deserializer.
     
     Global Instance AssociatedFunction_new_cursor :
       M.IsAssociatedFunction.C Self "new_cursor" new_cursor.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_cursor.
     
@@ -56365,6 +56453,7 @@ Module deserializer.
       end.
     
     Global Instance AssociatedFunction_slice : M.IsAssociatedFunction.C Self "slice" slice.
+    Proof.
     Admitted.
     Global Typeclasses Opaque slice.
     
@@ -56409,6 +56498,7 @@ Module deserializer.
     
     Global Instance AssociatedFunction_check_no_extraneous_bytes :
       M.IsAssociatedFunction.C Self "check_no_extraneous_bytes" check_no_extraneous_bytes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_no_extraneous_bytes.
   End Impl_move_binary_format_deserializer_VersionedBinary.
@@ -56444,6 +56534,7 @@ Module deserializer.
       end.
     
     Global Instance AssociatedFunction_version : M.IsAssociatedFunction.C Self "version" version.
+    Proof.
     Admitted.
     Global Typeclasses Opaque version.
     
@@ -56490,6 +56581,7 @@ Module deserializer.
       end.
     
     Global Instance AssociatedFunction_position : M.IsAssociatedFunction.C Self "position" position.
+    Proof.
     Admitted.
     Global Typeclasses Opaque position.
     
@@ -56533,6 +56625,7 @@ Module deserializer.
       end.
     
     Global Instance AssociatedFunction_read_u8 : M.IsAssociatedFunction.C Self "read_u8" read_u8.
+    Proof.
     Admitted.
     Global Typeclasses Opaque read_u8.
     
@@ -56587,6 +56680,7 @@ Module deserializer.
     
     Global Instance AssociatedFunction_set_position :
       M.IsAssociatedFunction.C Self "set_position" set_position.
+    Proof.
     Admitted.
     Global Typeclasses Opaque set_position.
     
@@ -56630,6 +56724,7 @@ Module deserializer.
       end.
     
     Global Instance AssociatedFunction_read_u32 : M.IsAssociatedFunction.C Self "read_u32" read_u32.
+    Proof.
     Admitted.
     Global Typeclasses Opaque read_u32.
     
@@ -56678,6 +56773,7 @@ Module deserializer.
     
     Global Instance AssociatedFunction_read_uleb128_as_u64 :
       M.IsAssociatedFunction.C Self "read_uleb128_as_u64" read_uleb128_as_u64.
+    Proof.
     Admitted.
     Global Typeclasses Opaque read_uleb128_as_u64.
   End Impl_move_binary_format_deserializer_VersionedCursor.

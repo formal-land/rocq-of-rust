@@ -77,6 +77,7 @@ Module Impl_e2e_call_runtime_Env.
   Parameter balance : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_balance : M.IsAssociatedFunction.C Self "balance" balance.
+  Proof.
   Admitted.
 End Impl_e2e_call_runtime_Env.
 
@@ -108,21 +109,25 @@ Module Impl_e2e_call_runtime_Contract.
   Parameter init_env : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_init_env : M.IsAssociatedFunction.C Self "init_env" init_env.
+  Proof.
   Admitted.
   
   Parameter env : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_env : M.IsAssociatedFunction.C Self "env" env.
+  Proof.
   Admitted.
   
   Parameter new : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   
   Parameter get_contract_balance : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_get_contract_balance :
     M.IsAssociatedFunction.C Self "get_contract_balance" get_contract_balance.
+  Proof.
   Admitted.
 End Impl_e2e_call_runtime_Contract.

@@ -72,6 +72,7 @@ Module slice.
       Global Instance AssociatedFunction_next_back_unchecked :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "next_back_unchecked" (next_back_unchecked T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque next_back_unchecked.
       
@@ -222,6 +223,7 @@ Module slice.
       Global Instance AssociatedFunction_make_slice :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "make_slice" (make_slice T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque make_slice.
       
@@ -434,6 +436,7 @@ Module slice.
       Global Instance AssociatedFunction_post_inc_start :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "post_inc_start" (post_inc_start T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque post_inc_start.
       
@@ -600,6 +603,7 @@ Module slice.
       Global Instance AssociatedFunction_pre_dec_end :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "pre_dec_end" (pre_dec_end T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque pre_dec_end.
     End Impl_core_slice_iter_Iter_T.
@@ -5777,6 +5781,7 @@ Module slice.
       Global Instance AssociatedFunction_next_back_unchecked :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "next_back_unchecked" (next_back_unchecked T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque next_back_unchecked.
       
@@ -5939,6 +5944,7 @@ Module slice.
       Global Instance AssociatedFunction_make_slice :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "make_slice" (make_slice T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque make_slice.
       
@@ -6151,6 +6157,7 @@ Module slice.
       Global Instance AssociatedFunction_post_inc_start :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "post_inc_start" (post_inc_start T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque post_inc_start.
       
@@ -6317,6 +6324,7 @@ Module slice.
       Global Instance AssociatedFunction_pre_dec_end :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "pre_dec_end" (pre_dec_end T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque pre_dec_end.
     End Impl_core_slice_iter_IterMut_T.

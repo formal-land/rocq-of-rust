@@ -30,6 +30,7 @@ Definition choose_u32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) :
 
 Global Instance Instance_IsFunction_choose_u32 :
   M.IsFunction.C "choose_and_add::choose_u32" choose_u32.
+Proof.
 Admitted.
 Global Typeclasses Opaque choose_u32.
 
@@ -55,6 +56,7 @@ Definition add_pair (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M
   end.
 
 Global Instance Instance_IsFunction_add_pair : M.IsFunction.C "choose_and_add::add_pair" add_pair.
+Proof.
 Admitted.
 Global Typeclasses Opaque add_pair.
 
@@ -96,5 +98,6 @@ Definition choose_and_add (ε : list Value.t) (τ : list Ty.t) (α : list Value.
 
 Global Instance Instance_IsFunction_choose_and_add :
   M.IsFunction.C "choose_and_add::choose_and_add" choose_and_add.
+Proof.
 Admitted.
 Global Typeclasses Opaque choose_and_add.

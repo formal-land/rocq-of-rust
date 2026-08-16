@@ -27,6 +27,7 @@ Module Impl_flipper_Flipper.
     end.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new.
   
@@ -63,6 +64,7 @@ Module Impl_flipper_Flipper.
   
   Global Instance AssociatedFunction_new_default :
     M.IsAssociatedFunction.C Self "new_default" new_default.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new_default.
   
@@ -105,6 +107,7 @@ Module Impl_flipper_Flipper.
     end.
   
   Global Instance AssociatedFunction_flip : M.IsAssociatedFunction.C Self "flip" flip.
+  Proof.
   Admitted.
   Global Typeclasses Opaque flip.
   
@@ -129,6 +132,7 @@ Module Impl_flipper_Flipper.
     end.
   
   Global Instance AssociatedFunction_get : M.IsAssociatedFunction.C Self "get" get.
+  Proof.
   Admitted.
   Global Typeclasses Opaque get.
 End Impl_flipper_Flipper.

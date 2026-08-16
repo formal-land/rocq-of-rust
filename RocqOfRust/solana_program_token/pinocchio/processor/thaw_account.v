@@ -41,6 +41,7 @@ Module processor.
       M.IsFunction.C
         "pinocchio_token_program::processor::thaw_account::process_thaw_account"
         process_thaw_account.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_thaw_account.
   End thaw_account.

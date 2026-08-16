@@ -962,6 +962,7 @@ Module base_convert.
     Global Instance AssociatedFunction_to_base_le :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "to_base_le" (to_base_le BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_base_le.
     
@@ -1088,6 +1089,7 @@ Module base_convert.
     Global Instance AssociatedFunction_to_base_be :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "to_base_be" (to_base_be BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_base_be.
     
@@ -2367,6 +2369,7 @@ Module base_convert.
     Global Instance AssociatedFunction_from_base_le :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "from_base_le" (from_base_le BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_base_le.
     
@@ -3070,6 +3073,7 @@ Module base_convert.
     Global Instance AssociatedFunction_from_base_be :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "from_base_be" (from_base_be BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_base_be.
   End Impl_ruint_Uint_BITS_LIMBS.

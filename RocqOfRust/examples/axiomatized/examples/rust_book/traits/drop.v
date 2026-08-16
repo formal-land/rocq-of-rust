@@ -26,4 +26,5 @@ End Impl_core_ops_drop_Drop_for_drop_Droppable.
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "drop::main" main.
+Proof.
 Admitted.

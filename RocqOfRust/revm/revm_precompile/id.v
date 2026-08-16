@@ -1119,6 +1119,7 @@ Module id.
       end.
     
     Global Instance AssociatedFunction_custom : M.IsAssociatedFunction.C Self "custom" custom.
+    Proof.
     Admitted.
     Global Typeclasses Opaque custom.
     
@@ -1356,6 +1357,7 @@ Module id.
       end.
     
     Global Instance AssociatedFunction_name : M.IsAssociatedFunction.C Self "name" name.
+    Proof.
     Admitted.
     Global Typeclasses Opaque name.
     
@@ -2042,6 +2044,7 @@ Module id.
     
     Global Instance AssociatedFunction_precompile :
       M.IsAssociatedFunction.C Self "precompile" precompile.
+    Proof.
     Admitted.
     Global Typeclasses Opaque precompile.
   End Impl_revm_precompile_id_PrecompileId.

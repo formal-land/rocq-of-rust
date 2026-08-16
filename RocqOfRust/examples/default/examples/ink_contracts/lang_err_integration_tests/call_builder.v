@@ -165,6 +165,7 @@ Module Impl_call_builder_Selector.
     end.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new.
 End Impl_call_builder_Selector.
@@ -225,6 +226,7 @@ Module Impl_call_builder_CallBuilderTest.
     end.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new.
   
@@ -336,6 +338,7 @@ Module Impl_call_builder_CallBuilderTest.
     end.
   
   Global Instance AssociatedFunction_call : M.IsAssociatedFunction.C Self "call" call.
+  Proof.
   Admitted.
   Global Typeclasses Opaque call.
   
@@ -370,6 +373,7 @@ Module Impl_call_builder_CallBuilderTest.
     end.
   
   Global Instance AssociatedFunction_invoke : M.IsAssociatedFunction.C Self "invoke" invoke.
+  Proof.
   Admitted.
   Global Typeclasses Opaque invoke.
   
@@ -429,6 +433,7 @@ Module Impl_call_builder_CallBuilderTest.
   
   Global Instance AssociatedFunction_call_instantiate :
     M.IsAssociatedFunction.C Self "call_instantiate" call_instantiate.
+  Proof.
   Admitted.
   Global Typeclasses Opaque call_instantiate.
   
@@ -485,6 +490,7 @@ Module Impl_call_builder_CallBuilderTest.
   
   Global Instance AssociatedFunction_call_instantiate_fallible :
     M.IsAssociatedFunction.C Self "call_instantiate_fallible" call_instantiate_fallible.
+  Proof.
   Admitted.
   Global Typeclasses Opaque call_instantiate_fallible.
 End Impl_call_builder_CallBuilderTest.

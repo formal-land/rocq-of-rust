@@ -116,6 +116,7 @@ Module iter.
         Global Instance AssociatedFunction_new :
           forall (I P : Ty.t),
           M.IsAssociatedFunction.C (Self I P) "new" (new I P).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new.
       End Impl_core_iter_adapters_map_while_MapWhile_I_P.

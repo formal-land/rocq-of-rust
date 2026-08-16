@@ -5,4 +5,5 @@ Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "functions_closures_example_searching_through_iterators_Iterator_find::main" main.
+Proof.
 Admitted.

@@ -34,6 +34,7 @@ Module Impl_example05_Foo.
     end.
   
   Global Instance AssociatedFunction_plus1 : M.IsAssociatedFunction.C Self "plus1" plus1.
+  Proof.
   Admitted.
   Global Typeclasses Opaque plus1.
 End Impl_example05_Foo.
@@ -63,5 +64,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "example05::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

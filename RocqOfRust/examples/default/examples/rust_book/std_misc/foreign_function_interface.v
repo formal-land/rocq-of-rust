@@ -5,12 +5,14 @@ Parameter csqrtf : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_csqrtf :
   M.IsFunction.C "foreign_function_interface::csqrtf" csqrtf.
+Proof.
 Admitted.
 
 Parameter ccosf : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_ccosf :
   M.IsFunction.C "foreign_function_interface::ccosf" ccosf.
+Proof.
 Admitted.
 
 (*
@@ -32,6 +34,7 @@ Definition cos (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_cos : M.IsFunction.C "foreign_function_interface::cos" cos.
+Proof.
 Admitted.
 Global Typeclasses Opaque cos.
 
@@ -309,6 +312,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "foreign_function_interface::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.
 

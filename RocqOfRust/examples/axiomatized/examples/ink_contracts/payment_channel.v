@@ -270,40 +270,47 @@ Module Impl_payment_channel_Env.
   Parameter caller : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_caller : M.IsAssociatedFunction.C Self "caller" caller.
+  Proof.
   Admitted.
   
   Parameter emit_event : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_emit_event :
     M.IsAssociatedFunction.C Self "emit_event" emit_event.
+  Proof.
   Admitted.
   
   Parameter terminate_contract : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_terminate_contract :
     M.IsAssociatedFunction.C Self "terminate_contract" terminate_contract.
+  Proof.
   Admitted.
   
   Parameter transfer : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_transfer : M.IsAssociatedFunction.C Self "transfer" transfer.
+  Proof.
   Admitted.
   
   Parameter block_timestamp : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_block_timestamp :
     M.IsAssociatedFunction.C Self "block_timestamp" block_timestamp.
+  Proof.
   Admitted.
   
   Parameter balance : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_balance : M.IsAssociatedFunction.C Self "balance" balance.
+  Proof.
   Admitted.
   
   Parameter account_id : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_account_id :
     M.IsAssociatedFunction.C Self "account_id" account_id.
+  Proof.
   Admitted.
 End Impl_payment_channel_Env.
 
@@ -317,12 +324,14 @@ Parameter hash_encoded : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_hash_encoded :
   M.IsFunction.C "payment_channel::hash_encoded" hash_encoded.
+Proof.
 Admitted.
 
 Parameter ecdsa_recover : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_ecdsa_recover :
   M.IsFunction.C "payment_channel::ecdsa_recover" ecdsa_recover.
+Proof.
 Admitted.
 
 (*
@@ -487,85 +496,100 @@ Module Impl_payment_channel_PaymentChannel.
   Parameter init_env : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_init_env : M.IsAssociatedFunction.C Self "init_env" init_env.
+  Proof.
   Admitted.
   
   Parameter env : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_env : M.IsAssociatedFunction.C Self "env" env.
+  Proof.
   Admitted.
   
   Parameter is_signature_valid : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_is_signature_valid :
     M.IsAssociatedFunction.C Self "is_signature_valid" is_signature_valid.
+  Proof.
   Admitted.
   
   Parameter new : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   
   Parameter close_inner : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_close_inner :
     M.IsAssociatedFunction.C Self "close_inner" close_inner.
+  Proof.
   Admitted.
   
   Parameter close : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_close : M.IsAssociatedFunction.C Self "close" close.
+  Proof.
   Admitted.
   
   Parameter start_sender_close : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_start_sender_close :
     M.IsAssociatedFunction.C Self "start_sender_close" start_sender_close.
+  Proof.
   Admitted.
   
   Parameter claim_timeout : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_claim_timeout :
     M.IsAssociatedFunction.C Self "claim_timeout" claim_timeout.
+  Proof.
   Admitted.
   
   Parameter withdraw : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_withdraw : M.IsAssociatedFunction.C Self "withdraw" withdraw.
+  Proof.
   Admitted.
   
   Parameter get_sender : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_get_sender :
     M.IsAssociatedFunction.C Self "get_sender" get_sender.
+  Proof.
   Admitted.
   
   Parameter get_recipient : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_get_recipient :
     M.IsAssociatedFunction.C Self "get_recipient" get_recipient.
+  Proof.
   Admitted.
   
   Parameter get_expiration : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_get_expiration :
     M.IsAssociatedFunction.C Self "get_expiration" get_expiration.
+  Proof.
   Admitted.
   
   Parameter get_withdrawn : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_get_withdrawn :
     M.IsAssociatedFunction.C Self "get_withdrawn" get_withdrawn.
+  Proof.
   Admitted.
   
   Parameter get_close_duration : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_get_close_duration :
     M.IsAssociatedFunction.C Self "get_close_duration" get_close_duration.
+  Proof.
   Admitted.
   
   Parameter get_balance : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_get_balance :
     M.IsAssociatedFunction.C Self "get_balance" get_balance.
+  Proof.
   Admitted.
 End Impl_payment_channel_PaymentChannel.

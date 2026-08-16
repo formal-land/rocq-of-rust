@@ -1212,6 +1212,7 @@ Module num.
       
       Global Instance Instance_IsFunction_parse_long_mantissa :
         M.IsFunction.C "core::num::dec2flt::slow::parse_long_mantissa" parse_long_mantissa.
+      Proof.
       Admitted.
       Global Typeclasses Opaque parse_long_mantissa.
       
@@ -1221,6 +1222,7 @@ Module num.
         
         Global Instance Instance_IsConstant_value_MAX_SHIFT :
           M.IsFunction.C "core::num::dec2flt::slow::parse_long_mantissa::MAX_SHIFT" value_MAX_SHIFT.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_MAX_SHIFT.
         
@@ -1231,6 +1233,7 @@ Module num.
           M.IsFunction.C
             "core::num::dec2flt::slow::parse_long_mantissa::NUM_POWERS"
             value_NUM_POWERS.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_NUM_POWERS.
         
@@ -1264,6 +1267,7 @@ Module num.
         
         Global Instance Instance_IsConstant_value_POWERS :
           M.IsFunction.C "core::num::dec2flt::slow::parse_long_mantissa::POWERS" value_POWERS.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_POWERS.
       End parse_long_mantissa.

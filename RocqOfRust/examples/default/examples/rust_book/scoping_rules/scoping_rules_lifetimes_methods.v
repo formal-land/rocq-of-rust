@@ -48,6 +48,7 @@ Module Impl_scoping_rules_lifetimes_methods_Owner.
     end.
   
   Global Instance AssociatedFunction_add_one : M.IsAssociatedFunction.C Self "add_one" add_one.
+  Proof.
   Admitted.
   Global Typeclasses Opaque add_one.
   
@@ -149,6 +150,7 @@ Module Impl_scoping_rules_lifetimes_methods_Owner.
     end.
   
   Global Instance AssociatedFunction_print : M.IsAssociatedFunction.C Self "print" print.
+  Proof.
   Admitted.
   Global Typeclasses Opaque print.
 End Impl_scoping_rules_lifetimes_methods_Owner.
@@ -201,5 +203,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "scoping_rules_lifetimes_methods::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

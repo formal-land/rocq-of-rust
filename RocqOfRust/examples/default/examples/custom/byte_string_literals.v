@@ -14,6 +14,7 @@ Definition byte_string_literal (ε : list Value.t) (τ : list Ty.t) (α : list V
 
 Global Instance Instance_IsFunction_byte_string_literal :
   M.IsFunction.C "byte_string_literals::byte_string_literal" byte_string_literal.
+Proof.
 Admitted.
 Global Typeclasses Opaque byte_string_literal.
 
@@ -30,5 +31,6 @@ Definition byte_literal (ε : list Value.t) (τ : list Ty.t) (α : list Value.t)
 
 Global Instance Instance_IsFunction_byte_literal :
   M.IsFunction.C "byte_string_literals::byte_literal" byte_literal.
+Proof.
 Admitted.
 Global Typeclasses Opaque byte_literal.

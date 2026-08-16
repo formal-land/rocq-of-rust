@@ -29,6 +29,7 @@ Module num.
         
         Global Instance Instance_IsConstant_value_POW10 :
           M.IsFunction.C "core::num::flt2dec::strategy::dragon::POW10" value_POW10.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_POW10.
         
@@ -45,6 +46,7 @@ Module num.
         
         Global Instance Instance_IsConstant_value_POW5TO16 :
           M.IsFunction.C "core::num::flt2dec::strategy::dragon::POW5TO16" value_POW5TO16.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_POW5TO16.
         
@@ -65,6 +67,7 @@ Module num.
         
         Global Instance Instance_IsConstant_value_POW5TO32 :
           M.IsFunction.C "core::num::flt2dec::strategy::dragon::POW5TO32" value_POW5TO32.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_POW5TO32.
         
@@ -87,6 +90,7 @@ Module num.
         
         Global Instance Instance_IsConstant_value_POW5TO64 :
           M.IsFunction.C "core::num::flt2dec::strategy::dragon::POW5TO64" value_POW5TO64.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_POW5TO64.
         
@@ -114,6 +118,7 @@ Module num.
         
         Global Instance Instance_IsConstant_value_POW5TO128 :
           M.IsFunction.C "core::num::flt2dec::strategy::dragon::POW5TO128" value_POW5TO128.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_POW5TO128.
         
@@ -150,6 +155,7 @@ Module num.
         
         Global Instance Instance_IsConstant_value_POW5TO256 :
           M.IsFunction.C "core::num::flt2dec::strategy::dragon::POW5TO256" value_POW5TO256.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_POW5TO256.
         
@@ -1040,6 +1046,7 @@ Module num.
         
         Global Instance Instance_IsFunction_mul_pow10 :
           M.IsFunction.C "core::num::flt2dec::strategy::dragon::mul_pow10" mul_pow10.
+        Proof.
         Admitted.
         Global Typeclasses Opaque mul_pow10.
         
@@ -1297,6 +1304,7 @@ Module num.
         
         Global Instance Instance_IsFunction_div_2pow10 :
           M.IsFunction.C "core::num::flt2dec::strategy::dragon::div_2pow10" div_2pow10.
+        Proof.
         Admitted.
         Global Typeclasses Opaque div_2pow10.
         
@@ -1712,6 +1720,7 @@ Module num.
         
         Global Instance Instance_IsFunction_div_rem_upto_16 :
           M.IsFunction.C "core::num::flt2dec::strategy::dragon::div_rem_upto_16" div_rem_upto_16.
+        Proof.
         Admitted.
         Global Typeclasses Opaque div_rem_upto_16.
         
@@ -3683,6 +3692,7 @@ Module num.
         
         Global Instance Instance_IsFunction_format_shortest :
           M.IsFunction.C "core::num::flt2dec::strategy::dragon::format_shortest" format_shortest.
+        Proof.
         Admitted.
         Global Typeclasses Opaque format_shortest.
         
@@ -6687,6 +6697,7 @@ Module num.
         
         Global Instance Instance_IsFunction_format_exact :
           M.IsFunction.C "core::num::flt2dec::strategy::dragon::format_exact" format_exact.
+        Proof.
         Admitted.
         Global Typeclasses Opaque format_exact.
       End dragon.

@@ -255,6 +255,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_chainid :
       M.IsFunction.C "revm_interpreter::instructions::block_info::chainid" chainid.
+    Proof.
     Admitted.
     Global Typeclasses Opaque chainid.
     
@@ -456,6 +457,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_coinbase :
       M.IsFunction.C "revm_interpreter::instructions::block_info::coinbase" coinbase.
+    Proof.
     Admitted.
     Global Typeclasses Opaque coinbase.
     
@@ -607,6 +609,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_timestamp :
       M.IsFunction.C "revm_interpreter::instructions::block_info::timestamp" timestamp.
+    Proof.
     Admitted.
     Global Typeclasses Opaque timestamp.
     
@@ -758,6 +761,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_block_number :
       M.IsFunction.C "revm_interpreter::instructions::block_info::block_number" block_number.
+    Proof.
     Admitted.
     Global Typeclasses Opaque block_number.
     
@@ -1140,6 +1144,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_difficulty :
       M.IsFunction.C "revm_interpreter::instructions::block_info::difficulty" difficulty.
+    Proof.
     Admitted.
     Global Typeclasses Opaque difficulty.
     
@@ -1291,6 +1296,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_gaslimit :
       M.IsFunction.C "revm_interpreter::instructions::block_info::gaslimit" gaslimit.
+    Proof.
     Admitted.
     Global Typeclasses Opaque gaslimit.
     
@@ -1546,6 +1552,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_basefee :
       M.IsFunction.C "revm_interpreter::instructions::block_info::basefee" basefee.
+    Proof.
     Admitted.
     Global Typeclasses Opaque basefee.
     
@@ -1803,6 +1810,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_blob_basefee :
       M.IsFunction.C "revm_interpreter::instructions::block_info::blob_basefee" blob_basefee.
+    Proof.
     Admitted.
     Global Typeclasses Opaque blob_basefee.
   End block_info.

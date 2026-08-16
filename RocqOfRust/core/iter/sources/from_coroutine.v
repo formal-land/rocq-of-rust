@@ -24,6 +24,7 @@ Module iter.
       
       Global Instance Instance_IsFunction_from_coroutine :
         M.IsFunction.C "core::iter::sources::from_coroutine::from_coroutine" from_coroutine.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_coroutine.
       

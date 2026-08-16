@@ -5,20 +5,24 @@ Parameter increase : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_increase :
   M.IsFunction.C "program_arguments_parsing::increase" increase.
+Proof.
 Admitted.
 
 Parameter decrease : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_decrease :
   M.IsFunction.C "program_arguments_parsing::decrease" decrease.
+Proof.
 Admitted.
 
 Parameter help : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_help : M.IsFunction.C "program_arguments_parsing::help" help.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "program_arguments_parsing::main" main.
+Proof.
 Admitted.

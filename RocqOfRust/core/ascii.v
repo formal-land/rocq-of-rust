@@ -100,6 +100,7 @@ Module ascii.
   
   Global Instance Instance_IsFunction_escape_default :
     M.IsFunction.C "core::ascii::escape_default" escape_default.
+  Proof.
   Admitted.
   Global Typeclasses Opaque escape_default.
   
@@ -142,6 +143,7 @@ Module ascii.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -180,6 +182,7 @@ Module ascii.
       end.
     
     Global Instance AssociatedFunction_empty : M.IsAssociatedFunction.C Self "empty" empty.
+    Proof.
     Admitted.
     Global Typeclasses Opaque empty.
   End Impl_core_ascii_EscapeDefault.

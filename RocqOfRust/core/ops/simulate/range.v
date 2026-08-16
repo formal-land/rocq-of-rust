@@ -22,6 +22,7 @@ Module Impl_Range.
         stack
       )
     }}.
+  Proof.
   Admitted.
 End Impl_Range.
 
@@ -48,6 +49,7 @@ Module Impl_Clone_for_Range.
         stack
       )
     }}.
+  Proof.
   Admitted.
 
   Instance I {Idx : Set} : core.simulate.clone.Clone.C (Self Idx) := {|

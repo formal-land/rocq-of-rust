@@ -107,6 +107,7 @@ Module Impl_AsRef_for_Slice.
     Instance I
         {T : Set} `{Link T} :
         AsRef.Eq.C (Self := Self T) (T := Self T) Impl_AsRef_for_Slice.I.
+    Proof.
     Admitted.
   End Eq.
   Export (hints) Eq.
@@ -139,6 +140,7 @@ Module Impl_AsRef_for_Ref.
           (Self := Self T)
           (T := U)
           (I (AsRef_for_T := AsRef_for_T)).
+    Proof.
     Admitted.
   End Eq.
   Export (hints) Eq.

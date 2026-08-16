@@ -1984,6 +1984,7 @@ Module hash.
     
     Global Instance Instance_IsFunction_u8to64_le :
       M.IsFunction.C "core::hash::sip::u8to64_le" u8to64_le.
+    Proof.
     Admitted.
     Global Typeclasses Opaque u8to64_le.
     
@@ -2013,6 +2014,7 @@ Module hash.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -2061,6 +2063,7 @@ Module hash.
       
       Global Instance AssociatedFunction_new_with_keys :
         M.IsAssociatedFunction.C Self "new_with_keys" new_with_keys.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_with_keys.
     End Impl_core_hash_sip_SipHasher.
@@ -2091,6 +2094,7 @@ Module hash.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -2133,6 +2137,7 @@ Module hash.
       
       Global Instance AssociatedFunction_new_with_keys :
         M.IsAssociatedFunction.C Self "new_with_keys" new_with_keys.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_with_keys.
     End Impl_core_hash_sip_SipHasher13.
@@ -2211,6 +2216,7 @@ Module hash.
       Global Instance AssociatedFunction_new_with_keys :
         forall (S : Ty.t),
         M.IsAssociatedFunction.C (Self S) "new_with_keys" (new_with_keys S).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_with_keys.
       
@@ -2368,6 +2374,7 @@ Module hash.
       Global Instance AssociatedFunction_reset :
         forall (S : Ty.t),
         M.IsAssociatedFunction.C (Self S) "reset" (reset S).
+      Proof.
       Admitted.
       Global Typeclasses Opaque reset.
     End Impl_core_hash_sip_Hasher_S.

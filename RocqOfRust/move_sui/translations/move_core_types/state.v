@@ -380,6 +380,7 @@ Module state.
   
   Global Instance Instance_IsFunction_set_state :
     M.IsFunction.C "move_core_types::state::set_state" set_state.
+  Proof.
   Admitted.
   Global Typeclasses Opaque set_state.
   
@@ -540,6 +541,7 @@ Module state.
   
   Global Instance Instance_IsFunction_get_state :
     M.IsFunction.C "move_core_types::state::get_state" get_state.
+  Proof.
   Admitted.
   Global Typeclasses Opaque get_state.
 End state.

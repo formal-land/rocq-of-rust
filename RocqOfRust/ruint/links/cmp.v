@@ -15,6 +15,7 @@ Module Impl_Uint.
     Run.Trait
       (cmp.Impl_ruint_Uint_BITS_LIMBS.is_zero (φ BITS) (φ LIMBS)) [] [] [ φ self ]
       bool.
+  Proof.
   Admitted.
   Global Opaque run_is_zero.
 End Impl_Uint.
@@ -26,6 +27,7 @@ Module Impl_PartialOrd_for_Uint.
     Uint.t BITS LIMBS.
 
   Instance run (BITS LIMBS : usize) : PartialOrd.Run (Self BITS LIMBS) (Self BITS LIMBS).
+  Proof.
   Admitted.
 End Impl_PartialOrd_for_Uint.
 Export (hints) Impl_PartialOrd_for_Uint.

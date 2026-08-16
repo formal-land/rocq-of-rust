@@ -496,6 +496,7 @@ Module journaled_state.
       Global Instance AssociatedFunction_into_account_ref :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "into_account_ref" (into_account_ref ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_account_ref.
       
@@ -553,6 +554,7 @@ Module journaled_state.
       Global Instance AssociatedFunction_new :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "new" (new ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -610,6 +612,7 @@ Module journaled_state.
       Global Instance AssociatedFunction_balance :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "balance" (balance ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque balance.
       
@@ -661,6 +664,7 @@ Module journaled_state.
       Global Instance AssociatedFunction_nonce :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "nonce" (nonce ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque nonce.
       
@@ -723,6 +727,7 @@ Module journaled_state.
       Global Instance AssociatedFunction_code_hash :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "code_hash" (code_hash ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque code_hash.
       
@@ -792,6 +797,7 @@ Module journaled_state.
       Global Instance AssociatedFunction_code :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "code" (code ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque code.
       
@@ -950,6 +956,7 @@ Module journaled_state.
       Global Instance AssociatedFunction_touch :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "touch" (touch ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque touch.
       
@@ -1014,6 +1021,7 @@ Module journaled_state.
       Global Instance AssociatedFunction_unsafe_mark_cold :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "unsafe_mark_cold" (unsafe_mark_cold ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque unsafe_mark_cold.
       
@@ -1254,6 +1262,7 @@ Module journaled_state.
       Global Instance AssociatedFunction_set_balance :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "set_balance" (set_balance ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque set_balance.
       
@@ -1438,6 +1447,7 @@ Module journaled_state.
       Global Instance AssociatedFunction_incr_balance :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "incr_balance" (incr_balance ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque incr_balance.
       
@@ -1622,6 +1632,7 @@ Module journaled_state.
       Global Instance AssociatedFunction_decr_balance :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "decr_balance" (decr_balance ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque decr_balance.
       
@@ -1819,6 +1830,7 @@ Module journaled_state.
       Global Instance AssociatedFunction_bump_nonce :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "bump_nonce" (bump_nonce ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque bump_nonce.
       
@@ -1980,6 +1992,7 @@ Module journaled_state.
       Global Instance AssociatedFunction_set_nonce :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "set_nonce" (set_nonce ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque set_nonce.
       
@@ -2054,6 +2067,7 @@ Module journaled_state.
       Global Instance AssociatedFunction_unsafe_set_nonce :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "unsafe_set_nonce" (unsafe_set_nonce ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque unsafe_set_nonce.
       
@@ -2234,6 +2248,7 @@ Module journaled_state.
       Global Instance AssociatedFunction_set_code :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "set_code" (set_code ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque set_code.
       
@@ -2315,6 +2330,7 @@ Module journaled_state.
           (Self ENTRY)
           "set_code_and_hash_slow"
           (set_code_and_hash_slow ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque set_code_and_hash_slow.
       
@@ -2573,6 +2589,7 @@ Module journaled_state.
       Global Instance AssociatedFunction_delegate :
         forall (ENTRY : Ty.t),
         M.IsAssociatedFunction.C (Self ENTRY) "delegate" (delegate ENTRY).
+      Proof.
       Admitted.
       Global Typeclasses Opaque delegate.
     End Impl_revm_context_interface_journaled_state_account_JournaledAccount_ENTRY.

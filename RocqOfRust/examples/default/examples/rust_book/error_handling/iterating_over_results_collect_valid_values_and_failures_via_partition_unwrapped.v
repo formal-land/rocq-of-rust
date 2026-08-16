@@ -888,5 +888,6 @@ Global Instance Instance_IsFunction_main :
   M.IsFunction.C
     "iterating_over_results_collect_valid_values_and_failures_via_partition_unwrapped::main"
     main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

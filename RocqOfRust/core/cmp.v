@@ -501,6 +501,7 @@ Module cmp.
       end.
     
     Global Instance AssociatedFunction_as_raw : M.IsAssociatedFunction.C Self "as_raw" as_raw.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_raw.
     
@@ -534,6 +535,7 @@ Module cmp.
       end.
     
     Global Instance AssociatedFunction_is_eq : M.IsAssociatedFunction.C Self "is_eq" is_eq.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_eq.
     
@@ -563,6 +565,7 @@ Module cmp.
       end.
     
     Global Instance AssociatedFunction_is_ne : M.IsAssociatedFunction.C Self "is_ne" is_ne.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_ne.
     
@@ -592,6 +595,7 @@ Module cmp.
       end.
     
     Global Instance AssociatedFunction_is_lt : M.IsAssociatedFunction.C Self "is_lt" is_lt.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_lt.
     
@@ -621,6 +625,7 @@ Module cmp.
       end.
     
     Global Instance AssociatedFunction_is_gt : M.IsAssociatedFunction.C Self "is_gt" is_gt.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_gt.
     
@@ -650,6 +655,7 @@ Module cmp.
       end.
     
     Global Instance AssociatedFunction_is_le : M.IsAssociatedFunction.C Self "is_le" is_le.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_le.
     
@@ -679,6 +685,7 @@ Module cmp.
       end.
     
     Global Instance AssociatedFunction_is_ge : M.IsAssociatedFunction.C Self "is_ge" is_ge.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_ge.
     
@@ -718,6 +725,7 @@ Module cmp.
       end.
     
     Global Instance AssociatedFunction_reverse : M.IsAssociatedFunction.C Self "reverse" reverse.
+    Proof.
     Admitted.
     Global Typeclasses Opaque reverse.
     
@@ -750,6 +758,7 @@ Module cmp.
       end.
     
     Global Instance AssociatedFunction_then_ : M.IsAssociatedFunction.C Self "then" then_.
+    Proof.
     Admitted.
     Global Typeclasses Opaque then_.
     
@@ -798,6 +807,7 @@ Module cmp.
     
     Global Instance AssociatedFunction_then_with :
       M.IsAssociatedFunction.C Self "then_with" then_with.
+    Proof.
     Admitted.
     Global Typeclasses Opaque then_with.
   End Impl_core_cmp_Ordering.
@@ -2102,6 +2112,7 @@ Module cmp.
   
   Global Instance Instance_IsFunction_default_chaining_impl :
     M.IsFunction.C "core::cmp::default_chaining_impl" default_chaining_impl.
+  Proof.
   Admitted.
   Global Typeclasses Opaque default_chaining_impl.
   
@@ -2125,6 +2136,7 @@ Module cmp.
     end.
   
   Global Instance Instance_IsFunction_min : M.IsFunction.C "core::cmp::min" min.
+  Proof.
   Admitted.
   Global Typeclasses Opaque min.
   
@@ -2203,6 +2215,7 @@ Module cmp.
     end.
   
   Global Instance Instance_IsFunction_min_by : M.IsFunction.C "core::cmp::min_by" min_by.
+  Proof.
   Admitted.
   Global Typeclasses Opaque min_by.
   
@@ -2305,6 +2318,7 @@ Module cmp.
   
   Global Instance Instance_IsFunction_min_by_key :
     M.IsFunction.C "core::cmp::min_by_key" min_by_key.
+  Proof.
   Admitted.
   Global Typeclasses Opaque min_by_key.
   
@@ -2328,6 +2342,7 @@ Module cmp.
     end.
   
   Global Instance Instance_IsFunction_max : M.IsFunction.C "core::cmp::max" max.
+  Proof.
   Admitted.
   Global Typeclasses Opaque max.
   
@@ -2406,6 +2421,7 @@ Module cmp.
     end.
   
   Global Instance Instance_IsFunction_max_by : M.IsFunction.C "core::cmp::max_by" max_by.
+  Proof.
   Admitted.
   Global Typeclasses Opaque max_by.
   
@@ -2508,6 +2524,7 @@ Module cmp.
   
   Global Instance Instance_IsFunction_max_by_key :
     M.IsFunction.C "core::cmp::max_by_key" max_by_key.
+  Proof.
   Admitted.
   Global Typeclasses Opaque max_by_key.
   
@@ -2549,6 +2566,7 @@ Module cmp.
     end.
   
   Global Instance Instance_IsFunction_minmax : M.IsFunction.C "core::cmp::minmax" minmax.
+  Proof.
   Admitted.
   Global Typeclasses Opaque minmax.
   
@@ -2626,6 +2644,7 @@ Module cmp.
     end.
   
   Global Instance Instance_IsFunction_minmax_by : M.IsFunction.C "core::cmp::minmax_by" minmax_by.
+  Proof.
   Admitted.
   Global Typeclasses Opaque minmax_by.
   
@@ -2727,6 +2746,7 @@ Module cmp.
   
   Global Instance Instance_IsFunction_minmax_by_key :
     M.IsFunction.C "core::cmp::minmax_by_key" minmax_by_key.
+  Proof.
   Admitted.
   Global Typeclasses Opaque minmax_by_key.
   

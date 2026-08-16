@@ -261,6 +261,7 @@ Module Impl_PartialEq_for_Ordering.
 
   Module Eq.
     Instance I : PartialEq.Eq.C Self Self I.
+    Proof.
     Admitted.
   End Eq.
   Export (hints) Eq.
@@ -287,6 +288,7 @@ Module Impl_Ord_for_usize.
       SimulateM.eval_f (Impl_Ord_for_usize.run_cmp ref_self ref_other) stack 🌲
       (Output.Success (cmp self other), stack)
     }}.
+  Proof.
   Admitted.
 
   Lemma min_eq (self other : Self) (stack : Stack.t) :
@@ -294,6 +296,7 @@ Module Impl_Ord_for_usize.
       SimulateM.eval_f (cmp.Ord.Provided.run_min self other) stack 🌲
       (Output.Success (Z.min i[self] i[other] : Self), stack)
     }}.
+  Proof.
   Admitted.
 
   Lemma max_eq (self other : Self) (stack : Stack.t) :
@@ -301,6 +304,7 @@ Module Impl_Ord_for_usize.
       SimulateM.eval_f (cmp.Ord.Provided.run_max self other) stack 🌲
       (Output.Success (Z.max i[self] i[other] : Self), stack)
     }}.
+  Proof.
   Admitted.
 
   (* Helpers *)
@@ -309,6 +313,7 @@ Module Impl_Ord_for_usize.
       SimulateM.eval_f (run_min self other) stack 🌲
       (Output.Success (Z.min i[self] i[other] : Self), stack)
     }}.
+  Proof.
   Admitted.
 
   Lemma toplevel_max_eq (self other : Self) (stack : Stack.t) :
@@ -316,6 +321,7 @@ Module Impl_Ord_for_usize.
       SimulateM.eval_f (run_max self other) stack 🌲
       (Output.Success (Z.max i[self] i[other] : Self), stack)
     }}.
+  Proof.
   Admitted.
 End Impl_Ord_for_usize.
 Export (hints) Impl_Ord_for_usize.

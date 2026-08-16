@@ -483,6 +483,7 @@ Module bls12_381.
     
     Global Instance Instance_IsFunction_remove_fp_padding :
       M.IsFunction.C "revm_precompile::bls12_381::utils::remove_fp_padding" remove_fp_padding.
+    Proof.
     Admitted.
     Global Typeclasses Opaque remove_fp_padding.
     
@@ -1219,6 +1220,7 @@ Module bls12_381.
     
     Global Instance Instance_IsFunction_remove_g1_padding :
       M.IsFunction.C "revm_precompile::bls12_381::utils::remove_g1_padding" remove_g1_padding.
+    Proof.
     Admitted.
     Global Typeclasses Opaque remove_g1_padding.
     
@@ -1947,6 +1949,7 @@ Module bls12_381.
     
     Global Instance Instance_IsFunction_remove_g2_padding :
       M.IsFunction.C "revm_precompile::bls12_381::utils::remove_g2_padding" remove_g2_padding.
+    Proof.
     Admitted.
     Global Typeclasses Opaque remove_g2_padding.
     
@@ -2430,6 +2433,7 @@ Module bls12_381.
     
     Global Instance Instance_IsFunction_pad_g1_point :
       M.IsFunction.C "revm_precompile::bls12_381::utils::pad_g1_point" pad_g1_point.
+    Proof.
     Admitted.
     Global Typeclasses Opaque pad_g1_point.
     
@@ -2925,6 +2929,7 @@ Module bls12_381.
     
     Global Instance Instance_IsFunction_pad_g2_point :
       M.IsFunction.C "revm_precompile::bls12_381::utils::pad_g2_point" pad_g2_point.
+    Proof.
     Admitted.
     Global Typeclasses Opaque pad_g2_point.
   End utils.

@@ -2596,6 +2596,7 @@ Module from.
     Global Instance AssociatedFunction_from :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "from" (from BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque from.
     
@@ -2723,6 +2724,7 @@ Module from.
     Global Instance AssociatedFunction_saturating_from :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "saturating_from" (saturating_from BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque saturating_from.
     
@@ -2898,6 +2900,7 @@ Module from.
     Global Instance AssociatedFunction_wrapping_from :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "wrapping_from" (wrapping_from BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque wrapping_from.
     
@@ -2962,6 +2965,7 @@ Module from.
     Global Instance AssociatedFunction_to :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "to" (to BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque to.
     
@@ -3074,6 +3078,7 @@ Module from.
     Global Instance AssociatedFunction_wrapping_to :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "wrapping_to" (wrapping_to BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque wrapping_to.
     
@@ -3186,6 +3191,7 @@ Module from.
     Global Instance AssociatedFunction_saturating_to :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "saturating_to" (saturating_to BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque saturating_to.
     
@@ -3255,6 +3261,7 @@ Module from.
     Global Instance AssociatedFunction_from_uint :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "from_uint" (from_uint BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_uint.
     
@@ -3327,6 +3334,7 @@ Module from.
     Global Instance AssociatedFunction_checked_from_uint :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "checked_from_uint" (checked_from_uint BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque checked_from_uint.
   End Impl_ruint_Uint_BITS_LIMBS.

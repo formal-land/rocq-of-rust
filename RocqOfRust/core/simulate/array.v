@@ -21,4 +21,5 @@ Lemma pointer_coercion_unsize_array_to_slice_eq
       stack
     )
   }}.
+Proof.
 Admitted.

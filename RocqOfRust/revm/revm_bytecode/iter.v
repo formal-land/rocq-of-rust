@@ -421,6 +421,7 @@ Module iter.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -460,6 +461,7 @@ Module iter.
     
     Global Instance AssociatedFunction_skip_to_next_opcode :
       M.IsAssociatedFunction.C Self "skip_to_next_opcode" skip_to_next_opcode.
+    Proof.
     Admitted.
     Global Typeclasses Opaque skip_to_next_opcode.
     
@@ -505,6 +507,7 @@ Module iter.
       end.
     
     Global Instance AssociatedFunction_as_slice : M.IsAssociatedFunction.C Self "as_slice" as_slice.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_slice.
     
@@ -588,6 +591,7 @@ Module iter.
       end.
     
     Global Instance AssociatedFunction_position : M.IsAssociatedFunction.C Self "position" position.
+    Proof.
     Admitted.
     Global Typeclasses Opaque position.
     
@@ -847,6 +851,7 @@ Module iter.
     
     Global Instance AssociatedFunction_skip_immediate :
       M.IsAssociatedFunction.C Self "skip_immediate" skip_immediate.
+    Proof.
     Admitted.
     Global Typeclasses Opaque skip_immediate.
     
@@ -923,6 +928,7 @@ Module iter.
       end.
     
     Global Instance AssociatedFunction_peek : M.IsAssociatedFunction.C Self "peek" peek.
+    Proof.
     Admitted.
     Global Typeclasses Opaque peek.
     
@@ -978,6 +984,7 @@ Module iter.
     
     Global Instance AssociatedFunction_peek_opcode :
       M.IsAssociatedFunction.C Self "peek_opcode" peek_opcode.
+    Proof.
     Admitted.
     Global Typeclasses Opaque peek_opcode.
   End Impl_revm_bytecode_iter_BytecodeIterator.

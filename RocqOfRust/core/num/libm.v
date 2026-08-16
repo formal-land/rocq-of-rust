@@ -6,21 +6,25 @@ Module num.
     Parameter cbrt : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
     
     Global Instance Instance_IsFunction_cbrt : M.IsFunction.C "core::num::libm::cbrt" cbrt.
+    Proof.
     Admitted.
     
     Parameter cbrtf : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
     
     Global Instance Instance_IsFunction_cbrtf : M.IsFunction.C "core::num::libm::cbrtf" cbrtf.
+    Proof.
     Admitted.
     
     Parameter fdim : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
     
     Global Instance Instance_IsFunction_fdim : M.IsFunction.C "core::num::libm::fdim" fdim.
+    Proof.
     Admitted.
     
     Parameter fdimf : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
     
     Global Instance Instance_IsFunction_fdimf : M.IsFunction.C "core::num::libm::fdimf" fdimf.
+    Proof.
     Admitted.
   End libm.
 End num.

@@ -137,6 +137,7 @@ Module Impl_contract_transfer_Env.
     end.
   
   Global Instance AssociatedFunction_caller : M.IsAssociatedFunction.C Self "caller" caller.
+  Proof.
   Admitted.
   Global Typeclasses Opaque caller.
   
@@ -162,6 +163,7 @@ Module Impl_contract_transfer_Env.
     end.
   
   Global Instance AssociatedFunction_balance : M.IsAssociatedFunction.C Self "balance" balance.
+  Proof.
   Admitted.
   Global Typeclasses Opaque balance.
   
@@ -189,6 +191,7 @@ Module Impl_contract_transfer_Env.
     end.
   
   Global Instance AssociatedFunction_transfer : M.IsAssociatedFunction.C Self "transfer" transfer.
+  Proof.
   Admitted.
   Global Typeclasses Opaque transfer.
   
@@ -215,6 +218,7 @@ Module Impl_contract_transfer_Env.
   
   Global Instance AssociatedFunction_transferred_value :
     M.IsAssociatedFunction.C Self "transferred_value" transferred_value.
+  Proof.
   Admitted.
   Global Typeclasses Opaque transferred_value.
 End Impl_contract_transfer_Env.
@@ -250,6 +254,7 @@ Module Impl_contract_transfer_GiveMe.
     end.
   
   Global Instance AssociatedFunction_init_env : M.IsAssociatedFunction.C Self "init_env" init_env.
+  Proof.
   Admitted.
   Global Typeclasses Opaque init_env.
   
@@ -273,6 +278,7 @@ Module Impl_contract_transfer_GiveMe.
     end.
   
   Global Instance AssociatedFunction_env : M.IsAssociatedFunction.C Self "env" env.
+  Proof.
   Admitted.
   Global Typeclasses Opaque env.
   
@@ -288,6 +294,7 @@ Module Impl_contract_transfer_GiveMe.
     end.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new.
   
@@ -738,6 +745,7 @@ Module Impl_contract_transfer_GiveMe.
     end.
   
   Global Instance AssociatedFunction_give_me : M.IsAssociatedFunction.C Self "give_me" give_me.
+  Proof.
   Admitted.
   Global Typeclasses Opaque give_me.
   
@@ -963,6 +971,7 @@ Module Impl_contract_transfer_GiveMe.
   
   Global Instance AssociatedFunction_was_it_ten :
     M.IsAssociatedFunction.C Self "was_it_ten" was_it_ten.
+  Proof.
   Admitted.
   Global Typeclasses Opaque was_it_ten.
 End Impl_contract_transfer_GiveMe.

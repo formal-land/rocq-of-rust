@@ -693,6 +693,7 @@ Module num.
     
     Global Instance Instance_IsConstant_value_SMALL_POW5 :
       M.IsFunction.C "core::num::bignum::SMALL_POW5" value_SMALL_POW5.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SMALL_POW5.
     
@@ -755,6 +756,7 @@ Module num.
       
       Global Instance AssociatedFunction_from_small :
         M.IsAssociatedFunction.C Self "from_small" from_small.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_small.
       
@@ -878,6 +880,7 @@ Module num.
       
       Global Instance AssociatedFunction_from_u64 :
         M.IsAssociatedFunction.C Self "from_u64" from_u64.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_u64.
       
@@ -948,6 +951,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_digits : M.IsAssociatedFunction.C Self "digits" digits.
+      Proof.
       Admitted.
       Global Typeclasses Opaque digits.
       
@@ -1022,6 +1026,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_get_bit : M.IsAssociatedFunction.C Self "get_bit" get_bit.
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_bit.
       
@@ -1115,6 +1120,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_is_zero : M.IsAssociatedFunction.C Self "is_zero" is_zero.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_zero.
       
@@ -1270,6 +1276,7 @@ Module num.
       
       Global Instance AssociatedFunction_bit_length :
         M.IsAssociatedFunction.C Self "bit_length" bit_length.
+      Proof.
       Admitted.
       Global Typeclasses Opaque bit_length.
       
@@ -1742,6 +1749,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_add : M.IsAssociatedFunction.C Self "add" add.
+      Proof.
       Admitted.
       Global Typeclasses Opaque add.
       
@@ -1980,6 +1988,7 @@ Module num.
       
       Global Instance AssociatedFunction_add_small :
         M.IsAssociatedFunction.C Self "add_small" add_small.
+      Proof.
       Admitted.
       Global Typeclasses Opaque add_small.
       
@@ -2450,6 +2459,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_sub : M.IsAssociatedFunction.C Self "sub" sub.
+      Proof.
       Admitted.
       Global Typeclasses Opaque sub.
       
@@ -2767,6 +2777,7 @@ Module num.
       
       Global Instance AssociatedFunction_mul_small :
         M.IsAssociatedFunction.C Self "mul_small" mul_small.
+      Proof.
       Admitted.
       Global Typeclasses Opaque mul_small.
       
@@ -3954,6 +3965,7 @@ Module num.
       
       Global Instance AssociatedFunction_mul_pow2 :
         M.IsAssociatedFunction.C Self "mul_pow2" mul_pow2.
+      Proof.
       Admitted.
       Global Typeclasses Opaque mul_pow2.
       
@@ -4300,6 +4312,7 @@ Module num.
       
       Global Instance AssociatedFunction_mul_pow5 :
         M.IsAssociatedFunction.C Self "mul_pow5" mul_pow5.
+      Proof.
       Admitted.
       Global Typeclasses Opaque mul_pow5.
       
@@ -4539,6 +4552,7 @@ Module num.
       
       Global Instance AssociatedFunction_mul_digits :
         M.IsAssociatedFunction.C Self "mul_digits" mul_digits.
+      Proof.
       Admitted.
       Global Typeclasses Opaque mul_digits.
       
@@ -4883,6 +4897,7 @@ Module num.
       
       Global Instance AssociatedFunction_div_rem_small :
         M.IsAssociatedFunction.C Self "div_rem_small" div_rem_small.
+      Proof.
       Admitted.
       Global Typeclasses Opaque div_rem_small.
     End Impl_core_num_bignum_Big32x40.
@@ -6318,6 +6333,7 @@ Module num.
         
         Global Instance AssociatedFunction_from_small :
           M.IsAssociatedFunction.C Self "from_small" from_small.
+        Proof.
         Admitted.
         Global Typeclasses Opaque from_small.
         
@@ -6441,6 +6457,7 @@ Module num.
         
         Global Instance AssociatedFunction_from_u64 :
           M.IsAssociatedFunction.C Self "from_u64" from_u64.
+        Proof.
         Admitted.
         Global Typeclasses Opaque from_u64.
         
@@ -6514,6 +6531,7 @@ Module num.
           end.
         
         Global Instance AssociatedFunction_digits : M.IsAssociatedFunction.C Self "digits" digits.
+        Proof.
         Admitted.
         Global Typeclasses Opaque digits.
         
@@ -6588,6 +6606,7 @@ Module num.
         
         Global Instance AssociatedFunction_get_bit :
           M.IsAssociatedFunction.C Self "get_bit" get_bit.
+        Proof.
         Admitted.
         Global Typeclasses Opaque get_bit.
         
@@ -6682,6 +6701,7 @@ Module num.
         
         Global Instance AssociatedFunction_is_zero :
           M.IsAssociatedFunction.C Self "is_zero" is_zero.
+        Proof.
         Admitted.
         Global Typeclasses Opaque is_zero.
         
@@ -6838,6 +6858,7 @@ Module num.
         
         Global Instance AssociatedFunction_bit_length :
           M.IsAssociatedFunction.C Self "bit_length" bit_length.
+        Proof.
         Admitted.
         Global Typeclasses Opaque bit_length.
         
@@ -7319,6 +7340,7 @@ Module num.
           end.
         
         Global Instance AssociatedFunction_add : M.IsAssociatedFunction.C Self "add" add.
+        Proof.
         Admitted.
         Global Typeclasses Opaque add.
         
@@ -7562,6 +7584,7 @@ Module num.
         
         Global Instance AssociatedFunction_add_small :
           M.IsAssociatedFunction.C Self "add_small" add_small.
+        Proof.
         Admitted.
         Global Typeclasses Opaque add_small.
         
@@ -8036,6 +8059,7 @@ Module num.
           end.
         
         Global Instance AssociatedFunction_sub : M.IsAssociatedFunction.C Self "sub" sub.
+        Proof.
         Admitted.
         Global Typeclasses Opaque sub.
         
@@ -8360,6 +8384,7 @@ Module num.
         
         Global Instance AssociatedFunction_mul_small :
           M.IsAssociatedFunction.C Self "mul_small" mul_small.
+        Proof.
         Admitted.
         Global Typeclasses Opaque mul_small.
         
@@ -9560,6 +9585,7 @@ Module num.
         
         Global Instance AssociatedFunction_mul_pow2 :
           M.IsAssociatedFunction.C Self "mul_pow2" mul_pow2.
+        Proof.
         Admitted.
         Global Typeclasses Opaque mul_pow2.
         
@@ -9917,6 +9943,7 @@ Module num.
         
         Global Instance AssociatedFunction_mul_pow5 :
           M.IsAssociatedFunction.C Self "mul_pow5" mul_pow5.
+        Proof.
         Admitted.
         Global Typeclasses Opaque mul_pow5.
         
@@ -10168,6 +10195,7 @@ Module num.
         
         Global Instance AssociatedFunction_mul_digits :
           M.IsAssociatedFunction.C Self "mul_digits" mul_digits.
+        Proof.
         Admitted.
         Global Typeclasses Opaque mul_digits.
         
@@ -10517,6 +10545,7 @@ Module num.
         
         Global Instance AssociatedFunction_div_rem_small :
           M.IsAssociatedFunction.C Self "div_rem_small" div_rem_small.
+        Proof.
         Admitted.
         Global Typeclasses Opaque div_rem_small.
       End Impl_core_num_bignum_tests_Big8x3.

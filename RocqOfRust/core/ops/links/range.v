@@ -106,6 +106,7 @@ Module Range.
 
   Lemma get_end_rust_subpointer_is_valid {Idx : Set} `{Link Idx} :
       SubPointer.Runner.Valid.t (@get_end_rust_subpointer Idx H).
+  Proof.
   Admitted.
   Smpl Add apply get_end_rust_subpointer_is_valid : run_sub_pointer.
 End Range.
@@ -116,6 +117,7 @@ Module Impl_Clone_for_Range.
     Range.t Idx.
 
   Instance run (Idx : Set) `{Link Idx} : Clone.Run (Self Idx).
+  Proof.
   Admitted.
 End Impl_Clone_for_Range.
 Export (hints) Impl_Clone_for_Range.
@@ -129,6 +131,7 @@ Module Impl_Range.
     Run.Trait
       (ops.range.Impl_core_ops_range_Range_Idx.is_empty (Φ Idx)) [] [] [ φ self ]
       bool.
+  Proof.
   Admitted.
   Global Opaque run_is_empty.
 End Impl_Range.

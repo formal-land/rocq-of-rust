@@ -341,6 +341,7 @@ Module iter.
         Global Instance AssociatedFunction_new :
           forall (I : Ty.t),
           M.IsAssociatedFunction.C (Self I) "new" (new I).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new.
         
@@ -400,6 +401,7 @@ Module iter.
         Global Instance AssociatedFunction_original_step :
           forall (I : Ty.t),
           M.IsAssociatedFunction.C (Self I) "original_step" (original_step I).
+        Proof.
         Admitted.
         Global Typeclasses Opaque original_step.
         (*
@@ -537,6 +539,7 @@ Module iter.
         Global Instance AssociatedFunction_next_back_index :
           forall (I : Ty.t),
           M.IsAssociatedFunction.C (Self I) "next_back_index" (next_back_index I).
+        Proof.
         Admitted.
         Global Typeclasses Opaque next_back_index.
       End Impl_core_iter_adapters_step_by_StepBy_I.

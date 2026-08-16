@@ -7,6 +7,7 @@ Module eip7825.
   
   Global Instance Instance_IsConstant_value_TX_GAS_LIMIT_CAP :
     M.IsFunction.C "revm_primitives::eip7825::TX_GAS_LIMIT_CAP" value_TX_GAS_LIMIT_CAP.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_TX_GAS_LIMIT_CAP.
 End eip7825.

@@ -207,6 +207,7 @@ Definition difference (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) :
 
 Global Instance Instance_IsFunction_difference :
   M.IsFunction.C "generics_associated_types_problem::difference" difference.
+Proof.
 Admitted.
 Global Typeclasses Opaque difference.
 
@@ -776,5 +777,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "generics_associated_types_problem::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

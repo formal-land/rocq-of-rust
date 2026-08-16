@@ -23,36 +23,43 @@ Module Impl_Ordering.
   Instance run_as_raw (self : Self) :
     Run.Trait cmp.Impl_core_cmp_Ordering.as_raw [] [] [ φ self ]
       (Integer.t IntegerKind.I8).
+  Proof.
   Admitted.
   Global Opaque run_as_raw.
 
   Instance run_is_eq (self : Self) :
     Run.Trait cmp.Impl_core_cmp_Ordering.is_eq [] [] [ φ self ] bool.
+  Proof.
   Admitted.
   Global Opaque run_is_eq.
 
   Instance run_is_ne (self : Self) :
     Run.Trait cmp.Impl_core_cmp_Ordering.is_ne [] [] [ φ self ] bool.
+  Proof.
   Admitted.
   Global Opaque run_is_ne.
 
   Instance run_is_lt (self : Self) :
     Run.Trait cmp.Impl_core_cmp_Ordering.is_lt [] [] [ φ self ] bool.
+  Proof.
   Admitted.
   Global Opaque run_is_lt.
 
   Instance run_is_gt (self : Self) :
     Run.Trait cmp.Impl_core_cmp_Ordering.is_gt [] [] [ φ self ] bool.
+  Proof.
   Admitted.
   Global Opaque run_is_gt.
 
   Instance run_is_le (self : Self) :
     Run.Trait cmp.Impl_core_cmp_Ordering.is_le [] [] [ φ self ] bool.
+  Proof.
   Admitted.
   Global Opaque run_is_le.
 
   Instance run_is_ge (self : Self) :
     Run.Trait cmp.Impl_core_cmp_Ordering.is_ge [] [] [ φ self ] bool.
+  Proof.
   Admitted.
   Global Opaque run_is_ge.
 End Impl_Ordering.

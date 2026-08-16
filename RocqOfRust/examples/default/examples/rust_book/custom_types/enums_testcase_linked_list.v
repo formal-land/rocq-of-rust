@@ -48,6 +48,7 @@ Module Impl_enums_testcase_linked_list_List.
     end.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new.
   
@@ -90,6 +91,7 @@ Module Impl_enums_testcase_linked_list_List.
     end.
   
   Global Instance AssociatedFunction_prepend : M.IsAssociatedFunction.C Self "prepend" prepend.
+  Proof.
   Admitted.
   Global Typeclasses Opaque prepend.
   
@@ -186,6 +188,7 @@ Module Impl_enums_testcase_linked_list_List.
     end.
   
   Global Instance AssociatedFunction_len : M.IsAssociatedFunction.C Self "len" len.
+  Proof.
   Admitted.
   Global Typeclasses Opaque len.
   
@@ -399,6 +402,7 @@ Module Impl_enums_testcase_linked_list_List.
   
   Global Instance AssociatedFunction_stringify :
     M.IsAssociatedFunction.C Self "stringify" stringify.
+  Proof.
   Admitted.
   Global Typeclasses Opaque stringify.
 End Impl_enums_testcase_linked_list_List.
@@ -678,5 +682,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "enums_testcase_linked_list::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

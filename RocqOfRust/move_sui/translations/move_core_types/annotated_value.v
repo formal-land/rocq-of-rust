@@ -8,6 +8,7 @@ Module annotated_value.
   
   Global Instance Instance_IsConstant_value_MOVE_STRUCT_NAME :
     M.IsFunction.C "move_core_types::annotated_value::MOVE_STRUCT_NAME" value_MOVE_STRUCT_NAME.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MOVE_STRUCT_NAME.
   
@@ -17,6 +18,7 @@ Module annotated_value.
   
   Global Instance Instance_IsConstant_value_MOVE_STRUCT_TYPE :
     M.IsFunction.C "move_core_types::annotated_value::MOVE_STRUCT_TYPE" value_MOVE_STRUCT_TYPE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MOVE_STRUCT_TYPE.
   
@@ -26,6 +28,7 @@ Module annotated_value.
   
   Global Instance Instance_IsConstant_value_MOVE_STRUCT_FIELDS :
     M.IsFunction.C "move_core_types::annotated_value::MOVE_STRUCT_FIELDS" value_MOVE_STRUCT_FIELDS.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MOVE_STRUCT_FIELDS.
   
@@ -3016,6 +3019,7 @@ Module annotated_value.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_move_core_types_annotated_value_MoveFieldLayout.
@@ -5149,6 +5153,7 @@ Module annotated_value.
     
     Global Instance AssociatedFunction_simple_deserialize :
       M.IsAssociatedFunction.C Self "simple_deserialize" simple_deserialize.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simple_deserialize.
     
@@ -5545,6 +5550,7 @@ Module annotated_value.
     
     Global Instance AssociatedFunction_visit_deserialize :
       M.IsAssociatedFunction.C Self "visit_deserialize" visit_deserialize.
+    Proof.
     Admitted.
     Global Typeclasses Opaque visit_deserialize.
     
@@ -5613,6 +5619,7 @@ Module annotated_value.
     
     Global Instance AssociatedFunction_simple_serialize :
       M.IsAssociatedFunction.C Self "simple_serialize" simple_serialize.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simple_serialize.
     
@@ -5942,6 +5949,7 @@ Module annotated_value.
     
     Global Instance AssociatedFunction_undecorate :
       M.IsAssociatedFunction.C Self "undecorate" undecorate.
+    Proof.
     Admitted.
     Global Typeclasses Opaque undecorate.
   End Impl_move_core_types_annotated_value_MoveValue.
@@ -6180,6 +6188,7 @@ Module annotated_value.
   
   Global Instance Instance_IsFunction_serialize_values :
     M.IsFunction.C "move_core_types::annotated_value::serialize_values" serialize_values.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_values.
   
@@ -6221,6 +6230,7 @@ Module annotated_value.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -6404,6 +6414,7 @@ Module annotated_value.
     
     Global Instance AssociatedFunction_simple_deserialize :
       M.IsAssociatedFunction.C Self "simple_deserialize" simple_deserialize.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simple_deserialize.
     
@@ -6800,6 +6811,7 @@ Module annotated_value.
     
     Global Instance AssociatedFunction_visit_deserialize :
       M.IsAssociatedFunction.C Self "visit_deserialize" visit_deserialize.
+    Proof.
     Admitted.
     Global Typeclasses Opaque visit_deserialize.
     
@@ -7001,6 +7013,7 @@ Module annotated_value.
     
     Global Instance AssociatedFunction_into_fields :
       M.IsAssociatedFunction.C Self "into_fields" into_fields.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_fields.
     
@@ -7159,6 +7172,7 @@ Module annotated_value.
     
     Global Instance AssociatedFunction_undecorate :
       M.IsAssociatedFunction.C Self "undecorate" undecorate.
+    Proof.
     Admitted.
     Global Typeclasses Opaque undecorate.
   End Impl_move_core_types_annotated_value_MoveStruct.
@@ -7197,6 +7211,7 @@ Module annotated_value.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -7361,6 +7376,7 @@ Module annotated_value.
     
     Global Instance AssociatedFunction_into_fields :
       M.IsAssociatedFunction.C Self "into_fields" into_fields.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_fields.
   End Impl_move_core_types_annotated_value_MoveStructLayout.

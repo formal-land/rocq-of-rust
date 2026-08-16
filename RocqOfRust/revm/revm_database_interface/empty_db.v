@@ -264,6 +264,7 @@ Module empty_db.
     Global Instance AssociatedFunction_new :
       forall (E : Ty.t),
       M.IsAssociatedFunction.C (Self E) "new" (new E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_revm_database_interface_empty_db_EmptyDBTyped_E.

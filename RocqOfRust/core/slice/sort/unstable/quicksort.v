@@ -809,6 +809,7 @@ Module slice.
         
         Global Instance Instance_IsFunction_quicksort :
           M.IsFunction.C "core::slice::sort::unstable::quicksort::quicksort" quicksort.
+        Proof.
         Admitted.
         Global Typeclasses Opaque quicksort.
         
@@ -1118,6 +1119,7 @@ Module slice.
         
         Global Instance Instance_IsFunction_partition :
           M.IsFunction.C "core::slice::sort::unstable::quicksort::partition" partition.
+        Proof.
         Admitted.
         Global Typeclasses Opaque partition.
         
@@ -1251,6 +1253,7 @@ Module slice.
         
         Global Instance Instance_IsFunction_inst_partition :
           M.IsFunction.C "core::slice::sort::unstable::quicksort::inst_partition" inst_partition.
+        Proof.
         Admitted.
         Global Typeclasses Opaque inst_partition.
         
@@ -1266,6 +1269,7 @@ Module slice.
             M.IsFunction.C
               "core::slice::sort::unstable::quicksort::inst_partition::MAX_BRANCHLESS_PARTITION_SIZE"
               value_MAX_BRANCHLESS_PARTITION_SIZE.
+          Proof.
           Admitted.
           Global Typeclasses Opaque value_MAX_BRANCHLESS_PARTITION_SIZE.
         End inst_partition.
@@ -1992,6 +1996,7 @@ Module slice.
           M.IsFunction.C
             "core::slice::sort::unstable::quicksort::partition_hoare_branchy_cyclic"
             partition_hoare_branchy_cyclic.
+        Proof.
         Admitted.
         Global Typeclasses Opaque partition_hoare_branchy_cyclic.
         
@@ -2966,6 +2971,7 @@ Module slice.
           M.IsFunction.C
             "core::slice::sort::unstable::quicksort::partition_lomuto_branchless_cyclic"
             partition_lomuto_branchless_cyclic.
+        Proof.
         Admitted.
         Global Typeclasses Opaque partition_lomuto_branchless_cyclic.
         

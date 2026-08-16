@@ -3074,6 +3074,7 @@ Module str.
       
       Global Instance AssociatedFunction_utf8_size :
         M.IsAssociatedFunction.C Self "utf8_size" utf8_size.
+      Proof.
       Admitted.
       Global Typeclasses Opaque utf8_size.
     End Impl_core_str_pattern_CharSearcher.
@@ -13711,6 +13712,7 @@ Module str.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
     End Impl_core_str_pattern_StrSearcher.
@@ -17146,6 +17148,7 @@ Module str.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -17247,6 +17250,7 @@ Module str.
       
       Global Instance AssociatedFunction_byteset_create :
         M.IsAssociatedFunction.C Self "byteset_create" byteset_create.
+      Proof.
       Admitted.
       Global Typeclasses Opaque byteset_create.
       
@@ -17304,6 +17308,7 @@ Module str.
       
       Global Instance AssociatedFunction_byteset_contains :
         M.IsAssociatedFunction.C Self "byteset_contains" byteset_contains.
+      Proof.
       Admitted.
       Global Typeclasses Opaque byteset_contains.
       
@@ -18662,6 +18667,7 @@ Module str.
         end.
       
       Global Instance AssociatedFunction_next : M.IsAssociatedFunction.C Self "next" next.
+      Proof.
       Admitted.
       Global Typeclasses Opaque next.
       
@@ -20099,6 +20105,7 @@ Module str.
       
       Global Instance AssociatedFunction_next_back :
         M.IsAssociatedFunction.C Self "next_back" next_back.
+      Proof.
       Admitted.
       Global Typeclasses Opaque next_back.
       
@@ -20465,6 +20472,7 @@ Module str.
       
       Global Instance AssociatedFunction_maximal_suffix :
         M.IsAssociatedFunction.C Self "maximal_suffix" maximal_suffix.
+      Proof.
       Admitted.
       Global Typeclasses Opaque maximal_suffix.
       
@@ -20950,6 +20958,7 @@ Module str.
       
       Global Instance AssociatedFunction_reverse_maximal_suffix :
         M.IsAssociatedFunction.C Self "reverse_maximal_suffix" reverse_maximal_suffix.
+      Proof.
       Admitted.
       Global Typeclasses Opaque reverse_maximal_suffix.
     End Impl_core_str_pattern_TwoWaySearcher.
@@ -23553,6 +23562,7 @@ Module str.
     
     Global Instance Instance_IsFunction_simd_contains :
       M.IsFunction.C "core::str::pattern::simd_contains" simd_contains.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_contains.
     
@@ -23562,6 +23572,7 @@ Module str.
       
       Global Instance Instance_IsConstant_value_UNROLL :
         M.IsFunction.C "core::str::pattern::simd_contains::UNROLL" value_UNROLL.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_UNROLL.
     End simd_contains.
@@ -24517,6 +24528,7 @@ Module str.
     
     Global Instance Instance_IsFunction_small_slice_eq :
       M.IsFunction.C "core::str::pattern::small_slice_eq" small_slice_eq.
+    Proof.
     Admitted.
     Global Typeclasses Opaque small_slice_eq.
   End pattern.

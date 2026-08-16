@@ -5,4 +5,5 @@ Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "functions_closures_forced_capturing_with_move::main" main.
+Proof.
 Admitted.

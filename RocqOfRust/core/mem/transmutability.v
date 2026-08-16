@@ -485,6 +485,7 @@ Module mem.
       
       Global Instance AssociatedConstant_value_NOTHING :
         M.IsAssociatedFunction.C Self "NOTHING" value_NOTHING.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_NOTHING.
       
@@ -507,6 +508,7 @@ Module mem.
       
       Global Instance AssociatedConstant_value_ALIGNMENT :
         M.IsAssociatedFunction.C Self "ALIGNMENT" value_ALIGNMENT.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_ALIGNMENT.
       
@@ -529,6 +531,7 @@ Module mem.
       
       Global Instance AssociatedConstant_value_LIFETIMES :
         M.IsAssociatedFunction.C Self "LIFETIMES" value_LIFETIMES.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_LIFETIMES.
       
@@ -551,6 +554,7 @@ Module mem.
       
       Global Instance AssociatedConstant_value_SAFETY :
         M.IsAssociatedFunction.C Self "SAFETY" value_SAFETY.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_SAFETY.
       
@@ -573,6 +577,7 @@ Module mem.
       
       Global Instance AssociatedConstant_value_VALIDITY :
         M.IsAssociatedFunction.C Self "VALIDITY" value_VALIDITY.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_VALIDITY.
       
@@ -675,6 +680,7 @@ Module mem.
         end.
       
       Global Instance AssociatedFunction_and : M.IsAssociatedFunction.C Self "and" and.
+      Proof.
       Admitted.
       Global Typeclasses Opaque and.
       
@@ -801,6 +807,7 @@ Module mem.
         end.
       
       Global Instance AssociatedFunction_but_not : M.IsAssociatedFunction.C Self "but_not" but_not.
+      Proof.
       Admitted.
       Global Typeclasses Opaque but_not.
     End Impl_core_mem_transmutability_Assume.

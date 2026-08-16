@@ -15,6 +15,7 @@ Module bls12_381_const.
   
   Global Instance Instance_IsConstant_value_G1_ADD_ADDRESS :
     M.IsFunction.C "revm_precompile::bls12_381_const::G1_ADD_ADDRESS" value_G1_ADD_ADDRESS.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_G1_ADD_ADDRESS.
   
@@ -31,6 +32,7 @@ Module bls12_381_const.
   
   Global Instance Instance_IsConstant_value_G1_MSM_ADDRESS :
     M.IsFunction.C "revm_precompile::bls12_381_const::G1_MSM_ADDRESS" value_G1_MSM_ADDRESS.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_G1_MSM_ADDRESS.
   
@@ -47,6 +49,7 @@ Module bls12_381_const.
   
   Global Instance Instance_IsConstant_value_G2_ADD_ADDRESS :
     M.IsFunction.C "revm_precompile::bls12_381_const::G2_ADD_ADDRESS" value_G2_ADD_ADDRESS.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_G2_ADD_ADDRESS.
   
@@ -63,6 +66,7 @@ Module bls12_381_const.
   
   Global Instance Instance_IsConstant_value_G2_MSM_ADDRESS :
     M.IsFunction.C "revm_precompile::bls12_381_const::G2_MSM_ADDRESS" value_G2_MSM_ADDRESS.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_G2_MSM_ADDRESS.
   
@@ -79,6 +83,7 @@ Module bls12_381_const.
   
   Global Instance Instance_IsConstant_value_PAIRING_ADDRESS :
     M.IsFunction.C "revm_precompile::bls12_381_const::PAIRING_ADDRESS" value_PAIRING_ADDRESS.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PAIRING_ADDRESS.
   
@@ -97,6 +102,7 @@ Module bls12_381_const.
     M.IsFunction.C
       "revm_precompile::bls12_381_const::MAP_FP_TO_G1_ADDRESS"
       value_MAP_FP_TO_G1_ADDRESS.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MAP_FP_TO_G1_ADDRESS.
   
@@ -119,6 +125,7 @@ Module bls12_381_const.
     M.IsFunction.C
       "revm_precompile::bls12_381_const::MAP_FP2_TO_G2_ADDRESS"
       value_MAP_FP2_TO_G2_ADDRESS.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MAP_FP2_TO_G2_ADDRESS.
   
@@ -129,6 +136,7 @@ Module bls12_381_const.
     M.IsFunction.C
       "revm_precompile::bls12_381_const::G1_ADD_BASE_GAS_FEE"
       value_G1_ADD_BASE_GAS_FEE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_G1_ADD_BASE_GAS_FEE.
   
@@ -139,6 +147,7 @@ Module bls12_381_const.
     M.IsFunction.C
       "revm_precompile::bls12_381_const::G1_MSM_BASE_GAS_FEE"
       value_G1_MSM_BASE_GAS_FEE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_G1_MSM_BASE_GAS_FEE.
   
@@ -147,6 +156,7 @@ Module bls12_381_const.
   
   Global Instance Instance_IsConstant_value_MSM_MULTIPLIER :
     M.IsFunction.C "revm_precompile::bls12_381_const::MSM_MULTIPLIER" value_MSM_MULTIPLIER.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MSM_MULTIPLIER.
   
@@ -161,6 +171,7 @@ Module bls12_381_const.
     M.IsFunction.C
       "revm_precompile::bls12_381_const::MAP_FP_TO_G1_BASE_GAS_FEE"
       value_MAP_FP_TO_G1_BASE_GAS_FEE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MAP_FP_TO_G1_BASE_GAS_FEE.
   
@@ -175,6 +186,7 @@ Module bls12_381_const.
     M.IsFunction.C
       "revm_precompile::bls12_381_const::MAP_FP2_TO_G2_BASE_GAS_FEE"
       value_MAP_FP2_TO_G2_BASE_GAS_FEE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MAP_FP2_TO_G2_BASE_GAS_FEE.
   
@@ -185,6 +197,7 @@ Module bls12_381_const.
     M.IsFunction.C
       "revm_precompile::bls12_381_const::G2_ADD_BASE_GAS_FEE"
       value_G2_ADD_BASE_GAS_FEE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_G2_ADD_BASE_GAS_FEE.
   
@@ -195,6 +208,7 @@ Module bls12_381_const.
     M.IsFunction.C
       "revm_precompile::bls12_381_const::G2_MSM_BASE_GAS_FEE"
       value_G2_MSM_BASE_GAS_FEE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_G2_MSM_BASE_GAS_FEE.
   
@@ -205,6 +219,7 @@ Module bls12_381_const.
     M.IsFunction.C
       "revm_precompile::bls12_381_const::PAIRING_OFFSET_BASE"
       value_PAIRING_OFFSET_BASE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PAIRING_OFFSET_BASE.
   
@@ -219,6 +234,7 @@ Module bls12_381_const.
     M.IsFunction.C
       "revm_precompile::bls12_381_const::PAIRING_MULTIPLIER_BASE"
       value_PAIRING_MULTIPLIER_BASE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PAIRING_MULTIPLIER_BASE.
   
@@ -370,6 +386,7 @@ Module bls12_381_const.
     M.IsFunction.C
       "revm_precompile::bls12_381_const::DISCOUNT_TABLE_G1_MSM"
       value_DISCOUNT_TABLE_G1_MSM.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_DISCOUNT_TABLE_G1_MSM.
   
@@ -521,6 +538,7 @@ Module bls12_381_const.
     M.IsFunction.C
       "revm_precompile::bls12_381_const::DISCOUNT_TABLE_G2_MSM"
       value_DISCOUNT_TABLE_G2_MSM.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_DISCOUNT_TABLE_G2_MSM.
   
@@ -529,6 +547,7 @@ Module bls12_381_const.
   
   Global Instance Instance_IsConstant_value_FP_LENGTH :
     M.IsFunction.C "revm_precompile::bls12_381_const::FP_LENGTH" value_FP_LENGTH.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_FP_LENGTH.
   
@@ -537,6 +556,7 @@ Module bls12_381_const.
   
   Global Instance Instance_IsConstant_value_PADDED_FP_LENGTH :
     M.IsFunction.C "revm_precompile::bls12_381_const::PADDED_FP_LENGTH" value_PADDED_FP_LENGTH.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PADDED_FP_LENGTH.
   
@@ -558,6 +578,7 @@ Module bls12_381_const.
   
   Global Instance Instance_IsConstant_value_G1_LENGTH :
     M.IsFunction.C "revm_precompile::bls12_381_const::G1_LENGTH" value_G1_LENGTH.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_G1_LENGTH.
   
@@ -582,6 +603,7 @@ Module bls12_381_const.
   
   Global Instance Instance_IsConstant_value_PADDED_G1_LENGTH :
     M.IsFunction.C "revm_precompile::bls12_381_const::PADDED_G1_LENGTH" value_PADDED_G1_LENGTH.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PADDED_G1_LENGTH.
   
@@ -603,6 +625,7 @@ Module bls12_381_const.
   
   Global Instance Instance_IsConstant_value_FP2_LENGTH :
     M.IsFunction.C "revm_precompile::bls12_381_const::FP2_LENGTH" value_FP2_LENGTH.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_FP2_LENGTH.
   
@@ -627,6 +650,7 @@ Module bls12_381_const.
   
   Global Instance Instance_IsConstant_value_PADDED_FP2_LENGTH :
     M.IsFunction.C "revm_precompile::bls12_381_const::PADDED_FP2_LENGTH" value_PADDED_FP2_LENGTH.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PADDED_FP2_LENGTH.
   
@@ -635,6 +659,7 @@ Module bls12_381_const.
   
   Global Instance Instance_IsConstant_value_SCALAR_LENGTH :
     M.IsFunction.C "revm_precompile::bls12_381_const::SCALAR_LENGTH" value_SCALAR_LENGTH.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SCALAR_LENGTH.
   
@@ -656,6 +681,7 @@ Module bls12_381_const.
   
   Global Instance Instance_IsConstant_value_SCALAR_LENGTH_BITS :
     M.IsFunction.C "revm_precompile::bls12_381_const::SCALAR_LENGTH_BITS" value_SCALAR_LENGTH_BITS.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SCALAR_LENGTH_BITS.
   
@@ -682,6 +708,7 @@ Module bls12_381_const.
     M.IsFunction.C
       "revm_precompile::bls12_381_const::G1_ADD_INPUT_LENGTH"
       value_G1_ADD_INPUT_LENGTH.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_G1_ADD_INPUT_LENGTH.
   
@@ -710,6 +737,7 @@ Module bls12_381_const.
     M.IsFunction.C
       "revm_precompile::bls12_381_const::G1_MSM_INPUT_LENGTH"
       value_G1_MSM_INPUT_LENGTH.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_G1_MSM_INPUT_LENGTH.
   
@@ -731,6 +759,7 @@ Module bls12_381_const.
   
   Global Instance Instance_IsConstant_value_G2_LENGTH :
     M.IsFunction.C "revm_precompile::bls12_381_const::G2_LENGTH" value_G2_LENGTH.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_G2_LENGTH.
   
@@ -755,6 +784,7 @@ Module bls12_381_const.
   
   Global Instance Instance_IsConstant_value_PADDED_G2_LENGTH :
     M.IsFunction.C "revm_precompile::bls12_381_const::PADDED_G2_LENGTH" value_PADDED_G2_LENGTH.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PADDED_G2_LENGTH.
   
@@ -781,6 +811,7 @@ Module bls12_381_const.
     M.IsFunction.C
       "revm_precompile::bls12_381_const::G2_ADD_INPUT_LENGTH"
       value_G2_ADD_INPUT_LENGTH.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_G2_ADD_INPUT_LENGTH.
   
@@ -809,6 +840,7 @@ Module bls12_381_const.
     M.IsFunction.C
       "revm_precompile::bls12_381_const::G2_MSM_INPUT_LENGTH"
       value_G2_MSM_INPUT_LENGTH.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_G2_MSM_INPUT_LENGTH.
   
@@ -840,6 +872,7 @@ Module bls12_381_const.
     M.IsFunction.C
       "revm_precompile::bls12_381_const::PAIRING_INPUT_LENGTH"
       value_PAIRING_INPUT_LENGTH.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PAIRING_INPUT_LENGTH.
   
@@ -848,6 +881,7 @@ Module bls12_381_const.
   
   Global Instance Instance_IsConstant_value_FP_PAD_BY :
     M.IsFunction.C "revm_precompile::bls12_381_const::FP_PAD_BY" value_FP_PAD_BY.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_FP_PAD_BY.
   
@@ -866,6 +900,7 @@ Module bls12_381_const.
     M.IsFunction.C
       "revm_precompile::bls12_381_const::TRUSTED_SETUP_TAU_G2_BYTES"
       value_TRUSTED_SETUP_TAU_G2_BYTES.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_TRUSTED_SETUP_TAU_G2_BYTES.
 End bls12_381_const.

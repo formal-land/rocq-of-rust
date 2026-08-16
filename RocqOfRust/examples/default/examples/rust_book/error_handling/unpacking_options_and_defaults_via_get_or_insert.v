@@ -421,5 +421,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "unpacking_options_and_defaults_via_get_or_insert::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

@@ -1053,6 +1053,7 @@ Module journal.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -1091,6 +1092,7 @@ Module journal.
       
       Global Instance AssociatedFunction_precompiles :
         M.IsAssociatedFunction.C Self "precompiles" precompiles.
+      Proof.
       Admitted.
       Global Typeclasses Opaque precompiles.
       
@@ -1123,6 +1125,7 @@ Module journal.
       
       Global Instance AssociatedFunction_coinbase :
         M.IsAssociatedFunction.C Self "coinbase" coinbase.
+      Proof.
       Admitted.
       Global Typeclasses Opaque coinbase.
       
@@ -1526,6 +1529,7 @@ Module journal.
       
       Global Instance AssociatedFunction_set_precompile_addresses :
         M.IsAssociatedFunction.C Self "set_precompile_addresses" set_precompile_addresses.
+      Proof.
       Admitted.
       Global Typeclasses Opaque set_precompile_addresses.
       
@@ -1569,6 +1573,7 @@ Module journal.
       
       Global Instance AssociatedFunction_set_coinbase :
         M.IsAssociatedFunction.C Self "set_coinbase" set_coinbase.
+      Proof.
       Admitted.
       Global Typeclasses Opaque set_coinbase.
       
@@ -1627,6 +1632,7 @@ Module journal.
       
       Global Instance AssociatedFunction_set_access_list :
         M.IsAssociatedFunction.C Self "set_access_list" set_access_list.
+      Proof.
       Admitted.
       Global Typeclasses Opaque set_access_list.
       
@@ -1668,6 +1674,7 @@ Module journal.
       
       Global Instance AssociatedFunction_clear_coinbase :
         M.IsAssociatedFunction.C Self "clear_coinbase" clear_coinbase.
+      Proof.
       Admitted.
       Global Typeclasses Opaque clear_coinbase.
       
@@ -1756,6 +1763,7 @@ Module journal.
           Self
           "clear_coinbase_and_access_list"
           clear_coinbase_and_access_list.
+      Proof.
       Admitted.
       Global Typeclasses Opaque clear_coinbase_and_access_list.
       
@@ -2109,6 +2117,7 @@ Module journal.
         end.
       
       Global Instance AssociatedFunction_is_warm : M.IsAssociatedFunction.C Self "is_warm" is_warm.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_warm.
       
@@ -2335,6 +2344,7 @@ Module journal.
       
       Global Instance AssociatedFunction_is_storage_warm :
         M.IsAssociatedFunction.C Self "is_storage_warm" is_storage_warm.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_storage_warm.
       
@@ -2383,6 +2393,7 @@ Module journal.
         end.
       
       Global Instance AssociatedFunction_is_cold : M.IsAssociatedFunction.C Self "is_cold" is_cold.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_cold.
     End Impl_revm_context_journal_warm_addresses_WarmAddresses.

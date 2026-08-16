@@ -932,6 +932,7 @@ Module effects.
     Global Instance AssociatedFunction_as_ref :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "as_ref" (as_ref T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_ref.
     
@@ -1029,6 +1030,7 @@ Module effects.
     Global Instance AssociatedFunction_map :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "map" (map T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque map.
     
@@ -1104,6 +1106,7 @@ Module effects.
     Global Instance AssociatedFunction_ok :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "ok" (ok T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque ok.
   End Impl_move_core_types_effects_Op_T.
@@ -2923,6 +2926,7 @@ Module effects.
   
   Global Instance Instance_IsFunction_squash :
     M.IsFunction.C "move_core_types::effects::squash" squash.
+  Proof.
   Admitted.
   Global Typeclasses Opaque squash.
   
@@ -2991,6 +2995,7 @@ Module effects.
     
     Global Instance AssociatedFunction_from_modules_resources :
       M.IsAssociatedFunction.C Self "from_modules_resources" from_modules_resources.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_modules_resources.
     
@@ -3098,6 +3103,7 @@ Module effects.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -3561,6 +3567,7 @@ Module effects.
     
     Global Instance AssociatedFunction_add_module_op :
       M.IsAssociatedFunction.C Self "add_module_op" add_module_op.
+    Proof.
     Admitted.
     Global Typeclasses Opaque add_module_op.
     
@@ -4027,6 +4034,7 @@ Module effects.
     
     Global Instance AssociatedFunction_add_resource_op :
       M.IsAssociatedFunction.C Self "add_resource_op" add_resource_op.
+    Proof.
     Admitted.
     Global Typeclasses Opaque add_resource_op.
     
@@ -4067,6 +4075,7 @@ Module effects.
     
     Global Instance AssociatedFunction_into_inner :
       M.IsAssociatedFunction.C Self "into_inner" into_inner.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_inner.
     
@@ -4092,6 +4101,7 @@ Module effects.
     
     Global Instance AssociatedFunction_into_resources :
       M.IsAssociatedFunction.C Self "into_resources" into_resources.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_resources.
     
@@ -4117,6 +4127,7 @@ Module effects.
     
     Global Instance AssociatedFunction_into_modules :
       M.IsAssociatedFunction.C Self "into_modules" into_modules.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_modules.
     
@@ -4151,6 +4162,7 @@ Module effects.
       end.
     
     Global Instance AssociatedFunction_modules : M.IsAssociatedFunction.C Self "modules" modules.
+    Proof.
     Admitted.
     Global Typeclasses Opaque modules.
     
@@ -4186,6 +4198,7 @@ Module effects.
     
     Global Instance AssociatedFunction_resources :
       M.IsAssociatedFunction.C Self "resources" resources.
+    Proof.
     Admitted.
     Global Typeclasses Opaque resources.
     
@@ -4278,6 +4291,7 @@ Module effects.
       end.
     
     Global Instance AssociatedFunction_is_empty : M.IsAssociatedFunction.C Self "is_empty" is_empty.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_empty.
     
@@ -4497,6 +4511,7 @@ Module effects.
       end.
     
     Global Instance AssociatedFunction_squash : M.IsAssociatedFunction.C Self "squash" squash.
+    Proof.
     Admitted.
     Global Typeclasses Opaque squash.
   End Impl_move_core_types_effects_AccountChangeSet.
@@ -5063,6 +5078,7 @@ Module effects.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -5410,6 +5426,7 @@ Module effects.
     
     Global Instance AssociatedFunction_add_account_changeset :
       M.IsAssociatedFunction.C Self "add_account_changeset" add_account_changeset.
+    Proof.
     Admitted.
     Global Typeclasses Opaque add_account_changeset.
     
@@ -5444,6 +5461,7 @@ Module effects.
       end.
     
     Global Instance AssociatedFunction_accounts : M.IsAssociatedFunction.C Self "accounts" accounts.
+    Proof.
     Admitted.
     Global Typeclasses Opaque accounts.
     
@@ -5469,6 +5487,7 @@ Module effects.
     
     Global Instance AssociatedFunction_into_inner :
       M.IsAssociatedFunction.C Self "into_inner" into_inner.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_inner.
     
@@ -5667,6 +5686,7 @@ Module effects.
         Self
         "get_or_insert_account_changeset"
         get_or_insert_account_changeset.
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_or_insert_account_changeset.
     
@@ -5795,6 +5815,7 @@ Module effects.
     
     Global Instance AssociatedFunction_add_module_op :
       M.IsAssociatedFunction.C Self "add_module_op" add_module_op.
+    Proof.
     Admitted.
     Global Typeclasses Opaque add_module_op.
     
@@ -5883,6 +5904,7 @@ Module effects.
     
     Global Instance AssociatedFunction_add_resource_op :
       M.IsAssociatedFunction.C Self "add_resource_op" add_resource_op.
+    Proof.
     Admitted.
     Global Typeclasses Opaque add_resource_op.
     
@@ -6450,6 +6472,7 @@ Module effects.
       end.
     
     Global Instance AssociatedFunction_squash : M.IsAssociatedFunction.C Self "squash" squash.
+    Proof.
     Admitted.
     Global Typeclasses Opaque squash.
     
@@ -7110,6 +7133,7 @@ Module effects.
     
     Global Instance AssociatedFunction_into_modules :
       M.IsAssociatedFunction.C Self "into_modules" into_modules.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_modules.
     
@@ -8254,6 +8278,7 @@ Module effects.
       end.
     
     Global Instance AssociatedFunction_modules : M.IsAssociatedFunction.C Self "modules" modules.
+    Proof.
     Admitted.
     Global Typeclasses Opaque modules.
     
@@ -9406,6 +9431,7 @@ Module effects.
     
     Global Instance AssociatedFunction_resources :
       M.IsAssociatedFunction.C Self "resources" resources.
+    Proof.
     Admitted.
     Global Typeclasses Opaque resources.
   End Impl_move_core_types_effects_ChangeSet.

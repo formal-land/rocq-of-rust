@@ -4,4 +4,5 @@ Require Import RocqOfRust.RocqOfRust.
 Parameter classify : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_classify : M.IsFunction.C "range_patterns::classify" classify.
+Proof.
 Admitted.

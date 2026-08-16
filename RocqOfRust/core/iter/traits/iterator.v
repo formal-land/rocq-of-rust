@@ -29,6 +29,7 @@ Module iter.
         M.IsFunction.C
           "core::iter::traits::iterator::_assert_is_dyn_compatible"
           _assert_is_dyn_compatible.
+      Proof.
       Admitted.
       Global Typeclasses Opaque _assert_is_dyn_compatible.
       
@@ -6863,6 +6864,7 @@ Module iter.
       
       Global Instance Instance_IsFunction_iter_compare :
         M.IsFunction.C "core::iter::traits::iterator::iter_compare" iter_compare.
+      Proof.
       Admitted.
       Global Typeclasses Opaque iter_compare.
       
@@ -7086,6 +7088,7 @@ Module iter.
         
         Global Instance Instance_IsFunction_compare :
           M.IsFunction.C "core::iter::traits::iterator::iter_compare::compare" compare.
+        Proof.
         Admitted.
         Global Typeclasses Opaque compare.
       End iter_compare.
@@ -7188,6 +7191,7 @@ Module iter.
       
       Global Instance Instance_IsFunction_iter_eq :
         M.IsFunction.C "core::iter::traits::iterator::iter_eq" iter_eq.
+      Proof.
       Admitted.
       Global Typeclasses Opaque iter_eq.
       

@@ -61,4 +61,5 @@ Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "unpacking_options_and_defaults_via_or::main" main.
+Proof.
 Admitted.

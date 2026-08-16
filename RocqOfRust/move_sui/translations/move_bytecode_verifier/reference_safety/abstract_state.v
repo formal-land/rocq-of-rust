@@ -505,6 +505,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_is_reference :
         M.IsAssociatedFunction.C Self "is_reference" is_reference.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_reference.
       
@@ -550,6 +551,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_is_value :
         M.IsAssociatedFunction.C Self "is_value" is_value.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_value.
       
@@ -624,6 +626,7 @@ Module reference_safety.
         end.
       
       Global Instance AssociatedFunction_ref_id : M.IsAssociatedFunction.C Self "ref_id" ref_id.
+      Proof.
       Admitted.
       Global Typeclasses Opaque ref_id.
     End Impl_move_bytecode_verifier_reference_safety_abstract_state_AbstractValue.
@@ -2257,6 +2260,7 @@ Module reference_safety.
       M.IsFunction.C
         "move_bytecode_verifier::reference_safety::abstract_state::STEP_BASE_COST"
         value_STEP_BASE_COST.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_STEP_BASE_COST.
     
@@ -2271,6 +2275,7 @@ Module reference_safety.
       M.IsFunction.C
         "move_bytecode_verifier::reference_safety::abstract_state::STEP_PER_LOCAL_COST"
         value_STEP_PER_LOCAL_COST.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_STEP_PER_LOCAL_COST.
     
@@ -2285,6 +2290,7 @@ Module reference_safety.
       M.IsFunction.C
         "move_bytecode_verifier::reference_safety::abstract_state::STEP_PER_GRAPH_ITEM_COST"
         value_STEP_PER_GRAPH_ITEM_COST.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_STEP_PER_GRAPH_ITEM_COST.
     
@@ -2295,6 +2301,7 @@ Module reference_safety.
       M.IsFunction.C
         "move_bytecode_verifier::reference_safety::abstract_state::JOIN_BASE_COST"
         value_JOIN_BASE_COST.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_JOIN_BASE_COST.
     
@@ -2309,6 +2316,7 @@ Module reference_safety.
       M.IsFunction.C
         "move_bytecode_verifier::reference_safety::abstract_state::JOIN_PER_LOCAL_COST"
         value_JOIN_PER_LOCAL_COST.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_JOIN_PER_LOCAL_COST.
     
@@ -2323,6 +2331,7 @@ Module reference_safety.
       M.IsFunction.C
         "move_bytecode_verifier::reference_safety::abstract_state::JOIN_PER_GRAPH_ITEM_COST"
         value_JOIN_PER_GRAPH_ITEM_COST.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_JOIN_PER_GRAPH_ITEM_COST.
     
@@ -2337,6 +2346,7 @@ Module reference_safety.
       M.IsFunction.C
         "move_bytecode_verifier::reference_safety::abstract_state::REF_PARAM_EDGE_COST"
         value_REF_PARAM_EDGE_COST.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_REF_PARAM_EDGE_COST.
     
@@ -2351,6 +2361,7 @@ Module reference_safety.
       M.IsFunction.C
         "move_bytecode_verifier::reference_safety::abstract_state::REF_PARAM_EDGE_COST_GROWTH"
         value_REF_PARAM_EDGE_COST_GROWTH.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_REF_PARAM_EDGE_COST_GROWTH.
     
@@ -2365,6 +2376,7 @@ Module reference_safety.
       M.IsFunction.C
         "move_bytecode_verifier::reference_safety::abstract_state::CALL_PER_ACQUIRES_COST"
         value_CALL_PER_ACQUIRES_COST.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_CALL_PER_ACQUIRES_COST.
     
@@ -3769,6 +3781,7 @@ Module reference_safety.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -3823,6 +3836,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_local_count :
         M.IsAssociatedFunction.C Self "local_count" local_count.
+      Proof.
       Admitted.
       Global Typeclasses Opaque local_count.
       
@@ -3876,6 +3890,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_graph_size :
         M.IsAssociatedFunction.C Self "graph_size" graph_size.
+      Proof.
       Admitted.
       Global Typeclasses Opaque graph_size.
       
@@ -3941,6 +3956,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_frame_root :
         M.IsAssociatedFunction.C Self "frame_root" frame_root.
+      Proof.
       Admitted.
       Global Typeclasses Opaque frame_root.
       
@@ -4021,6 +4037,7 @@ Module reference_safety.
         end.
       
       Global Instance AssociatedFunction_error : M.IsAssociatedFunction.C Self "error" error.
+      Proof.
       Admitted.
       Global Typeclasses Opaque error.
       
@@ -4132,6 +4149,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_value_for :
         M.IsAssociatedFunction.C Self "value_for" value_for.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_for.
       
@@ -4228,6 +4246,7 @@ Module reference_safety.
         end.
       
       Global Instance AssociatedFunction_new_ref : M.IsAssociatedFunction.C Self "new_ref" new_ref.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_ref.
       
@@ -4286,6 +4305,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_add_copy :
         M.IsAssociatedFunction.C Self "add_copy" add_copy.
+      Proof.
       Admitted.
       Global Typeclasses Opaque add_copy.
       
@@ -4344,6 +4364,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_add_borrow :
         M.IsAssociatedFunction.C Self "add_borrow" add_borrow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque add_borrow.
       
@@ -4410,6 +4431,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_add_field_borrow :
         M.IsAssociatedFunction.C Self "add_field_borrow" add_field_borrow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque add_field_borrow.
       
@@ -4484,6 +4506,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_add_local_borrow :
         M.IsAssociatedFunction.C Self "add_local_borrow" add_local_borrow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque add_local_borrow.
       
@@ -4562,6 +4585,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_add_resource_borrow :
         M.IsAssociatedFunction.C Self "add_resource_borrow" add_resource_borrow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque add_resource_borrow.
       
@@ -4620,6 +4644,7 @@ Module reference_safety.
         end.
       
       Global Instance AssociatedFunction_release : M.IsAssociatedFunction.C Self "release" release.
+      Proof.
       Admitted.
       Global Typeclasses Opaque release.
       
@@ -4793,6 +4818,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_has_full_borrows :
         M.IsAssociatedFunction.C Self "has_full_borrows" has_full_borrows.
+      Proof.
       Admitted.
       Global Typeclasses Opaque has_full_borrows.
       
@@ -5399,6 +5425,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_has_consistent_borrows :
         M.IsAssociatedFunction.C Self "has_consistent_borrows" has_consistent_borrows.
+      Proof.
       Admitted.
       Global Typeclasses Opaque has_consistent_borrows.
       
@@ -6006,6 +6033,7 @@ Module reference_safety.
           Self
           "has_consistent_mutable_borrows"
           has_consistent_mutable_borrows.
+      Proof.
       Admitted.
       Global Typeclasses Opaque has_consistent_mutable_borrows.
       
@@ -6124,6 +6152,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_is_writable :
         M.IsAssociatedFunction.C Self "is_writable" is_writable.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_writable.
       
@@ -6274,6 +6303,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_is_freezable :
         M.IsAssociatedFunction.C Self "is_freezable" is_freezable.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_freezable.
       
@@ -6363,6 +6393,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_is_readable :
         M.IsAssociatedFunction.C Self "is_readable" is_readable.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_readable.
       
@@ -6426,6 +6457,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_is_local_borrowed :
         M.IsAssociatedFunction.C Self "is_local_borrowed" is_local_borrowed.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_local_borrowed.
       
@@ -6493,6 +6525,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_is_local_mutably_borrowed :
         M.IsAssociatedFunction.C Self "is_local_mutably_borrowed" is_local_mutably_borrowed.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_local_mutably_borrowed.
       
@@ -6560,6 +6593,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_is_global_borrowed :
         M.IsAssociatedFunction.C Self "is_global_borrowed" is_global_borrowed.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_global_borrowed.
       
@@ -6631,6 +6665,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_is_global_mutably_borrowed :
         M.IsAssociatedFunction.C Self "is_global_mutably_borrowed" is_global_mutably_borrowed.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_global_mutably_borrowed.
       
@@ -6698,6 +6733,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_is_frame_safe_to_destroy :
         M.IsAssociatedFunction.C Self "is_frame_safe_to_destroy" is_frame_safe_to_destroy.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_frame_safe_to_destroy.
       
@@ -6771,6 +6807,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_release_value :
         M.IsAssociatedFunction.C Self "release_value" release_value.
+      Proof.
       Admitted.
       Global Typeclasses Opaque release_value.
       
@@ -7345,6 +7382,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_copy_loc :
         M.IsAssociatedFunction.C Self "copy_loc" copy_loc.
+      Proof.
       Admitted.
       Global Typeclasses Opaque copy_loc.
       
@@ -7929,6 +7967,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_move_loc :
         M.IsAssociatedFunction.C Self "move_loc" move_loc.
+      Proof.
       Admitted.
       Global Typeclasses Opaque move_loc.
       
@@ -8511,6 +8550,7 @@ Module reference_safety.
         end.
       
       Global Instance AssociatedFunction_st_loc : M.IsAssociatedFunction.C Self "st_loc" st_loc.
+      Proof.
       Admitted.
       Global Typeclasses Opaque st_loc.
       
@@ -8716,6 +8756,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_freeze_ref :
         M.IsAssociatedFunction.C Self "freeze_ref" freeze_ref.
+      Proof.
       Admitted.
       Global Typeclasses Opaque freeze_ref.
       
@@ -9123,6 +9164,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_comparison :
         M.IsAssociatedFunction.C Self "comparison" comparison.
+      Proof.
       Admitted.
       Global Typeclasses Opaque comparison.
       
@@ -9295,6 +9337,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_read_ref :
         M.IsAssociatedFunction.C Self "read_ref" read_ref.
+      Proof.
       Admitted.
       Global Typeclasses Opaque read_ref.
       
@@ -9441,6 +9484,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_write_ref :
         M.IsAssociatedFunction.C Self "write_ref" write_ref.
+      Proof.
       Admitted.
       Global Typeclasses Opaque write_ref.
       
@@ -9631,6 +9675,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_borrow_loc :
         M.IsAssociatedFunction.C Self "borrow_loc" borrow_loc.
+      Proof.
       Admitted.
       Global Typeclasses Opaque borrow_loc.
       
@@ -9957,6 +10002,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_borrow_field :
         M.IsAssociatedFunction.C Self "borrow_field" borrow_field.
+      Proof.
       Admitted.
       Global Typeclasses Opaque borrow_field.
       
@@ -10167,6 +10213,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_borrow_global :
         M.IsAssociatedFunction.C Self "borrow_global" borrow_global.
+      Proof.
       Admitted.
       Global Typeclasses Opaque borrow_global.
       
@@ -10288,6 +10335,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_move_from :
         M.IsAssociatedFunction.C Self "move_from" move_from.
+      Proof.
       Admitted.
       Global Typeclasses Opaque move_from.
       
@@ -10668,6 +10716,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_vector_op :
         M.IsAssociatedFunction.C Self "vector_op" vector_op.
+      Proof.
       Admitted.
       Global Typeclasses Opaque vector_op.
       
@@ -11105,6 +11154,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_vector_element_borrow :
         M.IsAssociatedFunction.C Self "vector_element_borrow" vector_element_borrow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque vector_element_borrow.
       
@@ -13528,6 +13578,7 @@ Module reference_safety.
         end.
       
       Global Instance AssociatedFunction_call : M.IsAssociatedFunction.C Self "call" call.
+      Proof.
       Admitted.
       Global Typeclasses Opaque call.
       
@@ -14543,6 +14594,7 @@ Module reference_safety.
         end.
       
       Global Instance AssociatedFunction_ret : M.IsAssociatedFunction.C Self "ret" ret.
+      Proof.
       Admitted.
       Global Typeclasses Opaque ret.
       
@@ -15318,6 +15370,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_construct_canonical_state :
         M.IsAssociatedFunction.C Self "construct_canonical_state" construct_canonical_state.
+      Proof.
       Admitted.
       Global Typeclasses Opaque construct_canonical_state.
       
@@ -15481,6 +15534,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_all_immutable :
         M.IsAssociatedFunction.C Self "all_immutable" all_immutable.
+      Proof.
       Admitted.
       Global Typeclasses Opaque all_immutable.
       
@@ -15888,6 +15942,7 @@ Module reference_safety.
       
       Global Instance AssociatedFunction_is_canonical :
         M.IsAssociatedFunction.C Self "is_canonical" is_canonical.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_canonical.
       
@@ -17041,6 +17096,7 @@ Module reference_safety.
         end.
       
       Global Instance AssociatedFunction_join_ : M.IsAssociatedFunction.C Self "join_" join_.
+      Proof.
       Admitted.
       Global Typeclasses Opaque join_.
     End Impl_move_bytecode_verifier_reference_safety_abstract_state_AbstractState.

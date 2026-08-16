@@ -74,6 +74,7 @@ Module pow.
     Global Instance AssociatedFunction_checked_pow :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "checked_pow" (checked_pow BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque checked_pow.
     
@@ -420,6 +421,7 @@ Module pow.
     Global Instance AssociatedFunction_overflowing_pow :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "overflowing_pow" (overflowing_pow BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque overflowing_pow.
     
@@ -456,6 +458,7 @@ Module pow.
     Global Instance AssociatedFunction_pow :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "pow" (pow BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque pow.
     
@@ -522,6 +525,7 @@ Module pow.
     Global Instance AssociatedFunction_saturating_pow :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "saturating_pow" (saturating_pow BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque saturating_pow.
     
@@ -754,6 +758,7 @@ Module pow.
     Global Instance AssociatedFunction_wrapping_pow :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "wrapping_pow" (wrapping_pow BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque wrapping_pow.
     
@@ -1493,6 +1498,7 @@ Module pow.
     Global Instance AssociatedFunction_approx_pow2 :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "approx_pow2" (approx_pow2 BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque approx_pow2.
   End Impl_ruint_Uint_BITS_LIMBS.

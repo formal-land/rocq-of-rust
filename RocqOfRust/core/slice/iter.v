@@ -434,6 +434,7 @@ Module slice.
       Global Instance AssociatedFunction_new :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "new" (new T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -473,6 +474,7 @@ Module slice.
       Global Instance AssociatedFunction_as_slice :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "as_slice" (as_slice T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_slice.
     End Impl_core_slice_iter_Iter_T.
@@ -914,6 +916,7 @@ Module slice.
       Global Instance AssociatedFunction_new :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "new" (new T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -1086,6 +1089,7 @@ Module slice.
       Global Instance AssociatedFunction_into_slice :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "into_slice" (into_slice T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_slice.
       
@@ -1128,6 +1132,7 @@ Module slice.
       Global Instance AssociatedFunction_as_slice :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "as_slice" (as_slice T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_slice.
       
@@ -1311,6 +1316,7 @@ Module slice.
       Global Instance AssociatedFunction_as_mut_slice :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "as_mut_slice" (as_mut_slice T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_mut_slice.
     End Impl_core_slice_iter_IterMut_T.
@@ -1415,6 +1421,7 @@ Module slice.
       Global Instance AssociatedFunction_new :
         forall (T P : Ty.t),
         M.IsAssociatedFunction.C (Self T P) "new" (new T P).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -1504,6 +1511,7 @@ Module slice.
       Global Instance AssociatedFunction_as_slice :
         forall (T P : Ty.t),
         M.IsAssociatedFunction.C (Self T P) "as_slice" (as_slice T P).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_slice.
     End Impl_core_slice_iter_Split_T_P.
@@ -2826,6 +2834,7 @@ Module slice.
       Global Instance AssociatedFunction_new :
         forall (T P : Ty.t),
         M.IsAssociatedFunction.C (Self T P) "new" (new T P).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
     End Impl_core_slice_iter_SplitInclusive_T_P.
@@ -4183,6 +4192,7 @@ Module slice.
       Global Instance AssociatedFunction_new :
         forall (T P : Ty.t),
         M.IsAssociatedFunction.C (Self T P) "new" (new T P).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
     End Impl_core_slice_iter_SplitMut_T_P.
@@ -5553,6 +5563,7 @@ Module slice.
       Global Instance AssociatedFunction_new :
         forall (T P : Ty.t),
         M.IsAssociatedFunction.C (Self T P) "new" (new T P).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
     End Impl_core_slice_iter_SplitInclusiveMut_T_P.
@@ -6888,6 +6899,7 @@ Module slice.
       Global Instance AssociatedFunction_new :
         forall (T P : Ty.t),
         M.IsAssociatedFunction.C (Self T P) "new" (new T P).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
     End Impl_core_slice_iter_RSplit_T_P.
@@ -7443,6 +7455,7 @@ Module slice.
       Global Instance AssociatedFunction_new :
         forall (T P : Ty.t),
         M.IsAssociatedFunction.C (Self T P) "new" (new T P).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
     End Impl_core_slice_iter_RSplitMut_T_P.
@@ -8355,6 +8368,7 @@ Module slice.
       Global Instance AssociatedFunction_new :
         forall (T P : Ty.t),
         M.IsAssociatedFunction.C (Self T P) "new" (new T P).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
     End Impl_core_slice_iter_SplitN_T_P.
@@ -8528,6 +8542,7 @@ Module slice.
       Global Instance AssociatedFunction_new :
         forall (T P : Ty.t),
         M.IsAssociatedFunction.C (Self T P) "new" (new T P).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
     End Impl_core_slice_iter_RSplitN_T_P.
@@ -8705,6 +8720,7 @@ Module slice.
       Global Instance AssociatedFunction_new :
         forall (T P : Ty.t),
         M.IsAssociatedFunction.C (Self T P) "new" (new T P).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
     End Impl_core_slice_iter_SplitNMut_T_P.
@@ -8882,6 +8898,7 @@ Module slice.
       Global Instance AssociatedFunction_new :
         forall (T P : Ty.t),
         M.IsAssociatedFunction.C (Self T P) "new" (new T P).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
     End Impl_core_slice_iter_RSplitNMut_T_P.
@@ -9175,6 +9192,7 @@ Module slice.
       Global Instance AssociatedFunction_new :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "new" (new T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
     End Impl_core_slice_iter_Windows_T.
@@ -10906,6 +10924,7 @@ Module slice.
       Global Instance AssociatedFunction_new :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "new" (new T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
     End Impl_core_slice_iter_Chunks_T.
@@ -13012,6 +13031,7 @@ Module slice.
       Global Instance AssociatedFunction_new :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "new" (new T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
     End Impl_core_slice_iter_ChunksMut_T.
@@ -15297,6 +15317,7 @@ Module slice.
       Global Instance AssociatedFunction_new :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "new" (new T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -15331,6 +15352,7 @@ Module slice.
       Global Instance AssociatedFunction_remainder :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "remainder" (remainder T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque remainder.
     End Impl_core_slice_iter_ChunksExact_T.
@@ -17094,6 +17116,7 @@ Module slice.
       Global Instance AssociatedFunction_new :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "new" (new T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -17137,6 +17160,7 @@ Module slice.
       Global Instance AssociatedFunction_into_remainder :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "into_remainder" (into_remainder T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_remainder.
     End Impl_core_slice_iter_ChunksExactMut_T.
@@ -18917,6 +18941,7 @@ Module slice.
       Global Instance AssociatedFunction_new :
         forall (N : Value.t) (T : Ty.t),
         M.IsAssociatedFunction.C (Self N T) "new" (new N T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
     End Impl_core_slice_iter_ArrayWindows_N_T.
@@ -19975,6 +20000,7 @@ Module slice.
       Global Instance AssociatedFunction_new :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "new" (new T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
     End Impl_core_slice_iter_RChunks_T.
@@ -22060,6 +22086,7 @@ Module slice.
       Global Instance AssociatedFunction_new :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "new" (new T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
     End Impl_core_slice_iter_RChunksMut_T.
@@ -24316,6 +24343,7 @@ Module slice.
       Global Instance AssociatedFunction_new :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "new" (new T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -24350,6 +24378,7 @@ Module slice.
       Global Instance AssociatedFunction_remainder :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "remainder" (remainder T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque remainder.
     End Impl_core_slice_iter_RChunksExact_T.
@@ -26146,6 +26175,7 @@ Module slice.
       Global Instance AssociatedFunction_new :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "new" (new T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -26192,6 +26222,7 @@ Module slice.
       Global Instance AssociatedFunction_into_remainder :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "into_remainder" (into_remainder T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_remainder.
     End Impl_core_slice_iter_RChunksExactMut_T.
@@ -27962,6 +27993,7 @@ Module slice.
       Global Instance AssociatedFunction_new :
         forall (T P : Ty.t),
         M.IsAssociatedFunction.C (Self T P) "new" (new T P).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
     End Impl_core_slice_iter_ChunkBy_T_P.
@@ -29133,6 +29165,7 @@ Module slice.
       Global Instance AssociatedFunction_new :
         forall (T P : Ty.t),
         M.IsAssociatedFunction.C (Self T P) "new" (new T P).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
     End Impl_core_slice_iter_ChunkByMut_T_P.

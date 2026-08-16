@@ -77,6 +77,7 @@ Module pin.
       Global Instance AssociatedFunction_new :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "new" (new T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -119,6 +120,7 @@ Module pin.
       Global Instance AssociatedFunction_into_inner :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "into_inner" (into_inner T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_inner.
       (*
@@ -194,6 +196,7 @@ Module pin.
       Global Instance AssociatedFunction_get_mut_pinned :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "get_mut_pinned" (get_mut_pinned T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut_pinned.
       
@@ -240,6 +243,7 @@ Module pin.
       Global Instance AssociatedFunction_get_mut_unchecked :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "get_mut_unchecked" (get_mut_unchecked T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut_unchecked.
       
@@ -286,6 +290,7 @@ Module pin.
       Global Instance AssociatedFunction_get :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "get" (get T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque get.
       
@@ -316,6 +321,7 @@ Module pin.
       Global Instance AssociatedFunction_raw_get :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "raw_get" (raw_get T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque raw_get.
       
@@ -344,6 +350,7 @@ Module pin.
       Global Instance AssociatedFunction_raw_get_mut :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "raw_get_mut" (raw_get_mut T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque raw_get_mut.
     End Impl_core_pin_unsafe_pinned_UnsafePinned_T.

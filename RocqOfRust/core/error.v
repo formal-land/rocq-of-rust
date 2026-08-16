@@ -223,6 +223,7 @@ Module error.
       end.
     
     Global Instance AssociatedFunction_is_ : M.IsAssociatedFunction.C Self "is" is_.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_.
     
@@ -329,6 +330,7 @@ Module error.
     
     Global Instance AssociatedFunction_downcast_ref :
       M.IsAssociatedFunction.C Self "downcast_ref" downcast_ref.
+    Proof.
     Admitted.
     Global Typeclasses Opaque downcast_ref.
     
@@ -435,6 +437,7 @@ Module error.
     
     Global Instance AssociatedFunction_downcast_mut :
       M.IsAssociatedFunction.C Self "downcast_mut" downcast_mut.
+    Proof.
     Admitted.
     Global Typeclasses Opaque downcast_mut.
     (*
@@ -491,6 +494,7 @@ Module error.
       end.
     
     Global Instance AssociatedFunction_sources : M.IsAssociatedFunction.C Self "sources" sources.
+    Proof.
     Admitted.
     Global Typeclasses Opaque sources.
   End Impl_Dyn_core_error_Error_Trait.
@@ -548,6 +552,7 @@ Module error.
       end.
     
     Global Instance AssociatedFunction_is_ : M.IsAssociatedFunction.C Self "is" is_.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_.
     
@@ -601,6 +606,7 @@ Module error.
     
     Global Instance AssociatedFunction_downcast_ref :
       M.IsAssociatedFunction.C Self "downcast_ref" downcast_ref.
+    Proof.
     Admitted.
     Global Typeclasses Opaque downcast_ref.
     
@@ -654,6 +660,7 @@ Module error.
     
     Global Instance AssociatedFunction_downcast_mut :
       M.IsAssociatedFunction.C Self "downcast_mut" downcast_mut.
+    Proof.
     Admitted.
     Global Typeclasses Opaque downcast_mut.
   End Impl_Dyn_core_error_Error_Trait_core_marker_Send_AutoTrait.
@@ -724,6 +731,7 @@ Module error.
       end.
     
     Global Instance AssociatedFunction_is_ : M.IsAssociatedFunction.C Self "is" is_.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_.
     
@@ -785,6 +793,7 @@ Module error.
     
     Global Instance AssociatedFunction_downcast_ref :
       M.IsAssociatedFunction.C Self "downcast_ref" downcast_ref.
+    Proof.
     Admitted.
     Global Typeclasses Opaque downcast_ref.
     
@@ -846,6 +855,7 @@ Module error.
     
     Global Instance AssociatedFunction_downcast_mut :
       M.IsAssociatedFunction.C Self "downcast_mut" downcast_mut.
+    Proof.
     Admitted.
     Global Typeclasses Opaque downcast_mut.
   End Impl_Dyn_core_error_Error_Trait_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait.
@@ -878,6 +888,7 @@ Module error.
   
   Global Instance Instance_IsFunction_request_value :
     M.IsFunction.C "core::error::request_value" request_value.
+  Proof.
   Admitted.
   Global Typeclasses Opaque request_value.
   
@@ -914,6 +925,7 @@ Module error.
   
   Global Instance Instance_IsFunction_request_ref :
     M.IsFunction.C "core::error::request_ref" request_ref.
+  Proof.
   Admitted.
   Global Typeclasses Opaque request_ref.
   
@@ -1007,6 +1019,7 @@ Module error.
   
   Global Instance Instance_IsFunction_request_by_type_tag :
     M.IsFunction.C "core::error::request_by_type_tag" request_by_type_tag.
+  Proof.
   Admitted.
   Global Typeclasses Opaque request_by_type_tag.
   
@@ -1070,6 +1083,7 @@ Module error.
     
     Global Instance AssociatedFunction_provide_value :
       M.IsAssociatedFunction.C Self "provide_value" provide_value.
+    Proof.
     Admitted.
     Global Typeclasses Opaque provide_value.
     
@@ -1119,6 +1133,7 @@ Module error.
     
     Global Instance AssociatedFunction_provide_value_with :
       M.IsAssociatedFunction.C Self "provide_value_with" provide_value_with.
+    Proof.
     Admitted.
     Global Typeclasses Opaque provide_value_with.
     
@@ -1167,6 +1182,7 @@ Module error.
     
     Global Instance AssociatedFunction_provide_ref :
       M.IsAssociatedFunction.C Self "provide_ref" provide_ref.
+    Proof.
     Admitted.
     Global Typeclasses Opaque provide_ref.
     
@@ -1219,6 +1235,7 @@ Module error.
     
     Global Instance AssociatedFunction_provide_ref_with :
       M.IsAssociatedFunction.C Self "provide_ref_with" provide_ref_with.
+    Proof.
     Admitted.
     Global Typeclasses Opaque provide_ref_with.
     
@@ -1356,6 +1373,7 @@ Module error.
       end.
     
     Global Instance AssociatedFunction_provide : M.IsAssociatedFunction.C Self "provide" provide.
+    Proof.
     Admitted.
     Global Typeclasses Opaque provide.
     
@@ -1509,6 +1527,7 @@ Module error.
     
     Global Instance AssociatedFunction_provide_with :
       M.IsAssociatedFunction.C Self "provide_with" provide_with.
+    Proof.
     Admitted.
     Global Typeclasses Opaque provide_with.
     
@@ -1545,6 +1564,7 @@ Module error.
     
     Global Instance AssociatedFunction_would_be_satisfied_by_value_of :
       M.IsAssociatedFunction.C Self "would_be_satisfied_by_value_of" would_be_satisfied_by_value_of.
+    Proof.
     Admitted.
     Global Typeclasses Opaque would_be_satisfied_by_value_of.
     
@@ -1586,6 +1606,7 @@ Module error.
     
     Global Instance AssociatedFunction_would_be_satisfied_by_ref_of :
       M.IsAssociatedFunction.C Self "would_be_satisfied_by_ref_of" would_be_satisfied_by_ref_of.
+    Proof.
     Admitted.
     Global Typeclasses Opaque would_be_satisfied_by_ref_of.
     
@@ -1668,6 +1689,7 @@ Module error.
     
     Global Instance AssociatedFunction_would_be_satisfied_by :
       M.IsAssociatedFunction.C Self "would_be_satisfied_by" would_be_satisfied_by.
+    Proof.
     Admitted.
     Global Typeclasses Opaque would_be_satisfied_by.
   End Impl_core_error_Request.
@@ -2281,6 +2303,7 @@ Module error.
     Global Instance AssociatedFunction_as_request :
       forall (I : Ty.t),
       M.IsAssociatedFunction.C (Self I) "as_request" (as_request I).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_request.
   End Impl_core_error_Tagged_core_error_TaggedOption_I.
@@ -2551,6 +2574,7 @@ Module error.
       end.
     
     Global Instance AssociatedFunction_downcast : M.IsAssociatedFunction.C Self "downcast" downcast.
+    Proof.
     Admitted.
     Global Typeclasses Opaque downcast.
     
@@ -2796,6 +2820,7 @@ Module error.
     
     Global Instance AssociatedFunction_downcast_mut :
       M.IsAssociatedFunction.C Self "downcast_mut" downcast_mut.
+    Proof.
     Admitted.
     Global Typeclasses Opaque downcast_mut.
   End Impl_core_error_Tagged_Dyn_core_error_Erased_Trait.

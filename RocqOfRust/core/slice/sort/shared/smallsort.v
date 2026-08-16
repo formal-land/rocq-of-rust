@@ -1034,6 +1034,7 @@ Module slice.
           M.IsFunction.C
             "core::slice::sort::shared::smallsort::SMALL_SORT_FALLBACK_THRESHOLD"
             value_SMALL_SORT_FALLBACK_THRESHOLD.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_SMALL_SORT_FALLBACK_THRESHOLD.
         
@@ -1048,6 +1049,7 @@ Module slice.
           M.IsFunction.C
             "core::slice::sort::shared::smallsort::SMALL_SORT_GENERAL_THRESHOLD"
             value_SMALL_SORT_GENERAL_THRESHOLD.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_SMALL_SORT_GENERAL_THRESHOLD.
         
@@ -1078,6 +1080,7 @@ Module slice.
           M.IsFunction.C
             "core::slice::sort::shared::smallsort::SMALL_SORT_GENERAL_SCRATCH_LEN"
             value_SMALL_SORT_GENERAL_SCRATCH_LEN.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_SMALL_SORT_GENERAL_SCRATCH_LEN.
         
@@ -1092,6 +1095,7 @@ Module slice.
           M.IsFunction.C
             "core::slice::sort::shared::smallsort::SMALL_SORT_NETWORK_THRESHOLD"
             value_SMALL_SORT_NETWORK_THRESHOLD.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_SMALL_SORT_NETWORK_THRESHOLD.
         
@@ -1110,6 +1114,7 @@ Module slice.
           M.IsFunction.C
             "core::slice::sort::shared::smallsort::SMALL_SORT_NETWORK_SCRATCH_LEN"
             value_SMALL_SORT_NETWORK_SCRATCH_LEN.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_SMALL_SORT_NETWORK_SCRATCH_LEN.
         
@@ -1124,6 +1129,7 @@ Module slice.
           M.IsFunction.C
             "core::slice::sort::shared::smallsort::MAX_STACK_ARRAY_SIZE"
             value_MAX_STACK_ARRAY_SIZE.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_MAX_STACK_ARRAY_SIZE.
         
@@ -1199,6 +1205,7 @@ Module slice.
           M.IsFunction.C
             "core::slice::sort::shared::smallsort::small_sort_fallback"
             small_sort_fallback.
+        Proof.
         Admitted.
         Global Typeclasses Opaque small_sort_fallback.
         
@@ -1344,6 +1351,7 @@ Module slice.
           M.IsFunction.C
             "core::slice::sort::shared::smallsort::small_sort_general"
             small_sort_general.
+        Proof.
         Admitted.
         Global Typeclasses Opaque small_sort_general.
         
@@ -2434,6 +2442,7 @@ Module slice.
           M.IsFunction.C
             "core::slice::sort::shared::smallsort::small_sort_general_with_scratch"
             small_sort_general_with_scratch.
+        Proof.
         Admitted.
         Global Typeclasses Opaque small_sort_general_with_scratch.
         
@@ -3127,6 +3136,7 @@ Module slice.
           M.IsFunction.C
             "core::slice::sort::shared::smallsort::small_sort_network"
             small_sort_network.
+        Proof.
         Admitted.
         Global Typeclasses Opaque small_sort_network.
         
@@ -3336,6 +3346,7 @@ Module slice.
         
         Global Instance Instance_IsFunction_swap_if_less :
           M.IsFunction.C "core::slice::sort::shared::smallsort::swap_if_less" swap_if_less.
+        Proof.
         Admitted.
         Global Typeclasses Opaque swap_if_less.
         
@@ -3828,6 +3839,7 @@ Module slice.
         
         Global Instance Instance_IsFunction_sort9_optimal :
           M.IsFunction.C "core::slice::sort::shared::smallsort::sort9_optimal" sort9_optimal.
+        Proof.
         Admitted.
         Global Typeclasses Opaque sort9_optimal.
         
@@ -4640,6 +4652,7 @@ Module slice.
         
         Global Instance Instance_IsFunction_sort13_optimal :
           M.IsFunction.C "core::slice::sort::shared::smallsort::sort13_optimal" sort13_optimal.
+        Proof.
         Admitted.
         Global Typeclasses Opaque sort13_optimal.
         
@@ -5008,6 +5021,7 @@ Module slice.
         
         Global Instance Instance_IsFunction_insert_tail :
           M.IsFunction.C "core::slice::sort::shared::smallsort::insert_tail" insert_tail.
+        Proof.
         Admitted.
         Global Typeclasses Opaque insert_tail.
         
@@ -5215,6 +5229,7 @@ Module slice.
           M.IsFunction.C
             "core::slice::sort::shared::smallsort::insertion_sort_shift_left"
             insertion_sort_shift_left.
+        Proof.
         Admitted.
         Global Typeclasses Opaque insertion_sort_shift_left.
         
@@ -5718,6 +5733,7 @@ Module slice.
         
         Global Instance Instance_IsFunction_sort4_stable :
           M.IsFunction.C "core::slice::sort::shared::smallsort::sort4_stable" sort4_stable.
+        Proof.
         Admitted.
         Global Typeclasses Opaque sort4_stable.
         
@@ -5864,6 +5880,7 @@ Module slice.
         
         Global Instance Instance_IsFunction_sort8_stable :
           M.IsFunction.C "core::slice::sort::shared::smallsort::sort8_stable" sort8_stable.
+        Proof.
         Admitted.
         Global Typeclasses Opaque sort8_stable.
         
@@ -6045,6 +6062,7 @@ Module slice.
         
         Global Instance Instance_IsFunction_merge_up :
           M.IsFunction.C "core::slice::sort::shared::smallsort::merge_up" merge_up.
+        Proof.
         Admitted.
         Global Typeclasses Opaque merge_up.
         
@@ -6226,6 +6244,7 @@ Module slice.
         
         Global Instance Instance_IsFunction_merge_down :
           M.IsFunction.C "core::slice::sort::shared::smallsort::merge_down" merge_down.
+        Proof.
         Admitted.
         Global Typeclasses Opaque merge_down.
         
@@ -6915,6 +6934,7 @@ Module slice.
           M.IsFunction.C
             "core::slice::sort::shared::smallsort::bidirectional_merge"
             bidirectional_merge.
+        Proof.
         Admitted.
         Global Typeclasses Opaque bidirectional_merge.
         
@@ -6972,6 +6992,7 @@ Module slice.
           M.IsFunction.C
             "core::slice::sort::shared::smallsort::panic_on_ord_violation"
             panic_on_ord_violation.
+        Proof.
         Admitted.
         Global Typeclasses Opaque panic_on_ord_violation.
         
@@ -7008,6 +7029,7 @@ Module slice.
           M.IsFunction.C
             "core::slice::sort::shared::smallsort::has_efficient_in_place_swap"
             has_efficient_in_place_swap.
+        Proof.
         Admitted.
         Global Typeclasses Opaque has_efficient_in_place_swap.
       End smallsort.

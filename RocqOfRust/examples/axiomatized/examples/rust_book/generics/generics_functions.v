@@ -28,26 +28,31 @@ Require Import RocqOfRust.RocqOfRust.
 Parameter reg_fn : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_reg_fn : M.IsFunction.C "generics_functions::reg_fn" reg_fn.
+Proof.
 Admitted.
 
 Parameter gen_spec_t : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_gen_spec_t :
   M.IsFunction.C "generics_functions::gen_spec_t" gen_spec_t.
+Proof.
 Admitted.
 
 Parameter gen_spec_i32 : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_gen_spec_i32 :
   M.IsFunction.C "generics_functions::gen_spec_i32" gen_spec_i32.
+Proof.
 Admitted.
 
 Parameter generic : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_generic : M.IsFunction.C "generics_functions::generic" generic.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "generics_functions::main" main.
+Proof.
 Admitted.

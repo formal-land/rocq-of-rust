@@ -32,6 +32,7 @@ Definition max2 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_max2 : M.IsFunction.C "loops_free::max2" max2.
+Proof.
 Admitted.
 Global Typeclasses Opaque max2.
 
@@ -69,6 +70,7 @@ Definition abs_i32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M 
   end.
 
 Global Instance Instance_IsFunction_abs_i32 : M.IsFunction.C "loops_free::abs_i32" abs_i32.
+Proof.
 Admitted.
 Global Typeclasses Opaque abs_i32.
 
@@ -114,6 +116,7 @@ Definition bool_and (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M
   end.
 
 Global Instance Instance_IsFunction_bool_and : M.IsFunction.C "loops_free::bool_and" bool_and.
+Proof.
 Admitted.
 Global Typeclasses Opaque bool_and.
 
@@ -162,6 +165,7 @@ Definition get_or_zero (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) 
 
 Global Instance Instance_IsFunction_get_or_zero :
   M.IsFunction.C "loops_free::get_or_zero" get_or_zero.
+Proof.
 Admitted.
 Global Typeclasses Opaque get_or_zero.
 
@@ -254,6 +258,7 @@ Definition eq2 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_eq2 : M.IsFunction.C "loops_free::eq2" eq2.
+Proof.
 Admitted.
 Global Typeclasses Opaque eq2.
 
@@ -308,6 +313,7 @@ Definition eq_pair (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M 
   end.
 
 Global Instance Instance_IsFunction_eq_pair : M.IsFunction.C "loops_free::eq_pair" eq_pair.
+Proof.
 Admitted.
 Global Typeclasses Opaque eq_pair.
 
@@ -374,6 +380,7 @@ Definition min3 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_min3 : M.IsFunction.C "loops_free::min3" min3.
+Proof.
 Admitted.
 Global Typeclasses Opaque min3.
 
@@ -405,5 +412,6 @@ Definition choose_ref (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) :
   end.
 
 Global Instance Instance_IsFunction_choose_ref : M.IsFunction.C "loops_free::choose_ref" choose_ref.
+Proof.
 Admitted.
 Global Typeclasses Opaque choose_ref.

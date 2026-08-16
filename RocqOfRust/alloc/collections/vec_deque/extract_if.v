@@ -154,6 +154,7 @@ Module collections.
         Global Instance AssociatedFunction_new :
           forall (T F A : Ty.t),
           M.IsAssociatedFunction.C (Self T F A) "new" (new T F A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new.
         
@@ -219,6 +220,7 @@ Module collections.
         Global Instance AssociatedFunction_allocator :
           forall (T F A : Ty.t),
           M.IsAssociatedFunction.C (Self T F A) "allocator" (allocator T F A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque allocator.
       End Impl_alloc_collections_vec_deque_extract_if_ExtractIf_T_F_A.

@@ -111,6 +111,7 @@ Module ability_field_requirements.
     M.IsFunction.C
       "move_bytecode_verifier::ability_field_requirements::verify_module"
       verify_module.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_module.
   
@@ -1552,6 +1553,7 @@ Module ability_field_requirements.
     M.IsFunction.C
       "move_bytecode_verifier::ability_field_requirements::verify_module_impl"
       verify_module_impl.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_module_impl.
 End ability_field_requirements.

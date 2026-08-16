@@ -7,6 +7,7 @@ Module eip7702.
   
   Global Instance Instance_IsConstant_value_PER_AUTH_BASE_COST :
     M.IsFunction.C "revm_primitives::eip7702::PER_AUTH_BASE_COST" value_PER_AUTH_BASE_COST.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PER_AUTH_BASE_COST.
   
@@ -19,6 +20,7 @@ Module eip7702.
   
   Global Instance Instance_IsConstant_value_PER_EMPTY_ACCOUNT_COST :
     M.IsFunction.C "revm_primitives::eip7702::PER_EMPTY_ACCOUNT_COST" value_PER_EMPTY_ACCOUNT_COST.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PER_EMPTY_ACCOUNT_COST.
 End eip7702.

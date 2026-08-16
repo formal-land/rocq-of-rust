@@ -640,6 +640,7 @@ Module slice.
       
       Global Instance Instance_IsFunction_partition_at_index :
         M.IsFunction.C "core::slice::sort::select::partition_at_index" partition_at_index.
+      Proof.
       Admitted.
       Global Typeclasses Opaque partition_at_index.
       
@@ -654,6 +655,7 @@ Module slice.
         M.IsFunction.C
           "core::slice::sort::select::INSERTION_SORT_THRESHOLD"
           value_INSERTION_SORT_THRESHOLD.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_INSERTION_SORT_THRESHOLD.
       
@@ -1648,6 +1650,7 @@ Module slice.
       
       Global Instance Instance_IsFunction_partition_at_index_loop :
         M.IsFunction.C "core::slice::sort::select::partition_at_index_loop" partition_at_index_loop.
+      Proof.
       Admitted.
       Global Typeclasses Opaque partition_at_index_loop.
       
@@ -1888,6 +1891,7 @@ Module slice.
       
       Global Instance Instance_IsFunction_min_index :
         M.IsFunction.C "core::slice::sort::select::min_index" min_index.
+      Proof.
       Admitted.
       Global Typeclasses Opaque min_index.
       
@@ -2128,6 +2132,7 @@ Module slice.
       
       Global Instance Instance_IsFunction_max_index :
         M.IsFunction.C "core::slice::sort::select::max_index" max_index.
+      Proof.
       Admitted.
       Global Typeclasses Opaque max_index.
       
@@ -2860,6 +2865,7 @@ Module slice.
       
       Global Instance Instance_IsFunction_median_of_medians :
         M.IsFunction.C "core::slice::sort::select::median_of_medians" median_of_medians.
+      Proof.
       Admitted.
       Global Typeclasses Opaque median_of_medians.
       
@@ -3416,6 +3422,7 @@ Module slice.
       
       Global Instance Instance_IsFunction_median_of_ninthers :
         M.IsFunction.C "core::slice::sort::select::median_of_ninthers" median_of_ninthers.
+      Proof.
       Admitted.
       Global Typeclasses Opaque median_of_ninthers.
       
@@ -4200,6 +4207,7 @@ Module slice.
       
       Global Instance Instance_IsFunction_ninther :
         M.IsFunction.C "core::slice::sort::select::ninther" ninther.
+      Proof.
       Admitted.
       Global Typeclasses Opaque ninther.
       
@@ -4465,6 +4473,7 @@ Module slice.
       
       Global Instance Instance_IsFunction_median_idx :
         M.IsFunction.C "core::slice::sort::select::median_idx" median_idx.
+      Proof.
       Admitted.
       Global Typeclasses Opaque median_idx.
     End select.

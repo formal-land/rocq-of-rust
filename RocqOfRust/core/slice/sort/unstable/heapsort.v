@@ -347,6 +347,7 @@ Module slice.
         
         Global Instance Instance_IsFunction_heapsort :
           M.IsFunction.C "core::slice::sort::unstable::heapsort::heapsort" heapsort.
+        Proof.
         Admitted.
         Global Typeclasses Opaque heapsort.
         
@@ -768,6 +769,7 @@ Module slice.
         
         Global Instance Instance_IsFunction_sift_down :
           M.IsFunction.C "core::slice::sort::unstable::heapsort::sift_down" sift_down.
+        Proof.
         Admitted.
         Global Typeclasses Opaque sift_down.
       End heapsort.

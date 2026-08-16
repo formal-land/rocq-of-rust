@@ -106,6 +106,7 @@ Module post_execution.
   
   Global Instance Instance_IsFunction_eip7623_check_gas_floor :
     M.IsFunction.C "revm_handler::post_execution::eip7623_check_gas_floor" eip7623_check_gas_floor.
+  Proof.
   Admitted.
   Global Typeclasses Opaque eip7623_check_gas_floor.
   
@@ -177,6 +178,7 @@ Module post_execution.
   
   Global Instance Instance_IsFunction_refund :
     M.IsFunction.C "revm_handler::post_execution::refund" refund.
+  Proof.
   Admitted.
   Global Typeclasses Opaque refund.
   
@@ -1034,6 +1036,7 @@ Module post_execution.
   
   Global Instance Instance_IsFunction_reimburse_caller :
     M.IsFunction.C "revm_handler::post_execution::reimburse_caller" reimburse_caller.
+  Proof.
   Admitted.
   Global Typeclasses Opaque reimburse_caller.
   
@@ -2067,6 +2070,7 @@ Module post_execution.
   
   Global Instance Instance_IsFunction_reward_beneficiary :
     M.IsFunction.C "revm_handler::post_execution::reward_beneficiary" reward_beneficiary.
+  Proof.
   Admitted.
   Global Typeclasses Opaque reward_beneficiary.
   
@@ -2798,6 +2802,7 @@ Module post_execution.
   
   Global Instance Instance_IsFunction_output :
     M.IsFunction.C "revm_handler::post_execution::output" output.
+  Proof.
   Admitted.
   Global Typeclasses Opaque output.
 End post_execution.

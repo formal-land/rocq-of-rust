@@ -131,5 +131,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "inline_assembly_register_template_modifiers::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

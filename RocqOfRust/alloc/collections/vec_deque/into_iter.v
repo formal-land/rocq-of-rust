@@ -113,6 +113,7 @@ Module collections.
         Global Instance AssociatedFunction_new :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "new" (new T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new.
         
@@ -152,6 +153,7 @@ Module collections.
         Global Instance AssociatedFunction_into_vecdeque :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "into_vecdeque" (into_vecdeque T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque into_vecdeque.
       End Impl_alloc_collections_vec_deque_into_iter_IntoIter_T_A.

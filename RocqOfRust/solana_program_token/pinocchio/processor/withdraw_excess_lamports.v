@@ -1956,6 +1956,7 @@ Module processor.
       M.IsFunction.C
         "pinocchio_token_program::processor::withdraw_excess_lamports::process_withdraw_excess_lamports"
         process_withdraw_excess_lamports.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_withdraw_excess_lamports.
   End withdraw_excess_lamports.

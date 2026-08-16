@@ -4,6 +4,7 @@ Require Import RocqOfRust.RocqOfRust.
 Parameter foo : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_foo : M.IsFunction.C "concurrent_tests::foo" foo.
+Proof.
 Admitted.
 
 Module tests.
@@ -11,11 +12,13 @@ Module tests.
   
   Global Instance Instance_IsFunction_test_file_1 :
     M.IsFunction.C "concurrent_tests::tests::test_file'1" test_file_1.
+  Proof.
   Admitted.
   
   Parameter test_file_also_1 : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance Instance_IsFunction_test_file_also_1 :
     M.IsFunction.C "concurrent_tests::tests::test_file_also'1" test_file_also_1.
+  Proof.
   Admitted.
 End tests.

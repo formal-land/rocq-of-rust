@@ -129,6 +129,7 @@ Module Impl_FromResidual_for_Result.
 
   Instance run (T E : Set) `{Link T} `{Link E} :
     FromResidual.Run (Self T E) (R E).
+  Proof.
   Admitted.
 End Impl_FromResidual_for_Result.
 Export (hints) Impl_FromResidual_for_Result.
@@ -154,6 +155,7 @@ Module Impl_Try_for_Result.
 
 Instance run (T E : Set) `{Link T} `{Link E} :
     Try.Run (Self T E) (types T E).
+  Proof.
   Admitted.
 End Impl_Try_for_Result.
 Export (hints) Impl_Try_for_Result.
@@ -186,6 +188,7 @@ Module Impl_Result_T_E.
     (msg : '& string) :
     Run.Trait
       (result.Impl_core_result_Result_T_E.expect (Φ T) (Φ E)) [] [] [ φ self; φ msg ] T.
+  Proof.
   Admitted.
   Global Opaque run_expect.
 End Impl_Result_T_E.

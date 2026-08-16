@@ -16,6 +16,7 @@ Module slice.
           M.IsFunction.C
             "core::slice::sort::shared::pivot::PSEUDO_MEDIAN_REC_THRESHOLD"
             value_PSEUDO_MEDIAN_REC_THRESHOLD.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_PSEUDO_MEDIAN_REC_THRESHOLD.
         
@@ -307,6 +308,7 @@ Module slice.
         
         Global Instance Instance_IsFunction_choose_pivot :
           M.IsFunction.C "core::slice::sort::shared::pivot::choose_pivot" choose_pivot.
+        Proof.
         Admitted.
         Global Typeclasses Opaque choose_pivot.
         
@@ -573,6 +575,7 @@ Module slice.
         
         Global Instance Instance_IsFunction_median3_rec :
           M.IsFunction.C "core::slice::sort::shared::pivot::median3_rec" median3_rec.
+        Proof.
         Admitted.
         Global Typeclasses Opaque median3_rec.
         
@@ -749,6 +752,7 @@ Module slice.
         
         Global Instance Instance_IsFunction_median3 :
           M.IsFunction.C "core::slice::sort::shared::pivot::median3" median3.
+        Proof.
         Admitted.
         Global Typeclasses Opaque median3.
       End pivot.

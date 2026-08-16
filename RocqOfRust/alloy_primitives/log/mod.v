@@ -194,6 +194,7 @@ Module log.
   
   Global Instance Instance_IsFunction_logs_bloom :
     M.IsFunction.C "alloy_primitives::log::logs_bloom" logs_bloom.
+  Proof.
   Admitted.
   Global Typeclasses Opaque logs_bloom.
   
@@ -810,6 +811,7 @@ Module log.
     
     Global Instance AssociatedFunction_new_unchecked :
       M.IsAssociatedFunction.C Self "new_unchecked" new_unchecked.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_unchecked.
     
@@ -886,6 +888,7 @@ Module log.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -948,6 +951,7 @@ Module log.
       end.
     
     Global Instance AssociatedFunction_empty : M.IsAssociatedFunction.C Self "empty" empty.
+    Proof.
     Admitted.
     Global Typeclasses Opaque empty.
     
@@ -1004,6 +1008,7 @@ Module log.
       end.
     
     Global Instance AssociatedFunction_is_valid : M.IsAssociatedFunction.C Self "is_valid" is_valid.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_valid.
     
@@ -1079,6 +1084,7 @@ Module log.
       end.
     
     Global Instance AssociatedFunction_topics : M.IsAssociatedFunction.C Self "topics" topics.
+    Proof.
     Admitted.
     Global Typeclasses Opaque topics.
     
@@ -1160,6 +1166,7 @@ Module log.
     
     Global Instance AssociatedFunction_topics_mut :
       M.IsAssociatedFunction.C Self "topics_mut" topics_mut.
+    Proof.
     Admitted.
     Global Typeclasses Opaque topics_mut.
     
@@ -1200,6 +1207,7 @@ Module log.
     
     Global Instance AssociatedFunction_topics_mut_unchecked :
       M.IsAssociatedFunction.C Self "topics_mut_unchecked" topics_mut_unchecked.
+    Proof.
     Admitted.
     Global Typeclasses Opaque topics_mut_unchecked.
     
@@ -1248,6 +1256,7 @@ Module log.
     
     Global Instance AssociatedFunction_set_topics_unchecked :
       M.IsAssociatedFunction.C Self "set_topics_unchecked" set_topics_unchecked.
+    Proof.
     Admitted.
     Global Typeclasses Opaque set_topics_unchecked.
     
@@ -1322,6 +1331,7 @@ Module log.
     
     Global Instance AssociatedFunction_set_topics_truncating :
       M.IsAssociatedFunction.C Self "set_topics_truncating" set_topics_truncating.
+    Proof.
     Admitted.
     Global Typeclasses Opaque set_topics_truncating.
     
@@ -1356,6 +1366,7 @@ Module log.
       end.
     
     Global Instance AssociatedFunction_split : M.IsAssociatedFunction.C Self "split" split.
+    Proof.
     Admitted.
     Global Typeclasses Opaque split.
   End Impl_alloy_primitives_log_LogData.
@@ -2116,6 +2127,7 @@ Module log.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -2168,6 +2180,7 @@ Module log.
     
     Global Instance AssociatedFunction_new_unchecked :
       M.IsAssociatedFunction.C Self "new_unchecked" new_unchecked.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_unchecked.
     
@@ -2209,6 +2222,7 @@ Module log.
       end.
     
     Global Instance AssociatedFunction_empty : M.IsAssociatedFunction.C Self "empty" empty.
+    Proof.
     Admitted.
     Global Typeclasses Opaque empty.
   End Impl_alloy_primitives_log_Log_alloy_primitives_log_LogData.
@@ -2245,6 +2259,7 @@ Module log.
     Global Instance AssociatedFunction_new_from_event_unchecked :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "new_from_event_unchecked" (new_from_event_unchecked T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_from_event_unchecked.
     
@@ -2351,6 +2366,7 @@ Module log.
     Global Instance AssociatedFunction_new_from_event :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "new_from_event" (new_from_event T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_from_event.
     
@@ -2420,6 +2436,7 @@ Module log.
     Global Instance AssociatedFunction_reserialize :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "reserialize" (reserialize T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque reserialize.
   End Impl_alloy_primitives_log_Log_T.

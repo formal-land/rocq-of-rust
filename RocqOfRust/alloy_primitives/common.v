@@ -718,6 +718,7 @@ Module common.
       end.
     
     Global Instance AssociatedFunction_to : M.IsAssociatedFunction.C Self "to" to.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to.
     
@@ -752,6 +753,7 @@ Module common.
     
     Global Instance AssociatedFunction_is_create :
       M.IsAssociatedFunction.C Self "is_create" is_create.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_create.
     
@@ -790,6 +792,7 @@ Module common.
       end.
     
     Global Instance AssociatedFunction_is_call : M.IsAssociatedFunction.C Self "is_call" is_call.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_call.
     
@@ -820,6 +823,7 @@ Module common.
       end.
     
     Global Instance AssociatedFunction_size : M.IsAssociatedFunction.C Self "size" size.
+    Proof.
     Admitted.
     Global Typeclasses Opaque size.
   End Impl_alloy_primitives_common_TxKind.

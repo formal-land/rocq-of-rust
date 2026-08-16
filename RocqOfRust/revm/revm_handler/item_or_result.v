@@ -323,6 +323,7 @@ Module item_or_result.
     Global Instance AssociatedFunction_map_frame :
       forall (ITEM RES : Ty.t),
       M.IsAssociatedFunction.C (Self ITEM RES) "map_frame" (map_frame ITEM RES).
+    Proof.
     Admitted.
     Global Typeclasses Opaque map_frame.
     
@@ -404,6 +405,7 @@ Module item_or_result.
     Global Instance AssociatedFunction_map_result :
       forall (ITEM RES : Ty.t),
       M.IsAssociatedFunction.C (Self ITEM RES) "map_result" (map_result ITEM RES).
+    Proof.
     Admitted.
     Global Typeclasses Opaque map_result.
     (*
@@ -453,6 +455,7 @@ Module item_or_result.
     Global Instance AssociatedFunction_is_result :
       forall (ITEM RES : Ty.t),
       M.IsAssociatedFunction.C (Self ITEM RES) "is_result" (is_result ITEM RES).
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_result.
     
@@ -503,6 +506,7 @@ Module item_or_result.
     Global Instance AssociatedFunction_is_item :
       forall (ITEM RES : Ty.t),
       M.IsAssociatedFunction.C (Self ITEM RES) "is_item" (is_item ITEM RES).
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_item.
   End Impl_revm_handler_item_or_result_ItemOrResult_ITEM_RES.

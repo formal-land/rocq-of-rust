@@ -34,6 +34,7 @@ Module utils.
   
   Global Instance Instance_IsConstant_value_WEI_IN_ETHER :
     M.IsFunction.C "alloy_primitives::utils::WEI_IN_ETHER" value_WEI_IN_ETHER.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_WEI_IN_ETHER.
   
@@ -50,6 +51,7 @@ Module utils.
   
   Global Instance Instance_IsConstant_value_EIP191_PREFIX :
     M.IsFunction.C "alloy_primitives::utils::EIP191_PREFIX" value_EIP191_PREFIX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_EIP191_PREFIX.
   
@@ -373,6 +375,7 @@ Module utils.
   
   Global Instance Instance_IsFunction_box_try_new :
     M.IsFunction.C "alloy_primitives::utils::box_try_new" box_try_new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque box_try_new.
   
@@ -789,6 +792,7 @@ Module utils.
   
   Global Instance Instance_IsFunction_box_try_new_uninit :
     M.IsFunction.C "alloy_primitives::utils::box_try_new_uninit" box_try_new_uninit.
+  Proof.
   Admitted.
   Global Typeclasses Opaque box_try_new_uninit.
   
@@ -1075,6 +1079,7 @@ Module utils.
   
   Global Instance Instance_IsFunction_try_collect_vec :
     M.IsFunction.C "alloy_primitives::utils::try_collect_vec" try_collect_vec.
+  Proof.
   Admitted.
   Global Typeclasses Opaque try_collect_vec.
   
@@ -1171,6 +1176,7 @@ Module utils.
   
   Global Instance Instance_IsFunction_vec_try_with_capacity :
     M.IsFunction.C "alloy_primitives::utils::vec_try_with_capacity" vec_try_with_capacity.
+  Proof.
   Admitted.
   Global Typeclasses Opaque vec_try_with_capacity.
   
@@ -1385,6 +1391,7 @@ Module utils.
   
   Global Instance Instance_IsFunction_vec_try_from_elem :
     M.IsFunction.C "alloy_primitives::utils::vec_try_from_elem" vec_try_from_elem.
+  Proof.
   Admitted.
   Global Typeclasses Opaque vec_try_from_elem.
   
@@ -1429,6 +1436,7 @@ Module utils.
   
   Global Instance Instance_IsFunction_eip191_hash_message :
     M.IsFunction.C "alloy_primitives::utils::eip191_hash_message" eip191_hash_message.
+  Proof.
   Admitted.
   Global Typeclasses Opaque eip191_hash_message.
   
@@ -1483,6 +1491,7 @@ Module utils.
   
   Global Instance Instance_IsFunction_eip191_message :
     M.IsFunction.C "alloy_primitives::utils::eip191_message" eip191_message.
+  Proof.
   Admitted.
   Global Typeclasses Opaque eip191_message.
   
@@ -1690,6 +1699,7 @@ Module utils.
     
     Global Instance Instance_IsFunction_eip191_message :
       M.IsFunction.C "alloy_primitives::utils::eip191_message::eip191_message" eip191_message.
+    Proof.
     Admitted.
     Global Typeclasses Opaque eip191_message.
   End eip191_message.
@@ -1775,6 +1785,7 @@ Module utils.
   
   Global Instance Instance_IsFunction_keccak256 :
     M.IsFunction.C "alloy_primitives::utils::keccak256" keccak256.
+  Proof.
   Admitted.
   Global Typeclasses Opaque keccak256.
   
@@ -1978,6 +1989,7 @@ Module utils.
     
     Global Instance Instance_IsFunction_keccak256 :
       M.IsFunction.C "alloy_primitives::utils::keccak256::keccak256" keccak256.
+    Proof.
     Admitted.
     Global Typeclasses Opaque keccak256.
   End keccak256.
@@ -2084,6 +2096,7 @@ Module utils.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -2163,6 +2176,7 @@ Module utils.
       
       Global Instance AssociatedFunction_finalize_into :
         M.IsAssociatedFunction.C Self "finalize_into" finalize_into.
+      Proof.
       Admitted.
       Global Typeclasses Opaque finalize_into.
       
@@ -2219,6 +2233,7 @@ Module utils.
         end.
       
       Global Instance AssociatedFunction_update : M.IsAssociatedFunction.C Self "update" update.
+      Proof.
       Admitted.
       Global Typeclasses Opaque update.
     End Impl_alloy_primitives_utils_keccak256_state_State.
@@ -2422,6 +2437,7 @@ Module utils.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -2488,6 +2504,7 @@ Module utils.
       end.
     
     Global Instance AssociatedFunction_update : M.IsAssociatedFunction.C Self "update" update.
+    Proof.
     Admitted.
     Global Typeclasses Opaque update.
     
@@ -2632,6 +2649,7 @@ Module utils.
       end.
     
     Global Instance AssociatedFunction_finalize : M.IsAssociatedFunction.C Self "finalize" finalize.
+    Proof.
     Admitted.
     Global Typeclasses Opaque finalize.
     
@@ -2740,6 +2758,7 @@ Module utils.
     
     Global Instance AssociatedFunction_finalize_into :
       M.IsAssociatedFunction.C Self "finalize_into" finalize_into.
+    Proof.
     Admitted.
     Global Typeclasses Opaque finalize_into.
     
@@ -2828,6 +2847,7 @@ Module utils.
     
     Global Instance AssociatedFunction_finalize_into_array :
       M.IsAssociatedFunction.C Self "finalize_into_array" finalize_into_array.
+    Proof.
     Admitted.
     Global Typeclasses Opaque finalize_into_array.
     
@@ -2892,6 +2912,7 @@ Module utils.
     
     Global Instance AssociatedFunction_finalize_into_raw :
       M.IsAssociatedFunction.C Self "finalize_into_raw" finalize_into_raw.
+    Proof.
     Admitted.
     Global Typeclasses Opaque finalize_into_raw.
   End Impl_alloy_primitives_utils_Keccak256.

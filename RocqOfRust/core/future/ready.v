@@ -326,6 +326,7 @@ Module future.
       Global Instance AssociatedFunction_into_inner :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "into_inner" (into_inner T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_inner.
     End Impl_core_future_ready_Ready_T.
@@ -349,6 +350,7 @@ Module future.
       end.
     
     Global Instance Instance_IsFunction_ready : M.IsFunction.C "core::future::ready::ready" ready.
+    Proof.
     Admitted.
     Global Typeclasses Opaque ready.
   End ready.

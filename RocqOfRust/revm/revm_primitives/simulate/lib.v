@@ -16,4 +16,5 @@ Lemma KECCAK_EMPTY_eq (stack : Stack.t) :
       stack
     )
   }}.
+Proof.
 Admitted.

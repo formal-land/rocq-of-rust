@@ -38,5 +38,6 @@ Module CallInput.
         stack
       )
     }}.
+  Proof.
   Admitted.
 End CallInput.

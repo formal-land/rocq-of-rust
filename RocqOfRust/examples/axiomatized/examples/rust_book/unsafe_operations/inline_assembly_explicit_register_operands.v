@@ -5,4 +5,5 @@ Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "inline_assembly_explicit_register_operands::main" main.
+Proof.
 Admitted.

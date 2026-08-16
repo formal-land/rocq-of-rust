@@ -48,6 +48,7 @@ Module num.
     
     Global Instance Instance_IsFunction_do_panic :
       M.IsFunction.C "core::num::from_ascii_radix_panic::do_panic" do_panic.
+    Proof.
     Admitted.
     Global Typeclasses Opaque do_panic.
   End from_ascii_radix_panic.
@@ -96,6 +97,7 @@ Module mem.
     
     Global Instance Instance_IsFunction_do_panic :
       M.IsFunction.C "core::mem::conjure_zst::do_panic" do_panic.
+    Proof.
     Admitted.
     Global Typeclasses Opaque do_panic.
   End conjure_zst.
@@ -148,6 +150,7 @@ Module cell.
     
     Global Instance Instance_IsFunction_do_panic :
       M.IsFunction.C "core::cell::panic_already_borrowed::do_panic" do_panic.
+    Proof.
     Admitted.
     Global Typeclasses Opaque do_panic.
   End panic_already_borrowed.
@@ -202,6 +205,7 @@ Module cell.
     
     Global Instance Instance_IsFunction_do_panic :
       M.IsFunction.C "core::cell::panic_already_mutably_borrowed::do_panic" do_panic.
+    Proof.
     Admitted.
     Global Typeclasses Opaque do_panic.
   End panic_already_mutably_borrowed.
@@ -261,6 +265,7 @@ Module char.
       
       Global Instance Instance_IsFunction_do_panic :
         M.IsFunction.C "core::char::methods::encode_utf8_raw::do_panic" do_panic.
+      Proof.
       Admitted.
       Global Typeclasses Opaque do_panic.
     End encode_utf8_raw.
@@ -317,6 +322,7 @@ Module char.
       
       Global Instance Instance_IsFunction_do_panic :
         M.IsFunction.C "core::char::methods::encode_utf16_raw::do_panic" do_panic.
+      Proof.
       Admitted.
       Global Typeclasses Opaque do_panic.
     End encode_utf16_raw.
@@ -352,6 +358,7 @@ Module panic.
   
   Global Instance Instance_IsFunction_abort_unwind :
     M.IsFunction.C "core::panic::abort_unwind" abort_unwind.
+  Proof.
   Admitted.
   Global Typeclasses Opaque abort_unwind.
   
@@ -427,6 +434,7 @@ Module slice.
       
       Global Instance Instance_IsFunction_do_panic :
         M.IsFunction.C "core::slice::index::slice_index_fail::do_panic" do_panic.
+      Proof.
       Admitted.
       Global Typeclasses Opaque do_panic.
       
@@ -480,6 +488,7 @@ Module slice.
       
       Global Instance Instance_IsFunction_do_panic_1 :
         M.IsFunction.C "core::slice::index::slice_index_fail::do_panic'1" do_panic_1.
+      Proof.
       Admitted.
       Global Typeclasses Opaque do_panic_1.
       
@@ -533,6 +542,7 @@ Module slice.
       
       Global Instance Instance_IsFunction_do_panic_2 :
         M.IsFunction.C "core::slice::index::slice_index_fail::do_panic'2" do_panic_2.
+      Proof.
       Admitted.
       Global Typeclasses Opaque do_panic_2.
       
@@ -586,6 +596,7 @@ Module slice.
       
       Global Instance Instance_IsFunction_do_panic_3 :
         M.IsFunction.C "core::slice::index::slice_index_fail::do_panic'3" do_panic_3.
+      Proof.
       Admitted.
       Global Typeclasses Opaque do_panic_3.
     End slice_index_fail.
@@ -643,6 +654,7 @@ Module slice.
       
       Global Instance Instance_IsFunction_do_panic :
         M.IsFunction.C "core::slice::copy_from_slice_impl::len_mismatch_fail::do_panic" do_panic.
+      Proof.
       Admitted.
       Global Typeclasses Opaque do_panic.
     End len_mismatch_fail.

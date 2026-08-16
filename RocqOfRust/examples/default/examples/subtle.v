@@ -147,6 +147,7 @@ Module Impl_subtle_Choice.
   
   Global Instance AssociatedFunction_unwrap_u8 :
     M.IsAssociatedFunction.C Self "unwrap_u8" unwrap_u8.
+  Proof.
   Admitted.
   Global Typeclasses Opaque unwrap_u8.
 End Impl_subtle_Choice.
@@ -735,6 +736,7 @@ Definition black_box (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : 
   end.
 
 Global Instance Instance_IsFunction_black_box : M.IsFunction.C "subtle::black_box" black_box.
+Proof.
 Admitted.
 Global Typeclasses Opaque black_box.
 
@@ -4584,6 +4586,7 @@ Module Impl_subtle_CtOption_T.
   Global Instance AssociatedFunction_new :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "new" (new T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque new.
   
@@ -4806,6 +4809,7 @@ Module Impl_subtle_CtOption_T.
   Global Instance AssociatedFunction_expect :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "expect" (expect T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque expect.
   
@@ -4955,6 +4959,7 @@ Module Impl_subtle_CtOption_T.
   Global Instance AssociatedFunction_unwrap :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "unwrap" (unwrap T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque unwrap.
   
@@ -5006,6 +5011,7 @@ Module Impl_subtle_CtOption_T.
   Global Instance AssociatedFunction_unwrap_or :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "unwrap_or" (unwrap_or T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque unwrap_or.
   
@@ -5081,6 +5087,7 @@ Module Impl_subtle_CtOption_T.
   Global Instance AssociatedFunction_unwrap_or_else :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "unwrap_or_else" (unwrap_or_else T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque unwrap_or_else.
   
@@ -5112,6 +5119,7 @@ Module Impl_subtle_CtOption_T.
   Global Instance AssociatedFunction_is_some :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "is_some" (is_some T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque is_some.
   
@@ -5157,6 +5165,7 @@ Module Impl_subtle_CtOption_T.
   Global Instance AssociatedFunction_is_none :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "is_none" (is_none T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque is_none.
   
@@ -5279,6 +5288,7 @@ Module Impl_subtle_CtOption_T.
   Global Instance AssociatedFunction_map :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "map" (map T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque map.
   
@@ -5413,6 +5423,7 @@ Module Impl_subtle_CtOption_T.
   Global Instance AssociatedFunction_and_then :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "and_then" (and_then T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque and_then.
   
@@ -5491,6 +5502,7 @@ Module Impl_subtle_CtOption_T.
   Global Instance AssociatedFunction_or_else :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "or_else" (or_else T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque or_else.
 End Impl_subtle_CtOption_T.

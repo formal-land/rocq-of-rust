@@ -526,6 +526,7 @@ Module unicode.
     
     Global Instance Instance_IsFunction_bitset_search :
       M.IsFunction.C "core::unicode::unicode_data::bitset_search" bitset_search.
+    Proof.
     Admitted.
     Global Typeclasses Opaque bitset_search.
     
@@ -670,6 +671,7 @@ Module unicode.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -711,6 +713,7 @@ Module unicode.
       
       Global Instance AssociatedFunction_start_index :
         M.IsAssociatedFunction.C Self "start_index" start_index.
+      Proof.
       Admitted.
       Global Typeclasses Opaque start_index.
       
@@ -761,6 +764,7 @@ Module unicode.
       
       Global Instance AssociatedFunction_prefix_sum :
         M.IsAssociatedFunction.C Self "prefix_sum" prefix_sum.
+      Proof.
       Admitted.
       Global Typeclasses Opaque prefix_sum.
     End Impl_core_unicode_unicode_data_ShortOffsetRunHeader.
@@ -1481,6 +1485,7 @@ Module unicode.
     
     Global Instance Instance_IsFunction_skip_search :
       M.IsFunction.C "core::unicode::unicode_data::skip_search" skip_search.
+    Proof.
     Admitted.
     Global Typeclasses Opaque skip_search.
     
@@ -1498,6 +1503,7 @@ Module unicode.
     
     Global Instance Instance_IsConstant_value_UNICODE_VERSION :
       M.IsFunction.C "core::unicode::unicode_data::UNICODE_VERSION" value_UNICODE_VERSION.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_UNICODE_VERSION.
     
@@ -2038,6 +2044,7 @@ Module unicode.
         M.IsFunction.C
           "core::unicode::unicode_data::alphabetic::SHORT_OFFSET_RUNS"
           value_SHORT_OFFSET_RUNS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_SHORT_OFFSET_RUNS.
       
@@ -3574,6 +3581,7 @@ Module unicode.
       
       Global Instance Instance_IsConstant_value_OFFSETS :
         M.IsFunction.C "core::unicode::unicode_data::alphabetic::OFFSETS" value_OFFSETS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_OFFSETS.
       
@@ -3678,6 +3686,7 @@ Module unicode.
       
       Global Instance Instance_IsFunction_lookup :
         M.IsFunction.C "core::unicode::unicode_data::alphabetic::lookup" lookup.
+      Proof.
       Admitted.
       Global Typeclasses Opaque lookup.
       
@@ -3778,6 +3787,7 @@ Module unicode.
       
       Global Instance Instance_IsFunction_lookup_slow :
         M.IsFunction.C "core::unicode::unicode_data::alphabetic::lookup_slow" lookup_slow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque lookup_slow.
     End alphabetic.
@@ -4169,6 +4179,7 @@ Module unicode.
         M.IsFunction.C
           "core::unicode::unicode_data::case_ignorable::SHORT_OFFSET_RUNS"
           value_SHORT_OFFSET_RUNS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_SHORT_OFFSET_RUNS.
       
@@ -5105,6 +5116,7 @@ Module unicode.
       
       Global Instance Instance_IsConstant_value_OFFSETS :
         M.IsFunction.C "core::unicode::unicode_data::case_ignorable::OFFSETS" value_OFFSETS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_OFFSETS.
       
@@ -5209,6 +5221,7 @@ Module unicode.
       
       Global Instance Instance_IsFunction_lookup :
         M.IsFunction.C "core::unicode::unicode_data::case_ignorable::lookup" lookup.
+      Proof.
       Admitted.
       Global Typeclasses Opaque lookup.
       
@@ -5309,6 +5322,7 @@ Module unicode.
       
       Global Instance Instance_IsFunction_lookup_slow :
         M.IsFunction.C "core::unicode::unicode_data::case_ignorable::lookup_slow" lookup_slow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque lookup_slow.
     End case_ignorable.
@@ -5560,6 +5574,7 @@ Module unicode.
         M.IsFunction.C
           "core::unicode::unicode_data::cased::SHORT_OFFSET_RUNS"
           value_SHORT_OFFSET_RUNS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_SHORT_OFFSET_RUNS.
       
@@ -5890,6 +5905,7 @@ Module unicode.
       
       Global Instance Instance_IsConstant_value_OFFSETS :
         M.IsFunction.C "core::unicode::unicode_data::cased::OFFSETS" value_OFFSETS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_OFFSETS.
       
@@ -5994,6 +6010,7 @@ Module unicode.
       
       Global Instance Instance_IsFunction_lookup :
         M.IsFunction.C "core::unicode::unicode_data::cased::lookup" lookup.
+      Proof.
       Admitted.
       Global Typeclasses Opaque lookup.
       
@@ -6094,6 +6111,7 @@ Module unicode.
       
       Global Instance Instance_IsFunction_lookup_slow :
         M.IsFunction.C "core::unicode::unicode_data::cased::lookup_slow" lookup_slow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque lookup_slow.
     End cased.
@@ -6455,6 +6473,7 @@ Module unicode.
         M.IsFunction.C
           "core::unicode::unicode_data::grapheme_extend::SHORT_OFFSET_RUNS"
           value_SHORT_OFFSET_RUNS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_SHORT_OFFSET_RUNS.
       
@@ -7239,6 +7258,7 @@ Module unicode.
       
       Global Instance Instance_IsConstant_value_OFFSETS :
         M.IsFunction.C "core::unicode::unicode_data::grapheme_extend::OFFSETS" value_OFFSETS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_OFFSETS.
       
@@ -7343,6 +7363,7 @@ Module unicode.
       
       Global Instance Instance_IsFunction_lookup :
         M.IsFunction.C "core::unicode::unicode_data::grapheme_extend::lookup" lookup.
+      Proof.
       Admitted.
       Global Typeclasses Opaque lookup.
       
@@ -7443,6 +7464,7 @@ Module unicode.
       
       Global Instance Instance_IsFunction_lookup_slow :
         M.IsFunction.C "core::unicode::unicode_data::grapheme_extend::lookup_slow" lookup_slow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque lookup_slow.
     End grapheme_extend.
@@ -7591,6 +7613,7 @@ Module unicode.
         M.IsFunction.C
           "core::unicode::unicode_data::lowercase::BITSET_CHUNKS_MAP"
           value_BITSET_CHUNKS_MAP.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_BITSET_CHUNKS_MAP.
       
@@ -8002,6 +8025,7 @@ Module unicode.
         M.IsFunction.C
           "core::unicode::unicode_data::lowercase::BITSET_INDEX_CHUNKS"
           value_BITSET_INDEX_CHUNKS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_BITSET_INDEX_CHUNKS.
       
@@ -8078,6 +8102,7 @@ Module unicode.
         M.IsFunction.C
           "core::unicode::unicode_data::lowercase::BITSET_CANONICAL"
           value_BITSET_CANONICAL.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_BITSET_CANONICAL.
       
@@ -8125,6 +8150,7 @@ Module unicode.
         M.IsFunction.C
           "core::unicode::unicode_data::lowercase::BITSET_MAPPING"
           value_BITSET_MAPPING.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_BITSET_MAPPING.
       
@@ -8345,6 +8371,7 @@ Module unicode.
       
       Global Instance Instance_IsFunction_lookup :
         M.IsFunction.C "core::unicode::unicode_data::lowercase::lookup" lookup.
+      Proof.
       Admitted.
       Global Typeclasses Opaque lookup.
     End lowercase.
@@ -8804,6 +8831,7 @@ Module unicode.
       
       Global Instance Instance_IsConstant_value_SHORT_OFFSET_RUNS :
         M.IsFunction.C "core::unicode::unicode_data::n::SHORT_OFFSET_RUNS" value_SHORT_OFFSET_RUNS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_SHORT_OFFSET_RUNS.
       
@@ -9112,6 +9140,7 @@ Module unicode.
       
       Global Instance Instance_IsConstant_value_OFFSETS :
         M.IsFunction.C "core::unicode::unicode_data::n::OFFSETS" value_OFFSETS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_OFFSETS.
       
@@ -9212,6 +9241,7 @@ Module unicode.
       
       Global Instance Instance_IsFunction_lookup :
         M.IsFunction.C "core::unicode::unicode_data::n::lookup" lookup.
+      Proof.
       Admitted.
       Global Typeclasses Opaque lookup.
       
@@ -9312,6 +9342,7 @@ Module unicode.
       
       Global Instance Instance_IsFunction_lookup_slow :
         M.IsFunction.C "core::unicode::unicode_data::n::lookup_slow" lookup_slow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque lookup_slow.
     End n.
@@ -9462,6 +9493,7 @@ Module unicode.
         M.IsFunction.C
           "core::unicode::unicode_data::uppercase::BITSET_CHUNKS_MAP"
           value_BITSET_CHUNKS_MAP.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_BITSET_CHUNKS_MAP.
       
@@ -9816,6 +9848,7 @@ Module unicode.
         M.IsFunction.C
           "core::unicode::unicode_data::uppercase::BITSET_INDEX_CHUNKS"
           value_BITSET_INDEX_CHUNKS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_BITSET_INDEX_CHUNKS.
       
@@ -9879,6 +9912,7 @@ Module unicode.
         M.IsFunction.C
           "core::unicode::unicode_data::uppercase::BITSET_CANONICAL"
           value_BITSET_CANONICAL.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_BITSET_CANONICAL.
       
@@ -9929,6 +9963,7 @@ Module unicode.
         M.IsFunction.C
           "core::unicode::unicode_data::uppercase::BITSET_MAPPING"
           value_BITSET_MAPPING.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_BITSET_MAPPING.
       
@@ -10149,6 +10184,7 @@ Module unicode.
       
       Global Instance Instance_IsFunction_lookup :
         M.IsFunction.C "core::unicode::unicode_data::uppercase::lookup" lookup.
+      Proof.
       Admitted.
       Global Typeclasses Opaque lookup.
     End uppercase.
@@ -10426,6 +10462,7 @@ Module unicode.
         M.IsFunction.C
           "core::unicode::unicode_data::white_space::WHITESPACE_MAP"
           value_WHITESPACE_MAP.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_WHITESPACE_MAP.
       
@@ -10661,6 +10698,7 @@ Module unicode.
       
       Global Instance Instance_IsFunction_lookup :
         M.IsFunction.C "core::unicode::unicode_data::white_space::lookup" lookup.
+      Proof.
       Admitted.
       Global Typeclasses Opaque lookup.
     End white_space.
@@ -10671,6 +10709,7 @@ Module unicode.
       
       Global Instance Instance_IsConstant_value_INDEX_MASK :
         M.IsFunction.C "core::unicode::unicode_data::conversions::INDEX_MASK" value_INDEX_MASK.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_INDEX_MASK.
       
@@ -11353,6 +11392,7 @@ Module unicode.
       
       Global Instance Instance_IsFunction_to_lower :
         M.IsFunction.C "core::unicode::unicode_data::conversions::to_lower" to_lower.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_lower.
       
@@ -12035,6 +12075,7 @@ Module unicode.
       
       Global Instance Instance_IsFunction_to_upper :
         M.IsFunction.C "core::unicode::unicode_data::conversions::to_upper" to_upper.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_upper.
       
@@ -14757,6 +14798,7 @@ Module unicode.
         M.IsFunction.C
           "core::unicode::unicode_data::conversions::LOWERCASE_TABLE"
           value_LOWERCASE_TABLE.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_LOWERCASE_TABLE.
       
@@ -14827,6 +14869,7 @@ Module unicode.
         M.IsFunction.C
           "core::unicode::unicode_data::conversions::LOWERCASE_TABLE_MULTI"
           value_LOWERCASE_TABLE_MULTI.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_LOWERCASE_TABLE_MULTI.
       
@@ -17725,6 +17768,7 @@ Module unicode.
         M.IsFunction.C
           "core::unicode::unicode_data::conversions::UPPERCASE_TABLE"
           value_UPPERCASE_TABLE.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_UPPERCASE_TABLE.
       
@@ -17997,6 +18041,7 @@ Module unicode.
         M.IsFunction.C
           "core::unicode::unicode_data::conversions::UPPERCASE_TABLE_MULTI"
           value_UPPERCASE_TABLE_MULTI.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_UPPERCASE_TABLE_MULTI.
     End conversions.

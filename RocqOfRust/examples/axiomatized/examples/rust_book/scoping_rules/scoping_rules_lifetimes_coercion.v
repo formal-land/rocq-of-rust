@@ -5,16 +5,19 @@ Parameter multiply : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_multiply :
   M.IsFunction.C "scoping_rules_lifetimes_coercion::multiply" multiply.
+Proof.
 Admitted.
 
 Parameter choose_first : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_choose_first :
   M.IsFunction.C "scoping_rules_lifetimes_coercion::choose_first" choose_first.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "scoping_rules_lifetimes_coercion::main" main.
+Proof.
 Admitted.

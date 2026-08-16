@@ -4,4 +4,5 @@ Require Import RocqOfRust.RocqOfRust.
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "for_and_iterators_iter_mut::main" main.
+Proof.
 Admitted.

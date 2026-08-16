@@ -33,6 +33,7 @@ Module mem.
     end.
   
   Global Instance Instance_IsFunction_forget : M.IsFunction.C "core::mem::forget" forget.
+  Proof.
   Admitted.
   Global Typeclasses Opaque forget.
   
@@ -56,6 +57,7 @@ Module mem.
   
   Global Instance Instance_IsFunction_forget_unsized :
     M.IsFunction.C "core::mem::forget_unsized" forget_unsized.
+  Proof.
   Admitted.
   Global Typeclasses Opaque forget_unsized.
   
@@ -73,6 +75,7 @@ Module mem.
     end.
   
   Global Instance Instance_IsFunction_size_of : M.IsFunction.C "core::mem::size_of" size_of.
+  Proof.
   Admitted.
   Global Typeclasses Opaque size_of.
   
@@ -97,6 +100,7 @@ Module mem.
   
   Global Instance Instance_IsFunction_size_of_val :
     M.IsFunction.C "core::mem::size_of_val" size_of_val.
+  Proof.
   Admitted.
   Global Typeclasses Opaque size_of_val.
   
@@ -121,6 +125,7 @@ Module mem.
   
   Global Instance Instance_IsFunction_size_of_val_raw :
     M.IsFunction.C "core::mem::size_of_val_raw" size_of_val_raw.
+  Proof.
   Admitted.
   Global Typeclasses Opaque size_of_val_raw.
   
@@ -139,6 +144,7 @@ Module mem.
   
   Global Instance Instance_IsFunction_min_align_of :
     M.IsFunction.C "core::mem::min_align_of" min_align_of.
+  Proof.
   Admitted.
   Global Typeclasses Opaque min_align_of.
   
@@ -163,6 +169,7 @@ Module mem.
   
   Global Instance Instance_IsFunction_min_align_of_val :
     M.IsFunction.C "core::mem::min_align_of_val" min_align_of_val.
+  Proof.
   Admitted.
   Global Typeclasses Opaque min_align_of_val.
   
@@ -180,6 +187,7 @@ Module mem.
     end.
   
   Global Instance Instance_IsFunction_align_of : M.IsFunction.C "core::mem::align_of" align_of.
+  Proof.
   Admitted.
   Global Typeclasses Opaque align_of.
   
@@ -204,6 +212,7 @@ Module mem.
   
   Global Instance Instance_IsFunction_align_of_val :
     M.IsFunction.C "core::mem::align_of_val" align_of_val.
+  Proof.
   Admitted.
   Global Typeclasses Opaque align_of_val.
   
@@ -228,6 +237,7 @@ Module mem.
   
   Global Instance Instance_IsFunction_align_of_val_raw :
     M.IsFunction.C "core::mem::align_of_val_raw" align_of_val_raw.
+  Proof.
   Admitted.
   Global Typeclasses Opaque align_of_val_raw.
   
@@ -246,6 +256,7 @@ Module mem.
   
   Global Instance Instance_IsFunction_needs_drop :
     M.IsFunction.C "core::mem::needs_drop" needs_drop.
+  Proof.
   Admitted.
   Global Typeclasses Opaque needs_drop.
   
@@ -298,6 +309,7 @@ Module mem.
     end.
   
   Global Instance Instance_IsFunction_zeroed : M.IsFunction.C "core::mem::zeroed" zeroed.
+  Proof.
   Admitted.
   Global Typeclasses Opaque zeroed.
   
@@ -402,6 +414,7 @@ Module mem.
   
   Global Instance Instance_IsFunction_uninitialized :
     M.IsFunction.C "core::mem::uninitialized" uninitialized.
+  Proof.
   Admitted.
   Global Typeclasses Opaque uninitialized.
   
@@ -430,6 +443,7 @@ Module mem.
     end.
   
   Global Instance Instance_IsFunction_swap : M.IsFunction.C "core::mem::swap" swap.
+  Proof.
   Admitted.
   Global Typeclasses Opaque swap.
   
@@ -459,6 +473,7 @@ Module mem.
     end.
   
   Global Instance Instance_IsFunction_take : M.IsFunction.C "core::mem::take" take.
+  Proof.
   Admitted.
   Global Typeclasses Opaque take.
   
@@ -511,6 +526,7 @@ Module mem.
     end.
   
   Global Instance Instance_IsFunction_replace : M.IsFunction.C "core::mem::replace" replace.
+  Proof.
   Admitted.
   Global Typeclasses Opaque replace.
   
@@ -531,6 +547,7 @@ Module mem.
     end.
   
   Global Instance Instance_IsFunction_drop : M.IsFunction.C "core::mem::drop" drop.
+  Proof.
   Admitted.
   Global Typeclasses Opaque drop.
   
@@ -549,6 +566,7 @@ Module mem.
     end.
   
   Global Instance Instance_IsFunction_copy : M.IsFunction.C "core::mem::copy" copy.
+  Proof.
   Admitted.
   Global Typeclasses Opaque copy.
   
@@ -709,6 +727,7 @@ Module mem.
   
   Global Instance Instance_IsFunction_transmute_copy :
     M.IsFunction.C "core::mem::transmute_copy" transmute_copy.
+  Proof.
   Admitted.
   Global Typeclasses Opaque transmute_copy.
   
@@ -1062,6 +1081,7 @@ Module mem.
   
   Global Instance Instance_IsFunction_discriminant :
     M.IsFunction.C "core::mem::discriminant" discriminant.
+  Proof.
   Admitted.
   Global Typeclasses Opaque discriminant.
   
@@ -1080,6 +1100,7 @@ Module mem.
   
   Global Instance Instance_IsFunction_variant_count :
     M.IsFunction.C "core::mem::variant_count" variant_count.
+  Proof.
   Admitted.
   Global Typeclasses Opaque variant_count.
   
@@ -1198,6 +1219,7 @@ Module mem.
   
   Global Instance Instance_IsFunction_conjure_zst :
     M.IsFunction.C "core::mem::conjure_zst" conjure_zst.
+  Proof.
   Admitted.
   Global Typeclasses Opaque conjure_zst.
 End mem.

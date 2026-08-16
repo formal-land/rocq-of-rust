@@ -415,6 +415,7 @@ Module Impl_unpacking_options_via_question_mark_Person.
   
   Global Instance AssociatedFunction_work_phone_area_code :
     M.IsAssociatedFunction.C Self "work_phone_area_code" work_phone_area_code.
+  Proof.
   Admitted.
   Global Typeclasses Opaque work_phone_area_code.
 End Impl_unpacking_options_via_question_mark_Person.
@@ -648,5 +649,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "unpacking_options_via_question_mark::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

@@ -582,6 +582,7 @@ Module Impl_PartialEq_for_Ordering.
   Definition Self : Set := Ordering.t.
 
   Instance run : PartialEq.Run Self Self.
+  Proof.
   Admitted.
 End Impl_PartialEq_for_Ordering.
 Export (hints) Impl_PartialEq_for_Ordering.
@@ -590,6 +591,7 @@ Module Impl_PartialEq_for_U8.
   Definition Self : Set := u8.
 
   Instance run : PartialEq.Run Self Self.
+  Proof.
   Admitted.
 End Impl_PartialEq_for_U8.
 Export (hints) Impl_PartialEq_for_U8.
@@ -601,6 +603,7 @@ Module Impl_PartialEq_for_Array.
   Instance run
     (T U : Set) (N : usize) `{Link T} `{Link U} `{PartialEq.Run T U}
     : PartialEq.Run (array.t T N) (array.t U N).
+  Proof.
   Admitted.
 End Impl_PartialEq_for_Array.
 Export (hints) Impl_PartialEq_for_Array.
@@ -612,6 +615,7 @@ Module Impl_PartialEq_for_Ref.
   Instance run
     (A B : Set) `{Link A} `{Link B} 
     : PartialEq.Run ('& A) ('& B).
+  Proof.
   Admitted.
 End Impl_PartialEq_for_Ref.
 Export (hints) Impl_PartialEq_for_Ref.
@@ -620,6 +624,7 @@ Module Impl_PartialOrd_for_U32.
   Definition Self : Set := u32.
 
   Instance run : PartialOrd.Run Self Self.
+  Proof.
   Admitted.
 End Impl_PartialOrd_for_U32.
 Export (hints) Impl_PartialOrd_for_U32.
@@ -631,6 +636,7 @@ Module Impl_PartialOrd_for_Ref.
   Instance run (A B : Set) `{Link A} `{Link B}
     {run_PartialOrd_for_A : PartialOrd.Run A B} :
     PartialOrd.Run ('& A) ('& B).
+  Proof.
   Admitted.
 End Impl_PartialOrd_for_Ref.
 Export (hints) Impl_PartialOrd_for_Ref.

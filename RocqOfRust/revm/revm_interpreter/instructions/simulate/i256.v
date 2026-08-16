@@ -40,6 +40,7 @@ Lemma i256_sign_eq
       stack
     )
   }}.
+Proof.
 Admitted.
 
 Module Impl_Ord_for_Sign.
@@ -90,6 +91,7 @@ Lemma i256_cmp_eq
       stack
     )
   }}.
+Proof.
 Admitted.
 
 Definition sign_eqb (s1 s2 : Sign.t) : bool :=
@@ -169,6 +171,7 @@ Lemma i256_div_eq
       stack
     )
   }}.
+Proof.
 Admitted.
 
 (*
@@ -218,4 +221,5 @@ Lemma i256_mod_eq
       stack
     )
   }}.
+Proof.
 Admitted.

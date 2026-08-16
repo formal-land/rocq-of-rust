@@ -381,6 +381,7 @@ Module ops.
       
       Global Instance AssociatedFunction_new_unchecked :
         M.IsAssociatedFunction.C Self "new_unchecked" new_unchecked.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_unchecked.
       
@@ -403,6 +404,7 @@ Module ops.
         end.
       
       Global Instance AssociatedFunction_zero_to : M.IsAssociatedFunction.C Self "zero_to" zero_to.
+      Proof.
       Admitted.
       Global Typeclasses Opaque zero_to.
       
@@ -431,6 +433,7 @@ Module ops.
         end.
       
       Global Instance AssociatedFunction_start : M.IsAssociatedFunction.C Self "start" start.
+      Proof.
       Admitted.
       Global Typeclasses Opaque start.
       
@@ -459,6 +462,7 @@ Module ops.
         end.
       
       Global Instance AssociatedFunction_end_ : M.IsAssociatedFunction.C Self "end" end_.
+      Proof.
       Admitted.
       Global Typeclasses Opaque end_.
       
@@ -502,6 +506,7 @@ Module ops.
         end.
       
       Global Instance AssociatedFunction_len : M.IsAssociatedFunction.C Self "len" len.
+      Proof.
       Admitted.
       Global Typeclasses Opaque len.
       
@@ -620,6 +625,7 @@ Module ops.
       
       Global Instance AssociatedFunction_next_unchecked :
         M.IsAssociatedFunction.C Self "next_unchecked" next_unchecked.
+      Proof.
       Admitted.
       Global Typeclasses Opaque next_unchecked.
       
@@ -741,6 +747,7 @@ Module ops.
       
       Global Instance AssociatedFunction_next_back_unchecked :
         M.IsAssociatedFunction.C Self "next_back_unchecked" next_back_unchecked.
+      Proof.
       Admitted.
       Global Typeclasses Opaque next_back_unchecked.
       
@@ -866,6 +873,7 @@ Module ops.
       
       Global Instance AssociatedFunction_take_prefix :
         M.IsAssociatedFunction.C Self "take_prefix" take_prefix.
+      Proof.
       Admitted.
       Global Typeclasses Opaque take_prefix.
       
@@ -991,6 +999,7 @@ Module ops.
       
       Global Instance AssociatedFunction_take_suffix :
         M.IsAssociatedFunction.C Self "take_suffix" take_suffix.
+      Proof.
       Admitted.
       Global Typeclasses Opaque take_suffix.
       
@@ -1040,6 +1049,7 @@ Module ops.
       
       Global Instance AssociatedFunction_assume_range :
         M.IsAssociatedFunction.C Self "assume_range" assume_range.
+      Proof.
       Admitted.
       Global Typeclasses Opaque assume_range.
     End Impl_core_ops_index_range_IndexRange.

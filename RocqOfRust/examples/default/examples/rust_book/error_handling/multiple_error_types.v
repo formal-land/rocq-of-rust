@@ -124,6 +124,7 @@ Definition double_first (ε : list Value.t) (τ : list Ty.t) (α : list Value.t)
 
 Global Instance Instance_IsFunction_double_first :
   M.IsFunction.C "multiple_error_types::double_first" double_first.
+Proof.
 Admitted.
 Global Typeclasses Opaque double_first.
 
@@ -676,5 +677,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "multiple_error_types::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

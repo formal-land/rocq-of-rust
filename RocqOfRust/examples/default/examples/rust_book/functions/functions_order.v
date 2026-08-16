@@ -43,6 +43,7 @@ Module Impl_functions_order_SomeType.
     end.
   
   Global Instance AssociatedFunction_meth1 : M.IsAssociatedFunction.C Self "meth1" meth1.
+  Proof.
   Admitted.
   Global Typeclasses Opaque meth1.
   
@@ -57,6 +58,7 @@ Module Impl_functions_order_SomeType.
     end.
   
   Global Instance AssociatedFunction_meth2 : M.IsAssociatedFunction.C Self "meth2" meth2.
+  Proof.
   Admitted.
   Global Typeclasses Opaque meth2.
 End Impl_functions_order_SomeType.
@@ -125,6 +127,7 @@ Definition depends_on_trait_impl (ε : list Value.t) (τ : list Ty.t) (α : list
 
 Global Instance Instance_IsFunction_depends_on_trait_impl :
   M.IsFunction.C "functions_order::depends_on_trait_impl" depends_on_trait_impl.
+Proof.
 Admitted.
 Global Typeclasses Opaque depends_on_trait_impl.
 
@@ -247,6 +250,7 @@ Module inner_mod.
     end.
   
   Global Instance Instance_IsFunction_bar : M.IsFunction.C "functions_order::inner_mod::bar" bar.
+  Proof.
   Admitted.
   Global Typeclasses Opaque bar.
   
@@ -258,6 +262,7 @@ Module inner_mod.
     end.
   
   Global Instance Instance_IsFunction_tar : M.IsFunction.C "functions_order::inner_mod::tar" tar.
+  Proof.
   Admitted.
   Global Typeclasses Opaque tar.
   
@@ -285,6 +290,7 @@ Module inner_mod.
     
     Global Instance Instance_IsFunction_tick :
       M.IsFunction.C "functions_order::inner_mod::nested_mod::tick" tick.
+    Proof.
     Admitted.
     Global Typeclasses Opaque tick.
     
@@ -297,6 +303,7 @@ Module inner_mod.
     
     Global Instance Instance_IsFunction_tack :
       M.IsFunction.C "functions_order::inner_mod::nested_mod::tack" tack.
+    Proof.
     Admitted.
     Global Typeclasses Opaque tack.
   End nested_mod.
@@ -345,6 +352,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "functions_order::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.
 
@@ -356,5 +364,6 @@ Definition foo (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_foo : M.IsFunction.C "functions_order::foo" foo.
+Proof.
 Admitted.
 Global Typeclasses Opaque foo.

@@ -4,4 +4,5 @@ Require Import RocqOfRust.RocqOfRust.
 Parameter foo : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_foo : M.IsFunction.C "let_else::foo" foo.
+Proof.
 Admitted.

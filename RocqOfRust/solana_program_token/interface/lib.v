@@ -107,5 +107,6 @@ Definition check_program_account (ε : list Value.t) (τ : list Ty.t) (α : list
 
 Global Instance Instance_IsFunction_check_program_account :
   M.IsFunction.C "spl_token_interface::check_program_account" check_program_account.
+Proof.
 Admitted.
 Global Typeclasses Opaque check_program_account.

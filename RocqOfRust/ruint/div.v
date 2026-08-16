@@ -116,6 +116,7 @@ Module div.
     Global Instance AssociatedFunction_checked_div :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "checked_div" (checked_div BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque checked_div.
     
@@ -229,6 +230,7 @@ Module div.
     Global Instance AssociatedFunction_checked_rem :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "checked_rem" (checked_rem BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque checked_rem.
     
@@ -427,6 +429,7 @@ Module div.
     Global Instance AssociatedFunction_div_ceil :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "div_ceil" (div_ceil BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque div_ceil.
     
@@ -588,6 +591,7 @@ Module div.
     Global Instance AssociatedFunction_div_rem :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "div_rem" (div_rem BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque div_rem.
     
@@ -640,6 +644,7 @@ Module div.
     Global Instance AssociatedFunction_wrapping_div :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "wrapping_div" (wrapping_div BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque wrapping_div.
     
@@ -692,6 +697,7 @@ Module div.
     Global Instance AssociatedFunction_wrapping_rem :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "wrapping_rem" (wrapping_rem BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque wrapping_rem.
   End Impl_ruint_Uint_BITS_LIMBS.

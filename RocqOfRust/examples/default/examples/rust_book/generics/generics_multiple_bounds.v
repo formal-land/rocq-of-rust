@@ -157,6 +157,7 @@ Definition compare_prints (ε : list Value.t) (τ : list Ty.t) (α : list Value.
 
 Global Instance Instance_IsFunction_compare_prints :
   M.IsFunction.C "generics_multiple_bounds::compare_prints" compare_prints.
+Proof.
 Admitted.
 Global Typeclasses Opaque compare_prints.
 
@@ -312,6 +313,7 @@ Definition compare_types (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
 
 Global Instance Instance_IsFunction_compare_types :
   M.IsFunction.C "generics_multiple_bounds::compare_types" compare_types.
+Proof.
 Admitted.
 Global Typeclasses Opaque compare_types.
 
@@ -468,5 +470,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "generics_multiple_bounds::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

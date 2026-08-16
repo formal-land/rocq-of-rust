@@ -10,6 +10,7 @@ Module processor.
       M.IsFunction.C
         "pinocchio_token_program::processor::batch::IX_HEADER_SIZE"
         value_IX_HEADER_SIZE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_IX_HEADER_SIZE.
     
@@ -2180,6 +2181,7 @@ Module processor.
     
     Global Instance Instance_IsFunction_process_batch :
       M.IsFunction.C "pinocchio_token_program::processor::batch::process_batch" process_batch.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_batch.
   End batch.

@@ -15,11 +15,13 @@ Module Impl_scoping_rules_lifetimes_methods_Owner.
   Parameter add_one : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_add_one : M.IsAssociatedFunction.C Self "add_one" add_one.
+  Proof.
   Admitted.
   
   Parameter print : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_print : M.IsAssociatedFunction.C Self "print" print.
+  Proof.
   Admitted.
 End Impl_scoping_rules_lifetimes_methods_Owner.
 
@@ -27,4 +29,5 @@ Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "scoping_rules_lifetimes_methods::main" main.
+Proof.
 Admitted.

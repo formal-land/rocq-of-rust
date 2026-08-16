@@ -13,6 +13,7 @@ Module collections.
       
       Global Instance Instance_IsConstant_value_MIN_LEN :
         M.IsFunction.C "alloc::collections::btree::map::MIN_LEN" value_MIN_LEN.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MIN_LEN.
       
@@ -1211,6 +1212,7 @@ Module collections.
         Global Instance AssociatedFunction_replace :
           forall (K A : Ty.t),
           M.IsAssociatedFunction.C (Self K A) "replace" (replace K A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque replace.
         
@@ -2048,6 +2050,7 @@ Module collections.
         Global Instance AssociatedFunction_get_or_insert_with :
           forall (K A : Ty.t),
           M.IsAssociatedFunction.C (Self K A) "get_or_insert_with" (get_or_insert_with K A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque get_or_insert_with.
       End Impl_alloc_collections_btree_map_BTreeMap_K_alloc_collections_btree_set_val_SetValZST_A.
@@ -2540,6 +2543,7 @@ Module collections.
         Global Instance AssociatedFunction_iter :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "iter" (iter K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque iter.
         (*
@@ -2843,6 +2847,7 @@ Module collections.
         Global Instance AssociatedFunction_dying_next :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "dying_next" (dying_next K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque dying_next.
         
@@ -3147,6 +3152,7 @@ Module collections.
         Global Instance AssociatedFunction_dying_next_back :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "dying_next_back" (dying_next_back K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque dying_next_back.
       End Impl_alloc_collections_btree_map_IntoIter_K_V_A.
@@ -4543,6 +4549,7 @@ Module collections.
         Global Instance AssociatedFunction_new :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "new" (new K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new.
       End Impl_alloc_collections_btree_map_BTreeMap_K_V_alloc_alloc_Global.
@@ -4726,6 +4733,7 @@ Module collections.
         Global Instance AssociatedFunction_clear :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "clear" (clear K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque clear.
         
@@ -4791,6 +4799,7 @@ Module collections.
         Global Instance AssociatedFunction_new_in :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "new_in" (new_in K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new_in.
         (*
@@ -5265,6 +5274,7 @@ Module collections.
         Global Instance AssociatedFunction_get :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "get" (get K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque get.
         
@@ -5756,6 +5766,7 @@ Module collections.
         Global Instance AssociatedFunction_get_key_value :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "get_key_value" (get_key_value K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque get_key_value.
         
@@ -6339,6 +6350,7 @@ Module collections.
         Global Instance AssociatedFunction_first_key_value :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "first_key_value" (first_key_value K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque first_key_value.
         
@@ -7324,6 +7336,7 @@ Module collections.
         Global Instance AssociatedFunction_first_entry :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "first_entry" (first_entry K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque first_entry.
         
@@ -7452,6 +7465,7 @@ Module collections.
         Global Instance AssociatedFunction_pop_first :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "pop_first" (pop_first K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque pop_first.
         
@@ -8035,6 +8049,7 @@ Module collections.
         Global Instance AssociatedFunction_last_key_value :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "last_key_value" (last_key_value K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque last_key_value.
         
@@ -9020,6 +9035,7 @@ Module collections.
         Global Instance AssociatedFunction_last_entry :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "last_entry" (last_entry K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque last_entry.
         
@@ -9148,6 +9164,7 @@ Module collections.
         Global Instance AssociatedFunction_pop_last :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "pop_last" (pop_last K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque pop_last.
         
@@ -9225,6 +9242,7 @@ Module collections.
         Global Instance AssociatedFunction_contains_key :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "contains_key" (contains_key K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque contains_key.
         
@@ -9686,6 +9704,7 @@ Module collections.
         Global Instance AssociatedFunction_get_mut :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "get_mut" (get_mut K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque get_mut.
         
@@ -9823,6 +9842,7 @@ Module collections.
         Global Instance AssociatedFunction_insert :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "insert" (insert K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque insert.
         
@@ -9976,6 +9996,7 @@ Module collections.
         Global Instance AssociatedFunction_try_insert :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "try_insert" (try_insert K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque try_insert.
         
@@ -10058,6 +10079,7 @@ Module collections.
         Global Instance AssociatedFunction_remove :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "remove" (remove K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque remove.
         
@@ -10679,6 +10701,7 @@ Module collections.
         Global Instance AssociatedFunction_remove_entry :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "remove_entry" (remove_entry K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque remove_entry.
         
@@ -10850,6 +10873,7 @@ Module collections.
         Global Instance AssociatedFunction_retain :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "retain" (retain K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque retain.
         
@@ -11490,6 +11514,7 @@ Module collections.
         Global Instance AssociatedFunction_append :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "append" (append K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque append.
         
@@ -11678,6 +11703,7 @@ Module collections.
         Global Instance AssociatedFunction_range :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "range" (range K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque range.
         
@@ -11887,6 +11913,7 @@ Module collections.
         Global Instance AssociatedFunction_range_mut :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "range_mut" (range_mut K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque range_mut.
         
@@ -12491,6 +12518,7 @@ Module collections.
         Global Instance AssociatedFunction_entry :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "entry" (entry K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque entry.
         
@@ -12995,6 +13023,7 @@ Module collections.
         Global Instance AssociatedFunction_split_off :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "split_off" (split_off K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque split_off.
         
@@ -13093,6 +13122,7 @@ Module collections.
         Global Instance AssociatedFunction_extract_if :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "extract_if" (extract_if K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque extract_if.
         
@@ -13778,6 +13808,7 @@ Module collections.
         Global Instance AssociatedFunction_extract_if_inner :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "extract_if_inner" (extract_if_inner K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque extract_if_inner.
         
@@ -13830,6 +13861,7 @@ Module collections.
         Global Instance AssociatedFunction_into_keys :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "into_keys" (into_keys K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque into_keys.
         
@@ -13882,6 +13914,7 @@ Module collections.
         Global Instance AssociatedFunction_into_values :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "into_values" (into_values K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque into_values.
         
@@ -14105,6 +14138,7 @@ Module collections.
             (Self K V A)
             "bulk_build_from_sorted_iter"
             (bulk_build_from_sorted_iter K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque bulk_build_from_sorted_iter.
         (*
@@ -14304,6 +14338,7 @@ Module collections.
         Global Instance AssociatedFunction_iter :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "iter" (iter K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque iter.
         
@@ -14526,6 +14561,7 @@ Module collections.
         Global Instance AssociatedFunction_iter_mut :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "iter_mut" (iter_mut K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque iter_mut.
         
@@ -14574,6 +14610,7 @@ Module collections.
         Global Instance AssociatedFunction_keys :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "keys" (keys K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque keys.
         
@@ -14627,6 +14664,7 @@ Module collections.
         Global Instance AssociatedFunction_values :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "values" (values K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque values.
         
@@ -14680,6 +14718,7 @@ Module collections.
         Global Instance AssociatedFunction_values_mut :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "values_mut" (values_mut K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque values_mut.
         
@@ -14715,6 +14754,7 @@ Module collections.
         Global Instance AssociatedFunction_len :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "len" (len K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque len.
         
@@ -14765,6 +14805,7 @@ Module collections.
         Global Instance AssociatedFunction_is_empty :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "is_empty" (is_empty K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque is_empty.
         
@@ -15188,6 +15229,7 @@ Module collections.
         Global Instance AssociatedFunction_lower_bound :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "lower_bound" (lower_bound K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque lower_bound.
         
@@ -15879,6 +15921,7 @@ Module collections.
         Global Instance AssociatedFunction_lower_bound_mut :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "lower_bound_mut" (lower_bound_mut K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque lower_bound_mut.
         
@@ -16302,6 +16345,7 @@ Module collections.
         Global Instance AssociatedFunction_upper_bound :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "upper_bound" (upper_bound K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque upper_bound.
         
@@ -16993,6 +17037,7 @@ Module collections.
         Global Instance AssociatedFunction_upper_bound_mut :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "upper_bound_mut" (upper_bound_mut K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque upper_bound_mut.
       End Impl_alloc_collections_btree_map_BTreeMap_K_V_A.
@@ -18353,6 +18398,7 @@ Module collections.
         Global Instance AssociatedFunction_iter :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "iter" (iter K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque iter.
       End Impl_alloc_collections_btree_map_IterMut_K_V.
@@ -21714,6 +21760,7 @@ Module collections.
         Global Instance AssociatedFunction_peek :
           forall (K V R : Ty.t),
           M.IsAssociatedFunction.C (Self K V R) "peek" (peek K V R).
+        Proof.
         Admitted.
         Global Typeclasses Opaque peek.
         
@@ -23247,6 +23294,7 @@ Module collections.
         Global Instance AssociatedFunction_next :
           forall (K V R : Ty.t),
           M.IsAssociatedFunction.C (Self K V R) "next" (next K V R).
+        Proof.
         Admitted.
         Global Typeclasses Opaque next.
         
@@ -23309,6 +23357,7 @@ Module collections.
         Global Instance AssociatedFunction_size_hint :
           forall (K V R : Ty.t),
           M.IsAssociatedFunction.C (Self K V R) "size_hint" (size_hint K V R).
+        Proof.
         Admitted.
         Global Typeclasses Opaque size_hint.
       End Impl_alloc_collections_btree_map_ExtractIfInner_K_V_R.
@@ -28357,6 +28406,7 @@ Module collections.
         Global Instance AssociatedFunction_next :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "next" (next K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque next.
         
@@ -29056,6 +29106,7 @@ Module collections.
         Global Instance AssociatedFunction_prev :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "prev" (prev K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque prev.
         
@@ -29121,6 +29172,7 @@ Module collections.
         Global Instance AssociatedFunction_peek_next :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "peek_next" (peek_next K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque peek_next.
         
@@ -29186,6 +29238,7 @@ Module collections.
         Global Instance AssociatedFunction_peek_prev :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "peek_prev" (peek_prev K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque peek_prev.
       End Impl_alloc_collections_btree_map_Cursor_K_V.
@@ -29437,6 +29490,7 @@ Module collections.
         Global Instance AssociatedFunction_next :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "next" (next K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque next.
         
@@ -29683,6 +29737,7 @@ Module collections.
         Global Instance AssociatedFunction_prev :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "prev" (prev K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque prev.
         
@@ -29934,6 +29989,7 @@ Module collections.
         Global Instance AssociatedFunction_peek_next :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "peek_next" (peek_next K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque peek_next.
         
@@ -30185,6 +30241,7 @@ Module collections.
         Global Instance AssociatedFunction_peek_prev :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "peek_prev" (peek_prev K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque peek_prev.
         
@@ -30237,6 +30294,7 @@ Module collections.
         Global Instance AssociatedFunction_as_cursor :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "as_cursor" (as_cursor K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque as_cursor.
         
@@ -30273,6 +30331,7 @@ Module collections.
         Global Instance AssociatedFunction_with_mutable_key :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "with_mutable_key" (with_mutable_key K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque with_mutable_key.
         (*
@@ -30331,6 +30390,7 @@ Module collections.
             (Self K V A)
             "insert_after_unchecked"
             (insert_after_unchecked K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque insert_after_unchecked.
         
@@ -30390,6 +30450,7 @@ Module collections.
             (Self K V A)
             "insert_before_unchecked"
             (insert_before_unchecked K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque insert_before_unchecked.
         
@@ -30449,6 +30510,7 @@ Module collections.
         Global Instance AssociatedFunction_insert_after :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "insert_after" (insert_after K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque insert_after.
         
@@ -30508,6 +30570,7 @@ Module collections.
         Global Instance AssociatedFunction_insert_before :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "insert_before" (insert_before K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque insert_before.
         
@@ -30560,6 +30623,7 @@ Module collections.
         Global Instance AssociatedFunction_remove_next :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "remove_next" (remove_next K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque remove_next.
         
@@ -30612,6 +30676,7 @@ Module collections.
         Global Instance AssociatedFunction_remove_prev :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "remove_prev" (remove_prev K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque remove_prev.
       End Impl_alloc_collections_btree_map_CursorMut_K_V_A.
@@ -31481,6 +31546,7 @@ Module collections.
         Global Instance AssociatedFunction_next :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "next" (next K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque next.
         
@@ -32345,6 +32411,7 @@ Module collections.
         Global Instance AssociatedFunction_prev :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "prev" (prev K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque prev.
         
@@ -33121,6 +33188,7 @@ Module collections.
         Global Instance AssociatedFunction_peek_next :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "peek_next" (peek_next K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque peek_next.
         
@@ -33897,6 +33965,7 @@ Module collections.
         Global Instance AssociatedFunction_peek_prev :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "peek_prev" (peek_prev K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque peek_prev.
         
@@ -34357,6 +34426,7 @@ Module collections.
         Global Instance AssociatedFunction_as_cursor :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "as_cursor" (as_cursor K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque as_cursor.
         (*
@@ -35662,6 +35732,7 @@ Module collections.
             (Self K V A)
             "insert_after_unchecked"
             (insert_after_unchecked K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque insert_after_unchecked.
         
@@ -37044,6 +37115,7 @@ Module collections.
             (Self K V A)
             "insert_before_unchecked"
             (insert_before_unchecked K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque insert_before_unchecked.
         
@@ -37397,6 +37469,7 @@ Module collections.
         Global Instance AssociatedFunction_insert_after :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "insert_after" (insert_after K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque insert_after.
         
@@ -37750,6 +37823,7 @@ Module collections.
         Global Instance AssociatedFunction_insert_before :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "insert_before" (insert_before K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque insert_before.
         
@@ -39102,6 +39176,7 @@ Module collections.
         Global Instance AssociatedFunction_remove_next :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "remove_next" (remove_next K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque remove_next.
         
@@ -40454,6 +40529,7 @@ Module collections.
         Global Instance AssociatedFunction_remove_prev :
           forall (K V A : Ty.t),
           M.IsAssociatedFunction.C (Self K V A) "remove_prev" (remove_prev K V A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque remove_prev.
       End Impl_alloc_collections_btree_map_CursorMutKey_K_V_A.

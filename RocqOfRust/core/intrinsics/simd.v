@@ -24,6 +24,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_insert :
       M.IsFunction.C "core::intrinsics::simd::simd_insert" simd_insert.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_insert.
     
@@ -47,6 +48,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_extract :
       M.IsFunction.C "core::intrinsics::simd::simd_extract" simd_extract.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_extract.
     
@@ -102,6 +104,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_insert_dyn :
       M.IsFunction.C "core::intrinsics::simd::simd_insert_dyn" simd_insert_dyn.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_insert_dyn.
     
@@ -145,6 +148,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_extract_dyn :
       M.IsFunction.C "core::intrinsics::simd::simd_extract_dyn" simd_extract_dyn.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_extract_dyn.
     
@@ -168,6 +172,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_add :
       M.IsFunction.C "core::intrinsics::simd::simd_add" simd_add.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_add.
     
@@ -191,6 +196,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_sub :
       M.IsFunction.C "core::intrinsics::simd::simd_sub" simd_sub.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_sub.
     
@@ -214,6 +220,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_mul :
       M.IsFunction.C "core::intrinsics::simd::simd_mul" simd_mul.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_mul.
     
@@ -237,6 +244,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_div :
       M.IsFunction.C "core::intrinsics::simd::simd_div" simd_div.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_div.
     
@@ -260,6 +268,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_rem :
       M.IsFunction.C "core::intrinsics::simd::simd_rem" simd_rem.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_rem.
     
@@ -283,6 +292,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_shl :
       M.IsFunction.C "core::intrinsics::simd::simd_shl" simd_shl.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_shl.
     
@@ -306,6 +316,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_shr :
       M.IsFunction.C "core::intrinsics::simd::simd_shr" simd_shr.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_shr.
     
@@ -330,6 +341,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_funnel_shl :
       M.IsFunction.C "core::intrinsics::simd::simd_funnel_shl" simd_funnel_shl.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_funnel_shl.
     
@@ -354,6 +366,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_funnel_shr :
       M.IsFunction.C "core::intrinsics::simd::simd_funnel_shr" simd_funnel_shr.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_funnel_shr.
     
@@ -377,6 +390,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_and :
       M.IsFunction.C "core::intrinsics::simd::simd_and" simd_and.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_and.
     
@@ -400,6 +414,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_or :
       M.IsFunction.C "core::intrinsics::simd::simd_or" simd_or.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_or.
     
@@ -423,6 +438,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_xor :
       M.IsFunction.C "core::intrinsics::simd::simd_xor" simd_xor.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_xor.
     
@@ -445,6 +461,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_cast :
       M.IsFunction.C "core::intrinsics::simd::simd_cast" simd_cast.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_cast.
     
@@ -467,6 +484,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_as :
       M.IsFunction.C "core::intrinsics::simd::simd_as" simd_as.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_as.
     
@@ -489,6 +507,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_neg :
       M.IsFunction.C "core::intrinsics::simd::simd_neg" simd_neg.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_neg.
     
@@ -511,6 +530,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_fabs :
       M.IsFunction.C "core::intrinsics::simd::simd_fabs" simd_fabs.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_fabs.
     
@@ -534,6 +554,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_fmin :
       M.IsFunction.C "core::intrinsics::simd::simd_fmin" simd_fmin.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_fmin.
     
@@ -557,6 +578,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_fmax :
       M.IsFunction.C "core::intrinsics::simd::simd_fmax" simd_fmax.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_fmax.
     
@@ -580,6 +602,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_eq :
       M.IsFunction.C "core::intrinsics::simd::simd_eq" simd_eq.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_eq.
     
@@ -603,6 +626,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_ne :
       M.IsFunction.C "core::intrinsics::simd::simd_ne" simd_ne.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_ne.
     
@@ -626,6 +650,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_lt :
       M.IsFunction.C "core::intrinsics::simd::simd_lt" simd_lt.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_lt.
     
@@ -649,6 +674,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_le :
       M.IsFunction.C "core::intrinsics::simd::simd_le" simd_le.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_le.
     
@@ -672,6 +698,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_gt :
       M.IsFunction.C "core::intrinsics::simd::simd_gt" simd_gt.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_gt.
     
@@ -695,6 +722,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_ge :
       M.IsFunction.C "core::intrinsics::simd::simd_ge" simd_ge.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_ge.
     
@@ -719,6 +747,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_shuffle :
       M.IsFunction.C "core::intrinsics::simd::simd_shuffle" simd_shuffle.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_shuffle.
     
@@ -743,6 +772,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_gather :
       M.IsFunction.C "core::intrinsics::simd::simd_gather" simd_gather.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_gather.
     
@@ -767,6 +797,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_scatter :
       M.IsFunction.C "core::intrinsics::simd::simd_scatter" simd_scatter.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_scatter.
     
@@ -1003,6 +1034,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_masked_load :
       M.IsFunction.C "core::intrinsics::simd::simd_masked_load" simd_masked_load.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_masked_load.
     
@@ -1027,6 +1059,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_masked_store :
       M.IsFunction.C "core::intrinsics::simd::simd_masked_store" simd_masked_store.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_masked_store.
     
@@ -1050,6 +1083,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_saturating_add :
       M.IsFunction.C "core::intrinsics::simd::simd_saturating_add" simd_saturating_add.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_saturating_add.
     
@@ -1073,6 +1107,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_saturating_sub :
       M.IsFunction.C "core::intrinsics::simd::simd_saturating_sub" simd_saturating_sub.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_saturating_sub.
     
@@ -1096,6 +1131,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_reduce_add_ordered :
       M.IsFunction.C "core::intrinsics::simd::simd_reduce_add_ordered" simd_reduce_add_ordered.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_reduce_add_ordered.
     
@@ -1122,6 +1158,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_reduce_add_unordered :
       M.IsFunction.C "core::intrinsics::simd::simd_reduce_add_unordered" simd_reduce_add_unordered.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_reduce_add_unordered.
     
@@ -1145,6 +1182,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_reduce_mul_ordered :
       M.IsFunction.C "core::intrinsics::simd::simd_reduce_mul_ordered" simd_reduce_mul_ordered.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_reduce_mul_ordered.
     
@@ -1171,6 +1209,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_reduce_mul_unordered :
       M.IsFunction.C "core::intrinsics::simd::simd_reduce_mul_unordered" simd_reduce_mul_unordered.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_reduce_mul_unordered.
     
@@ -1193,6 +1232,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_reduce_all :
       M.IsFunction.C "core::intrinsics::simd::simd_reduce_all" simd_reduce_all.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_reduce_all.
     
@@ -1215,6 +1255,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_reduce_any :
       M.IsFunction.C "core::intrinsics::simd::simd_reduce_any" simd_reduce_any.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_reduce_any.
     
@@ -1237,6 +1278,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_reduce_max :
       M.IsFunction.C "core::intrinsics::simd::simd_reduce_max" simd_reduce_max.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_reduce_max.
     
@@ -1259,6 +1301,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_reduce_min :
       M.IsFunction.C "core::intrinsics::simd::simd_reduce_min" simd_reduce_min.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_reduce_min.
     
@@ -1281,6 +1324,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_reduce_and :
       M.IsFunction.C "core::intrinsics::simd::simd_reduce_and" simd_reduce_and.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_reduce_and.
     
@@ -1303,6 +1347,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_reduce_or :
       M.IsFunction.C "core::intrinsics::simd::simd_reduce_or" simd_reduce_or.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_reduce_or.
     
@@ -1325,6 +1370,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_reduce_xor :
       M.IsFunction.C "core::intrinsics::simd::simd_reduce_xor" simd_reduce_xor.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_reduce_xor.
     
@@ -1347,6 +1393,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_bitmask :
       M.IsFunction.C "core::intrinsics::simd::simd_bitmask" simd_bitmask.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_bitmask.
     
@@ -1371,6 +1418,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_select :
       M.IsFunction.C "core::intrinsics::simd::simd_select" simd_select.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_select.
     
@@ -1395,6 +1443,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_select_bitmask :
       M.IsFunction.C "core::intrinsics::simd::simd_select_bitmask" simd_select_bitmask.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_select_bitmask.
     
@@ -1418,6 +1467,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_arith_offset :
       M.IsFunction.C "core::intrinsics::simd::simd_arith_offset" simd_arith_offset.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_arith_offset.
     
@@ -1440,6 +1490,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_cast_ptr :
       M.IsFunction.C "core::intrinsics::simd::simd_cast_ptr" simd_cast_ptr.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_cast_ptr.
     
@@ -1462,6 +1513,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_expose_provenance :
       M.IsFunction.C "core::intrinsics::simd::simd_expose_provenance" simd_expose_provenance.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_expose_provenance.
     
@@ -1490,6 +1542,7 @@ Module intrinsics.
       M.IsFunction.C
         "core::intrinsics::simd::simd_with_exposed_provenance"
         simd_with_exposed_provenance.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_with_exposed_provenance.
     
@@ -1512,6 +1565,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_bswap :
       M.IsFunction.C "core::intrinsics::simd::simd_bswap" simd_bswap.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_bswap.
     
@@ -1534,6 +1588,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_bitreverse :
       M.IsFunction.C "core::intrinsics::simd::simd_bitreverse" simd_bitreverse.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_bitreverse.
     
@@ -1556,6 +1611,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_ctlz :
       M.IsFunction.C "core::intrinsics::simd::simd_ctlz" simd_ctlz.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_ctlz.
     
@@ -1578,6 +1634,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_ctpop :
       M.IsFunction.C "core::intrinsics::simd::simd_ctpop" simd_ctpop.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_ctpop.
     
@@ -1600,6 +1657,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_cttz :
       M.IsFunction.C "core::intrinsics::simd::simd_cttz" simd_cttz.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_cttz.
     
@@ -1622,6 +1680,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_ceil :
       M.IsFunction.C "core::intrinsics::simd::simd_ceil" simd_ceil.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_ceil.
     
@@ -1644,6 +1703,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_floor :
       M.IsFunction.C "core::intrinsics::simd::simd_floor" simd_floor.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_floor.
     
@@ -1666,6 +1726,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_round :
       M.IsFunction.C "core::intrinsics::simd::simd_round" simd_round.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_round.
     
@@ -1688,6 +1749,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_round_ties_even :
       M.IsFunction.C "core::intrinsics::simd::simd_round_ties_even" simd_round_ties_even.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_round_ties_even.
     
@@ -1710,6 +1772,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_trunc :
       M.IsFunction.C "core::intrinsics::simd::simd_trunc" simd_trunc.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_trunc.
     
@@ -1732,6 +1795,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_fsqrt :
       M.IsFunction.C "core::intrinsics::simd::simd_fsqrt" simd_fsqrt.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_fsqrt.
     
@@ -1756,6 +1820,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_fma :
       M.IsFunction.C "core::intrinsics::simd::simd_fma" simd_fma.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_fma.
     
@@ -1780,6 +1845,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_relaxed_fma :
       M.IsFunction.C "core::intrinsics::simd::simd_relaxed_fma" simd_relaxed_fma.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_relaxed_fma.
     
@@ -1802,6 +1868,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_fsin :
       M.IsFunction.C "core::intrinsics::simd::simd_fsin" simd_fsin.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_fsin.
     
@@ -1824,6 +1891,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_fcos :
       M.IsFunction.C "core::intrinsics::simd::simd_fcos" simd_fcos.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_fcos.
     
@@ -1846,6 +1914,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_fexp :
       M.IsFunction.C "core::intrinsics::simd::simd_fexp" simd_fexp.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_fexp.
     
@@ -1868,6 +1937,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_fexp2 :
       M.IsFunction.C "core::intrinsics::simd::simd_fexp2" simd_fexp2.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_fexp2.
     
@@ -1890,6 +1960,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_flog10 :
       M.IsFunction.C "core::intrinsics::simd::simd_flog10" simd_flog10.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_flog10.
     
@@ -1912,6 +1983,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_flog2 :
       M.IsFunction.C "core::intrinsics::simd::simd_flog2" simd_flog2.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_flog2.
     
@@ -1934,6 +2006,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_simd_flog :
       M.IsFunction.C "core::intrinsics::simd::simd_flog" simd_flog.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_flog.
   End simd.

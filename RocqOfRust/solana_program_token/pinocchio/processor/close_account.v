@@ -1092,6 +1092,7 @@ Module processor.
       M.IsFunction.C
         "pinocchio_token_program::processor::close_account::process_close_account"
         process_close_account.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_close_account.
   End close_account.

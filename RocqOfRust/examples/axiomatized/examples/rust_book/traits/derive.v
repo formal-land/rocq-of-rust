@@ -78,6 +78,7 @@ Module Impl_derive_Inches.
   
   Global Instance AssociatedFunction_to_centimeters :
     M.IsAssociatedFunction.C Self "to_centimeters" to_centimeters.
+  Proof.
   Admitted.
 End Impl_derive_Inches.
 
@@ -92,4 +93,5 @@ End Impl_derive_Inches.
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "derive::main" main.
+Proof.
 Admitted.

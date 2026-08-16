@@ -2323,6 +2323,7 @@ Module processor.
         M.IsFunction.C
           "pinocchio_token_program::processor::shared::initialize_account::process_initialize_account"
           process_initialize_account.
+      Proof.
       Admitted.
       Global Typeclasses Opaque process_initialize_account.
     End initialize_account.

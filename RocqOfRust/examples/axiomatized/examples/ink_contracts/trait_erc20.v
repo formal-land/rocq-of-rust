@@ -36,6 +36,7 @@ Module Impl_trait_erc20_Mapping_K_V.
   Global Instance AssociatedFunction_get :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "get" (get K V).
+  Proof.
   Admitted.
   
   Parameter insert : forall (K V : Ty.t), (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -43,6 +44,7 @@ Module Impl_trait_erc20_Mapping_K_V.
   Global Instance AssociatedFunction_insert :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "insert" (insert K V).
+  Proof.
   Admitted.
 End Impl_trait_erc20_Mapping_K_V.
 
@@ -295,12 +297,14 @@ Module Impl_trait_erc20_Env.
   Parameter caller : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_caller : M.IsAssociatedFunction.C Self "caller" caller.
+  Proof.
   Admitted.
   
   Parameter emit_event : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_emit_event :
     M.IsAssociatedFunction.C Self "emit_event" emit_event.
+  Proof.
   Admitted.
 End Impl_trait_erc20_Env.
 
@@ -310,34 +314,40 @@ Module Impl_trait_erc20_Erc20.
   Parameter init_env : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_init_env : M.IsAssociatedFunction.C Self "init_env" init_env.
+  Proof.
   Admitted.
   
   Parameter env : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_env : M.IsAssociatedFunction.C Self "env" env.
+  Proof.
   Admitted.
   
   Parameter new : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   
   Parameter balance_of_impl : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_balance_of_impl :
     M.IsAssociatedFunction.C Self "balance_of_impl" balance_of_impl.
+  Proof.
   Admitted.
   
   Parameter allowance_impl : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_allowance_impl :
     M.IsAssociatedFunction.C Self "allowance_impl" allowance_impl.
+  Proof.
   Admitted.
   
   Parameter transfer_from_to : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_transfer_from_to :
     M.IsAssociatedFunction.C Self "transfer_from_to" transfer_from_to.
+  Proof.
   Admitted.
 End Impl_trait_erc20_Erc20.
 

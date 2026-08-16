@@ -63,6 +63,7 @@ Module hash.
   
   Global Instance Instance_IsConstant_value_SHA256 :
     M.IsFunction.C "revm_precompile::hash::SHA256" value_SHA256.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SHA256.
   
@@ -127,6 +128,7 @@ Module hash.
   
   Global Instance Instance_IsConstant_value_RIPEMD160 :
     M.IsFunction.C "revm_precompile::hash::RIPEMD160" value_RIPEMD160.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_RIPEMD160.
   
@@ -348,6 +350,7 @@ Module hash.
   
   Global Instance Instance_IsFunction_sha256_run :
     M.IsFunction.C "revm_precompile::hash::sha256_run" sha256_run.
+  Proof.
   Admitted.
   Global Typeclasses Opaque sha256_run.
   
@@ -569,6 +572,7 @@ Module hash.
   
   Global Instance Instance_IsFunction_ripemd160_run :
     M.IsFunction.C "revm_precompile::hash::ripemd160_run" ripemd160_run.
+  Proof.
   Admitted.
   Global Typeclasses Opaque ripemd160_run.
 End hash.

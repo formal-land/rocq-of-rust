@@ -440,6 +440,7 @@ Module interpreter_action.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -482,6 +483,7 @@ Module interpreter_action.
       
       Global Instance AssociatedFunction_instruction_result :
         M.IsAssociatedFunction.C Self "instruction_result" instruction_result.
+      Proof.
       Admitted.
       Global Typeclasses Opaque instruction_result.
       
@@ -523,6 +525,7 @@ Module interpreter_action.
         end.
       
       Global Instance AssociatedFunction_output : M.IsAssociatedFunction.C Self "output" output.
+      Proof.
       Admitted.
       Global Typeclasses Opaque output.
       
@@ -564,6 +567,7 @@ Module interpreter_action.
         end.
       
       Global Instance AssociatedFunction_gas : M.IsAssociatedFunction.C Self "gas" gas.
+      Proof.
       Admitted.
       Global Typeclasses Opaque gas.
     End Impl_revm_interpreter_interpreter_action_create_outcome_CreateOutcome.

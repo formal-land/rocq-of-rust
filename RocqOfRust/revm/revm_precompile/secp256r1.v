@@ -7,6 +7,7 @@ Module secp256r1.
   
   Global Instance Instance_IsConstant_value_P256VERIFY_ADDRESS :
     M.IsFunction.C "revm_precompile::secp256r1::P256VERIFY_ADDRESS" value_P256VERIFY_ADDRESS.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_P256VERIFY_ADDRESS.
   
@@ -21,6 +22,7 @@ Module secp256r1.
     M.IsFunction.C
       "revm_precompile::secp256r1::P256VERIFY_BASE_GAS_FEE"
       value_P256VERIFY_BASE_GAS_FEE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_P256VERIFY_BASE_GAS_FEE.
   
@@ -35,6 +37,7 @@ Module secp256r1.
     M.IsFunction.C
       "revm_precompile::secp256r1::P256VERIFY_BASE_GAS_FEE_OSAKA"
       value_P256VERIFY_BASE_GAS_FEE_OSAKA.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_P256VERIFY_BASE_GAS_FEE_OSAKA.
   
@@ -81,6 +84,7 @@ Module secp256r1.
   
   Global Instance Instance_IsFunction_precompiles :
     M.IsFunction.C "revm_precompile::secp256r1::precompiles" precompiles.
+  Proof.
   Admitted.
   Global Typeclasses Opaque precompiles.
   
@@ -149,6 +153,7 @@ Module secp256r1.
   
   Global Instance Instance_IsConstant_value_P256VERIFY :
     M.IsFunction.C "revm_precompile::secp256r1::P256VERIFY" value_P256VERIFY.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_P256VERIFY.
   
@@ -217,6 +222,7 @@ Module secp256r1.
   
   Global Instance Instance_IsConstant_value_P256VERIFY_OSAKA :
     M.IsFunction.C "revm_precompile::secp256r1::P256VERIFY_OSAKA" value_P256VERIFY_OSAKA.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_P256VERIFY_OSAKA.
   
@@ -260,6 +266,7 @@ Module secp256r1.
   
   Global Instance Instance_IsFunction_p256_verify :
     M.IsFunction.C "revm_precompile::secp256r1::p256_verify" p256_verify.
+  Proof.
   Admitted.
   Global Typeclasses Opaque p256_verify.
   
@@ -303,6 +310,7 @@ Module secp256r1.
   
   Global Instance Instance_IsFunction_p256_verify_osaka :
     M.IsFunction.C "revm_precompile::secp256r1::p256_verify_osaka" p256_verify_osaka.
+  Proof.
   Admitted.
   Global Typeclasses Opaque p256_verify_osaka.
   
@@ -483,6 +491,7 @@ Module secp256r1.
   
   Global Instance Instance_IsFunction_p256_verify_inner :
     M.IsFunction.C "revm_precompile::secp256r1::p256_verify_inner" p256_verify_inner.
+  Proof.
   Admitted.
   Global Typeclasses Opaque p256_verify_inner.
   
@@ -985,6 +994,7 @@ Module secp256r1.
   
   Global Instance Instance_IsFunction_verify_impl :
     M.IsFunction.C "revm_precompile::secp256r1::verify_impl" verify_impl.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_impl.
   
@@ -1754,6 +1764,7 @@ Module secp256r1.
   
   Global Instance Instance_IsFunction_verify_signature :
     M.IsFunction.C "revm_precompile::secp256r1::verify_signature" verify_signature.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_signature.
 End secp256r1.

@@ -5,15 +5,18 @@ Parameter checked_division : (list Value.t) -> (list Ty.t) -> (list Value.t) -> 
 
 Global Instance Instance_IsFunction_checked_division :
   M.IsFunction.C "option::checked_division" checked_division.
+Proof.
 Admitted.
 
 Parameter try_division : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_try_division :
   M.IsFunction.C "option::try_division" try_division.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "option::main" main.
+Proof.
 Admitted.

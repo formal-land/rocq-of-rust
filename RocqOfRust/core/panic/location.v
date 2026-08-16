@@ -861,6 +861,7 @@ Module panic.
         end.
       
       Global Instance AssociatedFunction_caller : M.IsAssociatedFunction.C Self "caller" caller.
+      Proof.
       Admitted.
       Global Typeclasses Opaque caller.
       
@@ -907,6 +908,7 @@ Module panic.
         end.
       
       Global Instance AssociatedFunction_file : M.IsAssociatedFunction.C Self "file" file.
+      Proof.
       Admitted.
       Global Typeclasses Opaque file.
       
@@ -1028,6 +1030,7 @@ Module panic.
       
       Global Instance AssociatedFunction_file_as_c_str :
         M.IsAssociatedFunction.C Self "file_as_c_str" file_as_c_str.
+      Proof.
       Admitted.
       Global Typeclasses Opaque file_as_c_str.
       
@@ -1056,6 +1059,7 @@ Module panic.
         end.
       
       Global Instance AssociatedFunction_line : M.IsAssociatedFunction.C Self "line" line.
+      Proof.
       Admitted.
       Global Typeclasses Opaque line.
       
@@ -1084,6 +1088,7 @@ Module panic.
         end.
       
       Global Instance AssociatedFunction_column : M.IsAssociatedFunction.C Self "column" column.
+      Proof.
       Admitted.
       Global Typeclasses Opaque column.
     End Impl_core_panic_location_Location.

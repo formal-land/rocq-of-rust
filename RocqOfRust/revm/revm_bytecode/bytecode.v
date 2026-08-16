@@ -1225,6 +1225,7 @@ Module bytecode.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -1325,6 +1326,7 @@ Module bytecode.
     
     Global Instance AssociatedFunction_legacy_jump_table :
       M.IsAssociatedFunction.C Self "legacy_jump_table" legacy_jump_table.
+    Proof.
     Admitted.
     Global Typeclasses Opaque legacy_jump_table.
     
@@ -1415,6 +1417,7 @@ Module bytecode.
     
     Global Instance AssociatedFunction_hash_slow :
       M.IsAssociatedFunction.C Self "hash_slow" hash_slow.
+    Proof.
     Admitted.
     Global Typeclasses Opaque hash_slow.
     
@@ -1454,6 +1457,7 @@ Module bytecode.
     
     Global Instance AssociatedFunction_is_eip7702 :
       M.IsAssociatedFunction.C Self "is_eip7702" is_eip7702.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_eip7702.
     
@@ -1494,6 +1498,7 @@ Module bytecode.
     
     Global Instance AssociatedFunction_new_legacy :
       M.IsAssociatedFunction.C Self "new_legacy" new_legacy.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_legacy.
     
@@ -1545,6 +1550,7 @@ Module bytecode.
       end.
     
     Global Instance AssociatedFunction_new_raw : M.IsAssociatedFunction.C Self "new_raw" new_raw.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_raw.
     
@@ -1580,6 +1586,7 @@ Module bytecode.
     
     Global Instance AssociatedFunction_new_eip7702 :
       M.IsAssociatedFunction.C Self "new_eip7702" new_eip7702.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_eip7702.
     
@@ -1962,6 +1969,7 @@ Module bytecode.
     
     Global Instance AssociatedFunction_new_raw_checked :
       M.IsAssociatedFunction.C Self "new_raw_checked" new_raw_checked.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_raw_checked.
     
@@ -2003,6 +2011,7 @@ Module bytecode.
     
     Global Instance AssociatedFunction_new_analyzed :
       M.IsAssociatedFunction.C Self "new_analyzed" new_analyzed.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_analyzed.
     
@@ -2102,6 +2111,7 @@ Module bytecode.
       end.
     
     Global Instance AssociatedFunction_bytecode : M.IsAssociatedFunction.C Self "bytecode" bytecode.
+    Proof.
     Admitted.
     Global Typeclasses Opaque bytecode.
     
@@ -2196,6 +2206,7 @@ Module bytecode.
     
     Global Instance AssociatedFunction_bytecode_ptr :
       M.IsAssociatedFunction.C Self "bytecode_ptr" bytecode_ptr.
+    Proof.
     Admitted.
     Global Typeclasses Opaque bytecode_ptr.
     
@@ -2246,6 +2257,7 @@ Module bytecode.
       end.
     
     Global Instance AssociatedFunction_bytes : M.IsAssociatedFunction.C Self "bytes" bytes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque bytes.
     
@@ -2346,6 +2358,7 @@ Module bytecode.
     
     Global Instance AssociatedFunction_bytes_ref :
       M.IsAssociatedFunction.C Self "bytes_ref" bytes_ref.
+    Proof.
     Admitted.
     Global Typeclasses Opaque bytes_ref.
     
@@ -2424,6 +2437,7 @@ Module bytecode.
     
     Global Instance AssociatedFunction_bytes_slice :
       M.IsAssociatedFunction.C Self "bytes_slice" bytes_slice.
+    Proof.
     Admitted.
     Global Typeclasses Opaque bytes_slice.
     
@@ -2528,6 +2542,7 @@ Module bytecode.
     
     Global Instance AssociatedFunction_original_bytes :
       M.IsAssociatedFunction.C Self "original_bytes" original_bytes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque original_bytes.
     
@@ -2680,6 +2695,7 @@ Module bytecode.
     
     Global Instance AssociatedFunction_original_byte_slice :
       M.IsAssociatedFunction.C Self "original_byte_slice" original_byte_slice.
+    Proof.
     Admitted.
     Global Typeclasses Opaque original_byte_slice.
     
@@ -2727,6 +2743,7 @@ Module bytecode.
       end.
     
     Global Instance AssociatedFunction_len : M.IsAssociatedFunction.C Self "len" len.
+    Proof.
     Admitted.
     Global Typeclasses Opaque len.
     
@@ -2765,6 +2782,7 @@ Module bytecode.
       end.
     
     Global Instance AssociatedFunction_is_empty : M.IsAssociatedFunction.C Self "is_empty" is_empty.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_empty.
     
@@ -2797,6 +2815,7 @@ Module bytecode.
     
     Global Instance AssociatedFunction_iter_opcodes :
       M.IsAssociatedFunction.C Self "iter_opcodes" iter_opcodes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque iter_opcodes.
   End Impl_revm_bytecode_bytecode_Bytecode.

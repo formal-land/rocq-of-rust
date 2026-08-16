@@ -8,6 +8,7 @@ Module num.
     
     Global Instance Instance_IsConstant_value_MAX_SIG_DIGITS :
       M.IsFunction.C "core::num::flt2dec::MAX_SIG_DIGITS" value_MAX_SIG_DIGITS.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MAX_SIG_DIGITS.
     
@@ -276,6 +277,7 @@ Module num.
     
     Global Instance Instance_IsFunction_round_up :
       M.IsFunction.C "core::num::flt2dec::round_up" round_up.
+    Proof.
     Admitted.
     Global Typeclasses Opaque round_up.
     
@@ -2113,6 +2115,7 @@ Module num.
     
     Global Instance Instance_IsFunction_digits_to_dec_str :
       M.IsFunction.C "core::num::flt2dec::digits_to_dec_str" digits_to_dec_str.
+    Proof.
     Admitted.
     Global Typeclasses Opaque digits_to_dec_str.
     
@@ -3121,6 +3124,7 @@ Module num.
     
     Global Instance Instance_IsFunction_digits_to_exp_str :
       M.IsFunction.C "core::num::flt2dec::digits_to_exp_str" digits_to_exp_str.
+    Proof.
     Admitted.
     Global Typeclasses Opaque digits_to_exp_str.
     
@@ -3445,6 +3449,7 @@ Module num.
     
     Global Instance Instance_IsFunction_determine_sign :
       M.IsFunction.C "core::num::flt2dec::determine_sign" determine_sign.
+    Proof.
     Admitted.
     Global Typeclasses Opaque determine_sign.
     
@@ -4682,6 +4687,7 @@ Module num.
     
     Global Instance Instance_IsFunction_to_shortest_str :
       M.IsFunction.C "core::num::flt2dec::to_shortest_str" to_shortest_str.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_shortest_str.
     
@@ -6012,6 +6018,7 @@ Module num.
     
     Global Instance Instance_IsFunction_to_shortest_exp_str :
       M.IsFunction.C "core::num::flt2dec::to_shortest_exp_str" to_shortest_exp_str.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_shortest_exp_str.
     
@@ -6077,6 +6084,7 @@ Module num.
     
     Global Instance Instance_IsFunction_estimate_max_buf_len :
       M.IsFunction.C "core::num::flt2dec::estimate_max_buf_len" estimate_max_buf_len.
+    Proof.
     Admitted.
     Global Typeclasses Opaque estimate_max_buf_len.
     
@@ -7741,6 +7749,7 @@ Module num.
     
     Global Instance Instance_IsFunction_to_exact_exp_str :
       M.IsFunction.C "core::num::flt2dec::to_exact_exp_str" to_exact_exp_str.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_exact_exp_str.
     
@@ -9991,6 +10000,7 @@ Module num.
     
     Global Instance Instance_IsFunction_to_exact_fixed_str :
       M.IsFunction.C "core::num::flt2dec::to_exact_fixed_str" to_exact_fixed_str.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_exact_fixed_str.
   End flt2dec.

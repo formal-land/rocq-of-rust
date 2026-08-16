@@ -31,6 +31,7 @@ Module Impl_incrementer_Incrementer.
     end.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new.
   
@@ -67,6 +68,7 @@ Module Impl_incrementer_Incrementer.
   
   Global Instance AssociatedFunction_new_default :
     M.IsAssociatedFunction.C Self "new_default" new_default.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new_default.
   
@@ -104,6 +106,7 @@ Module Impl_incrementer_Incrementer.
     end.
   
   Global Instance AssociatedFunction_inc : M.IsAssociatedFunction.C Self "inc" inc.
+  Proof.
   Admitted.
   Global Typeclasses Opaque inc.
   
@@ -129,6 +132,7 @@ Module Impl_incrementer_Incrementer.
     end.
   
   Global Instance AssociatedFunction_get : M.IsAssociatedFunction.C Self "get" get.
+  Proof.
   Admitted.
   Global Typeclasses Opaque get.
 End Impl_incrementer_Incrementer.

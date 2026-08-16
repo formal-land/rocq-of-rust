@@ -833,5 +833,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "generics_phantom_type_test_case_unit_clarification::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

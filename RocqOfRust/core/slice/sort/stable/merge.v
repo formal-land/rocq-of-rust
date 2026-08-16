@@ -430,6 +430,7 @@ Module slice.
         
         Global Instance Instance_IsFunction_merge :
           M.IsFunction.C "core::slice::sort::stable::merge::merge" merge.
+        Proof.
         Admitted.
         Global Typeclasses Opaque merge.
         
@@ -742,6 +743,7 @@ Module slice.
           Global Instance AssociatedFunction_merge_up :
             forall (T : Ty.t),
             M.IsAssociatedFunction.C (Self T) "merge_up" (merge_up T).
+          Proof.
           Admitted.
           Global Typeclasses Opaque merge_up.
           
@@ -1058,6 +1060,7 @@ Module slice.
           Global Instance AssociatedFunction_merge_down :
             forall (T : Ty.t),
             M.IsAssociatedFunction.C (Self T) "merge_down" (merge_down T).
+          Proof.
           Admitted.
           Global Typeclasses Opaque merge_down.
         End Impl_core_slice_sort_stable_merge_MergeState_T.

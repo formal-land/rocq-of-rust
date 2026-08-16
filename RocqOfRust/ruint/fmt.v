@@ -3225,6 +3225,7 @@ Module fmt.
     Global Instance AssociatedFunction_new :
       forall (SIZE : Value.t),
       M.IsAssociatedFunction.C (Self SIZE) "new" (new SIZE).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -3335,6 +3336,7 @@ Module fmt.
     Global Instance AssociatedFunction_as_str :
       forall (SIZE : Value.t),
       M.IsAssociatedFunction.C (Self SIZE) "as_str" (as_str SIZE).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_str.
     
@@ -3446,6 +3448,7 @@ Module fmt.
     Global Instance AssociatedFunction_as_bytes_full :
       forall (SIZE : Value.t),
       M.IsAssociatedFunction.C (Self SIZE) "as_bytes_full" (as_bytes_full SIZE).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_bytes_full.
   End Impl_ruint_fmt_DisplayBuffer_SIZE.

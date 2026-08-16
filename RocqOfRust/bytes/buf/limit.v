@@ -131,6 +131,7 @@ Module buf.
       end.
     
     Global Instance Instance_IsFunction_new : M.IsFunction.C "bytes::buf::limit::new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -158,6 +159,7 @@ Module buf.
       Global Instance AssociatedFunction_into_inner :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "into_inner" (into_inner T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_inner.
       
@@ -198,6 +200,7 @@ Module buf.
       Global Instance AssociatedFunction_get_ref :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "get_ref" (get_ref T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_ref.
       
@@ -243,6 +246,7 @@ Module buf.
       Global Instance AssociatedFunction_get_mut :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "get_mut" (get_mut T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut.
       
@@ -277,6 +281,7 @@ Module buf.
       Global Instance AssociatedFunction_limit :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "limit" (limit T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque limit.
       
@@ -313,6 +318,7 @@ Module buf.
       Global Instance AssociatedFunction_set_limit :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "set_limit" (set_limit T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque set_limit.
     End Impl_bytes_buf_limit_Limit_T.

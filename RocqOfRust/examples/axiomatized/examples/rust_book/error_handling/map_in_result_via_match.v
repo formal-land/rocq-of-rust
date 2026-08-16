@@ -5,14 +5,17 @@ Parameter multiply : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_multiply :
   M.IsFunction.C "map_in_result_via_match::multiply" multiply.
+Proof.
 Admitted.
 
 Parameter print : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_print : M.IsFunction.C "map_in_result_via_match::print" print.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "map_in_result_via_match::main" main.
+Proof.
 Admitted.

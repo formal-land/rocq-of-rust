@@ -2330,6 +2330,7 @@ Module journaled_state.
     Global Instance AssociatedFunction_is_db_error :
       forall (E : Ty.t),
       M.IsAssociatedFunction.C (Self E) "is_db_error" (is_db_error E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_db_error.
     
@@ -2383,6 +2384,7 @@ Module journaled_state.
     Global Instance AssociatedFunction_is_cold_load_skipped :
       forall (E : Ty.t),
       M.IsAssociatedFunction.C (Self E) "is_cold_load_skipped" (is_cold_load_skipped E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_cold_load_skipped.
     
@@ -2432,6 +2434,7 @@ Module journaled_state.
     Global Instance AssociatedFunction_take_db_error :
       forall (E : Ty.t),
       M.IsAssociatedFunction.C (Self E) "take_db_error" (take_db_error E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque take_db_error.
     
@@ -2505,6 +2508,7 @@ Module journaled_state.
     Global Instance AssociatedFunction_unwrap_db_error :
       forall (E : Ty.t),
       M.IsAssociatedFunction.C (Self E) "unwrap_db_error" (unwrap_db_error E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque unwrap_db_error.
     
@@ -2575,6 +2579,7 @@ Module journaled_state.
     Global Instance AssociatedFunction_into_parts :
       forall (E : Ty.t),
       M.IsAssociatedFunction.C (Self E) "into_parts" (into_parts E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_parts.
   End Impl_revm_context_interface_journaled_state_JournalLoadError_E.
@@ -3830,6 +3835,7 @@ Module journaled_state.
     Global Instance AssociatedFunction_new :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "new" (new T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -3901,6 +3907,7 @@ Module journaled_state.
     Global Instance AssociatedFunction_map :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "map" (map T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque map.
   End Impl_revm_context_interface_journaled_state_StateLoad_T.
@@ -4878,6 +4885,7 @@ Module journaled_state.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -4955,6 +4963,7 @@ Module journaled_state.
     
     Global Instance AssociatedFunction_into_state_load :
       M.IsAssociatedFunction.C Self "into_state_load" into_state_load.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_state_load.
   End Impl_revm_context_interface_journaled_state_AccountInfoLoad.

@@ -4240,6 +4240,7 @@ Module transaction_argument.
   
   Global Instance Instance_IsFunction_convert_txn_args :
     M.IsFunction.C "move_core_types::transaction_argument::convert_txn_args" convert_txn_args.
+  Proof.
   Admitted.
   Global Typeclasses Opaque convert_txn_args.
   
@@ -4753,6 +4754,7 @@ Module transaction_argument.
       end.
     
     Global Instance AssociatedFunction_from : M.IsAssociatedFunction.C Self "from" from.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from.
     
@@ -4925,6 +4927,7 @@ Module transaction_argument.
       end.
     
     Global Instance AssociatedFunction_into_vec : M.IsAssociatedFunction.C Self "into_vec" into_vec.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_vec.
   End Impl_move_core_types_transaction_argument_VecBytes.

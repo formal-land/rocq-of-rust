@@ -302,6 +302,7 @@ Module control_flow_v5.
   
   Global Instance Instance_IsFunction_verify :
     M.IsFunction.C "move_bytecode_verifier::control_flow_v5::verify" verify.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify.
   
@@ -541,6 +542,7 @@ Module control_flow_v5.
   
   Global Instance Instance_IsFunction_verify_fallthrough :
     M.IsFunction.C "move_bytecode_verifier::control_flow_v5::verify_fallthrough" verify_fallthrough.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_fallthrough.
   
@@ -930,6 +932,7 @@ Module control_flow_v5.
       end.
     
     Global Instance AssociatedFunction_code : M.IsAssociatedFunction.C Self "code" code.
+    Proof.
     Admitted.
     Global Typeclasses Opaque code.
     
@@ -1194,6 +1197,7 @@ Module control_flow_v5.
     
     Global Instance AssociatedFunction_labeled_code :
       M.IsAssociatedFunction.C Self "labeled_code" labeled_code.
+    Proof.
     Admitted.
     Global Typeclasses Opaque labeled_code.
     
@@ -1249,6 +1253,7 @@ Module control_flow_v5.
       end.
     
     Global Instance AssociatedFunction_error : M.IsAssociatedFunction.C Self "error" error.
+    Proof.
     Admitted.
     Global Typeclasses Opaque error.
   End Impl_move_bytecode_verifier_control_flow_v5_ControlFlowVerifier.
@@ -1760,6 +1765,7 @@ Module control_flow_v5.
   
   Global Instance Instance_IsFunction_instruction_labels :
     M.IsFunction.C "move_bytecode_verifier::control_flow_v5::instruction_labels" instruction_labels.
+  Proof.
   Admitted.
   Global Typeclasses Opaque instruction_labels.
   
@@ -2502,6 +2508,7 @@ Module control_flow_v5.
   
   Global Instance Instance_IsFunction_check_jumps :
     M.IsFunction.C "move_bytecode_verifier::control_flow_v5::check_jumps" check_jumps.
+  Proof.
   Admitted.
   Global Typeclasses Opaque check_jumps.
   
@@ -3768,6 +3775,7 @@ Module control_flow_v5.
   
   Global Instance Instance_IsFunction_check_code :
     M.IsFunction.C "move_bytecode_verifier::control_flow_v5::check_code" check_code.
+  Proof.
   Admitted.
   Global Typeclasses Opaque check_code.
   
@@ -3792,6 +3800,7 @@ Module control_flow_v5.
   
   Global Instance Instance_IsFunction_is_back_edge :
     M.IsFunction.C "move_bytecode_verifier::control_flow_v5::is_back_edge" is_back_edge.
+  Proof.
   Admitted.
   Global Typeclasses Opaque is_back_edge.
   
@@ -4709,6 +4718,7 @@ Module control_flow_v5.
   
   Global Instance Instance_IsFunction_check_continues :
     M.IsFunction.C "move_bytecode_verifier::control_flow_v5::check_continues" check_continues.
+  Proof.
   Admitted.
   Global Typeclasses Opaque check_continues.
   
@@ -5347,6 +5357,7 @@ Module control_flow_v5.
   
   Global Instance Instance_IsFunction_check_breaks :
     M.IsFunction.C "move_bytecode_verifier::control_flow_v5::check_breaks" check_breaks.
+  Proof.
   Admitted.
   Global Typeclasses Opaque check_breaks.
   
@@ -6200,6 +6211,7 @@ Module control_flow_v5.
     M.IsFunction.C
       "move_bytecode_verifier::control_flow_v5::check_no_loop_splits"
       check_no_loop_splits.
+  Proof.
   Admitted.
   Global Typeclasses Opaque check_no_loop_splits.
   
@@ -6561,6 +6573,7 @@ Module control_flow_v5.
   
   Global Instance Instance_IsFunction_check_loop_depth :
     M.IsFunction.C "move_bytecode_verifier::control_flow_v5::check_loop_depth" check_loop_depth.
+  Proof.
   Admitted.
   Global Typeclasses Opaque check_loop_depth.
   
@@ -7189,6 +7202,7 @@ Module control_flow_v5.
   
   Global Instance Instance_IsFunction_count_loop_depth :
     M.IsFunction.C "move_bytecode_verifier::control_flow_v5::count_loop_depth" count_loop_depth.
+  Proof.
   Admitted.
   Global Typeclasses Opaque count_loop_depth.
 End control_flow_v5.

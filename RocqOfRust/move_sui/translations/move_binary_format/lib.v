@@ -801,6 +801,7 @@ Module Impl_move_binary_format_IndexKind.
     end.
   
   Global Instance AssociatedFunction_variants : M.IsAssociatedFunction.C Self "variants" variants.
+  Proof.
   Admitted.
   Global Typeclasses Opaque variants.
 End Impl_move_binary_format_IndexKind.

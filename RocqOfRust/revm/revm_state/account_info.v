@@ -1069,6 +1069,7 @@ Module account_info.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -1135,6 +1136,7 @@ Module account_info.
     
     Global Instance AssociatedFunction_with_code :
       M.IsAssociatedFunction.C Self "with_code" with_code.
+    Proof.
     Admitted.
     Global Typeclasses Opaque with_code.
     
@@ -1195,6 +1197,7 @@ Module account_info.
     
     Global Instance AssociatedFunction_with_code_hash :
       M.IsAssociatedFunction.C Self "with_code_hash" with_code_hash.
+    Proof.
     Admitted.
     Global Typeclasses Opaque with_code_hash.
     
@@ -1476,6 +1479,7 @@ Module account_info.
     
     Global Instance AssociatedFunction_with_code_and_hash :
       M.IsAssociatedFunction.C Self "with_code_and_hash" with_code_and_hash.
+    Proof.
     Admitted.
     Global Typeclasses Opaque with_code_and_hash.
     
@@ -1515,6 +1519,7 @@ Module account_info.
     
     Global Instance AssociatedFunction_with_balance :
       M.IsAssociatedFunction.C Self "with_balance" with_balance.
+    Proof.
     Admitted.
     Global Typeclasses Opaque with_balance.
     
@@ -1547,6 +1552,7 @@ Module account_info.
     
     Global Instance AssociatedFunction_with_nonce :
       M.IsAssociatedFunction.C Self "with_nonce" with_nonce.
+    Proof.
     Admitted.
     Global Typeclasses Opaque with_nonce.
     
@@ -1598,6 +1604,7 @@ Module account_info.
     
     Global Instance AssociatedFunction_set_balance :
       M.IsAssociatedFunction.C Self "set_balance" set_balance.
+    Proof.
     Admitted.
     Global Typeclasses Opaque set_balance.
     
@@ -1642,6 +1649,7 @@ Module account_info.
     
     Global Instance AssociatedFunction_set_nonce :
       M.IsAssociatedFunction.C Self "set_nonce" set_nonce.
+    Proof.
     Admitted.
     Global Typeclasses Opaque set_nonce.
     
@@ -1707,6 +1715,7 @@ Module account_info.
     
     Global Instance AssociatedFunction_set_code_hash :
       M.IsAssociatedFunction.C Self "set_code_hash" set_code_hash.
+    Proof.
     Admitted.
     Global Typeclasses Opaque set_code_hash.
     
@@ -1776,6 +1785,7 @@ Module account_info.
       end.
     
     Global Instance AssociatedFunction_set_code : M.IsAssociatedFunction.C Self "set_code" set_code.
+    Proof.
     Admitted.
     Global Typeclasses Opaque set_code.
     
@@ -1833,6 +1843,7 @@ Module account_info.
     
     Global Instance AssociatedFunction_set_code_and_hash :
       M.IsAssociatedFunction.C Self "set_code_and_hash" set_code_and_hash.
+    Proof.
     Admitted.
     Global Typeclasses Opaque set_code_and_hash.
     
@@ -1896,6 +1907,7 @@ Module account_info.
     
     Global Instance AssociatedFunction_copy_without_code :
       M.IsAssociatedFunction.C Self "copy_without_code" copy_without_code.
+    Proof.
     Admitted.
     Global Typeclasses Opaque copy_without_code.
     
@@ -1936,6 +1948,7 @@ Module account_info.
     
     Global Instance AssociatedFunction_without_code :
       M.IsAssociatedFunction.C Self "without_code" without_code.
+    Proof.
     Admitted.
     Global Typeclasses Opaque without_code.
     
@@ -2042,6 +2055,7 @@ Module account_info.
       end.
     
     Global Instance AssociatedFunction_is_empty : M.IsAssociatedFunction.C Self "is_empty" is_empty.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_empty.
     
@@ -2079,6 +2093,7 @@ Module account_info.
       end.
     
     Global Instance AssociatedFunction_exists_ : M.IsAssociatedFunction.C Self "exists" exists_.
+    Proof.
     Admitted.
     Global Typeclasses Opaque exists_.
     
@@ -2128,6 +2143,7 @@ Module account_info.
     
     Global Instance AssociatedFunction_has_no_code_and_nonce :
       M.IsAssociatedFunction.C Self "has_no_code_and_nonce" has_no_code_and_nonce.
+    Proof.
     Admitted.
     Global Typeclasses Opaque has_no_code_and_nonce.
     
@@ -2157,6 +2173,7 @@ Module account_info.
     
     Global Instance AssociatedFunction_code_hash :
       M.IsAssociatedFunction.C Self "code_hash" code_hash.
+    Proof.
     Admitted.
     Global Typeclasses Opaque code_hash.
     
@@ -2219,6 +2236,7 @@ Module account_info.
     
     Global Instance AssociatedFunction_is_empty_code_hash :
       M.IsAssociatedFunction.C Self "is_empty_code_hash" is_empty_code_hash.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_empty_code_hash.
     
@@ -2266,6 +2284,7 @@ Module account_info.
     
     Global Instance AssociatedFunction_take_bytecode :
       M.IsAssociatedFunction.C Self "take_bytecode" take_bytecode.
+    Proof.
     Admitted.
     Global Typeclasses Opaque take_bytecode.
     
@@ -2309,6 +2328,7 @@ Module account_info.
     
     Global Instance AssociatedFunction_from_balance :
       M.IsAssociatedFunction.C Self "from_balance" from_balance.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_balance.
     
@@ -2385,6 +2405,7 @@ Module account_info.
     
     Global Instance AssociatedFunction_from_bytecode :
       M.IsAssociatedFunction.C Self "from_bytecode" from_bytecode.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_bytecode.
   End Impl_revm_state_account_info_AccountInfo.

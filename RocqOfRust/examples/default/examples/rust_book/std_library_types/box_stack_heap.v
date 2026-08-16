@@ -178,6 +178,7 @@ Definition origin (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :
   end.
 
 Global Instance Instance_IsFunction_origin : M.IsFunction.C "box_stack_heap::origin" origin.
+Proof.
 Admitted.
 Global Typeclasses Opaque origin.
 
@@ -218,6 +219,7 @@ Definition boxed_origin (ε : list Value.t) (τ : list Ty.t) (α : list Value.t)
 
 Global Instance Instance_IsFunction_boxed_origin :
   M.IsFunction.C "box_stack_heap::boxed_origin" boxed_origin.
+Proof.
 Admitted.
 Global Typeclasses Opaque boxed_origin.
 
@@ -1261,5 +1263,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "box_stack_heap::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

@@ -31,6 +31,7 @@ Module Impl_IndexMut_for_Array.
     (IndexMut_Output : Set) `{Link IndexMut_Output}
     (run_IndexMut_for_slice_T : IndexMut.Run (list T) I IndexMut_Output) :
     IndexMut.Run (Self T I N) I IndexMut_Output.
+  Proof.
   Admitted.
 End Impl_IndexMut_for_Array.
 Export (hints) Impl_IndexMut_for_Array.
@@ -69,6 +70,7 @@ Module Impl_TryFrom_Ref_for_Ref_Array.
 
   Instance run (T : Set) `{Link T} (N : usize) :
     TryFrom.Run (Self T N) ('& (list T)) Error.
+  Proof.
   Admitted.
 End Impl_TryFrom_Ref_for_Ref_Array.
 Export (hints) Impl_TryFrom_Ref_for_Ref_Array.
@@ -89,6 +91,7 @@ Module Impl_TryFrom_Ref_for_Array.
 
   Instance run (T : Set) `{Link T} (N : usize) :
     TryFrom.Run (Self T N) ('& (list T)) Error.
+  Proof.
   Admitted.
 End Impl_TryFrom_Ref_for_Array.
 Export (hints) Impl_TryFrom_Ref_for_Array.

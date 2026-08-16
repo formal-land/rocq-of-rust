@@ -32,6 +32,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "inline_assembly_inlateout_mul::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.
 
@@ -90,6 +91,7 @@ Module main.
   
   Global Instance Instance_IsFunction_mul :
     M.IsFunction.C "inline_assembly_inlateout_mul::main::mul" mul.
+  Proof.
   Admitted.
   Global Typeclasses Opaque mul.
 End main.

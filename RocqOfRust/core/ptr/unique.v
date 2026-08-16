@@ -79,6 +79,7 @@ Module ptr.
       Global Instance AssociatedFunction_dangling :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "dangling" (dangling T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque dangling.
       (*
@@ -122,6 +123,7 @@ Module ptr.
       Global Instance AssociatedFunction_new_unchecked :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "new_unchecked" (new_unchecked T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_unchecked.
       
@@ -209,6 +211,7 @@ Module ptr.
       Global Instance AssociatedFunction_new :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "new" (new T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -243,6 +246,7 @@ Module ptr.
       Global Instance AssociatedFunction_from_non_null :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "from_non_null" (from_non_null T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_non_null.
       
@@ -282,6 +286,7 @@ Module ptr.
       Global Instance AssociatedFunction_as_ptr :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "as_ptr" (as_ptr T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_ptr.
       
@@ -315,6 +320,7 @@ Module ptr.
       Global Instance AssociatedFunction_as_non_null_ptr :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "as_non_null_ptr" (as_non_null_ptr T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_non_null_ptr.
       
@@ -368,6 +374,7 @@ Module ptr.
       Global Instance AssociatedFunction_as_ref :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "as_ref" (as_ref T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_ref.
       
@@ -431,6 +438,7 @@ Module ptr.
       Global Instance AssociatedFunction_as_mut :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "as_mut" (as_mut T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_mut.
       
@@ -480,6 +488,7 @@ Module ptr.
       Global Instance AssociatedFunction_cast :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "cast" (cast T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque cast.
     End Impl_core_ptr_unique_Unique_T.

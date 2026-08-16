@@ -4,11 +4,13 @@ Require Import RocqOfRust.RocqOfRust.
 Parameter add : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_add : M.IsFunction.C "unit_testing::add" add.
+Proof.
 Admitted.
 
 Parameter bad_add : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_bad_add : M.IsFunction.C "unit_testing::bad_add" bad_add.
+Proof.
 Admitted.
 
 Module tests.
@@ -16,11 +18,13 @@ Module tests.
   
   Global Instance Instance_IsFunction_test_add_1 :
     M.IsFunction.C "unit_testing::tests::test_add'1" test_add_1.
+  Proof.
   Admitted.
   
   Parameter test_bad_add_1 : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance Instance_IsFunction_test_bad_add_1 :
     M.IsFunction.C "unit_testing::tests::test_bad_add'1" test_bad_add_1.
+  Proof.
   Admitted.
 End tests.

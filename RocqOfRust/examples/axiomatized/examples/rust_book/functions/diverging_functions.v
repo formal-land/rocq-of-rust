@@ -4,11 +4,13 @@ Require Import RocqOfRust.RocqOfRust.
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "diverging_functions::main" main.
+Proof.
 Admitted.
 
 Module main.
   Parameter foo : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance Instance_IsFunction_foo : M.IsFunction.C "diverging_functions::main::foo" foo.
+  Proof.
   Admitted.
 End main.

@@ -693,6 +693,7 @@ Module interpreter_action.
         end.
       
       Global Instance AssociatedFunction_len : M.IsAssociatedFunction.C Self "len" len.
+      Proof.
       Admitted.
       Global Typeclasses Opaque len.
       
@@ -735,6 +736,7 @@ Module interpreter_action.
       
       Global Instance AssociatedFunction_is_empty :
         M.IsAssociatedFunction.C Self "is_empty" is_empty.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_empty.
       
@@ -1053,6 +1055,7 @@ Module interpreter_action.
         end.
       
       Global Instance AssociatedFunction_bytes : M.IsAssociatedFunction.C Self "bytes" bytes.
+      Proof.
       Admitted.
       Global Typeclasses Opaque bytes.
     End Impl_revm_interpreter_interpreter_action_call_inputs_CallInput.
@@ -2673,6 +2676,7 @@ Module interpreter_action.
       
       Global Instance AssociatedFunction_transfers_value :
         M.IsAssociatedFunction.C Self "transfers_value" transfers_value.
+      Proof.
       Admitted.
       Global Typeclasses Opaque transfers_value.
       
@@ -2725,6 +2729,7 @@ Module interpreter_action.
       
       Global Instance AssociatedFunction_transfer_value :
         M.IsAssociatedFunction.C Self "transfer_value" transfer_value.
+      Proof.
       Admitted.
       Global Typeclasses Opaque transfer_value.
       
@@ -2777,6 +2782,7 @@ Module interpreter_action.
       
       Global Instance AssociatedFunction_apparent_value :
         M.IsAssociatedFunction.C Self "apparent_value" apparent_value.
+      Proof.
       Admitted.
       Global Typeclasses Opaque apparent_value.
       
@@ -2809,6 +2815,7 @@ Module interpreter_action.
       
       Global Instance AssociatedFunction_transfer_from :
         M.IsAssociatedFunction.C Self "transfer_from" transfer_from.
+      Proof.
       Admitted.
       Global Typeclasses Opaque transfer_from.
       
@@ -2841,6 +2848,7 @@ Module interpreter_action.
       
       Global Instance AssociatedFunction_transfer_to :
         M.IsAssociatedFunction.C Self "transfer_to" transfer_to.
+      Proof.
       Admitted.
       Global Typeclasses Opaque transfer_to.
       
@@ -2888,6 +2896,7 @@ Module interpreter_action.
       
       Global Instance AssociatedFunction_call_value :
         M.IsAssociatedFunction.C Self "call_value" call_value.
+      Proof.
       Admitted.
       Global Typeclasses Opaque call_value.
     End Impl_revm_interpreter_interpreter_action_call_inputs_CallInputs.
@@ -3295,6 +3304,7 @@ Module interpreter_action.
         end.
       
       Global Instance AssociatedFunction_is_call : M.IsAssociatedFunction.C Self "is_call" is_call.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_call.
       
@@ -3336,6 +3346,7 @@ Module interpreter_action.
       
       Global Instance AssociatedFunction_is_call_code :
         M.IsAssociatedFunction.C Self "is_call_code" is_call_code.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_call_code.
       
@@ -3377,6 +3388,7 @@ Module interpreter_action.
       
       Global Instance AssociatedFunction_is_delegate_call :
         M.IsAssociatedFunction.C Self "is_delegate_call" is_delegate_call.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_delegate_call.
       
@@ -3418,6 +3430,7 @@ Module interpreter_action.
       
       Global Instance AssociatedFunction_is_static_call :
         M.IsAssociatedFunction.C Self "is_static_call" is_static_call.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_static_call.
     End Impl_revm_interpreter_interpreter_action_call_inputs_CallScheme.
@@ -4432,6 +4445,7 @@ Module interpreter_action.
         end.
       
       Global Instance AssociatedFunction_get : M.IsAssociatedFunction.C Self "get" get.
+      Proof.
       Admitted.
       Global Typeclasses Opaque get.
       
@@ -4518,6 +4532,7 @@ Module interpreter_action.
       
       Global Instance AssociatedFunction_transfer :
         M.IsAssociatedFunction.C Self "transfer" transfer.
+      Proof.
       Admitted.
       Global Typeclasses Opaque transfer.
       
@@ -4560,6 +4575,7 @@ Module interpreter_action.
       
       Global Instance AssociatedFunction_is_transfer :
         M.IsAssociatedFunction.C Self "is_transfer" is_transfer.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_transfer.
       
@@ -4646,6 +4662,7 @@ Module interpreter_action.
       
       Global Instance AssociatedFunction_apparent :
         M.IsAssociatedFunction.C Self "apparent" apparent.
+      Proof.
       Admitted.
       Global Typeclasses Opaque apparent.
       
@@ -4688,6 +4705,7 @@ Module interpreter_action.
       
       Global Instance AssociatedFunction_is_apparent :
         M.IsAssociatedFunction.C Self "is_apparent" is_apparent.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_apparent.
     End Impl_revm_interpreter_interpreter_action_call_inputs_CallValue.

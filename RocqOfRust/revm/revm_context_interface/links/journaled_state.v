@@ -128,6 +128,7 @@ Module Impl_Deref_for_Cow.
     Run.Trait
       (borrow.Impl_core_ops_deref_Deref_where_core_marker_Sized_B_where_alloc_borrow_ToOwned_B_for_alloc_borrow_Cow_B.deref (Φ T))
       [] [] [ φ self ] ('& T).
+  Proof.
   Admitted.
   Global Opaque run_deref.
 

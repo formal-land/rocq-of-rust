@@ -39,6 +39,7 @@ Definition function (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M
   end.
 
 Global Instance Instance_IsFunction_function : M.IsFunction.C "super_and_self::function" function.
+Proof.
 Admitted.
 Global Typeclasses Opaque function.
 
@@ -82,6 +83,7 @@ Module cool.
   
   Global Instance Instance_IsFunction_function :
     M.IsFunction.C "super_and_self::cool::function" function.
+  Proof.
   Admitted.
   Global Typeclasses Opaque function.
 End cool.
@@ -126,6 +128,7 @@ Module my.
   
   Global Instance Instance_IsFunction_function :
     M.IsFunction.C "super_and_self::my::function" function.
+  Proof.
   Admitted.
   Global Typeclasses Opaque function.
   
@@ -169,6 +172,7 @@ Module my.
     
     Global Instance Instance_IsFunction_function :
       M.IsFunction.C "super_and_self::my::cool::function" function.
+    Proof.
     Admitted.
     Global Typeclasses Opaque function.
   End cool.
@@ -262,6 +266,7 @@ Module my.
   
   Global Instance Instance_IsFunction_indirect_call :
     M.IsFunction.C "super_and_self::my::indirect_call" indirect_call.
+  Proof.
   Admitted.
   Global Typeclasses Opaque indirect_call.
 End my.
@@ -288,5 +293,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "super_and_self::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

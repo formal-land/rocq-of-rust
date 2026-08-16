@@ -76,6 +76,7 @@ Module utilities.
   
   Global Instance Instance_IsFunction_right_pad_with_offset :
     M.IsFunction.C "revm_precompile::utilities::right_pad_with_offset" right_pad_with_offset.
+  Proof.
   Admitted.
   Global Typeclasses Opaque right_pad_with_offset.
   
@@ -157,6 +158,7 @@ Module utilities.
     M.IsFunction.C
       "revm_precompile::utilities::right_pad_with_offset_vec"
       right_pad_with_offset_vec.
+  Proof.
   Admitted.
   Global Typeclasses Opaque right_pad_with_offset_vec.
   
@@ -375,6 +377,7 @@ Module utilities.
   
   Global Instance Instance_IsFunction_right_pad :
     M.IsFunction.C "revm_precompile::utilities::right_pad" right_pad.
+  Proof.
   Admitted.
   Global Typeclasses Opaque right_pad.
   
@@ -554,6 +557,7 @@ Module utilities.
   
   Global Instance Instance_IsFunction_right_pad_vec :
     M.IsFunction.C "revm_precompile::utilities::right_pad_vec" right_pad_vec.
+  Proof.
   Admitted.
   Global Typeclasses Opaque right_pad_vec.
   
@@ -779,6 +783,7 @@ Module utilities.
   
   Global Instance Instance_IsFunction_left_pad :
     M.IsFunction.C "revm_precompile::utilities::left_pad" left_pad.
+  Proof.
   Admitted.
   Global Typeclasses Opaque left_pad.
   
@@ -965,6 +970,7 @@ Module utilities.
   
   Global Instance Instance_IsFunction_left_pad_vec :
     M.IsFunction.C "revm_precompile::utilities::left_pad_vec" left_pad_vec.
+  Proof.
   Admitted.
   Global Typeclasses Opaque left_pad_vec.
   
@@ -1038,6 +1044,7 @@ Module utilities.
   
   Global Instance Instance_IsFunction_bool_to_bytes32 :
     M.IsFunction.C "revm_precompile::utilities::bool_to_bytes32" bool_to_bytes32.
+  Proof.
   Admitted.
   Global Typeclasses Opaque bool_to_bytes32.
   
@@ -1112,6 +1119,7 @@ Module utilities.
   
   Global Instance Instance_IsFunction_bool_to_b256 :
     M.IsFunction.C "revm_precompile::utilities::bool_to_b256" bool_to_b256.
+  Proof.
   Admitted.
   Global Typeclasses Opaque bool_to_b256.
   
@@ -1172,6 +1180,7 @@ Module utilities.
     
     Global Instance Instance_IsConstant_value_TRUE :
       M.IsFunction.C "revm_precompile::utilities::bool_to_b256::TRUE" value_TRUE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_TRUE.
     
@@ -1231,6 +1240,7 @@ Module utilities.
     
     Global Instance Instance_IsConstant_value_FALSE :
       M.IsFunction.C "revm_precompile::utilities::bool_to_b256::FALSE" value_FALSE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_FALSE.
   End bool_to_b256.

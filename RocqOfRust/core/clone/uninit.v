@@ -828,6 +828,7 @@ Module clone.
       Global Instance AssociatedFunction_from_fully_uninit :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "from_fully_uninit" (from_fully_uninit T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_fully_uninit.
       
@@ -914,6 +915,7 @@ Module clone.
       Global Instance AssociatedFunction_push :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "push" (push T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque push.
     End Impl_core_clone_uninit_InitializingSlice_T.

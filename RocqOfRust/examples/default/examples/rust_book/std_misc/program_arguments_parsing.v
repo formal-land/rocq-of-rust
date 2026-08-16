@@ -94,6 +94,7 @@ Definition increase (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M
 
 Global Instance Instance_IsFunction_increase :
   M.IsFunction.C "program_arguments_parsing::increase" increase.
+Proof.
 Admitted.
 Global Typeclasses Opaque increase.
 
@@ -190,6 +191,7 @@ Definition decrease (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M
 
 Global Instance Instance_IsFunction_decrease :
   M.IsFunction.C "program_arguments_parsing::decrease" decrease.
+Proof.
 Admitted.
 Global Typeclasses Opaque decrease.
 
@@ -245,6 +247,7 @@ match_args {increase|decrease} <integer>
   end.
 
 Global Instance Instance_IsFunction_help : M.IsFunction.C "program_arguments_parsing::help" help.
+Proof.
 Admitted.
 Global Typeclasses Opaque help.
 
@@ -828,5 +831,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "program_arguments_parsing::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

@@ -1924,6 +1924,7 @@ Module string.
     Global Instance AssociatedFunction_from_str_radix :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "from_str_radix" (from_str_radix BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_str_radix.
   End Impl_ruint_Uint_BITS_LIMBS.

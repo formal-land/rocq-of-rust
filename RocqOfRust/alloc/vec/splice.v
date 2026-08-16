@@ -1970,6 +1970,7 @@ Module vec.
       Global Instance AssociatedFunction_fill :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "fill" (fill T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque fill.
       
@@ -2185,6 +2186,7 @@ Module vec.
       Global Instance AssociatedFunction_move_tail :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "move_tail" (move_tail T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque move_tail.
     End Impl_alloc_vec_drain_Drain_T_A.

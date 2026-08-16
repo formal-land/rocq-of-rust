@@ -18,6 +18,7 @@ Module Impl_Uint.
         stack
       )
     }}.
+  Proof.
   Admitted.
   Definition wrapping_rem {BITS LIMBS : usize} (x1 x2 : lib.Uint.t BITS LIMBS) :
       lib.Uint.t BITS LIMBS :=
@@ -35,5 +36,6 @@ Module Impl_Uint.
         stack
       )
     }}.
+  Proof.
   Admitted.
 End Impl_Uint.

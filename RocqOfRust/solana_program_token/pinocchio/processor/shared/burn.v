@@ -2438,6 +2438,7 @@ Module processor.
         M.IsFunction.C
           "pinocchio_token_program::processor::shared::burn::process_burn"
           process_burn.
+      Proof.
       Admitted.
       Global Typeclasses Opaque process_burn.
     End burn.

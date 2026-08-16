@@ -86,5 +86,6 @@ Definition with_impls (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) :
   end.
 
 Global Instance Instance_IsFunction_with_impls : M.IsFunction.C "impl_param::with_impls" with_impls.
+Proof.
 Admitted.
 Global Typeclasses Opaque with_impls.

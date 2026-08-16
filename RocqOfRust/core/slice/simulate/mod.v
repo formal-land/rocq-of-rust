@@ -23,6 +23,7 @@ Module Impl_Slice.
         stack
       )
     }}.
+  Proof.
   Admitted.
 
   Definition is_empty {T : Set} `{Link T} (self : Self T) : bool :=
@@ -46,5 +47,6 @@ Module Impl_Slice.
         stack
       )
     }}.
+  Proof.
   Admitted.
 End Impl_Slice.

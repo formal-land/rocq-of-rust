@@ -5,10 +5,12 @@ Parameter double_first : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_double_first :
   M.IsFunction.C "pulling_results_out_of_options::double_first" double_first.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "pulling_results_out_of_options::main" main.
+Proof.
 Admitted.

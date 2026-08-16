@@ -5996,6 +5996,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -6049,6 +6050,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_name : M.IsAssociatedFunction.C Self "name" name.
+    Proof.
     Admitted.
     Global Typeclasses Opaque name.
     
@@ -6102,6 +6104,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_doc : M.IsAssociatedFunction.C Self "doc" doc.
+    Proof.
     Admitted.
     Global Typeclasses Opaque doc.
     
@@ -6158,6 +6161,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_code : M.IsAssociatedFunction.C Self "code" code.
+    Proof.
     Admitted.
     Global Typeclasses Opaque code.
     
@@ -6225,6 +6229,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_ty_args : M.IsAssociatedFunction.C Self "ty_args" ty_args.
+    Proof.
     Admitted.
     Global Typeclasses Opaque ty_args.
     
@@ -6284,6 +6289,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_args : M.IsAssociatedFunction.C Self "args" args.
+    Proof.
     Admitted.
     Global Typeclasses Opaque args.
   End Impl_move_core_types_abi_TransactionScriptABI.
@@ -6347,6 +6353,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -6400,6 +6407,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_name : M.IsAssociatedFunction.C Self "name" name.
+    Proof.
     Admitted.
     Global Typeclasses Opaque name.
     
@@ -6435,6 +6443,7 @@ Module abi.
     
     Global Instance AssociatedFunction_module_name :
       M.IsAssociatedFunction.C Self "module_name" module_name.
+    Proof.
     Admitted.
     Global Typeclasses Opaque module_name.
     
@@ -6488,6 +6497,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_doc : M.IsAssociatedFunction.C Self "doc" doc.
+    Proof.
     Admitted.
     Global Typeclasses Opaque doc.
     
@@ -6555,6 +6565,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_ty_args : M.IsAssociatedFunction.C Self "ty_args" ty_args.
+    Proof.
     Admitted.
     Global Typeclasses Opaque ty_args.
     
@@ -6614,6 +6625,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_args : M.IsAssociatedFunction.C Self "args" args.
+    Proof.
     Admitted.
     Global Typeclasses Opaque args.
   End Impl_move_core_types_abi_ScriptFunctionABI.
@@ -6657,6 +6669,7 @@ Module abi.
     
     Global Instance AssociatedFunction_is_script_fun_abi :
       M.IsAssociatedFunction.C Self "is_script_fun_abi" is_script_fun_abi.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_script_fun_abi.
     
@@ -6700,6 +6713,7 @@ Module abi.
     
     Global Instance AssociatedFunction_is_transaction_script_abi :
       M.IsAssociatedFunction.C Self "is_transaction_script_abi" is_transaction_script_abi.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_transaction_script_abi.
     
@@ -6799,6 +6813,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_name : M.IsAssociatedFunction.C Self "name" name.
+    Proof.
     Admitted.
     Global Typeclasses Opaque name.
     
@@ -6898,6 +6913,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_doc : M.IsAssociatedFunction.C Self "doc" doc.
+    Proof.
     Admitted.
     Global Typeclasses Opaque doc.
     
@@ -7021,6 +7037,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_ty_args : M.IsAssociatedFunction.C Self "ty_args" ty_args.
+    Proof.
     Admitted.
     Global Typeclasses Opaque ty_args.
     
@@ -7139,6 +7156,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_args : M.IsAssociatedFunction.C Self "args" args.
+    Proof.
     Admitted.
     Global Typeclasses Opaque args.
   End Impl_move_core_types_abi_ScriptABI.
@@ -7167,6 +7185,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -7220,6 +7239,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_name : M.IsAssociatedFunction.C Self "name" name.
+    Proof.
     Admitted.
     Global Typeclasses Opaque name.
     
@@ -7254,6 +7274,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_type_tag : M.IsAssociatedFunction.C Self "type_tag" type_tag.
+    Proof.
     Admitted.
     Global Typeclasses Opaque type_tag.
   End Impl_move_core_types_abi_ArgumentABI.
@@ -7280,6 +7301,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -7333,6 +7355,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_name : M.IsAssociatedFunction.C Self "name" name.
+    Proof.
     Admitted.
     Global Typeclasses Opaque name.
   End Impl_move_core_types_abi_TypeArgumentABI.

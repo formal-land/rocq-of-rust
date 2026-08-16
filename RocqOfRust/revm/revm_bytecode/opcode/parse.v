@@ -387,6 +387,7 @@ Module opcode.
         end.
       
       Global Instance AssociatedFunction_parse : M.IsAssociatedFunction.C Self "parse" parse.
+      Proof.
       Admitted.
       Global Typeclasses Opaque parse.
     End Impl_revm_bytecode_opcode_OpCode.

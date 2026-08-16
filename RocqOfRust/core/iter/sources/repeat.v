@@ -24,6 +24,7 @@ Module iter.
       
       Global Instance Instance_IsFunction_repeat :
         M.IsFunction.C "core::iter::sources::repeat::repeat" repeat.
+      Proof.
       Admitted.
       Global Typeclasses Opaque repeat.
       

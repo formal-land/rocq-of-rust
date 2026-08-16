@@ -64,6 +64,7 @@ Definition is_divisible_by (ε : list Value.t) (τ : list Ty.t) (α : list Value
 
 Global Instance Instance_IsFunction_is_divisible_by :
   M.IsFunction.C "functions::is_divisible_by" is_divisible_by.
+Proof.
 Admitted.
 Global Typeclasses Opaque is_divisible_by.
 
@@ -304,6 +305,7 @@ Definition fizzbuzz (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M
   end.
 
 Global Instance Instance_IsFunction_fizzbuzz : M.IsFunction.C "functions::fizzbuzz" fizzbuzz.
+Proof.
 Admitted.
 Global Typeclasses Opaque fizzbuzz.
 
@@ -430,6 +432,7 @@ Definition fizzbuzz_to (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) 
 
 Global Instance Instance_IsFunction_fizzbuzz_to :
   M.IsFunction.C "functions::fizzbuzz_to" fizzbuzz_to.
+Proof.
 Admitted.
 Global Typeclasses Opaque fizzbuzz_to.
 
@@ -456,5 +459,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "functions::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

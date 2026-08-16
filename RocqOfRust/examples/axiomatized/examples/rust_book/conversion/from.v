@@ -26,4 +26,5 @@ End Impl_core_convert_From_i32_for_from_Number.
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "from::main" main.
+Proof.
 Admitted.

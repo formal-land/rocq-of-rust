@@ -849,6 +849,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_mload :
       M.IsFunction.C "revm_interpreter::instructions::memory::mload" mload.
+    Proof.
     Admitted.
     Global Typeclasses Opaque mload.
     
@@ -1439,6 +1440,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_mstore :
       M.IsFunction.C "revm_interpreter::instructions::memory::mstore" mstore.
+    Proof.
     Admitted.
     Global Typeclasses Opaque mstore.
     
@@ -2029,6 +2031,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_mstore8 :
       M.IsFunction.C "revm_interpreter::instructions::memory::mstore8" mstore8.
+    Proof.
     Admitted.
     Global Typeclasses Opaque mstore8.
     
@@ -2211,6 +2214,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_msize :
       M.IsFunction.C "revm_interpreter::instructions::memory::msize" msize.
+    Proof.
     Admitted.
     Global Typeclasses Opaque msize.
     
@@ -3509,6 +3513,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_mcopy :
       M.IsFunction.C "revm_interpreter::instructions::memory::mcopy" mcopy.
+    Proof.
     Admitted.
     Global Typeclasses Opaque mcopy.
   End memory.

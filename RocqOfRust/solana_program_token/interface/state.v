@@ -3015,6 +3015,7 @@ Module state.
     
     Global Instance AssociatedFunction_is_frozen :
       M.IsAssociatedFunction.C Self "is_frozen" is_frozen.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_frozen.
     
@@ -3056,6 +3057,7 @@ Module state.
     
     Global Instance AssociatedFunction_is_native :
       M.IsAssociatedFunction.C Self "is_native" is_native.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_native.
     
@@ -3127,6 +3129,7 @@ Module state.
         Self
         "is_owned_by_system_program_or_incinerator"
         is_owned_by_system_program_or_incinerator.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_owned_by_system_program_or_incinerator.
   End Impl_spl_token_interface_state_Account.
@@ -8416,6 +8419,7 @@ Module state.
   
   Global Instance Instance_IsFunction_pack_coption_key :
     M.IsFunction.C "spl_token_interface::state::pack_coption_key" pack_coption_key.
+  Proof.
   Admitted.
   Global Typeclasses Opaque pack_coption_key.
   
@@ -8681,6 +8685,7 @@ Module state.
   
   Global Instance Instance_IsFunction_unpack_coption_key :
     M.IsFunction.C "spl_token_interface::state::unpack_coption_key" unpack_coption_key.
+  Proof.
   Admitted.
   Global Typeclasses Opaque unpack_coption_key.
   
@@ -8878,6 +8883,7 @@ Module state.
   
   Global Instance Instance_IsFunction_pack_coption_u64 :
     M.IsFunction.C "spl_token_interface::state::pack_coption_u64" pack_coption_u64.
+  Proof.
   Admitted.
   Global Typeclasses Opaque pack_coption_u64.
   
@@ -9137,6 +9143,7 @@ Module state.
   
   Global Instance Instance_IsFunction_unpack_coption_u64 :
     M.IsFunction.C "spl_token_interface::state::unpack_coption_u64" unpack_coption_u64.
+  Proof.
   Admitted.
   Global Typeclasses Opaque unpack_coption_u64.
   
@@ -9151,6 +9158,7 @@ Module state.
     M.IsFunction.C
       "spl_token_interface::state::SPL_TOKEN_ACCOUNT_MINT_OFFSET"
       value_SPL_TOKEN_ACCOUNT_MINT_OFFSET.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SPL_TOKEN_ACCOUNT_MINT_OFFSET.
   
@@ -9165,6 +9173,7 @@ Module state.
     M.IsFunction.C
       "spl_token_interface::state::SPL_TOKEN_ACCOUNT_OWNER_OFFSET"
       value_SPL_TOKEN_ACCOUNT_OWNER_OFFSET.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SPL_TOKEN_ACCOUNT_OWNER_OFFSET.
   
@@ -9544,6 +9553,7 @@ Module state.
     M.IsFunction.C
       "spl_token_interface::state::ACCOUNT_INITIALIZED_INDEX"
       value_ACCOUNT_INITIALIZED_INDEX.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_ACCOUNT_INITIALIZED_INDEX.
   
@@ -9627,6 +9637,7 @@ Module state.
   
   Global Instance Instance_IsFunction_is_initialized_account :
     M.IsFunction.C "spl_token_interface::state::is_initialized_account" is_initialized_account.
+  Proof.
   Admitted.
   Global Typeclasses Opaque is_initialized_account.
   

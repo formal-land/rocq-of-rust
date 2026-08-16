@@ -45,6 +45,7 @@ Module Impl_Interpreter.
         [ Φ H ]
         [ φ self; φ instruction_table; φ host ]
       unit.
+  Proof.
   Admitted.
   Global Opaque run_step.
 

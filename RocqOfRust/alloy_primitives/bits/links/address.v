@@ -32,6 +32,7 @@ Module Impl_Address.
     Run.Trait
       bits.address.Impl_alloy_primitives_bits_address_Address.from_word [] [] [ φ word ]
       Self.
+  Proof.
   Admitted.
   Global Opaque run_from_word.
 
@@ -40,6 +41,7 @@ Module Impl_Address.
     Run.Trait
       bits.address.Impl_alloy_primitives_bits_address_Address.into_word [] [] [ φ self ]
       (FixedBytes.t {| Integer.value := 32 |}).
+  Proof.
   Admitted.
   Global Opaque run_into_word.
 
@@ -60,6 +62,7 @@ Module Impl_Address.
       bits.address.Impl_alloy_primitives_bits_address_Address.create2
         [] [ Φ S; Φ H ] [ φ self; φ salt; φ init_code_hash ]
       Self.
+  Proof.
   Admitted.
   Global Opaque run_create2.
 End Impl_Address.

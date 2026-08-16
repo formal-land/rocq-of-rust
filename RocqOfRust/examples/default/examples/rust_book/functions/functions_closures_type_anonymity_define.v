@@ -20,6 +20,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "functions_closures_type_anonymity_define::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.
 
@@ -59,6 +60,7 @@ Module main.
   
   Global Instance Instance_IsFunction_apply :
     M.IsFunction.C "functions_closures_type_anonymity_define::main::apply" apply.
+  Proof.
   Admitted.
   Global Typeclasses Opaque apply.
 End main.

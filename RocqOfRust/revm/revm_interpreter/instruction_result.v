@@ -1453,6 +1453,7 @@ Module instruction_result.
       end.
     
     Global Instance AssociatedFunction_is_ok : M.IsAssociatedFunction.C Self "is_ok" is_ok.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_ok.
     
@@ -1590,6 +1591,7 @@ Module instruction_result.
     
     Global Instance AssociatedFunction_is_ok_or_revert :
       M.IsAssociatedFunction.C Self "is_ok_or_revert" is_ok_or_revert.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_ok_or_revert.
     
@@ -1677,6 +1679,7 @@ Module instruction_result.
     
     Global Instance AssociatedFunction_is_revert :
       M.IsAssociatedFunction.C Self "is_revert" is_revert.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_revert.
     
@@ -1899,6 +1902,7 @@ Module instruction_result.
       end.
     
     Global Instance AssociatedFunction_is_error : M.IsAssociatedFunction.C Self "is_error" is_error.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_error.
   End Impl_revm_interpreter_instruction_result_InstructionResult.
@@ -3315,6 +3319,7 @@ Module instruction_result.
     Global Instance AssociatedFunction_is_success :
       forall (HaltReasonTr : Ty.t),
       M.IsAssociatedFunction.C (Self HaltReasonTr) "is_success" (is_success HaltReasonTr).
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_success.
     
@@ -3381,6 +3386,7 @@ Module instruction_result.
     Global Instance AssociatedFunction_to_success :
       forall (HaltReasonTr : Ty.t),
       M.IsAssociatedFunction.C (Self HaltReasonTr) "to_success" (to_success HaltReasonTr).
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_success.
     
@@ -3428,6 +3434,7 @@ Module instruction_result.
     Global Instance AssociatedFunction_is_revert :
       forall (HaltReasonTr : Ty.t),
       M.IsAssociatedFunction.C (Self HaltReasonTr) "is_revert" (is_revert HaltReasonTr).
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_revert.
     
@@ -3476,6 +3483,7 @@ Module instruction_result.
     Global Instance AssociatedFunction_is_halt :
       forall (HaltReasonTr : Ty.t),
       M.IsAssociatedFunction.C (Self HaltReasonTr) "is_halt" (is_halt HaltReasonTr).
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_halt.
     
@@ -3534,6 +3542,7 @@ Module instruction_result.
     Global Instance AssociatedFunction_to_halt :
       forall (HaltReasonTr : Ty.t),
       M.IsAssociatedFunction.C (Self HaltReasonTr) "to_halt" (to_halt HaltReasonTr).
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_halt.
   End Impl_revm_interpreter_instruction_result_SuccessOrHalt_HaltReasonTr.

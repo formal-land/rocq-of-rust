@@ -236,6 +236,7 @@ Definition print_debug (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) 
 
 Global Instance Instance_IsFunction_print_debug :
   M.IsFunction.C "generics_bounds::print_debug" print_debug.
+Proof.
 Admitted.
 Global Typeclasses Opaque print_debug.
 
@@ -258,6 +259,7 @@ Definition area (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_area : M.IsFunction.C "generics_bounds::area" area.
+Proof.
 Admitted.
 Global Typeclasses Opaque area.
 
@@ -410,5 +412,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "generics_bounds::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

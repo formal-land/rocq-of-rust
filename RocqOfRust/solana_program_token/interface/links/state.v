@@ -98,6 +98,7 @@ Export (hints) Impl_Account.
 (* impl Pack for Mint *)
 Module Impl_Pack_for_Mint.
   Instance run : Pack.Run Mint.t.
+  Proof.
   Admitted.
 End Impl_Pack_for_Mint.
 Export (hints) Impl_Pack_for_Mint.
@@ -105,6 +106,7 @@ Export (hints) Impl_Pack_for_Mint.
 (* impl Pack for Account *)
 Module Impl_Pack_for_Account.
   Instance run : Pack.Run Account.t.
+  Proof.
   Admitted.
 End Impl_Pack_for_Account.
 Export (hints) Impl_Pack_for_Account.

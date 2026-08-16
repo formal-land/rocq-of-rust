@@ -434,6 +434,8 @@ impl Definition {
                     ],
                 ),
                 ψ.hardline(),
+                ψ.text("Proof."),
+                ψ.hardline(),
                 ψ.text("Admitted."),
             ]),
             DefinitionKind::Alias { args, ty, body } => nest(

@@ -1855,6 +1855,7 @@ Module interpreter_action.
       end.
     
     Global Instance AssociatedFunction_is_call : M.IsAssociatedFunction.C Self "is_call" is_call.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_call.
     
@@ -1902,6 +1903,7 @@ Module interpreter_action.
     
     Global Instance AssociatedFunction_is_create :
       M.IsAssociatedFunction.C Self "is_create" is_create.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_create.
     
@@ -1943,6 +1945,7 @@ Module interpreter_action.
     
     Global Instance AssociatedFunction_is_return :
       M.IsAssociatedFunction.C Self "is_return" is_return.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_return.
     
@@ -2022,6 +2025,7 @@ Module interpreter_action.
       end.
     
     Global Instance AssociatedFunction_gas_mut : M.IsAssociatedFunction.C Self "gas_mut" gas_mut.
+    Proof.
     Admitted.
     Global Typeclasses Opaque gas_mut.
     
@@ -2075,6 +2079,7 @@ Module interpreter_action.
     
     Global Instance AssociatedFunction_into_result_return :
       M.IsAssociatedFunction.C Self "into_result_return" into_result_return.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_result_return.
     
@@ -2149,6 +2154,7 @@ Module interpreter_action.
     
     Global Instance AssociatedFunction_instruction_result :
       M.IsAssociatedFunction.C Self "instruction_result" instruction_result.
+    Proof.
     Admitted.
     Global Typeclasses Opaque instruction_result.
     
@@ -2173,6 +2179,7 @@ Module interpreter_action.
     
     Global Instance AssociatedFunction_new_frame :
       M.IsAssociatedFunction.C Self "new_frame" new_frame.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_frame.
     
@@ -2224,6 +2231,7 @@ Module interpreter_action.
       end.
     
     Global Instance AssociatedFunction_new_halt : M.IsAssociatedFunction.C Self "new_halt" new_halt.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_halt.
     
@@ -2264,6 +2272,7 @@ Module interpreter_action.
     
     Global Instance AssociatedFunction_new_return :
       M.IsAssociatedFunction.C Self "new_return" new_return.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_return.
     
@@ -2326,6 +2335,7 @@ Module interpreter_action.
       end.
     
     Global Instance AssociatedFunction_new_stop : M.IsAssociatedFunction.C Self "new_stop" new_stop.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_stop.
   End Impl_revm_interpreter_interpreter_action_InterpreterAction.

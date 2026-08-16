@@ -72,6 +72,7 @@ Module mul.
     Global Instance AssociatedFunction_checked_mul :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "checked_mul" (checked_mul BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque checked_mul.
     
@@ -315,6 +316,7 @@ Module mul.
     Global Instance AssociatedFunction_overflowing_mul :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "overflowing_mul" (overflowing_mul BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque overflowing_mul.
     
@@ -379,6 +381,7 @@ Module mul.
     Global Instance AssociatedFunction_saturating_mul :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "saturating_mul" (saturating_mul BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque saturating_mul.
     
@@ -579,6 +582,7 @@ Module mul.
     Global Instance AssociatedFunction_wrapping_mul :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "wrapping_mul" (wrapping_mul BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque wrapping_mul.
     
@@ -1457,6 +1461,7 @@ Module mul.
     Global Instance AssociatedFunction_inv_ring :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "inv_ring" (inv_ring BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque inv_ring.
     
@@ -1942,6 +1947,7 @@ Module mul.
     Global Instance AssociatedFunction_widening_mul :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "widening_mul" (widening_mul BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque widening_mul.
   End Impl_ruint_Uint_BITS_LIMBS.

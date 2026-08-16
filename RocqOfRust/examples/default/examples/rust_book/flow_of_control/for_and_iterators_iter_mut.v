@@ -405,5 +405,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "for_and_iterators_iter_mut::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

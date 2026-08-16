@@ -106,6 +106,7 @@ Definition read_lines (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) :
 
 Global Instance Instance_IsFunction_read_lines :
   M.IsFunction.C "file_io_read_lines::read_lines" read_lines.
+Proof.
 Admitted.
 Global Typeclasses Opaque read_lines.
 
@@ -424,5 +425,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "file_io_read_lines::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

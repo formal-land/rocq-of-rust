@@ -36,6 +36,7 @@ Module Impl_multisig_Mapping_K_V.
   Global Instance AssociatedFunction_contains :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "contains" (contains K V).
+  Proof.
   Admitted.
   
   Parameter get : forall (K V : Ty.t), (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -43,6 +44,7 @@ Module Impl_multisig_Mapping_K_V.
   Global Instance AssociatedFunction_get :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "get" (get K V).
+  Proof.
   Admitted.
   
   Parameter insert : forall (K V : Ty.t), (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -50,6 +52,7 @@ Module Impl_multisig_Mapping_K_V.
   Global Instance AssociatedFunction_insert :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "insert" (insert K V).
+  Proof.
   Admitted.
   
   Parameter remove : forall (K V : Ty.t), (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -57,6 +60,7 @@ Module Impl_multisig_Mapping_K_V.
   Global Instance AssociatedFunction_remove :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "remove" (remove K V).
+  Proof.
   Admitted.
   
   Parameter size : forall (K V : Ty.t), (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -64,6 +68,7 @@ Module Impl_multisig_Mapping_K_V.
   Global Instance AssociatedFunction_size :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "size" (size K V).
+  Proof.
   Admitted.
   
   Parameter take : forall (K V : Ty.t), (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -71,6 +76,7 @@ Module Impl_multisig_Mapping_K_V.
   Global Instance AssociatedFunction_take :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "take" (take K V).
+  Proof.
   Admitted.
 End Impl_multisig_Mapping_K_V.
 
@@ -231,6 +237,7 @@ Parameter value_MAX_OWNERS : PolymorphicFunction.t.
 
 Global Instance Instance_IsConstant_value_MAX_OWNERS :
   M.IsFunction.C "multisig::MAX_OWNERS" value_MAX_OWNERS.
+Proof.
 Admitted.
 
 Axiom TransactionId : (Ty.path "multisig::TransactionId") = (Ty.path "u32").
@@ -239,6 +246,7 @@ Parameter value_WRONG_TRANSACTION_ID : PolymorphicFunction.t.
 
 Global Instance Instance_IsConstant_value_WRONG_TRANSACTION_ID :
   M.IsFunction.C "multisig::WRONG_TRANSACTION_ID" value_WRONG_TRANSACTION_ID.
+Proof.
 Admitted.
 
 (* StructTuple
@@ -617,24 +625,28 @@ Module Impl_multisig_Env.
   Parameter caller : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_caller : M.IsAssociatedFunction.C Self "caller" caller.
+  Proof.
   Admitted.
   
   Parameter emit_event : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_emit_event :
     M.IsAssociatedFunction.C Self "emit_event" emit_event.
+  Proof.
   Admitted.
   
   Parameter transferred_value : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_transferred_value :
     M.IsAssociatedFunction.C Self "transferred_value" transferred_value.
+  Proof.
   Admitted.
   
   Parameter account_id : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_account_id :
     M.IsAssociatedFunction.C Self "account_id" account_id.
+  Proof.
   Admitted.
 End Impl_multisig_Env.
 
@@ -687,6 +699,7 @@ Parameter ensure_requirement_is_valid : (list Value.t) -> (list Ty.t) -> (list V
 
 Global Instance Instance_IsFunction_ensure_requirement_is_valid :
   M.IsFunction.C "multisig::ensure_requirement_is_valid" ensure_requirement_is_valid.
+Proof.
 Admitted.
 
 Module Impl_multisig_Multisig.
@@ -695,135 +708,158 @@ Module Impl_multisig_Multisig.
   Parameter init_env : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_init_env : M.IsAssociatedFunction.C Self "init_env" init_env.
+  Proof.
   Admitted.
   
   Parameter env : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_env : M.IsAssociatedFunction.C Self "env" env.
+  Proof.
   Admitted.
   
   Parameter new : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   
   Parameter ensure_confirmed : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_ensure_confirmed :
     M.IsAssociatedFunction.C Self "ensure_confirmed" ensure_confirmed.
+  Proof.
   Admitted.
   
   Parameter ensure_transaction_exists : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_ensure_transaction_exists :
     M.IsAssociatedFunction.C Self "ensure_transaction_exists" ensure_transaction_exists.
+  Proof.
   Admitted.
   
   Parameter ensure_owner : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_ensure_owner :
     M.IsAssociatedFunction.C Self "ensure_owner" ensure_owner.
+  Proof.
   Admitted.
   
   Parameter ensure_caller_is_owner : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_ensure_caller_is_owner :
     M.IsAssociatedFunction.C Self "ensure_caller_is_owner" ensure_caller_is_owner.
+  Proof.
   Admitted.
   
   Parameter ensure_from_wallet : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_ensure_from_wallet :
     M.IsAssociatedFunction.C Self "ensure_from_wallet" ensure_from_wallet.
+  Proof.
   Admitted.
   
   Parameter ensure_no_owner : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_ensure_no_owner :
     M.IsAssociatedFunction.C Self "ensure_no_owner" ensure_no_owner.
+  Proof.
   Admitted.
   
   Parameter add_owner : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_add_owner :
     M.IsAssociatedFunction.C Self "add_owner" add_owner.
+  Proof.
   Admitted.
   
   Parameter owner_index : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_owner_index :
     M.IsAssociatedFunction.C Self "owner_index" owner_index.
+  Proof.
   Admitted.
   
   Parameter clean_owner_confirmations : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_clean_owner_confirmations :
     M.IsAssociatedFunction.C Self "clean_owner_confirmations" clean_owner_confirmations.
+  Proof.
   Admitted.
   
   Parameter remove_owner : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_remove_owner :
     M.IsAssociatedFunction.C Self "remove_owner" remove_owner.
+  Proof.
   Admitted.
   
   Parameter replace_owner : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_replace_owner :
     M.IsAssociatedFunction.C Self "replace_owner" replace_owner.
+  Proof.
   Admitted.
   
   Parameter change_requirement : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_change_requirement :
     M.IsAssociatedFunction.C Self "change_requirement" change_requirement.
+  Proof.
   Admitted.
   
   Parameter confirm_by_caller : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_confirm_by_caller :
     M.IsAssociatedFunction.C Self "confirm_by_caller" confirm_by_caller.
+  Proof.
   Admitted.
   
   Parameter submit_transaction : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_submit_transaction :
     M.IsAssociatedFunction.C Self "submit_transaction" submit_transaction.
+  Proof.
   Admitted.
   
   Parameter take_transaction : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_take_transaction :
     M.IsAssociatedFunction.C Self "take_transaction" take_transaction.
+  Proof.
   Admitted.
   
   Parameter cancel_transaction : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_cancel_transaction :
     M.IsAssociatedFunction.C Self "cancel_transaction" cancel_transaction.
+  Proof.
   Admitted.
   
   Parameter confirm_transaction : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_confirm_transaction :
     M.IsAssociatedFunction.C Self "confirm_transaction" confirm_transaction.
+  Proof.
   Admitted.
   
   Parameter revoke_confirmation : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_revoke_confirmation :
     M.IsAssociatedFunction.C Self "revoke_confirmation" revoke_confirmation.
+  Proof.
   Admitted.
   
   Parameter invoke_transaction : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_invoke_transaction :
     M.IsAssociatedFunction.C Self "invoke_transaction" invoke_transaction.
+  Proof.
   Admitted.
   
   Parameter eval_transaction : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_eval_transaction :
     M.IsAssociatedFunction.C Self "eval_transaction" eval_transaction.
+  Proof.
   Admitted.
 End Impl_multisig_Multisig.

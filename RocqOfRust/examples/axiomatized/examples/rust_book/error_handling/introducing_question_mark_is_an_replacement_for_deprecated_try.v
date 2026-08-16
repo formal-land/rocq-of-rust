@@ -7,16 +7,19 @@ Global Instance Instance_IsFunction_multiply :
   M.IsFunction.C
     "introducing_question_mark_is_an_replacement_for_deprecated_try::multiply"
     multiply.
+Proof.
 Admitted.
 
 Parameter print : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_print :
   M.IsFunction.C "introducing_question_mark_is_an_replacement_for_deprecated_try::print" print.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "introducing_question_mark_is_an_replacement_for_deprecated_try::main" main.
+Proof.
 Admitted.

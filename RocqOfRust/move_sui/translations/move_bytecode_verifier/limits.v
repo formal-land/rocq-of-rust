@@ -138,6 +138,7 @@ Module limits.
     
     Global Instance AssociatedFunction_verify_module :
       M.IsAssociatedFunction.C Self "verify_module" verify_module.
+    Proof.
     Admitted.
     Global Typeclasses Opaque verify_module.
     
@@ -884,6 +885,7 @@ Module limits.
     
     Global Instance AssociatedFunction_verify_module_impl :
       M.IsAssociatedFunction.C Self "verify_module_impl" verify_module_impl.
+    Proof.
     Admitted.
     Global Typeclasses Opaque verify_module_impl.
     
@@ -1366,6 +1368,7 @@ Module limits.
     
     Global Instance AssociatedFunction_verify_struct_handles :
       M.IsAssociatedFunction.C Self "verify_struct_handles" verify_struct_handles.
+    Proof.
     Admitted.
     Global Typeclasses Opaque verify_struct_handles.
     
@@ -2026,6 +2029,7 @@ Module limits.
     
     Global Instance AssociatedFunction_verify_function_handles :
       M.IsAssociatedFunction.C Self "verify_function_handles" verify_function_handles.
+    Proof.
     Admitted.
     Global Typeclasses Opaque verify_function_handles.
     
@@ -3614,6 +3618,7 @@ Module limits.
     
     Global Instance AssociatedFunction_verify_type_nodes :
       M.IsAssociatedFunction.C Self "verify_type_nodes" verify_type_nodes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque verify_type_nodes.
     
@@ -4052,6 +4057,7 @@ Module limits.
     
     Global Instance AssociatedFunction_verify_type_node :
       M.IsAssociatedFunction.C Self "verify_type_node" verify_type_node.
+    Proof.
     Admitted.
     Global Typeclasses Opaque verify_type_node.
     
@@ -4747,6 +4753,7 @@ Module limits.
     
     Global Instance AssociatedFunction_verify_definitions :
       M.IsAssociatedFunction.C Self "verify_definitions" verify_definitions.
+    Proof.
     Admitted.
     Global Typeclasses Opaque verify_definitions.
     
@@ -5741,6 +5748,7 @@ Module limits.
     
     Global Instance AssociatedFunction_verify_constants :
       M.IsAssociatedFunction.C Self "verify_constants" verify_constants.
+    Proof.
     Admitted.
     Global Typeclasses Opaque verify_constants.
     
@@ -6215,6 +6223,7 @@ Module limits.
     
     Global Instance AssociatedFunction_verify_identifiers :
       M.IsAssociatedFunction.C Self "verify_identifiers" verify_identifiers.
+    Proof.
     Admitted.
     Global Typeclasses Opaque verify_identifiers.
   End Impl_move_bytecode_verifier_limits_LimitsVerifier.

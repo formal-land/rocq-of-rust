@@ -1944,6 +1944,7 @@ Module errmap.
     
     Global Instance AssociatedFunction_add_error_category :
       M.IsAssociatedFunction.C Self "add_error_category" add_error_category.
+    Proof.
     Admitted.
     Global Typeclasses Opaque add_error_category.
     
@@ -2476,6 +2477,7 @@ Module errmap.
     
     Global Instance AssociatedFunction_add_module_error :
       M.IsAssociatedFunction.C Self "add_module_error" add_module_error.
+    Proof.
     Admitted.
     Global Typeclasses Opaque add_module_error.
     
@@ -2649,6 +2651,7 @@ Module errmap.
     
     Global Instance AssociatedFunction_from_file :
       M.IsAssociatedFunction.C Self "from_file" from_file.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_file.
     
@@ -2807,6 +2810,7 @@ Module errmap.
       end.
     
     Global Instance AssociatedFunction_to_file : M.IsAssociatedFunction.C Self "to_file" to_file.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_file.
     
@@ -3048,6 +3052,7 @@ Module errmap.
     
     Global Instance AssociatedFunction_get_explanation :
       M.IsAssociatedFunction.C Self "get_explanation" get_explanation.
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_explanation.
   End Impl_move_core_types_errmap_ErrorMapping.

@@ -48,6 +48,7 @@ Module raw_vec.
   
   Global Instance Instance_IsFunction_capacity_overflow :
     M.IsFunction.C "alloc::raw_vec::capacity_overflow" capacity_overflow.
+  Proof.
   Admitted.
   Global Typeclasses Opaque capacity_overflow.
   
@@ -95,6 +96,7 @@ Module raw_vec.
         |))).
     
     Global Instance AssociatedConstant_value_ZERO : M.IsAssociatedFunction.C Self "ZERO" value_ZERO.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ZERO.
     
@@ -137,6 +139,7 @@ Module raw_vec.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_alloc_raw_vec_Cap.
@@ -196,6 +199,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_new :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "new" (new T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -248,6 +252,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_with_capacity :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "with_capacity" (with_capacity T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque with_capacity.
     
@@ -309,6 +314,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_with_capacity_zeroed :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "with_capacity_zeroed" (with_capacity_zeroed T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque with_capacity_zeroed.
   End Impl_alloc_raw_vec_RawVec_T_alloc_alloc_Global.
@@ -405,6 +411,7 @@ Module raw_vec.
     
     Global Instance AssociatedFunction_with_capacity :
       M.IsAssociatedFunction.C Self "with_capacity" with_capacity.
+    Proof.
     Admitted.
     Global Typeclasses Opaque with_capacity.
   End Impl_alloc_raw_vec_RawVecInner_alloc_alloc_Global.
@@ -473,6 +480,7 @@ Module raw_vec.
   
   Global Instance Instance_IsFunction_min_non_zero_cap :
     M.IsFunction.C "alloc::raw_vec::min_non_zero_cap" min_non_zero_cap.
+  Proof.
   Admitted.
   Global Typeclasses Opaque min_non_zero_cap.
   
@@ -507,6 +515,7 @@ Module raw_vec.
     Global Instance AssociatedConstant_value_MIN_NON_ZERO_CAP :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "MIN_NON_ZERO_CAP" (value_MIN_NON_ZERO_CAP T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MIN_NON_ZERO_CAP.
     
@@ -552,6 +561,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_new_in :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "new_in" (new_in T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_in.
     
@@ -608,6 +618,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_with_capacity_in :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "with_capacity_in" (with_capacity_in T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque with_capacity_in.
     
@@ -718,6 +729,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_try_with_capacity_in :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "try_with_capacity_in" (try_with_capacity_in T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque try_with_capacity_in.
     
@@ -774,6 +786,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_with_capacity_zeroed_in :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "with_capacity_zeroed_in" (with_capacity_zeroed_in T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque with_capacity_zeroed_in.
     
@@ -1084,6 +1097,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_into_box :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "into_box" (into_box T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_box.
     
@@ -1159,6 +1173,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_from_raw_parts_in :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "from_raw_parts_in" (from_raw_parts_in T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_raw_parts_in.
     
@@ -1232,6 +1247,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_from_nonnull_in :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "from_nonnull_in" (from_nonnull_in T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_nonnull_in.
     
@@ -1275,6 +1291,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_ptr :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "ptr" (ptr T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque ptr.
     
@@ -1318,6 +1335,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_non_null :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "non_null" (non_null T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque non_null.
     
@@ -1366,6 +1384,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_capacity :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "capacity" (capacity T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque capacity.
     
@@ -1414,6 +1433,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_allocator :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "allocator" (allocator T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque allocator.
     
@@ -1470,6 +1490,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_reserve :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "reserve" (reserve T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque reserve.
     
@@ -1522,6 +1543,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_grow_one :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "grow_one" (grow_one T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque grow_one.
     
@@ -1581,6 +1603,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_try_reserve :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "try_reserve" (try_reserve T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque try_reserve.
     
@@ -1642,6 +1665,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_reserve_exact :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "reserve_exact" (reserve_exact T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque reserve_exact.
     
@@ -1710,6 +1734,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_try_reserve_exact :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "try_reserve_exact" (try_reserve_exact T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque try_reserve_exact.
     
@@ -1769,6 +1794,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_shrink_to_fit :
       forall (T A : Ty.t),
       M.IsAssociatedFunction.C (Self T A) "shrink_to_fit" (shrink_to_fit T A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque shrink_to_fit.
   End Impl_alloc_raw_vec_RawVec_T_A.
@@ -1890,6 +1916,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_new_in :
       forall (A : Ty.t),
       M.IsAssociatedFunction.C (Self A) "new_in" (new_in A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_in.
     
@@ -2014,6 +2041,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_with_capacity_in :
       forall (A : Ty.t),
       M.IsAssociatedFunction.C (Self A) "with_capacity_in" (with_capacity_in A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque with_capacity_in.
     
@@ -2066,6 +2094,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_try_with_capacity_in :
       forall (A : Ty.t),
       M.IsAssociatedFunction.C (Self A) "try_with_capacity_in" (try_with_capacity_in A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque try_with_capacity_in.
     
@@ -2150,6 +2179,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_with_capacity_zeroed_in :
       forall (A : Ty.t),
       M.IsAssociatedFunction.C (Self A) "with_capacity_zeroed_in" (with_capacity_zeroed_in A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque with_capacity_zeroed_in.
     
@@ -2652,6 +2682,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_try_allocate_in :
       forall (A : Ty.t),
       M.IsAssociatedFunction.C (Self A) "try_allocate_in" (try_allocate_in A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque try_allocate_in.
     
@@ -2698,6 +2729,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_from_raw_parts_in :
       forall (A : Ty.t),
       M.IsAssociatedFunction.C (Self A) "from_raw_parts_in" (from_raw_parts_in A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_raw_parts_in.
     
@@ -2751,6 +2783,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_from_nonnull_in :
       forall (A : Ty.t),
       M.IsAssociatedFunction.C (Self A) "from_nonnull_in" (from_nonnull_in A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_nonnull_in.
     
@@ -2799,6 +2832,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_ptr :
       forall (A : Ty.t),
       M.IsAssociatedFunction.C (Self A) "ptr" (ptr A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque ptr.
     
@@ -2855,6 +2889,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_non_null :
       forall (A : Ty.t),
       M.IsAssociatedFunction.C (Self A) "non_null" (non_null A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque non_null.
     
@@ -2918,6 +2953,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_capacity :
       forall (A : Ty.t),
       M.IsAssociatedFunction.C (Self A) "capacity" (capacity A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque capacity.
     
@@ -2958,6 +2994,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_allocator :
       forall (A : Ty.t),
       M.IsAssociatedFunction.C (Self A) "allocator" (allocator A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque allocator.
     
@@ -3190,6 +3227,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_current_memory :
       forall (A : Ty.t),
       M.IsAssociatedFunction.C (Self A) "current_memory" (current_memory A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque current_memory.
     
@@ -3287,6 +3325,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_reserve :
       forall (A : Ty.t),
       M.IsAssociatedFunction.C (Self A) "reserve" (reserve A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque reserve.
     
@@ -3371,6 +3410,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_grow_one :
       forall (A : Ty.t),
       M.IsAssociatedFunction.C (Self A) "grow_one" (grow_one A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque grow_one.
     
@@ -3646,6 +3686,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_try_reserve :
       forall (A : Ty.t),
       M.IsAssociatedFunction.C (Self A) "try_reserve" (try_reserve A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque try_reserve.
     
@@ -3722,6 +3763,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_reserve_exact :
       forall (A : Ty.t),
       M.IsAssociatedFunction.C (Self A) "reserve_exact" (reserve_exact A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque reserve_exact.
     
@@ -4002,6 +4044,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_try_reserve_exact :
       forall (A : Ty.t),
       M.IsAssociatedFunction.C (Self A) "try_reserve_exact" (try_reserve_exact A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque try_reserve_exact.
     
@@ -4076,6 +4119,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_shrink_to_fit :
       forall (A : Ty.t),
       M.IsAssociatedFunction.C (Self A) "shrink_to_fit" (shrink_to_fit A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque shrink_to_fit.
     
@@ -4142,6 +4186,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_needs_to_grow :
       forall (A : Ty.t),
       M.IsAssociatedFunction.C (Self A) "needs_to_grow" (needs_to_grow A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque needs_to_grow.
     
@@ -4234,6 +4279,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_set_ptr_and_cap :
       forall (A : Ty.t),
       M.IsAssociatedFunction.C (Self A) "set_ptr_and_cap" (set_ptr_and_cap A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque set_ptr_and_cap.
     
@@ -4967,6 +5013,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_grow_amortized :
       forall (A : Ty.t),
       M.IsAssociatedFunction.C (Self A) "grow_amortized" (grow_amortized A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque grow_amortized.
     
@@ -5583,6 +5630,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_grow_exact :
       forall (A : Ty.t),
       M.IsAssociatedFunction.C (Self A) "grow_exact" (grow_exact A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque grow_exact.
     
@@ -5728,6 +5776,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_shrink :
       forall (A : Ty.t),
       M.IsAssociatedFunction.C (Self A) "shrink" (shrink A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque shrink.
     
@@ -6401,6 +6450,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_shrink_unchecked :
       forall (A : Ty.t),
       M.IsAssociatedFunction.C (Self A) "shrink_unchecked" (shrink_unchecked A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque shrink_unchecked.
     
@@ -6518,6 +6568,7 @@ Module raw_vec.
     Global Instance AssociatedFunction_deallocate :
       forall (A : Ty.t),
       M.IsAssociatedFunction.C (Self A) "deallocate" (deallocate A).
+    Proof.
     Admitted.
     Global Typeclasses Opaque deallocate.
   End Impl_alloc_raw_vec_RawVecInner_A.
@@ -7142,6 +7193,7 @@ Module raw_vec.
   
   Global Instance Instance_IsFunction_finish_grow :
     M.IsFunction.C "alloc::raw_vec::finish_grow" finish_grow.
+  Proof.
   Admitted.
   Global Typeclasses Opaque finish_grow.
   
@@ -7207,6 +7259,7 @@ Module raw_vec.
   
   Global Instance Instance_IsFunction_handle_error :
     M.IsFunction.C "alloc::raw_vec::handle_error" handle_error.
+  Proof.
   Admitted.
   Global Typeclasses Opaque handle_error.
   
@@ -7307,6 +7360,7 @@ Module raw_vec.
   
   Global Instance Instance_IsFunction_alloc_guard :
     M.IsFunction.C "alloc::raw_vec::alloc_guard" alloc_guard.
+  Proof.
   Admitted.
   Global Typeclasses Opaque alloc_guard.
   
@@ -7451,6 +7505,7 @@ Module raw_vec.
   
   Global Instance Instance_IsFunction_layout_array :
     M.IsFunction.C "alloc::raw_vec::layout_array" layout_array.
+  Proof.
   Admitted.
   Global Typeclasses Opaque layout_array.
 End raw_vec.

@@ -14,6 +14,7 @@ Definition some_fn (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M 
 
 Global Instance Instance_IsFunction_some_fn :
   M.IsFunction.C "diverging_functions_no_info_in_return_type::some_fn" some_fn.
+Proof.
 Admitted.
 Global Typeclasses Opaque some_fn.
 
@@ -54,5 +55,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "diverging_functions_no_info_in_return_type::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

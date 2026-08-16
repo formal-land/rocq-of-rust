@@ -90,6 +90,7 @@ Module Impl_updated_incrementer_Env.
   
   Global Instance AssociatedFunction_set_code_hash :
     M.IsAssociatedFunction.C Self "set_code_hash" set_code_hash.
+  Proof.
   Admitted.
 End Impl_updated_incrementer_Env.
 
@@ -107,30 +108,36 @@ Module Impl_updated_incrementer_Incrementer.
   Parameter init_env : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_init_env : M.IsAssociatedFunction.C Self "init_env" init_env.
+  Proof.
   Admitted.
   
   Parameter env : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_env : M.IsAssociatedFunction.C Self "env" env.
+  Proof.
   Admitted.
   
   Parameter new : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   
   Parameter inc : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_inc : M.IsAssociatedFunction.C Self "inc" inc.
+  Proof.
   Admitted.
   
   Parameter get : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_get : M.IsAssociatedFunction.C Self "get" get.
+  Proof.
   Admitted.
   
   Parameter set_code : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_set_code : M.IsAssociatedFunction.C Self "set_code" set_code.
+  Proof.
   Admitted.
 End Impl_updated_incrementer_Incrementer.

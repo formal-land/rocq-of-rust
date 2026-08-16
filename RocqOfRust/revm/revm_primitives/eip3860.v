@@ -20,6 +20,7 @@ Module eip3860.
   
   Global Instance Instance_IsConstant_value_MAX_INITCODE_SIZE :
     M.IsFunction.C "revm_primitives::eip3860::MAX_INITCODE_SIZE" value_MAX_INITCODE_SIZE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MAX_INITCODE_SIZE.
 End eip3860.

@@ -6985,6 +6985,7 @@ Module str.
   
   Global Instance Instance_IsFunction_join_generic_copy :
     M.IsFunction.C "alloc::str::join_generic_copy" join_generic_copy.
+  Proof.
   Admitted.
   Global Typeclasses Opaque join_generic_copy.
   
@@ -7257,6 +7258,7 @@ Module str.
     
     Global Instance AssociatedFunction_into_boxed_bytes :
       M.IsAssociatedFunction.C Self "into_boxed_bytes" into_boxed_bytes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_boxed_bytes.
     
@@ -7977,6 +7979,7 @@ Module str.
       end.
     
     Global Instance AssociatedFunction_replace : M.IsAssociatedFunction.C Self "replace" replace.
+    Proof.
     Admitted.
     Global Typeclasses Opaque replace.
     
@@ -8321,6 +8324,7 @@ Module str.
       end.
     
     Global Instance AssociatedFunction_replacen : M.IsAssociatedFunction.C Self "replacen" replacen.
+    Proof.
     Admitted.
     Global Typeclasses Opaque replacen.
     
@@ -8906,6 +8910,7 @@ Module str.
     
     Global Instance AssociatedFunction_to_lowercase :
       M.IsAssociatedFunction.C Self "to_lowercase" to_lowercase.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_lowercase.
     
@@ -9292,6 +9297,7 @@ Module str.
     
     Global Instance AssociatedFunction_to_uppercase :
       M.IsAssociatedFunction.C Self "to_uppercase" to_uppercase.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_uppercase.
     
@@ -9379,6 +9385,7 @@ Module str.
     
     Global Instance AssociatedFunction_into_string :
       M.IsAssociatedFunction.C Self "into_string" into_string.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_string.
     
@@ -9436,6 +9443,7 @@ Module str.
       end.
     
     Global Instance AssociatedFunction_repeat : M.IsAssociatedFunction.C Self "repeat" repeat.
+    Proof.
     Admitted.
     Global Typeclasses Opaque repeat.
     
@@ -9498,6 +9506,7 @@ Module str.
     
     Global Instance AssociatedFunction_to_ascii_uppercase :
       M.IsAssociatedFunction.C Self "to_ascii_uppercase" to_ascii_uppercase.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_ascii_uppercase.
     
@@ -9560,6 +9569,7 @@ Module str.
     
     Global Instance AssociatedFunction_to_ascii_lowercase :
       M.IsAssociatedFunction.C Self "to_ascii_lowercase" to_ascii_lowercase.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_ascii_lowercase.
   End Impl_str.
@@ -9619,6 +9629,7 @@ Module str.
   
   Global Instance Instance_IsFunction_from_boxed_utf8_unchecked :
     M.IsFunction.C "alloc::str::from_boxed_utf8_unchecked" from_boxed_utf8_unchecked.
+  Proof.
   Admitted.
   Global Typeclasses Opaque from_boxed_utf8_unchecked.
   
@@ -10960,6 +10971,7 @@ Module str.
   
   Global Instance Instance_IsFunction_convert_while_ascii :
     M.IsFunction.C "alloc::str::convert_while_ascii" convert_while_ascii.
+  Proof.
   Admitted.
   Global Typeclasses Opaque convert_while_ascii.
   
@@ -10969,6 +10981,7 @@ Module str.
     
     Global Instance Instance_IsConstant_value_N :
       M.IsFunction.C "alloc::str::convert_while_ascii::N" value_N.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_N.
   End convert_while_ascii.
@@ -11127,6 +11140,7 @@ Module str.
   
   Global Instance Instance_IsFunction_replace_ascii :
     M.IsFunction.C "alloc::str::replace_ascii" replace_ascii.
+  Proof.
   Admitted.
   Global Typeclasses Opaque replace_ascii.
 End str.

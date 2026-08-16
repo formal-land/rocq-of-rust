@@ -4,20 +4,24 @@ Require Import RocqOfRust.RocqOfRust.
 Parameter sum_checked : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_sum_checked : M.IsFunction.C "loops::sum_checked" sum_checked.
+Proof.
 Admitted.
 
 Parameter reverse_in_place : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_reverse_in_place :
   M.IsFunction.C "loops::reverse_in_place" reverse_in_place.
+Proof.
 Admitted.
 
 Parameter is_sorted : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_is_sorted : M.IsFunction.C "loops::is_sorted" is_sorted.
+Proof.
 Admitted.
 
 Parameter max_array : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_max_array : M.IsFunction.C "loops::max_array" max_array.
+Proof.
 Admitted.

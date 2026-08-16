@@ -449,6 +449,7 @@ Module Impl_payment_channel_Env.
     end.
   
   Global Instance AssociatedFunction_caller : M.IsAssociatedFunction.C Self "caller" caller.
+  Proof.
   Admitted.
   Global Typeclasses Opaque caller.
   
@@ -476,6 +477,7 @@ Module Impl_payment_channel_Env.
   
   Global Instance AssociatedFunction_emit_event :
     M.IsAssociatedFunction.C Self "emit_event" emit_event.
+  Proof.
   Admitted.
   Global Typeclasses Opaque emit_event.
   
@@ -503,6 +505,7 @@ Module Impl_payment_channel_Env.
   
   Global Instance AssociatedFunction_terminate_contract :
     M.IsAssociatedFunction.C Self "terminate_contract" terminate_contract.
+  Proof.
   Admitted.
   Global Typeclasses Opaque terminate_contract.
   
@@ -530,6 +533,7 @@ Module Impl_payment_channel_Env.
     end.
   
   Global Instance AssociatedFunction_transfer : M.IsAssociatedFunction.C Self "transfer" transfer.
+  Proof.
   Admitted.
   Global Typeclasses Opaque transfer.
   
@@ -556,6 +560,7 @@ Module Impl_payment_channel_Env.
   
   Global Instance AssociatedFunction_block_timestamp :
     M.IsAssociatedFunction.C Self "block_timestamp" block_timestamp.
+  Proof.
   Admitted.
   Global Typeclasses Opaque block_timestamp.
   
@@ -581,6 +586,7 @@ Module Impl_payment_channel_Env.
     end.
   
   Global Instance AssociatedFunction_balance : M.IsAssociatedFunction.C Self "balance" balance.
+  Proof.
   Admitted.
   Global Typeclasses Opaque balance.
   
@@ -607,6 +613,7 @@ Module Impl_payment_channel_Env.
   
   Global Instance AssociatedFunction_account_id :
     M.IsAssociatedFunction.C Self "account_id" account_id.
+  Proof.
   Admitted.
   Global Typeclasses Opaque account_id.
 End Impl_payment_channel_Env.
@@ -650,6 +657,7 @@ Definition hash_encoded (ε : list Value.t) (τ : list Ty.t) (α : list Value.t)
 
 Global Instance Instance_IsFunction_hash_encoded :
   M.IsFunction.C "payment_channel::hash_encoded" hash_encoded.
+Proof.
 Admitted.
 Global Typeclasses Opaque hash_encoded.
 
@@ -702,6 +710,7 @@ Definition ecdsa_recover (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
 
 Global Instance Instance_IsFunction_ecdsa_recover :
   M.IsFunction.C "payment_channel::ecdsa_recover" ecdsa_recover.
+Proof.
 Admitted.
 Global Typeclasses Opaque ecdsa_recover.
 
@@ -1036,6 +1045,7 @@ Module Impl_payment_channel_PaymentChannel.
     end.
   
   Global Instance AssociatedFunction_init_env : M.IsAssociatedFunction.C Self "init_env" init_env.
+  Proof.
   Admitted.
   Global Typeclasses Opaque init_env.
   
@@ -1067,6 +1077,7 @@ Module Impl_payment_channel_PaymentChannel.
     end.
   
   Global Instance AssociatedFunction_env : M.IsAssociatedFunction.C Self "env" env.
+  Proof.
   Admitted.
   Global Typeclasses Opaque env.
   
@@ -1333,6 +1344,7 @@ Module Impl_payment_channel_PaymentChannel.
   
   Global Instance AssociatedFunction_is_signature_valid :
     M.IsAssociatedFunction.C Self "is_signature_valid" is_signature_valid.
+  Proof.
   Admitted.
   Global Typeclasses Opaque is_signature_valid.
   
@@ -1390,6 +1402,7 @@ Module Impl_payment_channel_PaymentChannel.
     end.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new.
   
@@ -1854,6 +1867,7 @@ Module Impl_payment_channel_PaymentChannel.
   
   Global Instance AssociatedFunction_close_inner :
     M.IsAssociatedFunction.C Self "close_inner" close_inner.
+  Proof.
   Admitted.
   Global Typeclasses Opaque close_inner.
   
@@ -2063,6 +2077,7 @@ Module Impl_payment_channel_PaymentChannel.
     end.
   
   Global Instance AssociatedFunction_close : M.IsAssociatedFunction.C Self "close" close.
+  Proof.
   Admitted.
   Global Typeclasses Opaque close.
   
@@ -2317,6 +2332,7 @@ Module Impl_payment_channel_PaymentChannel.
   
   Global Instance AssociatedFunction_start_sender_close :
     M.IsAssociatedFunction.C Self "start_sender_close" start_sender_close.
+  Proof.
   Admitted.
   Global Typeclasses Opaque start_sender_close.
   
@@ -2510,6 +2526,7 @@ Module Impl_payment_channel_PaymentChannel.
   
   Global Instance AssociatedFunction_claim_timeout :
     M.IsAssociatedFunction.C Self "claim_timeout" claim_timeout.
+  Proof.
   Admitted.
   Global Typeclasses Opaque claim_timeout.
   
@@ -2994,6 +3011,7 @@ Module Impl_payment_channel_PaymentChannel.
     end.
   
   Global Instance AssociatedFunction_withdraw : M.IsAssociatedFunction.C Self "withdraw" withdraw.
+  Proof.
   Admitted.
   Global Typeclasses Opaque withdraw.
   
@@ -3023,6 +3041,7 @@ Module Impl_payment_channel_PaymentChannel.
   
   Global Instance AssociatedFunction_get_sender :
     M.IsAssociatedFunction.C Self "get_sender" get_sender.
+  Proof.
   Admitted.
   Global Typeclasses Opaque get_sender.
   
@@ -3052,6 +3071,7 @@ Module Impl_payment_channel_PaymentChannel.
   
   Global Instance AssociatedFunction_get_recipient :
     M.IsAssociatedFunction.C Self "get_recipient" get_recipient.
+  Proof.
   Admitted.
   Global Typeclasses Opaque get_recipient.
   
@@ -3081,6 +3101,7 @@ Module Impl_payment_channel_PaymentChannel.
   
   Global Instance AssociatedFunction_get_expiration :
     M.IsAssociatedFunction.C Self "get_expiration" get_expiration.
+  Proof.
   Admitted.
   Global Typeclasses Opaque get_expiration.
   
@@ -3110,6 +3131,7 @@ Module Impl_payment_channel_PaymentChannel.
   
   Global Instance AssociatedFunction_get_withdrawn :
     M.IsAssociatedFunction.C Self "get_withdrawn" get_withdrawn.
+  Proof.
   Admitted.
   Global Typeclasses Opaque get_withdrawn.
   
@@ -3139,6 +3161,7 @@ Module Impl_payment_channel_PaymentChannel.
   
   Global Instance AssociatedFunction_get_close_duration :
     M.IsAssociatedFunction.C Self "get_close_duration" get_close_duration.
+  Proof.
   Admitted.
   Global Typeclasses Opaque get_close_duration.
   
@@ -3183,6 +3206,7 @@ Module Impl_payment_channel_PaymentChannel.
   
   Global Instance AssociatedFunction_get_balance :
     M.IsAssociatedFunction.C Self "get_balance" get_balance.
+  Proof.
   Admitted.
   Global Typeclasses Opaque get_balance.
 End Impl_payment_channel_PaymentChannel.

@@ -149,6 +149,7 @@ Global Instance Instance_IsFunction_combine_vecs_explicit_return_type :
   M.IsFunction.C
     "impl_trait_as_return_type::combine_vecs_explicit_return_type"
     combine_vecs_explicit_return_type.
+Proof.
 Admitted.
 Global Typeclasses Opaque combine_vecs_explicit_return_type.
 
@@ -291,6 +292,7 @@ Definition combine_vecs (ε : list Value.t) (τ : list Ty.t) (α : list Value.t)
 
 Global Instance Instance_IsFunction_combine_vecs :
   M.IsFunction.C "impl_trait_as_return_type::combine_vecs" combine_vecs.
+Proof.
 Admitted.
 Global Typeclasses Opaque combine_vecs.
 
@@ -1382,5 +1384,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "impl_trait_as_return_type::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

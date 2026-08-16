@@ -20,6 +20,7 @@ Require Import ruint.links.lib.
 Parameter WIRE : Set.
 
 Instance Link_WIRE : Link WIRE.
+Proof.
 Admitted.
 
 Module Stack.
@@ -29,6 +30,7 @@ Module Stack.
   }.
 
   Instance IsLink : Link t.
+  Proof.
   Admitted.
 End Stack.
 Export (hints) Stack.
@@ -41,6 +43,7 @@ Module Memory.
   }.
 
   Instance IsLink : Link t.
+  Proof.
   Admitted.
 
   (** Take n elements from list, padding with zeros if too short *)
@@ -159,6 +162,7 @@ Module Control.
   }.
 
   Instance IsLink : Link t.
+  Proof.
   Admitted.
 End Control.
 Export (hints) Control.
@@ -212,6 +216,7 @@ Export (hints) Immediates.
 
 Module LegacyBytecode.
   Instance I : LegacyBytecode.C WIRE_types.(InterpreterTypes.Types.Bytecode).
+  Proof.
   Admitted.
 End LegacyBytecode.
 Export (hints) LegacyBytecode.
@@ -247,18 +252,21 @@ Export (hints) Jumps.
 
 Module EofData.
   Instance I : EofData.C WIRE_types.(InterpreterTypes.Types.Bytecode).
+  Proof.
   Admitted.
 End EofData.
 Export (hints) EofData.
 
 Module EofContainer.
   Instance I : EofContainer.C WIRE_types.(InterpreterTypes.Types.Bytecode).
+  Proof.
   Admitted.
 End EofContainer.
 Export (hints) EofContainer.
 
 Module InputTraits.
   Instance I : InputTraits.C WIRE_types.(InterpreterTypes.Types.Input).
+  Proof.
   Admitted.
 End InputTraits.
 Export (hints) InputTraits.
@@ -285,6 +293,7 @@ Module StackTrait.
       (false, self).
 
   Definition push_b256 (self : Self) (value : aliases.B256.t) : bool * Self.
+  Proof.
   Admitted.
 
   (* TODO: check spec: do we let the stack as empty if the stack is too short? *)
@@ -436,9 +445,11 @@ Module LoopControl.
   |}.
 
   Definition instruction_result (self : Self) : InstructionResult.t.
+  Proof.
   Admitted.
 
   Definition take_next_action (self : Self) : InterpreterAction.t * Self.
+  Proof.
   Admitted.
 
   Instance I : LoopControl.C WIRE_types.(InterpreterTypes.Types.Control) := {|
@@ -605,12 +616,14 @@ Export (hints) MemoryTrait.
 
 Module SubRoutineStack.
   Instance I : SubRoutineStack.C WIRE_types.(InterpreterTypes.Types.SubRoutineStack).
+  Proof.
   Admitted.
 End SubRoutineStack.
 Export (hints) SubRoutineStack.
 
 Module ReturnData.
   Instance I : ReturnData.C WIRE_types.(InterpreterTypes.Types.ReturnData).
+  Proof.
   Admitted.
 End ReturnData.
 Export (hints) ReturnData.

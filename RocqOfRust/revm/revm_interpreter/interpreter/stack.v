@@ -8,6 +8,7 @@ Module interpreter.
     
     Global Instance Instance_IsConstant_value_STACK_LIMIT :
       M.IsFunction.C "revm_interpreter::interpreter::stack::STACK_LIMIT" value_STACK_LIMIT.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_STACK_LIMIT.
     
@@ -2345,6 +2346,7 @@ Module interpreter.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -2397,6 +2399,7 @@ Module interpreter.
         end.
       
       Global Instance AssociatedFunction_invalid : M.IsAssociatedFunction.C Self "invalid" invalid.
+      Proof.
       Admitted.
       Global Typeclasses Opaque invalid.
       
@@ -2446,6 +2449,7 @@ Module interpreter.
         end.
       
       Global Instance AssociatedFunction_len : M.IsAssociatedFunction.C Self "len" len.
+      Proof.
       Admitted.
       Global Typeclasses Opaque len.
       
@@ -2496,6 +2500,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_is_empty :
         M.IsAssociatedFunction.C Self "is_empty" is_empty.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_empty.
       
@@ -2530,6 +2535,7 @@ Module interpreter.
         end.
       
       Global Instance AssociatedFunction_data : M.IsAssociatedFunction.C Self "data" data.
+      Proof.
       Admitted.
       Global Typeclasses Opaque data.
       
@@ -2573,6 +2579,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_data_mut :
         M.IsAssociatedFunction.C Self "data_mut" data_mut.
+      Proof.
       Admitted.
       Global Typeclasses Opaque data_mut.
       
@@ -2599,6 +2606,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_into_data :
         M.IsAssociatedFunction.C Self "into_data" into_data.
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_data.
       
@@ -2692,6 +2700,7 @@ Module interpreter.
         end.
       
       Global Instance AssociatedFunction_pop : M.IsAssociatedFunction.C Self "pop" pop.
+      Proof.
       Admitted.
       Global Typeclasses Opaque pop.
       
@@ -2907,6 +2916,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_pop_unsafe :
         M.IsAssociatedFunction.C Self "pop_unsafe" pop_unsafe.
+      Proof.
       Admitted.
       Global Typeclasses Opaque pop_unsafe.
       
@@ -3211,6 +3221,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_top_unsafe :
         M.IsAssociatedFunction.C Self "top_unsafe" top_unsafe.
+      Proof.
       Admitted.
       Global Typeclasses Opaque top_unsafe.
       
@@ -3441,6 +3452,7 @@ Module interpreter.
         end.
       
       Global Instance AssociatedFunction_popn : M.IsAssociatedFunction.C Self "popn" popn.
+      Proof.
       Admitted.
       Global Typeclasses Opaque popn.
       
@@ -3554,6 +3566,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_popn_top :
         M.IsAssociatedFunction.C Self "popn_top" popn_top.
+      Proof.
       Admitted.
       Global Typeclasses Opaque popn_top.
       
@@ -3786,6 +3799,7 @@ Module interpreter.
         end.
       
       Global Instance AssociatedFunction_push : M.IsAssociatedFunction.C Self "push" push.
+      Proof.
       Admitted.
       Global Typeclasses Opaque push.
       
@@ -3997,6 +4011,7 @@ Module interpreter.
         end.
       
       Global Instance AssociatedFunction_peek : M.IsAssociatedFunction.C Self "peek" peek.
+      Proof.
       Admitted.
       Global Typeclasses Opaque peek.
       
@@ -4424,6 +4439,7 @@ Module interpreter.
         end.
       
       Global Instance AssociatedFunction_dup : M.IsAssociatedFunction.C Self "dup" dup.
+      Proof.
       Admitted.
       Global Typeclasses Opaque dup.
       
@@ -4463,6 +4479,7 @@ Module interpreter.
         end.
       
       Global Instance AssociatedFunction_swap : M.IsAssociatedFunction.C Self "swap" swap.
+      Proof.
       Admitted.
       Global Typeclasses Opaque swap.
       
@@ -4844,6 +4861,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_exchange :
         M.IsAssociatedFunction.C Self "exchange" exchange.
+      Proof.
       Admitted.
       Global Typeclasses Opaque exchange.
       
@@ -4931,6 +4949,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_push_slice :
         M.IsAssociatedFunction.C Self "push_slice" push_slice.
+      Proof.
       Admitted.
       Global Typeclasses Opaque push_slice.
       
@@ -6750,6 +6769,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_push_slice_ :
         M.IsAssociatedFunction.C Self "push_slice_" push_slice_.
+      Proof.
       Admitted.
       Global Typeclasses Opaque push_slice_.
       
@@ -6973,6 +6993,7 @@ Module interpreter.
         end.
       
       Global Instance AssociatedFunction_set : M.IsAssociatedFunction.C Self "set" set.
+      Proof.
       Admitted.
       Global Typeclasses Opaque set.
     End Impl_revm_interpreter_interpreter_stack_Stack.

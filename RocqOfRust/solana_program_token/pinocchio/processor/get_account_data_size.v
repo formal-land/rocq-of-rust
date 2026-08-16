@@ -619,6 +619,7 @@ Module processor.
       M.IsFunction.C
         "pinocchio_token_program::processor::get_account_data_size::process_get_account_data_size"
         process_get_account_data_size.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_get_account_data_size.
   End get_account_data_size.

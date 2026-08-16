@@ -4,6 +4,7 @@ Require Import RocqOfRust.RocqOfRust.
 Parameter function : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_function : M.IsFunction.C "super_and_self::function" function.
+Proof.
 Admitted.
 
 Module cool.
@@ -11,6 +12,7 @@ Module cool.
   
   Global Instance Instance_IsFunction_function :
     M.IsFunction.C "super_and_self::cool::function" function.
+  Proof.
   Admitted.
 End cool.
 
@@ -19,6 +21,7 @@ Module my.
   
   Global Instance Instance_IsFunction_function :
     M.IsFunction.C "super_and_self::my::function" function.
+  Proof.
   Admitted.
   
   Module cool.
@@ -26,6 +29,7 @@ Module my.
     
     Global Instance Instance_IsFunction_function :
       M.IsFunction.C "super_and_self::my::cool::function" function.
+    Proof.
     Admitted.
   End cool.
   
@@ -33,10 +37,12 @@ Module my.
   
   Global Instance Instance_IsFunction_indirect_call :
     M.IsFunction.C "super_and_self::my::indirect_call" indirect_call.
+  Proof.
   Admitted.
 End my.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "super_and_self::main" main.
+Proof.
 Admitted.

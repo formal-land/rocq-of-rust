@@ -40,6 +40,7 @@ Module Impl_Clone_for_bool.
 
   Module Eq.
     Instance I : Clone.Eq.C (Self := Self) Impl_Clone_for_bool.I.
+    Proof.
     Admitted.
   End Eq.
   Export (hints) Eq.

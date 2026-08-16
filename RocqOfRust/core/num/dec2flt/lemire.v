@@ -960,6 +960,7 @@ Module num.
       
       Global Instance Instance_IsFunction_compute_float :
         M.IsFunction.C "core::num::dec2flt::lemire::compute_float" compute_float.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compute_float.
       
@@ -1007,6 +1008,7 @@ Module num.
       
       Global Instance Instance_IsFunction_power :
         M.IsFunction.C "core::num::dec2flt::lemire::power" power.
+      Proof.
       Admitted.
       Global Typeclasses Opaque power.
       
@@ -1052,6 +1054,7 @@ Module num.
       
       Global Instance Instance_IsFunction_full_multiplication :
         M.IsFunction.C "core::num::dec2flt::lemire::full_multiplication" full_multiplication.
+      Proof.
       Admitted.
       Global Typeclasses Opaque full_multiplication.
       
@@ -1526,6 +1529,7 @@ Module num.
       
       Global Instance Instance_IsFunction_compute_product_approx :
         M.IsFunction.C "core::num::dec2flt::lemire::compute_product_approx" compute_product_approx.
+      Proof.
       Admitted.
       Global Typeclasses Opaque compute_product_approx.
     End lemire.

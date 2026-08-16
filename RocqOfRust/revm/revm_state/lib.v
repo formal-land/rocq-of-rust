@@ -759,6 +759,7 @@ Module Impl_revm_state_Account.
   
   Global Instance AssociatedFunction_new_not_existing :
     M.IsAssociatedFunction.C Self "new_not_existing" new_not_existing.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new_not_existing.
   
@@ -894,6 +895,7 @@ Module Impl_revm_state_Account.
   
   Global Instance AssociatedFunction_caller_initial_modification :
     M.IsAssociatedFunction.C Self "caller_initial_modification" caller_initial_modification.
+  Proof.
   Admitted.
   Global Typeclasses Opaque caller_initial_modification.
   
@@ -965,6 +967,7 @@ Module Impl_revm_state_Account.
   
   Global Instance AssociatedFunction_state_clear_aware_is_empty :
     M.IsAssociatedFunction.C Self "state_clear_aware_is_empty" state_clear_aware_is_empty.
+  Proof.
   Admitted.
   Global Typeclasses Opaque state_clear_aware_is_empty.
   
@@ -1017,6 +1020,7 @@ Module Impl_revm_state_Account.
   
   Global Instance AssociatedFunction_mark_selfdestruct :
     M.IsAssociatedFunction.C Self "mark_selfdestruct" mark_selfdestruct.
+  Proof.
   Admitted.
   Global Typeclasses Opaque mark_selfdestruct.
   
@@ -1069,6 +1073,7 @@ Module Impl_revm_state_Account.
   
   Global Instance AssociatedFunction_unmark_selfdestruct :
     M.IsAssociatedFunction.C Self "unmark_selfdestruct" unmark_selfdestruct.
+  Proof.
   Admitted.
   Global Typeclasses Opaque unmark_selfdestruct.
   
@@ -1109,6 +1114,7 @@ Module Impl_revm_state_Account.
   
   Global Instance AssociatedFunction_is_selfdestructed :
     M.IsAssociatedFunction.C Self "is_selfdestructed" is_selfdestructed.
+  Proof.
   Admitted.
   Global Typeclasses Opaque is_selfdestructed.
   
@@ -1161,6 +1167,7 @@ Module Impl_revm_state_Account.
   
   Global Instance AssociatedFunction_mark_touch :
     M.IsAssociatedFunction.C Self "mark_touch" mark_touch.
+  Proof.
   Admitted.
   Global Typeclasses Opaque mark_touch.
   
@@ -1213,6 +1220,7 @@ Module Impl_revm_state_Account.
   
   Global Instance AssociatedFunction_unmark_touch :
     M.IsAssociatedFunction.C Self "unmark_touch" unmark_touch.
+  Proof.
   Admitted.
   Global Typeclasses Opaque unmark_touch.
   
@@ -1253,6 +1261,7 @@ Module Impl_revm_state_Account.
   
   Global Instance AssociatedFunction_is_touched :
     M.IsAssociatedFunction.C Self "is_touched" is_touched.
+  Proof.
   Admitted.
   Global Typeclasses Opaque is_touched.
   
@@ -1305,6 +1314,7 @@ Module Impl_revm_state_Account.
   
   Global Instance AssociatedFunction_mark_created :
     M.IsAssociatedFunction.C Self "mark_created" mark_created.
+  Proof.
   Admitted.
   Global Typeclasses Opaque mark_created.
   
@@ -1357,6 +1367,7 @@ Module Impl_revm_state_Account.
   
   Global Instance AssociatedFunction_unmark_created :
     M.IsAssociatedFunction.C Self "unmark_created" unmark_created.
+  Proof.
   Admitted.
   Global Typeclasses Opaque unmark_created.
   
@@ -1409,6 +1420,7 @@ Module Impl_revm_state_Account.
   
   Global Instance AssociatedFunction_mark_cold :
     M.IsAssociatedFunction.C Self "mark_cold" mark_cold.
+  Proof.
   Admitted.
   Global Typeclasses Opaque mark_cold.
   
@@ -1472,6 +1484,7 @@ Module Impl_revm_state_Account.
   
   Global Instance AssociatedFunction_is_cold_transaction_id :
     M.IsAssociatedFunction.C Self "is_cold_transaction_id" is_cold_transaction_id.
+  Proof.
   Admitted.
   Global Typeclasses Opaque is_cold_transaction_id.
   
@@ -1555,6 +1568,7 @@ Module Impl_revm_state_Account.
   
   Global Instance AssociatedFunction_mark_warm_with_transaction_id :
     M.IsAssociatedFunction.C Self "mark_warm_with_transaction_id" mark_warm_with_transaction_id.
+  Proof.
   Admitted.
   Global Typeclasses Opaque mark_warm_with_transaction_id.
   
@@ -1595,6 +1609,7 @@ Module Impl_revm_state_Account.
   
   Global Instance AssociatedFunction_is_created_locally :
     M.IsAssociatedFunction.C Self "is_created_locally" is_created_locally.
+  Proof.
   Admitted.
   Global Typeclasses Opaque is_created_locally.
   
@@ -1635,6 +1650,7 @@ Module Impl_revm_state_Account.
   
   Global Instance AssociatedFunction_is_selfdestructed_locally :
     M.IsAssociatedFunction.C Self "is_selfdestructed_locally" is_selfdestructed_locally.
+  Proof.
   Admitted.
   Global Typeclasses Opaque is_selfdestructed_locally.
   
@@ -1709,6 +1725,7 @@ Module Impl_revm_state_Account.
   
   Global Instance AssociatedFunction_selfdestruct :
     M.IsAssociatedFunction.C Self "selfdestruct" selfdestruct.
+  Proof.
   Admitted.
   Global Typeclasses Opaque selfdestruct.
   
@@ -1827,6 +1844,7 @@ Module Impl_revm_state_Account.
   
   Global Instance AssociatedFunction_mark_created_locally :
     M.IsAssociatedFunction.C Self "mark_created_locally" mark_created_locally.
+  Proof.
   Admitted.
   Global Typeclasses Opaque mark_created_locally.
   
@@ -1879,6 +1897,7 @@ Module Impl_revm_state_Account.
   
   Global Instance AssociatedFunction_unmark_created_locally :
     M.IsAssociatedFunction.C Self "unmark_created_locally" unmark_created_locally.
+  Proof.
   Admitted.
   Global Typeclasses Opaque unmark_created_locally.
   
@@ -2001,6 +2020,7 @@ Module Impl_revm_state_Account.
   
   Global Instance AssociatedFunction_mark_selfdestructed_locally :
     M.IsAssociatedFunction.C Self "mark_selfdestructed_locally" mark_selfdestructed_locally.
+  Proof.
   Admitted.
   Global Typeclasses Opaque mark_selfdestructed_locally.
   
@@ -2057,6 +2077,7 @@ Module Impl_revm_state_Account.
   
   Global Instance AssociatedFunction_unmark_selfdestructed_locally :
     M.IsAssociatedFunction.C Self "unmark_selfdestructed_locally" unmark_selfdestructed_locally.
+  Proof.
   Admitted.
   Global Typeclasses Opaque unmark_selfdestructed_locally.
   
@@ -2097,6 +2118,7 @@ Module Impl_revm_state_Account.
   
   Global Instance AssociatedFunction_is_loaded_as_not_existing :
     M.IsAssociatedFunction.C Self "is_loaded_as_not_existing" is_loaded_as_not_existing.
+  Proof.
   Admitted.
   Global Typeclasses Opaque is_loaded_as_not_existing.
   
@@ -2152,6 +2174,7 @@ Module Impl_revm_state_Account.
       Self
       "is_loaded_as_not_existing_not_touched"
       is_loaded_as_not_existing_not_touched.
+  Proof.
   Admitted.
   Global Typeclasses Opaque is_loaded_as_not_existing_not_touched.
   
@@ -2192,6 +2215,7 @@ Module Impl_revm_state_Account.
   
   Global Instance AssociatedFunction_is_created :
     M.IsAssociatedFunction.C Self "is_created" is_created.
+  Proof.
   Admitted.
   Global Typeclasses Opaque is_created.
   
@@ -2229,6 +2253,7 @@ Module Impl_revm_state_Account.
     end.
   
   Global Instance AssociatedFunction_is_empty : M.IsAssociatedFunction.C Self "is_empty" is_empty.
+  Proof.
   Admitted.
   Global Typeclasses Opaque is_empty.
   
@@ -2444,6 +2469,7 @@ Module Impl_revm_state_Account.
   
   Global Instance AssociatedFunction_changed_storage_slots :
     M.IsAssociatedFunction.C Self "changed_storage_slots" changed_storage_slots.
+  Proof.
   Admitted.
   Global Typeclasses Opaque changed_storage_slots.
   
@@ -2472,6 +2498,7 @@ Module Impl_revm_state_Account.
   
   Global Instance AssociatedFunction_with_info :
     M.IsAssociatedFunction.C Self "with_info" with_info.
+  Proof.
   Admitted.
   Global Typeclasses Opaque with_info.
   
@@ -2674,6 +2701,7 @@ Module Impl_revm_state_Account.
   
   Global Instance AssociatedFunction_with_storage :
     M.IsAssociatedFunction.C Self "with_storage" with_storage.
+  Proof.
   Admitted.
   Global Typeclasses Opaque with_storage.
   
@@ -2707,6 +2735,7 @@ Module Impl_revm_state_Account.
   
   Global Instance AssociatedFunction_with_selfdestruct_mark :
     M.IsAssociatedFunction.C Self "with_selfdestruct_mark" with_selfdestruct_mark.
+  Proof.
   Admitted.
   Global Typeclasses Opaque with_selfdestruct_mark.
   
@@ -2735,6 +2764,7 @@ Module Impl_revm_state_Account.
   
   Global Instance AssociatedFunction_with_touched_mark :
     M.IsAssociatedFunction.C Self "with_touched_mark" with_touched_mark.
+  Proof.
   Admitted.
   Global Typeclasses Opaque with_touched_mark.
   
@@ -2763,6 +2793,7 @@ Module Impl_revm_state_Account.
   
   Global Instance AssociatedFunction_with_created_mark :
     M.IsAssociatedFunction.C Self "with_created_mark" with_created_mark.
+  Proof.
   Admitted.
   Global Typeclasses Opaque with_created_mark.
   
@@ -2791,6 +2822,7 @@ Module Impl_revm_state_Account.
   
   Global Instance AssociatedFunction_with_cold_mark :
     M.IsAssociatedFunction.C Self "with_cold_mark" with_cold_mark.
+  Proof.
   Admitted.
   Global Typeclasses Opaque with_cold_mark.
   
@@ -2828,6 +2860,7 @@ Module Impl_revm_state_Account.
   
   Global Instance AssociatedFunction_with_warm_mark :
     M.IsAssociatedFunction.C Self "with_warm_mark" with_warm_mark.
+  Proof.
   Admitted.
   Global Typeclasses Opaque with_warm_mark.
   
@@ -2862,6 +2895,7 @@ Module Impl_revm_state_Account.
   
   Global Instance AssociatedFunction_with_warm :
     M.IsAssociatedFunction.C Self "with_warm" with_warm.
+  Proof.
   Admitted.
   Global Typeclasses Opaque with_warm.
 End Impl_revm_state_Account.
@@ -3377,6 +3411,7 @@ Module Impl_revm_state_AccountStatus.
   
   Global Instance AssociatedFunction_is_touched :
     M.IsAssociatedFunction.C Self "is_touched" is_touched.
+  Proof.
   Admitted.
   Global Typeclasses Opaque is_touched.
 End Impl_revm_state_AccountStatus.
@@ -4226,6 +4261,7 @@ Module Impl_revm_state_EvmStorageSlot.
     end.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new.
   
@@ -4279,6 +4315,7 @@ Module Impl_revm_state_EvmStorageSlot.
   
   Global Instance AssociatedFunction_new_changed :
     M.IsAssociatedFunction.C Self "new_changed" new_changed.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new_changed.
   
@@ -4336,6 +4373,7 @@ Module Impl_revm_state_EvmStorageSlot.
   
   Global Instance AssociatedFunction_is_changed :
     M.IsAssociatedFunction.C Self "is_changed" is_changed.
+  Proof.
   Admitted.
   Global Typeclasses Opaque is_changed.
   
@@ -4362,6 +4400,7 @@ Module Impl_revm_state_EvmStorageSlot.
   
   Global Instance AssociatedFunction_original_value :
     M.IsAssociatedFunction.C Self "original_value" original_value.
+  Proof.
   Admitted.
   Global Typeclasses Opaque original_value.
   
@@ -4388,6 +4427,7 @@ Module Impl_revm_state_EvmStorageSlot.
   
   Global Instance AssociatedFunction_present_value :
     M.IsAssociatedFunction.C Self "present_value" present_value.
+  Proof.
   Admitted.
   Global Typeclasses Opaque present_value.
   
@@ -4422,6 +4462,7 @@ Module Impl_revm_state_EvmStorageSlot.
   
   Global Instance AssociatedFunction_mark_cold :
     M.IsAssociatedFunction.C Self "mark_cold" mark_cold.
+  Proof.
   Admitted.
   Global Typeclasses Opaque mark_cold.
   
@@ -4466,6 +4507,7 @@ Module Impl_revm_state_EvmStorageSlot.
   
   Global Instance AssociatedFunction_is_cold_transaction_id :
     M.IsAssociatedFunction.C Self "is_cold_transaction_id" is_cold_transaction_id.
+  Proof.
   Admitted.
   Global Typeclasses Opaque is_cold_transaction_id.
   
@@ -4531,6 +4573,7 @@ Module Impl_revm_state_EvmStorageSlot.
   
   Global Instance AssociatedFunction_mark_warm_with_transaction_id :
     M.IsAssociatedFunction.C Self "mark_warm_with_transaction_id" mark_warm_with_transaction_id.
+  Proof.
   Admitted.
   Global Typeclasses Opaque mark_warm_with_transaction_id.
 End Impl_revm_state_EvmStorageSlot.

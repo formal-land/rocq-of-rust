@@ -46,5 +46,6 @@ Definition classify (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M
   end.
 
 Global Instance Instance_IsFunction_classify : M.IsFunction.C "range_patterns::classify" classify.
+Proof.
 Admitted.
 Global Typeclasses Opaque classify.

@@ -695,6 +695,7 @@ Module gas.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -738,6 +739,7 @@ Module gas.
     
     Global Instance AssociatedFunction_new_spent :
       M.IsAssociatedFunction.C Self "new_spent" new_spent.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_spent.
     
@@ -766,6 +768,7 @@ Module gas.
       end.
     
     Global Instance AssociatedFunction_limit : M.IsAssociatedFunction.C Self "limit" limit.
+    Proof.
     Admitted.
     Global Typeclasses Opaque limit.
     
@@ -800,6 +803,7 @@ Module gas.
       end.
     
     Global Instance AssociatedFunction_memory : M.IsAssociatedFunction.C Self "memory" memory.
+    Proof.
     Admitted.
     Global Typeclasses Opaque memory.
     
@@ -840,6 +844,7 @@ Module gas.
     
     Global Instance AssociatedFunction_memory_mut :
       M.IsAssociatedFunction.C Self "memory_mut" memory_mut.
+    Proof.
     Admitted.
     Global Typeclasses Opaque memory_mut.
     
@@ -868,6 +873,7 @@ Module gas.
       end.
     
     Global Instance AssociatedFunction_refunded : M.IsAssociatedFunction.C Self "refunded" refunded.
+    Proof.
     Admitted.
     Global Typeclasses Opaque refunded.
     
@@ -909,6 +915,7 @@ Module gas.
       end.
     
     Global Instance AssociatedFunction_spent : M.IsAssociatedFunction.C Self "spent" spent.
+    Proof.
     Admitted.
     Global Typeclasses Opaque spent.
     
@@ -958,6 +965,7 @@ Module gas.
       end.
     
     Global Instance AssociatedFunction_used : M.IsAssociatedFunction.C Self "used" used.
+    Proof.
     Admitted.
     Global Typeclasses Opaque used.
     
@@ -1005,6 +1013,7 @@ Module gas.
     
     Global Instance AssociatedFunction_spent_sub_refunded :
       M.IsAssociatedFunction.C Self "spent_sub_refunded" spent_sub_refunded.
+    Proof.
     Admitted.
     Global Typeclasses Opaque spent_sub_refunded.
     
@@ -1034,6 +1043,7 @@ Module gas.
     
     Global Instance AssociatedFunction_remaining :
       M.IsAssociatedFunction.C Self "remaining" remaining.
+    Proof.
     Admitted.
     Global Typeclasses Opaque remaining.
     
@@ -1083,6 +1093,7 @@ Module gas.
     
     Global Instance AssociatedFunction_remaining_63_of_64_parts :
       M.IsAssociatedFunction.C Self "remaining_63_of_64_parts" remaining_63_of_64_parts.
+    Proof.
     Admitted.
     Global Typeclasses Opaque remaining_63_of_64_parts.
     
@@ -1124,6 +1135,7 @@ Module gas.
     
     Global Instance AssociatedFunction_erase_cost :
       M.IsAssociatedFunction.C Self "erase_cost" erase_cost.
+    Proof.
     Admitted.
     Global Typeclasses Opaque erase_cost.
     
@@ -1158,6 +1170,7 @@ Module gas.
     
     Global Instance AssociatedFunction_spend_all :
       M.IsAssociatedFunction.C Self "spend_all" spend_all.
+    Proof.
     Admitted.
     Global Typeclasses Opaque spend_all.
     
@@ -1199,6 +1212,7 @@ Module gas.
     
     Global Instance AssociatedFunction_record_refund :
       M.IsAssociatedFunction.C Self "record_refund" record_refund.
+    Proof.
     Admitted.
     Global Typeclasses Opaque record_refund.
     
@@ -1284,6 +1298,7 @@ Module gas.
     
     Global Instance AssociatedFunction_set_final_refund :
       M.IsAssociatedFunction.C Self "set_final_refund" set_final_refund.
+    Proof.
     Admitted.
     Global Typeclasses Opaque set_final_refund.
     
@@ -1319,6 +1334,7 @@ Module gas.
     
     Global Instance AssociatedFunction_set_refund :
       M.IsAssociatedFunction.C Self "set_refund" set_refund.
+    Proof.
     Admitted.
     Global Typeclasses Opaque set_refund.
     
@@ -1367,6 +1383,7 @@ Module gas.
     
     Global Instance AssociatedFunction_set_spent :
       M.IsAssociatedFunction.C Self "set_spent" set_spent.
+    Proof.
     Admitted.
     Global Typeclasses Opaque set_spent.
     
@@ -1454,6 +1471,7 @@ Module gas.
     
     Global Instance AssociatedFunction_record_cost :
       M.IsAssociatedFunction.C Self "record_cost" record_cost.
+    Proof.
     Admitted.
     Global Typeclasses Opaque record_cost.
     
@@ -1519,6 +1537,7 @@ Module gas.
     
     Global Instance AssociatedFunction_record_cost_unsafe :
       M.IsAssociatedFunction.C Self "record_cost_unsafe" record_cost_unsafe.
+    Proof.
     Admitted.
     Global Typeclasses Opaque record_cost_unsafe.
   End Impl_revm_interpreter_gas_Gas.
@@ -2085,6 +2104,7 @@ Module gas.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -2224,6 +2244,7 @@ Module gas.
     
     Global Instance AssociatedFunction_record_new_len :
       M.IsAssociatedFunction.C Self "record_new_len" record_new_len.
+    Proof.
     Admitted.
     Global Typeclasses Opaque record_new_len.
   End Impl_revm_interpreter_gas_MemoryGas.

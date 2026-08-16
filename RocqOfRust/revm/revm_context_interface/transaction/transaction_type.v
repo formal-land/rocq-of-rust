@@ -458,6 +458,7 @@ Module transaction.
       
       Global Instance AssociatedFunction_is_legacy :
         M.IsAssociatedFunction.C Self "is_legacy" is_legacy.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_legacy.
       
@@ -500,6 +501,7 @@ Module transaction.
       
       Global Instance AssociatedFunction_is_custom :
         M.IsAssociatedFunction.C Self "is_custom" is_custom.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_custom.
     End Impl_revm_context_interface_transaction_transaction_type_TransactionType.

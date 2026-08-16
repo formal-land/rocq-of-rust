@@ -349,6 +349,7 @@ Definition peel (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_peel : M.IsFunction.C "combinators_map::peel" peel.
+Proof.
 Admitted.
 Global Typeclasses Opaque peel.
 
@@ -399,6 +400,7 @@ Definition chop (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_chop : M.IsFunction.C "combinators_map::chop" chop.
+Proof.
 Admitted.
 Global Typeclasses Opaque chop.
 
@@ -463,6 +465,7 @@ Definition cook (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_cook : M.IsFunction.C "combinators_map::cook" cook.
+Proof.
 Admitted.
 Global Typeclasses Opaque cook.
 
@@ -607,6 +610,7 @@ Definition process (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M 
   end.
 
 Global Instance Instance_IsFunction_process : M.IsFunction.C "combinators_map::process" process.
+Proof.
 Admitted.
 Global Typeclasses Opaque process.
 
@@ -754,6 +758,7 @@ Definition eat (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_eat : M.IsFunction.C "combinators_map::eat" eat.
+Proof.
 Admitted.
 Global Typeclasses Opaque eat.
 
@@ -874,5 +879,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "combinators_map::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

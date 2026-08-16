@@ -1267,6 +1267,7 @@ Module processor.
         M.IsFunction.C
           "pinocchio_token_program::processor::shared::toggle_account_state::process_toggle_account_state"
           process_toggle_account_state.
+      Proof.
       Admitted.
       Global Typeclasses Opaque process_toggle_account_state.
     End toggle_account_state.

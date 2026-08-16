@@ -119,6 +119,7 @@ Module dependencies.
       end.
     
     Global Instance AssociatedFunction_module : M.IsAssociatedFunction.C Self "module" module.
+    Proof.
     Admitted.
     Global Typeclasses Opaque module.
     
@@ -3878,6 +3879,7 @@ Module dependencies.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_move_bytecode_verifier_dependencies_Context.
@@ -3998,6 +4000,7 @@ Module dependencies.
   
   Global Instance Instance_IsFunction_verify_module :
     M.IsFunction.C "move_bytecode_verifier::dependencies::verify_module" verify_module.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_module.
   
@@ -4471,6 +4474,7 @@ Module dependencies.
   
   Global Instance Instance_IsFunction_verify_module_impl :
     M.IsFunction.C "move_bytecode_verifier::dependencies::verify_module_impl" verify_module_impl.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_module_impl.
   
@@ -5007,6 +5011,7 @@ Module dependencies.
     M.IsFunction.C
       "move_bytecode_verifier::dependencies::verify_imported_modules"
       verify_imported_modules.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_imported_modules.
   
@@ -6416,6 +6421,7 @@ Module dependencies.
     M.IsFunction.C
       "move_bytecode_verifier::dependencies::verify_imported_structs"
       verify_imported_structs.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_imported_structs.
   
@@ -9174,6 +9180,7 @@ Module dependencies.
     M.IsFunction.C
       "move_bytecode_verifier::dependencies::verify_imported_functions"
       verify_imported_functions.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_imported_functions.
   
@@ -9220,6 +9227,7 @@ Module dependencies.
     M.IsFunction.C
       "move_bytecode_verifier::dependencies::compatible_struct_abilities"
       compatible_struct_abilities.
+  Proof.
   Admitted.
   Global Typeclasses Opaque compatible_struct_abilities.
   
@@ -9519,6 +9527,7 @@ Module dependencies.
     M.IsFunction.C
       "move_bytecode_verifier::dependencies::compatible_fun_type_parameters"
       compatible_fun_type_parameters.
+  Proof.
   Admitted.
   Global Typeclasses Opaque compatible_fun_type_parameters.
   
@@ -9855,6 +9864,7 @@ Module dependencies.
     M.IsFunction.C
       "move_bytecode_verifier::dependencies::compatible_struct_type_parameters"
       compatible_struct_type_parameters.
+  Proof.
   Admitted.
   Global Typeclasses Opaque compatible_struct_type_parameters.
   
@@ -9906,6 +9916,7 @@ Module dependencies.
     M.IsFunction.C
       "move_bytecode_verifier::dependencies::compatible_type_parameter_constraints"
       compatible_type_parameter_constraints.
+  Proof.
   Admitted.
   Global Typeclasses Opaque compatible_type_parameter_constraints.
   
@@ -9972,6 +9983,7 @@ Module dependencies.
     M.IsFunction.C
       "move_bytecode_verifier::dependencies::compatible_type_parameter_phantom_decl"
       compatible_type_parameter_phantom_decl.
+  Proof.
   Admitted.
   Global Typeclasses Opaque compatible_type_parameter_phantom_decl.
   
@@ -10610,6 +10622,7 @@ Module dependencies.
     M.IsFunction.C
       "move_bytecode_verifier::dependencies::compare_cross_module_signatures"
       compare_cross_module_signatures.
+  Proof.
   Admitted.
   Global Typeclasses Opaque compare_cross_module_signatures.
   
@@ -11961,6 +11974,7 @@ Module dependencies.
   
   Global Instance Instance_IsFunction_compare_types :
     M.IsFunction.C "move_bytecode_verifier::dependencies::compare_types" compare_types.
+  Proof.
   Admitted.
   Global Typeclasses Opaque compare_types.
   
@@ -12307,6 +12321,7 @@ Module dependencies.
   
   Global Instance Instance_IsFunction_compare_structs :
     M.IsFunction.C "move_bytecode_verifier::dependencies::compare_structs" compare_structs.
+  Proof.
   Admitted.
   Global Typeclasses Opaque compare_structs.
   
@@ -13168,6 +13183,7 @@ Module dependencies.
     M.IsFunction.C
       "move_bytecode_verifier::dependencies::verify_all_script_visibility_usage"
       verify_all_script_visibility_usage.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_all_script_visibility_usage.
   
@@ -13792,6 +13808,7 @@ Module dependencies.
     M.IsFunction.C
       "move_bytecode_verifier::dependencies::verify_script_visibility_usage"
       verify_script_visibility_usage.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_script_visibility_usage.
 End dependencies.

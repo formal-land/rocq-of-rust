@@ -40,6 +40,7 @@ Definition sum (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_sum : M.IsFunction.C "pattern_in_function_parameters::sum" sum.
+Proof.
 Admitted.
 Global Typeclasses Opaque sum.
 
@@ -283,5 +284,6 @@ Definition steps_between (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
 
 Global Instance Instance_IsFunction_steps_between :
   M.IsFunction.C "pattern_in_function_parameters::steps_between" steps_between.
+Proof.
 Admitted.
 Global Typeclasses Opaque steps_between.

@@ -726,6 +726,7 @@ Module instructions.
         M.IsFunction.C
           "revm_interpreter::instructions::contract::call_helpers::get_memory_input_and_out_ranges"
           get_memory_input_and_out_ranges.
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_memory_input_and_out_ranges.
       
@@ -1386,6 +1387,7 @@ Module instructions.
         M.IsFunction.C
           "revm_interpreter::instructions::contract::call_helpers::resize_memory"
           resize_memory.
+      Proof.
       Admitted.
       Global Typeclasses Opaque resize_memory.
       
@@ -2272,6 +2274,7 @@ Module instructions.
         M.IsFunction.C
           "revm_interpreter::instructions::contract::call_helpers::load_acc_and_calc_gas"
           load_acc_and_calc_gas.
+      Proof.
       Admitted.
       Global Typeclasses Opaque load_acc_and_calc_gas.
       
@@ -2640,6 +2643,7 @@ Module instructions.
         M.IsFunction.C
           "revm_interpreter::instructions::contract::call_helpers::load_account_delegated_handle_error"
           load_account_delegated_handle_error.
+      Proof.
       Admitted.
       Global Typeclasses Opaque load_account_delegated_handle_error.
       
@@ -3717,6 +3721,7 @@ Module instructions.
         M.IsFunction.C
           "revm_interpreter::instructions::contract::call_helpers::load_account_delegated"
           load_account_delegated.
+      Proof.
       Admitted.
       Global Typeclasses Opaque load_account_delegated.
       
@@ -3786,6 +3791,7 @@ Module instructions.
         M.IsFunction.C
           "revm_interpreter::instructions::contract::call_helpers::new_account_cost"
           new_account_cost.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_account_cost.
     End call_helpers.

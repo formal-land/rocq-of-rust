@@ -180,6 +180,7 @@ Module iter.
         Global Instance AssociatedFunction_new :
           forall (A B : Ty.t),
           M.IsAssociatedFunction.C (Self A B) "new" (new A B).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new.
         
@@ -469,6 +470,7 @@ Module iter.
         Global Instance AssociatedFunction_super_nth :
           forall (A B : Ty.t),
           M.IsAssociatedFunction.C (Self A B) "super_nth" (super_nth A B).
+        Proof.
         Admitted.
         Global Typeclasses Opaque super_nth.
       End Impl_core_iter_adapters_zip_Zip_A_B.
@@ -587,6 +589,7 @@ Module iter.
         end.
       
       Global Instance Instance_IsFunction_zip : M.IsFunction.C "core::iter::adapters::zip::zip" zip.
+      Proof.
       Admitted.
       Global Typeclasses Opaque zip.
       
@@ -7032,6 +7035,7 @@ Module iter.
       
       Global Instance Instance_IsFunction_try_get_unchecked :
         M.IsFunction.C "core::iter::adapters::zip::try_get_unchecked" try_get_unchecked.
+      Proof.
       Admitted.
       Global Typeclasses Opaque try_get_unchecked.
       

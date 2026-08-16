@@ -23,6 +23,7 @@ Module Impl_generics_implementation_Val.
   Parameter value : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_value : M.IsAssociatedFunction.C Self "value" value.
+  Proof.
   Admitted.
 End Impl_generics_implementation_Val.
 
@@ -35,10 +36,12 @@ Module Impl_generics_implementation_GenVal_T.
   Global Instance AssociatedFunction_value :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "value" (value T).
+  Proof.
   Admitted.
 End Impl_generics_implementation_GenVal_T.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "generics_implementation::main" main.
+Proof.
 Admitted.

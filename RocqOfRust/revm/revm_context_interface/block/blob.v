@@ -458,6 +458,7 @@ Module block.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -540,6 +541,7 @@ Module block.
       
       Global Instance AssociatedFunction_new_with_spec :
         M.IsAssociatedFunction.C Self "new_with_spec" new_with_spec.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_with_spec.
     End Impl_revm_context_interface_block_blob_BlobExcessGasAndPrice.
@@ -576,6 +578,7 @@ Module block.
     
     Global Instance Instance_IsFunction_calc_blob_gasprice :
       M.IsFunction.C "revm_context_interface::block::blob::calc_blob_gasprice" calc_blob_gasprice.
+    Proof.
     Admitted.
     Global Typeclasses Opaque calc_blob_gasprice.
     
@@ -607,6 +610,7 @@ Module block.
       M.IsFunction.C
         "revm_context_interface::block::blob::get_base_fee_per_blob_gas"
         get_base_fee_per_blob_gas.
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_base_fee_per_blob_gas.
     
@@ -852,6 +856,7 @@ Module block.
     
     Global Instance Instance_IsFunction_fake_exponential :
       M.IsFunction.C "revm_context_interface::block::blob::fake_exponential" fake_exponential.
+    Proof.
     Admitted.
     Global Typeclasses Opaque fake_exponential.
   End blob.

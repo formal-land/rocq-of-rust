@@ -15,10 +15,12 @@ Module Impl_example05_Foo.
   Parameter plus1 : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_plus1 : M.IsAssociatedFunction.C Self "plus1" plus1.
+  Proof.
   Admitted.
 End Impl_example05_Foo.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "example05::main" main.
+Proof.
 Admitted.

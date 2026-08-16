@@ -25,6 +25,7 @@ Module arch.
   
   Global Instance Instance_IsFunction_breakpoint :
     M.IsFunction.C "core::arch::breakpoint" breakpoint.
+  Proof.
   Admitted.
   Global Typeclasses Opaque breakpoint.
 End arch.

@@ -186,6 +186,7 @@ Module Impl_traits_Sheep.
     end.
   
   Global Instance AssociatedFunction_is_naked : M.IsAssociatedFunction.C Self "is_naked" is_naked.
+  Proof.
   Admitted.
   Global Typeclasses Opaque is_naked.
   (*
@@ -478,6 +479,7 @@ Module Impl_traits_Sheep.
     end.
   
   Global Instance AssociatedFunction_shear : M.IsAssociatedFunction.C Self "shear" shear.
+  Proof.
   Admitted.
   Global Typeclasses Opaque shear.
 End Impl_traits_Sheep.
@@ -817,5 +819,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "traits::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

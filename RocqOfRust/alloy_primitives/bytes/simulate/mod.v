@@ -28,6 +28,7 @@ Module Impl_Bytes.
         stack
       )
     }}.
+  Proof.
   Admitted.
 
   Definition copy_from_slice (data : list u8) : Self :=
@@ -44,6 +45,7 @@ Module Impl_Bytes.
         stack
       )
     }}.
+  Proof.
   Admitted.
 End Impl_Bytes.
 
@@ -69,6 +71,7 @@ Module Impl_Clone_for_Bytes.
         stack
       )
     }}.
+  Proof.
   Admitted.
 End Impl_Clone_for_Bytes.
 Export (hints) Impl_Clone_for_Bytes.
@@ -90,6 +93,7 @@ Module Impl_Default_for_Bytes.
         stack
       )
     }}.
+  Proof.
   Admitted.
 End Impl_Default_for_Bytes.
 Export (hints) Impl_Default_for_Bytes.
@@ -112,6 +116,7 @@ Module Impl_Deref_for_Bytes.
 
   Module Eq.
     Instance I : Deref.Eq.t I.
+    Proof.
     Admitted.
   End Eq.
   Export (hints) Eq.
@@ -136,6 +141,7 @@ Module Impl_DerefMut_for_Bytes.
 
   Module Eq.
     Instance I : DerefMut.Eq.t I.
+    Proof.
     Admitted.
   End Eq.
   Export (hints) Eq.
@@ -159,6 +165,7 @@ Module Impl_From_Vec_u8_for_Bytes.
         stack
       )
     }}.
+  Proof.
   Admitted.
 
   Instance I : From.C Self (Vec.t u8 Global.t) := {|

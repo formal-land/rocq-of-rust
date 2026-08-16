@@ -30,6 +30,7 @@ Module Impl_Deref_for_StateLoad.
         stack
       )
     }}.
+  Proof.
   Admitted.
 
   Instance I {T : Set} `{Link T} :

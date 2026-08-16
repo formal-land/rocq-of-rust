@@ -77,6 +77,7 @@ Module num.
         M.IsFunction.C
           "core::num::flt2dec::estimator::estimate_scaling_factor"
           estimate_scaling_factor.
+      Proof.
       Admitted.
       Global Typeclasses Opaque estimate_scaling_factor.
     End estimator.

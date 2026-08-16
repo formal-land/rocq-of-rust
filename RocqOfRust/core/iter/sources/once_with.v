@@ -27,6 +27,7 @@ Module iter.
       
       Global Instance Instance_IsFunction_once_with :
         M.IsFunction.C "core::iter::sources::once_with::once_with" once_with.
+      Proof.
       Admitted.
       Global Typeclasses Opaque once_with.
       
