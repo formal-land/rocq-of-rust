@@ -3,6 +3,7 @@ Require Import core.links.array.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_interpreter.instructions.links.arithmetic.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.addmod.
+Require Import revm.revm_interpreter.instructions.simulate.arithmetic.mulmod.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.div.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.rem.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.sdiv.
@@ -112,6 +113,17 @@ Module FragmentInstructionTable.
     Function1.of_run
       (fun context => run_addmod run_InterpreterTypes_for_WIRE context).
 
+  Definition mulmod_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_InterpreterTypes_for_WIRE :
+        InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_mulmod run_InterpreterTypes_for_WIRE context).
+
   Definition unknown_function
       {WIRE H : Set} `{Link WIRE} `{Link H}
       {WIRE_types : InterpreterTypes.Types.t}
@@ -182,6 +194,11 @@ Module FragmentInstructionTable.
         addmod_function (H := H) run_InterpreterTypes_for_WIRE;
       Instruction.static_gas := {| Integer.value := 8 |};
     |} in
+    let mulmod_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ :=
+        mulmod_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 8 |};
+    |} in
     @array.Build_t
       (Instruction.t WIRE H WIRE_types)
       {| Integer.value := 256 |}
@@ -204,6 +221,8 @@ Module FragmentInstructionTable.
                       smod_instruction
                         (ArrayPair.Build_t
                           addmod_instruction
-                          (ArrayPairs.repeat unknown_instruction 247)))))))))
+                          (ArrayPair.Build_t
+                            mulmod_instruction
+                            (ArrayPairs.repeat unknown_instruction 246))))))))))
       ).
 End FragmentInstructionTable.
