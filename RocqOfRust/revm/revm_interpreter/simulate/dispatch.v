@@ -7,6 +7,7 @@ Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.add.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.div.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.mul.
+Require Import revm.revm_interpreter.instructions.simulate.arithmetic.sdiv.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.sub.
 Require Import revm.revm_interpreter.instructions.simulate.control.stop.
 Require Import revm.revm_interpreter.instructions.simulate.control.unknown.
@@ -28,7 +29,8 @@ Module InterpreterDispatch.
     opcode.(Integer.value) = 1 \/
     opcode.(Integer.value) = 2 \/
     opcode.(Integer.value) = 3 \/
-    opcode.(Integer.value) = 4.
+    opcode.(Integer.value) = 4 \/
+    opcode.(Integer.value) = 5.
 
   Definition BytecodeInSimple (code : list u8) : Prop :=
     List.Forall OpcodeInSimple code.
@@ -81,6 +83,14 @@ Module InterpreterDispatch.
           Some instruction /\
         InterpreterStep.instruction_static_gas instruction =
           {| Integer.value := 5 |};
+    table_sdiv :
+      exists instruction,
+        InterpreterStep.instruction_at
+          table
+          {| Integer.value := 5 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 5 |};
   }.
 
   Definition simple
@@ -102,6 +112,8 @@ Module InterpreterDispatch.
         sub
       else if Z.eqb opcode.(Integer.value) 4 then
         div
+      else if Z.eqb opcode.(Integer.value) 5 then
+        sdiv
       else
         unknown)
       state.
@@ -162,6 +174,18 @@ Module InterpreterDispatch.
       (state : InstructionContext.State.t H WIRE WIRE_types) :
     simple {| Integer.value := 4 |} state =
     InstructionContext.map_interpreter div state.
+  Proof.
+    reflexivity.
+  Qed.
+
+  Lemma simple_sdiv
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 5 |} state =
+    InstructionContext.map_interpreter sdiv state.
   Proof.
     reflexivity.
   Qed.
@@ -736,54 +760,7 @@ Module InterpreterDispatch.
     apply simple_mul.
   Qed.
 
-  Lemma step_result_div
-      {H WIRE : Set} `{Link H} `{Link WIRE}
-      {WIRE_types : InterpreterTypes.Types.t}
-      `{InterpreterTypes.Types.AreLinks WIRE_types}
-      (IInterpreterTypes : InterpreterTypes.C WIRE_types)
-      (table :
-        array.t
-          (Instruction.t WIRE H WIRE_types)
-          {| Integer.value := 256 |})
-      (interpreter : Interpreter.t WIRE WIRE_types)
-      (host : H)
-      (instruction : Instruction.t WIRE H WIRE_types)
-      (gas : Gas.t)
-      (H_opcode :
-        IInterpreterTypes.(InterpreterTypes.Jumps_for_Bytecode)
-          .(Jumps.opcode) interpreter.(Interpreter.bytecode) =
-        {| Integer.value := 4 |})
-      (H_instruction :
-        InterpreterStep.instruction_at table {| Integer.value := 4 |} =
-        Some instruction)
-      (H_gas :
-        InterpreterStep.instruction_static_gas instruction =
-        {| Integer.value := 5 |})
-      (H_charge :
-        Impl_Gas.record_cost interpreter.(Interpreter.gas)
-          {| Integer.value := 5 |} = Some gas) :
-    step_result_simple IInterpreterTypes table
-      {| InstructionContext.State.interpreter := interpreter;
-         InstructionContext.State.host := host |} =
-    InterpreterStep.Result.Success
-      (InstructionContext.map_interpreter div
-        {| InstructionContext.State.interpreter :=
-             (interpreter
-                <| Interpreter.bytecode :=
-                     IInterpreterTypes.(InterpreterTypes.Jumps_for_Bytecode)
-                       .(Jumps.relative_jump) interpreter.(Interpreter.bytecode)
-                       {| Integer.value := 1 |} |>)
-               <| Interpreter.gas := gas |>;
-           InstructionContext.State.host := host |}).
-  Proof.
-    eapply step_result_success
-      with (opcode := {| Integer.value := 4 |})
-           (instruction := instruction)
-           (static_gas := {| Integer.value := 5 |});
-      try eassumption.
-    intros state.
-    apply simple_div.
-  Qed.
+
 
   Lemma step_result_out_of_gas
       {H WIRE : Set} `{Link H} `{Link WIRE}
