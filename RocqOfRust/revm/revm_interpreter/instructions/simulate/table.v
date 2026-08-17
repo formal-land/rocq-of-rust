@@ -3,7 +3,9 @@ Require Import core.links.array.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_interpreter.instructions.links.arithmetic.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.div.
+Require Import revm.revm_interpreter.instructions.simulate.arithmetic.rem.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.sdiv.
+Require Import revm.revm_interpreter.instructions.simulate.arithmetic.smod.
 Require Import revm.revm_interpreter.instructions.links.control.stop.
 Require Import revm.revm_interpreter.instructions.links.control.unknown.
 Require Import revm.revm_interpreter.links.instruction_context.
@@ -76,6 +78,28 @@ Module FragmentInstructionTable.
     Function1.of_run
       (fun context => run_sdiv run_InterpreterTypes_for_WIRE context).
 
+  Definition mod_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_InterpreterTypes_for_WIRE :
+        InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_rem run_InterpreterTypes_for_WIRE context).
+
+  Definition smod_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_InterpreterTypes_for_WIRE :
+        InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_smod run_InterpreterTypes_for_WIRE context).
+
   Definition unknown_function
       {WIRE H : Set} `{Link WIRE} `{Link H}
       {WIRE_types : InterpreterTypes.Types.t}
@@ -131,6 +155,16 @@ Module FragmentInstructionTable.
         sdiv_function (H := H) run_InterpreterTypes_for_WIRE;
       Instruction.static_gas := {| Integer.value := 5 |};
     |} in
+    let mod_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ :=
+        mod_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 5 |};
+    |} in
+    let smod_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ :=
+        smod_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 5 |};
+    |} in
     @array.Build_t
       (Instruction.t WIRE H WIRE_types)
       {| Integer.value := 256 |}
@@ -147,6 +181,10 @@ Module FragmentInstructionTable.
                   div_instruction
                   (ArrayPair.Build_t
                     sdiv_instruction
-                    (ArrayPairs.repeat unknown_instruction 250))))))
+                    (ArrayPair.Build_t
+                      mod_instruction
+                      (ArrayPair.Build_t
+                        smod_instruction
+                        (ArrayPairs.repeat unknown_instruction 248))))))))
       ).
 End FragmentInstructionTable.

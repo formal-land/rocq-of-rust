@@ -7,7 +7,9 @@ Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.add.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.div.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.mul.
+Require Import revm.revm_interpreter.instructions.simulate.arithmetic.rem.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.sdiv.
+Require Import revm.revm_interpreter.instructions.simulate.arithmetic.smod.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.sub.
 Require Import revm.revm_interpreter.instructions.simulate.control.stop.
 Require Import revm.revm_interpreter.instructions.simulate.control.unknown.
@@ -30,7 +32,9 @@ Module InterpreterDispatch.
     opcode.(Integer.value) = 2 \/
     opcode.(Integer.value) = 3 \/
     opcode.(Integer.value) = 4 \/
-    opcode.(Integer.value) = 5.
+    opcode.(Integer.value) = 5 \/
+    opcode.(Integer.value) = 6 \/
+    opcode.(Integer.value) = 7.
 
   Definition BytecodeInSimple (code : list u8) : Prop :=
     List.Forall OpcodeInSimple code.
@@ -91,6 +95,22 @@ Module InterpreterDispatch.
           Some instruction /\
         InterpreterStep.instruction_static_gas instruction =
           {| Integer.value := 5 |};
+    table_mod :
+      exists instruction,
+        InterpreterStep.instruction_at
+          table
+          {| Integer.value := 6 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 5 |};
+    table_smod :
+      exists instruction,
+        InterpreterStep.instruction_at
+          table
+          {| Integer.value := 7 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 5 |};
   }.
 
   Definition simple
@@ -114,6 +134,10 @@ Module InterpreterDispatch.
         div
       else if Z.eqb opcode.(Integer.value) 5 then
         sdiv
+      else if Z.eqb opcode.(Integer.value) 6 then
+        rem
+      else if Z.eqb opcode.(Integer.value) 7 then
+        smod
       else
         unknown)
       state.
@@ -186,6 +210,30 @@ Module InterpreterDispatch.
       (state : InstructionContext.State.t H WIRE WIRE_types) :
     simple {| Integer.value := 5 |} state =
     InstructionContext.map_interpreter sdiv state.
+  Proof.
+    reflexivity.
+  Qed.
+
+  Lemma simple_mod
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 6 |} state =
+    InstructionContext.map_interpreter rem state.
+  Proof.
+    reflexivity.
+  Qed.
+
+  Lemma simple_smod
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 7 |} state =
+    InstructionContext.map_interpreter smod state.
   Proof.
     reflexivity.
   Qed.
