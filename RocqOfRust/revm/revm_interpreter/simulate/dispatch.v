@@ -4,6 +4,7 @@ Require Import RocqOfRust.revm.revm_interpreter.interpreter.
 Require Import simulate.RocqOfRust.
 Require Import core.links.array.
 Require Import revm.revm_context_interface.links.host.
+Require Import revm.revm_interpreter.instructions.simulate.arithmetic.addmod.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.add.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.div.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.mul.
@@ -34,7 +35,8 @@ Module InterpreterDispatch.
     opcode.(Integer.value) = 4 \/
     opcode.(Integer.value) = 5 \/
     opcode.(Integer.value) = 6 \/
-    opcode.(Integer.value) = 7.
+    opcode.(Integer.value) = 7 \/
+    opcode.(Integer.value) = 8.
 
   Definition BytecodeInSimple (code : list u8) : Prop :=
     List.Forall OpcodeInSimple code.
@@ -111,6 +113,14 @@ Module InterpreterDispatch.
           Some instruction /\
         InterpreterStep.instruction_static_gas instruction =
           {| Integer.value := 5 |};
+    table_addmod :
+      exists instruction,
+        InterpreterStep.instruction_at
+          table
+          {| Integer.value := 8 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 8 |};
   }.
 
   Definition simple
@@ -138,6 +148,8 @@ Module InterpreterDispatch.
         rem
       else if Z.eqb opcode.(Integer.value) 7 then
         smod
+      else if Z.eqb opcode.(Integer.value) 8 then
+        addmod
       else
         unknown)
       state.
@@ -234,6 +246,18 @@ Module InterpreterDispatch.
       (state : InstructionContext.State.t H WIRE WIRE_types) :
     simple {| Integer.value := 7 |} state =
     InstructionContext.map_interpreter smod state.
+  Proof.
+    reflexivity.
+  Qed.
+
+  Lemma simple_addmod
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 8 |} state =
+    InstructionContext.map_interpreter addmod state.
   Proof.
     reflexivity.
   Qed.
