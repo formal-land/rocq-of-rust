@@ -47,7 +47,12 @@ Module either.
                   (let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "either::Either::Left", 0 |) in
-                  let db := M.alloc (| Ty.apply (Ty.path "&mut") [] [ L ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let db :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&mut") [] [ L ],
+                      M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -78,7 +83,12 @@ Module either.
                   (let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "either::Either::Right", 0 |) in
-                  let db := M.alloc (| Ty.apply (Ty.path "&mut") [] [ R ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let db :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&mut") [] [ R ],
+                      M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -155,7 +165,12 @@ Module either.
                   (let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "either::Either::Left", 0 |) in
-                  let db := M.alloc (| Ty.apply (Ty.path "&mut") [] [ L ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let db :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&mut") [] [ L ],
+                      M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -183,7 +198,12 @@ Module either.
                   (let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "either::Either::Right", 0 |) in
-                  let db := M.alloc (| Ty.apply (Ty.path "&mut") [] [ R ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let db :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&mut") [] [ R ],
+                      M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -261,7 +281,12 @@ Module either.
                   (let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "either::Either::Left", 0 |) in
-                  let db := M.alloc (| Ty.apply (Ty.path "&mut") [] [ L ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let db :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&mut") [] [ L ],
+                      M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -293,7 +318,12 @@ Module either.
                   (let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "either::Either::Right", 0 |) in
-                  let db := M.alloc (| Ty.apply (Ty.path "&mut") [] [ R ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let db :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&mut") [] [ R ],
+                      M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -362,7 +392,12 @@ Module either.
                   (let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "either::Either::Left", 0 |) in
-                  let db := M.alloc (| Ty.apply (Ty.path "&mut") [] [ L ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let db :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&mut") [] [ L ],
+                      M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -393,7 +428,12 @@ Module either.
                   (let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "either::Either::Right", 0 |) in
-                  let db := M.alloc (| Ty.apply (Ty.path "&mut") [] [ R ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let db :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&mut") [] [ R ],
+                      M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -483,7 +523,12 @@ Module either.
                   (let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "either::Either::Left", 0 |) in
-                  let db := M.alloc (| Ty.apply (Ty.path "&mut") [] [ L ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let db :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&mut") [] [ L ],
+                      M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.tuple [],
                     M.get_trait_method (|
@@ -505,7 +550,12 @@ Module either.
                   (let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "either::Either::Right", 0 |) in
-                  let db := M.alloc (| Ty.apply (Ty.path "&mut") [] [ R ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let db :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&mut") [] [ R ],
+                      M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.tuple [],
                     M.get_trait_method (|
@@ -582,7 +632,12 @@ Module either.
                   (let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "either::Either::Left", 0 |) in
-                  let db := M.alloc (| Ty.apply (Ty.path "&") [] [ L ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let db :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ L ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -618,7 +673,12 @@ Module either.
                   (let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "either::Either::Right", 0 |) in
-                  let db := M.alloc (| Ty.apply (Ty.path "&") [] [ R ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let db :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ R ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -700,7 +760,12 @@ Module either.
                   (let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "either::Either::Left", 0 |) in
-                  let db := M.alloc (| Ty.apply (Ty.path "&") [] [ L ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let db :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ L ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -733,7 +798,12 @@ Module either.
                   (let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "either::Either::Right", 0 |) in
-                  let db := M.alloc (| Ty.apply (Ty.path "&") [] [ R ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let db :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ R ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -816,7 +886,12 @@ Module either.
                   (let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "either::Either::Left", 0 |) in
-                  let db := M.alloc (| Ty.apply (Ty.path "&") [] [ L ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let db :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ L ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -853,7 +928,12 @@ Module either.
                   (let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "either::Either::Right", 0 |) in
-                  let db := M.alloc (| Ty.apply (Ty.path "&") [] [ R ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let db :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ R ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -932,7 +1012,12 @@ Module either.
                   (let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "either::Either::Left", 0 |) in
-                  let db := M.alloc (| Ty.apply (Ty.path "&") [] [ L ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let db :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ L ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -968,7 +1053,12 @@ Module either.
                   (let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "either::Either::Right", 0 |) in
-                  let db := M.alloc (| Ty.apply (Ty.path "&") [] [ R ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let db :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ R ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")

@@ -45,6 +45,7 @@ Module future.
     
     Global Instance Instance_IsFunction_async_drop_in_place :
       M.IsFunction.C "core::future::async_drop::async_drop_in_place" async_drop_in_place.
+    Proof.
     Admitted.
     Global Typeclasses Opaque async_drop_in_place.
   End async_drop.

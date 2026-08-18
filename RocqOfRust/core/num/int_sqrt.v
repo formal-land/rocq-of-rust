@@ -211,6 +211,7 @@ Module num.
     
     Global Instance Instance_IsConstant_value_U8_ISQRT_WITH_REMAINDER :
       M.IsFunction.C "core::num::int_sqrt::U8_ISQRT_WITH_REMAINDER" value_U8_ISQRT_WITH_REMAINDER.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_U8_ISQRT_WITH_REMAINDER.
     
@@ -243,6 +244,7 @@ Module num.
       end.
     
     Global Instance Instance_IsFunction_u8 : M.IsFunction.C "core::num::int_sqrt::u8" u8.
+    Proof.
     Admitted.
     Global Typeclasses Opaque u8.
     
@@ -336,6 +338,7 @@ Module num.
       end.
     
     Global Instance Instance_IsFunction_i8 : M.IsFunction.C "core::num::int_sqrt::i8" i8.
+    Proof.
     Admitted.
     Global Typeclasses Opaque i8.
     
@@ -429,6 +432,7 @@ Module num.
       end.
     
     Global Instance Instance_IsFunction_i16 : M.IsFunction.C "core::num::int_sqrt::i16" i16.
+    Proof.
     Admitted.
     Global Typeclasses Opaque i16.
     
@@ -522,6 +526,7 @@ Module num.
       end.
     
     Global Instance Instance_IsFunction_i32 : M.IsFunction.C "core::num::int_sqrt::i32" i32.
+    Proof.
     Admitted.
     Global Typeclasses Opaque i32.
     
@@ -615,6 +620,7 @@ Module num.
       end.
     
     Global Instance Instance_IsFunction_i64 : M.IsFunction.C "core::num::int_sqrt::i64" i64.
+    Proof.
     Admitted.
     Global Typeclasses Opaque i64.
     
@@ -708,6 +714,7 @@ Module num.
       end.
     
     Global Instance Instance_IsFunction_i128 : M.IsFunction.C "core::num::int_sqrt::i128" i128.
+    Proof.
     Admitted.
     Global Typeclasses Opaque i128.
     
@@ -1079,6 +1086,7 @@ Module num.
     
     Global Instance Instance_IsFunction_u16_stages :
       M.IsFunction.C "core::num::int_sqrt::u16_stages" u16_stages.
+    Proof.
     Admitted.
     Global Typeclasses Opaque u16_stages.
     
@@ -1096,6 +1104,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_N_SHIFT :
         M.IsFunction.C "core::num::int_sqrt::u16_stages::N_SHIFT" value_N_SHIFT.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_N_SHIFT.
       
@@ -1115,6 +1124,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_HALF_BITS :
         M.IsFunction.C "core::num::int_sqrt::u16_stages::HALF_BITS" value_HALF_BITS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_HALF_BITS.
       
@@ -1134,6 +1144,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_QUARTER_BITS :
         M.IsFunction.C "core::num::int_sqrt::u16_stages::QUARTER_BITS" value_QUARTER_BITS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_QUARTER_BITS.
       
@@ -1166,6 +1177,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_LOWER_HALF_1_BITS :
         M.IsFunction.C "core::num::int_sqrt::u16_stages::LOWER_HALF_1_BITS" value_LOWER_HALF_1_BITS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_LOWER_HALF_1_BITS.
     End u16_stages.
@@ -1883,6 +1895,7 @@ Module num.
     
     Global Instance Instance_IsFunction_u32_stages :
       M.IsFunction.C "core::num::int_sqrt::u32_stages" u32_stages.
+    Proof.
     Admitted.
     Global Typeclasses Opaque u32_stages.
     
@@ -1900,6 +1913,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_N_SHIFT :
         M.IsFunction.C "core::num::int_sqrt::u32_stages::N_SHIFT" value_N_SHIFT.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_N_SHIFT.
       
@@ -1919,6 +1933,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_N_SHIFT_1 :
         M.IsFunction.C "core::num::int_sqrt::u32_stages::N_SHIFT'1" value_N_SHIFT_1.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_N_SHIFT_1.
       
@@ -1938,6 +1953,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_HALF_BITS :
         M.IsFunction.C "core::num::int_sqrt::u32_stages::HALF_BITS" value_HALF_BITS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_HALF_BITS.
       
@@ -1957,6 +1973,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_QUARTER_BITS :
         M.IsFunction.C "core::num::int_sqrt::u32_stages::QUARTER_BITS" value_QUARTER_BITS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_QUARTER_BITS.
       
@@ -1989,6 +2006,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_LOWER_HALF_1_BITS :
         M.IsFunction.C "core::num::int_sqrt::u32_stages::LOWER_HALF_1_BITS" value_LOWER_HALF_1_BITS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_LOWER_HALF_1_BITS.
       
@@ -2026,6 +2044,7 @@ Module num.
         M.IsFunction.C
           "core::num::int_sqrt::u32_stages::LOWEST_QUARTER_1_BITS"
           value_LOWEST_QUARTER_1_BITS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_LOWEST_QUARTER_1_BITS.
       
@@ -2045,6 +2064,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_HALF_BITS_1 :
         M.IsFunction.C "core::num::int_sqrt::u32_stages::HALF_BITS'1" value_HALF_BITS_1.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_HALF_BITS_1.
       
@@ -2064,6 +2084,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_QUARTER_BITS_1 :
         M.IsFunction.C "core::num::int_sqrt::u32_stages::QUARTER_BITS'1" value_QUARTER_BITS_1.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_QUARTER_BITS_1.
       
@@ -2101,6 +2122,7 @@ Module num.
         M.IsFunction.C
           "core::num::int_sqrt::u32_stages::LOWER_HALF_1_BITS'1"
           value_LOWER_HALF_1_BITS_1.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_LOWER_HALF_1_BITS_1.
     End u32_stages.
@@ -3174,6 +3196,7 @@ Module num.
     
     Global Instance Instance_IsFunction_u64_stages :
       M.IsFunction.C "core::num::int_sqrt::u64_stages" u64_stages.
+    Proof.
     Admitted.
     Global Typeclasses Opaque u64_stages.
     
@@ -3191,6 +3214,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_N_SHIFT :
         M.IsFunction.C "core::num::int_sqrt::u64_stages::N_SHIFT" value_N_SHIFT.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_N_SHIFT.
       
@@ -3210,6 +3234,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_N_SHIFT_1 :
         M.IsFunction.C "core::num::int_sqrt::u64_stages::N_SHIFT'1" value_N_SHIFT_1.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_N_SHIFT_1.
       
@@ -3229,6 +3254,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_HALF_BITS :
         M.IsFunction.C "core::num::int_sqrt::u64_stages::HALF_BITS" value_HALF_BITS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_HALF_BITS.
       
@@ -3248,6 +3274,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_QUARTER_BITS :
         M.IsFunction.C "core::num::int_sqrt::u64_stages::QUARTER_BITS" value_QUARTER_BITS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_QUARTER_BITS.
       
@@ -3280,6 +3307,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_LOWER_HALF_1_BITS :
         M.IsFunction.C "core::num::int_sqrt::u64_stages::LOWER_HALF_1_BITS" value_LOWER_HALF_1_BITS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_LOWER_HALF_1_BITS.
       
@@ -3317,6 +3345,7 @@ Module num.
         M.IsFunction.C
           "core::num::int_sqrt::u64_stages::LOWEST_QUARTER_1_BITS"
           value_LOWEST_QUARTER_1_BITS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_LOWEST_QUARTER_1_BITS.
       
@@ -3336,6 +3365,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_N_SHIFT_2 :
         M.IsFunction.C "core::num::int_sqrt::u64_stages::N_SHIFT'2" value_N_SHIFT_2.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_N_SHIFT_2.
       
@@ -3355,6 +3385,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_HALF_BITS_1 :
         M.IsFunction.C "core::num::int_sqrt::u64_stages::HALF_BITS'1" value_HALF_BITS_1.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_HALF_BITS_1.
       
@@ -3374,6 +3405,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_QUARTER_BITS_1 :
         M.IsFunction.C "core::num::int_sqrt::u64_stages::QUARTER_BITS'1" value_QUARTER_BITS_1.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_QUARTER_BITS_1.
       
@@ -3411,6 +3443,7 @@ Module num.
         M.IsFunction.C
           "core::num::int_sqrt::u64_stages::LOWER_HALF_1_BITS'1"
           value_LOWER_HALF_1_BITS_1.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_LOWER_HALF_1_BITS_1.
       
@@ -3448,6 +3481,7 @@ Module num.
         M.IsFunction.C
           "core::num::int_sqrt::u64_stages::LOWEST_QUARTER_1_BITS'1"
           value_LOWEST_QUARTER_1_BITS_1.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_LOWEST_QUARTER_1_BITS_1.
       
@@ -3467,6 +3501,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_HALF_BITS_2 :
         M.IsFunction.C "core::num::int_sqrt::u64_stages::HALF_BITS'2" value_HALF_BITS_2.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_HALF_BITS_2.
       
@@ -3486,6 +3521,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_QUARTER_BITS_2 :
         M.IsFunction.C "core::num::int_sqrt::u64_stages::QUARTER_BITS'2" value_QUARTER_BITS_2.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_QUARTER_BITS_2.
       
@@ -3523,6 +3559,7 @@ Module num.
         M.IsFunction.C
           "core::num::int_sqrt::u64_stages::LOWER_HALF_1_BITS'2"
           value_LOWER_HALF_1_BITS_2.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_LOWER_HALF_1_BITS_2.
     End u64_stages.
@@ -4977,6 +5014,7 @@ Module num.
     
     Global Instance Instance_IsFunction_u128_stages :
       M.IsFunction.C "core::num::int_sqrt::u128_stages" u128_stages.
+    Proof.
     Admitted.
     Global Typeclasses Opaque u128_stages.
     
@@ -4994,6 +5032,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_N_SHIFT :
         M.IsFunction.C "core::num::int_sqrt::u128_stages::N_SHIFT" value_N_SHIFT.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_N_SHIFT.
       
@@ -5013,6 +5052,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_N_SHIFT_1 :
         M.IsFunction.C "core::num::int_sqrt::u128_stages::N_SHIFT'1" value_N_SHIFT_1.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_N_SHIFT_1.
       
@@ -5032,6 +5072,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_HALF_BITS :
         M.IsFunction.C "core::num::int_sqrt::u128_stages::HALF_BITS" value_HALF_BITS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_HALF_BITS.
       
@@ -5051,6 +5092,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_QUARTER_BITS :
         M.IsFunction.C "core::num::int_sqrt::u128_stages::QUARTER_BITS" value_QUARTER_BITS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_QUARTER_BITS.
       
@@ -5088,6 +5130,7 @@ Module num.
         M.IsFunction.C
           "core::num::int_sqrt::u128_stages::LOWER_HALF_1_BITS"
           value_LOWER_HALF_1_BITS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_LOWER_HALF_1_BITS.
       
@@ -5125,6 +5168,7 @@ Module num.
         M.IsFunction.C
           "core::num::int_sqrt::u128_stages::LOWEST_QUARTER_1_BITS"
           value_LOWEST_QUARTER_1_BITS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_LOWEST_QUARTER_1_BITS.
       
@@ -5144,6 +5188,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_N_SHIFT_2 :
         M.IsFunction.C "core::num::int_sqrt::u128_stages::N_SHIFT'2" value_N_SHIFT_2.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_N_SHIFT_2.
       
@@ -5163,6 +5208,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_HALF_BITS_1 :
         M.IsFunction.C "core::num::int_sqrt::u128_stages::HALF_BITS'1" value_HALF_BITS_1.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_HALF_BITS_1.
       
@@ -5182,6 +5228,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_QUARTER_BITS_1 :
         M.IsFunction.C "core::num::int_sqrt::u128_stages::QUARTER_BITS'1" value_QUARTER_BITS_1.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_QUARTER_BITS_1.
       
@@ -5219,6 +5266,7 @@ Module num.
         M.IsFunction.C
           "core::num::int_sqrt::u128_stages::LOWER_HALF_1_BITS'1"
           value_LOWER_HALF_1_BITS_1.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_LOWER_HALF_1_BITS_1.
       
@@ -5256,6 +5304,7 @@ Module num.
         M.IsFunction.C
           "core::num::int_sqrt::u128_stages::LOWEST_QUARTER_1_BITS'1"
           value_LOWEST_QUARTER_1_BITS_1.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_LOWEST_QUARTER_1_BITS_1.
       
@@ -5275,6 +5324,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_N_SHIFT_3 :
         M.IsFunction.C "core::num::int_sqrt::u128_stages::N_SHIFT'3" value_N_SHIFT_3.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_N_SHIFT_3.
       
@@ -5294,6 +5344,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_HALF_BITS_2 :
         M.IsFunction.C "core::num::int_sqrt::u128_stages::HALF_BITS'2" value_HALF_BITS_2.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_HALF_BITS_2.
       
@@ -5313,6 +5364,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_QUARTER_BITS_2 :
         M.IsFunction.C "core::num::int_sqrt::u128_stages::QUARTER_BITS'2" value_QUARTER_BITS_2.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_QUARTER_BITS_2.
       
@@ -5350,6 +5402,7 @@ Module num.
         M.IsFunction.C
           "core::num::int_sqrt::u128_stages::LOWER_HALF_1_BITS'2"
           value_LOWER_HALF_1_BITS_2.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_LOWER_HALF_1_BITS_2.
       
@@ -5387,6 +5440,7 @@ Module num.
         M.IsFunction.C
           "core::num::int_sqrt::u128_stages::LOWEST_QUARTER_1_BITS'2"
           value_LOWEST_QUARTER_1_BITS_2.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_LOWEST_QUARTER_1_BITS_2.
       
@@ -5406,6 +5460,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_HALF_BITS_3 :
         M.IsFunction.C "core::num::int_sqrt::u128_stages::HALF_BITS'3" value_HALF_BITS_3.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_HALF_BITS_3.
       
@@ -5425,6 +5480,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_QUARTER_BITS_3 :
         M.IsFunction.C "core::num::int_sqrt::u128_stages::QUARTER_BITS'3" value_QUARTER_BITS_3.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_QUARTER_BITS_3.
       
@@ -5462,6 +5518,7 @@ Module num.
         M.IsFunction.C
           "core::num::int_sqrt::u128_stages::LOWER_HALF_1_BITS'3"
           value_LOWER_HALF_1_BITS_3.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_LOWER_HALF_1_BITS_3.
     End u128_stages.
@@ -5605,6 +5662,7 @@ Module num.
       end.
     
     Global Instance Instance_IsFunction_u16 : M.IsFunction.C "core::num::int_sqrt::u16" u16.
+    Proof.
     Admitted.
     Global Typeclasses Opaque u16.
     
@@ -5622,6 +5680,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_EVEN_MAKING_BITMASK :
         M.IsFunction.C "core::num::int_sqrt::u16::EVEN_MAKING_BITMASK" value_EVEN_MAKING_BITMASK.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_EVEN_MAKING_BITMASK.
     End u16.
@@ -5765,6 +5824,7 @@ Module num.
       end.
     
     Global Instance Instance_IsFunction_u32 : M.IsFunction.C "core::num::int_sqrt::u32" u32.
+    Proof.
     Admitted.
     Global Typeclasses Opaque u32.
     
@@ -5782,6 +5842,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_EVEN_MAKING_BITMASK :
         M.IsFunction.C "core::num::int_sqrt::u32::EVEN_MAKING_BITMASK" value_EVEN_MAKING_BITMASK.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_EVEN_MAKING_BITMASK.
     End u32.
@@ -5925,6 +5986,7 @@ Module num.
       end.
     
     Global Instance Instance_IsFunction_u64 : M.IsFunction.C "core::num::int_sqrt::u64" u64.
+    Proof.
     Admitted.
     Global Typeclasses Opaque u64.
     
@@ -5942,6 +6004,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_EVEN_MAKING_BITMASK :
         M.IsFunction.C "core::num::int_sqrt::u64::EVEN_MAKING_BITMASK" value_EVEN_MAKING_BITMASK.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_EVEN_MAKING_BITMASK.
     End u64.
@@ -6085,6 +6148,7 @@ Module num.
       end.
     
     Global Instance Instance_IsFunction_u128 : M.IsFunction.C "core::num::int_sqrt::u128" u128.
+    Proof.
     Admitted.
     Global Typeclasses Opaque u128.
     
@@ -6102,6 +6166,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_EVEN_MAKING_BITMASK :
         M.IsFunction.C "core::num::int_sqrt::u128::EVEN_MAKING_BITMASK" value_EVEN_MAKING_BITMASK.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_EVEN_MAKING_BITMASK.
     End u128.
@@ -6135,6 +6200,7 @@ Module num.
     
     Global Instance Instance_IsFunction_panic_for_negative_argument :
       M.IsFunction.C "core::num::int_sqrt::panic_for_negative_argument" panic_for_negative_argument.
+    Proof.
     Admitted.
     Global Typeclasses Opaque panic_for_negative_argument.
   End int_sqrt.

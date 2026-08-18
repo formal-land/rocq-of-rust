@@ -2430,6 +2430,7 @@ Module Impl_revm_state_Account.
                               (let γ := M.deref (| M.read (| γ |) |) in
                               let γ1_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                               let γ1_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                              let _ := M.read (| γ1_1 |) in
                               let slot :=
                                 M.alloc (|
                                   Ty.apply
@@ -2441,7 +2442,7 @@ Module Impl_revm_state_Account.
                                         []
                                         [ Ty.path "revm_state::EvmStorageSlot" ]
                                     ],
-                                  γ1_1
+                                  M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                                 |) in
                               M.call_closure (|
                                 Ty.path "bool",

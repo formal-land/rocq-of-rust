@@ -288,7 +288,12 @@ Module asserting.
                 ltac:(M.monadic
                   (let γ0_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "core::option::Option::Some", 0 |) in
-                  let value := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ0_0 |) in
+                  let _ := M.read (| γ0_0 |) in
+                  let value :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ E ],
+                      M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")

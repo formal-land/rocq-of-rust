@@ -1016,13 +1016,14 @@ Module algorithms.
                                       M.read (| γ1_0 |),
                                       Value.Integer IntegerKind.U64 0
                                     |) in
+                                  let _ := M.read (| γ1_rest |) in
                                   let rest :=
                                     M.alloc (|
                                       Ty.apply
                                         (Ty.path "&")
                                         []
                                         [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ],
-                                      γ1_rest
+                                      M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                     |) in
                                   M.read (|
                                     let~ _ : Ty.tuple [] :=
@@ -1046,6 +1047,7 @@ Module algorithms.
                                               let γ1_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
                                               let γ1_rest :=
                                                 M.SubPointer.get_slice_rest (| γ, 1, 0 |) in
+                                              let _ := M.read (| γ1_rest |) in
                                               let rest :=
                                                 M.alloc (|
                                                   Ty.apply
@@ -1057,7 +1059,7 @@ Module algorithms.
                                                         []
                                                         [ Ty.path "u64" ]
                                                     ],
-                                                  γ1_rest
+                                                  M.borrow (| Pointer.Kind.MutRef, γ1_rest |)
                                                 |) in
                                               M.read (|
                                                 let~ _ : Ty.tuple [] :=
@@ -1106,13 +1108,14 @@ Module algorithms.
                                   let γ := M.deref (| M.read (| γ |) |) in
                                   let γ1_rest := M.SubPointer.get_slice_rest (| γ, 0, 1 |) in
                                   let γ1_rev0 := M.SubPointer.get_slice_rev_index (| γ, 0 |) in
+                                  let _ := M.read (| γ1_rest |) in
                                   let rest :=
                                     M.alloc (|
                                       Ty.apply
                                         (Ty.path "&")
                                         []
                                         [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ],
-                                      γ1_rest
+                                      M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                     |) in
                                   let _ :=
                                     is_constant_or_break_match (|
@@ -1166,13 +1169,14 @@ Module algorithms.
                                       M.read (| γ1_0 |),
                                       Value.Integer IntegerKind.U64 0
                                     |) in
+                                  let _ := M.read (| γ1_rest |) in
                                   let rest :=
                                     M.alloc (|
                                       Ty.apply
                                         (Ty.path "&")
                                         []
                                         [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ],
-                                      γ1_rest
+                                      M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                     |) in
                                   M.read (|
                                     let~ _ : Ty.tuple [] :=
@@ -1196,6 +1200,7 @@ Module algorithms.
                                               let γ1_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
                                               let γ1_rest :=
                                                 M.SubPointer.get_slice_rest (| γ, 1, 0 |) in
+                                              let _ := M.read (| γ1_rest |) in
                                               let rest :=
                                                 M.alloc (|
                                                   Ty.apply
@@ -1207,7 +1212,7 @@ Module algorithms.
                                                         []
                                                         [ Ty.path "u64" ]
                                                     ],
-                                                  γ1_rest
+                                                  M.borrow (| Pointer.Kind.MutRef, γ1_rest |)
                                                 |) in
                                               M.read (|
                                                 let~ _ : Ty.tuple [] :=
@@ -1256,13 +1261,14 @@ Module algorithms.
                                   let γ := M.deref (| M.read (| γ |) |) in
                                   let γ1_rest := M.SubPointer.get_slice_rest (| γ, 0, 1 |) in
                                   let γ1_rev0 := M.SubPointer.get_slice_rev_index (| γ, 0 |) in
+                                  let _ := M.read (| γ1_rest |) in
                                   let rest :=
                                     M.alloc (|
                                       Ty.apply
                                         (Ty.path "&")
                                         []
                                         [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ],
-                                      γ1_rest
+                                      M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                     |) in
                                   let _ :=
                                     is_constant_or_break_match (|

@@ -7352,10 +7352,11 @@ Module str.
                                         |) in
                                       let γ1_0 := M.deref (| M.read (| γ1_0 |) |) in
                                       let γ3_0 := M.SubPointer.get_slice_index (| γ1_0, 0 |) in
+                                      let _ := M.read (| γ3_0 |) in
                                       let from_byte :=
                                         M.alloc (|
                                           Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
-                                          γ3_0
+                                          M.borrow (| Pointer.Kind.Ref, γ3_0 |)
                                         |) in
                                       Value.StructTuple
                                         "core::option::Option::Some"
@@ -7499,10 +7500,11 @@ Module str.
                                     |) in
                                   let γ := M.deref (| M.read (| γ |) |) in
                                   let γ1_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
+                                  let _ := M.read (| γ1_0 |) in
                                   let to_byte :=
                                     M.alloc (|
                                       Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
-                                      γ1_0
+                                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                     |) in
                                   M.never_to_any (|
                                     M.read (|

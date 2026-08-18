@@ -111,13 +111,14 @@ Module decode_errors.
                       "revm_bytecode::decode_errors::BytecodeDecodeError::Eip7702",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_bytecode::eip7702::Eip7702DecodeError" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -203,13 +204,14 @@ Module decode_errors.
                       "revm_bytecode::decode_errors::BytecodeDecodeError::Eip7702",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_bytecode::eip7702::Eip7702DecodeError" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.tuple [],
@@ -305,13 +307,14 @@ Module decode_errors.
                       "revm_bytecode::decode_errors::BytecodeDecodeError::Eip7702",
                       0
                     |) in
+                  let _ := M.read (| γ2_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_bytecode::eip7702::Eip7702DecodeError" ],
-                      γ2_0
+                      M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                     |) in
                   let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                   let γ2_0 :=
@@ -320,13 +323,14 @@ Module decode_errors.
                       "revm_bytecode::decode_errors::BytecodeDecodeError::Eip7702",
                       0
                     |) in
+                  let _ := M.read (| γ2_0 |) in
                   let __arg1_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_bytecode::eip7702::Eip7702DecodeError" ],
-                      γ2_0
+                      M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                     |) in
                   M.call_closure (|
                     Ty.path "bool",
@@ -457,13 +461,14 @@ Module decode_errors.
                       "revm_bytecode::decode_errors::BytecodeDecodeError::Eip7702",
                       0
                     |) in
+                  let _ := M.read (| γ2_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_bytecode::eip7702::Eip7702DecodeError" ],
-                      γ2_0
+                      M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                     |) in
                   let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                   let γ2_0 :=
@@ -472,13 +477,14 @@ Module decode_errors.
                       "revm_bytecode::decode_errors::BytecodeDecodeError::Eip7702",
                       0
                     |) in
+                  let _ := M.read (| γ2_0 |) in
                   let __arg1_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_bytecode::eip7702::Eip7702DecodeError" ],
-                      γ2_0
+                      M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
@@ -563,13 +569,14 @@ Module decode_errors.
                       "revm_bytecode::decode_errors::BytecodeDecodeError::Eip7702",
                       0
                     |) in
+                  let _ := M.read (| γ2_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_bytecode::eip7702::Eip7702DecodeError" ],
-                      γ2_0
+                      M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                     |) in
                   let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                   let γ2_0 :=
@@ -578,13 +585,14 @@ Module decode_errors.
                       "revm_bytecode::decode_errors::BytecodeDecodeError::Eip7702",
                       0
                     |) in
+                  let _ := M.read (| γ2_0 |) in
                   let __arg1_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_bytecode::eip7702::Eip7702DecodeError" ],
-                      γ2_0
+                      M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                     |) in
                   M.call_closure (|
                     Ty.path "core::cmp::Ordering",
@@ -698,13 +706,14 @@ Module decode_errors.
                       "revm_bytecode::decode_errors::BytecodeDecodeError::Eip7702",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let e :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_bytecode::eip7702::Eip7702DecodeError" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply

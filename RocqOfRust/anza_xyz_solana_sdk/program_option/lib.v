@@ -132,7 +132,12 @@ Module Impl_core_cmp_PartialEq_where_core_cmp_PartialEq_T_solana_program_option_
                             "solana_program_option::COption::Some",
                             0
                           |) in
-                        let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                        let _ := M.read (| γ2_0 |) in
+                        let __self_0 :=
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ T ],
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                          |) in
                         let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                         let γ2_0 :=
                           M.SubPointer.get_struct_tuple_field (|
@@ -140,7 +145,12 @@ Module Impl_core_cmp_PartialEq_where_core_cmp_PartialEq_T_solana_program_option_
                             "solana_program_option::COption::Some",
                             0
                           |) in
-                        let __arg1_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                        let _ := M.read (| γ2_0 |) in
+                        let __arg1_0 :=
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ T ],
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                          |) in
                         M.call_closure (|
                           Ty.path "bool",
                           M.get_trait_method (|
@@ -252,7 +262,12 @@ Module Impl_core_cmp_PartialOrd_where_core_cmp_PartialOrd_T_solana_program_optio
                         "solana_program_option::COption::Some",
                         0
                       |) in
-                    let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                    let _ := M.read (| γ2_0 |) in
+                    let __self_0 :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                      |) in
                     let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                     let γ2_0 :=
                       M.SubPointer.get_struct_tuple_field (|
@@ -260,7 +275,12 @@ Module Impl_core_cmp_PartialOrd_where_core_cmp_PartialOrd_T_solana_program_optio
                         "solana_program_option::COption::Some",
                         0
                       |) in
-                    let __arg1_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                    let _ := M.read (| γ2_0 |) in
+                    let __arg1_0 :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                      |) in
                     M.call_closure (|
                       Ty.apply
                         (Ty.path "core::option::Option")
@@ -464,7 +484,12 @@ Module Impl_core_cmp_Ord_where_core_cmp_Ord_T_for_solana_program_option_COption_
                                 "solana_program_option::COption::Some",
                                 0
                               |) in
-                            let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                            let _ := M.read (| γ2_0 |) in
+                            let __self_0 :=
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ T ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
                               M.SubPointer.get_struct_tuple_field (|
@@ -472,7 +497,12 @@ Module Impl_core_cmp_Ord_where_core_cmp_Ord_T_for_solana_program_option_COption_
                                 "solana_program_option::COption::Some",
                                 0
                               |) in
-                            let __arg1_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                            let _ := M.read (| γ2_0 |) in
+                            let __arg1_0 :=
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ T ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             M.call_closure (|
                               Ty.path "core::cmp::Ordering",
                               M.get_trait_method (| "core::cmp::Ord", T, [], [], "cmp", [], [] |),
@@ -560,7 +590,12 @@ Module Impl_core_fmt_Debug_where_core_fmt_Debug_T_for_solana_program_option_COpt
                     "solana_program_option::COption::Some",
                     0
                   |) in
-                let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                let _ := M.read (| γ1_0 |) in
+                let __self_0 :=
+                  M.alloc (|
+                    Ty.apply (Ty.path "&") [] [ T ],
+                    M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                  |) in
                 M.call_closure (|
                   Ty.apply
                     (Ty.path "core::result::Result")
@@ -669,7 +704,12 @@ Module Impl_core_hash_Hash_where_core_hash_Hash_T_for_solana_program_option_COpt
                         "solana_program_option::COption::Some",
                         0
                       |) in
-                    let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                    let _ := M.read (| γ1_0 |) in
+                    let __self_0 :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     M.call_closure (|
                       Ty.tuple [],
                       M.get_trait_method (| "core::hash::Hash", T, [], [], "hash", [], [ __H ] |),
@@ -831,7 +871,12 @@ Module Impl_solana_program_option_COption_T.
                     "solana_program_option::COption::Some",
                     0
                   |) in
-                let y := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                let _ := M.read (| γ1_0 |) in
+                let y :=
+                  M.alloc (|
+                    Ty.apply (Ty.path "&") [] [ T ],
+                    M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                  |) in
                 M.call_closure (|
                   Ty.path "bool",
                   M.get_trait_method (|
@@ -898,7 +943,12 @@ Module Impl_solana_program_option_COption_T.
                     "solana_program_option::COption::Some",
                     0
                   |) in
-                let x := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_0 |) in
+                let _ := M.read (| γ0_0 |) in
+                let x :=
+                  M.alloc (|
+                    Ty.apply (Ty.path "&") [] [ T ],
+                    M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                  |) in
                 Value.StructTuple
                   "solana_program_option::COption::Some"
                   []
@@ -960,7 +1010,12 @@ Module Impl_solana_program_option_COption_T.
                     "solana_program_option::COption::Some",
                     0
                   |) in
-                let x := M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ0_0 |) in
+                let _ := M.read (| γ0_0 |) in
+                let x :=
+                  M.alloc (|
+                    Ty.apply (Ty.path "&mut") [] [ T ],
+                    M.borrow (| Pointer.Kind.MutRef, γ0_0 |)
+                  |) in
                 Value.StructTuple
                   "solana_program_option::COption::Some"
                   []
@@ -2050,7 +2105,12 @@ Module Impl_solana_program_option_COption_T.
                                 "solana_program_option::COption::Some",
                                 0
                               |) in
-                            let v := M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ0_0 |) in
+                            let _ := M.read (| γ0_0 |) in
+                            let v :=
+                              M.alloc (|
+                                Ty.apply (Ty.path "&mut") [] [ T ],
+                                M.borrow (| Pointer.Kind.MutRef, γ0_0 |)
+                              |) in
                             M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| v |) |) |)));
                         fun γ =>
                           ltac:(M.monadic
@@ -2851,7 +2911,12 @@ Module Impl_core_clone_Clone_where_core_clone_Clone_T_for_solana_program_option_
                     "solana_program_option::COption::Some",
                     0
                   |) in
-                let x := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                let _ := M.read (| γ1_0 |) in
+                let x :=
+                  M.alloc (|
+                    Ty.apply (Ty.path "&") [] [ T ],
+                    M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                  |) in
                 Value.StructTuple
                   "solana_program_option::COption::Some"
                   []
@@ -2930,7 +2995,12 @@ Module Impl_core_clone_Clone_where_core_clone_Clone_T_for_solana_program_option_
                     "solana_program_option::COption::Some",
                     0
                   |) in
-                let to := M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ2_0 |) in
+                let _ := M.read (| γ2_0 |) in
+                let to :=
+                  M.alloc (|
+                    Ty.apply (Ty.path "&mut") [] [ T ],
+                    M.borrow (| Pointer.Kind.MutRef, γ2_0 |)
+                  |) in
                 let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                 let γ2_0 :=
                   M.SubPointer.get_struct_tuple_field (|
@@ -2938,7 +3008,12 @@ Module Impl_core_clone_Clone_where_core_clone_Clone_T_for_solana_program_option_
                     "solana_program_option::COption::Some",
                     0
                   |) in
-                let from := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                let _ := M.read (| γ2_0 |) in
+                let from :=
+                  M.alloc (|
+                    Ty.apply (Ty.path "&") [] [ T ],
+                    M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                  |) in
                 M.call_closure (|
                   Ty.tuple [],
                   M.get_trait_method (| "core::clone::Clone", T, [], [], "clone_from", [], [] |),

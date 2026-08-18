@@ -104,7 +104,7 @@ Module Impl_Deref_for_Bytes.
 
   Definition deref : RefStub.t Self bytes.Bytes.t := {|
     RefStub.path := [
-      Pointer.Index.Array 0
+      Pointer.Index.StructTuple "alloy_primitives::bytes_::Bytes" 0
     ];
     RefStub.projection self := self.(bytes.links.mod.Bytes.value);
     RefStub.injection self value := {| bytes.links.mod.Bytes.value := value |};
@@ -123,13 +123,83 @@ Module Impl_Deref_for_Bytes.
 End Impl_Deref_for_Bytes.
 Export (hints) Impl_Deref_for_Bytes.
 
+Module Impl_AsRef_slice_u8_for_Bytes.
+  Definition Self : Set :=
+    bytes.links.mod.Bytes.t.
+
+  Definition as_ref (ref_self : '& Self) : '& (list u8) :=
+    let ref_bytes_raw : '* bytes.Bytes.t := {|
+      Ref.core :=
+        SubPointer.Runner.apply
+          ref_self.(Ref.core)
+          links.mod.Bytes.SubPointer.get_0;
+    |} in
+    let ref_bytes : '& bytes.Bytes.t :=
+      Ref.cast_to Pointer.Kind.Ref ref_bytes_raw in
+    Ref.cast_to Pointer.Kind.Ref
+      (RefStub.apply
+        (kind_target := Pointer.Kind.Raw)
+        ref_bytes
+        bytes.simulate.bytes.Impl_AsRef_slice_u8_for_Bytes.as_ref).
+
+  Lemma as_ref_eq
+      (ref_self : '& Self)
+      (stack : Stack.t)
+      (self : Self) :
+    CanRead.t stack self ref_self ->
+    {{
+      SimulateM.eval_f
+        (links.mod.Impl_AsRef_slice_u8_for_Bytes.run_as_ref ref_self)
+        stack 🌲
+      (
+        Output.Success (as_ref ref_self),
+        stack
+      )
+    }}.
+  Proof.
+    intros H_can_read.
+    unfold as_ref.
+    with_strategy transparent
+      [links.mod.Impl_AsRef_slice_u8_for_Bytes.run_as_ref] cbn.
+    s. {
+      apply bytes.simulate.bytes.Impl_AsRef_slice_u8_for_Bytes.Eq.I.
+    }
+    s.
+  Qed.
+
+  Lemma can_read_as_ref
+      (ref_self : '& Self)
+      (stack : Stack.t)
+      (self : Self) :
+    CanRead.t stack self ref_self ->
+    CanRead.t
+      stack
+      self.(bytes.links.mod.Bytes.value).(bytes.Bytes.value)
+      (as_ref ref_self).
+  Proof.
+    intros H_read.
+    destruct H_read.
+    - unfold as_ref; cbn.
+      constructor.
+    - destruct run.
+      unfold as_ref; cbn.
+      unshelve eapply CanRead.Mutable.
+      + constructor.
+        exact nth.
+      + cbn.
+        cbn in H.
+        now rewrite H.
+  Qed.
+End Impl_AsRef_slice_u8_for_Bytes.
+Export (hints) Impl_AsRef_slice_u8_for_Bytes.
+
 Module Impl_DerefMut_for_Bytes.
   Definition Self : Set :=
     bytes.links.mod.Bytes.t.
 
   Definition deref_mut : RefStub.t Self bytes.Bytes.t := {|
     RefStub.path := [
-      Pointer.Index.Array 0
+      Pointer.Index.StructTuple "alloy_primitives::bytes_::Bytes" 0
     ];
     RefStub.projection self := self.(bytes.links.mod.Bytes.value);
     RefStub.injection self value := {| bytes.links.mod.Bytes.value := value |};

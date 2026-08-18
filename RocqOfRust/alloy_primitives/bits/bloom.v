@@ -238,6 +238,7 @@ Module bits.
                         "alloy_primitives::bits::bloom::BloomInput::Raw",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
@@ -249,7 +250,7 @@ Module bits.
                               []
                               [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -305,6 +306,7 @@ Module bits.
                         "alloy_primitives::bits::bloom::BloomInput::Hash",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
@@ -316,7 +318,7 @@ Module bits.
                               [ Value.Integer IntegerKind.Usize 32 ]
                               []
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -733,6 +735,7 @@ Module bits.
                                           let γ0_0 := M.deref (| M.read (| γ0_0 |) |) in
                                           let γ2_0 := M.SubPointer.get_tuple_field (| γ0_0, 0 |) in
                                           let γ2_1 := M.SubPointer.get_tuple_field (| γ0_0, 1 |) in
+                                          let _ := M.read (| γ2_0 |) in
                                           let address :=
                                             M.alloc (|
                                               Ty.apply
@@ -740,15 +743,16 @@ Module bits.
                                                 []
                                                 [ Ty.path "alloy_primitives::bits::address::Address"
                                                 ],
-                                              γ2_0
+                                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                             |) in
+                                          let _ := M.read (| γ2_1 |) in
                                           let log_data :=
                                             M.alloc (|
                                               Ty.apply
                                                 (Ty.path "&")
                                                 []
                                                 [ Ty.path "alloy_primitives::log::LogData" ],
-                                              γ2_1
+                                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
                                             |) in
                                           M.call_closure (|
                                             Ty.tuple [],

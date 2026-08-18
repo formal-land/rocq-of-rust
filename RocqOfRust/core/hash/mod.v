@@ -3050,7 +3050,12 @@ Module hash.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                    let value_T := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_0 |) in
+                    let _ := M.read (| γ0_0 |) in
+                    let value_T :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                      |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
                         M.call_closure (|
@@ -3102,8 +3107,18 @@ Module hash.
                   ltac:(M.monadic
                     (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                     let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                    let value_T := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_0 |) in
-                    let value_B := M.alloc (| Ty.apply (Ty.path "&") [] [ B ], γ0_1 |) in
+                    let _ := M.read (| γ0_0 |) in
+                    let value_T :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                      |) in
+                    let _ := M.read (| γ0_1 |) in
+                    let value_B :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ B ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_1 |)
+                      |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
                         M.call_closure (|
@@ -3165,9 +3180,24 @@ Module hash.
                     (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                     let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                     let γ0_2 := M.SubPointer.get_tuple_field (| γ, 2 |) in
-                    let value_T := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_0 |) in
-                    let value_B := M.alloc (| Ty.apply (Ty.path "&") [] [ B ], γ0_1 |) in
-                    let value_C := M.alloc (| Ty.apply (Ty.path "&") [] [ C ], γ0_2 |) in
+                    let _ := M.read (| γ0_0 |) in
+                    let value_T :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                      |) in
+                    let _ := M.read (| γ0_1 |) in
+                    let value_B :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ B ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_1 |)
+                      |) in
+                    let _ := M.read (| γ0_2 |) in
+                    let value_C :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ C ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_2 |)
+                      |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
                         M.call_closure (|
@@ -3240,10 +3270,30 @@ Module hash.
                     let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                     let γ0_2 := M.SubPointer.get_tuple_field (| γ, 2 |) in
                     let γ0_3 := M.SubPointer.get_tuple_field (| γ, 3 |) in
-                    let value_T := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_0 |) in
-                    let value_B := M.alloc (| Ty.apply (Ty.path "&") [] [ B ], γ0_1 |) in
-                    let value_C := M.alloc (| Ty.apply (Ty.path "&") [] [ C ], γ0_2 |) in
-                    let value_D := M.alloc (| Ty.apply (Ty.path "&") [] [ D ], γ0_3 |) in
+                    let _ := M.read (| γ0_0 |) in
+                    let value_T :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                      |) in
+                    let _ := M.read (| γ0_1 |) in
+                    let value_B :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ B ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_1 |)
+                      |) in
+                    let _ := M.read (| γ0_2 |) in
+                    let value_C :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ C ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_2 |)
+                      |) in
+                    let _ := M.read (| γ0_3 |) in
+                    let value_D :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ D ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_3 |)
+                      |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
                         M.call_closure (|
@@ -3331,11 +3381,36 @@ Module hash.
                     let γ0_2 := M.SubPointer.get_tuple_field (| γ, 2 |) in
                     let γ0_3 := M.SubPointer.get_tuple_field (| γ, 3 |) in
                     let γ0_4 := M.SubPointer.get_tuple_field (| γ, 4 |) in
-                    let value_T := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_0 |) in
-                    let value_B := M.alloc (| Ty.apply (Ty.path "&") [] [ B ], γ0_1 |) in
-                    let value_C := M.alloc (| Ty.apply (Ty.path "&") [] [ C ], γ0_2 |) in
-                    let value_D := M.alloc (| Ty.apply (Ty.path "&") [] [ D ], γ0_3 |) in
-                    let value_E := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ0_4 |) in
+                    let _ := M.read (| γ0_0 |) in
+                    let value_T :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                      |) in
+                    let _ := M.read (| γ0_1 |) in
+                    let value_B :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ B ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_1 |)
+                      |) in
+                    let _ := M.read (| γ0_2 |) in
+                    let value_C :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ C ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_2 |)
+                      |) in
+                    let _ := M.read (| γ0_3 |) in
+                    let value_D :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ D ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_3 |)
+                      |) in
+                    let _ := M.read (| γ0_4 |) in
+                    let value_E :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ E ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_4 |)
+                      |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
                         M.call_closure (|
@@ -3433,12 +3508,42 @@ Module hash.
                     let γ0_3 := M.SubPointer.get_tuple_field (| γ, 3 |) in
                     let γ0_4 := M.SubPointer.get_tuple_field (| γ, 4 |) in
                     let γ0_5 := M.SubPointer.get_tuple_field (| γ, 5 |) in
-                    let value_T := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_0 |) in
-                    let value_B := M.alloc (| Ty.apply (Ty.path "&") [] [ B ], γ0_1 |) in
-                    let value_C := M.alloc (| Ty.apply (Ty.path "&") [] [ C ], γ0_2 |) in
-                    let value_D := M.alloc (| Ty.apply (Ty.path "&") [] [ D ], γ0_3 |) in
-                    let value_E := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ0_4 |) in
-                    let value_F := M.alloc (| Ty.apply (Ty.path "&") [] [ F ], γ0_5 |) in
+                    let _ := M.read (| γ0_0 |) in
+                    let value_T :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                      |) in
+                    let _ := M.read (| γ0_1 |) in
+                    let value_B :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ B ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_1 |)
+                      |) in
+                    let _ := M.read (| γ0_2 |) in
+                    let value_C :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ C ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_2 |)
+                      |) in
+                    let _ := M.read (| γ0_3 |) in
+                    let value_D :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ D ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_3 |)
+                      |) in
+                    let _ := M.read (| γ0_4 |) in
+                    let value_E :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ E ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_4 |)
+                      |) in
+                    let _ := M.read (| γ0_5 |) in
+                    let value_F :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ F ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_5 |)
+                      |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
                         M.call_closure (|
@@ -3546,13 +3651,48 @@ Module hash.
                     let γ0_4 := M.SubPointer.get_tuple_field (| γ, 4 |) in
                     let γ0_5 := M.SubPointer.get_tuple_field (| γ, 5 |) in
                     let γ0_6 := M.SubPointer.get_tuple_field (| γ, 6 |) in
-                    let value_T := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_0 |) in
-                    let value_B := M.alloc (| Ty.apply (Ty.path "&") [] [ B ], γ0_1 |) in
-                    let value_C := M.alloc (| Ty.apply (Ty.path "&") [] [ C ], γ0_2 |) in
-                    let value_D := M.alloc (| Ty.apply (Ty.path "&") [] [ D ], γ0_3 |) in
-                    let value_E := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ0_4 |) in
-                    let value_F := M.alloc (| Ty.apply (Ty.path "&") [] [ F ], γ0_5 |) in
-                    let value_G := M.alloc (| Ty.apply (Ty.path "&") [] [ G ], γ0_6 |) in
+                    let _ := M.read (| γ0_0 |) in
+                    let value_T :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                      |) in
+                    let _ := M.read (| γ0_1 |) in
+                    let value_B :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ B ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_1 |)
+                      |) in
+                    let _ := M.read (| γ0_2 |) in
+                    let value_C :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ C ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_2 |)
+                      |) in
+                    let _ := M.read (| γ0_3 |) in
+                    let value_D :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ D ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_3 |)
+                      |) in
+                    let _ := M.read (| γ0_4 |) in
+                    let value_E :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ E ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_4 |)
+                      |) in
+                    let _ := M.read (| γ0_5 |) in
+                    let value_F :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ F ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_5 |)
+                      |) in
+                    let _ := M.read (| γ0_6 |) in
+                    let value_G :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ G ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_6 |)
+                      |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
                         M.call_closure (|
@@ -3673,14 +3813,54 @@ Module hash.
                     let γ0_5 := M.SubPointer.get_tuple_field (| γ, 5 |) in
                     let γ0_6 := M.SubPointer.get_tuple_field (| γ, 6 |) in
                     let γ0_7 := M.SubPointer.get_tuple_field (| γ, 7 |) in
-                    let value_T := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_0 |) in
-                    let value_B := M.alloc (| Ty.apply (Ty.path "&") [] [ B ], γ0_1 |) in
-                    let value_C := M.alloc (| Ty.apply (Ty.path "&") [] [ C ], γ0_2 |) in
-                    let value_D := M.alloc (| Ty.apply (Ty.path "&") [] [ D ], γ0_3 |) in
-                    let value_E := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ0_4 |) in
-                    let value_F := M.alloc (| Ty.apply (Ty.path "&") [] [ F ], γ0_5 |) in
-                    let value_G := M.alloc (| Ty.apply (Ty.path "&") [] [ G ], γ0_6 |) in
-                    let value_H := M.alloc (| Ty.apply (Ty.path "&") [] [ H ], γ0_7 |) in
+                    let _ := M.read (| γ0_0 |) in
+                    let value_T :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                      |) in
+                    let _ := M.read (| γ0_1 |) in
+                    let value_B :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ B ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_1 |)
+                      |) in
+                    let _ := M.read (| γ0_2 |) in
+                    let value_C :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ C ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_2 |)
+                      |) in
+                    let _ := M.read (| γ0_3 |) in
+                    let value_D :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ D ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_3 |)
+                      |) in
+                    let _ := M.read (| γ0_4 |) in
+                    let value_E :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ E ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_4 |)
+                      |) in
+                    let _ := M.read (| γ0_5 |) in
+                    let value_F :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ F ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_5 |)
+                      |) in
+                    let _ := M.read (| γ0_6 |) in
+                    let value_G :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ G ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_6 |)
+                      |) in
+                    let _ := M.read (| γ0_7 |) in
+                    let value_H :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ H ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_7 |)
+                      |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
                         M.call_closure (|
@@ -3811,15 +3991,60 @@ Module hash.
                     let γ0_6 := M.SubPointer.get_tuple_field (| γ, 6 |) in
                     let γ0_7 := M.SubPointer.get_tuple_field (| γ, 7 |) in
                     let γ0_8 := M.SubPointer.get_tuple_field (| γ, 8 |) in
-                    let value_T := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_0 |) in
-                    let value_B := M.alloc (| Ty.apply (Ty.path "&") [] [ B ], γ0_1 |) in
-                    let value_C := M.alloc (| Ty.apply (Ty.path "&") [] [ C ], γ0_2 |) in
-                    let value_D := M.alloc (| Ty.apply (Ty.path "&") [] [ D ], γ0_3 |) in
-                    let value_E := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ0_4 |) in
-                    let value_F := M.alloc (| Ty.apply (Ty.path "&") [] [ F ], γ0_5 |) in
-                    let value_G := M.alloc (| Ty.apply (Ty.path "&") [] [ G ], γ0_6 |) in
-                    let value_H := M.alloc (| Ty.apply (Ty.path "&") [] [ H ], γ0_7 |) in
-                    let value_I := M.alloc (| Ty.apply (Ty.path "&") [] [ I ], γ0_8 |) in
+                    let _ := M.read (| γ0_0 |) in
+                    let value_T :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                      |) in
+                    let _ := M.read (| γ0_1 |) in
+                    let value_B :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ B ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_1 |)
+                      |) in
+                    let _ := M.read (| γ0_2 |) in
+                    let value_C :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ C ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_2 |)
+                      |) in
+                    let _ := M.read (| γ0_3 |) in
+                    let value_D :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ D ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_3 |)
+                      |) in
+                    let _ := M.read (| γ0_4 |) in
+                    let value_E :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ E ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_4 |)
+                      |) in
+                    let _ := M.read (| γ0_5 |) in
+                    let value_F :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ F ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_5 |)
+                      |) in
+                    let _ := M.read (| γ0_6 |) in
+                    let value_G :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ G ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_6 |)
+                      |) in
+                    let _ := M.read (| γ0_7 |) in
+                    let value_H :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ H ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_7 |)
+                      |) in
+                    let _ := M.read (| γ0_8 |) in
+                    let value_I :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ I ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_8 |)
+                      |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
                         M.call_closure (|
@@ -3961,16 +4186,66 @@ Module hash.
                     let γ0_7 := M.SubPointer.get_tuple_field (| γ, 7 |) in
                     let γ0_8 := M.SubPointer.get_tuple_field (| γ, 8 |) in
                     let γ0_9 := M.SubPointer.get_tuple_field (| γ, 9 |) in
-                    let value_T := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_0 |) in
-                    let value_B := M.alloc (| Ty.apply (Ty.path "&") [] [ B ], γ0_1 |) in
-                    let value_C := M.alloc (| Ty.apply (Ty.path "&") [] [ C ], γ0_2 |) in
-                    let value_D := M.alloc (| Ty.apply (Ty.path "&") [] [ D ], γ0_3 |) in
-                    let value_E := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ0_4 |) in
-                    let value_F := M.alloc (| Ty.apply (Ty.path "&") [] [ F ], γ0_5 |) in
-                    let value_G := M.alloc (| Ty.apply (Ty.path "&") [] [ G ], γ0_6 |) in
-                    let value_H := M.alloc (| Ty.apply (Ty.path "&") [] [ H ], γ0_7 |) in
-                    let value_I := M.alloc (| Ty.apply (Ty.path "&") [] [ I ], γ0_8 |) in
-                    let value_J := M.alloc (| Ty.apply (Ty.path "&") [] [ J ], γ0_9 |) in
+                    let _ := M.read (| γ0_0 |) in
+                    let value_T :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                      |) in
+                    let _ := M.read (| γ0_1 |) in
+                    let value_B :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ B ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_1 |)
+                      |) in
+                    let _ := M.read (| γ0_2 |) in
+                    let value_C :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ C ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_2 |)
+                      |) in
+                    let _ := M.read (| γ0_3 |) in
+                    let value_D :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ D ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_3 |)
+                      |) in
+                    let _ := M.read (| γ0_4 |) in
+                    let value_E :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ E ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_4 |)
+                      |) in
+                    let _ := M.read (| γ0_5 |) in
+                    let value_F :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ F ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_5 |)
+                      |) in
+                    let _ := M.read (| γ0_6 |) in
+                    let value_G :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ G ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_6 |)
+                      |) in
+                    let _ := M.read (| γ0_7 |) in
+                    let value_H :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ H ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_7 |)
+                      |) in
+                    let _ := M.read (| γ0_8 |) in
+                    let value_I :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ I ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_8 |)
+                      |) in
+                    let _ := M.read (| γ0_9 |) in
+                    let value_J :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ J ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_9 |)
+                      |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
                         M.call_closure (|
@@ -4122,17 +4397,72 @@ Module hash.
                     let γ0_8 := M.SubPointer.get_tuple_field (| γ, 8 |) in
                     let γ0_9 := M.SubPointer.get_tuple_field (| γ, 9 |) in
                     let γ0_10 := M.SubPointer.get_tuple_field (| γ, 10 |) in
-                    let value_T := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_0 |) in
-                    let value_B := M.alloc (| Ty.apply (Ty.path "&") [] [ B ], γ0_1 |) in
-                    let value_C := M.alloc (| Ty.apply (Ty.path "&") [] [ C ], γ0_2 |) in
-                    let value_D := M.alloc (| Ty.apply (Ty.path "&") [] [ D ], γ0_3 |) in
-                    let value_E := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ0_4 |) in
-                    let value_F := M.alloc (| Ty.apply (Ty.path "&") [] [ F ], γ0_5 |) in
-                    let value_G := M.alloc (| Ty.apply (Ty.path "&") [] [ G ], γ0_6 |) in
-                    let value_H := M.alloc (| Ty.apply (Ty.path "&") [] [ H ], γ0_7 |) in
-                    let value_I := M.alloc (| Ty.apply (Ty.path "&") [] [ I ], γ0_8 |) in
-                    let value_J := M.alloc (| Ty.apply (Ty.path "&") [] [ J ], γ0_9 |) in
-                    let value_K := M.alloc (| Ty.apply (Ty.path "&") [] [ K ], γ0_10 |) in
+                    let _ := M.read (| γ0_0 |) in
+                    let value_T :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                      |) in
+                    let _ := M.read (| γ0_1 |) in
+                    let value_B :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ B ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_1 |)
+                      |) in
+                    let _ := M.read (| γ0_2 |) in
+                    let value_C :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ C ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_2 |)
+                      |) in
+                    let _ := M.read (| γ0_3 |) in
+                    let value_D :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ D ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_3 |)
+                      |) in
+                    let _ := M.read (| γ0_4 |) in
+                    let value_E :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ E ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_4 |)
+                      |) in
+                    let _ := M.read (| γ0_5 |) in
+                    let value_F :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ F ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_5 |)
+                      |) in
+                    let _ := M.read (| γ0_6 |) in
+                    let value_G :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ G ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_6 |)
+                      |) in
+                    let _ := M.read (| γ0_7 |) in
+                    let value_H :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ H ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_7 |)
+                      |) in
+                    let _ := M.read (| γ0_8 |) in
+                    let value_I :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ I ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_8 |)
+                      |) in
+                    let _ := M.read (| γ0_9 |) in
+                    let value_J :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ J ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_9 |)
+                      |) in
+                    let _ := M.read (| γ0_10 |) in
+                    let value_K :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ K ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_10 |)
+                      |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
                         M.call_closure (|
@@ -4294,18 +4624,78 @@ Module hash.
                     let γ0_9 := M.SubPointer.get_tuple_field (| γ, 9 |) in
                     let γ0_10 := M.SubPointer.get_tuple_field (| γ, 10 |) in
                     let γ0_11 := M.SubPointer.get_tuple_field (| γ, 11 |) in
-                    let value_T := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_0 |) in
-                    let value_B := M.alloc (| Ty.apply (Ty.path "&") [] [ B ], γ0_1 |) in
-                    let value_C := M.alloc (| Ty.apply (Ty.path "&") [] [ C ], γ0_2 |) in
-                    let value_D := M.alloc (| Ty.apply (Ty.path "&") [] [ D ], γ0_3 |) in
-                    let value_E := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ0_4 |) in
-                    let value_F := M.alloc (| Ty.apply (Ty.path "&") [] [ F ], γ0_5 |) in
-                    let value_G := M.alloc (| Ty.apply (Ty.path "&") [] [ G ], γ0_6 |) in
-                    let value_H := M.alloc (| Ty.apply (Ty.path "&") [] [ H ], γ0_7 |) in
-                    let value_I := M.alloc (| Ty.apply (Ty.path "&") [] [ I ], γ0_8 |) in
-                    let value_J := M.alloc (| Ty.apply (Ty.path "&") [] [ J ], γ0_9 |) in
-                    let value_K := M.alloc (| Ty.apply (Ty.path "&") [] [ K ], γ0_10 |) in
-                    let value_L := M.alloc (| Ty.apply (Ty.path "&") [] [ L ], γ0_11 |) in
+                    let _ := M.read (| γ0_0 |) in
+                    let value_T :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                      |) in
+                    let _ := M.read (| γ0_1 |) in
+                    let value_B :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ B ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_1 |)
+                      |) in
+                    let _ := M.read (| γ0_2 |) in
+                    let value_C :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ C ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_2 |)
+                      |) in
+                    let _ := M.read (| γ0_3 |) in
+                    let value_D :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ D ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_3 |)
+                      |) in
+                    let _ := M.read (| γ0_4 |) in
+                    let value_E :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ E ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_4 |)
+                      |) in
+                    let _ := M.read (| γ0_5 |) in
+                    let value_F :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ F ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_5 |)
+                      |) in
+                    let _ := M.read (| γ0_6 |) in
+                    let value_G :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ G ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_6 |)
+                      |) in
+                    let _ := M.read (| γ0_7 |) in
+                    let value_H :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ H ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_7 |)
+                      |) in
+                    let _ := M.read (| γ0_8 |) in
+                    let value_I :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ I ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_8 |)
+                      |) in
+                    let _ := M.read (| γ0_9 |) in
+                    let value_J :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ J ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_9 |)
+                      |) in
+                    let _ := M.read (| γ0_10 |) in
+                    let value_K :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ K ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_10 |)
+                      |) in
+                    let _ := M.read (| γ0_11 |) in
+                    let value_L :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ L ],
+                        M.borrow (| Pointer.Kind.Ref, γ0_11 |)
+                      |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
                         M.call_closure (|

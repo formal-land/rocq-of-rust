@@ -3222,13 +3222,14 @@ Module instructions.
                                 "revm_bytecode::bytecode::Bytecode::Eip7702",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let code :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "revm_bytecode::eip7702::Eip7702Bytecode" ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             M.read (|
                               let~ _ : Ty.tuple [] :=

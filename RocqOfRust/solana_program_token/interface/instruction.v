@@ -263,12 +263,19 @@ Module instruction.
                       "spl_token_interface::instruction::TokenInstruction::InitializeMint",
                       "freeze_authority"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
                   let __self_1 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                      γ1_1
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                     |) in
+                  let _ := M.read (| γ1_2 |) in
                   let __self_2 :=
                     M.alloc (|
                       Ty.apply
@@ -280,7 +287,7 @@ Module instruction.
                             []
                             [ Ty.path "solana_address::Address" ]
                         ],
-                      γ1_2
+                      M.borrow (| Pointer.Kind.Ref, γ1_2 |)
                     |) in
                   Value.mkStructRecord
                     "spl_token_interface::instruction::TokenInstruction::InitializeMint"
@@ -358,7 +365,12 @@ Module instruction.
                       "spl_token_interface::instruction::TokenInstruction::InitializeMultisig",
                       "m"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.mkStructRecord
                     "spl_token_interface::instruction::TokenInstruction::InitializeMultisig"
                     []
@@ -388,7 +400,12 @@ Module instruction.
                       "spl_token_interface::instruction::TokenInstruction::Transfer",
                       "amount"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.mkStructRecord
                     "spl_token_interface::instruction::TokenInstruction::Transfer"
                     []
@@ -418,7 +435,12 @@ Module instruction.
                       "spl_token_interface::instruction::TokenInstruction::Approve",
                       "amount"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.mkStructRecord
                     "spl_token_interface::instruction::TokenInstruction::Approve"
                     []
@@ -467,14 +489,16 @@ Module instruction.
                       "spl_token_interface::instruction::TokenInstruction::SetAuthority",
                       "new_authority"
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "spl_token_interface::instruction::AuthorityType" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
+                  let _ := M.read (| γ1_1 |) in
                   let __self_1 :=
                     M.alloc (|
                       Ty.apply
@@ -486,7 +510,7 @@ Module instruction.
                             []
                             [ Ty.path "solana_address::Address" ]
                         ],
-                      γ1_1
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                     |) in
                   Value.mkStructRecord
                     "spl_token_interface::instruction::TokenInstruction::SetAuthority"
@@ -537,7 +561,12 @@ Module instruction.
                       "spl_token_interface::instruction::TokenInstruction::MintTo",
                       "amount"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.mkStructRecord
                     "spl_token_interface::instruction::TokenInstruction::MintTo"
                     []
@@ -567,7 +596,12 @@ Module instruction.
                       "spl_token_interface::instruction::TokenInstruction::Burn",
                       "amount"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.mkStructRecord
                     "spl_token_interface::instruction::TokenInstruction::Burn"
                     []
@@ -642,8 +676,18 @@ Module instruction.
                       "spl_token_interface::instruction::TokenInstruction::TransferChecked",
                       "decimals"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_1 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   Value.mkStructRecord
                     "spl_token_interface::instruction::TokenInstruction::TransferChecked"
                     []
@@ -693,8 +737,18 @@ Module instruction.
                       "spl_token_interface::instruction::TokenInstruction::ApproveChecked",
                       "decimals"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_1 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   Value.mkStructRecord
                     "spl_token_interface::instruction::TokenInstruction::ApproveChecked"
                     []
@@ -744,8 +798,18 @@ Module instruction.
                       "spl_token_interface::instruction::TokenInstruction::MintToChecked",
                       "decimals"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_1 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   Value.mkStructRecord
                     "spl_token_interface::instruction::TokenInstruction::MintToChecked"
                     []
@@ -795,8 +859,18 @@ Module instruction.
                       "spl_token_interface::instruction::TokenInstruction::BurnChecked",
                       "decimals"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_1 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   Value.mkStructRecord
                     "spl_token_interface::instruction::TokenInstruction::BurnChecked"
                     []
@@ -840,10 +914,11 @@ Module instruction.
                       "spl_token_interface::instruction::TokenInstruction::InitializeAccount2",
                       "owner"
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.mkStructRecord
                     "spl_token_interface::instruction::TokenInstruction::InitializeAccount2"
@@ -887,10 +962,11 @@ Module instruction.
                       "spl_token_interface::instruction::TokenInstruction::InitializeAccount3",
                       "owner"
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.mkStructRecord
                     "spl_token_interface::instruction::TokenInstruction::InitializeAccount3"
@@ -921,7 +997,12 @@ Module instruction.
                       "spl_token_interface::instruction::TokenInstruction::InitializeMultisig2",
                       "m"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.mkStructRecord
                     "spl_token_interface::instruction::TokenInstruction::InitializeMultisig2"
                     []
@@ -963,12 +1044,19 @@ Module instruction.
                       "spl_token_interface::instruction::TokenInstruction::InitializeMint2",
                       "freeze_authority"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
                   let __self_1 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                      γ1_1
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                     |) in
+                  let _ := M.read (| γ1_2 |) in
                   let __self_2 :=
                     M.alloc (|
                       Ty.apply
@@ -980,7 +1068,7 @@ Module instruction.
                             []
                             [ Ty.path "solana_address::Address" ]
                         ],
-                      γ1_2
+                      M.borrow (| Pointer.Kind.Ref, γ1_2 |)
                     |) in
                   Value.mkStructRecord
                     "spl_token_interface::instruction::TokenInstruction::InitializeMint2"
@@ -1071,7 +1159,12 @@ Module instruction.
                       "spl_token_interface::instruction::TokenInstruction::AmountToUiAmount",
                       "amount"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.mkStructRecord
                     "spl_token_interface::instruction::TokenInstruction::AmountToUiAmount"
                     []
@@ -1101,10 +1194,11 @@ Module instruction.
                       "spl_token_interface::instruction::TokenInstruction::UiAmountToAmount",
                       "ui_amount"
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.mkStructRecord
                     "spl_token_interface::instruction::TokenInstruction::UiAmountToAmount"
@@ -1192,12 +1286,19 @@ Module instruction.
                       "spl_token_interface::instruction::TokenInstruction::InitializeMint",
                       "freeze_authority"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
                   let __self_1 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                      γ1_1
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                     |) in
+                  let _ := M.read (| γ1_2 |) in
                   let __self_2 :=
                     M.alloc (|
                       Ty.apply
@@ -1209,7 +1310,7 @@ Module instruction.
                             []
                             [ Ty.path "solana_address::Address" ]
                         ],
-                      γ1_2
+                      M.borrow (| Pointer.Kind.Ref, γ1_2 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -1320,7 +1421,12 @@ Module instruction.
                       "spl_token_interface::instruction::TokenInstruction::InitializeMultisig",
                       "m"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -1366,7 +1472,12 @@ Module instruction.
                       "spl_token_interface::instruction::TokenInstruction::Transfer",
                       "amount"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -1412,7 +1523,12 @@ Module instruction.
                       "spl_token_interface::instruction::TokenInstruction::Approve",
                       "amount"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -1488,14 +1604,16 @@ Module instruction.
                       "spl_token_interface::instruction::TokenInstruction::SetAuthority",
                       "new_authority"
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "spl_token_interface::instruction::AuthorityType" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
+                  let _ := M.read (| γ1_1 |) in
                   let __self_1 :=
                     M.alloc (|
                       Ty.apply
@@ -1507,7 +1625,7 @@ Module instruction.
                             []
                             [ Ty.path "solana_address::Address" ]
                         ],
-                      γ1_1
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -1579,7 +1697,12 @@ Module instruction.
                       "spl_token_interface::instruction::TokenInstruction::MintTo",
                       "amount"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -1625,7 +1748,12 @@ Module instruction.
                       "spl_token_interface::instruction::TokenInstruction::Burn",
                       "amount"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -1749,8 +1877,18 @@ Module instruction.
                       "spl_token_interface::instruction::TokenInstruction::TransferChecked",
                       "decimals"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_1 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -1811,8 +1949,18 @@ Module instruction.
                       "spl_token_interface::instruction::TokenInstruction::ApproveChecked",
                       "decimals"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_1 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -1873,8 +2021,18 @@ Module instruction.
                       "spl_token_interface::instruction::TokenInstruction::MintToChecked",
                       "decimals"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_1 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -1935,8 +2093,18 @@ Module instruction.
                       "spl_token_interface::instruction::TokenInstruction::BurnChecked",
                       "decimals"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_1 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -1991,10 +2159,11 @@ Module instruction.
                       "spl_token_interface::instruction::TokenInstruction::InitializeAccount2",
                       "owner"
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -2068,10 +2237,11 @@ Module instruction.
                       "spl_token_interface::instruction::TokenInstruction::InitializeAccount3",
                       "owner"
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -2121,7 +2291,12 @@ Module instruction.
                       "spl_token_interface::instruction::TokenInstruction::InitializeMultisig2",
                       "m"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -2179,12 +2354,19 @@ Module instruction.
                       "spl_token_interface::instruction::TokenInstruction::InitializeMint2",
                       "freeze_authority"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
                   let __self_1 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                      γ1_1
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                     |) in
+                  let _ := M.read (| γ1_2 |) in
                   let __self_2 :=
                     M.alloc (|
                       Ty.apply
@@ -2196,7 +2378,7 @@ Module instruction.
                             []
                             [ Ty.path "solana_address::Address" ]
                         ],
-                      γ1_2
+                      M.borrow (| Pointer.Kind.Ref, γ1_2 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -2334,7 +2516,12 @@ Module instruction.
                       "spl_token_interface::instruction::TokenInstruction::AmountToUiAmount",
                       "amount"
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -2383,10 +2570,11 @@ Module instruction.
                       "spl_token_interface::instruction::TokenInstruction::UiAmountToAmount",
                       "ui_amount"
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -2552,13 +2740,19 @@ Module instruction.
                               "spl_token_interface::instruction::TokenInstruction::InitializeMint",
                               "freeze_authority"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __self_1 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                              γ2_1
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
                             |) in
+                          let _ := M.read (| γ2_2 |) in
                           let __self_2 :=
                             M.alloc (|
                               Ty.apply
@@ -2570,7 +2764,7 @@ Module instruction.
                                     []
                                     [ Ty.path "solana_address::Address" ]
                                 ],
-                              γ2_2
+                              M.borrow (| Pointer.Kind.Ref, γ2_2 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -2591,13 +2785,19 @@ Module instruction.
                               "spl_token_interface::instruction::TokenInstruction::InitializeMint",
                               "freeze_authority"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __arg1_1 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                              γ2_1
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
                             |) in
+                          let _ := M.read (| γ2_2 |) in
                           let __arg1_2 :=
                             M.alloc (|
                               Ty.apply
@@ -2609,7 +2809,7 @@ Module instruction.
                                     []
                                     [ Ty.path "solana_address::Address" ]
                                 ],
-                              γ2_2
+                              M.borrow (| Pointer.Kind.Ref, γ2_2 |)
                             |) in
                           LogicalOp.and (|
                             LogicalOp.and (|
@@ -2699,8 +2899,12 @@ Module instruction.
                               "spl_token_interface::instruction::TokenInstruction::InitializeMultisig",
                               "m"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_record_field (|
@@ -2708,8 +2912,12 @@ Module instruction.
                               "spl_token_interface::instruction::TokenInstruction::InitializeMultisig",
                               "m"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -2737,8 +2945,12 @@ Module instruction.
                               "spl_token_interface::instruction::TokenInstruction::Transfer",
                               "amount"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_record_field (|
@@ -2746,8 +2958,12 @@ Module instruction.
                               "spl_token_interface::instruction::TokenInstruction::Transfer",
                               "amount"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -2775,8 +2991,12 @@ Module instruction.
                               "spl_token_interface::instruction::TokenInstruction::Approve",
                               "amount"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_record_field (|
@@ -2784,8 +3004,12 @@ Module instruction.
                               "spl_token_interface::instruction::TokenInstruction::Approve",
                               "amount"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -2819,14 +3043,16 @@ Module instruction.
                               "spl_token_interface::instruction::TokenInstruction::SetAuthority",
                               "new_authority"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "spl_token_interface::instruction::AuthorityType" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __self_1 :=
                             M.alloc (|
                               Ty.apply
@@ -2838,7 +3064,7 @@ Module instruction.
                                     []
                                     [ Ty.path "solana_address::Address" ]
                                 ],
-                              γ2_1
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -2853,14 +3079,16 @@ Module instruction.
                               "spl_token_interface::instruction::TokenInstruction::SetAuthority",
                               "new_authority"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "spl_token_interface::instruction::AuthorityType" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __arg1_1 :=
                             M.alloc (|
                               Ty.apply
@@ -2872,7 +3100,7 @@ Module instruction.
                                     []
                                     [ Ty.path "solana_address::Address" ]
                                 ],
-                              γ2_1
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
                             |) in
                           LogicalOp.and (|
                             M.call_closure (|
@@ -2946,8 +3174,12 @@ Module instruction.
                               "spl_token_interface::instruction::TokenInstruction::MintTo",
                               "amount"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_record_field (|
@@ -2955,8 +3187,12 @@ Module instruction.
                               "spl_token_interface::instruction::TokenInstruction::MintTo",
                               "amount"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -2984,8 +3220,12 @@ Module instruction.
                               "spl_token_interface::instruction::TokenInstruction::Burn",
                               "amount"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_record_field (|
@@ -2993,8 +3233,12 @@ Module instruction.
                               "spl_token_interface::instruction::TokenInstruction::Burn",
                               "amount"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -3028,10 +3272,18 @@ Module instruction.
                               "spl_token_interface::instruction::TokenInstruction::TransferChecked",
                               "decimals"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __self_1 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_record_field (|
@@ -3045,10 +3297,18 @@ Module instruction.
                               "spl_token_interface::instruction::TokenInstruction::TransferChecked",
                               "decimals"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __arg1_1 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           LogicalOp.and (|
                             M.call_closure (|
                               Ty.path "bool",
@@ -3101,10 +3361,18 @@ Module instruction.
                               "spl_token_interface::instruction::TokenInstruction::ApproveChecked",
                               "decimals"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __self_1 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_record_field (|
@@ -3118,10 +3386,18 @@ Module instruction.
                               "spl_token_interface::instruction::TokenInstruction::ApproveChecked",
                               "decimals"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __arg1_1 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           LogicalOp.and (|
                             M.call_closure (|
                               Ty.path "bool",
@@ -3174,10 +3450,18 @@ Module instruction.
                               "spl_token_interface::instruction::TokenInstruction::MintToChecked",
                               "decimals"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __self_1 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_record_field (|
@@ -3191,10 +3475,18 @@ Module instruction.
                               "spl_token_interface::instruction::TokenInstruction::MintToChecked",
                               "decimals"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __arg1_1 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           LogicalOp.and (|
                             M.call_closure (|
                               Ty.path "bool",
@@ -3247,10 +3539,18 @@ Module instruction.
                               "spl_token_interface::instruction::TokenInstruction::BurnChecked",
                               "decimals"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __self_1 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_record_field (|
@@ -3264,10 +3564,18 @@ Module instruction.
                               "spl_token_interface::instruction::TokenInstruction::BurnChecked",
                               "decimals"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __arg1_1 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           LogicalOp.and (|
                             M.call_closure (|
                               Ty.path "bool",
@@ -3314,10 +3622,11 @@ Module instruction.
                               "spl_token_interface::instruction::TokenInstruction::InitializeAccount2",
                               "owner"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -3326,10 +3635,11 @@ Module instruction.
                               "spl_token_interface::instruction::TokenInstruction::InitializeAccount2",
                               "owner"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -3358,10 +3668,11 @@ Module instruction.
                               "spl_token_interface::instruction::TokenInstruction::InitializeAccount3",
                               "owner"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -3370,10 +3681,11 @@ Module instruction.
                               "spl_token_interface::instruction::TokenInstruction::InitializeAccount3",
                               "owner"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -3402,8 +3714,12 @@ Module instruction.
                               "spl_token_interface::instruction::TokenInstruction::InitializeMultisig2",
                               "m"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_record_field (|
@@ -3411,8 +3727,12 @@ Module instruction.
                               "spl_token_interface::instruction::TokenInstruction::InitializeMultisig2",
                               "m"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -3452,13 +3772,19 @@ Module instruction.
                               "spl_token_interface::instruction::TokenInstruction::InitializeMint2",
                               "freeze_authority"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __self_1 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                              γ2_1
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
                             |) in
+                          let _ := M.read (| γ2_2 |) in
                           let __self_2 :=
                             M.alloc (|
                               Ty.apply
@@ -3470,7 +3796,7 @@ Module instruction.
                                     []
                                     [ Ty.path "solana_address::Address" ]
                                 ],
-                              γ2_2
+                              M.borrow (| Pointer.Kind.Ref, γ2_2 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -3491,13 +3817,19 @@ Module instruction.
                               "spl_token_interface::instruction::TokenInstruction::InitializeMint2",
                               "freeze_authority"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __arg1_1 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                              γ2_1
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
                             |) in
+                          let _ := M.read (| γ2_2 |) in
                           let __arg1_2 :=
                             M.alloc (|
                               Ty.apply
@@ -3509,7 +3841,7 @@ Module instruction.
                                     []
                                     [ Ty.path "solana_address::Address" ]
                                 ],
-                              γ2_2
+                              M.borrow (| Pointer.Kind.Ref, γ2_2 |)
                             |) in
                           LogicalOp.and (|
                             LogicalOp.and (|
@@ -3599,8 +3931,12 @@ Module instruction.
                               "spl_token_interface::instruction::TokenInstruction::AmountToUiAmount",
                               "amount"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_record_field (|
@@ -3608,8 +3944,12 @@ Module instruction.
                               "spl_token_interface::instruction::TokenInstruction::AmountToUiAmount",
                               "amount"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -3637,13 +3977,14 @@ Module instruction.
                               "spl_token_interface::instruction::TokenInstruction::UiAmountToAmount",
                               "ui_amount"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -3652,13 +3993,14 @@ Module instruction.
                               "spl_token_interface::instruction::TokenInstruction::UiAmountToAmount",
                               "ui_amount"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -10488,11 +10830,13 @@ Module instruction.
                           "spl_token_interface::instruction::TokenInstruction::InitializeMint",
                           "decimals"
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let mint_authority :=
                         M.alloc (|
                           Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
+                      let _ := M.read (| γ1_1 |) in
                       let freeze_authority :=
                         M.alloc (|
                           Ty.apply
@@ -10504,7 +10848,7 @@ Module instruction.
                                 []
                                 [ Ty.path "solana_address::Address" ]
                             ],
-                          γ1_1
+                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                         |) in
                       let decimals := M.copy (| Ty.path "u8", γ1_2 |) in
                       M.read (|
@@ -11088,14 +11432,16 @@ Module instruction.
                           "spl_token_interface::instruction::TokenInstruction::SetAuthority",
                           "new_authority"
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let authority_type :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "spl_token_interface::instruction::AuthorityType" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
+                      let _ := M.read (| γ1_1 |) in
                       let new_authority :=
                         M.alloc (|
                           Ty.apply
@@ -11107,7 +11453,7 @@ Module instruction.
                                 []
                                 [ Ty.path "solana_address::Address" ]
                             ],
-                          γ1_1
+                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                         |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
@@ -11938,11 +12284,13 @@ Module instruction.
                           "spl_token_interface::instruction::TokenInstruction::InitializeMint2",
                           "decimals"
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let mint_authority :=
                         M.alloc (|
                           Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
+                      let _ := M.read (| γ1_1 |) in
                       let freeze_authority :=
                         M.alloc (|
                           Ty.apply
@@ -11954,7 +12302,7 @@ Module instruction.
                                 []
                                 [ Ty.path "solana_address::Address" ]
                             ],
-                          γ1_1
+                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                         |) in
                       let decimals := M.copy (| Ty.path "u8", γ1_2 |) in
                       M.read (|
@@ -12214,10 +12562,11 @@ Module instruction.
                           "spl_token_interface::instruction::TokenInstruction::UiAmountToAmount",
                           "ui_amount"
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let ui_amount :=
                         M.alloc (|
                           Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
@@ -13420,10 +13769,11 @@ Module instruction.
                       "solana_program_option::COption::Some",
                       0
                     |) in
+                  let _ := M.read (| γ0_0 |) in
                   let key :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                      γ0_0
+                      M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                     |) in
                   M.read (|
                     let~ _ : Ty.tuple [] :=

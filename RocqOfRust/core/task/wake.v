@@ -824,6 +824,7 @@ Module task.
                         "core::task::wake::ExtData::Some",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
@@ -835,7 +836,7 @@ Module task.
                               []
                               [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -891,7 +892,12 @@ Module task.
                         "core::task::wake::ExtData::None",
                         0
                       |) in
-                    let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.tuple [] ], γ1_0 |) in
+                    let _ := M.read (| γ1_0 |) in
+                    let __self_0 :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.tuple [] ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     M.call_closure (|
                       Ty.apply
                         (Ty.path "core::result::Result")
@@ -1170,6 +1176,7 @@ Module task.
                                         "core::task::wake::ExtData::Some",
                                         0
                                       |) in
+                                    let _ := M.read (| γ1_0 |) in
                                     let data :=
                                       M.alloc (|
                                         Ty.apply
@@ -1181,7 +1188,7 @@ Module task.
                                               []
                                               [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]
                                           ],
-                                        γ1_0
+                                        M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                                       |) in
                                     M.call_closure (|
                                       Ty.apply
@@ -1214,10 +1221,11 @@ Module task.
                                         "core::task::wake::ExtData::None",
                                         0
                                       |) in
+                                    let _ := M.read (| γ1_0 |) in
                                     let unit_ :=
                                       M.alloc (|
                                         Ty.apply (Ty.path "&mut") [] [ Ty.tuple [] ],
-                                        γ1_0
+                                        M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                                       |) in
                                     M.call_closure (|
                                       Ty.apply
@@ -1731,6 +1739,7 @@ Module task.
                             "core::task::wake::ExtData::Some",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let ext :=
                           M.alloc (|
                             Ty.apply
@@ -1742,7 +1751,7 @@ Module task.
                                   []
                                   [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]
                               ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                           |) in
                         Value.StructTuple
                           "core::task::wake::ExtData::Some"

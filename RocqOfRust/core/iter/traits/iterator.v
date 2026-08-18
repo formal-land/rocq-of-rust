@@ -1809,11 +1809,12 @@ Module iter.
                 [
                   fun γ =>
                     ltac:(M.monadic
-                      (let predicate :=
+                      (let _ := M.read (| γ |) in
+                      let predicate :=
                         M.alloc (|
                           Ty.path
                             "Type for variables in patterns in function parameters is not handled",
-                          γ
+                          M.borrow (| Pointer.Kind.MutRef, γ |)
                         |) in
                       M.read (|
                         let~ true_count : Ty.path "usize" := Value.Integer IntegerKind.Usize 0 in

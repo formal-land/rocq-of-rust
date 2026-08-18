@@ -134,7 +134,12 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
             [
               fun γ =>
                 ltac:(M.monadic
-                  (let ref_c1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "char" ], γ |) in
+                  (let _ := M.read (| γ |) in
+                  let ref_c1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "char" ],
+                      M.borrow (| Pointer.Kind.Ref, γ |)
+                    |) in
                   M.read (|
                     let~ ref_c2 : Ty.apply (Ty.path "&") [] [ Ty.path "char" ] :=
                       M.borrow (| Pointer.Kind.Ref, c |) in
@@ -282,8 +287,12 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                   "scoping_rules_borrowing_the_ref_pattern::Point",
                                   "y"
                                 |) in
+                              let _ := M.read (| γ0_0 |) in
                               let ref_to_x :=
-                                M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i32" ], γ0_0 |) in
+                                M.alloc (|
+                                  Ty.apply (Ty.path "&") [] [ Ty.path "i32" ],
+                                  M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                                |) in
                               M.read (| M.deref (| M.read (| ref_to_x |) |) |)))
                         ]
                       |) in
@@ -308,10 +317,11 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                   "scoping_rules_borrowing_the_ref_pattern::Point",
                                   "y"
                                 |) in
+                              let _ := M.read (| γ0_1 |) in
                               let mut_ref_to_y :=
                                 M.alloc (|
                                   Ty.apply (Ty.path "&mut") [] [ Ty.path "i32" ],
-                                  γ0_1
+                                  M.borrow (| Pointer.Kind.MutRef, γ0_1 |)
                                 |) in
                               M.read (|
                                 let~ _ : Ty.tuple [] :=
@@ -637,10 +647,11 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                             ltac:(M.monadic
                               (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                               let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                              let _ := M.read (| γ0_1 |) in
                               let last :=
                                 M.alloc (|
                                   Ty.apply (Ty.path "&mut") [] [ Ty.path "u32" ],
-                                  γ0_1
+                                  M.borrow (| Pointer.Kind.MutRef, γ0_1 |)
                                 |) in
                               M.read (|
                                 let~ _ : Ty.tuple [] :=

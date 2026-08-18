@@ -178,8 +178,12 @@ Module num.
                                 "core::num::fmt::Part::Zero",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ2_0 |) in
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
                               M.SubPointer.get_struct_tuple_field (|
@@ -187,8 +191,12 @@ Module num.
                                 "core::num::fmt::Part::Zero",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ2_0 |) in
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             M.call_closure (|
                               Ty.path "bool",
                               M.get_trait_method (|
@@ -216,8 +224,12 @@ Module num.
                                 "core::num::fmt::Part::Num",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ2_0 |) in
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
                               M.SubPointer.get_struct_tuple_field (|
@@ -225,8 +237,12 @@ Module num.
                                 "core::num::fmt::Part::Num",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ2_0 |) in
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             M.call_closure (|
                               Ty.path "bool",
                               M.get_trait_method (|
@@ -254,6 +270,7 @@ Module num.
                                 "core::num::fmt::Part::Copy",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
                               M.alloc (|
                                 Ty.apply
@@ -265,7 +282,7 @@ Module num.
                                       []
                                       [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
                                   ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
@@ -274,6 +291,7 @@ Module num.
                                 "core::num::fmt::Part::Copy",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
                               M.alloc (|
                                 Ty.apply
@@ -285,7 +303,7 @@ Module num.
                                       []
                                       [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
                                   ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             M.call_closure (|
                               Ty.path "bool",
@@ -423,8 +441,12 @@ Module num.
                         "core::num::fmt::Part::Zero",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     M.call_closure (|
                       Ty.apply
                         (Ty.path "core::result::Result")
@@ -465,8 +487,12 @@ Module num.
                     (let γ := M.deref (| M.read (| γ |) |) in
                     let γ1_0 :=
                       M.SubPointer.get_struct_tuple_field (| γ, "core::num::fmt::Part::Num", 0 |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_0 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     M.call_closure (|
                       Ty.apply
                         (Ty.path "core::result::Result")
@@ -511,6 +537,7 @@ Module num.
                         "core::num::fmt::Part::Copy",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
@@ -522,7 +549,7 @@ Module num.
                               []
                               [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply

@@ -511,6 +511,7 @@ Module legacy.
       
       Global Instance AssociatedFunction_into_analyzed :
         M.IsAssociatedFunction.C Self "into_analyzed" into_analyzed.
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_analyzed.
     End Impl_revm_bytecode_legacy_raw_LegacyRawBytecode.

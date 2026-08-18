@@ -60,13 +60,14 @@ Module interpreter_action.
                         "revm_interpreter::interpreter_action::call_inputs::CallInput::SharedBuffer",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ] ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     Value.StructTuple
                       "revm_interpreter::interpreter_action::call_inputs::CallInput::SharedBuffer"
@@ -96,10 +97,11 @@ Module interpreter_action.
                         "revm_interpreter::interpreter_action::call_inputs::CallInput::Bytes",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     Value.StructTuple
                       "revm_interpreter::interpreter_action::call_inputs::CallInput::Bytes"
@@ -169,13 +171,14 @@ Module interpreter_action.
                         "revm_interpreter::interpreter_action::call_inputs::CallInput::SharedBuffer",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ] ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -231,10 +234,11 @@ Module interpreter_action.
                         "revm_interpreter::interpreter_action::call_inputs::CallInput::Bytes",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -392,6 +396,7 @@ Module interpreter_action.
                                 "revm_interpreter::interpreter_action::call_inputs::CallInput::SharedBuffer",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
                               M.alloc (|
                                 Ty.apply
@@ -403,7 +408,7 @@ Module interpreter_action.
                                       []
                                       [ Ty.path "usize" ]
                                   ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
@@ -412,6 +417,7 @@ Module interpreter_action.
                                 "revm_interpreter::interpreter_action::call_inputs::CallInput::SharedBuffer",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
                               M.alloc (|
                                 Ty.apply
@@ -423,7 +429,7 @@ Module interpreter_action.
                                       []
                                       [ Ty.path "usize" ]
                                   ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             M.call_closure (|
                               Ty.path "bool",
@@ -470,13 +476,14 @@ Module interpreter_action.
                                 "revm_interpreter::interpreter_action::call_inputs::CallInput::Bytes",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
@@ -485,13 +492,14 @@ Module interpreter_action.
                                 "revm_interpreter::interpreter_action::call_inputs::CallInput::Bytes",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             M.call_closure (|
                               Ty.path "bool",
@@ -628,10 +636,11 @@ Module interpreter_action.
                         "revm_interpreter::interpreter_action::call_inputs::CallInput::Bytes",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let bytes :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.path "usize",
@@ -666,13 +675,14 @@ Module interpreter_action.
                         "revm_interpreter::interpreter_action::call_inputs::CallInput::SharedBuffer",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let range :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ] ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.path "usize",
@@ -781,10 +791,11 @@ Module interpreter_action.
                         "revm_interpreter::interpreter_action::call_inputs::CallInput::Bytes",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let bytes :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.path "alloy_primitives::bytes_::Bytes",
@@ -808,13 +819,14 @@ Module interpreter_action.
                         "revm_interpreter::interpreter_action::call_inputs::CallInput::SharedBuffer",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let range :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ] ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.path "alloy_primitives::bytes_::Bytes",
@@ -3503,6 +3515,7 @@ Module interpreter_action.
                         "revm_interpreter::interpreter_action::call_inputs::CallValue::Transfer",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
@@ -3517,7 +3530,7 @@ Module interpreter_action.
                               ]
                               []
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     Value.StructTuple
                       "revm_interpreter::interpreter_action::call_inputs::CallValue::Transfer"
@@ -3557,6 +3570,7 @@ Module interpreter_action.
                         "revm_interpreter::interpreter_action::call_inputs::CallValue::Apparent",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
@@ -3571,7 +3585,7 @@ Module interpreter_action.
                               ]
                               []
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     Value.StructTuple
                       "revm_interpreter::interpreter_action::call_inputs::CallValue::Apparent"
@@ -3651,6 +3665,7 @@ Module interpreter_action.
                         "revm_interpreter::interpreter_action::call_inputs::CallValue::Transfer",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
@@ -3665,7 +3680,7 @@ Module interpreter_action.
                               ]
                               []
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -3724,6 +3739,7 @@ Module interpreter_action.
                         "revm_interpreter::interpreter_action::call_inputs::CallValue::Apparent",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
@@ -3738,7 +3754,7 @@ Module interpreter_action.
                               ]
                               []
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -3904,6 +3920,7 @@ Module interpreter_action.
                                 "revm_interpreter::interpreter_action::call_inputs::CallValue::Transfer",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
                               M.alloc (|
                                 Ty.apply
@@ -3918,7 +3935,7 @@ Module interpreter_action.
                                       ]
                                       []
                                   ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
@@ -3927,6 +3944,7 @@ Module interpreter_action.
                                 "revm_interpreter::interpreter_action::call_inputs::CallValue::Transfer",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
                               M.alloc (|
                                 Ty.apply
@@ -3941,7 +3959,7 @@ Module interpreter_action.
                                       ]
                                       []
                                   ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             M.call_closure (|
                               Ty.path "bool",
@@ -3994,6 +4012,7 @@ Module interpreter_action.
                                 "revm_interpreter::interpreter_action::call_inputs::CallValue::Apparent",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
                               M.alloc (|
                                 Ty.apply
@@ -4008,7 +4027,7 @@ Module interpreter_action.
                                       ]
                                       []
                                   ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
@@ -4017,6 +4036,7 @@ Module interpreter_action.
                                 "revm_interpreter::interpreter_action::call_inputs::CallValue::Apparent",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
                               M.alloc (|
                                 Ty.apply
@@ -4031,7 +4051,7 @@ Module interpreter_action.
                                       ]
                                       []
                                   ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             M.call_closure (|
                               Ty.path "bool",
@@ -4203,6 +4223,7 @@ Module interpreter_action.
                             "revm_interpreter::interpreter_action::call_inputs::CallValue::Transfer",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let __self_0 :=
                           M.alloc (|
                             Ty.apply
@@ -4217,7 +4238,7 @@ Module interpreter_action.
                                   ]
                                   []
                               ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.call_closure (|
                           Ty.tuple [],
@@ -4250,6 +4271,7 @@ Module interpreter_action.
                             "revm_interpreter::interpreter_action::call_inputs::CallValue::Apparent",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let __self_0 :=
                           M.alloc (|
                             Ty.apply
@@ -4264,7 +4286,7 @@ Module interpreter_action.
                                   ]
                                   []
                               ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.call_closure (|
                           Ty.tuple [],

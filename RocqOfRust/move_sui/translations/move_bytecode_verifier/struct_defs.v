@@ -3068,6 +3068,7 @@ Module struct_defs.
                               "move_binary_format::file_format::SignatureToken::Vector",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let inner :=
                             M.alloc (|
                               Ty.apply
@@ -3082,7 +3083,7 @@ Module struct_defs.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                             |) in
                           M.match_operator (|
                             Ty.tuple [],
@@ -3245,13 +3246,14 @@ Module struct_defs.
                               "move_binary_format::file_format::SignatureToken::Struct",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let sh_idx :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_binary_format::file_format::StructHandleIndex" ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                             |) in
                           M.match_operator (|
                             Ty.tuple [],
@@ -3468,6 +3470,7 @@ Module struct_defs.
                               "move_binary_format::file_format::SignatureToken::StructInstantiation",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let struct_inst :=
                             M.alloc (|
                               Ty.apply
@@ -3494,7 +3497,7 @@ Module struct_defs.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                             |) in
                           M.match_operator (|
                             Ty.tuple [],
@@ -3526,6 +3529,7 @@ Module struct_defs.
                                   (let γ := M.deref (| M.read (| γ |) |) in
                                   let γ1_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                                   let γ1_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                                  let _ := M.read (| γ1_0 |) in
                                   let sh_idx :=
                                     M.alloc (|
                                       Ty.apply
@@ -3535,8 +3539,9 @@ Module struct_defs.
                                           Ty.path
                                             "move_binary_format::file_format::StructHandleIndex"
                                         ],
-                                      γ1_0
+                                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                     |) in
+                                  let _ := M.read (| γ1_1 |) in
                                   let inners :=
                                     M.alloc (|
                                       Ty.apply
@@ -3552,7 +3557,7 @@ Module struct_defs.
                                               Ty.path "alloc::alloc::Global"
                                             ]
                                         ],
-                                      γ1_1
+                                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                                     |) in
                                   M.read (|
                                     let~ _ : Ty.tuple [] :=

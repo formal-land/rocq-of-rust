@@ -11591,6 +11591,7 @@ Module collections.
                           "core::option::Option::Some",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let root :=
                         M.alloc (|
                           Ty.apply
@@ -11607,7 +11608,7 @@ Module collections.
                                   Ty.path "alloc::collections::btree::node::marker::LeafOrInternal"
                                 ]
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       Value.mkStructRecord
                         "alloc::collections::btree::map::Range"
@@ -11785,6 +11786,7 @@ Module collections.
                           "core::option::Option::Some",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let root :=
                         M.alloc (|
                           Ty.apply
@@ -11801,7 +11803,7 @@ Module collections.
                                   Ty.path "alloc::collections::btree::node::marker::LeafOrInternal"
                                 ]
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                         |) in
                       Value.mkStructRecord
                         "alloc::collections::btree::map::RangeMut"
@@ -12172,6 +12174,7 @@ Module collections.
                                   "core::option::Option::Some",
                                   0
                                 |) in
+                              let _ := M.read (| γ0_0 |) in
                               let root :=
                                 M.alloc (|
                                   Ty.apply
@@ -12189,7 +12192,7 @@ Module collections.
                                             "alloc::collections::btree::node::marker::LeafOrInternal"
                                         ]
                                     ],
-                                  γ0_0
+                                  M.borrow (| Pointer.Kind.MutRef, γ0_0 |)
                                 |) in
                               M.match_operator (|
                                 Ty.apply
@@ -14210,6 +14213,7 @@ Module collections.
                           "core::option::Option::Some",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let root :=
                         M.alloc (|
                           Ty.apply
@@ -14226,7 +14230,7 @@ Module collections.
                                   Ty.path "alloc::collections::btree::node::marker::LeafOrInternal"
                                 ]
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.read (|
                         let~ full_range :
@@ -14416,6 +14420,7 @@ Module collections.
                           "core::option::Option::Some",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let root :=
                         M.alloc (|
                           Ty.apply
@@ -14432,7 +14437,7 @@ Module collections.
                                   Ty.path "alloc::collections::btree::node::marker::LeafOrInternal"
                                 ]
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                         |) in
                       M.read (|
                         let~ full_range :
@@ -22339,13 +22344,14 @@ Module collections.
                                                               "core::ops::range::Bound::Included",
                                                               0
                                                             |) in
+                                                          let _ := M.read (| γ0_0 |) in
                                                           let end_ :=
                                                             M.alloc (|
                                                               Ty.apply
                                                                 (Ty.path "&")
                                                                 []
                                                                 [ Ty.apply (Ty.path "&") [] [ K ] ],
-                                                              γ0_0
+                                                              M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                                                             |) in
                                                           let γ :=
                                                             M.alloc (|
@@ -22393,13 +22399,14 @@ Module collections.
                                                               "core::ops::range::Bound::Excluded",
                                                               0
                                                             |) in
+                                                          let _ := M.read (| γ0_0 |) in
                                                           let end_ :=
                                                             M.alloc (|
                                                               Ty.apply
                                                                 (Ty.path "&")
                                                                 []
                                                                 [ Ty.apply (Ty.path "&") [] [ K ] ],
-                                                              γ0_0
+                                                              M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                                                             |) in
                                                           let γ :=
                                                             M.alloc (|
@@ -36395,6 +36402,7 @@ Module collections.
                                           "core::option::Option::Some",
                                           0
                                         |) in
+                                      let _ := M.read (| γ1_0 |) in
                                       let root :=
                                         M.alloc (|
                                           Ty.apply
@@ -36413,7 +36421,7 @@ Module collections.
                                                     "alloc::collections::btree::node::marker::LeafOrInternal"
                                                 ]
                                             ],
-                                          γ1_0
+                                          M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                                         |) in
                                       M.call_closure (|
                                         Ty.apply

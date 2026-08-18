@@ -536,10 +536,11 @@ Module utils.
                         "alloy_primitives::utils::units::UnitsError::InvalidUnit",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -585,13 +586,14 @@ Module utils.
                         "alloy_primitives::utils::units::UnitsError::ParseSigned",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "alloy_primitives::signed::errors::ParseSignedError" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -697,13 +699,14 @@ Module utils.
                         "alloy_primitives::utils::units::UnitsError::ParseSigned",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let e :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "alloy_primitives::signed::errors::ParseSignedError" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     Value.StructTuple
                       "core::option::Option::Some"
@@ -780,10 +783,11 @@ Module utils.
                         "alloy_primitives::utils::units::UnitsError::InvalidUnit",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let s :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -900,13 +904,14 @@ Module utils.
                         "alloy_primitives::utils::units::UnitsError::ParseSigned",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let e :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "alloy_primitives::signed::errors::ParseSignedError" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -1148,6 +1153,7 @@ Module utils.
                         "alloy_primitives::utils::units::ParseUnits::U256",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
@@ -1162,7 +1168,7 @@ Module utils.
                               ]
                               []
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -1221,6 +1227,7 @@ Module utils.
                         "alloy_primitives::utils::units::ParseUnits::I256",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
@@ -1235,7 +1242,7 @@ Module utils.
                               ]
                               []
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -1387,6 +1394,7 @@ Module utils.
                                 "alloy_primitives::utils::units::ParseUnits::U256",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
                               M.alloc (|
                                 Ty.apply
@@ -1401,7 +1409,7 @@ Module utils.
                                       ]
                                       []
                                   ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
@@ -1410,6 +1418,7 @@ Module utils.
                                 "alloy_primitives::utils::units::ParseUnits::U256",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
                               M.alloc (|
                                 Ty.apply
@@ -1424,7 +1433,7 @@ Module utils.
                                       ]
                                       []
                                   ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             M.call_closure (|
                               Ty.path "bool",
@@ -1477,6 +1486,7 @@ Module utils.
                                 "alloy_primitives::utils::units::ParseUnits::I256",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
                               M.alloc (|
                                 Ty.apply
@@ -1491,7 +1501,7 @@ Module utils.
                                       ]
                                       []
                                   ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
@@ -1500,6 +1510,7 @@ Module utils.
                                 "alloy_primitives::utils::units::ParseUnits::I256",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
                               M.alloc (|
                                 Ty.apply
@@ -1514,7 +1525,7 @@ Module utils.
                                       ]
                                       []
                                   ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             M.call_closure (|
                               Ty.path "bool",
@@ -1694,6 +1705,7 @@ Module utils.
                             "alloy_primitives::utils::units::ParseUnits::U256",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __self_0 :=
                           M.alloc (|
                             Ty.apply
@@ -1708,7 +1720,7 @@ Module utils.
                                   ]
                                   []
                               ],
-                            γ2_0
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                           |) in
                         let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                         let γ2_0 :=
@@ -1717,6 +1729,7 @@ Module utils.
                             "alloy_primitives::utils::units::ParseUnits::U256",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __arg1_0 :=
                           M.alloc (|
                             Ty.apply
@@ -1731,7 +1744,7 @@ Module utils.
                                   ]
                                   []
                               ],
-                            γ2_0
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                           |) in
                         M.call_closure (|
                           Ty.apply
@@ -1777,6 +1790,7 @@ Module utils.
                             "alloy_primitives::utils::units::ParseUnits::I256",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __self_0 :=
                           M.alloc (|
                             Ty.apply
@@ -1791,7 +1805,7 @@ Module utils.
                                   ]
                                   []
                               ],
-                            γ2_0
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                           |) in
                         let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                         let γ2_0 :=
@@ -1800,6 +1814,7 @@ Module utils.
                             "alloy_primitives::utils::units::ParseUnits::I256",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __arg1_0 :=
                           M.alloc (|
                             Ty.apply
@@ -1814,7 +1829,7 @@ Module utils.
                                   ]
                                   []
                               ],
-                            γ2_0
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                           |) in
                         M.call_closure (|
                           Ty.apply
@@ -1992,6 +2007,7 @@ Module utils.
                                     "alloy_primitives::utils::units::ParseUnits::U256",
                                     0
                                   |) in
+                                let _ := M.read (| γ2_0 |) in
                                 let __self_0 :=
                                   M.alloc (|
                                     Ty.apply
@@ -2006,7 +2022,7 @@ Module utils.
                                           ]
                                           []
                                       ],
-                                    γ2_0
+                                    M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                   |) in
                                 let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                                 let γ2_0 :=
@@ -2015,6 +2031,7 @@ Module utils.
                                     "alloy_primitives::utils::units::ParseUnits::U256",
                                     0
                                   |) in
+                                let _ := M.read (| γ2_0 |) in
                                 let __arg1_0 :=
                                   M.alloc (|
                                     Ty.apply
@@ -2029,7 +2046,7 @@ Module utils.
                                           ]
                                           []
                                       ],
-                                    γ2_0
+                                    M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                   |) in
                                 M.call_closure (|
                                   Ty.path "core::cmp::Ordering",
@@ -2070,6 +2087,7 @@ Module utils.
                                     "alloy_primitives::utils::units::ParseUnits::I256",
                                     0
                                   |) in
+                                let _ := M.read (| γ2_0 |) in
                                 let __self_0 :=
                                   M.alloc (|
                                     Ty.apply
@@ -2084,7 +2102,7 @@ Module utils.
                                           ]
                                           []
                                       ],
-                                    γ2_0
+                                    M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                   |) in
                                 let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                                 let γ2_0 :=
@@ -2093,6 +2111,7 @@ Module utils.
                                     "alloy_primitives::utils::units::ParseUnits::I256",
                                     0
                                   |) in
+                                let _ := M.read (| γ2_0 |) in
                                 let __arg1_0 :=
                                   M.alloc (|
                                     Ty.apply
@@ -2107,7 +2126,7 @@ Module utils.
                                           ]
                                           []
                                       ],
-                                    γ2_0
+                                    M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                   |) in
                                 M.call_closure (|
                                   Ty.path "core::cmp::Ordering",
@@ -2292,6 +2311,7 @@ Module utils.
                         "alloy_primitives::utils::units::ParseUnits::U256",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let val :=
                       M.alloc (|
                         Ty.apply
@@ -2306,7 +2326,7 @@ Module utils.
                               ]
                               []
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -2339,6 +2359,7 @@ Module utils.
                         "alloy_primitives::utils::units::ParseUnits::I256",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let val :=
                       M.alloc (|
                         Ty.apply
@@ -2353,7 +2374,7 @@ Module utils.
                               ]
                               []
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -7164,6 +7185,7 @@ Module utils.
                         "alloy_primitives::utils::units::ParseUnits::I256",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let n :=
                       M.alloc (|
                         Ty.apply
@@ -7178,7 +7200,7 @@ Module utils.
                               ]
                               []
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.path "bool",
@@ -7244,6 +7266,7 @@ Module utils.
                         "alloy_primitives::utils::units::ParseUnits::I256",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let n :=
                       M.alloc (|
                         Ty.apply
@@ -7258,7 +7281,7 @@ Module utils.
                               ]
                               []
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.path "bool",
@@ -7314,6 +7337,7 @@ Module utils.
                         "alloy_primitives::utils::units::ParseUnits::U256",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let n :=
                       M.alloc (|
                         Ty.apply
@@ -7328,7 +7352,7 @@ Module utils.
                               ]
                               []
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.path "bool",
@@ -7352,6 +7376,7 @@ Module utils.
                         "alloy_primitives::utils::units::ParseUnits::I256",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let n :=
                       M.alloc (|
                         Ty.apply
@@ -7366,7 +7391,7 @@ Module utils.
                               ]
                               []
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.path "bool",

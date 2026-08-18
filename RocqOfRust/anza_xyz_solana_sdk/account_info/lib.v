@@ -4414,12 +4414,18 @@ Module Impl_solana_account_info_IntoAccountInfo_where_solana_account_info_Accoun
                 (let γ := M.deref (| M.read (| γ |) |) in
                 let γ1_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                 let γ1_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                let _ := M.read (| γ1_0 |) in
                 let key :=
                   M.alloc (|
                     Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                    γ1_0
+                    M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                   |) in
-                let account := M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ1_1 |) in
+                let _ := M.read (| γ1_1 |) in
+                let account :=
+                  M.alloc (|
+                    Ty.apply (Ty.path "&mut") [] [ T ],
+                    M.borrow (| Pointer.Kind.MutRef, γ1_1 |)
+                  |) in
                 M.match_operator (|
                   Ty.path "solana_account_info::AccountInfo",
                   M.alloc (|

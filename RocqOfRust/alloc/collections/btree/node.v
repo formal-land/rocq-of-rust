@@ -4523,6 +4523,7 @@ Module collections.
                           "alloc::collections::btree::node::NodeRef",
                           "_marker"
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let node :=
                         M.alloc (|
                           Ty.apply
@@ -4539,10 +4540,15 @@ Module collections.
                                     [ K; V ]
                                 ]
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
+                      let _ := M.read (| γ1_1 |) in
                       let height :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_1 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                        |) in
+                      let _ := M.read (| γ1_2 |) in
                       let _marker :=
                         M.alloc (|
                           Ty.apply
@@ -4554,7 +4560,7 @@ Module collections.
                                 []
                                 [ Ty.tuple [ BorrowType; Type_ ] ]
                             ],
-                          γ1_2
+                          M.borrow (| Pointer.Kind.Ref, γ1_2 |)
                         |) in
                       M.match_operator (|
                         Ty.path "bool",
@@ -10516,6 +10522,7 @@ Module collections.
                           "alloc::collections::btree::node::Handle",
                           "_marker"
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let node :=
                         M.alloc (|
                           Ty.apply
@@ -10527,17 +10534,22 @@ Module collections.
                                 []
                                 [ BorrowType; K; V; NodeType ]
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
+                      let _ := M.read (| γ1_1 |) in
                       let idx :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_1 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                        |) in
+                      let _ := M.read (| γ1_2 |) in
                       let _marker :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.apply (Ty.path "core::marker::PhantomData") [] [ HandleType ] ],
-                          γ1_2
+                          M.borrow (| Pointer.Kind.Ref, γ1_2 |)
                         |) in
                       LogicalOp.and (|
                         M.call_closure (|

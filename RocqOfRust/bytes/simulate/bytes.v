@@ -1,5 +1,7 @@
 Require Import simulate.RocqOfRust.
 Require Import bytes.links.bytes.
+Require Import core.convert.links.mod.
+Require Import core.convert.simulate.mod.
 Require Import core.ops.links.deref.
 Require Import core.ops.simulate.deref.
 
@@ -48,3 +50,48 @@ Module Impl_Deref_for_Bytes.
   Export (hints) Eq.
 End Impl_Deref_for_Bytes.
 Export (hints) Impl_Deref_for_Bytes.
+
+Module Impl_AsRef_slice_u8_for_Bytes.
+  Definition Self : Set :=
+    Bytes.t.
+
+  Definition as_ref : RefStub.t Self (list u8) :=
+    Impl_Deref_for_Bytes.deref.
+
+  Instance I : AsRef.C Self (list u8) := {|
+    AsRef.as_ref := as_ref;
+  |}.
+
+  Module Eq.
+    Instance I : AsRef.Eq.C Impl_AsRef_slice_u8_for_Bytes.I.
+    Proof.
+      constructor; intros.
+      change {{
+        SimulateM.eval_f
+          (bytes.links.bytes.Impl_AsRef_slice_u8_for_Bytes.run_as_ref ref_self)
+          stack 🌲
+        (
+          Output.Success
+            (RefStub.apply ref_self Impl_Deref_for_Bytes.deref),
+          stack
+        )
+      }}.
+      with_strategy transparent
+        [bytes.links.bytes.Impl_AsRef_slice_u8_for_Bytes.run_as_ref]
+        unfold bytes.links.bytes.Impl_AsRef_slice_u8_for_Bytes.run_as_ref.
+      exact
+        (@Deref.Eq.deref
+          Self
+          (list u8)
+          _
+          _
+          bytes.links.bytes.Impl_Deref_for_Bytes.run
+          Impl_Deref_for_Bytes.I
+          Impl_Deref_for_Bytes.Eq.I
+          ref_self
+          stack).
+    Qed.
+  End Eq.
+  Export (hints) Eq.
+End Impl_AsRef_slice_u8_for_Bytes.
+Export (hints) Impl_AsRef_slice_u8_for_Bytes.

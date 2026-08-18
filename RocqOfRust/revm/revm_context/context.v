@@ -112,13 +112,43 @@ Module context.
                       "revm_context::context::Context",
                       "error"
                     |) in
-                  let __field_block := M.alloc (| Ty.apply (Ty.path "&") [] [ BLOCK ], γ1_0 |) in
-                  let __field_tx := M.alloc (| Ty.apply (Ty.path "&") [] [ TX ], γ1_1 |) in
-                  let __field_cfg := M.alloc (| Ty.apply (Ty.path "&") [] [ CFG ], γ1_2 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __field_block :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ BLOCK ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __field_tx :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ TX ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
+                  let _ := M.read (| γ1_2 |) in
+                  let __field_cfg :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ CFG ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_2 |)
+                    |) in
+                  let _ := M.read (| γ1_3 |) in
                   let __field_journaled_state :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ JOURNAL ], γ1_3 |) in
-                  let __field_chain := M.alloc (| Ty.apply (Ty.path "&") [] [ CHAIN ], γ1_4 |) in
-                  let __field_local := M.alloc (| Ty.apply (Ty.path "&") [] [ LOCAL ], γ1_5 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ JOURNAL ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_3 |)
+                    |) in
+                  let _ := M.read (| γ1_4 |) in
+                  let __field_chain :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ CHAIN ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_4 |)
+                    |) in
+                  let _ := M.read (| γ1_5 |) in
+                  let __field_local :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ LOCAL ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_5 |)
+                    |) in
+                  let _ := M.read (| γ1_6 |) in
                   let __field_error :=
                     M.alloc (|
                       Ty.apply
@@ -143,7 +173,7 @@ Module context.
                                 ]
                             ]
                         ],
-                      γ1_6
+                      M.borrow (| Pointer.Kind.Ref, γ1_6 |)
                     |) in
                   Value.mkStructRecord
                     "revm_context::context::Context"
@@ -408,13 +438,43 @@ Module context.
                       "revm_context::context::Context",
                       "error"
                     |) in
-                  let __field_block := M.alloc (| Ty.apply (Ty.path "&") [] [ BLOCK ], γ1_0 |) in
-                  let __field_tx := M.alloc (| Ty.apply (Ty.path "&") [] [ TX ], γ1_1 |) in
-                  let __field_cfg := M.alloc (| Ty.apply (Ty.path "&") [] [ CFG ], γ1_2 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __field_block :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ BLOCK ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __field_tx :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ TX ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
+                  let _ := M.read (| γ1_2 |) in
+                  let __field_cfg :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ CFG ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_2 |)
+                    |) in
+                  let _ := M.read (| γ1_3 |) in
                   let __field_journaled_state :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ JOURNAL ], γ1_3 |) in
-                  let __field_chain := M.alloc (| Ty.apply (Ty.path "&") [] [ CHAIN ], γ1_4 |) in
-                  let __field_local := M.alloc (| Ty.apply (Ty.path "&") [] [ LOCAL ], γ1_5 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ JOURNAL ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_3 |)
+                    |) in
+                  let _ := M.read (| γ1_4 |) in
+                  let __field_chain :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ CHAIN ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_4 |)
+                    |) in
+                  let _ := M.read (| γ1_5 |) in
+                  let __field_local :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ LOCAL ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_5 |)
+                    |) in
+                  let _ := M.read (| γ1_6 |) in
                   let __field_error :=
                     M.alloc (|
                       Ty.apply
@@ -439,7 +499,7 @@ Module context.
                                 ]
                             ]
                         ],
-                      γ1_6
+                      M.borrow (| Pointer.Kind.Ref, γ1_6 |)
                     |) in
                   M.read (|
                     let~ __builder : Ty.path "core::fmt::builders::DebugStruct" :=

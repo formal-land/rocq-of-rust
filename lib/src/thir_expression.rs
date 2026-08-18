@@ -58,30 +58,65 @@ fn build_inner_match(
             Pattern::Binding {
                 name,
                 ty,
-                is_with_ref,
+                by_ref,
                 is_with_mutability,
                 pattern,
-            } => Rc::new(Expr::Let {
-                name: Some(name.clone()),
-                ty: if *is_with_ref || !*is_with_mutability {
-                    None
-                } else {
-                    Some(ty.clone())
-                },
-                init: if *is_with_ref {
-                    Expr::local_var(&scrutinee).alloc(ty.clone())
-                } else if *is_with_mutability {
-                    Expr::local_var(&scrutinee).read()
-                } else {
-                    Expr::local_var(&scrutinee).copy(ty.clone())
-                },
-                body: match pattern {
+            } => {
+                let body = match pattern {
                     None => body,
-                    Some(pattern) => {
-                        build_inner_match(vec![(scrutinee, pattern.clone())], body, depth + 1)
-                    }
-                },
-            }),
+                    Some(pattern) => build_inner_match(
+                        vec![(scrutinee.clone(), pattern.clone())],
+                        body,
+                        depth + 1,
+                    ),
+                };
+                let binding = Rc::new(Expr::Let {
+                    name: Some(name.clone()),
+                    ty: if matches!(by_ref, ByRef::Yes { .. }) || !*is_with_mutability {
+                        None
+                    } else {
+                        Some(ty.clone())
+                    },
+                    init: match by_ref {
+                        // A by-ref binding turns the sub-place into a reference
+                        // value, so it must go through a borrow to get a pointer
+                        // of the right kind.
+                        ByRef::Yes { is_mut } => Rc::new(Expr::Call {
+                            func: Expr::local_var("M.borrow"),
+                            args: vec![
+                                Expr::local_var(if *is_mut {
+                                    "Pointer.Kind.MutRef"
+                                } else {
+                                    "Pointer.Kind.Ref"
+                                }),
+                                Expr::local_var(&scrutinee),
+                            ],
+                            kind: CallKind::Effectful,
+                        })
+                        .alloc(ty.clone()),
+                        ByRef::No => {
+                            if *is_with_mutability {
+                                Expr::local_var(&scrutinee).read()
+                            } else {
+                                Expr::local_var(&scrutinee).copy(ty.clone())
+                            }
+                        }
+                    },
+                    body,
+                });
+
+                match by_ref {
+                    // Borrowing does not access the pointee, so validate the
+                    // candidate match arm before constructing its reference.
+                    ByRef::Yes { .. } => Rc::new(Expr::Let {
+                        name: None,
+                        ty: None,
+                        init: Expr::local_var(&scrutinee).read(),
+                        body: binding,
+                    }),
+                    ByRef::No => binding,
+                }
+            }
             Pattern::StructRecord(path, fields) => {
                 let body = build_inner_match(
                     fields
@@ -1444,7 +1479,7 @@ fn compile_stmts<'a>(
                                 name,
                                 ty: _,
                                 pattern: None,
-                                is_with_ref: false,
+                                by_ref: ByRef::No,
                                 is_with_mutability: _,
                             },
                             None,
