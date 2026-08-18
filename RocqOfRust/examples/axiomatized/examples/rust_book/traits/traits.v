@@ -22,10 +22,12 @@ Module Impl_traits_Sheep.
   Parameter is_naked : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_is_naked : M.IsAssociatedFunction.C Self "is_naked" is_naked.
+  Proof.
   Admitted.
   Parameter shear : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_shear : M.IsAssociatedFunction.C Self "shear" shear.
+  Proof.
   Admitted.
 End Impl_traits_Sheep.
 
@@ -59,4 +61,5 @@ End Impl_traits_Animal_for_traits_Sheep.
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "traits::main" main.
+Proof.
 Admitted.

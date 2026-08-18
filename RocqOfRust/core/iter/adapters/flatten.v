@@ -102,6 +102,7 @@ Module iter.
         Global Instance AssociatedFunction_new :
           forall (I U F : Ty.t),
           M.IsAssociatedFunction.C (Self I U F) "new" (new I U F).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new.
         
@@ -213,6 +214,7 @@ Module iter.
         Global Instance AssociatedFunction_into_parts :
           forall (I U F : Ty.t),
           M.IsAssociatedFunction.C (Self I U F) "into_parts" (into_parts I U F).
+        Proof.
         Admitted.
         Global Typeclasses Opaque into_parts.
       End Impl_core_iter_adapters_flatten_FlatMap_I_U_F.
@@ -1412,6 +1414,7 @@ Module iter.
         Global Instance AssociatedFunction_new :
           forall (I : Ty.t),
           M.IsAssociatedFunction.C (Self I) "new" (new I).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new.
       End Impl_core_iter_adapters_flatten_Flatten_I.
@@ -2699,6 +2702,7 @@ Module iter.
         Global Instance AssociatedFunction_new :
           forall (I U : Ty.t),
           M.IsAssociatedFunction.C (Self I U) "new" (new I U).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new.
         (*
@@ -2880,6 +2884,7 @@ Module iter.
         Global Instance AssociatedFunction_iter_fold :
           forall (I U : Ty.t),
           M.IsAssociatedFunction.C (Self I U) "iter_fold" (iter_fold I U).
+        Proof.
         Admitted.
         Global Typeclasses Opaque iter_fold.
         
@@ -3479,6 +3484,7 @@ Module iter.
         Global Instance AssociatedFunction_iter_try_fold :
           forall (I U : Ty.t),
           M.IsAssociatedFunction.C (Self I U) "iter_try_fold" (iter_try_fold I U).
+        Proof.
         Admitted.
         Global Typeclasses Opaque iter_try_fold.
         (*
@@ -3660,6 +3666,7 @@ Module iter.
         Global Instance AssociatedFunction_iter_rfold :
           forall (I U : Ty.t),
           M.IsAssociatedFunction.C (Self I U) "iter_rfold" (iter_rfold I U).
+        Proof.
         Admitted.
         Global Typeclasses Opaque iter_rfold.
         
@@ -4259,6 +4266,7 @@ Module iter.
         Global Instance AssociatedFunction_iter_try_rfold :
           forall (I U : Ty.t),
           M.IsAssociatedFunction.C (Self I U) "iter_try_rfold" (iter_try_rfold I U).
+        Proof.
         Admitted.
         Global Typeclasses Opaque iter_try_rfold.
       End Impl_core_iter_adapters_flatten_FlattenCompat_I_U.
@@ -7504,6 +7512,7 @@ Module iter.
       
       Global Instance Instance_IsFunction_and_then_or_clear :
         M.IsFunction.C "core::iter::adapters::flatten::and_then_or_clear" and_then_or_clear.
+      Proof.
       Admitted.
       Global Typeclasses Opaque and_then_or_clear.
       
@@ -7817,6 +7826,7 @@ Module iter.
       
       Global Instance Instance_IsFunction_into_item :
         M.IsFunction.C "core::iter::adapters::flatten::into_item" into_item.
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_item.
       
@@ -7996,6 +8006,7 @@ Module iter.
       
       Global Instance Instance_IsFunction_flatten_one :
         M.IsFunction.C "core::iter::adapters::flatten::flatten_one" flatten_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque flatten_one.
       
@@ -8187,6 +8198,7 @@ Module iter.
       
       Global Instance Instance_IsFunction_try_flatten_one :
         M.IsFunction.C "core::iter::adapters::flatten::try_flatten_one" try_flatten_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque try_flatten_one.
       
@@ -8345,6 +8357,7 @@ Module iter.
       
       Global Instance Instance_IsFunction_advance_by_one :
         M.IsFunction.C "core::iter::adapters::flatten::advance_by_one" advance_by_one.
+      Proof.
       Admitted.
       Global Typeclasses Opaque advance_by_one.
       

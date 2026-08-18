@@ -68,6 +68,7 @@ Module Impl_subtle_Choice.
   
   Global Instance AssociatedFunction_unwrap_u8 :
     M.IsAssociatedFunction.C Self "unwrap_u8" unwrap_u8.
+  Proof.
   Admitted.
 End Impl_subtle_Choice.
 
@@ -197,6 +198,7 @@ End Impl_core_ops_bit_Not_for_subtle_Choice.
 Parameter black_box : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_black_box : M.IsFunction.C "subtle::black_box" black_box.
+Proof.
 Admitted.
 
 Module Impl_core_convert_From_u8_for_subtle_Choice.
@@ -693,6 +695,7 @@ Module Impl_subtle_CtOption_T.
   Global Instance AssociatedFunction_new :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "new" (new T).
+  Proof.
   Admitted.
   
   Parameter expect : forall (T : Ty.t), (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -700,6 +703,7 @@ Module Impl_subtle_CtOption_T.
   Global Instance AssociatedFunction_expect :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "expect" (expect T).
+  Proof.
   Admitted.
   
   Parameter unwrap : forall (T : Ty.t), (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -707,6 +711,7 @@ Module Impl_subtle_CtOption_T.
   Global Instance AssociatedFunction_unwrap :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "unwrap" (unwrap T).
+  Proof.
   Admitted.
   
   Parameter unwrap_or : forall (T : Ty.t), (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -714,6 +719,7 @@ Module Impl_subtle_CtOption_T.
   Global Instance AssociatedFunction_unwrap_or :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "unwrap_or" (unwrap_or T).
+  Proof.
   Admitted.
   
   Parameter unwrap_or_else :
@@ -723,6 +729,7 @@ Module Impl_subtle_CtOption_T.
   Global Instance AssociatedFunction_unwrap_or_else :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "unwrap_or_else" (unwrap_or_else T).
+  Proof.
   Admitted.
   
   Parameter is_some : forall (T : Ty.t), (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -730,6 +737,7 @@ Module Impl_subtle_CtOption_T.
   Global Instance AssociatedFunction_is_some :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "is_some" (is_some T).
+  Proof.
   Admitted.
   
   Parameter is_none : forall (T : Ty.t), (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -737,6 +745,7 @@ Module Impl_subtle_CtOption_T.
   Global Instance AssociatedFunction_is_none :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "is_none" (is_none T).
+  Proof.
   Admitted.
   
   Parameter map : forall (T : Ty.t), (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -744,6 +753,7 @@ Module Impl_subtle_CtOption_T.
   Global Instance AssociatedFunction_map :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "map" (map T).
+  Proof.
   Admitted.
   
   Parameter and_then : forall (T : Ty.t), (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -751,6 +761,7 @@ Module Impl_subtle_CtOption_T.
   Global Instance AssociatedFunction_and_then :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "and_then" (and_then T).
+  Proof.
   Admitted.
   
   Parameter or_else : forall (T : Ty.t), (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -758,6 +769,7 @@ Module Impl_subtle_CtOption_T.
   Global Instance AssociatedFunction_or_else :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "or_else" (or_else T).
+  Proof.
   Admitted.
 End Impl_subtle_CtOption_T.
 

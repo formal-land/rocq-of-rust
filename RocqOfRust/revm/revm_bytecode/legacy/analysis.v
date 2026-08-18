@@ -888,6 +888,7 @@ Module legacy.
     
     Global Instance Instance_IsFunction_analyze_legacy :
       M.IsFunction.C "revm_bytecode::legacy::analysis::analyze_legacy" analyze_legacy.
+    Proof.
     Admitted.
     Global Typeclasses Opaque analyze_legacy.
   End analysis.

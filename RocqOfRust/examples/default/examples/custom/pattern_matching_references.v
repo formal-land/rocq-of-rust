@@ -28,6 +28,7 @@ Definition match_value (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) 
 
 Global Instance Instance_IsFunction_match_value :
   M.IsFunction.C "pattern_matching_references::match_value" match_value.
+Proof.
 Admitted.
 Global Typeclasses Opaque match_value.
 
@@ -63,6 +64,7 @@ Definition match_ref (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : 
 
 Global Instance Instance_IsFunction_match_ref :
   M.IsFunction.C "pattern_matching_references::match_ref" match_ref.
+Proof.
 Admitted.
 Global Typeclasses Opaque match_ref.
 
@@ -113,6 +115,7 @@ Definition match_ref_mut (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
 
 Global Instance Instance_IsFunction_match_ref_mut :
   M.IsFunction.C "pattern_matching_references::match_ref_mut" match_ref_mut.
+Proof.
 Admitted.
 Global Typeclasses Opaque match_ref_mut.
 
@@ -144,6 +147,7 @@ Definition match_reference (ε : list Value.t) (τ : list Ty.t) (α : list Value
 
 Global Instance Instance_IsFunction_match_reference :
   M.IsFunction.C "pattern_matching_references::match_reference" match_reference.
+Proof.
 Admitted.
 Global Typeclasses Opaque match_reference.
 
@@ -175,5 +179,6 @@ Definition match_mutable_reference (ε : list Value.t) (τ : list Ty.t) (α : li
 
 Global Instance Instance_IsFunction_match_mutable_reference :
   M.IsFunction.C "pattern_matching_references::match_mutable_reference" match_mutable_reference.
+Proof.
 Admitted.
 Global Typeclasses Opaque match_mutable_reference.
