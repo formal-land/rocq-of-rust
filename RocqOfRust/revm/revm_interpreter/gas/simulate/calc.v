@@ -62,27 +62,29 @@ Definition exp_cost (spec_id : SpecId.t) (power : aliases.U256.t) : option u64 :
            EXP.(Integer.value) +
            gas_byte * ((log2floor power).(Integer.value) / 8 + 1) |}.
 
-Lemma log2floor_zero :
-  log2floor {| Uint.value := 0 |} = {| Integer.value := 0 |}.
-Proof. reflexivity. Qed.
+Module Test.
+  Lemma log2floor_zero :
+    log2floor {| Uint.value := 0 |} = {| Integer.value := 0 |}.
+  Proof. reflexivity. Qed.
 
-Lemma log2floor_byte_boundary :
-  log2floor {| Uint.value := 256 |} = {| Integer.value := 8 |}.
-Proof. reflexivity. Qed.
+  Lemma log2floor_byte_boundary :
+    log2floor {| Uint.value := 256 |} = {| Integer.value := 8 |}.
+  Proof. reflexivity. Qed.
 
-Lemma exp_cost_zero_power (spec_id : SpecId.t) :
-  exp_cost spec_id {| Uint.value := 0 |} = Some EXP.
-Proof. reflexivity. Qed.
+  Lemma exp_cost_zero_power (spec_id : SpecId.t) :
+    exp_cost spec_id {| Uint.value := 0 |} = Some EXP.
+  Proof. reflexivity. Qed.
 
-Lemma exp_cost_frontier_one_byte :
-  exp_cost SpecId.FRONTIER {| Uint.value := 255 |} =
-  Some {| Integer.value := 20 |}.
-Proof. reflexivity. Qed.
+  Lemma exp_cost_frontier_one_byte :
+    exp_cost SpecId.FRONTIER {| Uint.value := 255 |} =
+    Some {| Integer.value := 20 |}.
+  Proof. reflexivity. Qed.
 
-Lemma exp_cost_spurious_dragon_two_bytes :
-  exp_cost SpecId.SPURIOUS_DRAGON {| Uint.value := 256 |} =
-  Some {| Integer.value := 110 |}.
-Proof. reflexivity. Qed.
+  Lemma exp_cost_spurious_dragon_two_bytes :
+    exp_cost SpecId.SPURIOUS_DRAGON {| Uint.value := 256 |} =
+    Some {| Integer.value := 110 |}.
+  Proof. reflexivity. Qed.
+End Test.
 
 Lemma exp_cost_eq (stack : Stack.t)
     (spec_id : SpecId.t) (power : aliases.U256.t) :
