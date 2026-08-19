@@ -479,6 +479,60 @@ Module InterpreterDispatch.
         end
     end.
 
+  Lemma run_plain_fuel_finished
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (fuel : nat)
+      (IInterpreterTypes : InterpreterTypes.C WIRE_types)
+      (is_not_end :
+        WIRE_types.(InterpreterTypes.Types.Bytecode) -> bool)
+      (table :
+        array.t
+          (Instruction.t WIRE H WIRE_types)
+          {| Integer.value := 256 |})
+      (state : InstructionContext.State.t H WIRE WIRE_types)
+      (result :
+        InterpreterAction.t *
+          InstructionContext.State.t H WIRE WIRE_types)
+      (H_finished :
+        finish_if_halted IInterpreterTypes is_not_end state = Some result) :
+    run_plain_fuel fuel IInterpreterTypes is_not_end table state = Some result.
+  Proof.
+    destruct fuel;
+      cbn [run_plain_fuel];
+      rewrite H_finished;
+      reflexivity.
+  Qed.
+
+  Lemma run_plain_fuel_running
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (fuel : nat)
+      (IInterpreterTypes : InterpreterTypes.C WIRE_types)
+      (is_not_end :
+        WIRE_types.(InterpreterTypes.Types.Bytecode) -> bool)
+      (table :
+        array.t
+          (Instruction.t WIRE H WIRE_types)
+          {| Integer.value := 256 |})
+      (state : InstructionContext.State.t H WIRE WIRE_types)
+      (H_running :
+        finish_if_halted IInterpreterTypes is_not_end state = None) :
+    run_plain_fuel (S fuel) IInterpreterTypes is_not_end table state =
+    match step_result_simple IInterpreterTypes table state with
+    | InterpreterStep.Result.MissingInstruction => None
+    | InterpreterStep.Result.OutOfGas state
+    | InterpreterStep.Result.Success state =>
+        run_plain_fuel fuel IInterpreterTypes is_not_end table state
+    end.
+  Proof.
+    cbn [run_plain_fuel].
+    rewrite H_running.
+    reflexivity.
+  Qed.
+
   Instance run_run_plain
       (WIRE H : Set) `{Link WIRE} `{Link H}
       {WIRE_types : InterpreterTypes.Types.t}
