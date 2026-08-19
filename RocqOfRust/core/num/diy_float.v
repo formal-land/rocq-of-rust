@@ -274,6 +274,7 @@ Module num.
         end.
       
       Global Instance AssociatedFunction_mul : M.IsAssociatedFunction.C Self "mul" mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque mul.
       
@@ -412,6 +413,7 @@ Module num.
       
       Global Instance AssociatedFunction_normalize :
         M.IsAssociatedFunction.C Self "normalize" normalize.
+      Proof.
       Admitted.
       Global Typeclasses Opaque normalize.
       
@@ -649,6 +651,7 @@ Module num.
       
       Global Instance AssociatedFunction_normalize_to :
         M.IsAssociatedFunction.C Self "normalize_to" normalize_to.
+      Proof.
       Admitted.
       Global Typeclasses Opaque normalize_to.
     End Impl_core_num_diy_float_Fp.

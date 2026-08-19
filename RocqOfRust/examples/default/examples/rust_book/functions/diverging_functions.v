@@ -15,6 +15,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "diverging_functions::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.
 
@@ -41,6 +42,7 @@ Module main.
     end.
   
   Global Instance Instance_IsFunction_foo : M.IsFunction.C "diverging_functions::main::foo" foo.
+  Proof.
   Admitted.
   Global Typeclasses Opaque foo.
 End main.

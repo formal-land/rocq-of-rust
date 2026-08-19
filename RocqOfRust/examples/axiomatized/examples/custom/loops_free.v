@@ -4,40 +4,48 @@ Require Import RocqOfRust.RocqOfRust.
 Parameter max2 : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_max2 : M.IsFunction.C "loops_free::max2" max2.
+Proof.
 Admitted.
 
 Parameter abs_i32 : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_abs_i32 : M.IsFunction.C "loops_free::abs_i32" abs_i32.
+Proof.
 Admitted.
 
 Parameter bool_and : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_bool_and : M.IsFunction.C "loops_free::bool_and" bool_and.
+Proof.
 Admitted.
 
 Parameter get_or_zero : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_get_or_zero :
   M.IsFunction.C "loops_free::get_or_zero" get_or_zero.
+Proof.
 Admitted.
 
 Parameter eq2 : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_eq2 : M.IsFunction.C "loops_free::eq2" eq2.
+Proof.
 Admitted.
 
 Parameter eq_pair : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_eq_pair : M.IsFunction.C "loops_free::eq_pair" eq_pair.
+Proof.
 Admitted.
 
 Parameter min3 : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_min3 : M.IsFunction.C "loops_free::min3" min3.
+Proof.
 Admitted.
 
 Parameter choose_ref : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_choose_ref : M.IsFunction.C "loops_free::choose_ref" choose_ref.
+Proof.
 Admitted.

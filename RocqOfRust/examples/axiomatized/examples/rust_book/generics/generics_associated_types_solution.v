@@ -48,12 +48,14 @@ Parameter difference : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_difference :
   M.IsFunction.C "generics_associated_types_solution::difference" difference.
+Proof.
 Admitted.
 
 Parameter get_a : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_get_a :
   M.IsFunction.C "generics_associated_types_solution::get_a" get_a.
+Proof.
 Admitted.
 
 (* Trait *)
@@ -84,10 +86,12 @@ Parameter get_output : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_get_output :
   M.IsFunction.C "generics_associated_types_solution::get_output" get_output.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "generics_associated_types_solution::main" main.
+Proof.
 Admitted.

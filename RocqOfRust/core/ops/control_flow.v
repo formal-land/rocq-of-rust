@@ -58,7 +58,12 @@ Module ops.
                         "core::ops::control_flow::ControlFlow::Continue",
                         0
                       |) in
-                    let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ C ], γ1_0 |) in
+                    let _ := M.read (| γ1_0 |) in
+                    let __self_0 :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ C ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     Value.StructTuple
                       "core::ops::control_flow::ControlFlow::Continue"
                       []
@@ -79,7 +84,12 @@ Module ops.
                         "core::ops::control_flow::ControlFlow::Break",
                         0
                       |) in
-                    let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ B ], γ1_0 |) in
+                    let _ := M.read (| γ1_0 |) in
+                    let __self_0 :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ B ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     Value.StructTuple
                       "core::ops::control_flow::ControlFlow::Break"
                       []
@@ -214,7 +224,12 @@ Module ops.
                                 "core::ops::control_flow::ControlFlow::Continue",
                                 0
                               |) in
-                            let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ C ], γ2_0 |) in
+                            let _ := M.read (| γ2_0 |) in
+                            let __self_0 :=
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ C ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
                               M.SubPointer.get_struct_tuple_field (|
@@ -222,7 +237,12 @@ Module ops.
                                 "core::ops::control_flow::ControlFlow::Continue",
                                 0
                               |) in
-                            let __arg1_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ C ], γ2_0 |) in
+                            let _ := M.read (| γ2_0 |) in
+                            let __arg1_0 :=
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ C ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             M.call_closure (|
                               Ty.path "bool",
                               M.get_trait_method (|
@@ -250,7 +270,12 @@ Module ops.
                                 "core::ops::control_flow::ControlFlow::Break",
                                 0
                               |) in
-                            let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ B ], γ2_0 |) in
+                            let _ := M.read (| γ2_0 |) in
+                            let __self_0 :=
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ B ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
                               M.SubPointer.get_struct_tuple_field (|
@@ -258,7 +283,12 @@ Module ops.
                                 "core::ops::control_flow::ControlFlow::Break",
                                 0
                               |) in
-                            let __arg1_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ B ], γ2_0 |) in
+                            let _ := M.read (| γ2_0 |) in
+                            let __arg1_0 :=
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ B ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             M.call_closure (|
                               Ty.path "bool",
                               M.get_trait_method (|
@@ -404,7 +434,12 @@ Module ops.
                         "core::ops::control_flow::ControlFlow::Continue",
                         0
                       |) in
-                    let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ C ], γ1_0 |) in
+                    let _ := M.read (| γ1_0 |) in
+                    let __self_0 :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ C ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     M.call_closure (|
                       Ty.apply
                         (Ty.path "core::result::Result")
@@ -446,7 +481,12 @@ Module ops.
                         "core::ops::control_flow::ControlFlow::Break",
                         0
                       |) in
-                    let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ B ], γ1_0 |) in
+                    let _ := M.read (| γ1_0 |) in
+                    let __self_0 :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ B ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     M.call_closure (|
                       Ty.apply
                         (Ty.path "core::result::Result")
@@ -559,7 +599,12 @@ Module ops.
                             "core::ops::control_flow::ControlFlow::Continue",
                             0
                           |) in
-                        let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ C ], γ1_0 |) in
+                        let _ := M.read (| γ1_0 |) in
+                        let __self_0 :=
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ C ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                          |) in
                         M.call_closure (|
                           Ty.tuple [],
                           M.get_trait_method (|
@@ -585,7 +630,12 @@ Module ops.
                             "core::ops::control_flow::ControlFlow::Break",
                             0
                           |) in
-                        let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ B ], γ1_0 |) in
+                        let _ := M.read (| γ1_0 |) in
+                        let __self_0 :=
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ B ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                          |) in
                         M.call_closure (|
                           Ty.tuple [],
                           M.get_trait_method (|
@@ -897,6 +947,7 @@ Module ops.
       Global Instance AssociatedFunction_is_break :
         forall (B C : Ty.t),
         M.IsAssociatedFunction.C (Self B C) "is_break" (is_break B C).
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_break.
       
@@ -945,6 +996,7 @@ Module ops.
       Global Instance AssociatedFunction_is_continue :
         forall (B C : Ty.t),
         M.IsAssociatedFunction.C (Self B C) "is_continue" (is_continue B C).
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_continue.
       
@@ -1001,6 +1053,7 @@ Module ops.
       Global Instance AssociatedFunction_break_value :
         forall (B C : Ty.t),
         M.IsAssociatedFunction.C (Self B C) "break_value" (break_value B C).
+      Proof.
       Admitted.
       Global Typeclasses Opaque break_value.
       
@@ -1054,6 +1107,7 @@ Module ops.
       Global Instance AssociatedFunction_break_ok :
         forall (B C : Ty.t),
         M.IsAssociatedFunction.C (Self B C) "break_ok" (break_ok B C).
+      Proof.
       Admitted.
       Global Typeclasses Opaque break_ok.
       
@@ -1133,6 +1187,7 @@ Module ops.
       Global Instance AssociatedFunction_map_break :
         forall (B C : Ty.t),
         M.IsAssociatedFunction.C (Self B C) "map_break" (map_break B C).
+      Proof.
       Admitted.
       Global Typeclasses Opaque map_break.
       
@@ -1189,6 +1244,7 @@ Module ops.
       Global Instance AssociatedFunction_continue_value :
         forall (B C : Ty.t),
         M.IsAssociatedFunction.C (Self B C) "continue_value" (continue_value B C).
+      Proof.
       Admitted.
       Global Typeclasses Opaque continue_value.
       
@@ -1247,6 +1303,7 @@ Module ops.
       Global Instance AssociatedFunction_continue_ok :
         forall (B C : Ty.t),
         M.IsAssociatedFunction.C (Self B C) "continue_ok" (continue_ok B C).
+      Proof.
       Admitted.
       Global Typeclasses Opaque continue_ok.
       
@@ -1331,6 +1388,7 @@ Module ops.
       Global Instance AssociatedFunction_map_continue :
         forall (B C : Ty.t),
         M.IsAssociatedFunction.C (Self B C) "map_continue" (map_continue B C).
+      Proof.
       Admitted.
       Global Typeclasses Opaque map_continue.
     End Impl_core_ops_control_flow_ControlFlow_B_C.
@@ -1401,6 +1459,7 @@ Module ops.
       Global Instance AssociatedFunction_into_value :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "into_value" (into_value T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_value.
     End Impl_core_ops_control_flow_ControlFlow_T_T.
@@ -1511,6 +1570,7 @@ Module ops.
       Global Instance AssociatedFunction_from_try :
         forall (R : Ty.t),
         M.IsAssociatedFunction.C (Self R) "from_try" (from_try R).
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_try.
       
@@ -1583,6 +1643,7 @@ Module ops.
       Global Instance AssociatedFunction_into_try :
         forall (R : Ty.t),
         M.IsAssociatedFunction.C (Self R) "into_try" (into_try R).
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_try.
     End Impl_core_ops_control_flow_ControlFlow_R_associated_in_trait_core_ops_try_trait_Try___R_Output.

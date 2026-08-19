@@ -45,6 +45,7 @@ Module special.
     Global Instance AssociatedFunction_is_power_of_two :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "is_power_of_two" (is_power_of_two BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_power_of_two.
     
@@ -97,6 +98,7 @@ Module special.
     Global Instance AssociatedFunction_next_power_of_two :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "next_power_of_two" (next_power_of_two BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque next_power_of_two.
     
@@ -258,6 +260,7 @@ Module special.
         (Self BITS LIMBS)
         "checked_next_power_of_two"
         (checked_next_power_of_two BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque checked_next_power_of_two.
     (*
@@ -324,6 +327,7 @@ Module special.
     Global Instance AssociatedFunction_next_multiple_of :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "next_multiple_of" (next_multiple_of BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque next_multiple_of.
     
@@ -690,6 +694,7 @@ Module special.
         (Self BITS LIMBS)
         "checked_next_multiple_of"
         (checked_next_multiple_of BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque checked_next_multiple_of.
   End Impl_ruint_Uint_BITS_LIMBS.

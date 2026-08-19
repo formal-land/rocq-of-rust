@@ -42,6 +42,7 @@ Module foo.
     
     Global Instance Instance_IsFunction_f_foo_gre :
       M.IsFunction.C "module_duplicate::foo::gre::f_foo_gre" f_foo_gre.
+    Proof.
     Admitted.
     Global Typeclasses Opaque f_foo_gre.
   End gre.
@@ -91,6 +92,7 @@ Module foo.
     end.
   
   Global Instance Instance_IsFunction_f_foo : M.IsFunction.C "module_duplicate::foo::f_foo" f_foo.
+  Proof.
   Admitted.
   Global Typeclasses Opaque f_foo.
 End foo.
@@ -117,5 +119,6 @@ Definition f (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_f : M.IsFunction.C "module_duplicate::f" f.
+Proof.
 Admitted.
 Global Typeclasses Opaque f.

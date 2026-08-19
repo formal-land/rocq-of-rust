@@ -116,6 +116,7 @@ Module iter.
         Global Instance AssociatedFunction_new :
           forall (I P : Ty.t),
           M.IsAssociatedFunction.C (Self I P) "new" (new I P).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new.
         (*
@@ -778,6 +779,7 @@ Module iter.
         Global Instance AssociatedFunction_next_chunk_dropless :
           forall (I P : Ty.t),
           M.IsAssociatedFunction.C (Self I P) "next_chunk_dropless" (next_chunk_dropless I P).
+        Proof.
         Admitted.
         Global Typeclasses Opaque next_chunk_dropless.
       End Impl_core_iter_adapters_filter_Filter_I_P.
@@ -1008,6 +1010,7 @@ Module iter.
       
       Global Instance Instance_IsFunction_filter_fold :
         M.IsFunction.C "core::iter::adapters::filter::filter_fold" filter_fold.
+      Proof.
       Admitted.
       Global Typeclasses Opaque filter_fold.
       
@@ -1136,6 +1139,7 @@ Module iter.
       
       Global Instance Instance_IsFunction_filter_try_fold :
         M.IsFunction.C "core::iter::adapters::filter::filter_try_fold" filter_try_fold.
+      Proof.
       Admitted.
       Global Typeclasses Opaque filter_try_fold.
       

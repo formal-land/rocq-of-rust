@@ -29,6 +29,7 @@ Module Impl_Option.
       SimulateM.eval_f (Impl_Option.run_map Run_FnOnce_for_F self f) stack 🌲
       (Output.Success (map self f), stack)
     }}.
+  Proof.
   Admitted.
 
   Definition ok_or {T E : Set} (self : Self T) (err : E) : Result.t T E :=
@@ -162,6 +163,7 @@ Module Impl_Try_for_Option.
         stack 🌲
       (Output.Success (from_output output), stack)
     }}.
+  Proof.
   Admitted.
 
   Definition branch {T : Set} (self : Self T) :
@@ -179,6 +181,7 @@ Module Impl_Try_for_Option.
         stack 🌲
       (Output.Success (branch self), stack)
     }}.
+  Proof.
   Admitted.
 
   Instance I (T : Set) `{Link T}
@@ -221,6 +224,7 @@ Module Impl_FromResidual_Infallible_for_Option.
         stack 🌲
       (Output.Success (from_residual residual), stack)
     }}.
+  Proof.
   Admitted.
 
   Instance I (T : Set) :

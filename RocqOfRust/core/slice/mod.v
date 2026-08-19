@@ -225,6 +225,7 @@ Module slice.
   
   Global Instance Instance_IsFunction_split_point_of :
     M.IsFunction.C "core::slice::split_point_of" split_point_of.
+  Proof.
   Admitted.
   Global Typeclasses Opaque split_point_of.
   
@@ -280,6 +281,7 @@ Module slice.
     Global Instance AssociatedFunction_len :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "len" (len T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque len.
     
@@ -313,6 +315,7 @@ Module slice.
     Global Instance AssociatedFunction_is_empty :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "is_empty" (is_empty T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_empty.
     
@@ -338,7 +341,12 @@ Module slice.
                   let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
                   let γ1_rest := M.SubPointer.get_slice_rest (| γ, 1, 0 |) in
-                  let first := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let first :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "core::option::Option::Some"
                     []
@@ -359,6 +367,7 @@ Module slice.
     Global Instance AssociatedFunction_first :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "first" (first T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque first.
     
@@ -387,7 +396,12 @@ Module slice.
                   let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
                   let γ1_rest := M.SubPointer.get_slice_rest (| γ, 1, 0 |) in
-                  let first := M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let first :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&mut") [] [ T ],
+                      M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "core::option::Option::Some"
                     []
@@ -408,6 +422,7 @@ Module slice.
     Global Instance AssociatedFunction_first_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "first_mut" (first_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque first_mut.
     
@@ -442,11 +457,17 @@ Module slice.
                   let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
                   let γ1_rest := M.SubPointer.get_slice_rest (| γ, 1, 0 |) in
-                  let first := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let first :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_rest |) in
                   let tail :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                      γ1_rest
+                      M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                     |) in
                   Value.StructTuple
                     "core::option::Option::Some"
@@ -486,6 +507,7 @@ Module slice.
     Global Instance AssociatedFunction_split_first :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "split_first" (split_first T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_first.
     
@@ -528,11 +550,17 @@ Module slice.
                   let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
                   let γ1_rest := M.SubPointer.get_slice_rest (| γ, 1, 0 |) in
-                  let first := M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let first :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&mut") [] [ T ],
+                      M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_rest |) in
                   let tail :=
                     M.alloc (|
                       Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                      γ1_rest
+                      M.borrow (| Pointer.Kind.MutRef, γ1_rest |)
                     |) in
                   Value.StructTuple
                     "core::option::Option::Some"
@@ -572,6 +600,7 @@ Module slice.
     Global Instance AssociatedFunction_split_first_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "split_first_mut" (split_first_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_first_mut.
     
@@ -606,12 +635,18 @@ Module slice.
                   let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_rest := M.SubPointer.get_slice_rest (| γ, 0, 1 |) in
                   let γ1_rev0 := M.SubPointer.get_slice_rev_index (| γ, 0 |) in
+                  let _ := M.read (| γ1_rest |) in
                   let init :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                      γ1_rest
+                      M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                     |) in
-                  let last := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_rev0 |) in
+                  let _ := M.read (| γ1_rev0 |) in
+                  let last :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_rev0 |)
+                    |) in
                   Value.StructTuple
                     "core::option::Option::Some"
                     []
@@ -650,6 +685,7 @@ Module slice.
     Global Instance AssociatedFunction_split_last :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "split_last" (split_last T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_last.
     
@@ -692,12 +728,18 @@ Module slice.
                   let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_rest := M.SubPointer.get_slice_rest (| γ, 0, 1 |) in
                   let γ1_rev0 := M.SubPointer.get_slice_rev_index (| γ, 0 |) in
+                  let _ := M.read (| γ1_rest |) in
                   let init :=
                     M.alloc (|
                       Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                      γ1_rest
+                      M.borrow (| Pointer.Kind.MutRef, γ1_rest |)
                     |) in
-                  let last := M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ1_rev0 |) in
+                  let _ := M.read (| γ1_rev0 |) in
+                  let last :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&mut") [] [ T ],
+                      M.borrow (| Pointer.Kind.MutRef, γ1_rev0 |)
+                    |) in
                   Value.StructTuple
                     "core::option::Option::Some"
                     []
@@ -736,6 +778,7 @@ Module slice.
     Global Instance AssociatedFunction_split_last_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "split_last_mut" (split_last_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_last_mut.
     
@@ -761,7 +804,12 @@ Module slice.
                   let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_rest := M.SubPointer.get_slice_rest (| γ, 0, 1 |) in
                   let γ1_rev0 := M.SubPointer.get_slice_rev_index (| γ, 0 |) in
-                  let last := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_rev0 |) in
+                  let _ := M.read (| γ1_rev0 |) in
+                  let last :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_rev0 |)
+                    |) in
                   Value.StructTuple
                     "core::option::Option::Some"
                     []
@@ -782,6 +830,7 @@ Module slice.
     Global Instance AssociatedFunction_last :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "last" (last T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque last.
     
@@ -810,7 +859,12 @@ Module slice.
                   let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_rest := M.SubPointer.get_slice_rest (| γ, 0, 1 |) in
                   let γ1_rev0 := M.SubPointer.get_slice_rev_index (| γ, 0 |) in
-                  let last := M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ1_rev0 |) in
+                  let _ := M.read (| γ1_rev0 |) in
+                  let last :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&mut") [] [ T ],
+                      M.borrow (| Pointer.Kind.MutRef, γ1_rev0 |)
+                    |) in
                   Value.StructTuple
                     "core::option::Option::Some"
                     []
@@ -831,6 +885,7 @@ Module slice.
     Global Instance AssociatedFunction_last_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "last_mut" (last_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque last_mut.
     
@@ -943,6 +998,7 @@ Module slice.
     Global Instance AssociatedFunction_first_chunk :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "first_chunk" (first_chunk T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque first_chunk.
     
@@ -1069,6 +1125,7 @@ Module slice.
     Global Instance AssociatedFunction_first_chunk_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "first_chunk_mut" (first_chunk_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque first_chunk_mut.
     
@@ -1252,6 +1309,7 @@ Module slice.
     Global Instance AssociatedFunction_split_first_chunk :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "split_first_chunk" (split_first_chunk T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_first_chunk.
     
@@ -1452,6 +1510,7 @@ Module slice.
     Global Instance AssociatedFunction_split_first_chunk_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "split_first_chunk_mut" (split_first_chunk_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_first_chunk_mut.
     
@@ -1675,6 +1734,7 @@ Module slice.
     Global Instance AssociatedFunction_split_last_chunk :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "split_last_chunk" (split_last_chunk T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_last_chunk.
     
@@ -1927,6 +1987,7 @@ Module slice.
     Global Instance AssociatedFunction_split_last_chunk_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "split_last_chunk_mut" (split_last_chunk_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_last_chunk_mut.
     
@@ -2100,6 +2161,7 @@ Module slice.
     Global Instance AssociatedFunction_last_chunk :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "last_chunk" (last_chunk T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque last_chunk.
     
@@ -2299,6 +2361,7 @@ Module slice.
     Global Instance AssociatedFunction_last_chunk_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "last_chunk_mut" (last_chunk_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque last_chunk_mut.
     
@@ -2352,6 +2415,7 @@ Module slice.
     Global Instance AssociatedFunction_get :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "get" (get T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque get.
     
@@ -2411,6 +2475,7 @@ Module slice.
     Global Instance AssociatedFunction_get_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "get_mut" (get_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_mut.
     
@@ -2475,6 +2540,7 @@ Module slice.
     Global Instance AssociatedFunction_get_unchecked :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "get_unchecked" (get_unchecked T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_unchecked.
     
@@ -2560,6 +2626,7 @@ Module slice.
     Global Instance AssociatedFunction_get_unchecked_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "get_unchecked_mut" (get_unchecked_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_unchecked_mut.
     
@@ -2590,6 +2657,7 @@ Module slice.
     Global Instance AssociatedFunction_as_ptr :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "as_ptr" (as_ptr T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_ptr.
     
@@ -2623,6 +2691,7 @@ Module slice.
     Global Instance AssociatedFunction_as_mut_ptr :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "as_mut_ptr" (as_mut_ptr T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_mut_ptr.
     
@@ -2705,6 +2774,7 @@ Module slice.
     Global Instance AssociatedFunction_as_ptr_range :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "as_ptr_range" (as_ptr_range T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_ptr_range.
     
@@ -2779,6 +2849,7 @@ Module slice.
     Global Instance AssociatedFunction_as_mut_ptr_range :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "as_mut_ptr_range" (as_mut_ptr_range T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_mut_ptr_range.
     
@@ -2887,6 +2958,7 @@ Module slice.
     Global Instance AssociatedFunction_as_array :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "as_array" (as_array T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_array.
     
@@ -3003,6 +3075,7 @@ Module slice.
     Global Instance AssociatedFunction_as_mut_array :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "as_mut_array" (as_mut_array T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_mut_array.
     
@@ -3058,6 +3131,7 @@ Module slice.
     Global Instance AssociatedFunction_swap :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "swap" (swap T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque swap.
     
@@ -3191,6 +3265,7 @@ Module slice.
     Global Instance AssociatedFunction_swap_unchecked :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "swap_unchecked" (swap_unchecked T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque swap_unchecked.
     
@@ -3407,6 +3482,7 @@ Module slice.
     Global Instance AssociatedFunction_reverse :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "reverse" (reverse T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque reverse.
     
@@ -3438,6 +3514,7 @@ Module slice.
     Global Instance AssociatedFunction_iter :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "iter" (iter T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque iter.
     
@@ -3472,6 +3549,7 @@ Module slice.
     Global Instance AssociatedFunction_iter_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "iter_mut" (iter_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque iter_mut.
     
@@ -3545,6 +3623,7 @@ Module slice.
     Global Instance AssociatedFunction_windows :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "windows" (windows T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque windows.
     
@@ -3630,6 +3709,7 @@ Module slice.
     Global Instance AssociatedFunction_chunks :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "chunks" (chunks T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque chunks.
     
@@ -3718,6 +3798,7 @@ Module slice.
     Global Instance AssociatedFunction_chunks_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "chunks_mut" (chunks_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque chunks_mut.
     
@@ -3803,6 +3884,7 @@ Module slice.
     Global Instance AssociatedFunction_chunks_exact :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "chunks_exact" (chunks_exact T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque chunks_exact.
     
@@ -3896,6 +3978,7 @@ Module slice.
     Global Instance AssociatedFunction_chunks_exact_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "chunks_exact_mut" (chunks_exact_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque chunks_exact_mut.
     
@@ -4043,6 +4126,7 @@ Module slice.
     Global Instance AssociatedFunction_as_chunks_unchecked :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "as_chunks_unchecked" (as_chunks_unchecked T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_chunks_unchecked.
     
@@ -4261,6 +4345,7 @@ Module slice.
     Global Instance AssociatedFunction_as_chunks :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "as_chunks" (as_chunks T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_chunks.
     
@@ -4490,6 +4575,7 @@ Module slice.
     Global Instance AssociatedFunction_as_rchunks :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "as_rchunks" (as_rchunks T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_rchunks.
     
@@ -4669,6 +4755,7 @@ Module slice.
     Global Instance AssociatedFunction_as_chunks_unchecked_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "as_chunks_unchecked_mut" (as_chunks_unchecked_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_chunks_unchecked_mut.
     
@@ -4898,6 +4985,7 @@ Module slice.
     Global Instance AssociatedFunction_as_chunks_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "as_chunks_mut" (as_chunks_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_chunks_mut.
     
@@ -5143,6 +5231,7 @@ Module slice.
     Global Instance AssociatedFunction_as_rchunks_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "as_rchunks_mut" (as_rchunks_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_rchunks_mut.
     
@@ -5224,6 +5313,7 @@ Module slice.
     Global Instance AssociatedFunction_array_windows :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "array_windows" (array_windows T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque array_windows.
     
@@ -5309,6 +5399,7 @@ Module slice.
     Global Instance AssociatedFunction_rchunks :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "rchunks" (rchunks T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque rchunks.
     
@@ -5397,6 +5488,7 @@ Module slice.
     Global Instance AssociatedFunction_rchunks_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "rchunks_mut" (rchunks_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque rchunks_mut.
     
@@ -5482,6 +5574,7 @@ Module slice.
     Global Instance AssociatedFunction_rchunks_exact :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "rchunks_exact" (rchunks_exact T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque rchunks_exact.
     
@@ -5575,6 +5668,7 @@ Module slice.
     Global Instance AssociatedFunction_rchunks_exact_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "rchunks_exact_mut" (rchunks_exact_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque rchunks_exact_mut.
     
@@ -5610,6 +5704,7 @@ Module slice.
     Global Instance AssociatedFunction_chunk_by :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "chunk_by" (chunk_by T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque chunk_by.
     
@@ -5649,6 +5744,7 @@ Module slice.
     Global Instance AssociatedFunction_chunk_by_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "chunk_by_mut" (chunk_by_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque chunk_by_mut.
     
@@ -5750,6 +5846,7 @@ Module slice.
     Global Instance AssociatedFunction_split_at :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "split_at" (split_at T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_at.
     
@@ -5856,6 +5953,7 @@ Module slice.
     Global Instance AssociatedFunction_split_at_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "split_at_mut" (split_at_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_at_mut.
     
@@ -6000,6 +6098,7 @@ Module slice.
     Global Instance AssociatedFunction_split_at_unchecked :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "split_at_unchecked" (split_at_unchecked T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_at_unchecked.
     
@@ -6151,6 +6250,7 @@ Module slice.
     Global Instance AssociatedFunction_split_at_mut_unchecked :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "split_at_mut_unchecked" (split_at_mut_unchecked T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_at_mut_unchecked.
     
@@ -6265,6 +6365,7 @@ Module slice.
     Global Instance AssociatedFunction_split_at_checked :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "split_at_checked" (split_at_checked T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_at_checked.
     
@@ -6382,6 +6483,7 @@ Module slice.
     Global Instance AssociatedFunction_split_at_mut_checked :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "split_at_mut_checked" (split_at_mut_checked T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_at_mut_checked.
     
@@ -6417,6 +6519,7 @@ Module slice.
     Global Instance AssociatedFunction_split :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "split" (split T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque split.
     
@@ -6456,6 +6559,7 @@ Module slice.
     Global Instance AssociatedFunction_split_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "split_mut" (split_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_mut.
     
@@ -6496,6 +6600,7 @@ Module slice.
     Global Instance AssociatedFunction_split_inclusive :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "split_inclusive" (split_inclusive T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_inclusive.
     
@@ -6540,6 +6645,7 @@ Module slice.
     Global Instance AssociatedFunction_split_inclusive_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "split_inclusive_mut" (split_inclusive_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_inclusive_mut.
     
@@ -6575,6 +6681,7 @@ Module slice.
     Global Instance AssociatedFunction_rsplit :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "rsplit" (rsplit T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque rsplit.
     
@@ -6614,6 +6721,7 @@ Module slice.
     Global Instance AssociatedFunction_rsplit_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "rsplit_mut" (rsplit_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque rsplit_mut.
     
@@ -6665,6 +6773,7 @@ Module slice.
     Global Instance AssociatedFunction_splitn :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "splitn" (splitn T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque splitn.
     
@@ -6719,6 +6828,7 @@ Module slice.
     Global Instance AssociatedFunction_splitn_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "splitn_mut" (splitn_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque splitn_mut.
     
@@ -6770,6 +6880,7 @@ Module slice.
     Global Instance AssociatedFunction_rsplitn :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "rsplitn" (rsplitn T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque rsplitn.
     
@@ -6824,6 +6935,7 @@ Module slice.
     Global Instance AssociatedFunction_rsplitn_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "rsplitn_mut" (rsplitn_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque rsplitn_mut.
     
@@ -7141,6 +7253,7 @@ Module slice.
     Global Instance AssociatedFunction_split_once :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "split_once" (split_once T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_once.
     
@@ -7458,6 +7571,7 @@ Module slice.
     Global Instance AssociatedFunction_rsplit_once :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "rsplit_once" (rsplit_once T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque rsplit_once.
     
@@ -7499,6 +7613,7 @@ Module slice.
     Global Instance AssociatedFunction_contains :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "contains" (contains T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque contains.
     
@@ -7611,6 +7726,7 @@ Module slice.
     Global Instance AssociatedFunction_starts_with :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "starts_with" (starts_with T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque starts_with.
     
@@ -7750,6 +7866,7 @@ Module slice.
     Global Instance AssociatedFunction_ends_with :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "ends_with" (ends_with T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque ends_with.
     
@@ -7985,6 +8102,7 @@ Module slice.
     Global Instance AssociatedFunction_strip_prefix :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "strip_prefix" (strip_prefix T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque strip_prefix.
     
@@ -8277,6 +8395,7 @@ Module slice.
     Global Instance AssociatedFunction_strip_suffix :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "strip_suffix" (strip_suffix T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque strip_suffix.
     
@@ -8472,6 +8591,7 @@ Module slice.
     Global Instance AssociatedFunction_strip_circumfix :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "strip_circumfix" (strip_circumfix T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque strip_circumfix.
     
@@ -8682,6 +8802,7 @@ Module slice.
     Global Instance AssociatedFunction_trim_prefix :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "trim_prefix" (trim_prefix T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque trim_prefix.
     
@@ -8936,6 +9057,7 @@ Module slice.
     Global Instance AssociatedFunction_trim_suffix :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "trim_suffix" (trim_suffix T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque trim_suffix.
     
@@ -9006,6 +9128,7 @@ Module slice.
     Global Instance AssociatedFunction_binary_search :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "binary_search" (binary_search T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque binary_search.
     
@@ -9478,6 +9601,7 @@ Module slice.
     Global Instance AssociatedFunction_binary_search_by :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "binary_search_by" (binary_search_by T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque binary_search_by.
     
@@ -9582,6 +9706,7 @@ Module slice.
     Global Instance AssociatedFunction_binary_search_by_key :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "binary_search_by_key" (binary_search_by_key T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque binary_search_by_key.
     
@@ -9651,6 +9776,7 @@ Module slice.
     Global Instance AssociatedFunction_sort_unstable :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "sort_unstable" (sort_unstable T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque sort_unstable.
     
@@ -9820,6 +9946,7 @@ Module slice.
     Global Instance AssociatedFunction_sort_unstable_by :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "sort_unstable_by" (sort_unstable_by T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque sort_unstable_by.
     
@@ -10017,6 +10144,7 @@ Module slice.
     Global Instance AssociatedFunction_sort_unstable_by_key :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "sort_unstable_by_key" (sort_unstable_by_key T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque sort_unstable_by_key.
     
@@ -10073,6 +10201,7 @@ Module slice.
     Global Instance AssociatedFunction_select_nth_unstable :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "select_nth_unstable" (select_nth_unstable T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque select_nth_unstable.
     
@@ -10222,6 +10351,7 @@ Module slice.
     Global Instance AssociatedFunction_select_nth_unstable_by :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "select_nth_unstable_by" (select_nth_unstable_by T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque select_nth_unstable_by.
     
@@ -10388,6 +10518,7 @@ Module slice.
     Global Instance AssociatedFunction_select_nth_unstable_by_key :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "select_nth_unstable_by_key" (select_nth_unstable_by_key T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque select_nth_unstable_by_key.
     
@@ -10483,6 +10614,7 @@ Module slice.
     Global Instance AssociatedFunction_partition_dedup :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "partition_dedup" (partition_dedup T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque partition_dedup.
     
@@ -11006,6 +11138,7 @@ Module slice.
     Global Instance AssociatedFunction_partition_dedup_by :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "partition_dedup_by" (partition_dedup_by T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque partition_dedup_by.
     
@@ -11163,6 +11296,7 @@ Module slice.
     Global Instance AssociatedFunction_partition_dedup_by_key :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "partition_dedup_by_key" (partition_dedup_by_key T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque partition_dedup_by_key.
     
@@ -11297,6 +11431,7 @@ Module slice.
     Global Instance AssociatedFunction_rotate_left :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "rotate_left" (rotate_left T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque rotate_left.
     
@@ -11431,6 +11566,7 @@ Module slice.
     Global Instance AssociatedFunction_rotate_right :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "rotate_right" (rotate_right T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque rotate_right.
     
@@ -11479,6 +11615,7 @@ Module slice.
     Global Instance AssociatedFunction_fill :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "fill" (fill T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque fill.
     
@@ -11618,6 +11755,7 @@ Module slice.
     Global Instance AssociatedFunction_fill_with :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "fill_with" (fill_with T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque fill_with.
     
@@ -11672,6 +11810,7 @@ Module slice.
     Global Instance AssociatedFunction_clone_from_slice :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "clone_from_slice" (clone_from_slice T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque clone_from_slice.
     
@@ -11715,6 +11854,7 @@ Module slice.
     Global Instance AssociatedFunction_copy_from_slice :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "copy_from_slice" (copy_from_slice T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque copy_from_slice.
     
@@ -11931,6 +12071,7 @@ Module slice.
     Global Instance AssociatedFunction_copy_within :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "copy_within" (copy_within T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque copy_within.
     
@@ -12087,6 +12228,7 @@ Module slice.
     Global Instance AssociatedFunction_swap_with_slice :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "swap_with_slice" (swap_with_slice T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque swap_with_slice.
     
@@ -12224,6 +12366,7 @@ Module slice.
     Global Instance AssociatedFunction_align_to_offsets :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "align_to_offsets" (align_to_offsets T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque align_to_offsets.
     
@@ -12769,6 +12912,7 @@ Module slice.
     Global Instance AssociatedFunction_align_to :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "align_to" (align_to T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque align_to.
     
@@ -13355,6 +13499,7 @@ Module slice.
     Global Instance AssociatedFunction_align_to_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "align_to_mut" (align_to_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque align_to_mut.
     
@@ -13555,6 +13700,7 @@ Module slice.
     Global Instance AssociatedFunction_as_simd :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "as_simd" (as_simd T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_simd.
     
@@ -13758,6 +13904,7 @@ Module slice.
     Global Instance AssociatedFunction_as_simd_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "as_simd_mut" (as_simd_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_simd_mut.
     
@@ -14437,6 +14584,7 @@ Module slice.
     Global Instance AssociatedFunction_is_sorted :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "is_sorted" (is_sorted T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_sorted.
     
@@ -14528,8 +14676,18 @@ Module slice.
                                 (let γ := M.deref (| M.read (| γ |) |) in
                                 let γ1_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
                                 let γ1_1 := M.SubPointer.get_slice_index (| γ, 1 |) in
-                                let a := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
-                                let b := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_1 |) in
+                                let _ := M.read (| γ1_0 |) in
+                                let a :=
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "&") [] [ T ],
+                                    M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                                  |) in
+                                let _ := M.read (| γ1_1 |) in
+                                let b :=
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "&") [] [ T ],
+                                    M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                                  |) in
                                 M.call_closure (|
                                   Ty.path "bool",
                                   M.get_trait_method (|
@@ -14574,6 +14732,7 @@ Module slice.
     Global Instance AssociatedFunction_is_sorted_by :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "is_sorted_by" (is_sorted_by T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_sorted_by.
     
@@ -14625,6 +14784,7 @@ Module slice.
     Global Instance AssociatedFunction_is_sorted_by_key :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "is_sorted_by_key" (is_sorted_by_key T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_sorted_by_key.
     
@@ -14766,6 +14926,7 @@ Module slice.
     Global Instance AssociatedFunction_partition_point :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "partition_point" (partition_point T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque partition_point.
     
@@ -15184,6 +15345,7 @@ Module slice.
     Global Instance AssociatedFunction_split_off :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "split_off" (split_off T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_off.
     
@@ -15633,6 +15795,7 @@ Module slice.
     Global Instance AssociatedFunction_split_off_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "split_off_mut" (split_off_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_off_mut.
     
@@ -15758,6 +15921,7 @@ Module slice.
     Global Instance AssociatedFunction_split_off_first :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "split_off_first" (split_off_first T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_off_first.
     
@@ -15935,6 +16099,7 @@ Module slice.
     Global Instance AssociatedFunction_split_off_first_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "split_off_first_mut" (split_off_first_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_off_first_mut.
     
@@ -16060,6 +16225,7 @@ Module slice.
     Global Instance AssociatedFunction_split_off_last :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "split_off_last" (split_off_last T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_off_last.
     
@@ -16237,6 +16403,7 @@ Module slice.
     Global Instance AssociatedFunction_split_off_last_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "split_off_last_mut" (split_off_last_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_off_last_mut.
     
@@ -16870,6 +17037,7 @@ Module slice.
     Global Instance AssociatedFunction_get_disjoint_unchecked_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "get_disjoint_unchecked_mut" (get_disjoint_unchecked_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_disjoint_unchecked_mut.
     
@@ -17187,6 +17355,7 @@ Module slice.
     Global Instance AssociatedFunction_get_disjoint_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "get_disjoint_mut" (get_disjoint_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_disjoint_mut.
     
@@ -17428,6 +17597,7 @@ Module slice.
     Global Instance AssociatedFunction_element_offset :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "element_offset" (element_offset T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque element_offset.
     
@@ -17746,6 +17916,7 @@ Module slice.
     Global Instance AssociatedFunction_subslice_range :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "subslice_range" (subslice_range T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque subslice_range.
   End Impl_slice_T.
@@ -17837,6 +18008,7 @@ Module slice.
     Global Instance AssociatedFunction_align_to_uninit_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "align_to_uninit_mut" (align_to_uninit_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque align_to_uninit_mut.
   End Impl_slice_core_mem_maybe_uninit_MaybeUninit_T.
@@ -17999,6 +18171,7 @@ Module slice.
     Global Instance AssociatedFunction_as_flattened :
       forall (N : Value.t) (T : Ty.t),
       M.IsAssociatedFunction.C (Self N T) "as_flattened" (as_flattened N T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_flattened.
     
@@ -18190,6 +18363,7 @@ Module slice.
     Global Instance AssociatedFunction_as_flattened_mut :
       forall (N : Value.t) (T : Ty.t),
       M.IsAssociatedFunction.C (Self N T) "as_flattened_mut" (as_flattened_mut N T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_flattened_mut.
   End Impl_slice_array_N_T.
@@ -18240,6 +18414,7 @@ Module slice.
     
     Global Instance AssociatedFunction_sort_floats :
       M.IsAssociatedFunction.C Self "sort_floats" sort_floats.
+    Proof.
     Admitted.
     Global Typeclasses Opaque sort_floats.
   End Impl_slice_f32.
@@ -18290,6 +18465,7 @@ Module slice.
     
     Global Instance AssociatedFunction_sort_floats :
       M.IsAssociatedFunction.C Self "sort_floats" sort_floats.
+    Proof.
     Admitted.
     Global Typeclasses Opaque sort_floats.
   End Impl_slice_f64.
@@ -18451,6 +18627,7 @@ Module slice.
   
   Global Instance Instance_IsFunction_copy_from_slice_impl :
     M.IsFunction.C "core::slice::copy_from_slice_impl" copy_from_slice_impl.
+  Proof.
   Admitted.
   Global Typeclasses Opaque copy_from_slice_impl.
   
@@ -18485,6 +18662,7 @@ Module slice.
     
     Global Instance Instance_IsFunction_len_mismatch_fail :
       M.IsFunction.C "core::slice::copy_from_slice_impl::len_mismatch_fail" len_mismatch_fail.
+    Proof.
     Admitted.
     Global Typeclasses Opaque len_mismatch_fail.
   End copy_from_slice_impl.
@@ -19594,6 +19772,7 @@ Module slice.
   
   Global Instance Instance_IsFunction_get_disjoint_check_valid :
     M.IsFunction.C "core::slice::get_disjoint_check_valid" get_disjoint_check_valid.
+  Proof.
   Admitted.
   Global Typeclasses Opaque get_disjoint_check_valid.
   

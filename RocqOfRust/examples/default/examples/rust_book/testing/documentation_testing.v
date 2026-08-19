@@ -17,6 +17,7 @@ Definition add (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_add : M.IsFunction.C "documentation_testing::add" add.
+Proof.
 Admitted.
 Global Typeclasses Opaque add.
 
@@ -76,5 +77,6 @@ Definition div (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_div : M.IsFunction.C "documentation_testing::div" div.
+Proof.
 Admitted.
 Global Typeclasses Opaque div.

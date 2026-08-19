@@ -1291,6 +1291,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_keccak256 :
       M.IsFunction.C "revm_interpreter::instructions::system::keccak256" keccak256.
+    Proof.
     Admitted.
     Global Typeclasses Opaque keccak256.
     
@@ -1508,6 +1509,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_address :
       M.IsFunction.C "revm_interpreter::instructions::system::address" address.
+    Proof.
     Admitted.
     Global Typeclasses Opaque address.
     
@@ -1725,6 +1727,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_caller :
       M.IsFunction.C "revm_interpreter::instructions::system::caller" caller.
+    Proof.
     Admitted.
     Global Typeclasses Opaque caller.
     
@@ -1907,6 +1910,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_codesize :
       M.IsFunction.C "revm_interpreter::instructions::system::codesize" codesize.
+    Proof.
     Admitted.
     Global Typeclasses Opaque codesize.
     
@@ -2635,6 +2639,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_codecopy :
       M.IsFunction.C "revm_interpreter::instructions::system::codecopy" codecopy.
+    Proof.
     Admitted.
     Global Typeclasses Opaque codecopy.
     
@@ -3360,6 +3365,7 @@ Module instructions.
                                                       "revm_interpreter::interpreter_action::call_inputs::CallInput::Bytes",
                                                       0
                                                     |) in
+                                                  let _ := M.read (| γ1_0 |) in
                                                   let bytes :=
                                                     M.alloc (|
                                                       Ty.apply
@@ -3367,7 +3373,7 @@ Module instructions.
                                                         []
                                                         [ Ty.path "alloy_primitives::bytes_::Bytes"
                                                         ],
-                                                      γ1_0
+                                                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                     |) in
                                                   M.read (|
                                                     let~ _ : Ty.tuple [] :=
@@ -3587,6 +3593,7 @@ Module instructions.
                                                       "revm_interpreter::interpreter_action::call_inputs::CallInput::SharedBuffer",
                                                       0
                                                     |) in
+                                                  let _ := M.read (| γ1_0 |) in
                                                   let range :=
                                                     M.alloc (|
                                                       Ty.apply
@@ -3598,7 +3605,7 @@ Module instructions.
                                                             []
                                                             [ Ty.path "usize" ]
                                                         ],
-                                                      γ1_0
+                                                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                     |) in
                                                   M.read (|
                                                     let~ input_slice :
@@ -3917,6 +3924,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_calldataload :
       M.IsFunction.C "revm_interpreter::instructions::system::calldataload" calldataload.
+    Proof.
     Admitted.
     Global Typeclasses Opaque calldataload.
     
@@ -4122,6 +4130,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_calldatasize :
       M.IsFunction.C "revm_interpreter::instructions::system::calldatasize" calldatasize.
+    Proof.
     Admitted.
     Global Typeclasses Opaque calldatasize.
     
@@ -4284,6 +4293,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_callvalue :
       M.IsFunction.C "revm_interpreter::instructions::system::callvalue" callvalue.
+    Proof.
     Admitted.
     Global Typeclasses Opaque callvalue.
     
@@ -4954,13 +4964,14 @@ Module instructions.
                                                   "revm_interpreter::interpreter_action::call_inputs::CallInput::Bytes",
                                                   0
                                                 |) in
+                                              let _ := M.read (| γ1_0 |) in
                                               let bytes :=
                                                 M.alloc (|
                                                   Ty.apply
                                                     (Ty.path "&")
                                                     []
                                                     [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                                                  γ1_0
+                                                  M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                 |) in
                                               M.read (|
                                                 let~ _ : Ty.tuple [] :=
@@ -5050,6 +5061,7 @@ Module instructions.
                                                   "revm_interpreter::interpreter_action::call_inputs::CallInput::SharedBuffer",
                                                   0
                                                 |) in
+                                              let _ := M.read (| γ1_0 |) in
                                               let range :=
                                                 M.alloc (|
                                                   Ty.apply
@@ -5061,7 +5073,7 @@ Module instructions.
                                                         []
                                                         [ Ty.path "usize" ]
                                                     ],
-                                                  γ1_0
+                                                  M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                 |) in
                                               M.read (|
                                                 let~ _ : Ty.tuple [] :=
@@ -5179,6 +5191,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_calldatacopy :
       M.IsFunction.C "revm_interpreter::instructions::system::calldatacopy" calldatacopy.
+    Proof.
     Admitted.
     Global Typeclasses Opaque calldatacopy.
     
@@ -5511,6 +5524,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_returndatasize :
       M.IsFunction.C "revm_interpreter::instructions::system::returndatasize" returndatasize.
+    Proof.
     Admitted.
     Global Typeclasses Opaque returndatasize.
     
@@ -6575,6 +6589,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_returndatacopy :
       M.IsFunction.C "revm_interpreter::instructions::system::returndatacopy" returndatacopy.
+    Proof.
     Admitted.
     Global Typeclasses Opaque returndatacopy.
     
@@ -6749,6 +6764,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_gas :
       M.IsFunction.C "revm_interpreter::instructions::system::gas" gas.
+    Proof.
     Admitted.
     Global Typeclasses Opaque gas.
     
@@ -7276,6 +7292,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_memory_resize :
       M.IsFunction.C "revm_interpreter::instructions::system::memory_resize" memory_resize.
+    Proof.
     Admitted.
     Global Typeclasses Opaque memory_resize.
   End system.

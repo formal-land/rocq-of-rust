@@ -435,6 +435,7 @@ Module account_address.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -445,6 +446,7 @@ Module account_address.
     
     Global Instance AssociatedConstant_value_LENGTH :
       M.IsAssociatedFunction.C Self "LENGTH" value_LENGTH.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_LENGTH.
     
@@ -462,6 +464,7 @@ Module account_address.
         |))).
     
     Global Instance AssociatedConstant_value_ZERO : M.IsAssociatedFunction.C Self "ZERO" value_ZERO.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ZERO.
     
@@ -484,6 +487,7 @@ Module account_address.
         |))).
     
     Global Instance AssociatedConstant_value_ONE : M.IsAssociatedFunction.C Self "ONE" value_ONE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ONE.
     
@@ -506,6 +510,7 @@ Module account_address.
         |))).
     
     Global Instance AssociatedConstant_value_TWO : M.IsAssociatedFunction.C Self "TWO" value_TWO.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_TWO.
     
@@ -562,6 +567,7 @@ Module account_address.
     
     Global Instance AssociatedFunction_get_hex_address_one :
       M.IsAssociatedFunction.C Self "get_hex_address_one" get_hex_address_one.
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_hex_address_one.
     
@@ -618,6 +624,7 @@ Module account_address.
     
     Global Instance AssociatedFunction_get_hex_address_two :
       M.IsAssociatedFunction.C Self "get_hex_address_two" get_hex_address_two.
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_hex_address_two.
     
@@ -671,6 +678,7 @@ Module account_address.
       end.
     
     Global Instance AssociatedFunction_random : M.IsAssociatedFunction.C Self "random" random.
+    Proof.
     Admitted.
     Global Typeclasses Opaque random.
     
@@ -730,6 +738,7 @@ Module account_address.
     
     Global Instance AssociatedFunction_to_canonical_string :
       M.IsAssociatedFunction.C Self "to_canonical_string" to_canonical_string.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_canonical_string.
     
@@ -811,6 +820,7 @@ Module account_address.
     
     Global Instance AssociatedFunction_to_canonical_display :
       M.IsAssociatedFunction.C Self "to_canonical_display" to_canonical_display.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_canonical_display.
     
@@ -962,6 +972,7 @@ Module account_address.
     
     Global Instance AssociatedFunction_short_str_lossless :
       M.IsAssociatedFunction.C Self "short_str_lossless" short_str_lossless.
+    Proof.
     Admitted.
     Global Typeclasses Opaque short_str_lossless.
     
@@ -1025,6 +1036,7 @@ Module account_address.
       end.
     
     Global Instance AssociatedFunction_to_vec : M.IsAssociatedFunction.C Self "to_vec" to_vec.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_vec.
     
@@ -1051,6 +1063,7 @@ Module account_address.
     
     Global Instance AssociatedFunction_into_bytes :
       M.IsAssociatedFunction.C Self "into_bytes" into_bytes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_bytes.
     
@@ -1544,6 +1557,7 @@ Module account_address.
     
     Global Instance AssociatedFunction_from_hex_literal :
       M.IsAssociatedFunction.C Self "from_hex_literal" from_hex_literal.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_hex_literal.
     
@@ -1652,6 +1666,7 @@ Module account_address.
     
     Global Instance AssociatedFunction_to_hex_literal :
       M.IsAssociatedFunction.C Self "to_hex_literal" to_hex_literal.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_hex_literal.
     
@@ -1793,6 +1808,7 @@ Module account_address.
       end.
     
     Global Instance AssociatedFunction_from_hex : M.IsAssociatedFunction.C Self "from_hex" from_hex.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_hex.
     
@@ -1897,6 +1913,7 @@ Module account_address.
       end.
     
     Global Instance AssociatedFunction_to_hex : M.IsAssociatedFunction.C Self "to_hex" to_hex.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_hex.
     
@@ -2057,6 +2074,7 @@ Module account_address.
     
     Global Instance AssociatedFunction_from_bytes :
       M.IsAssociatedFunction.C Self "from_bytes" from_bytes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_bytes.
     
@@ -2112,6 +2130,7 @@ Module account_address.
     
     Global Instance AssociatedFunction_abstract_size_for_gas_metering :
       M.IsAssociatedFunction.C Self "abstract_size_for_gas_metering" abstract_size_for_gas_metering.
+    Proof.
     Admitted.
     Global Typeclasses Opaque abstract_size_for_gas_metering.
   End Impl_move_core_types_account_address_AccountAddress.

@@ -214,6 +214,7 @@ Module ptr.
       M.IsFunction.C
         "core::ptr::alignment::_alignment_can_be_structurally_matched"
         _alignment_can_be_structurally_matched.
+    Proof.
     Admitted.
     Global Typeclasses Opaque _alignment_can_be_structurally_matched.
     
@@ -234,6 +235,7 @@ Module ptr.
           |))).
       
       Global Instance AssociatedConstant_value_MIN : M.IsAssociatedFunction.C Self "MIN" value_MIN.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MIN.
       
@@ -257,6 +259,7 @@ Module ptr.
         end.
       
       Global Instance AssociatedFunction_of_ : M.IsAssociatedFunction.C Self "of" of_.
+      Proof.
       Admitted.
       Global Typeclasses Opaque of_.
       
@@ -328,6 +331,7 @@ Module ptr.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -402,6 +406,7 @@ Module ptr.
       
       Global Instance AssociatedFunction_new_unchecked :
         M.IsAssociatedFunction.C Self "new_unchecked" new_unchecked.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_unchecked.
       
@@ -425,6 +430,7 @@ Module ptr.
       
       Global Instance AssociatedFunction_as_usize :
         M.IsAssociatedFunction.C Self "as_usize" as_usize.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_usize.
       
@@ -461,6 +467,7 @@ Module ptr.
       
       Global Instance AssociatedFunction_as_nonzero :
         M.IsAssociatedFunction.C Self "as_nonzero" as_nonzero.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_nonzero.
       
@@ -499,6 +506,7 @@ Module ptr.
         end.
       
       Global Instance AssociatedFunction_log2 : M.IsAssociatedFunction.C Self "log2" log2.
+      Proof.
       Admitted.
       Global Typeclasses Opaque log2.
       
@@ -540,6 +548,7 @@ Module ptr.
         end.
       
       Global Instance AssociatedFunction_mask : M.IsAssociatedFunction.C Self "mask" mask.
+      Proof.
       Admitted.
       Global Typeclasses Opaque mask.
       
@@ -599,6 +608,7 @@ Module ptr.
         end.
       
       Global Instance AssociatedFunction_max : M.IsAssociatedFunction.C Self "max" max.
+      Proof.
       Admitted.
       Global Typeclasses Opaque max.
     End Impl_core_ptr_alignment_Alignment.

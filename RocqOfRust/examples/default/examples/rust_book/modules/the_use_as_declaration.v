@@ -40,6 +40,7 @@ Definition function (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M
 
 Global Instance Instance_IsFunction_function :
   M.IsFunction.C "the_use_as_declaration::function" function.
+Proof.
 Admitted.
 Global Typeclasses Opaque function.
 
@@ -84,6 +85,7 @@ Module deeply.
     
     Global Instance Instance_IsFunction_function :
       M.IsFunction.C "the_use_as_declaration::deeply::nested::function" function.
+    Proof.
     Admitted.
     Global Typeclasses Opaque function.
   End nested.
@@ -187,5 +189,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "the_use_as_declaration::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

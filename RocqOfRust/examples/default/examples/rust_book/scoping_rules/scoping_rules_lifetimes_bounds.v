@@ -192,6 +192,7 @@ Definition print (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 
 Global Instance Instance_IsFunction_print :
   M.IsFunction.C "scoping_rules_lifetimes_bounds::print" print.
+Proof.
 Admitted.
 Global Typeclasses Opaque print.
 
@@ -308,6 +309,7 @@ Definition print_ref (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : 
 
 Global Instance Instance_IsFunction_print_ref :
   M.IsFunction.C "scoping_rules_lifetimes_bounds::print_ref" print_ref.
+Proof.
 Admitted.
 Global Typeclasses Opaque print_ref.
 
@@ -361,5 +363,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "scoping_rules_lifetimes_bounds::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

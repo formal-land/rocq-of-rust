@@ -5,9 +5,11 @@ Parameter value_LOREM_IPSUM : PolymorphicFunction.t.
 
 Global Instance Instance_IsConstant_value_LOREM_IPSUM :
   M.IsFunction.C "file_io_create::LOREM_IPSUM" value_LOREM_IPSUM.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "file_io_create::main" main.
+Proof.
 Admitted.

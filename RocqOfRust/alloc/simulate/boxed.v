@@ -21,5 +21,6 @@ Module Impl_Box.
         stack
       )
     }}.
+  Proof.
   Admitted.
 End Impl_Box.

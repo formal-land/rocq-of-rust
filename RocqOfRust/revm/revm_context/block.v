@@ -1584,6 +1584,7 @@ Module block.
     
     Global Instance AssociatedFunction_set_blob_excess_gas_and_price :
       M.IsAssociatedFunction.C Self "set_blob_excess_gas_and_price" set_blob_excess_gas_and_price.
+    Proof.
     Admitted.
     Global Typeclasses Opaque set_blob_excess_gas_and_price.
   End Impl_revm_context_block_BlockEnv.

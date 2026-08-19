@@ -18,6 +18,7 @@ Require Import revm.revm_interpreter.instructions.simulate.arithmetic.smod.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.sub.
 Require Import revm.revm_interpreter.instructions.simulate.control.stop.
 Require Import revm.revm_interpreter.instructions.simulate.control.unknown.
+Require Import revm.revm_interpreter.instructions.simulate.system.returndatacopy.
 Require Import revm.revm_interpreter.instructions.simulate.table.
 Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.interpreter.
@@ -31,6 +32,8 @@ Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import revm.revm_interpreter.simulate.step.
 
 Module InterpreterDispatch.
+  (** The multi-step theorem currently uses this narrower subset of the
+      operations supported by [simple]. *)
   Definition OpcodeInSimple (opcode : u8) : Prop :=
     opcode.(Integer.value) = 0 \/
     opcode.(Integer.value) = 1 \/
@@ -146,6 +149,14 @@ Module InterpreterDispatch.
           Some instruction /\
         InterpreterStep.instruction_static_gas instruction =
           {| Integer.value := 5 |};
+    table_returndatacopy :
+      exists instruction,
+        InterpreterStep.instruction_at
+          table
+          {| Integer.value := 62 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 0 |};
   }.
 
   Definition simple
@@ -181,6 +192,8 @@ Module InterpreterDispatch.
         exp IInterpreterTypes
       else if Z.eqb opcode.(Integer.value) 11 then
         signextend
+      else if Z.eqb opcode.(Integer.value) 62 then
+        returndatacopy
       else
         unknown)
       state.
@@ -325,6 +338,18 @@ Module InterpreterDispatch.
       (state : InstructionContext.State.t H WIRE WIRE_types) :
     simple {| Integer.value := 11 |} state =
     InstructionContext.map_interpreter signextend state.
+  Proof.
+    reflexivity.
+  Qed.
+
+  Lemma simple_returndatacopy
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 62 |} state =
+    InstructionContext.map_interpreter returndatacopy state.
   Proof.
     reflexivity.
   Qed.
@@ -953,7 +978,63 @@ Module InterpreterDispatch.
     apply simple_mul.
   Qed.
 
-
+  Lemma step_result_returndatacopy
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (IInterpreterTypes : InterpreterTypes.C WIRE_types)
+      (table :
+        array.t
+          (Instruction.t WIRE H WIRE_types)
+          {| Integer.value := 256 |})
+      (interpreter : Interpreter.t WIRE WIRE_types)
+      (host : H)
+      (instruction : Instruction.t WIRE H WIRE_types)
+      (gas : Gas.t)
+      (H_opcode :
+        IInterpreterTypes.(InterpreterTypes.Jumps_for_Bytecode)
+          .(Jumps.opcode) interpreter.(Interpreter.bytecode) =
+        {| Integer.value := 62 |})
+      (H_instruction :
+        InterpreterStep.instruction_at table {| Integer.value := 62 |} =
+        Some instruction)
+      (H_gas :
+        InterpreterStep.instruction_static_gas instruction =
+        {| Integer.value := 0 |})
+      (H_charge :
+        Impl_Gas.record_cost
+          interpreter.(Interpreter.gas)
+          {| Integer.value := 0 |} =
+        Some gas) :
+    step_result_simple IInterpreterTypes table
+      {|
+        InstructionContext.State.interpreter := interpreter;
+        InstructionContext.State.host := host;
+      |} =
+    InterpreterStep.Result.Success
+      (InstructionContext.map_interpreter returndatacopy
+        {|
+          InstructionContext.State.interpreter :=
+            (interpreter
+                <| Interpreter.bytecode :=
+                  IInterpreterTypes.(InterpreterTypes.Jumps_for_Bytecode)
+                    .(Jumps.relative_jump)
+                    interpreter.(Interpreter.bytecode)
+                    {| Integer.value := 1 |}
+                |>)
+              <| Interpreter.gas := gas |>;
+          InstructionContext.State.host := host;
+        |}).
+  Proof.
+    eapply step_result_success
+      with
+        (opcode := {| Integer.value := 62 |})
+        (instruction := instruction)
+        (static_gas := {| Integer.value := 0 |});
+      try eassumption.
+    intros state.
+    apply simple_returndatacopy.
+  Qed.
 
   Lemma step_result_out_of_gas
       {H WIRE : Set} `{Link H} `{Link WIRE}

@@ -30,6 +30,7 @@ Module str.
       
       Global Instance AssociatedFunction_utf8_chunks :
         M.IsAssociatedFunction.C Self "utf8_chunks" utf8_chunks.
+      Proof.
       Admitted.
       Global Typeclasses Opaque utf8_chunks.
     End Impl_slice_u8.
@@ -443,6 +444,7 @@ Module str.
         end.
       
       Global Instance AssociatedFunction_valid : M.IsAssociatedFunction.C Self "valid" valid.
+      Proof.
       Admitted.
       Global Typeclasses Opaque valid.
       
@@ -471,6 +473,7 @@ Module str.
         end.
       
       Global Instance AssociatedFunction_invalid : M.IsAssociatedFunction.C Self "invalid" invalid.
+      Proof.
       Admitted.
       Global Typeclasses Opaque invalid.
     End Impl_core_str_lossy_Utf8Chunk.
@@ -2597,6 +2600,7 @@ Module str.
         end.
       
       Global Instance AssociatedFunction_debug : M.IsAssociatedFunction.C Self "debug" debug.
+      Proof.
       Admitted.
       Global Typeclasses Opaque debug.
     End Impl_core_str_lossy_Utf8Chunks.

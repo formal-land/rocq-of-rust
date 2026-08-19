@@ -26,30 +26,36 @@ End Impl_core_fmt_Debug_for_mutations_Numbers.
 Parameter get_a_ref : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_get_a_ref : M.IsFunction.C "mutations::get_a_ref" get_a_ref.
+Proof.
 Admitted.
 
 Parameter get_b_mut : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_get_b_mut : M.IsFunction.C "mutations::get_b_mut" get_b_mut.
+Proof.
 Admitted.
 
 Parameter duplicate : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_duplicate : M.IsFunction.C "mutations::duplicate" duplicate.
+Proof.
 Admitted.
 
 Parameter apply_duplicate : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_apply_duplicate :
   M.IsFunction.C "mutations::apply_duplicate" apply_duplicate.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "mutations::main" main.
+Proof.
 Admitted.
 
 Parameter incr : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_incr : M.IsFunction.C "mutations::incr" incr.
+Proof.
 Admitted.

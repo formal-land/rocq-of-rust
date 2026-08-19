@@ -111,6 +111,7 @@ Module ability_field_requirements.
     M.IsFunction.C
       "move_bytecode_verifier::ability_field_requirements::verify_module"
       verify_module.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_module.
   
@@ -518,6 +519,7 @@ Module ability_field_requirements.
                                                               "move_binary_format::file_format::StructFieldInformation::Declared",
                                                               0
                                                             |) in
+                                                          let _ := M.read (| γ1_0 |) in
                                                           let fields :=
                                                             M.alloc (|
                                                               Ty.apply
@@ -533,7 +535,7 @@ Module ability_field_requirements.
                                                                       Ty.path "alloc::alloc::Global"
                                                                     ]
                                                                 ],
-                                                              γ1_0
+                                                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                             |) in
                                                           M.read (| fields |)))
                                                     ]
@@ -1552,6 +1554,7 @@ Module ability_field_requirements.
     M.IsFunction.C
       "move_bytecode_verifier::ability_field_requirements::verify_module_impl"
       verify_module_impl.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_module_impl.
 End ability_field_requirements.

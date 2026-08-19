@@ -375,6 +375,7 @@ Module algorithms.
       end.
     
     Global Instance Instance_IsFunction_gcd : M.IsFunction.C "ruint::algorithms::gcd::gcd" gcd.
+    Proof.
     Admitted.
     Global Typeclasses Opaque gcd.
     
@@ -1313,6 +1314,7 @@ Module algorithms.
     
     Global Instance Instance_IsFunction_gcd_extended :
       M.IsFunction.C "ruint::algorithms::gcd::gcd_extended" gcd_extended.
+    Proof.
     Admitted.
     Global Typeclasses Opaque gcd_extended.
     
@@ -2145,6 +2147,7 @@ Module algorithms.
     
     Global Instance Instance_IsFunction_inv_mod :
       M.IsFunction.C "ruint::algorithms::gcd::inv_mod" inv_mod.
+    Proof.
     Admitted.
     Global Typeclasses Opaque inv_mod.
   End gcd.

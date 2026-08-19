@@ -852,6 +852,7 @@ Module legacy.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -953,6 +954,7 @@ Module legacy.
       
       Global Instance AssociatedFunction_as_slice :
         M.IsAssociatedFunction.C Self "as_slice" as_slice.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_slice.
       
@@ -981,6 +983,7 @@ Module legacy.
         end.
       
       Global Instance AssociatedFunction_len : M.IsAssociatedFunction.C Self "len" len.
+      Proof.
       Admitted.
       Global Typeclasses Opaque len.
       
@@ -1017,6 +1020,7 @@ Module legacy.
       
       Global Instance AssociatedFunction_is_empty :
         M.IsAssociatedFunction.C Self "is_empty" is_empty.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_empty.
       
@@ -1084,6 +1088,7 @@ Module legacy.
       
       Global Instance AssociatedFunction_from_slice :
         M.IsAssociatedFunction.C Self "from_slice" from_slice.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_slice.
       
@@ -1131,6 +1136,7 @@ Module legacy.
       
       Global Instance AssociatedFunction_from_bytes :
         M.IsAssociatedFunction.C Self "from_bytes" from_bytes.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_bytes.
       
@@ -1596,6 +1602,7 @@ Module legacy.
       
       Global Instance AssociatedFunction_from_bytes_arc :
         M.IsAssociatedFunction.C Self "from_bytes_arc" from_bytes_arc.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_bytes_arc.
       
@@ -1688,6 +1695,7 @@ Module legacy.
       
       Global Instance AssociatedFunction_is_valid :
         M.IsAssociatedFunction.C Self "is_valid" is_valid.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_valid.
     End Impl_revm_bytecode_legacy_jump_map_JumpTable.

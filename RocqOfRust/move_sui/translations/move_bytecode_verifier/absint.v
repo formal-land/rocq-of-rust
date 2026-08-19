@@ -213,6 +213,7 @@ Module absint.
     M.IsFunction.C
       "move_bytecode_verifier::absint::ANALYZE_FUNCTION_BASE_COST"
       value_ANALYZE_FUNCTION_BASE_COST.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_ANALYZE_FUNCTION_BASE_COST.
   
@@ -227,6 +228,7 @@ Module absint.
     M.IsFunction.C
       "move_bytecode_verifier::absint::EXECUTE_BLOCK_BASE_COST"
       value_EXECUTE_BLOCK_BASE_COST.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_EXECUTE_BLOCK_BASE_COST.
   
@@ -235,6 +237,7 @@ Module absint.
   
   Global Instance Instance_IsConstant_value_PER_BACKEDGE_COST :
     M.IsFunction.C "move_bytecode_verifier::absint::PER_BACKEDGE_COST" value_PER_BACKEDGE_COST.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PER_BACKEDGE_COST.
   
@@ -243,6 +246,7 @@ Module absint.
   
   Global Instance Instance_IsConstant_value_PER_SUCCESSOR_COST :
     M.IsFunction.C "move_bytecode_verifier::absint::PER_SUCCESSOR_COST" value_PER_SUCCESSOR_COST.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PER_SUCCESSOR_COST.
   
@@ -3470,6 +3474,7 @@ Module absint.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -3501,6 +3506,7 @@ Module absint.
       end.
     
     Global Instance AssociatedFunction_index : M.IsAssociatedFunction.C Self "index" index.
+    Proof.
     Admitted.
     Global Typeclasses Opaque index.
     
@@ -3537,6 +3543,7 @@ Module absint.
       end.
     
     Global Instance AssociatedFunction_code : M.IsAssociatedFunction.C Self "code" code.
+    Proof.
     Admitted.
     Global Typeclasses Opaque code.
     
@@ -3574,6 +3581,7 @@ Module absint.
     
     Global Instance AssociatedFunction_parameters :
       M.IsAssociatedFunction.C Self "parameters" parameters.
+    Proof.
     Admitted.
     Global Typeclasses Opaque parameters.
     
@@ -3610,6 +3618,7 @@ Module absint.
       end.
     
     Global Instance AssociatedFunction_return_ : M.IsAssociatedFunction.C Self "return_" return_.
+    Proof.
     Admitted.
     Global Typeclasses Opaque return_.
     
@@ -3646,6 +3655,7 @@ Module absint.
       end.
     
     Global Instance AssociatedFunction_locals : M.IsAssociatedFunction.C Self "locals" locals.
+    Proof.
     Admitted.
     Global Typeclasses Opaque locals.
     
@@ -3683,6 +3693,7 @@ Module absint.
     
     Global Instance AssociatedFunction_type_parameters :
       M.IsAssociatedFunction.C Self "type_parameters" type_parameters.
+    Proof.
     Admitted.
     Global Typeclasses Opaque type_parameters.
     
@@ -3720,6 +3731,7 @@ Module absint.
       end.
     
     Global Instance AssociatedFunction_cfg : M.IsAssociatedFunction.C Self "cfg" cfg.
+    Proof.
     Admitted.
     Global Typeclasses Opaque cfg.
   End Impl_move_bytecode_verifier_absint_FunctionContext.

@@ -23,11 +23,13 @@ Module Impl_functions_order_SomeType.
   Parameter meth1 : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_meth1 : M.IsAssociatedFunction.C Self "meth1" meth1.
+  Proof.
   Admitted.
   
   Parameter meth2 : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_meth2 : M.IsAssociatedFunction.C Self "meth2" meth2.
+  Proof.
   Admitted.
 End Impl_functions_order_SomeType.
 
@@ -35,6 +37,7 @@ Parameter depends_on_trait_impl : (list Value.t) -> (list Ty.t) -> (list Value.t
 
 Global Instance Instance_IsFunction_depends_on_trait_impl :
   M.IsFunction.C "functions_order::depends_on_trait_impl" depends_on_trait_impl.
+Proof.
 Admitted.
 
 (* Trait *)
@@ -84,11 +87,13 @@ Module inner_mod.
   Parameter bar : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance Instance_IsFunction_bar : M.IsFunction.C "functions_order::inner_mod::bar" bar.
+  Proof.
   Admitted.
   
   Parameter tar : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance Instance_IsFunction_tar : M.IsFunction.C "functions_order::inner_mod::tar" tar.
+  Proof.
   Admitted.
   
   Module nested_mod.
@@ -96,12 +101,14 @@ Module inner_mod.
     
     Global Instance Instance_IsFunction_tick :
       M.IsFunction.C "functions_order::inner_mod::nested_mod::tick" tick.
+    Proof.
     Admitted.
     
     Parameter tack : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
     
     Global Instance Instance_IsFunction_tack :
       M.IsFunction.C "functions_order::inner_mod::nested_mod::tack" tack.
+    Proof.
     Admitted.
   End nested_mod.
 End inner_mod.
@@ -109,9 +116,11 @@ End inner_mod.
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "functions_order::main" main.
+Proof.
 Admitted.
 
 Parameter foo : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_foo : M.IsFunction.C "functions_order::foo" foo.
+Proof.
 Admitted.

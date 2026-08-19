@@ -65,6 +65,7 @@ Module bls12_381.
     
     Global Instance Instance_IsConstant_value_PRECOMPILE :
       M.IsFunction.C "revm_precompile::bls12_381::g1_add::PRECOMPILE" value_PRECOMPILE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PRECOMPILE.
     
@@ -1246,6 +1247,7 @@ Module bls12_381.
     
     Global Instance Instance_IsFunction_g1_add :
       M.IsFunction.C "revm_precompile::bls12_381::g1_add::g1_add" g1_add.
+    Proof.
     Admitted.
     Global Typeclasses Opaque g1_add.
   End g1_add.

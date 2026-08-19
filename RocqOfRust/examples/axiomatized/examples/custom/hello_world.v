@@ -4,9 +4,11 @@ Require Import RocqOfRust.RocqOfRust.
 Parameter message : PolymorphicFunction.t.
 
 Global Instance Instance_IsConstant_message : M.IsFunction.C "hello_world::message" message.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "hello_world::main" main.
+Proof.
 Admitted.

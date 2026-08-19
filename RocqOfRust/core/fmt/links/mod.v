@@ -37,6 +37,7 @@ Module Impl_Arguments.
       (template : '& (array.t u8 N))
       (args : '& (array.t Argument.t M)) :
     Run.Trait fmt.Impl_core_fmt_Arguments.new [φ N; φ M] [] [φ template; φ args] Self.
+  Proof.
   Admitted.
   Global Opaque run_new.
 

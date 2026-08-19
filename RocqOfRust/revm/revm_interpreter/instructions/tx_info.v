@@ -151,6 +151,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_gasprice :
       M.IsFunction.C "revm_interpreter::instructions::tx_info::gasprice" gasprice.
+    Proof.
     Admitted.
     Global Typeclasses Opaque gasprice.
     
@@ -350,6 +351,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_origin :
       M.IsFunction.C "revm_interpreter::instructions::tx_info::origin" origin.
+    Proof.
     Admitted.
     Global Typeclasses Opaque origin.
     
@@ -1046,6 +1048,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_blob_hash :
       M.IsFunction.C "revm_interpreter::instructions::tx_info::blob_hash" blob_hash.
+    Proof.
     Admitted.
     Global Typeclasses Opaque blob_hash.
   End tx_info.

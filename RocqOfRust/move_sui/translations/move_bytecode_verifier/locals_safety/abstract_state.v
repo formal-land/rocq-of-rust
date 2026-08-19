@@ -295,6 +295,7 @@ Module locals_safety.
       M.IsFunction.C
         "move_bytecode_verifier::locals_safety::abstract_state::STEP_BASE_COST"
         value_STEP_BASE_COST.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_STEP_BASE_COST.
     
@@ -305,6 +306,7 @@ Module locals_safety.
       M.IsFunction.C
         "move_bytecode_verifier::locals_safety::abstract_state::RET_PER_LOCAL_COST"
         value_RET_PER_LOCAL_COST.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_RET_PER_LOCAL_COST.
     
@@ -315,6 +317,7 @@ Module locals_safety.
       M.IsFunction.C
         "move_bytecode_verifier::locals_safety::abstract_state::JOIN_BASE_COST"
         value_JOIN_BASE_COST.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_JOIN_BASE_COST.
     
@@ -329,6 +332,7 @@ Module locals_safety.
       M.IsFunction.C
         "move_bytecode_verifier::locals_safety::abstract_state::JOIN_PER_LOCAL_COST"
         value_JOIN_PER_LOCAL_COST.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_JOIN_PER_LOCAL_COST.
     
@@ -1939,6 +1943,7 @@ Module locals_safety.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -2002,6 +2007,7 @@ Module locals_safety.
       
       Global Instance AssociatedFunction_local_abilities :
         M.IsAssociatedFunction.C Self "local_abilities" local_abilities.
+      Proof.
       Admitted.
       Global Typeclasses Opaque local_abilities.
       
@@ -2041,6 +2047,7 @@ Module locals_safety.
       
       Global Instance AssociatedFunction_all_local_abilities :
         M.IsAssociatedFunction.C Self "all_local_abilities" all_local_abilities.
+      Proof.
       Admitted.
       Global Typeclasses Opaque all_local_abilities.
       
@@ -2104,6 +2111,7 @@ Module locals_safety.
       
       Global Instance AssociatedFunction_local_state :
         M.IsAssociatedFunction.C Self "local_state" local_state.
+      Proof.
       Admitted.
       Global Typeclasses Opaque local_state.
       
@@ -2143,6 +2151,7 @@ Module locals_safety.
       
       Global Instance AssociatedFunction_local_states :
         M.IsAssociatedFunction.C Self "local_states" local_states.
+      Proof.
       Admitted.
       Global Typeclasses Opaque local_states.
       
@@ -2211,6 +2220,7 @@ Module locals_safety.
       
       Global Instance AssociatedFunction_set_available :
         M.IsAssociatedFunction.C Self "set_available" set_available.
+      Proof.
       Admitted.
       Global Typeclasses Opaque set_available.
       
@@ -2392,6 +2402,7 @@ Module locals_safety.
       
       Global Instance AssociatedFunction_set_unavailable :
         M.IsAssociatedFunction.C Self "set_unavailable" set_unavailable.
+      Proof.
       Admitted.
       Global Typeclasses Opaque set_unavailable.
       
@@ -2470,6 +2481,7 @@ Module locals_safety.
         end.
       
       Global Instance AssociatedFunction_error : M.IsAssociatedFunction.C Self "error" error.
+      Proof.
       Admitted.
       Global Typeclasses Opaque error.
       
@@ -3513,6 +3525,7 @@ Module locals_safety.
         end.
       
       Global Instance AssociatedFunction_join_ : M.IsAssociatedFunction.C Self "join_" join_.
+      Proof.
       Admitted.
       Global Typeclasses Opaque join_.
     End Impl_move_bytecode_verifier_locals_safety_abstract_state_AbstractState.

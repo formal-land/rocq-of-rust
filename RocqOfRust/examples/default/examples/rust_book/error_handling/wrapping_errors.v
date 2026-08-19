@@ -71,10 +71,11 @@ Module Impl_core_fmt_Debug_for_wrapping_errors_DoubleError.
                     "wrapping_errors::DoubleError::Parse",
                     0
                   |) in
+                let _ := M.read (| γ1_0 |) in
                 let __self_0 :=
                   M.alloc (|
                     Ty.apply (Ty.path "&") [] [ Ty.path "core::num::error::ParseIntError" ],
-                    γ1_0
+                    M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                   |) in
                 M.call_closure (|
                   Ty.apply
@@ -271,10 +272,11 @@ Module Impl_core_error_Error_for_wrapping_errors_DoubleError.
                     "wrapping_errors::DoubleError::Parse",
                     0
                   |) in
+                let _ := M.read (| γ0_0 |) in
                 let e :=
                   M.alloc (|
                     Ty.apply (Ty.path "&") [] [ Ty.path "core::num::error::ParseIntError" ],
-                    γ0_0
+                    M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                   |) in
                 Value.StructTuple
                   "core::option::Option::Some"
@@ -719,6 +721,7 @@ Definition double_first (ε : list Value.t) (τ : list Ty.t) (α : list Value.t)
 
 Global Instance Instance_IsFunction_double_first :
   M.IsFunction.C "wrapping_errors::double_first" double_first.
+Proof.
 Admitted.
 Global Typeclasses Opaque double_first.
 
@@ -1111,6 +1114,7 @@ Definition print (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_print : M.IsFunction.C "wrapping_errors::print" print.
+Proof.
 Admitted.
 Global Typeclasses Opaque print.
 
@@ -1386,5 +1390,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "wrapping_errors::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

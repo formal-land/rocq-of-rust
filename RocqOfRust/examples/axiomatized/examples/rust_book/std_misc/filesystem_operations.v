@@ -4,19 +4,23 @@ Require Import RocqOfRust.RocqOfRust.
 Parameter cat : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_cat : M.IsFunction.C "filesystem_operations::cat" cat.
+Proof.
 Admitted.
 
 Parameter echo : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_echo : M.IsFunction.C "filesystem_operations::echo" echo.
+Proof.
 Admitted.
 
 Parameter touch : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_touch : M.IsFunction.C "filesystem_operations::touch" touch.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "filesystem_operations::main" main.
+Proof.
 Admitted.

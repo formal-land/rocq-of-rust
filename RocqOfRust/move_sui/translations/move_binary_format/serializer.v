@@ -277,6 +277,7 @@ Module serializer.
   
   Global Instance Instance_IsFunction_write_as_uleb128 :
     M.IsFunction.C "move_binary_format::serializer::write_as_uleb128" write_as_uleb128.
+  Proof.
   Admitted.
   Global Typeclasses Opaque write_as_uleb128.
   
@@ -333,6 +334,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_signature_index"
       serialize_signature_index.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_signature_index.
   
@@ -396,6 +398,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_module_handle_index"
       serialize_module_handle_index.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_module_handle_index.
   
@@ -455,6 +458,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_identifier_index"
       serialize_identifier_index.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_identifier_index.
   
@@ -518,6 +522,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_struct_handle_index"
       serialize_struct_handle_index.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_struct_handle_index.
   
@@ -584,6 +589,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_address_identifier_index"
       serialize_address_identifier_index.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_address_identifier_index.
   
@@ -643,6 +649,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_struct_def_index"
       serialize_struct_def_index.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_struct_def_index.
   
@@ -709,6 +716,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_function_handle_index"
       serialize_function_handle_index.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_function_handle_index.
   
@@ -772,6 +780,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_field_handle_index"
       serialize_field_handle_index.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_field_handle_index.
   
@@ -834,6 +843,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_field_inst_index"
       serialize_field_inst_index.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_field_inst_index.
   
@@ -900,6 +910,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_function_inst_index"
       serialize_function_inst_index.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_function_inst_index.
   
@@ -966,6 +977,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_struct_def_inst_index"
       serialize_struct_def_inst_index.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_struct_def_inst_index.
   
@@ -1010,6 +1022,7 @@ Module serializer.
   
   Global Instance Instance_IsFunction_seiralize_table_offset :
     M.IsFunction.C "move_binary_format::serializer::seiralize_table_offset" seiralize_table_offset.
+  Proof.
   Admitted.
   Global Typeclasses Opaque seiralize_table_offset.
   
@@ -1054,6 +1067,7 @@ Module serializer.
   
   Global Instance Instance_IsFunction_serialize_table_size :
     M.IsFunction.C "move_binary_format::serializer::serialize_table_size" serialize_table_size.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_table_size.
   
@@ -1117,6 +1131,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_constant_pool_index"
       serialize_constant_pool_index.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_constant_pool_index.
   
@@ -1163,6 +1178,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_bytecode_count"
       serialize_bytecode_count.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_bytecode_count.
   
@@ -1209,6 +1225,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_identifier_size"
       serialize_identifier_size.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_identifier_size.
   
@@ -1255,6 +1272,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_constant_size"
       serialize_constant_size.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_constant_size.
   
@@ -1305,6 +1323,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_metadata_key_size"
       serialize_metadata_key_size.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_metadata_key_size.
   
@@ -1355,6 +1374,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_metadata_value_size"
       serialize_metadata_value_size.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_metadata_value_size.
   
@@ -1399,6 +1419,7 @@ Module serializer.
   
   Global Instance Instance_IsFunction_serialize_field_count :
     M.IsFunction.C "move_binary_format::serializer::serialize_field_count" serialize_field_count.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_field_count.
   
@@ -1443,6 +1464,7 @@ Module serializer.
   
   Global Instance Instance_IsFunction_serialize_field_offset :
     M.IsFunction.C "move_binary_format::serializer::serialize_field_offset" serialize_field_offset.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_field_offset.
   
@@ -1489,6 +1511,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_acquires_count"
       serialize_acquires_count.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_acquires_count.
   
@@ -1535,6 +1558,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_signature_size"
       serialize_signature_size.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_signature_size.
   
@@ -1585,6 +1609,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_type_parameter_index"
       serialize_type_parameter_index.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_type_parameter_index.
   
@@ -1635,6 +1660,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_type_parameter_count"
       serialize_type_parameter_count.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_type_parameter_count.
   
@@ -1681,6 +1707,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_bytecode_offset"
       serialize_bytecode_offset.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_bytecode_offset.
   
@@ -1725,6 +1752,7 @@ Module serializer.
   
   Global Instance Instance_IsFunction_serialize_table_count :
     M.IsFunction.C "move_binary_format::serializer::serialize_table_count" serialize_table_count.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_table_count.
   
@@ -1769,6 +1797,7 @@ Module serializer.
   
   Global Instance Instance_IsFunction_serialize_local_index :
     M.IsFunction.C "move_binary_format::serializer::serialize_local_index" serialize_local_index.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_local_index.
   
@@ -2126,6 +2155,7 @@ Module serializer.
   
   Global Instance Instance_IsFunction_validate_version :
     M.IsFunction.C "move_binary_format::serializer::validate_version" validate_version.
+  Proof.
   Admitted.
   Global Typeclasses Opaque validate_version.
   
@@ -2181,6 +2211,7 @@ Module serializer.
     
     Global Instance AssociatedFunction_serialize :
       M.IsAssociatedFunction.C Self "serialize" serialize.
+    Proof.
     Admitted.
     Global Typeclasses Opaque serialize.
     
@@ -3390,6 +3421,7 @@ Module serializer.
     
     Global Instance AssociatedFunction_serialize_for_version :
       M.IsAssociatedFunction.C Self "serialize_for_version" serialize_for_version.
+    Proof.
     Admitted.
     Global Typeclasses Opaque serialize_for_version.
   End Impl_move_binary_format_file_format_CompiledModule.
@@ -4695,6 +4727,7 @@ Module serializer.
   
   Global Instance Instance_IsFunction_check_index_in_binary :
     M.IsFunction.C "move_binary_format::serializer::check_index_in_binary" check_index_in_binary.
+  Proof.
   Admitted.
   Global Typeclasses Opaque check_index_in_binary.
   
@@ -5160,6 +5193,7 @@ Module serializer.
   
   Global Instance Instance_IsFunction_serialize_table_index :
     M.IsFunction.C "move_binary_format::serializer::serialize_table_index" serialize_table_index.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_table_index.
   
@@ -5479,6 +5513,7 @@ Module serializer.
   
   Global Instance Instance_IsFunction_serialize_magic :
     M.IsFunction.C "move_binary_format::serializer::serialize_magic" serialize_magic.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_magic.
   
@@ -6404,6 +6439,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_module_handle"
       serialize_module_handle.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_module_handle.
   
@@ -6889,6 +6925,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_struct_handle"
       serialize_struct_handle.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_struct_handle.
   
@@ -7383,6 +7420,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_type_parameters"
       serialize_type_parameters.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_type_parameters.
   
@@ -7580,6 +7618,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_type_parameter"
       serialize_type_parameter.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_type_parameter.
   
@@ -8203,6 +8242,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_function_handle"
       serialize_function_handle.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_function_handle.
   
@@ -8520,6 +8560,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_function_instantiation"
       serialize_function_instantiation.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_function_instantiation.
   
@@ -8957,6 +8998,7 @@ Module serializer.
   
   Global Instance Instance_IsFunction_serialize_identifier :
     M.IsFunction.C "move_binary_format::serializer::serialize_identifier" serialize_identifier.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_identifier.
   
@@ -9289,6 +9331,7 @@ Module serializer.
   
   Global Instance Instance_IsFunction_serialize_address :
     M.IsFunction.C "move_binary_format::serializer::serialize_address" serialize_address.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_address.
   
@@ -9530,6 +9573,7 @@ Module serializer.
   
   Global Instance Instance_IsFunction_serialize_constant :
     M.IsFunction.C "move_binary_format::serializer::serialize_constant" serialize_constant.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_constant.
   
@@ -9817,6 +9861,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_metadata_entry"
       serialize_metadata_entry.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_metadata_entry.
   
@@ -10278,6 +10323,7 @@ Module serializer.
   
   Global Instance Instance_IsFunction_serialize_byte_blob :
     M.IsFunction.C "move_binary_format::serializer::serialize_byte_blob" serialize_byte_blob.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_byte_blob.
   
@@ -10524,6 +10570,7 @@ Module serializer.
                             "move_binary_format::file_format::StructFieldInformation::Declared",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let fields :=
                           M.alloc (|
                             Ty.apply
@@ -10538,7 +10585,7 @@ Module serializer.
                                     Ty.path "alloc::alloc::Global"
                                   ]
                               ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -10762,6 +10809,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_struct_definition"
       serialize_struct_definition.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_struct_definition.
   
@@ -11079,6 +11127,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_struct_def_instantiation"
       serialize_struct_def_instantiation.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_struct_def_instantiation.
   
@@ -11567,6 +11616,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_field_definitions"
       serialize_field_definitions.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_field_definitions.
   
@@ -11777,6 +11827,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_field_definition"
       serialize_field_definition.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_field_definition.
   
@@ -12076,6 +12127,7 @@ Module serializer.
   
   Global Instance Instance_IsFunction_serialize_field_handle :
     M.IsFunction.C "move_binary_format::serializer::serialize_field_handle" serialize_field_handle.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_field_handle.
   
@@ -12393,6 +12445,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_field_instantiation"
       serialize_field_instantiation.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_field_instantiation.
   
@@ -12880,6 +12933,7 @@ Module serializer.
   
   Global Instance Instance_IsFunction_serialize_acquires :
     M.IsFunction.C "move_binary_format::serializer::serialize_acquires" serialize_acquires.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_acquires.
   
@@ -12963,6 +13017,7 @@ Module serializer.
   
   Global Instance Instance_IsFunction_serialize_signature :
     M.IsFunction.C "move_binary_format::serializer::serialize_signature" serialize_signature.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_signature.
   
@@ -13444,6 +13499,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_signature_tokens"
       serialize_signature_tokens.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_signature_tokens.
   
@@ -14989,13 +15045,14 @@ Module serializer.
                             "move_binary_format::file_format::SignatureToken::Struct",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let idx :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "move_binary_format::file_format::StructHandleIndex" ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -15284,6 +15341,7 @@ Module serializer.
                             "move_binary_format::file_format::SignatureToken::StructInstantiation",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let struct_inst :=
                           M.alloc (|
                             Ty.apply
@@ -15310,7 +15368,7 @@ Module serializer.
                                     Ty.path "alloc::alloc::Global"
                                   ]
                               ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.match_operator (|
                           Ty.tuple [],
@@ -15342,6 +15400,7 @@ Module serializer.
                                 (let γ := M.deref (| M.read (| γ |) |) in
                                 let γ1_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                                 let γ1_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                                let _ := M.read (| γ1_0 |) in
                                 let idx :=
                                   M.alloc (|
                                     Ty.apply
@@ -15349,8 +15408,9 @@ Module serializer.
                                       []
                                       [ Ty.path "move_binary_format::file_format::StructHandleIndex"
                                       ],
-                                    γ1_0
+                                    M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                   |) in
+                                let _ := M.read (| γ1_1 |) in
                                 let type_params :=
                                   M.alloc (|
                                     Ty.apply
@@ -15366,7 +15426,7 @@ Module serializer.
                                             Ty.path "alloc::alloc::Global"
                                           ]
                                       ],
-                                    γ1_1
+                                    M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                                   |) in
                                 M.read (|
                                   let~ _ : Ty.tuple [] :=
@@ -16124,8 +16184,12 @@ Module serializer.
                             "move_binary_format::file_format::SignatureToken::TypeParameter",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let idx :=
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_0 |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                          |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
                             M.match_operator (|
@@ -16423,6 +16487,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_signature_token_single_node_impl"
       serialize_signature_token_single_node_impl.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_signature_token_single_node_impl.
   
@@ -16860,6 +16925,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_signature_token"
       serialize_signature_token.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_signature_token.
   
@@ -17047,6 +17113,7 @@ Module serializer.
   
   Global Instance Instance_IsFunction_serialize_ability_set :
     M.IsFunction.C "move_binary_format::serializer::serialize_ability_set" serialize_ability_set.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_ability_set.
   
@@ -17525,6 +17592,7 @@ Module serializer.
   
   Global Instance Instance_IsFunction_serialize_ability_sets :
     M.IsFunction.C "move_binary_format::serializer::serialize_ability_sets" serialize_ability_sets.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_ability_sets.
   
@@ -17754,6 +17822,7 @@ Module serializer.
   
   Global Instance Instance_IsFunction_serialize_code_unit :
     M.IsFunction.C "move_binary_format::serializer::serialize_code_unit" serialize_code_unit.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_code_unit.
   
@@ -18466,8 +18535,12 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::BrTrue",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let code_offset :=
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_0 |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                          |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
                             M.match_operator (|
@@ -18647,8 +18720,12 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::BrFalse",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let code_offset :=
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_0 |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                          |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
                             M.match_operator (|
@@ -18828,8 +18905,12 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::Branch",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let code_offset :=
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_0 |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                          |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
                             M.match_operator (|
@@ -19009,8 +19090,12 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::LdU8",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let value :=
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                          |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
                             M.match_operator (|
@@ -19191,8 +19276,12 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::LdU64",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let value :=
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                          |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
                             M.match_operator (|
@@ -19372,6 +19461,7 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::LdU128",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let value :=
                           M.alloc (|
                             Ty.apply
@@ -19383,7 +19473,7 @@ Module serializer.
                                   []
                                   [ Ty.path "u128"; Ty.path "alloc::alloc::Global" ]
                               ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -19680,13 +19770,14 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::LdConst",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let const_idx :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "move_binary_format::file_format::ConstantPoolIndex" ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -19946,8 +20037,12 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::CopyLoc",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let local_idx :=
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                          |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
                             M.match_operator (|
@@ -20127,8 +20222,12 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::MoveLoc",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let local_idx :=
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                          |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
                             M.match_operator (|
@@ -20308,8 +20407,12 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::StLoc",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let local_idx :=
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                          |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
                             M.match_operator (|
@@ -20489,8 +20592,12 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::MutBorrowLoc",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let local_idx :=
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                          |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
                             M.match_operator (|
@@ -20670,8 +20777,12 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::ImmBorrowLoc",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let local_idx :=
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                          |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
                             M.match_operator (|
@@ -20851,13 +20962,14 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::MutBorrowField",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let field_idx :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "move_binary_format::file_format::FieldHandleIndex" ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -21041,6 +21153,7 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::MutBorrowFieldGeneric",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let field_idx :=
                           M.alloc (|
                             Ty.apply
@@ -21048,7 +21161,7 @@ Module serializer.
                               []
                               [ Ty.path "move_binary_format::file_format::FieldInstantiationIndex"
                               ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -21232,13 +21345,14 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::ImmBorrowField",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let field_idx :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "move_binary_format::file_format::FieldHandleIndex" ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -21422,6 +21536,7 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::ImmBorrowFieldGeneric",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let field_idx :=
                           M.alloc (|
                             Ty.apply
@@ -21429,7 +21544,7 @@ Module serializer.
                               []
                               [ Ty.path "move_binary_format::file_format::FieldInstantiationIndex"
                               ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -21613,13 +21728,14 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::Call",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let method_idx :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "move_binary_format::file_format::FunctionHandleIndex" ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -21803,13 +21919,14 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::Pack",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let class_idx :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "move_binary_format::file_format::StructDefinitionIndex" ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -21993,13 +22110,14 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::Unpack",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let class_idx :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "move_binary_format::file_format::StructDefinitionIndex" ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -22183,6 +22301,7 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::CallGeneric",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let method_idx :=
                           M.alloc (|
                             Ty.apply
@@ -22192,7 +22311,7 @@ Module serializer.
                                 Ty.path
                                   "move_binary_format::file_format::FunctionInstantiationIndex"
                               ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -22376,6 +22495,7 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::PackGeneric",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let class_idx :=
                           M.alloc (|
                             Ty.apply
@@ -22385,7 +22505,7 @@ Module serializer.
                                 Ty.path
                                   "move_binary_format::file_format::StructDefInstantiationIndex"
                               ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -22569,6 +22689,7 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::UnpackGeneric",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let class_idx :=
                           M.alloc (|
                             Ty.apply
@@ -22578,7 +22699,7 @@ Module serializer.
                                 Ty.path
                                   "move_binary_format::file_format::StructDefInstantiationIndex"
                               ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -23636,13 +23757,14 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::ExistsDeprecated",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let class_idx :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "move_binary_format::file_format::StructDefinitionIndex" ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -23826,13 +23948,14 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::MutBorrowGlobalDeprecated",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let class_idx :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "move_binary_format::file_format::StructDefinitionIndex" ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -24016,13 +24139,14 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::ImmBorrowGlobalDeprecated",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let class_idx :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "move_binary_format::file_format::StructDefinitionIndex" ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -24206,13 +24330,14 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::MoveFromDeprecated",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let class_idx :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "move_binary_format::file_format::StructDefinitionIndex" ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -24396,13 +24521,14 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::MoveToDeprecated",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let class_idx :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "move_binary_format::file_format::StructDefinitionIndex" ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -24586,6 +24712,7 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::ExistsGenericDeprecated",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let class_idx :=
                           M.alloc (|
                             Ty.apply
@@ -24595,7 +24722,7 @@ Module serializer.
                                 Ty.path
                                   "move_binary_format::file_format::StructDefInstantiationIndex"
                               ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -24779,6 +24906,7 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::MutBorrowGlobalGenericDeprecated",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let class_idx :=
                           M.alloc (|
                             Ty.apply
@@ -24788,7 +24916,7 @@ Module serializer.
                                 Ty.path
                                   "move_binary_format::file_format::StructDefInstantiationIndex"
                               ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -24972,6 +25100,7 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::ImmBorrowGlobalGenericDeprecated",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let class_idx :=
                           M.alloc (|
                             Ty.apply
@@ -24981,7 +25110,7 @@ Module serializer.
                                 Ty.path
                                   "move_binary_format::file_format::StructDefInstantiationIndex"
                               ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -25165,6 +25294,7 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::MoveFromGenericDeprecated",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let class_idx :=
                           M.alloc (|
                             Ty.apply
@@ -25174,7 +25304,7 @@ Module serializer.
                                 Ty.path
                                   "move_binary_format::file_format::StructDefInstantiationIndex"
                               ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -25358,6 +25488,7 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::MoveToGenericDeprecated",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let class_idx :=
                           M.alloc (|
                             Ty.apply
@@ -25367,7 +25498,7 @@ Module serializer.
                                 Ty.path
                                   "move_binary_format::file_format::StructDefInstantiationIndex"
                               ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -25557,16 +25688,21 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::VecPack",
                             1
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let sig_idx :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
+                        let _ := M.read (| γ1_1 |) in
                         let num :=
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                          |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
                             M.match_operator (|
@@ -25877,13 +26013,14 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::VecLen",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let sig_idx :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -26064,13 +26201,14 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::VecImmBorrow",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let sig_idx :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -26251,13 +26389,14 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::VecMutBorrow",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let sig_idx :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -26438,13 +26577,14 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::VecPushBack",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let sig_idx :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -26625,13 +26765,14 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::VecPopBack",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let sig_idx :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -26818,16 +26959,21 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::VecUnpack",
                             1
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let sig_idx :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
+                        let _ := M.read (| γ1_1 |) in
                         let num :=
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                          |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
                             M.match_operator (|
@@ -27138,13 +27284,14 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::VecSwap",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let sig_idx :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -27325,8 +27472,12 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::LdU16",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let value :=
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_0 |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                          |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
                             M.match_operator (|
@@ -27506,8 +27657,12 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::LdU32",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let value :=
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], γ1_0 |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                          |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
                             M.match_operator (|
@@ -27687,6 +27842,7 @@ Module serializer.
                             "move_binary_format::file_format::Bytecode::LdU256",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let value :=
                           M.alloc (|
                             Ty.apply
@@ -27701,7 +27857,7 @@ Module serializer.
                                     Ty.path "alloc::alloc::Global"
                                   ]
                               ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -28111,6 +28267,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::serialize_instruction_inner"
       serialize_instruction_inner.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_instruction_inner.
   
@@ -28592,6 +28749,7 @@ Module serializer.
   
   Global Instance Instance_IsFunction_serialize_code :
     M.IsFunction.C "move_binary_format::serializer::serialize_code" serialize_code.
+  Proof.
   Admitted.
   Global Typeclasses Opaque serialize_code.
   
@@ -28820,6 +28978,7 @@ Module serializer.
     M.IsFunction.C
       "move_binary_format::serializer::checked_calculate_table_size"
       checked_calculate_table_size.
+  Proof.
   Admitted.
   Global Typeclasses Opaque checked_calculate_table_size.
   
@@ -28878,6 +29037,7 @@ Module serializer.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -29173,6 +29333,7 @@ Module serializer.
     
     Global Instance AssociatedFunction_serialize_header :
       M.IsAssociatedFunction.C Self "serialize_header" serialize_header.
+    Proof.
     Admitted.
     Global Typeclasses Opaque serialize_header.
     
@@ -30737,6 +30898,7 @@ Module serializer.
     
     Global Instance AssociatedFunction_serialize_table_indices :
       M.IsAssociatedFunction.C Self "serialize_table_indices" serialize_table_indices.
+    Proof.
     Admitted.
     Global Typeclasses Opaque serialize_table_indices.
     
@@ -32350,6 +32512,7 @@ Module serializer.
     
     Global Instance AssociatedFunction_serialize_common_tables :
       M.IsAssociatedFunction.C Self "serialize_common_tables" serialize_common_tables.
+    Proof.
     Admitted.
     Global Typeclasses Opaque serialize_common_tables.
     
@@ -33127,6 +33290,7 @@ Module serializer.
     
     Global Instance AssociatedFunction_serialize_module_handles :
       M.IsAssociatedFunction.C Self "serialize_module_handles" serialize_module_handles.
+    Proof.
     Admitted.
     Global Typeclasses Opaque serialize_module_handles.
     
@@ -33904,6 +34068,7 @@ Module serializer.
     
     Global Instance AssociatedFunction_serialize_struct_handles :
       M.IsAssociatedFunction.C Self "serialize_struct_handles" serialize_struct_handles.
+    Proof.
     Admitted.
     Global Typeclasses Opaque serialize_struct_handles.
     
@@ -34689,6 +34854,7 @@ Module serializer.
     
     Global Instance AssociatedFunction_serialize_function_handles :
       M.IsAssociatedFunction.C Self "serialize_function_handles" serialize_function_handles.
+    Proof.
     Admitted.
     Global Typeclasses Opaque serialize_function_handles.
     
@@ -35479,6 +35645,7 @@ Module serializer.
         Self
         "serialize_function_instantiations"
         serialize_function_instantiations.
+    Proof.
     Admitted.
     Global Typeclasses Opaque serialize_function_instantiations.
     
@@ -36301,6 +36468,7 @@ Module serializer.
     
     Global Instance AssociatedFunction_serialize_identifiers :
       M.IsAssociatedFunction.C Self "serialize_identifiers" serialize_identifiers.
+    Proof.
     Admitted.
     Global Typeclasses Opaque serialize_identifiers.
     
@@ -37084,6 +37252,7 @@ Module serializer.
     
     Global Instance AssociatedFunction_serialize_address_identifiers :
       M.IsAssociatedFunction.C Self "serialize_address_identifiers" serialize_address_identifiers.
+    Proof.
     Admitted.
     Global Typeclasses Opaque serialize_address_identifiers.
     
@@ -37857,6 +38026,7 @@ Module serializer.
     
     Global Instance AssociatedFunction_serialize_constants :
       M.IsAssociatedFunction.C Self "serialize_constants" serialize_constants.
+    Proof.
     Admitted.
     Global Typeclasses Opaque serialize_constants.
     
@@ -38614,6 +38784,7 @@ Module serializer.
     
     Global Instance AssociatedFunction_serialize_metadata :
       M.IsAssociatedFunction.C Self "serialize_metadata" serialize_metadata.
+    Proof.
     Admitted.
     Global Typeclasses Opaque serialize_metadata.
     
@@ -39388,6 +39559,7 @@ Module serializer.
     
     Global Instance AssociatedFunction_serialize_signatures :
       M.IsAssociatedFunction.C Self "serialize_signatures" serialize_signatures.
+    Proof.
     Admitted.
     Global Typeclasses Opaque serialize_signatures.
     
@@ -39420,6 +39592,7 @@ Module serializer.
     
     Global Instance AssociatedFunction_major_version :
       M.IsAssociatedFunction.C Self "major_version" major_version.
+    Proof.
     Admitted.
     Global Typeclasses Opaque major_version.
   End Impl_move_binary_format_serializer_CommonSerializer.
@@ -39478,6 +39651,7 @@ Module serializer.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -40570,6 +40744,7 @@ Module serializer.
     
     Global Instance AssociatedFunction_serialize_tables :
       M.IsAssociatedFunction.C Self "serialize_tables" serialize_tables.
+    Proof.
     Admitted.
     Global Typeclasses Opaque serialize_tables.
     
@@ -41638,6 +41813,7 @@ Module serializer.
     
     Global Instance AssociatedFunction_serialize_table_indices :
       M.IsAssociatedFunction.C Self "serialize_table_indices" serialize_table_indices.
+    Proof.
     Admitted.
     Global Typeclasses Opaque serialize_table_indices.
     
@@ -42444,6 +42620,7 @@ Module serializer.
     
     Global Instance AssociatedFunction_serialize_struct_definitions :
       M.IsAssociatedFunction.C Self "serialize_struct_definitions" serialize_struct_definitions.
+    Proof.
     Admitted.
     Global Typeclasses Opaque serialize_struct_definitions.
     
@@ -43254,6 +43431,7 @@ Module serializer.
         Self
         "serialize_struct_def_instantiations"
         serialize_struct_def_instantiations.
+    Proof.
     Admitted.
     Global Typeclasses Opaque serialize_struct_def_instantiations.
     
@@ -44033,6 +44211,7 @@ Module serializer.
     
     Global Instance AssociatedFunction_serialize_field_handles :
       M.IsAssociatedFunction.C Self "serialize_field_handles" serialize_field_handles.
+    Proof.
     Admitted.
     Global Typeclasses Opaque serialize_field_handles.
     
@@ -44824,6 +45003,7 @@ Module serializer.
     
     Global Instance AssociatedFunction_serialize_field_instantiations :
       M.IsAssociatedFunction.C Self "serialize_field_instantiations" serialize_field_instantiations.
+    Proof.
     Admitted.
     Global Typeclasses Opaque serialize_field_instantiations.
     
@@ -45638,6 +45818,7 @@ Module serializer.
     
     Global Instance AssociatedFunction_serialize_function_definitions :
       M.IsAssociatedFunction.C Self "serialize_function_definitions" serialize_function_definitions.
+    Proof.
     Admitted.
     Global Typeclasses Opaque serialize_function_definitions.
     
@@ -46663,13 +46844,14 @@ Module serializer.
                               "core::option::Option::Some",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let code :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_binary_format::file_format::CodeUnit" ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                             |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
@@ -46848,6 +47030,7 @@ Module serializer.
     
     Global Instance AssociatedFunction_serialize_function_definition :
       M.IsAssociatedFunction.C Self "serialize_function_definition" serialize_function_definition.
+    Proof.
     Admitted.
     Global Typeclasses Opaque serialize_function_definition.
     
@@ -47647,6 +47830,7 @@ Module serializer.
     
     Global Instance AssociatedFunction_serialize_friend_declarations :
       M.IsAssociatedFunction.C Self "serialize_friend_declarations" serialize_friend_declarations.
+    Proof.
     Admitted.
     Global Typeclasses Opaque serialize_friend_declarations.
   End Impl_move_binary_format_serializer_ModuleSerializer.

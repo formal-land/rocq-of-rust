@@ -39,6 +39,7 @@ Module Impl_Iterator_for_Iter.
     '& T.
 
   Instance run (T : Set) `{Link T} : Iterator.Run (Self T) (Item T).
+  Proof.
   Admitted.
 End Impl_Iterator_for_Iter.
 
@@ -104,6 +105,7 @@ Module Impl_ChunksExact.
     (self : '& (Self T)) :
     Run.Trait (slice.iter.Impl_core_slice_iter_ChunksExact_T.remainder (Φ T)) [] [] [φ self]
       ('& (list T)).
+  Proof.
   Admitted.
   Global Opaque run_remainder.
 End Impl_ChunksExact.
@@ -119,6 +121,7 @@ Module Impl_Iterator_for_ChunksExact.
       '& (list T).
 
     Instance run (T : Set) `{Link T} : Iterator.Run (Self T) (Item T).
+    Proof.
     Admitted.
 End Impl_Iterator_for_ChunksExact.
 
@@ -163,6 +166,7 @@ Module Impl_RChunksExact.
     Run.Trait
       (slice.iter.Impl_core_slice_iter_RChunksExact_T.remainder (Φ T)) [] [] [φ self]
       ('& (list T)).
+  Proof.
   Admitted.
   Global Opaque run_remainder.
 End Impl_RChunksExact.
@@ -178,5 +182,6 @@ Module Impl_Iterator_for_RChunksExact.
       '& (list T).
 
     Instance run (T : Set) `{Link T} : Iterator.Run (Self T) (Item T).
+    Proof.
     Admitted.
 End Impl_Iterator_for_RChunksExact.

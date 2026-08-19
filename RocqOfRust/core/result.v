@@ -114,7 +114,12 @@ Module result.
                               "core::result::Result::Ok",
                               0
                             |) in
-                          let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                          let _ := M.read (| γ2_0 |) in
+                          let __self_0 :=
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ T ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -122,7 +127,12 @@ Module result.
                               "core::result::Result::Ok",
                               0
                             |) in
-                          let __arg1_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                          let _ := M.read (| γ2_0 |) in
+                          let __arg1_0 :=
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ T ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -150,7 +160,12 @@ Module result.
                               "core::result::Result::Err",
                               0
                             |) in
-                          let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ2_0 |) in
+                          let _ := M.read (| γ2_0 |) in
+                          let __self_0 :=
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ E ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -158,7 +173,12 @@ Module result.
                               "core::result::Result::Err",
                               0
                             |) in
-                          let __arg1_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ2_0 |) in
+                          let _ := M.read (| γ2_0 |) in
+                          let __arg1_0 :=
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ E ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -272,7 +292,12 @@ Module result.
                           "core::result::Result::Ok",
                           0
                         |) in
-                      let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                      let _ := M.read (| γ2_0 |) in
+                      let __self_0 :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ T ],
+                          M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                        |) in
                       let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                       let γ2_0 :=
                         M.SubPointer.get_struct_tuple_field (|
@@ -280,7 +305,12 @@ Module result.
                           "core::result::Result::Ok",
                           0
                         |) in
-                      let __arg1_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                      let _ := M.read (| γ2_0 |) in
+                      let __arg1_0 :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ T ],
+                          M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                        |) in
                       M.call_closure (|
                         Ty.apply
                           (Ty.path "core::option::Option")
@@ -311,7 +341,12 @@ Module result.
                           "core::result::Result::Err",
                           0
                         |) in
-                      let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ2_0 |) in
+                      let _ := M.read (| γ2_0 |) in
+                      let __self_0 :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ E ],
+                          M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                        |) in
                       let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                       let γ2_0 :=
                         M.SubPointer.get_struct_tuple_field (|
@@ -319,7 +354,12 @@ Module result.
                           "core::result::Result::Err",
                           0
                         |) in
-                      let __arg1_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ2_0 |) in
+                      let _ := M.read (| γ2_0 |) in
+                      let __arg1_0 :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ E ],
+                          M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                        |) in
                       M.call_closure (|
                         Ty.apply
                           (Ty.path "core::option::Option")
@@ -530,7 +570,12 @@ Module result.
                                   "core::result::Result::Ok",
                                   0
                                 |) in
-                              let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                              let _ := M.read (| γ2_0 |) in
+                              let __self_0 :=
+                                M.alloc (|
+                                  Ty.apply (Ty.path "&") [] [ T ],
+                                  M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                                |) in
                               let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                               let γ2_0 :=
                                 M.SubPointer.get_struct_tuple_field (|
@@ -538,7 +583,12 @@ Module result.
                                   "core::result::Result::Ok",
                                   0
                                 |) in
-                              let __arg1_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                              let _ := M.read (| γ2_0 |) in
+                              let __arg1_0 :=
+                                M.alloc (|
+                                  Ty.apply (Ty.path "&") [] [ T ],
+                                  M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                                |) in
                               M.call_closure (|
                                 Ty.path "core::cmp::Ordering",
                                 M.get_trait_method (| "core::cmp::Ord", T, [], [], "cmp", [], [] |),
@@ -564,7 +614,12 @@ Module result.
                                   "core::result::Result::Err",
                                   0
                                 |) in
-                              let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ2_0 |) in
+                              let _ := M.read (| γ2_0 |) in
+                              let __self_0 :=
+                                M.alloc (|
+                                  Ty.apply (Ty.path "&") [] [ E ],
+                                  M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                                |) in
                               let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                               let γ2_0 :=
                                 M.SubPointer.get_struct_tuple_field (|
@@ -572,7 +627,12 @@ Module result.
                                   "core::result::Result::Err",
                                   0
                                 |) in
-                              let __arg1_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ2_0 |) in
+                              let _ := M.read (| γ2_0 |) in
+                              let __arg1_0 :=
+                                M.alloc (|
+                                  Ty.apply (Ty.path "&") [] [ E ],
+                                  M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                                |) in
                               M.call_closure (|
                                 Ty.path "core::cmp::Ordering",
                                 M.get_trait_method (| "core::cmp::Ord", E, [], [], "cmp", [], [] |),
@@ -660,7 +720,12 @@ Module result.
                   (let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "core::result::Result::Ok", 0 |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -698,7 +763,12 @@ Module result.
                   (let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "core::result::Result::Err", 0 |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ E ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -807,7 +877,12 @@ Module result.
                           "core::result::Result::Ok",
                           0
                         |) in
-                      let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                      let _ := M.read (| γ1_0 |) in
+                      let __self_0 :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ T ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
                       M.call_closure (|
                         Ty.tuple [],
                         M.get_trait_method (| "core::hash::Hash", T, [], [], "hash", [], [ __H ] |),
@@ -825,7 +900,12 @@ Module result.
                           "core::result::Result::Err",
                           0
                         |) in
-                      let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ1_0 |) in
+                      let _ := M.read (| γ1_0 |) in
+                      let __self_0 :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ E ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
                       M.call_closure (|
                         Ty.tuple [],
                         M.get_trait_method (| "core::hash::Hash", E, [], [], "hash", [], [ __H ] |),
@@ -887,6 +967,7 @@ Module result.
     Global Instance AssociatedFunction_is_ok :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "is_ok" (is_ok T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_ok.
     
@@ -945,6 +1026,7 @@ Module result.
     Global Instance AssociatedFunction_is_ok_and :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "is_ok_and" (is_ok_and T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_ok_and.
     
@@ -985,6 +1067,7 @@ Module result.
     Global Instance AssociatedFunction_is_err :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "is_err" (is_err T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_err.
     
@@ -1043,6 +1126,7 @@ Module result.
     Global Instance AssociatedFunction_is_err_and :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "is_err_and" (is_err_and T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_err_and.
     
@@ -1087,6 +1171,7 @@ Module result.
     Global Instance AssociatedFunction_ok :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "ok" (ok T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque ok.
     
@@ -1131,6 +1216,7 @@ Module result.
     Global Instance AssociatedFunction_err :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "err" (err T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque err.
     
@@ -1163,7 +1249,12 @@ Module result.
                 ltac:(M.monadic
                   (let γ0_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "core::result::Result::Ok", 0 |) in
-                  let x := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_0 |) in
+                  let _ := M.read (| γ0_0 |) in
+                  let x :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                    |) in
                   Value.StructTuple
                     "core::result::Result::Ok"
                     []
@@ -1173,7 +1264,12 @@ Module result.
                 ltac:(M.monadic
                   (let γ0_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "core::result::Result::Err", 0 |) in
-                  let x := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ0_0 |) in
+                  let _ := M.read (| γ0_0 |) in
+                  let x :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ E ],
+                      M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                    |) in
                   Value.StructTuple
                     "core::result::Result::Err"
                     []
@@ -1187,6 +1283,7 @@ Module result.
     Global Instance AssociatedFunction_as_ref :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "as_ref" (as_ref T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_ref.
     
@@ -1222,7 +1319,12 @@ Module result.
                 ltac:(M.monadic
                   (let γ0_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "core::result::Result::Ok", 0 |) in
-                  let x := M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ0_0 |) in
+                  let _ := M.read (| γ0_0 |) in
+                  let x :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&mut") [] [ T ],
+                      M.borrow (| Pointer.Kind.MutRef, γ0_0 |)
+                    |) in
                   Value.StructTuple
                     "core::result::Result::Ok"
                     []
@@ -1232,7 +1334,12 @@ Module result.
                 ltac:(M.monadic
                   (let γ0_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "core::result::Result::Err", 0 |) in
-                  let x := M.alloc (| Ty.apply (Ty.path "&mut") [] [ E ], γ0_0 |) in
+                  let _ := M.read (| γ0_0 |) in
+                  let x :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&mut") [] [ E ],
+                      M.borrow (| Pointer.Kind.MutRef, γ0_0 |)
+                    |) in
                   Value.StructTuple
                     "core::result::Result::Err"
                     []
@@ -1246,6 +1353,7 @@ Module result.
     Global Instance AssociatedFunction_as_mut :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "as_mut" (as_mut T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_mut.
     
@@ -1309,6 +1417,7 @@ Module result.
     Global Instance AssociatedFunction_map :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "map" (map T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque map.
     
@@ -1369,6 +1478,7 @@ Module result.
     Global Instance AssociatedFunction_map_or :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "map_or" (map_or T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque map_or.
     
@@ -1440,6 +1550,7 @@ Module result.
     Global Instance AssociatedFunction_map_or_else :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "map_or_else" (map_or_else T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque map_or_else.
     
@@ -1508,6 +1619,7 @@ Module result.
     Global Instance AssociatedFunction_map_or_default :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "map_or_default" (map_or_default T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque map_or_default.
     
@@ -1571,6 +1683,7 @@ Module result.
     Global Instance AssociatedFunction_map_err :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "map_err" (map_err T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque map_err.
     
@@ -1608,7 +1721,12 @@ Module result.
                           "core::result::Result::Ok",
                           0
                         |) in
-                      let t := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_0 |) in
+                      let _ := M.read (| γ0_0 |) in
+                      let t :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ T ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                        |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
                           M.call_closure (|
@@ -1641,6 +1759,7 @@ Module result.
     Global Instance AssociatedFunction_inspect :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "inspect" (inspect T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque inspect.
     
@@ -1678,7 +1797,12 @@ Module result.
                           "core::result::Result::Err",
                           0
                         |) in
-                      let e := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ0_0 |) in
+                      let _ := M.read (| γ0_0 |) in
+                      let e :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ E ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                        |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
                           M.call_closure (|
@@ -1711,6 +1835,7 @@ Module result.
     Global Instance AssociatedFunction_inspect_err :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "inspect_err" (inspect_err T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque inspect_err.
     
@@ -1786,6 +1911,7 @@ Module result.
     Global Instance AssociatedFunction_as_deref :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "as_deref" (as_deref T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_deref.
     
@@ -1869,6 +1995,7 @@ Module result.
     Global Instance AssociatedFunction_as_deref_mut :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "as_deref_mut" (as_deref_mut T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_deref_mut.
     
@@ -1927,6 +2054,7 @@ Module result.
     Global Instance AssociatedFunction_iter :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "iter" (iter T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque iter.
     
@@ -1991,6 +2119,7 @@ Module result.
     Global Instance AssociatedFunction_iter_mut :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "iter_mut" (iter_mut T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque iter_mut.
     
@@ -2060,6 +2189,7 @@ Module result.
     Global Instance AssociatedFunction_expect :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "expect" (expect T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque expect.
     
@@ -2131,6 +2261,7 @@ Module result.
     Global Instance AssociatedFunction_unwrap :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "unwrap" (unwrap T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque unwrap.
     
@@ -2184,6 +2315,7 @@ Module result.
     Global Instance AssociatedFunction_unwrap_or_default :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "unwrap_or_default" (unwrap_or_default T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque unwrap_or_default.
     
@@ -2253,6 +2385,7 @@ Module result.
     Global Instance AssociatedFunction_expect_err :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "expect_err" (expect_err T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque expect_err.
     
@@ -2326,6 +2459,7 @@ Module result.
     Global Instance AssociatedFunction_unwrap_err :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "unwrap_err" (unwrap_err T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque unwrap_err.
     
@@ -2384,6 +2518,7 @@ Module result.
     Global Instance AssociatedFunction_into_ok :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "into_ok" (into_ok T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_ok.
     
@@ -2442,6 +2577,7 @@ Module result.
     Global Instance AssociatedFunction_into_err :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "into_err" (into_err T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_err.
     
@@ -2488,6 +2624,7 @@ Module result.
     Global Instance AssociatedFunction_and :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "and" (and T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque and.
     
@@ -2545,6 +2682,7 @@ Module result.
     Global Instance AssociatedFunction_and_then :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "and_then" (and_then T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque and_then.
     
@@ -2591,6 +2729,7 @@ Module result.
     Global Instance AssociatedFunction_or :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "or" (or T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque or.
     
@@ -2648,6 +2787,7 @@ Module result.
     Global Instance AssociatedFunction_or_else :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "or_else" (or_else T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque or_else.
     
@@ -2693,6 +2833,7 @@ Module result.
     Global Instance AssociatedFunction_unwrap_or :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "unwrap_or" (unwrap_or T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque unwrap_or.
     
@@ -2755,6 +2896,7 @@ Module result.
     Global Instance AssociatedFunction_unwrap_or_else :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "unwrap_or_else" (unwrap_or_else T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque unwrap_or_else.
     
@@ -2823,6 +2965,7 @@ Module result.
     Global Instance AssociatedFunction_unwrap_unchecked :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "unwrap_unchecked" (unwrap_unchecked T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque unwrap_unchecked.
     
@@ -2875,6 +3018,7 @@ Module result.
     Global Instance AssociatedFunction_unwrap_err_unchecked :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "unwrap_err_unchecked" (unwrap_err_unchecked T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque unwrap_err_unchecked.
   End Impl_core_result_Result_T_E.
@@ -2931,6 +3075,7 @@ Module result.
     Global Instance AssociatedFunction_copied :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "copied" (copied T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque copied.
     
@@ -3000,6 +3145,7 @@ Module result.
     Global Instance AssociatedFunction_cloned :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "cloned" (cloned T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque cloned.
   End Impl_core_result_Result_ref__T_E.
@@ -3059,6 +3205,7 @@ Module result.
     Global Instance AssociatedFunction_copied :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "copied" (copied T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque copied.
     
@@ -3134,6 +3281,7 @@ Module result.
     Global Instance AssociatedFunction_cloned :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "cloned" (cloned T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque cloned.
   End Impl_core_result_Result_ref_mut_T_E.
@@ -3220,6 +3368,7 @@ Module result.
     Global Instance AssociatedFunction_transpose :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "transpose" (transpose T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque transpose.
   End Impl_core_result_Result_core_option_Option_T_E.
@@ -3278,6 +3427,7 @@ Module result.
     Global Instance AssociatedFunction_flatten :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "flatten" (flatten T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque flatten.
   End Impl_core_result_Result_core_result_Result_T_E_E.
@@ -3382,6 +3532,7 @@ Module result.
   
   Global Instance Instance_IsFunction_unwrap_failed :
     M.IsFunction.C "core::result::unwrap_failed" unwrap_failed.
+  Proof.
   Admitted.
   Global Typeclasses Opaque unwrap_failed.
   
@@ -3415,7 +3566,12 @@ Module result.
                   (let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "core::result::Result::Ok", 0 |) in
-                  let x := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let x :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "core::result::Result::Ok"
                     []
@@ -3432,7 +3588,12 @@ Module result.
                   (let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "core::result::Result::Err", 0 |) in
-                  let x := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let x :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ E ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "core::result::Result::Err"
                     []
@@ -3500,11 +3661,21 @@ Module result.
                   let γ0_0 := M.deref (| M.read (| γ0_0 |) |) in
                   let γ2_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ0_0, "core::result::Result::Ok", 0 |) in
-                  let to := M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ2_0 |) in
+                  let _ := M.read (| γ2_0 |) in
+                  let to :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&mut") [] [ T ],
+                      M.borrow (| Pointer.Kind.MutRef, γ2_0 |)
+                    |) in
                   let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                   let γ2_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ0_1, "core::result::Result::Ok", 0 |) in
-                  let from := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                  let _ := M.read (| γ2_0 |) in
+                  let from :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.tuple [],
                     M.get_trait_method (| "core::clone::Clone", T, [], [], "clone_from", [], [] |),
@@ -3524,7 +3695,12 @@ Module result.
                       "core::result::Result::Err",
                       0
                     |) in
-                  let to := M.alloc (| Ty.apply (Ty.path "&mut") [] [ E ], γ2_0 |) in
+                  let _ := M.read (| γ2_0 |) in
+                  let to :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&mut") [] [ E ],
+                      M.borrow (| Pointer.Kind.MutRef, γ2_0 |)
+                    |) in
                   let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                   let γ2_0 :=
                     M.SubPointer.get_struct_tuple_field (|
@@ -3532,7 +3708,12 @@ Module result.
                       "core::result::Result::Err",
                       0
                     |) in
-                  let from := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ2_0 |) in
+                  let _ := M.read (| γ2_0 |) in
+                  let from :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ E ],
+                      M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.tuple [],
                     M.get_trait_method (| "core::clone::Clone", E, [], [], "clone_from", [], [] |),

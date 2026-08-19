@@ -612,13 +612,14 @@ Module journaled_state.
                         "revm_context_interface::journaled_state::entry::JournalEntry::AccountWarmed",
                         "address"
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "alloy_primitives::bits::address::Address" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -688,6 +689,7 @@ Module journaled_state.
                         "revm_context_interface::journaled_state::entry::JournalEntry::AccountDestroyed",
                         "destroyed_status"
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
@@ -702,24 +704,27 @@ Module journaled_state.
                               ]
                               []
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
+                    let _ := M.read (| γ1_1 |) in
                     let __self_1 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "alloy_primitives::bits::address::Address" ],
-                        γ1_1
+                        M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                       |) in
+                    let _ := M.read (| γ1_2 |) in
                     let __self_2 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "alloy_primitives::bits::address::Address" ],
-                        γ1_2
+                        M.borrow (| Pointer.Kind.Ref, γ1_2 |)
                       |) in
+                    let _ := M.read (| γ1_3 |) in
                     let __self_3 :=
                       M.alloc (|
                         Ty.apply
@@ -729,7 +734,7 @@ Module journaled_state.
                             Ty.path
                               "revm_context_interface::journaled_state::entry::SelfdestructionRevertStatus"
                           ],
-                        γ1_3
+                        M.borrow (| Pointer.Kind.Ref, γ1_3 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -843,13 +848,14 @@ Module journaled_state.
                         "revm_context_interface::journaled_state::entry::JournalEntry::AccountTouched",
                         "address"
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "alloy_primitives::bits::address::Address" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -910,6 +916,7 @@ Module journaled_state.
                         "revm_context_interface::journaled_state::entry::JournalEntry::BalanceChange",
                         "address"
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
@@ -924,15 +931,16 @@ Module journaled_state.
                               ]
                               []
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
+                    let _ := M.read (| γ1_1 |) in
                     let __self_1 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "alloy_primitives::bits::address::Address" ],
-                        γ1_1
+                        M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -1019,6 +1027,7 @@ Module journaled_state.
                         "revm_context_interface::journaled_state::entry::JournalEntry::BalanceTransfer",
                         "to"
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
@@ -1033,23 +1042,25 @@ Module journaled_state.
                               ]
                               []
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
+                    let _ := M.read (| γ1_1 |) in
                     let __self_1 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "alloy_primitives::bits::address::Address" ],
-                        γ1_1
+                        M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                       |) in
+                    let _ := M.read (| γ1_2 |) in
                     let __self_2 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "alloy_primitives::bits::address::Address" ],
-                        γ1_2
+                        M.borrow (| Pointer.Kind.Ref, γ1_2 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -1148,16 +1159,21 @@ Module journaled_state.
                         "revm_context_interface::journaled_state::entry::JournalEntry::NonceChange",
                         "previous_nonce"
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "alloy_primitives::bits::address::Address" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
+                    let _ := M.read (| γ1_1 |) in
                     let __self_1 :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                      |) in
                     M.call_closure (|
                       Ty.apply
                         (Ty.path "core::result::Result")
@@ -1221,13 +1237,14 @@ Module journaled_state.
                         "revm_context_interface::journaled_state::entry::JournalEntry::NonceBump",
                         "address"
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "alloy_primitives::bits::address::Address" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -1285,16 +1302,21 @@ Module journaled_state.
                         "revm_context_interface::journaled_state::entry::JournalEntry::AccountCreated",
                         "is_created_globally"
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "alloy_primitives::bits::address::Address" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
+                    let _ := M.read (| γ1_1 |) in
                     let __self_1 :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], γ1_1 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                      |) in
                     M.call_closure (|
                       Ty.apply
                         (Ty.path "core::result::Result")
@@ -1373,6 +1395,7 @@ Module journaled_state.
                         "revm_context_interface::journaled_state::entry::JournalEntry::StorageChanged",
                         "address"
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
@@ -1387,8 +1410,9 @@ Module journaled_state.
                               ]
                               []
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
+                    let _ := M.read (| γ1_1 |) in
                     let __self_1 :=
                       M.alloc (|
                         Ty.apply
@@ -1403,15 +1427,16 @@ Module journaled_state.
                               ]
                               []
                           ],
-                        γ1_1
+                        M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                       |) in
+                    let _ := M.read (| γ1_2 |) in
                     let __self_2 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "alloy_primitives::bits::address::Address" ],
-                        γ1_2
+                        M.borrow (| Pointer.Kind.Ref, γ1_2 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -1518,6 +1543,7 @@ Module journaled_state.
                         "revm_context_interface::journaled_state::entry::JournalEntry::StorageWarmed",
                         "address"
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
@@ -1532,15 +1558,16 @@ Module journaled_state.
                               ]
                               []
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
+                    let _ := M.read (| γ1_1 |) in
                     let __self_1 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "alloy_primitives::bits::address::Address" ],
-                        γ1_1
+                        M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -1627,6 +1654,7 @@ Module journaled_state.
                         "revm_context_interface::journaled_state::entry::JournalEntry::TransientStorageChange",
                         "address"
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
@@ -1641,8 +1669,9 @@ Module journaled_state.
                               ]
                               []
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
+                    let _ := M.read (| γ1_1 |) in
                     let __self_1 :=
                       M.alloc (|
                         Ty.apply
@@ -1657,15 +1686,16 @@ Module journaled_state.
                               ]
                               []
                           ],
-                        γ1_1
+                        M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                       |) in
+                    let _ := M.read (| γ1_2 |) in
                     let __self_2 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "alloy_primitives::bits::address::Address" ],
-                        γ1_2
+                        M.borrow (| Pointer.Kind.Ref, γ1_2 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -1766,13 +1796,14 @@ Module journaled_state.
                         "revm_context_interface::journaled_state::entry::JournalEntry::CodeChange",
                         "address"
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "alloy_primitives::bits::address::Address" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -1859,13 +1890,14 @@ Module journaled_state.
                         "revm_context_interface::journaled_state::entry::JournalEntry::AccountWarmed",
                         "address"
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "alloy_primitives::bits::address::Address" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     Value.mkStructRecord
                       "revm_context_interface::journaled_state::entry::JournalEntry::AccountWarmed"
@@ -1914,6 +1946,7 @@ Module journaled_state.
                         "revm_context_interface::journaled_state::entry::JournalEntry::AccountDestroyed",
                         "destroyed_status"
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
@@ -1928,24 +1961,27 @@ Module journaled_state.
                               ]
                               []
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
+                    let _ := M.read (| γ1_1 |) in
                     let __self_1 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "alloy_primitives::bits::address::Address" ],
-                        γ1_1
+                        M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                       |) in
+                    let _ := M.read (| γ1_2 |) in
                     let __self_2 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "alloy_primitives::bits::address::Address" ],
-                        γ1_2
+                        M.borrow (| Pointer.Kind.Ref, γ1_2 |)
                       |) in
+                    let _ := M.read (| γ1_3 |) in
                     let __self_3 :=
                       M.alloc (|
                         Ty.apply
@@ -1955,7 +1991,7 @@ Module journaled_state.
                             Ty.path
                               "revm_context_interface::journaled_state::entry::SelfdestructionRevertStatus"
                           ],
-                        γ1_3
+                        M.borrow (| Pointer.Kind.Ref, γ1_3 |)
                       |) in
                     Value.mkStructRecord
                       "revm_context_interface::journaled_state::entry::JournalEntry::AccountDestroyed"
@@ -2042,13 +2078,14 @@ Module journaled_state.
                         "revm_context_interface::journaled_state::entry::JournalEntry::AccountTouched",
                         "address"
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "alloy_primitives::bits::address::Address" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     Value.mkStructRecord
                       "revm_context_interface::journaled_state::entry::JournalEntry::AccountTouched"
@@ -2085,6 +2122,7 @@ Module journaled_state.
                         "revm_context_interface::journaled_state::entry::JournalEntry::BalanceChange",
                         "address"
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
@@ -2099,15 +2137,16 @@ Module journaled_state.
                               ]
                               []
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
+                    let _ := M.read (| γ1_1 |) in
                     let __self_1 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "alloy_primitives::bits::address::Address" ],
-                        γ1_1
+                        M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                       |) in
                     Value.mkStructRecord
                       "revm_context_interface::journaled_state::entry::JournalEntry::BalanceChange"
@@ -2176,6 +2215,7 @@ Module journaled_state.
                         "revm_context_interface::journaled_state::entry::JournalEntry::BalanceTransfer",
                         "to"
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
@@ -2190,23 +2230,25 @@ Module journaled_state.
                               ]
                               []
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
+                    let _ := M.read (| γ1_1 |) in
                     let __self_1 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "alloy_primitives::bits::address::Address" ],
-                        γ1_1
+                        M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                       |) in
+                    let _ := M.read (| γ1_2 |) in
                     let __self_2 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "alloy_primitives::bits::address::Address" ],
-                        γ1_2
+                        M.borrow (| Pointer.Kind.Ref, γ1_2 |)
                       |) in
                     Value.mkStructRecord
                       "revm_context_interface::journaled_state::entry::JournalEntry::BalanceTransfer"
@@ -2283,16 +2325,21 @@ Module journaled_state.
                         "revm_context_interface::journaled_state::entry::JournalEntry::NonceChange",
                         "previous_nonce"
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "alloy_primitives::bits::address::Address" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
+                    let _ := M.read (| γ1_1 |) in
                     let __self_1 :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                      |) in
                     Value.mkStructRecord
                       "revm_context_interface::journaled_state::entry::JournalEntry::NonceChange"
                       []
@@ -2336,13 +2383,14 @@ Module journaled_state.
                         "revm_context_interface::journaled_state::entry::JournalEntry::NonceBump",
                         "address"
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "alloy_primitives::bits::address::Address" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     Value.mkStructRecord
                       "revm_context_interface::journaled_state::entry::JournalEntry::NonceBump"
@@ -2379,16 +2427,21 @@ Module journaled_state.
                         "revm_context_interface::journaled_state::entry::JournalEntry::AccountCreated",
                         "is_created_globally"
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "alloy_primitives::bits::address::Address" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
+                    let _ := M.read (| γ1_1 |) in
                     let __self_1 :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], γ1_1 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                      |) in
                     Value.mkStructRecord
                       "revm_context_interface::journaled_state::entry::JournalEntry::AccountCreated"
                       []
@@ -2444,6 +2497,7 @@ Module journaled_state.
                         "revm_context_interface::journaled_state::entry::JournalEntry::StorageChanged",
                         "address"
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
@@ -2458,8 +2512,9 @@ Module journaled_state.
                               ]
                               []
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
+                    let _ := M.read (| γ1_1 |) in
                     let __self_1 :=
                       M.alloc (|
                         Ty.apply
@@ -2474,15 +2529,16 @@ Module journaled_state.
                               ]
                               []
                           ],
-                        γ1_1
+                        M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                       |) in
+                    let _ := M.read (| γ1_2 |) in
                     let __self_2 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "alloy_primitives::bits::address::Address" ],
-                        γ1_2
+                        M.borrow (| Pointer.Kind.Ref, γ1_2 |)
                       |) in
                     Value.mkStructRecord
                       "revm_context_interface::journaled_state::entry::JournalEntry::StorageChanged"
@@ -2571,6 +2627,7 @@ Module journaled_state.
                         "revm_context_interface::journaled_state::entry::JournalEntry::StorageWarmed",
                         "address"
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
@@ -2585,15 +2642,16 @@ Module journaled_state.
                               ]
                               []
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
+                    let _ := M.read (| γ1_1 |) in
                     let __self_1 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "alloy_primitives::bits::address::Address" ],
-                        γ1_1
+                        M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                       |) in
                     Value.mkStructRecord
                       "revm_context_interface::journaled_state::entry::JournalEntry::StorageWarmed"
@@ -2662,6 +2720,7 @@ Module journaled_state.
                         "revm_context_interface::journaled_state::entry::JournalEntry::TransientStorageChange",
                         "address"
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
@@ -2676,8 +2735,9 @@ Module journaled_state.
                               ]
                               []
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
+                    let _ := M.read (| γ1_1 |) in
                     let __self_1 :=
                       M.alloc (|
                         Ty.apply
@@ -2692,15 +2752,16 @@ Module journaled_state.
                               ]
                               []
                           ],
-                        γ1_1
+                        M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                       |) in
+                    let _ := M.read (| γ1_2 |) in
                     let __self_2 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "alloy_primitives::bits::address::Address" ],
-                        γ1_2
+                        M.borrow (| Pointer.Kind.Ref, γ1_2 |)
                       |) in
                     Value.mkStructRecord
                       "revm_context_interface::journaled_state::entry::JournalEntry::TransientStorageChange"
@@ -2783,13 +2844,14 @@ Module journaled_state.
                         "revm_context_interface::journaled_state::entry::JournalEntry::CodeChange",
                         "address"
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "alloy_primitives::bits::address::Address" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     Value.mkStructRecord
                       "revm_context_interface::journaled_state::entry::JournalEntry::CodeChange"
@@ -2927,13 +2989,14 @@ Module journaled_state.
                                 "revm_context_interface::journaled_state::entry::JournalEntry::AccountWarmed",
                                 "address"
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "alloy_primitives::bits::address::Address" ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
@@ -2942,13 +3005,14 @@ Module journaled_state.
                                 "revm_context_interface::journaled_state::entry::JournalEntry::AccountWarmed",
                                 "address"
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "alloy_primitives::bits::address::Address" ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             M.call_closure (|
                               Ty.path "bool",
@@ -3003,6 +3067,7 @@ Module journaled_state.
                                 "revm_context_interface::journaled_state::entry::JournalEntry::AccountDestroyed",
                                 "destroyed_status"
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
                               M.alloc (|
                                 Ty.apply
@@ -3017,24 +3082,27 @@ Module journaled_state.
                                       ]
                                       []
                                   ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
+                            let _ := M.read (| γ2_1 |) in
                             let __self_1 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "alloy_primitives::bits::address::Address" ],
-                                γ2_1
+                                M.borrow (| Pointer.Kind.Ref, γ2_1 |)
                               |) in
+                            let _ := M.read (| γ2_2 |) in
                             let __self_2 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "alloy_primitives::bits::address::Address" ],
-                                γ2_2
+                                M.borrow (| Pointer.Kind.Ref, γ2_2 |)
                               |) in
+                            let _ := M.read (| γ2_3 |) in
                             let __self_3 :=
                               M.alloc (|
                                 Ty.apply
@@ -3044,7 +3112,7 @@ Module journaled_state.
                                     Ty.path
                                       "revm_context_interface::journaled_state::entry::SelfdestructionRevertStatus"
                                   ],
-                                γ2_3
+                                M.borrow (| Pointer.Kind.Ref, γ2_3 |)
                               |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
@@ -3071,6 +3139,7 @@ Module journaled_state.
                                 "revm_context_interface::journaled_state::entry::JournalEntry::AccountDestroyed",
                                 "destroyed_status"
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
                               M.alloc (|
                                 Ty.apply
@@ -3085,24 +3154,27 @@ Module journaled_state.
                                       ]
                                       []
                                   ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
+                            let _ := M.read (| γ2_1 |) in
                             let __arg1_1 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "alloy_primitives::bits::address::Address" ],
-                                γ2_1
+                                M.borrow (| Pointer.Kind.Ref, γ2_1 |)
                               |) in
+                            let _ := M.read (| γ2_2 |) in
                             let __arg1_2 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "alloy_primitives::bits::address::Address" ],
-                                γ2_2
+                                M.borrow (| Pointer.Kind.Ref, γ2_2 |)
                               |) in
+                            let _ := M.read (| γ2_3 |) in
                             let __arg1_3 :=
                               M.alloc (|
                                 Ty.apply
@@ -3112,7 +3184,7 @@ Module journaled_state.
                                     Ty.path
                                       "revm_context_interface::journaled_state::entry::SelfdestructionRevertStatus"
                                   ],
-                                γ2_3
+                                M.borrow (| Pointer.Kind.Ref, γ2_3 |)
                               |) in
                             LogicalOp.and (|
                               LogicalOp.and (|
@@ -3252,13 +3324,14 @@ Module journaled_state.
                                 "revm_context_interface::journaled_state::entry::JournalEntry::AccountTouched",
                                 "address"
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "alloy_primitives::bits::address::Address" ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
@@ -3267,13 +3340,14 @@ Module journaled_state.
                                 "revm_context_interface::journaled_state::entry::JournalEntry::AccountTouched",
                                 "address"
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "alloy_primitives::bits::address::Address" ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             M.call_closure (|
                               Ty.path "bool",
@@ -3316,6 +3390,7 @@ Module journaled_state.
                                 "revm_context_interface::journaled_state::entry::JournalEntry::BalanceChange",
                                 "address"
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
                               M.alloc (|
                                 Ty.apply
@@ -3330,15 +3405,16 @@ Module journaled_state.
                                       ]
                                       []
                                   ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
+                            let _ := M.read (| γ2_1 |) in
                             let __self_1 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "alloy_primitives::bits::address::Address" ],
-                                γ2_1
+                                M.borrow (| Pointer.Kind.Ref, γ2_1 |)
                               |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
@@ -3353,6 +3429,7 @@ Module journaled_state.
                                 "revm_context_interface::journaled_state::entry::JournalEntry::BalanceChange",
                                 "address"
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
                               M.alloc (|
                                 Ty.apply
@@ -3367,15 +3444,16 @@ Module journaled_state.
                                       ]
                                       []
                                   ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
+                            let _ := M.read (| γ2_1 |) in
                             let __arg1_1 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "alloy_primitives::bits::address::Address" ],
-                                γ2_1
+                                M.borrow (| Pointer.Kind.Ref, γ2_1 |)
                               |) in
                             LogicalOp.and (|
                               M.call_closure (|
@@ -3467,6 +3545,7 @@ Module journaled_state.
                                 "revm_context_interface::journaled_state::entry::JournalEntry::BalanceTransfer",
                                 "to"
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
                               M.alloc (|
                                 Ty.apply
@@ -3481,23 +3560,25 @@ Module journaled_state.
                                       ]
                                       []
                                   ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
+                            let _ := M.read (| γ2_1 |) in
                             let __self_1 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "alloy_primitives::bits::address::Address" ],
-                                γ2_1
+                                M.borrow (| Pointer.Kind.Ref, γ2_1 |)
                               |) in
+                            let _ := M.read (| γ2_2 |) in
                             let __self_2 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "alloy_primitives::bits::address::Address" ],
-                                γ2_2
+                                M.borrow (| Pointer.Kind.Ref, γ2_2 |)
                               |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
@@ -3518,6 +3599,7 @@ Module journaled_state.
                                 "revm_context_interface::journaled_state::entry::JournalEntry::BalanceTransfer",
                                 "to"
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
                               M.alloc (|
                                 Ty.apply
@@ -3532,23 +3614,25 @@ Module journaled_state.
                                       ]
                                       []
                                   ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
+                            let _ := M.read (| γ2_1 |) in
                             let __arg1_1 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "alloy_primitives::bits::address::Address" ],
-                                γ2_1
+                                M.borrow (| Pointer.Kind.Ref, γ2_1 |)
                               |) in
+                            let _ := M.read (| γ2_2 |) in
                             let __arg1_2 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "alloy_primitives::bits::address::Address" ],
-                                γ2_2
+                                M.borrow (| Pointer.Kind.Ref, γ2_2 |)
                               |) in
                             LogicalOp.and (|
                               LogicalOp.and (|
@@ -3661,16 +3745,21 @@ Module journaled_state.
                                 "revm_context_interface::journaled_state::entry::JournalEntry::NonceChange",
                                 "previous_nonce"
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "alloy_primitives::bits::address::Address" ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
+                            let _ := M.read (| γ2_1 |) in
                             let __self_1 :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_1 |) in
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                              |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
                               M.SubPointer.get_struct_record_field (|
@@ -3684,16 +3773,21 @@ Module journaled_state.
                                 "revm_context_interface::journaled_state::entry::JournalEntry::NonceChange",
                                 "previous_nonce"
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "alloy_primitives::bits::address::Address" ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
+                            let _ := M.read (| γ2_1 |) in
                             let __arg1_1 :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_1 |) in
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                              |) in
                             LogicalOp.and (|
                               M.call_closure (|
                                 Ty.path "bool",
@@ -3748,13 +3842,14 @@ Module journaled_state.
                                 "revm_context_interface::journaled_state::entry::JournalEntry::NonceBump",
                                 "address"
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "alloy_primitives::bits::address::Address" ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
@@ -3763,13 +3858,14 @@ Module journaled_state.
                                 "revm_context_interface::journaled_state::entry::JournalEntry::NonceBump",
                                 "address"
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "alloy_primitives::bits::address::Address" ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             M.call_closure (|
                               Ty.path "bool",
@@ -3812,16 +3908,21 @@ Module journaled_state.
                                 "revm_context_interface::journaled_state::entry::JournalEntry::AccountCreated",
                                 "is_created_globally"
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "alloy_primitives::bits::address::Address" ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
+                            let _ := M.read (| γ2_1 |) in
                             let __self_1 :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], γ2_1 |) in
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                              |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
                               M.SubPointer.get_struct_record_field (|
@@ -3835,16 +3936,21 @@ Module journaled_state.
                                 "revm_context_interface::journaled_state::entry::JournalEntry::AccountCreated",
                                 "is_created_globally"
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "alloy_primitives::bits::address::Address" ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
+                            let _ := M.read (| γ2_1 |) in
                             let __arg1_1 :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], γ2_1 |) in
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                              |) in
                             LogicalOp.and (|
                               M.call_closure (|
                                 Ty.path "bool",
@@ -3911,6 +4017,7 @@ Module journaled_state.
                                 "revm_context_interface::journaled_state::entry::JournalEntry::StorageChanged",
                                 "address"
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
                               M.alloc (|
                                 Ty.apply
@@ -3925,8 +4032,9 @@ Module journaled_state.
                                       ]
                                       []
                                   ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
+                            let _ := M.read (| γ2_1 |) in
                             let __self_1 :=
                               M.alloc (|
                                 Ty.apply
@@ -3941,15 +4049,16 @@ Module journaled_state.
                                       ]
                                       []
                                   ],
-                                γ2_1
+                                M.borrow (| Pointer.Kind.Ref, γ2_1 |)
                               |) in
+                            let _ := M.read (| γ2_2 |) in
                             let __self_2 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "alloy_primitives::bits::address::Address" ],
-                                γ2_2
+                                M.borrow (| Pointer.Kind.Ref, γ2_2 |)
                               |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
@@ -3970,6 +4079,7 @@ Module journaled_state.
                                 "revm_context_interface::journaled_state::entry::JournalEntry::StorageChanged",
                                 "address"
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
                               M.alloc (|
                                 Ty.apply
@@ -3984,8 +4094,9 @@ Module journaled_state.
                                       ]
                                       []
                                   ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
+                            let _ := M.read (| γ2_1 |) in
                             let __arg1_1 :=
                               M.alloc (|
                                 Ty.apply
@@ -4000,15 +4111,16 @@ Module journaled_state.
                                       ]
                                       []
                                   ],
-                                γ2_1
+                                M.borrow (| Pointer.Kind.Ref, γ2_1 |)
                               |) in
+                            let _ := M.read (| γ2_2 |) in
                             let __arg1_2 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "alloy_primitives::bits::address::Address" ],
-                                γ2_2
+                                M.borrow (| Pointer.Kind.Ref, γ2_2 |)
                               |) in
                             LogicalOp.and (|
                               LogicalOp.and (|
@@ -4137,6 +4249,7 @@ Module journaled_state.
                                 "revm_context_interface::journaled_state::entry::JournalEntry::StorageWarmed",
                                 "address"
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
                               M.alloc (|
                                 Ty.apply
@@ -4151,15 +4264,16 @@ Module journaled_state.
                                       ]
                                       []
                                   ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
+                            let _ := M.read (| γ2_1 |) in
                             let __self_1 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "alloy_primitives::bits::address::Address" ],
-                                γ2_1
+                                M.borrow (| Pointer.Kind.Ref, γ2_1 |)
                               |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
@@ -4174,6 +4288,7 @@ Module journaled_state.
                                 "revm_context_interface::journaled_state::entry::JournalEntry::StorageWarmed",
                                 "address"
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
                               M.alloc (|
                                 Ty.apply
@@ -4188,15 +4303,16 @@ Module journaled_state.
                                       ]
                                       []
                                   ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
+                            let _ := M.read (| γ2_1 |) in
                             let __arg1_1 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "alloy_primitives::bits::address::Address" ],
-                                γ2_1
+                                M.borrow (| Pointer.Kind.Ref, γ2_1 |)
                               |) in
                             LogicalOp.and (|
                               M.call_closure (|
@@ -4288,6 +4404,7 @@ Module journaled_state.
                                 "revm_context_interface::journaled_state::entry::JournalEntry::TransientStorageChange",
                                 "address"
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
                               M.alloc (|
                                 Ty.apply
@@ -4302,8 +4419,9 @@ Module journaled_state.
                                       ]
                                       []
                                   ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
+                            let _ := M.read (| γ2_1 |) in
                             let __self_1 :=
                               M.alloc (|
                                 Ty.apply
@@ -4318,15 +4436,16 @@ Module journaled_state.
                                       ]
                                       []
                                   ],
-                                γ2_1
+                                M.borrow (| Pointer.Kind.Ref, γ2_1 |)
                               |) in
+                            let _ := M.read (| γ2_2 |) in
                             let __self_2 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "alloy_primitives::bits::address::Address" ],
-                                γ2_2
+                                M.borrow (| Pointer.Kind.Ref, γ2_2 |)
                               |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
@@ -4347,6 +4466,7 @@ Module journaled_state.
                                 "revm_context_interface::journaled_state::entry::JournalEntry::TransientStorageChange",
                                 "address"
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
                               M.alloc (|
                                 Ty.apply
@@ -4361,8 +4481,9 @@ Module journaled_state.
                                       ]
                                       []
                                   ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
+                            let _ := M.read (| γ2_1 |) in
                             let __arg1_1 :=
                               M.alloc (|
                                 Ty.apply
@@ -4377,15 +4498,16 @@ Module journaled_state.
                                       ]
                                       []
                                   ],
-                                γ2_1
+                                M.borrow (| Pointer.Kind.Ref, γ2_1 |)
                               |) in
+                            let _ := M.read (| γ2_2 |) in
                             let __arg1_2 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "alloy_primitives::bits::address::Address" ],
-                                γ2_2
+                                M.borrow (| Pointer.Kind.Ref, γ2_2 |)
                               |) in
                             LogicalOp.and (|
                               LogicalOp.and (|
@@ -4508,13 +4630,14 @@ Module journaled_state.
                                 "revm_context_interface::journaled_state::entry::JournalEntry::CodeChange",
                                 "address"
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "alloy_primitives::bits::address::Address" ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
@@ -4523,13 +4646,14 @@ Module journaled_state.
                                 "revm_context_interface::journaled_state::entry::JournalEntry::CodeChange",
                                 "address"
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "alloy_primitives::bits::address::Address" ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             M.call_closure (|
                               Ty.path "bool",
@@ -4736,13 +4860,14 @@ Module journaled_state.
                             "revm_context_interface::journaled_state::entry::JournalEntry::AccountWarmed",
                             "address"
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let __self_0 :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "alloy_primitives::bits::address::Address" ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.call_closure (|
                           Ty.tuple [],
@@ -4787,6 +4912,7 @@ Module journaled_state.
                             "revm_context_interface::journaled_state::entry::JournalEntry::AccountDestroyed",
                             "destroyed_status"
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let __self_0 :=
                           M.alloc (|
                             Ty.apply
@@ -4801,24 +4927,27 @@ Module journaled_state.
                                   ]
                                   []
                               ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
+                        let _ := M.read (| γ1_1 |) in
                         let __self_1 :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "alloy_primitives::bits::address::Address" ],
-                            γ1_1
+                            M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                           |) in
+                        let _ := M.read (| γ1_2 |) in
                         let __self_2 :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "alloy_primitives::bits::address::Address" ],
-                            γ1_2
+                            M.borrow (| Pointer.Kind.Ref, γ1_2 |)
                           |) in
+                        let _ := M.read (| γ1_3 |) in
                         let __self_3 :=
                           M.alloc (|
                             Ty.apply
@@ -4828,7 +4957,7 @@ Module journaled_state.
                                 Ty.path
                                   "revm_context_interface::journaled_state::entry::SelfdestructionRevertStatus"
                               ],
-                            γ1_3
+                            M.borrow (| Pointer.Kind.Ref, γ1_3 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -4930,13 +5059,14 @@ Module journaled_state.
                             "revm_context_interface::journaled_state::entry::JournalEntry::AccountTouched",
                             "address"
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let __self_0 :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "alloy_primitives::bits::address::Address" ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.call_closure (|
                           Ty.tuple [],
@@ -4969,6 +5099,7 @@ Module journaled_state.
                             "revm_context_interface::journaled_state::entry::JournalEntry::BalanceChange",
                             "address"
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let __self_0 :=
                           M.alloc (|
                             Ty.apply
@@ -4983,15 +5114,16 @@ Module journaled_state.
                                   ]
                                   []
                               ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
+                        let _ := M.read (| γ1_1 |) in
                         let __self_1 :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "alloy_primitives::bits::address::Address" ],
-                            γ1_1
+                            M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -5064,6 +5196,7 @@ Module journaled_state.
                             "revm_context_interface::journaled_state::entry::JournalEntry::BalanceTransfer",
                             "to"
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let __self_0 :=
                           M.alloc (|
                             Ty.apply
@@ -5078,23 +5211,25 @@ Module journaled_state.
                                   ]
                                   []
                               ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
+                        let _ := M.read (| γ1_1 |) in
                         let __self_1 :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "alloy_primitives::bits::address::Address" ],
-                            γ1_1
+                            M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                           |) in
+                        let _ := M.read (| γ1_2 |) in
                         let __self_2 :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "alloy_primitives::bits::address::Address" ],
-                            γ1_2
+                            M.borrow (| Pointer.Kind.Ref, γ1_2 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -5181,16 +5316,21 @@ Module journaled_state.
                             "revm_context_interface::journaled_state::entry::JournalEntry::NonceChange",
                             "previous_nonce"
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let __self_0 :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "alloy_primitives::bits::address::Address" ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
+                        let _ := M.read (| γ1_1 |) in
                         let __self_1 :=
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                          |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
                             M.call_closure (|
@@ -5244,13 +5384,14 @@ Module journaled_state.
                             "revm_context_interface::journaled_state::entry::JournalEntry::NonceBump",
                             "address"
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let __self_0 :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "alloy_primitives::bits::address::Address" ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.call_closure (|
                           Ty.tuple [],
@@ -5283,16 +5424,21 @@ Module journaled_state.
                             "revm_context_interface::journaled_state::entry::JournalEntry::AccountCreated",
                             "is_created_globally"
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let __self_0 :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "alloy_primitives::bits::address::Address" ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
+                        let _ := M.read (| γ1_1 |) in
                         let __self_1 :=
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], γ1_1 |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                          |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
                             M.call_closure (|
@@ -5358,6 +5504,7 @@ Module journaled_state.
                             "revm_context_interface::journaled_state::entry::JournalEntry::StorageChanged",
                             "address"
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let __self_0 :=
                           M.alloc (|
                             Ty.apply
@@ -5372,8 +5519,9 @@ Module journaled_state.
                                   ]
                                   []
                               ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
+                        let _ := M.read (| γ1_1 |) in
                         let __self_1 :=
                           M.alloc (|
                             Ty.apply
@@ -5388,15 +5536,16 @@ Module journaled_state.
                                   ]
                                   []
                               ],
-                            γ1_1
+                            M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                           |) in
+                        let _ := M.read (| γ1_2 |) in
                         let __self_2 :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "alloy_primitives::bits::address::Address" ],
-                            γ1_2
+                            M.borrow (| Pointer.Kind.Ref, γ1_2 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -5489,6 +5638,7 @@ Module journaled_state.
                             "revm_context_interface::journaled_state::entry::JournalEntry::StorageWarmed",
                             "address"
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let __self_0 :=
                           M.alloc (|
                             Ty.apply
@@ -5503,15 +5653,16 @@ Module journaled_state.
                                   ]
                                   []
                               ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
+                        let _ := M.read (| γ1_1 |) in
                         let __self_1 :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "alloy_primitives::bits::address::Address" ],
-                            γ1_1
+                            M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -5584,6 +5735,7 @@ Module journaled_state.
                             "revm_context_interface::journaled_state::entry::JournalEntry::TransientStorageChange",
                             "address"
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let __self_0 :=
                           M.alloc (|
                             Ty.apply
@@ -5598,8 +5750,9 @@ Module journaled_state.
                                   ]
                                   []
                               ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
+                        let _ := M.read (| γ1_1 |) in
                         let __self_1 :=
                           M.alloc (|
                             Ty.apply
@@ -5614,15 +5767,16 @@ Module journaled_state.
                                   ]
                                   []
                               ],
-                            γ1_1
+                            M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                           |) in
+                        let _ := M.read (| γ1_2 |) in
                         let __self_2 :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "alloy_primitives::bits::address::Address" ],
-                            γ1_2
+                            M.borrow (| Pointer.Kind.Ref, γ1_2 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -5709,13 +5863,14 @@ Module journaled_state.
                             "revm_context_interface::journaled_state::entry::JournalEntry::CodeChange",
                             "address"
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let __self_0 :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "alloy_primitives::bits::address::Address" ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.call_closure (|
                           Ty.tuple [],

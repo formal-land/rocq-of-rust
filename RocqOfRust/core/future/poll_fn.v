@@ -22,6 +22,7 @@ Module future.
     
     Global Instance Instance_IsFunction_poll_fn :
       M.IsFunction.C "core::future::poll_fn::poll_fn" poll_fn.
+    Proof.
     Admitted.
     Global Typeclasses Opaque poll_fn.
     

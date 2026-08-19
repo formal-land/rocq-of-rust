@@ -101,6 +101,7 @@ Module Impl_erc721_Mapping_K_V.
   Global Instance AssociatedFunction_contains :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "contains" (contains K V).
+  Proof.
   Admitted.
   Global Typeclasses Opaque contains.
   
@@ -133,6 +134,7 @@ Module Impl_erc721_Mapping_K_V.
   Global Instance AssociatedFunction_get :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "get" (get K V).
+  Proof.
   Admitted.
   Global Typeclasses Opaque get.
   
@@ -166,6 +168,7 @@ Module Impl_erc721_Mapping_K_V.
   Global Instance AssociatedFunction_insert :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "insert" (insert K V).
+  Proof.
   Admitted.
   Global Typeclasses Opaque insert.
   
@@ -198,6 +201,7 @@ Module Impl_erc721_Mapping_K_V.
   Global Instance AssociatedFunction_remove :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "remove" (remove K V).
+  Proof.
   Admitted.
   Global Typeclasses Opaque remove.
   
@@ -230,6 +234,7 @@ Module Impl_erc721_Mapping_K_V.
   Global Instance AssociatedFunction_size :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "size" (size K V).
+  Proof.
   Admitted.
   Global Typeclasses Opaque size.
   
@@ -262,6 +267,7 @@ Module Impl_erc721_Mapping_K_V.
   Global Instance AssociatedFunction_take :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "take" (take K V).
+  Proof.
   Admitted.
   Global Typeclasses Opaque take.
 End Impl_erc721_Mapping_K_V.
@@ -876,6 +882,7 @@ Module Impl_erc721_Env.
     end.
   
   Global Instance AssociatedFunction_caller : M.IsAssociatedFunction.C Self "caller" caller.
+  Proof.
   Admitted.
   Global Typeclasses Opaque caller.
   
@@ -902,6 +909,7 @@ Module Impl_erc721_Env.
   
   Global Instance AssociatedFunction_emit_event :
     M.IsAssociatedFunction.C Self "emit_event" emit_event.
+  Proof.
   Admitted.
   Global Typeclasses Opaque emit_event.
 End Impl_erc721_Env.
@@ -929,6 +937,7 @@ Module Impl_erc721_Erc721.
     end.
   
   Global Instance AssociatedFunction_init_env : M.IsAssociatedFunction.C Self "init_env" init_env.
+  Proof.
   Admitted.
   Global Typeclasses Opaque init_env.
   
@@ -951,6 +960,7 @@ Module Impl_erc721_Erc721.
     end.
   
   Global Instance AssociatedFunction_env : M.IsAssociatedFunction.C Self "env" env.
+  Proof.
   Admitted.
   Global Typeclasses Opaque env.
   
@@ -980,6 +990,7 @@ Module Impl_erc721_Erc721.
     end.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new.
   
@@ -1034,6 +1045,7 @@ Module Impl_erc721_Erc721.
   
   Global Instance AssociatedFunction_balance_of_or_zero :
     M.IsAssociatedFunction.C Self "balance_of_or_zero" balance_of_or_zero.
+  Proof.
   Admitted.
   Global Typeclasses Opaque balance_of_or_zero.
   
@@ -1081,6 +1093,7 @@ Module Impl_erc721_Erc721.
   
   Global Instance AssociatedFunction_clear_approval :
     M.IsAssociatedFunction.C Self "clear_approval" clear_approval.
+  Proof.
   Admitted.
   Global Typeclasses Opaque clear_approval.
   
@@ -1136,6 +1149,7 @@ Module Impl_erc721_Erc721.
   
   Global Instance AssociatedFunction_approved_for_all :
     M.IsAssociatedFunction.C Self "approved_for_all" approved_for_all.
+  Proof.
   Admitted.
   Global Typeclasses Opaque approved_for_all.
   
@@ -1174,6 +1188,7 @@ Module Impl_erc721_Erc721.
     end.
   
   Global Instance AssociatedFunction_owner_of : M.IsAssociatedFunction.C Self "owner_of" owner_of.
+  Proof.
   Admitted.
   Global Typeclasses Opaque owner_of.
   
@@ -1411,6 +1426,7 @@ Module Impl_erc721_Erc721.
   
   Global Instance AssociatedFunction_approved_or_owner :
     M.IsAssociatedFunction.C Self "approved_or_owner" approved_or_owner.
+  Proof.
   Admitted.
   Global Typeclasses Opaque approved_or_owner.
   
@@ -1449,6 +1465,7 @@ Module Impl_erc721_Erc721.
     end.
   
   Global Instance AssociatedFunction_exists_ : M.IsAssociatedFunction.C Self "exists" exists_.
+  Proof.
   Admitted.
   Global Typeclasses Opaque exists_.
   
@@ -1476,6 +1493,7 @@ Module Impl_erc721_Erc721.
   
   Global Instance AssociatedFunction_balance_of :
     M.IsAssociatedFunction.C Self "balance_of" balance_of.
+  Proof.
   Admitted.
   Global Typeclasses Opaque balance_of.
   
@@ -1515,6 +1533,7 @@ Module Impl_erc721_Erc721.
   
   Global Instance AssociatedFunction_get_approved :
     M.IsAssociatedFunction.C Self "get_approved" get_approved.
+  Proof.
   Admitted.
   Global Typeclasses Opaque get_approved.
   
@@ -1544,6 +1563,7 @@ Module Impl_erc721_Erc721.
   
   Global Instance AssociatedFunction_is_approved_for_all :
     M.IsAssociatedFunction.C Self "is_approved_for_all" is_approved_for_all.
+  Proof.
   Admitted.
   Global Typeclasses Opaque is_approved_for_all.
   
@@ -1767,6 +1787,7 @@ Module Impl_erc721_Erc721.
   
   Global Instance AssociatedFunction_approve_for_all :
     M.IsAssociatedFunction.C Self "approve_for_all" approve_for_all.
+  Proof.
   Admitted.
   Global Typeclasses Opaque approve_for_all.
   
@@ -1924,6 +1945,7 @@ Module Impl_erc721_Erc721.
   
   Global Instance AssociatedFunction_set_approval_for_all :
     M.IsAssociatedFunction.C Self "set_approval_for_all" set_approval_for_all.
+  Proof.
   Admitted.
   Global Typeclasses Opaque set_approval_for_all.
   
@@ -2305,6 +2327,7 @@ Module Impl_erc721_Erc721.
   
   Global Instance AssociatedFunction_approve_for :
     M.IsAssociatedFunction.C Self "approve_for" approve_for.
+  Proof.
   Admitted.
   Global Typeclasses Opaque approve_for.
   
@@ -2464,6 +2487,7 @@ Module Impl_erc721_Erc721.
     end.
   
   Global Instance AssociatedFunction_approve : M.IsAssociatedFunction.C Self "approve" approve.
+  Proof.
   Admitted.
   Global Typeclasses Opaque approve.
   
@@ -2519,6 +2543,7 @@ Module Impl_erc721_Erc721.
                         "erc721::Erc721",
                         "owned_tokens_count"
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let token_owner :=
                       M.alloc (|
                         Ty.apply
@@ -2530,8 +2555,9 @@ Module Impl_erc721_Erc721.
                               []
                               [ Ty.path "u32"; Ty.path "erc721::AccountId" ]
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                       |) in
+                    let _ := M.read (| γ1_1 |) in
                     let owned_tokens_count :=
                       M.alloc (|
                         Ty.apply
@@ -2543,7 +2569,7 @@ Module Impl_erc721_Erc721.
                               []
                               [ Ty.path "erc721::AccountId"; Ty.path "u32" ]
                           ],
-                        γ1_1
+                        M.borrow (| Pointer.Kind.MutRef, γ1_1 |)
                       |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
@@ -2859,6 +2885,7 @@ Module Impl_erc721_Erc721.
   
   Global Instance AssociatedFunction_remove_token_from :
     M.IsAssociatedFunction.C Self "remove_token_from" remove_token_from.
+  Proof.
   Admitted.
   Global Typeclasses Opaque remove_token_from.
   
@@ -2919,6 +2946,7 @@ Module Impl_erc721_Erc721.
                         "erc721::Erc721",
                         "owned_tokens_count"
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let token_owner :=
                       M.alloc (|
                         Ty.apply
@@ -2930,8 +2958,9 @@ Module Impl_erc721_Erc721.
                               []
                               [ Ty.path "u32"; Ty.path "erc721::AccountId" ]
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                       |) in
+                    let _ := M.read (| γ1_1 |) in
                     let owned_tokens_count :=
                       M.alloc (|
                         Ty.apply
@@ -2943,7 +2972,7 @@ Module Impl_erc721_Erc721.
                               []
                               [ Ty.path "erc721::AccountId"; Ty.path "u32" ]
                           ],
-                        γ1_1
+                        M.borrow (| Pointer.Kind.MutRef, γ1_1 |)
                       |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
@@ -3211,6 +3240,7 @@ Module Impl_erc721_Erc721.
   
   Global Instance AssociatedFunction_add_token_to :
     M.IsAssociatedFunction.C Self "add_token_to" add_token_to.
+  Proof.
   Admitted.
   Global Typeclasses Opaque add_token_to.
   
@@ -3682,6 +3712,7 @@ Module Impl_erc721_Erc721.
   
   Global Instance AssociatedFunction_transfer_token_from :
     M.IsAssociatedFunction.C Self "transfer_token_from" transfer_token_from.
+  Proof.
   Admitted.
   Global Typeclasses Opaque transfer_token_from.
   
@@ -3864,6 +3895,7 @@ Module Impl_erc721_Erc721.
     end.
   
   Global Instance AssociatedFunction_transfer : M.IsAssociatedFunction.C Self "transfer" transfer.
+  Proof.
   Admitted.
   Global Typeclasses Opaque transfer.
   
@@ -4034,6 +4066,7 @@ Module Impl_erc721_Erc721.
   
   Global Instance AssociatedFunction_transfer_from :
     M.IsAssociatedFunction.C Self "transfer_from" transfer_from.
+  Proof.
   Admitted.
   Global Typeclasses Opaque transfer_from.
   
@@ -4283,6 +4316,7 @@ Module Impl_erc721_Erc721.
     end.
   
   Global Instance AssociatedFunction_mint : M.IsAssociatedFunction.C Self "mint" mint.
+  Proof.
   Admitted.
   Global Typeclasses Opaque mint.
   
@@ -4372,6 +4406,7 @@ Module Impl_erc721_Erc721.
                             "erc721::Erc721",
                             "owned_tokens_count"
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let token_owner :=
                           M.alloc (|
                             Ty.apply
@@ -4383,8 +4418,9 @@ Module Impl_erc721_Erc721.
                                   []
                                   [ Ty.path "u32"; Ty.path "erc721::AccountId" ]
                               ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                           |) in
+                        let _ := M.read (| γ1_1 |) in
                         let owned_tokens_count :=
                           M.alloc (|
                             Ty.apply
@@ -4396,7 +4432,7 @@ Module Impl_erc721_Erc721.
                                   []
                                   [ Ty.path "erc721::AccountId"; Ty.path "u32" ]
                               ],
-                            γ1_1
+                            M.borrow (| Pointer.Kind.MutRef, γ1_1 |)
                           |) in
                         M.read (|
                           let~ owner : Ty.path "erc721::AccountId" :=
@@ -4943,6 +4979,7 @@ Module Impl_erc721_Erc721.
     end.
   
   Global Instance AssociatedFunction_burn : M.IsAssociatedFunction.C Self "burn" burn.
+  Proof.
   Admitted.
   Global Typeclasses Opaque burn.
 End Impl_erc721_Erc721.

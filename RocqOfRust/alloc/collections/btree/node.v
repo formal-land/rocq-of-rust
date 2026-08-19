@@ -9,6 +9,7 @@ Module collections.
       
       Global Instance Instance_IsConstant_value_B :
         M.IsFunction.C "alloc::collections::btree::node::B" value_B.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_B.
       
@@ -37,6 +38,7 @@ Module collections.
       
       Global Instance Instance_IsConstant_value_CAPACITY :
         M.IsFunction.C "alloc::collections::btree::node::CAPACITY" value_CAPACITY.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_CAPACITY.
       
@@ -64,6 +66,7 @@ Module collections.
         M.IsFunction.C
           "alloc::collections::btree::node::MIN_LEN_AFTER_SPLIT"
           value_MIN_LEN_AFTER_SPLIT.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MIN_LEN_AFTER_SPLIT.
       
@@ -85,6 +88,7 @@ Module collections.
       
       Global Instance Instance_IsConstant_value_KV_IDX_CENTER :
         M.IsFunction.C "alloc::collections::btree::node::KV_IDX_CENTER" value_KV_IDX_CENTER.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_KV_IDX_CENTER.
       
@@ -112,6 +116,7 @@ Module collections.
         M.IsFunction.C
           "alloc::collections::btree::node::EDGE_IDX_LEFT_OF_CENTER"
           value_EDGE_IDX_LEFT_OF_CENTER.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_EDGE_IDX_LEFT_OF_CENTER.
       
@@ -126,6 +131,7 @@ Module collections.
         M.IsFunction.C
           "alloc::collections::btree::node::EDGE_IDX_RIGHT_OF_CENTER"
           value_EDGE_IDX_RIGHT_OF_CENTER.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_EDGE_IDX_RIGHT_OF_CENTER.
       
@@ -284,6 +290,7 @@ Module collections.
         Global Instance AssociatedFunction_init :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "init" (init K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque init.
         
@@ -436,6 +443,7 @@ Module collections.
         Global Instance AssociatedFunction_new :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "new" (new K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new.
       End Impl_alloc_collections_btree_node_LeafNode_K_V.
@@ -645,6 +653,7 @@ Module collections.
         Global Instance AssociatedFunction_new :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "new" (new K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new.
       End Impl_alloc_collections_btree_node_InternalNode_K_V.
@@ -936,6 +945,7 @@ Module collections.
         Global Instance AssociatedFunction_new_leaf :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "new_leaf" (new_leaf K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new_leaf.
         
@@ -1069,6 +1079,7 @@ Module collections.
         Global Instance AssociatedFunction_from_new_leaf :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "from_new_leaf" (from_new_leaf K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque from_new_leaf.
       End Impl_alloc_collections_btree_node_NodeRef_alloc_collections_btree_node_marker_Owned_K_V_alloc_collections_btree_node_marker_Leaf.
@@ -1321,6 +1332,7 @@ Module collections.
         Global Instance AssociatedFunction_new_internal :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "new_internal" (new_internal K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new_internal.
         
@@ -1594,6 +1606,7 @@ Module collections.
         Global Instance AssociatedFunction_from_new_internal :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "from_new_internal" (from_new_internal K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque from_new_internal.
       End Impl_alloc_collections_btree_node_NodeRef_alloc_collections_btree_node_marker_Owned_K_V_alloc_collections_btree_node_marker_Internal.
@@ -1757,6 +1770,7 @@ Module collections.
             (Self BorrowType K V)
             "from_internal"
             (from_internal BorrowType K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque from_internal.
         (*
@@ -1833,6 +1847,7 @@ Module collections.
             (Self BorrowType K V)
             "as_internal_ptr"
             (as_internal_ptr BorrowType K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque as_internal_ptr.
         (*
@@ -1904,6 +1919,7 @@ Module collections.
         Global Instance AssociatedFunction_forget_type :
           forall (BorrowType K V : Ty.t),
           M.IsAssociatedFunction.C (Self BorrowType K V) "forget_type" (forget_type BorrowType K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque forget_type.
       End Impl_alloc_collections_btree_node_NodeRef_BorrowType_K_V_alloc_collections_btree_node_marker_Internal.
@@ -2026,6 +2042,7 @@ Module collections.
         Global Instance AssociatedFunction_as_internal_mut :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "as_internal_mut" (as_internal_mut K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque as_internal_mut.
         (*
@@ -2222,6 +2239,7 @@ Module collections.
         Global Instance AssociatedFunction_edge_area_mut :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "edge_area_mut" (edge_area_mut K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque edge_area_mut.
         (*
@@ -2582,6 +2600,7 @@ Module collections.
             (Self K V)
             "correct_childrens_parent_links"
             (correct_childrens_parent_links K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque correct_childrens_parent_links.
         
@@ -2688,6 +2707,7 @@ Module collections.
             (Self K V)
             "correct_all_childrens_parent_links"
             (correct_all_childrens_parent_links K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque correct_all_childrens_parent_links.
         (*
@@ -3205,6 +3225,7 @@ Module collections.
         Global Instance AssociatedFunction_push :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "push" (push K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque push.
       End Impl_alloc_collections_btree_node_NodeRef_alloc_collections_btree_node_marker_Mut_K_V_alloc_collections_btree_node_marker_Internal.
@@ -3295,6 +3316,7 @@ Module collections.
         Global Instance AssociatedFunction_len :
           forall (BorrowType K V Type_ : Ty.t),
           M.IsAssociatedFunction.C (Self BorrowType K V Type_) "len" (len BorrowType K V Type_).
+        Proof.
         Admitted.
         Global Typeclasses Opaque len.
         
@@ -3342,6 +3364,7 @@ Module collections.
             (Self BorrowType K V Type_)
             "height"
             (height BorrowType K V Type_).
+        Proof.
         Admitted.
         Global Typeclasses Opaque height.
         
@@ -3411,6 +3434,7 @@ Module collections.
             (Self BorrowType K V Type_)
             "reborrow"
             (reborrow BorrowType K V Type_).
+        Proof.
         Admitted.
         Global Typeclasses Opaque reborrow.
         
@@ -3478,6 +3502,7 @@ Module collections.
             (Self BorrowType K V Type_)
             "as_leaf_ptr"
             (as_leaf_ptr BorrowType K V Type_).
+        Proof.
         Admitted.
         Global Typeclasses Opaque as_leaf_ptr.
         (*
@@ -4003,6 +4028,7 @@ Module collections.
             (Self BorrowType K V Type_)
             "ascend"
             (ascend BorrowType K V Type_).
+        Proof.
         Admitted.
         Global Typeclasses Opaque ascend.
         
@@ -4066,6 +4092,7 @@ Module collections.
             (Self BorrowType K V Type_)
             "first_edge"
             (first_edge BorrowType K V Type_).
+        Proof.
         Admitted.
         Global Typeclasses Opaque first_edge.
         
@@ -4158,6 +4185,7 @@ Module collections.
             (Self BorrowType K V Type_)
             "last_edge"
             (last_edge BorrowType K V Type_).
+        Proof.
         Admitted.
         Global Typeclasses Opaque last_edge.
         
@@ -4285,6 +4313,7 @@ Module collections.
             (Self BorrowType K V Type_)
             "first_kv"
             (first_kv BorrowType K V Type_).
+        Proof.
         Admitted.
         Global Typeclasses Opaque first_kv.
         
@@ -4419,6 +4448,7 @@ Module collections.
             (Self BorrowType K V Type_)
             "last_kv"
             (last_kv BorrowType K V Type_).
+        Proof.
         Admitted.
         Global Typeclasses Opaque last_kv.
         (*
@@ -4493,6 +4523,7 @@ Module collections.
                           "alloc::collections::btree::node::NodeRef",
                           "_marker"
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let node :=
                         M.alloc (|
                           Ty.apply
@@ -4509,10 +4540,15 @@ Module collections.
                                     [ K; V ]
                                 ]
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
+                      let _ := M.read (| γ1_1 |) in
                       let height :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_1 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                        |) in
+                      let _ := M.read (| γ1_2 |) in
                       let _marker :=
                         M.alloc (|
                           Ty.apply
@@ -4524,7 +4560,7 @@ Module collections.
                                 []
                                 [ Ty.tuple [ BorrowType; Type_ ] ]
                             ],
-                          γ1_2
+                          M.borrow (| Pointer.Kind.Ref, γ1_2 |)
                         |) in
                       M.match_operator (|
                         Ty.path "bool",
@@ -4773,6 +4809,7 @@ Module collections.
         Global Instance AssociatedFunction_eq :
           forall (BorrowType K V Type_ : Ty.t),
           M.IsAssociatedFunction.C (Self BorrowType K V Type_) "eq" (eq BorrowType K V Type_).
+        Proof.
         Admitted.
         Global Typeclasses Opaque eq.
       End Impl_alloc_collections_btree_node_NodeRef_BorrowType_K_V_Type_.
@@ -4857,6 +4894,7 @@ Module collections.
         Global Instance AssociatedFunction_into_leaf :
           forall (K V Type_ : Ty.t),
           M.IsAssociatedFunction.C (Self K V Type_) "into_leaf" (into_leaf K V Type_).
+        Proof.
         Admitted.
         Global Typeclasses Opaque into_leaf.
         
@@ -5068,6 +5106,7 @@ Module collections.
         Global Instance AssociatedFunction_keys :
           forall (K V Type_ : Ty.t),
           M.IsAssociatedFunction.C (Self K V Type_) "keys" (keys K V Type_).
+        Proof.
         Admitted.
         Global Typeclasses Opaque keys.
       End Impl_alloc_collections_btree_node_NodeRef_alloc_collections_btree_node_marker_Immut_K_V_Type_.
@@ -5376,6 +5415,7 @@ Module collections.
         Global Instance AssociatedFunction_deallocate_and_ascend :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "deallocate_and_ascend" (deallocate_and_ascend K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque deallocate_and_ascend.
       End Impl_alloc_collections_btree_node_NodeRef_alloc_collections_btree_node_marker_Dying_K_V_alloc_collections_btree_node_marker_LeafOrInternal.
@@ -5449,6 +5489,7 @@ Module collections.
         Global Instance AssociatedFunction_reborrow_mut :
           forall (K V Type_ : Ty.t),
           M.IsAssociatedFunction.C (Self K V Type_) "reborrow_mut" (reborrow_mut K V Type_).
+        Proof.
         Admitted.
         Global Typeclasses Opaque reborrow_mut.
         
@@ -5544,6 +5585,7 @@ Module collections.
         Global Instance AssociatedFunction_as_leaf_mut :
           forall (K V Type_ : Ty.t),
           M.IsAssociatedFunction.C (Self K V Type_) "as_leaf_mut" (as_leaf_mut K V Type_).
+        Proof.
         Admitted.
         Global Typeclasses Opaque as_leaf_mut.
         
@@ -5639,6 +5681,7 @@ Module collections.
         Global Instance AssociatedFunction_into_leaf_mut :
           forall (K V Type_ : Ty.t),
           M.IsAssociatedFunction.C (Self K V Type_) "into_leaf_mut" (into_leaf_mut K V Type_).
+        Proof.
         Admitted.
         Global Typeclasses Opaque into_leaf_mut.
         
@@ -5707,6 +5750,7 @@ Module collections.
         Global Instance AssociatedFunction_dormant :
           forall (K V Type_ : Ty.t),
           M.IsAssociatedFunction.C (Self K V Type_) "dormant" (dormant K V Type_).
+        Proof.
         Admitted.
         Global Typeclasses Opaque dormant.
         (*
@@ -5861,6 +5905,7 @@ Module collections.
         Global Instance AssociatedFunction_key_area_mut :
           forall (K V Type_ : Ty.t),
           M.IsAssociatedFunction.C (Self K V Type_) "key_area_mut" (key_area_mut K V Type_).
+        Proof.
         Admitted.
         Global Typeclasses Opaque key_area_mut.
         
@@ -6016,6 +6061,7 @@ Module collections.
         Global Instance AssociatedFunction_val_area_mut :
           forall (K V Type_ : Ty.t),
           M.IsAssociatedFunction.C (Self K V Type_) "val_area_mut" (val_area_mut K V Type_).
+        Proof.
         Admitted.
         Global Typeclasses Opaque val_area_mut.
         (*
@@ -6098,6 +6144,7 @@ Module collections.
         Global Instance AssociatedFunction_len_mut :
           forall (K V Type_ : Ty.t),
           M.IsAssociatedFunction.C (Self K V Type_) "len_mut" (len_mut K V Type_).
+        Proof.
         Admitted.
         Global Typeclasses Opaque len_mut.
       End Impl_alloc_collections_btree_node_NodeRef_alloc_collections_btree_node_marker_Mut_K_V_Type_.
@@ -6166,6 +6213,7 @@ Module collections.
         Global Instance AssociatedFunction_awaken :
           forall (K V Type_ : Ty.t),
           M.IsAssociatedFunction.C (Self K V Type_) "awaken" (awaken K V Type_).
+        Proof.
         Admitted.
         Global Typeclasses Opaque awaken.
       End Impl_alloc_collections_btree_node_NodeRef_alloc_collections_btree_node_marker_DormantMut_K_V_Type_.
@@ -6270,6 +6318,7 @@ Module collections.
         Global Instance AssociatedFunction_as_leaf_dying :
           forall (K V Type_ : Ty.t),
           M.IsAssociatedFunction.C (Self K V Type_) "as_leaf_dying" (as_leaf_dying K V Type_).
+        Proof.
         Admitted.
         Global Typeclasses Opaque as_leaf_dying.
       End Impl_alloc_collections_btree_node_NodeRef_alloc_collections_btree_node_marker_Dying_K_V_Type_.
@@ -6596,6 +6645,7 @@ Module collections.
             (Self K V Type_)
             "into_key_val_mut_at"
             (into_key_val_mut_at K V Type_).
+        Proof.
         Admitted.
         Global Typeclasses Opaque into_key_val_mut_at.
       End Impl_alloc_collections_btree_node_NodeRef_alloc_collections_btree_node_marker_ValMut_K_V_Type_.
@@ -6743,6 +6793,7 @@ Module collections.
         Global Instance AssociatedFunction_set_parent_link :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "set_parent_link" (set_parent_link K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque set_parent_link.
         (*
@@ -6896,6 +6947,7 @@ Module collections.
         Global Instance AssociatedFunction_cast_to_leaf_unchecked :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "cast_to_leaf_unchecked" (cast_to_leaf_unchecked K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque cast_to_leaf_unchecked.
         
@@ -7051,6 +7103,7 @@ Module collections.
             (Self K V)
             "cast_to_internal_unchecked"
             (cast_to_internal_unchecked K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque cast_to_internal_unchecked.
         (*
@@ -8072,6 +8125,7 @@ Module collections.
         Global Instance AssociatedFunction_choose_parent_kv :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "choose_parent_kv" (choose_parent_kv K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque choose_parent_kv.
       End Impl_alloc_collections_btree_node_NodeRef_alloc_collections_btree_node_marker_Mut_K_V_alloc_collections_btree_node_marker_LeafOrInternal.
@@ -8219,6 +8273,7 @@ Module collections.
         Global Instance AssociatedFunction_clear_parent_link :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "clear_parent_link" (clear_parent_link K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque clear_parent_link.
         (*
@@ -8291,6 +8346,7 @@ Module collections.
         Global Instance AssociatedFunction_new :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "new" (new K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new.
         
@@ -8549,6 +8605,7 @@ Module collections.
         Global Instance AssociatedFunction_push_internal_level :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "push_internal_level" (push_internal_level K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque push_internal_level.
         
@@ -8894,6 +8951,7 @@ Module collections.
         Global Instance AssociatedFunction_pop_internal_level :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "pop_internal_level" (pop_internal_level K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque pop_internal_level.
       End Impl_alloc_collections_btree_node_NodeRef_alloc_collections_btree_node_marker_Owned_K_V_alloc_collections_btree_node_marker_LeafOrInternal.
@@ -8968,6 +9026,7 @@ Module collections.
         Global Instance AssociatedFunction_borrow_mut :
           forall (K V Type_ : Ty.t),
           M.IsAssociatedFunction.C (Self K V Type_) "borrow_mut" (borrow_mut K V Type_).
+        Proof.
         Admitted.
         Global Typeclasses Opaque borrow_mut.
         
@@ -9036,6 +9095,7 @@ Module collections.
         Global Instance AssociatedFunction_borrow_valmut :
           forall (K V Type_ : Ty.t),
           M.IsAssociatedFunction.C (Self K V Type_) "borrow_valmut" (borrow_valmut K V Type_).
+        Proof.
         Admitted.
         Global Typeclasses Opaque borrow_valmut.
         
@@ -9097,6 +9157,7 @@ Module collections.
         Global Instance AssociatedFunction_into_dying :
           forall (K V Type_ : Ty.t),
           M.IsAssociatedFunction.C (Self K V Type_) "into_dying" (into_dying K V Type_).
+        Proof.
         Admitted.
         Global Typeclasses Opaque into_dying.
       End Impl_alloc_collections_btree_node_NodeRef_alloc_collections_btree_node_marker_Owned_K_V_Type_.
@@ -9444,6 +9505,7 @@ Module collections.
         Global Instance AssociatedFunction_push_with_handle :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "push_with_handle" (push_with_handle K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque push_with_handle.
         
@@ -9550,6 +9612,7 @@ Module collections.
         Global Instance AssociatedFunction_push :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "push" (push K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque push.
       End Impl_alloc_collections_btree_node_NodeRef_alloc_collections_btree_node_marker_Mut_K_V_alloc_collections_btree_node_marker_Leaf.
@@ -9630,6 +9693,7 @@ Module collections.
         Global Instance AssociatedFunction_forget_type :
           forall (BorrowType K V : Ty.t),
           M.IsAssociatedFunction.C (Self BorrowType K V) "forget_type" (forget_type BorrowType K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque forget_type.
       End Impl_alloc_collections_btree_node_NodeRef_BorrowType_K_V_alloc_collections_btree_node_marker_Leaf.
@@ -9867,6 +9931,7 @@ Module collections.
         Global Instance AssociatedFunction_force :
           forall (BorrowType K V : Ty.t),
           M.IsAssociatedFunction.C (Self BorrowType K V) "force" (force BorrowType K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque force.
       End Impl_alloc_collections_btree_node_NodeRef_BorrowType_K_V_alloc_collections_btree_node_marker_LeafOrInternal.
@@ -9982,6 +10047,7 @@ Module collections.
         Global Instance AssociatedFunction_into_node :
           forall (Node Type_ : Ty.t),
           M.IsAssociatedFunction.C (Self Node Type_) "into_node" (into_node Node Type_).
+        Proof.
         Admitted.
         Global Typeclasses Opaque into_node.
         
@@ -10026,6 +10092,7 @@ Module collections.
         Global Instance AssociatedFunction_idx :
           forall (Node Type_ : Ty.t),
           M.IsAssociatedFunction.C (Self Node Type_) "idx" (idx Node Type_).
+        Proof.
         Admitted.
         Global Typeclasses Opaque idx.
       End Impl_alloc_collections_btree_node_Handle_Node_Type_.
@@ -10181,6 +10248,7 @@ Module collections.
             (Self BorrowType K V NodeType)
             "new_kv"
             (new_kv BorrowType K V NodeType).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new_kv.
         
@@ -10265,6 +10333,7 @@ Module collections.
             (Self BorrowType K V NodeType)
             "left_edge"
             (left_edge BorrowType K V NodeType).
+        Proof.
         Admitted.
         Global Typeclasses Opaque left_edge.
         
@@ -10356,6 +10425,7 @@ Module collections.
             (Self BorrowType K V NodeType)
             "right_edge"
             (right_edge BorrowType K V NodeType).
+        Proof.
         Admitted.
         Global Typeclasses Opaque right_edge.
       End Impl_alloc_collections_btree_node_Handle_alloc_collections_btree_node_NodeRef_BorrowType_K_V_NodeType_alloc_collections_btree_node_marker_KV.
@@ -10452,6 +10522,7 @@ Module collections.
                           "alloc::collections::btree::node::Handle",
                           "_marker"
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let node :=
                         M.alloc (|
                           Ty.apply
@@ -10463,17 +10534,22 @@ Module collections.
                                 []
                                 [ BorrowType; K; V; NodeType ]
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
+                      let _ := M.read (| γ1_1 |) in
                       let idx :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_1 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                        |) in
+                      let _ := M.read (| γ1_2 |) in
                       let _marker :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.apply (Ty.path "core::marker::PhantomData") [] [ HandleType ] ],
-                          γ1_2
+                          M.borrow (| Pointer.Kind.Ref, γ1_2 |)
                         |) in
                       LogicalOp.and (|
                         M.call_closure (|
@@ -10654,6 +10730,7 @@ Module collections.
             (Self BorrowType K V NodeType HandleType)
             "reborrow"
             (reborrow BorrowType K V NodeType HandleType).
+        Proof.
         Admitted.
         Global Typeclasses Opaque reborrow.
       End Impl_alloc_collections_btree_node_Handle_alloc_collections_btree_node_NodeRef_BorrowType_K_V_NodeType_HandleType.
@@ -10766,6 +10843,7 @@ Module collections.
             (Self K V NodeType HandleType)
             "reborrow_mut"
             (reborrow_mut K V NodeType HandleType).
+        Proof.
         Admitted.
         Global Typeclasses Opaque reborrow_mut.
         
@@ -10869,6 +10947,7 @@ Module collections.
             (Self K V NodeType HandleType)
             "dormant"
             (dormant K V NodeType HandleType).
+        Proof.
         Admitted.
         Global Typeclasses Opaque dormant.
       End Impl_alloc_collections_btree_node_Handle_alloc_collections_btree_node_NodeRef_alloc_collections_btree_node_marker_Mut_K_V_NodeType_HandleType.
@@ -10982,6 +11061,7 @@ Module collections.
             (Self K V NodeType HandleType)
             "awaken"
             (awaken K V NodeType HandleType).
+        Proof.
         Admitted.
         Global Typeclasses Opaque awaken.
       End Impl_alloc_collections_btree_node_Handle_alloc_collections_btree_node_NodeRef_alloc_collections_btree_node_marker_DormantMut_K_V_NodeType_HandleType.
@@ -11137,6 +11217,7 @@ Module collections.
             (Self BorrowType K V NodeType)
             "new_edge"
             (new_edge BorrowType K V NodeType).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new_edge.
         
@@ -11340,6 +11421,7 @@ Module collections.
             (Self BorrowType K V NodeType)
             "left_kv"
             (left_kv BorrowType K V NodeType).
+        Proof.
         Admitted.
         Global Typeclasses Opaque left_kv.
         
@@ -11557,6 +11639,7 @@ Module collections.
             (Self BorrowType K V NodeType)
             "right_kv"
             (right_kv BorrowType K V NodeType).
+        Proof.
         Admitted.
         Global Typeclasses Opaque right_kv.
       End Impl_alloc_collections_btree_node_Handle_alloc_collections_btree_node_NodeRef_BorrowType_K_V_NodeType_alloc_collections_btree_node_marker_Edge.
@@ -11826,6 +11909,7 @@ Module collections.
       
       Global Instance Instance_IsFunction_splitpoint :
         M.IsFunction.C "alloc::collections::btree::node::splitpoint" splitpoint.
+      Proof.
       Admitted.
       Global Typeclasses Opaque splitpoint.
       
@@ -12294,6 +12378,7 @@ Module collections.
         Global Instance AssociatedFunction_insert_fit :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "insert_fit" (insert_fit K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque insert_fit.
         (*
@@ -13186,6 +13271,7 @@ Module collections.
         Global Instance AssociatedFunction_insert :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "insert" (insert K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque insert.
         (*
@@ -14139,6 +14225,7 @@ Module collections.
         Global Instance AssociatedFunction_insert_recursing :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "insert_recursing" (insert_recursing K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque insert_recursing.
       End Impl_alloc_collections_btree_node_Handle_alloc_collections_btree_node_NodeRef_alloc_collections_btree_node_marker_Mut_K_V_alloc_collections_btree_node_marker_Leaf_alloc_collections_btree_node_marker_Edge.
@@ -14356,6 +14443,7 @@ Module collections.
         Global Instance AssociatedFunction_correct_parent_link :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "correct_parent_link" (correct_parent_link K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque correct_parent_link.
         (*
@@ -15023,6 +15111,7 @@ Module collections.
         Global Instance AssociatedFunction_insert_fit :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "insert_fit" (insert_fit K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque insert_fit.
         
@@ -15787,6 +15876,7 @@ Module collections.
         Global Instance AssociatedFunction_insert :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "insert" (insert K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque insert.
       End Impl_alloc_collections_btree_node_Handle_alloc_collections_btree_node_NodeRef_alloc_collections_btree_node_marker_Mut_K_V_alloc_collections_btree_node_marker_Internal_alloc_collections_btree_node_marker_Edge.
@@ -16154,6 +16244,7 @@ Module collections.
         Global Instance AssociatedFunction_descend :
           forall (BorrowType K V : Ty.t),
           M.IsAssociatedFunction.C (Self BorrowType K V) "descend" (descend BorrowType K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque descend.
         (*
@@ -16281,6 +16372,7 @@ Module collections.
             (Self BorrowType K V)
             "forget_node_type"
             (forget_node_type BorrowType K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque forget_node_type.
       End Impl_alloc_collections_btree_node_Handle_alloc_collections_btree_node_NodeRef_BorrowType_K_V_alloc_collections_btree_node_marker_Internal_alloc_collections_btree_node_marker_Edge.
@@ -16672,6 +16764,7 @@ Module collections.
         Global Instance AssociatedFunction_into_kv :
           forall (K V NodeType : Ty.t),
           M.IsAssociatedFunction.C (Self K V NodeType) "into_kv" (into_kv K V NodeType).
+        Proof.
         Admitted.
         Global Typeclasses Opaque into_kv.
       End Impl_alloc_collections_btree_node_Handle_alloc_collections_btree_node_NodeRef_alloc_collections_btree_node_marker_Immut_K_V_NodeType_alloc_collections_btree_node_marker_KV.
@@ -16809,6 +16902,7 @@ Module collections.
         Global Instance AssociatedFunction_key_mut :
           forall (K V NodeType : Ty.t),
           M.IsAssociatedFunction.C (Self K V NodeType) "key_mut" (key_mut K V NodeType).
+        Proof.
         Admitted.
         Global Typeclasses Opaque key_mut.
         
@@ -17115,6 +17209,7 @@ Module collections.
         Global Instance AssociatedFunction_into_val_mut :
           forall (K V NodeType : Ty.t),
           M.IsAssociatedFunction.C (Self K V NodeType) "into_val_mut" (into_val_mut K V NodeType).
+        Proof.
         Admitted.
         Global Typeclasses Opaque into_val_mut.
         
@@ -17517,6 +17612,7 @@ Module collections.
         Global Instance AssociatedFunction_into_kv_mut :
           forall (K V NodeType : Ty.t),
           M.IsAssociatedFunction.C (Self K V NodeType) "into_kv_mut" (into_kv_mut K V NodeType).
+        Proof.
         Admitted.
         Global Typeclasses Opaque into_kv_mut.
         (*
@@ -17903,6 +17999,7 @@ Module collections.
         Global Instance AssociatedFunction_kv_mut :
           forall (K V NodeType : Ty.t),
           M.IsAssociatedFunction.C (Self K V NodeType) "kv_mut" (kv_mut K V NodeType).
+        Proof.
         Admitted.
         Global Typeclasses Opaque kv_mut.
         
@@ -18005,6 +18102,7 @@ Module collections.
         Global Instance AssociatedFunction_replace_kv :
           forall (K V NodeType : Ty.t),
           M.IsAssociatedFunction.C (Self K V NodeType) "replace_kv" (replace_kv K V NodeType).
+        Proof.
         Admitted.
         Global Typeclasses Opaque replace_kv.
         (*
@@ -18686,6 +18784,7 @@ Module collections.
             (Self K V NodeType)
             "split_leaf_data"
             (split_leaf_data K V NodeType).
+        Proof.
         Admitted.
         Global Typeclasses Opaque split_leaf_data.
       End Impl_alloc_collections_btree_node_Handle_alloc_collections_btree_node_NodeRef_alloc_collections_btree_node_marker_Mut_K_V_NodeType_alloc_collections_btree_node_marker_KV.
@@ -18770,6 +18869,7 @@ Module collections.
             (Self K V NodeType)
             "into_kv_valmut"
             (into_kv_valmut K V NodeType).
+        Proof.
         Admitted.
         Global Typeclasses Opaque into_kv_valmut.
       End Impl_alloc_collections_btree_node_Handle_alloc_collections_btree_node_NodeRef_alloc_collections_btree_node_marker_ValMut_K_V_NodeType_alloc_collections_btree_node_marker_KV.
@@ -19158,6 +19258,7 @@ Module collections.
         Global Instance AssociatedFunction_into_key_val :
           forall (K V NodeType : Ty.t),
           M.IsAssociatedFunction.C (Self K V NodeType) "into_key_val" (into_key_val K V NodeType).
+        Proof.
         Admitted.
         Global Typeclasses Opaque into_key_val.
         
@@ -19511,6 +19612,7 @@ Module collections.
         Global Instance AssociatedFunction_drop_key_val :
           forall (K V NodeType : Ty.t),
           M.IsAssociatedFunction.C (Self K V NodeType) "drop_key_val" (drop_key_val K V NodeType).
+        Proof.
         Admitted.
         Global Typeclasses Opaque drop_key_val.
       End Impl_alloc_collections_btree_node_Handle_alloc_collections_btree_node_NodeRef_alloc_collections_btree_node_marker_Dying_K_V_NodeType_alloc_collections_btree_node_marker_KV.
@@ -19695,6 +19797,7 @@ Module collections.
         Global Instance AssociatedFunction_split :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "split" (split K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque split.
         
@@ -20029,6 +20132,7 @@ Module collections.
         Global Instance AssociatedFunction_remove :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "remove" (remove K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque remove.
       End Impl_alloc_collections_btree_node_Handle_alloc_collections_btree_node_NodeRef_alloc_collections_btree_node_marker_Mut_K_V_alloc_collections_btree_node_marker_Leaf_alloc_collections_btree_node_marker_KV.
@@ -20533,6 +20637,7 @@ Module collections.
         Global Instance AssociatedFunction_split :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "split" (split K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque split.
         (*
@@ -20860,6 +20965,7 @@ Module collections.
         Global Instance AssociatedFunction_consider_for_balancing :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "consider_for_balancing" (consider_for_balancing K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque consider_for_balancing.
       End Impl_alloc_collections_btree_node_Handle_alloc_collections_btree_node_NodeRef_alloc_collections_btree_node_marker_Mut_K_V_alloc_collections_btree_node_marker_Internal_alloc_collections_btree_node_marker_KV.
@@ -20977,6 +21083,7 @@ Module collections.
         Global Instance AssociatedFunction_left_child_len :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "left_child_len" (left_child_len K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque left_child_len.
         
@@ -21041,6 +21148,7 @@ Module collections.
         Global Instance AssociatedFunction_right_child_len :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "right_child_len" (right_child_len K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque right_child_len.
         
@@ -21080,6 +21188,7 @@ Module collections.
         Global Instance AssociatedFunction_into_left_child :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "into_left_child" (into_left_child K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque into_left_child.
         
@@ -21119,6 +21228,7 @@ Module collections.
         Global Instance AssociatedFunction_into_right_child :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "into_right_child" (into_right_child K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque into_right_child.
         
@@ -21232,6 +21342,7 @@ Module collections.
         Global Instance AssociatedFunction_can_merge :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "can_merge" (can_merge K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque can_merge.
         (*
@@ -22941,6 +23052,7 @@ Module collections.
         Global Instance AssociatedFunction_do_merge :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "do_merge" (do_merge K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque do_merge.
         
@@ -23137,6 +23249,7 @@ Module collections.
         Global Instance AssociatedFunction_merge_tracking_parent :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "merge_tracking_parent" (merge_tracking_parent K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque merge_tracking_parent.
         
@@ -23333,6 +23446,7 @@ Module collections.
         Global Instance AssociatedFunction_merge_tracking_child :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "merge_tracking_child" (merge_tracking_child K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque merge_tracking_child.
         
@@ -23644,6 +23758,7 @@ Module collections.
             (Self K V)
             "merge_tracking_child_edge"
             (merge_tracking_child_edge K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque merge_tracking_child_edge.
         
@@ -23765,6 +23880,7 @@ Module collections.
         Global Instance AssociatedFunction_steal_left :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "steal_left" (steal_left K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque steal_left.
         
@@ -23882,6 +23998,7 @@ Module collections.
         Global Instance AssociatedFunction_steal_right :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "steal_right" (steal_right K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque steal_right.
         
@@ -25627,6 +25744,7 @@ Module collections.
         Global Instance AssociatedFunction_bulk_steal_left :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "bulk_steal_left" (bulk_steal_left K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque bulk_steal_left.
         
@@ -27441,6 +27559,7 @@ Module collections.
         Global Instance AssociatedFunction_bulk_steal_right :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "bulk_steal_right" (bulk_steal_right K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque bulk_steal_right.
       End Impl_alloc_collections_btree_node_BalancingContext_K_V.
@@ -27576,6 +27695,7 @@ Module collections.
             (Self BorrowType K V)
             "forget_node_type"
             (forget_node_type BorrowType K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque forget_node_type.
       End Impl_alloc_collections_btree_node_Handle_alloc_collections_btree_node_NodeRef_BorrowType_K_V_alloc_collections_btree_node_marker_Leaf_alloc_collections_btree_node_marker_Edge.
@@ -27711,6 +27831,7 @@ Module collections.
             (Self BorrowType K V)
             "forget_node_type"
             (forget_node_type BorrowType K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque forget_node_type.
       End Impl_alloc_collections_btree_node_Handle_alloc_collections_btree_node_NodeRef_BorrowType_K_V_alloc_collections_btree_node_marker_Leaf_alloc_collections_btree_node_marker_KV.
@@ -28065,6 +28186,7 @@ Module collections.
         Global Instance AssociatedFunction_force :
           forall (BorrowType K V Type_ : Ty.t),
           M.IsAssociatedFunction.C (Self BorrowType K V Type_) "force" (force BorrowType K V Type_).
+        Proof.
         Admitted.
         Global Typeclasses Opaque force.
       End Impl_alloc_collections_btree_node_Handle_alloc_collections_btree_node_NodeRef_BorrowType_K_V_alloc_collections_btree_node_marker_LeafOrInternal_Type_.
@@ -28223,6 +28345,7 @@ Module collections.
             (Self K V Type_)
             "cast_to_leaf_unchecked"
             (cast_to_leaf_unchecked K V Type_).
+        Proof.
         Admitted.
         Global Typeclasses Opaque cast_to_leaf_unchecked.
       End Impl_alloc_collections_btree_node_Handle_alloc_collections_btree_node_NodeRef_alloc_collections_btree_node_marker_Mut_K_V_alloc_collections_btree_node_marker_LeafOrInternal_Type_.
@@ -29449,6 +29572,7 @@ Module collections.
         Global Instance AssociatedFunction_move_suffix :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "move_suffix" (move_suffix K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque move_suffix.
       End Impl_alloc_collections_btree_node_Handle_alloc_collections_btree_node_NodeRef_alloc_collections_btree_node_marker_Mut_K_V_alloc_collections_btree_node_marker_LeafOrInternal_alloc_collections_btree_node_marker_Edge.
@@ -29618,6 +29742,7 @@ Module collections.
         Global Instance AssociatedFunction_forget_node_type :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "forget_node_type" (forget_node_type K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque forget_node_type.
       End Impl_alloc_collections_btree_node_SplitResult_K_V_alloc_collections_btree_node_marker_Leaf.
@@ -29742,6 +29867,7 @@ Module collections.
         Global Instance AssociatedFunction_forget_node_type :
           forall (K V : Ty.t),
           M.IsAssociatedFunction.C (Self K V) "forget_node_type" (forget_node_type K V).
+        Proof.
         Admitted.
         Global Typeclasses Opaque forget_node_type.
       End Impl_alloc_collections_btree_node_SplitResult_K_V_alloc_collections_btree_node_marker_Internal.
@@ -30263,6 +30389,7 @@ Module collections.
       
       Global Instance Instance_IsFunction_slice_insert :
         M.IsFunction.C "alloc::collections::btree::node::slice_insert" slice_insert.
+      Proof.
       Admitted.
       Global Typeclasses Opaque slice_insert.
       
@@ -30506,6 +30633,7 @@ Module collections.
       
       Global Instance Instance_IsFunction_slice_remove :
         M.IsFunction.C "alloc::collections::btree::node::slice_remove" slice_remove.
+      Proof.
       Admitted.
       Global Typeclasses Opaque slice_remove.
       
@@ -30632,6 +30760,7 @@ Module collections.
       
       Global Instance Instance_IsFunction_slice_shl :
         M.IsFunction.C "alloc::collections::btree::node::slice_shl" slice_shl.
+      Proof.
       Admitted.
       Global Typeclasses Opaque slice_shl.
       
@@ -30755,6 +30884,7 @@ Module collections.
       
       Global Instance Instance_IsFunction_slice_shr :
         M.IsFunction.C "alloc::collections::btree::node::slice_shr" slice_shr.
+      Proof.
       Admitted.
       Global Typeclasses Opaque slice_shr.
       
@@ -30940,6 +31070,7 @@ Module collections.
       
       Global Instance Instance_IsFunction_move_to_slice :
         M.IsFunction.C "alloc::collections::btree::node::move_to_slice" move_to_slice.
+      Proof.
       Admitted.
       Global Typeclasses Opaque move_to_slice.
     End node.

@@ -27,6 +27,7 @@ Module Impl_PartialEq_for_TransactionType.
   Definition Self : Set := TransactionType.t.
 
   Instance run : PartialEq.Run Self Self.
+  Proof.
   Admitted.
 End Impl_PartialEq_for_TransactionType.
 Export (hints) Impl_PartialEq_for_TransactionType.

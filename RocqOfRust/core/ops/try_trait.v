@@ -40,6 +40,7 @@ Module ops.
     
     Global Instance Instance_IsFunction_from_yeet :
       M.IsFunction.C "core::ops::try_trait::from_yeet" from_yeet.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_yeet.
     
@@ -76,6 +77,7 @@ Module ops.
     
     Global Instance Instance_IsFunction_residual_into_try_type :
       M.IsFunction.C "core::ops::try_trait::residual_into_try_type" residual_into_try_type.
+    Proof.
     Admitted.
     Global Typeclasses Opaque residual_into_try_type.
     
@@ -288,6 +290,7 @@ Module ops.
       Global Instance AssociatedFunction_wrap_mut_1 :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "wrap_mut_1" (wrap_mut_1 T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque wrap_mut_1.
       
@@ -359,6 +362,7 @@ Module ops.
       Global Instance AssociatedFunction_wrap_mut_2 :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "wrap_mut_2" (wrap_mut_2 T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque wrap_mut_2.
     End Impl_core_ops_try_trait_NeverShortCircuit_T.

@@ -33,6 +33,7 @@ Definition set_code_hash (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
 
 Global Instance Instance_IsFunction_set_code_hash :
   M.IsFunction.C "set_code_hash::set_code_hash" set_code_hash.
+Proof.
 Admitted.
 Global Typeclasses Opaque set_code_hash.
 
@@ -113,6 +114,7 @@ Module Impl_set_code_hash_Incrementer.
     end.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new.
   
@@ -307,6 +309,7 @@ Module Impl_set_code_hash_Incrementer.
     end.
   
   Global Instance AssociatedFunction_inc : M.IsAssociatedFunction.C Self "inc" inc.
+  Proof.
   Admitted.
   Global Typeclasses Opaque inc.
   
@@ -332,6 +335,7 @@ Module Impl_set_code_hash_Incrementer.
     end.
   
   Global Instance AssociatedFunction_get : M.IsAssociatedFunction.C Self "get" get.
+  Proof.
   Admitted.
   Global Typeclasses Opaque get.
   
@@ -546,6 +550,7 @@ Module Impl_set_code_hash_Incrementer.
     end.
   
   Global Instance AssociatedFunction_set_code : M.IsAssociatedFunction.C Self "set_code" set_code.
+  Proof.
   Admitted.
   Global Typeclasses Opaque set_code.
 End Impl_set_code_hash_Incrementer.

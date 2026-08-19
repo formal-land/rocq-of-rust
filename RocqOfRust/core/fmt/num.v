@@ -11617,6 +11617,7 @@ Module fmt.
     
     Global Instance Instance_IsConstant_value_DECIMAL_PAIRS :
       M.IsFunction.C "core::fmt::num::DECIMAL_PAIRS" value_DECIMAL_PAIRS.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_DECIMAL_PAIRS.
     
@@ -11744,6 +11745,7 @@ Module fmt.
     
     Global Instance Instance_IsFunction_slice_buffer_to_str :
       M.IsFunction.C "core::fmt::num::slice_buffer_to_str" slice_buffer_to_str.
+    Proof.
     Admitted.
     Global Typeclasses Opaque slice_buffer_to_str.
     
@@ -13905,6 +13907,7 @@ Module fmt.
           end.
         
         Global Instance AssociatedFunction__fmt : M.IsAssociatedFunction.C Self "_fmt" _fmt.
+        Proof.
         Admitted.
         Global Typeclasses Opaque _fmt.
         
@@ -14985,6 +14988,7 @@ Module fmt.
         
         Global Instance AssociatedFunction__fmt_inner :
           M.IsAssociatedFunction.C Self "_fmt_inner" _fmt_inner.
+        Proof.
         Admitted.
         Global Typeclasses Opaque _fmt_inner.
         (*
@@ -15179,6 +15183,7 @@ Module fmt.
         
         Global Instance AssociatedFunction_format_into :
           M.IsAssociatedFunction.C Self "format_into" format_into.
+        Proof.
         Admitted.
         Global Typeclasses Opaque format_into.
       End Impl_u8.
@@ -15448,6 +15453,7 @@ Module fmt.
         
         Global Instance AssociatedFunction_format_into :
           M.IsAssociatedFunction.C Self "format_into" format_into.
+        Proof.
         Admitted.
         Global Typeclasses Opaque format_into.
       End Impl_i8.
@@ -15846,6 +15852,7 @@ Module fmt.
           end.
         
         Global Instance AssociatedFunction__fmt : M.IsAssociatedFunction.C Self "_fmt" _fmt.
+        Proof.
         Admitted.
         Global Typeclasses Opaque _fmt.
         
@@ -16926,6 +16933,7 @@ Module fmt.
         
         Global Instance AssociatedFunction__fmt_inner :
           M.IsAssociatedFunction.C Self "_fmt_inner" _fmt_inner.
+        Proof.
         Admitted.
         Global Typeclasses Opaque _fmt_inner.
         (*
@@ -17120,6 +17128,7 @@ Module fmt.
         
         Global Instance AssociatedFunction_format_into :
           M.IsAssociatedFunction.C Self "format_into" format_into.
+        Proof.
         Admitted.
         Global Typeclasses Opaque format_into.
       End Impl_u16.
@@ -17389,6 +17398,7 @@ Module fmt.
         
         Global Instance AssociatedFunction_format_into :
           M.IsAssociatedFunction.C Self "format_into" format_into.
+        Proof.
         Admitted.
         Global Typeclasses Opaque format_into.
       End Impl_i16.
@@ -17787,6 +17797,7 @@ Module fmt.
           end.
         
         Global Instance AssociatedFunction__fmt : M.IsAssociatedFunction.C Self "_fmt" _fmt.
+        Proof.
         Admitted.
         Global Typeclasses Opaque _fmt.
         
@@ -18867,6 +18878,7 @@ Module fmt.
         
         Global Instance AssociatedFunction__fmt_inner :
           M.IsAssociatedFunction.C Self "_fmt_inner" _fmt_inner.
+        Proof.
         Admitted.
         Global Typeclasses Opaque _fmt_inner.
         (*
@@ -19061,6 +19073,7 @@ Module fmt.
         
         Global Instance AssociatedFunction_format_into :
           M.IsAssociatedFunction.C Self "format_into" format_into.
+        Proof.
         Admitted.
         Global Typeclasses Opaque format_into.
       End Impl_u32.
@@ -19330,6 +19343,7 @@ Module fmt.
         
         Global Instance AssociatedFunction_format_into :
           M.IsAssociatedFunction.C Self "format_into" format_into.
+        Proof.
         Admitted.
         Global Typeclasses Opaque format_into.
       End Impl_i32.
@@ -19728,6 +19742,7 @@ Module fmt.
           end.
         
         Global Instance AssociatedFunction__fmt : M.IsAssociatedFunction.C Self "_fmt" _fmt.
+        Proof.
         Admitted.
         Global Typeclasses Opaque _fmt.
         
@@ -20808,6 +20823,7 @@ Module fmt.
         
         Global Instance AssociatedFunction__fmt_inner :
           M.IsAssociatedFunction.C Self "_fmt_inner" _fmt_inner.
+        Proof.
         Admitted.
         Global Typeclasses Opaque _fmt_inner.
         (*
@@ -21002,6 +21018,7 @@ Module fmt.
         
         Global Instance AssociatedFunction_format_into :
           M.IsAssociatedFunction.C Self "format_into" format_into.
+        Proof.
         Admitted.
         Global Typeclasses Opaque format_into.
       End Impl_u64.
@@ -21271,6 +21288,7 @@ Module fmt.
         
         Global Instance AssociatedFunction_format_into :
           M.IsAssociatedFunction.C Self "format_into" format_into.
+        Proof.
         Admitted.
         Global Typeclasses Opaque format_into.
       End Impl_i64.
@@ -21669,6 +21687,7 @@ Module fmt.
           end.
         
         Global Instance AssociatedFunction__fmt : M.IsAssociatedFunction.C Self "_fmt" _fmt.
+        Proof.
         Admitted.
         Global Typeclasses Opaque _fmt.
         
@@ -22771,6 +22790,7 @@ Module fmt.
         
         Global Instance AssociatedFunction__fmt_inner :
           M.IsAssociatedFunction.C Self "_fmt_inner" _fmt_inner.
+        Proof.
         Admitted.
         Global Typeclasses Opaque _fmt_inner.
         (*
@@ -22966,6 +22986,7 @@ Module fmt.
         
         Global Instance AssociatedFunction_format_into :
           M.IsAssociatedFunction.C Self "format_into" format_into.
+        Proof.
         Admitted.
         Global Typeclasses Opaque format_into.
       End Impl_usize.
@@ -23241,6 +23262,7 @@ Module fmt.
         
         Global Instance AssociatedFunction_format_into :
           M.IsAssociatedFunction.C Self "format_into" format_into.
+        Proof.
         Admitted.
         Global Typeclasses Opaque format_into.
       End Impl_isize.
@@ -26024,6 +26046,7 @@ Module fmt.
       
       Global Instance Instance_IsFunction_exp_u64 :
         M.IsFunction.C "core::fmt::num::imp::exp_u64" exp_u64.
+      Proof.
       Admitted.
       Global Typeclasses Opaque exp_u64.
       
@@ -26054,6 +26077,7 @@ Module fmt.
         
         Global Instance Instance_IsConstant_value_MAX_DEC_N :
           M.IsFunction.C "core::fmt::num::imp::exp_u64::MAX_DEC_N" value_MAX_DEC_N.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_MAX_DEC_N.
         
@@ -26079,6 +26103,7 @@ Module fmt.
         
         Global Instance Instance_IsConstant_value_MAX_COEF_LEN :
           M.IsFunction.C "core::fmt::num::imp::exp_u64::MAX_COEF_LEN" value_MAX_COEF_LEN.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_MAX_COEF_LEN.
         
@@ -26104,6 +26129,7 @@ Module fmt.
         
         Global Instance Instance_IsConstant_value_MAX_TEXT_LEN :
           M.IsFunction.C "core::fmt::num::imp::exp_u64::MAX_TEXT_LEN" value_MAX_TEXT_LEN.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_MAX_TEXT_LEN.
       End exp_u64.
@@ -29788,6 +29814,7 @@ Module fmt.
     
     Global Instance Instance_IsFunction_exp_u128 :
       M.IsFunction.C "core::fmt::num::exp_u128" exp_u128.
+    Proof.
     Admitted.
     Global Typeclasses Opaque exp_u128.
     
@@ -29818,6 +29845,7 @@ Module fmt.
       
       Global Instance Instance_IsConstant_value_MAX_DEC_N :
         M.IsFunction.C "core::fmt::num::exp_u128::MAX_DEC_N" value_MAX_DEC_N.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MAX_DEC_N.
       
@@ -29843,6 +29871,7 @@ Module fmt.
       
       Global Instance Instance_IsConstant_value_MAX_COEF_LEN :
         M.IsFunction.C "core::fmt::num::exp_u128::MAX_COEF_LEN" value_MAX_COEF_LEN.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MAX_COEF_LEN.
       
@@ -29868,6 +29897,7 @@ Module fmt.
       
       Global Instance Instance_IsConstant_value_MAX_TEXT_LEN :
         M.IsFunction.C "core::fmt::num::exp_u128::MAX_TEXT_LEN" value_MAX_TEXT_LEN.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MAX_TEXT_LEN.
     End exp_u128.
@@ -30083,6 +30113,7 @@ Module fmt.
     
     Global Instance Instance_IsConstant_value_U128_MAX_DEC_N :
       M.IsFunction.C "core::fmt::num::U128_MAX_DEC_N" value_U128_MAX_DEC_N.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_U128_MAX_DEC_N.
     
@@ -30445,6 +30476,7 @@ Module fmt.
         end.
       
       Global Instance AssociatedFunction__fmt : M.IsAssociatedFunction.C Self "_fmt" _fmt.
+      Proof.
       Admitted.
       Global Typeclasses Opaque _fmt.
       
@@ -31907,6 +31939,7 @@ Module fmt.
       
       Global Instance AssociatedFunction__fmt_inner :
         M.IsAssociatedFunction.C Self "_fmt_inner" _fmt_inner.
+      Proof.
       Admitted.
       Global Typeclasses Opaque _fmt_inner.
       
@@ -32080,6 +32113,7 @@ Module fmt.
       
       Global Instance AssociatedFunction_format_into :
         M.IsAssociatedFunction.C Self "format_into" format_into.
+      Proof.
       Admitted.
       Global Typeclasses Opaque format_into.
     End Impl_u128.
@@ -32493,6 +32527,7 @@ Module fmt.
       
       Global Instance AssociatedFunction_format_into :
         M.IsAssociatedFunction.C Self "format_into" format_into.
+      Proof.
       Admitted.
       Global Typeclasses Opaque format_into.
     End Impl_i128.
@@ -33085,6 +33120,7 @@ Module fmt.
     
     Global Instance Instance_IsFunction_enc_16lsd :
       M.IsFunction.C "core::fmt::num::enc_16lsd" enc_16lsd.
+    Proof.
     Admitted.
     Global Typeclasses Opaque enc_16lsd.
     
@@ -33219,6 +33255,7 @@ Module fmt.
     
     Global Instance Instance_IsFunction_div_rem_1e16 :
       M.IsFunction.C "core::fmt::num::div_rem_1e16" div_rem_1e16.
+    Proof.
     Admitted.
     Global Typeclasses Opaque div_rem_1e16.
     
@@ -33229,6 +33266,7 @@ Module fmt.
       
       Global Instance Instance_IsConstant_value_D :
         M.IsFunction.C "core::fmt::num::div_rem_1e16::D" value_D.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_D.
       
@@ -33241,6 +33279,7 @@ Module fmt.
       
       Global Instance Instance_IsConstant_value_M_HIGH :
         M.IsFunction.C "core::fmt::num::div_rem_1e16::M_HIGH" value_M_HIGH.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_M_HIGH.
       
@@ -33249,6 +33288,7 @@ Module fmt.
       
       Global Instance Instance_IsConstant_value_SH_POST :
         M.IsFunction.C "core::fmt::num::div_rem_1e16::SH_POST" value_SH_POST.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_SH_POST.
     End div_rem_1e16.

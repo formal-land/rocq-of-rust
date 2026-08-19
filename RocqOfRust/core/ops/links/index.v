@@ -59,6 +59,7 @@ Module Impl_Index_for_Array.
       `{Link T} `{Link I} `{Link Index_Output}
       `{!Index.Run T I Index_Output} :
     Index.Run (Self T I N) I (Output T I N Index_Output).
+  Proof.
   Admitted.
 End Impl_Index_for_Array.
 Export (hints) Impl_Index_for_Array.

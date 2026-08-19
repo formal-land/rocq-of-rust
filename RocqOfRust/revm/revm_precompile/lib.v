@@ -37,6 +37,7 @@ Definition calc_linear_cost_u32 (ε : list Value.t) (τ : list Ty.t) (α : list 
 
 Global Instance Instance_IsFunction_calc_linear_cost_u32 :
   M.IsFunction.C "revm_precompile::calc_linear_cost_u32" calc_linear_cost_u32.
+Proof.
 Admitted.
 Global Typeclasses Opaque calc_linear_cost_u32.
 
@@ -688,6 +689,7 @@ Module Impl_revm_precompile_Precompiles.
     end.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new.
   
@@ -831,6 +833,7 @@ Module Impl_revm_precompile_Precompiles.
   
   Global Instance AssociatedFunction_homestead :
     M.IsAssociatedFunction.C Self "homestead" homestead.
+  Proof.
   Admitted.
   Global Typeclasses Opaque homestead.
   
@@ -865,6 +868,7 @@ Module Impl_revm_precompile_Precompiles.
     end.
   
   Global Instance AssociatedFunction_inner : M.IsAssociatedFunction.C Self "inner" inner.
+  Proof.
   Admitted.
   Global Typeclasses Opaque inner.
   
@@ -1030,6 +1034,7 @@ Module Impl_revm_precompile_Precompiles.
   
   Global Instance AssociatedFunction_byzantium :
     M.IsAssociatedFunction.C Self "byzantium" byzantium.
+  Proof.
   Admitted.
   Global Typeclasses Opaque byzantium.
   
@@ -1193,6 +1198,7 @@ Module Impl_revm_precompile_Precompiles.
     end.
   
   Global Instance AssociatedFunction_istanbul : M.IsAssociatedFunction.C Self "istanbul" istanbul.
+  Proof.
   Admitted.
   Global Typeclasses Opaque istanbul.
   
@@ -1334,6 +1340,7 @@ Module Impl_revm_precompile_Precompiles.
     end.
   
   Global Instance AssociatedFunction_berlin : M.IsAssociatedFunction.C Self "berlin" berlin.
+  Proof.
   Admitted.
   Global Typeclasses Opaque berlin.
   
@@ -1475,6 +1482,7 @@ Module Impl_revm_precompile_Precompiles.
     end.
   
   Global Instance AssociatedFunction_cancun : M.IsAssociatedFunction.C Self "cancun" cancun.
+  Proof.
   Admitted.
   Global Typeclasses Opaque cancun.
   
@@ -1608,6 +1616,7 @@ Module Impl_revm_precompile_Precompiles.
     end.
   
   Global Instance AssociatedFunction_prague : M.IsAssociatedFunction.C Self "prague" prague.
+  Proof.
   Admitted.
   Global Typeclasses Opaque prague.
   
@@ -1752,6 +1761,7 @@ Module Impl_revm_precompile_Precompiles.
     end.
   
   Global Instance AssociatedFunction_osaka : M.IsAssociatedFunction.C Self "osaka" osaka.
+  Proof.
   Admitted.
   Global Typeclasses Opaque osaka.
   
@@ -1773,6 +1783,7 @@ Module Impl_revm_precompile_Precompiles.
     end.
   
   Global Instance AssociatedFunction_latest : M.IsAssociatedFunction.C Self "latest" latest.
+  Proof.
   Admitted.
   Global Typeclasses Opaque latest.
   
@@ -1827,6 +1838,7 @@ Module Impl_revm_precompile_Precompiles.
   
   Global Instance AssociatedFunction_addresses :
     M.IsAssociatedFunction.C Self "addresses" addresses.
+  Proof.
   Admitted.
   Global Typeclasses Opaque addresses.
   
@@ -1876,6 +1888,7 @@ Module Impl_revm_precompile_Precompiles.
   
   Global Instance AssociatedFunction_into_addresses :
     M.IsAssociatedFunction.C Self "into_addresses" into_addresses.
+  Proof.
   Admitted.
   Global Typeclasses Opaque into_addresses.
   
@@ -1929,6 +1942,7 @@ Module Impl_revm_precompile_Precompiles.
     end.
   
   Global Instance AssociatedFunction_contains : M.IsAssociatedFunction.C Self "contains" contains.
+  Proof.
   Admitted.
   Global Typeclasses Opaque contains.
   
@@ -2103,6 +2117,7 @@ Module Impl_revm_precompile_Precompiles.
     end.
   
   Global Instance AssociatedFunction_get : M.IsAssociatedFunction.C Self "get" get.
+  Proof.
   Admitted.
   Global Typeclasses Opaque get.
   
@@ -2159,6 +2174,7 @@ Module Impl_revm_precompile_Precompiles.
     end.
   
   Global Instance AssociatedFunction_get_mut : M.IsAssociatedFunction.C Self "get_mut" get_mut.
+  Proof.
   Admitted.
   Global Typeclasses Opaque get_mut.
   
@@ -2206,6 +2222,7 @@ Module Impl_revm_precompile_Precompiles.
     end.
   
   Global Instance AssociatedFunction_is_empty : M.IsAssociatedFunction.C Self "is_empty" is_empty.
+  Proof.
   Admitted.
   Global Typeclasses Opaque is_empty.
   
@@ -2253,6 +2270,7 @@ Module Impl_revm_precompile_Precompiles.
     end.
   
   Global Instance AssociatedFunction_len : M.IsAssociatedFunction.C Self "len" len.
+  Proof.
   Admitted.
   Global Typeclasses Opaque len.
   
@@ -2288,6 +2306,7 @@ Module Impl_revm_precompile_Precompiles.
   
   Global Instance AssociatedFunction_addresses_set :
     M.IsAssociatedFunction.C Self "addresses_set" addresses_set.
+  Proof.
   Admitted.
   Global Typeclasses Opaque addresses_set.
   
@@ -3051,6 +3070,7 @@ Module Impl_revm_precompile_Precompiles.
     end.
   
   Global Instance AssociatedFunction_extend : M.IsAssociatedFunction.C Self "extend" extend.
+  Proof.
   Admitted.
   Global Typeclasses Opaque extend.
   
@@ -3096,6 +3116,7 @@ Module Impl_revm_precompile_Precompiles.
                     "revm_precompile::Precompiles",
                     "inner"
                   |) in
+                let _ := M.read (| γ1_0 |) in
                 let inner :=
                   M.alloc (|
                     Ty.apply
@@ -3111,7 +3132,7 @@ Module Impl_revm_precompile_Precompiles.
                             Ty.path "std::hash::random::RandomState"
                           ]
                       ],
-                    γ1_0
+                    M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                   |) in
                 M.read (|
                   let~ inner :
@@ -3470,6 +3491,7 @@ Module Impl_revm_precompile_Precompiles.
                                                     M.SubPointer.get_tuple_field (| γ, 0 |) in
                                                   let γ1_1 :=
                                                     M.SubPointer.get_tuple_field (| γ, 1 |) in
+                                                  let _ := M.read (| γ1_0 |) in
                                                   let a :=
                                                     M.alloc (|
                                                       Ty.apply
@@ -3484,7 +3506,7 @@ Module Impl_revm_precompile_Precompiles.
                                                                 "alloy_primitives::bits::address::Address"
                                                             ]
                                                         ],
-                                                      γ1_0
+                                                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                     |) in
                                                   M.call_closure (|
                                                     Ty.path "bool",
@@ -3789,6 +3811,7 @@ Module Impl_revm_precompile_Precompiles.
   
   Global Instance AssociatedFunction_difference :
     M.IsAssociatedFunction.C Self "difference" difference.
+  Proof.
   Admitted.
   Global Typeclasses Opaque difference.
   
@@ -3834,6 +3857,7 @@ Module Impl_revm_precompile_Precompiles.
                     "revm_precompile::Precompiles",
                     "inner"
                   |) in
+                let _ := M.read (| γ1_0 |) in
                 let inner :=
                   M.alloc (|
                     Ty.apply
@@ -3849,7 +3873,7 @@ Module Impl_revm_precompile_Precompiles.
                             Ty.path "std::hash::random::RandomState"
                           ]
                       ],
-                    γ1_0
+                    M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                   |) in
                 M.read (|
                   let~ inner :
@@ -4208,6 +4232,7 @@ Module Impl_revm_precompile_Precompiles.
                                                     M.SubPointer.get_tuple_field (| γ, 0 |) in
                                                   let γ1_1 :=
                                                     M.SubPointer.get_tuple_field (| γ, 1 |) in
+                                                  let _ := M.read (| γ1_0 |) in
                                                   let a :=
                                                     M.alloc (|
                                                       Ty.apply
@@ -4222,7 +4247,7 @@ Module Impl_revm_precompile_Precompiles.
                                                                 "alloy_primitives::bits::address::Address"
                                                             ]
                                                         ],
-                                                      γ1_0
+                                                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                     |) in
                                                   M.call_closure (|
                                                     Ty.path "bool",
@@ -4518,6 +4543,7 @@ Module Impl_revm_precompile_Precompiles.
   
   Global Instance AssociatedFunction_intersection :
     M.IsAssociatedFunction.C Self "intersection" intersection.
+  Proof.
   Admitted.
   Global Typeclasses Opaque intersection.
 End Impl_revm_precompile_Precompiles.
@@ -5032,6 +5058,7 @@ Module Impl_revm_precompile_Precompile.
     end.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new.
   
@@ -5063,6 +5090,7 @@ Module Impl_revm_precompile_Precompile.
     end.
   
   Global Instance AssociatedFunction_id : M.IsAssociatedFunction.C Self "id" id.
+  Proof.
   Admitted.
   Global Typeclasses Opaque id.
   
@@ -5094,6 +5122,7 @@ Module Impl_revm_precompile_Precompile.
     end.
   
   Global Instance AssociatedFunction_address : M.IsAssociatedFunction.C Self "address" address.
+  Proof.
   Admitted.
   Global Typeclasses Opaque address.
   
@@ -5126,6 +5155,7 @@ Module Impl_revm_precompile_Precompile.
   
   Global Instance AssociatedFunction_precompile :
     M.IsAssociatedFunction.C Self "precompile" precompile.
+  Proof.
   Admitted.
   Global Typeclasses Opaque precompile.
   
@@ -5147,6 +5177,7 @@ Module Impl_revm_precompile_Precompile.
   
   Global Instance AssociatedFunction_into_precompile :
     M.IsAssociatedFunction.C Self "into_precompile" into_precompile.
+  Proof.
   Admitted.
   Global Typeclasses Opaque into_precompile.
   
@@ -5191,6 +5222,7 @@ Module Impl_revm_precompile_Precompile.
     end.
   
   Global Instance AssociatedFunction_execute : M.IsAssociatedFunction.C Self "execute" execute.
+  Proof.
   Admitted.
   Global Typeclasses Opaque execute.
 End Impl_revm_precompile_Precompile.
@@ -5994,6 +6026,7 @@ Module Impl_revm_precompile_PrecompileSpecId.
   
   Global Instance AssociatedFunction_from_spec_id :
     M.IsAssociatedFunction.C Self "from_spec_id" from_spec_id.
+  Proof.
   Admitted.
   Global Typeclasses Opaque from_spec_id.
 End Impl_revm_precompile_PrecompileSpecId.
@@ -6078,5 +6111,6 @@ Definition u64_to_address (ε : list Value.t) (τ : list Ty.t) (α : list Value.
 
 Global Instance Instance_IsFunction_u64_to_address :
   M.IsFunction.C "revm_precompile::u64_to_address" u64_to_address.
+Proof.
 Admitted.
 Global Typeclasses Opaque u64_to_address.

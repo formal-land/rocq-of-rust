@@ -67,6 +67,7 @@ Module interface.
   
   Global Instance Instance_IsConstant_value_CRYPTO :
     M.IsFunction.C "revm_precompile::interface::CRYPTO" value_CRYPTO.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_CRYPTO.
   
@@ -228,6 +229,7 @@ Module interface.
   
   Global Instance Instance_IsFunction_install_crypto :
     M.IsFunction.C "revm_precompile::interface::install_crypto" install_crypto.
+  Proof.
   Admitted.
   Global Typeclasses Opaque install_crypto.
   
@@ -488,6 +490,7 @@ Module interface.
   
   Global Instance Instance_IsFunction_crypto :
     M.IsFunction.C "revm_precompile::interface::crypto" crypto.
+  Proof.
   Admitted.
   Global Typeclasses Opaque crypto.
   
@@ -1178,6 +1181,7 @@ Module interface.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -1212,6 +1216,7 @@ Module interface.
     
     Global Instance AssociatedFunction_new_reverted :
       M.IsAssociatedFunction.C Self "new_reverted" new_reverted.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_reverted.
     
@@ -1242,6 +1247,7 @@ Module interface.
       end.
     
     Global Instance AssociatedFunction_reverted : M.IsAssociatedFunction.C Self "reverted" reverted.
+    Proof.
     Admitted.
     Global Typeclasses Opaque reverted.
   End Impl_revm_precompile_interface_PrecompileOutput.
@@ -3381,10 +3387,11 @@ Module interface.
                       "revm_precompile::interface::PrecompileError::Fatal",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "revm_precompile::interface::PrecompileError::Fatal"
@@ -3414,13 +3421,14 @@ Module interface.
                       "revm_precompile::interface::PrecompileError::Other",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "revm_precompile::interface::PrecompileError::Other"
@@ -4422,10 +4430,11 @@ Module interface.
                       "revm_precompile::interface::PrecompileError::Fatal",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -4471,13 +4480,14 @@ Module interface.
                       "revm_precompile::interface::PrecompileError::Other",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -4621,10 +4631,11 @@ Module interface.
                               "revm_precompile::interface::PrecompileError::Fatal",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -4633,10 +4644,11 @@ Module interface.
                               "revm_precompile::interface::PrecompileError::Fatal",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -4665,13 +4677,14 @@ Module interface.
                               "revm_precompile::interface::PrecompileError::Other",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -4680,13 +4693,14 @@ Module interface.
                               "revm_precompile::interface::PrecompileError::Other",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -4833,10 +4847,11 @@ Module interface.
                           "revm_precompile::interface::PrecompileError::Fatal",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -4863,13 +4878,14 @@ Module interface.
                           "revm_precompile::interface::PrecompileError::Other",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -4946,6 +4962,7 @@ Module interface.
       end.
     
     Global Instance AssociatedFunction_other : M.IsAssociatedFunction.C Self "other" other.
+    Proof.
     Admitted.
     Global Typeclasses Opaque other.
     
@@ -4975,6 +4992,7 @@ Module interface.
     
     Global Instance AssociatedFunction_other_static :
       M.IsAssociatedFunction.C Self "other_static" other_static.
+    Proof.
     Admitted.
     Global Typeclasses Opaque other_static.
     
@@ -5012,6 +5030,7 @@ Module interface.
       end.
     
     Global Instance AssociatedFunction_is_oog : M.IsAssociatedFunction.C Self "is_oog" is_oog.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_oog.
   End Impl_revm_precompile_interface_PrecompileError.
@@ -5518,10 +5537,11 @@ Module interface.
                           "revm_precompile::interface::PrecompileError::Fatal",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let s :=
                         M.alloc (|
                           Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -5550,13 +5570,14 @@ Module interface.
                           "revm_precompile::interface::PrecompileError::Other",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let s :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,

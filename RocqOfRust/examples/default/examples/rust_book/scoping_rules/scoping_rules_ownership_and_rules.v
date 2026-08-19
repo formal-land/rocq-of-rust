@@ -148,6 +148,7 @@ Definition destroy_box (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) 
 
 Global Instance Instance_IsFunction_destroy_box :
   M.IsFunction.C "scoping_rules_ownership_and_rules::destroy_box" destroy_box.
+Proof.
 Admitted.
 Global Typeclasses Opaque destroy_box.
 
@@ -450,5 +451,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "scoping_rules_ownership_and_rules::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

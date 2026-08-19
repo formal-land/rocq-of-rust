@@ -20,5 +20,6 @@ Definition add_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M 
   end.
 
 Global Instance Instance_IsFunction_add_one : M.IsFunction.C "add_one::add_one" add_one.
+Proof.
 Admitted.
 Global Typeclasses Opaque add_one.

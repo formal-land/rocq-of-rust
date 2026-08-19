@@ -14,6 +14,7 @@ Definition value_PANGRAM (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
 
 Global Instance Instance_IsConstant_value_PANGRAM :
   M.IsFunction.C "child_processes_pipes::PANGRAM" value_PANGRAM.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_PANGRAM.
 
@@ -739,5 +740,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "child_processes_pipes::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

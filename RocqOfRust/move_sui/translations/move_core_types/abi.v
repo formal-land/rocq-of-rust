@@ -52,13 +52,14 @@ Module abi.
                       "move_core_types::abi::ScriptABI::TransactionScript",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_core_types::abi::TransactionScriptABI" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_core_types::abi::ScriptABI::TransactionScript"
@@ -88,13 +89,14 @@ Module abi.
                       "move_core_types::abi::ScriptABI::ScriptFunction",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_core_types::abi::ScriptFunctionABI" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_core_types::abi::ScriptABI::ScriptFunction"
@@ -160,13 +162,14 @@ Module abi.
                       "move_core_types::abi::ScriptABI::TransactionScript",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_core_types::abi::TransactionScriptABI" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -220,13 +223,14 @@ Module abi.
                       "move_core_types::abi::ScriptABI::ScriptFunction",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_core_types::abi::ScriptFunctionABI" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -342,13 +346,14 @@ Module abi.
                           "move_core_types::abi::ScriptABI::TransactionScript",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_core_types::abi::TransactionScriptABI" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -375,13 +380,14 @@ Module abi.
                           "move_core_types::abi::ScriptABI::ScriptFunction",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_core_types::abi::ScriptFunctionABI" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -540,13 +546,14 @@ Module abi.
                               "move_core_types::abi::ScriptABI::TransactionScript",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_core_types::abi::TransactionScriptABI" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -555,13 +562,14 @@ Module abi.
                               "move_core_types::abi::ScriptABI::TransactionScript",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_core_types::abi::TransactionScriptABI" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -598,13 +606,14 @@ Module abi.
                               "move_core_types::abi::ScriptABI::ScriptFunction",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_core_types::abi::ScriptFunctionABI" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -613,13 +622,14 @@ Module abi.
                               "move_core_types::abi::ScriptABI::ScriptFunction",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_core_types::abi::ScriptFunctionABI" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -704,13 +714,14 @@ Module abi.
                         "move_core_types::abi::ScriptABI::TransactionScript",
                         0
                       |) in
+                    let _ := M.read (| γ0_0 |) in
                     let __field0 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "move_core_types::abi::TransactionScriptABI" ],
-                        γ0_0
+                        M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -745,13 +756,14 @@ Module abi.
                         "move_core_types::abi::ScriptABI::ScriptFunction",
                         0
                       |) in
+                    let _ := M.read (| γ0_0 |) in
                     let __field0 :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "move_core_types::abi::ScriptFunctionABI" ],
-                        γ0_0
+                        M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -5996,6 +6008,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -6049,6 +6062,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_name : M.IsAssociatedFunction.C Self "name" name.
+    Proof.
     Admitted.
     Global Typeclasses Opaque name.
     
@@ -6102,6 +6116,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_doc : M.IsAssociatedFunction.C Self "doc" doc.
+    Proof.
     Admitted.
     Global Typeclasses Opaque doc.
     
@@ -6158,6 +6173,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_code : M.IsAssociatedFunction.C Self "code" code.
+    Proof.
     Admitted.
     Global Typeclasses Opaque code.
     
@@ -6225,6 +6241,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_ty_args : M.IsAssociatedFunction.C Self "ty_args" ty_args.
+    Proof.
     Admitted.
     Global Typeclasses Opaque ty_args.
     
@@ -6284,6 +6301,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_args : M.IsAssociatedFunction.C Self "args" args.
+    Proof.
     Admitted.
     Global Typeclasses Opaque args.
   End Impl_move_core_types_abi_TransactionScriptABI.
@@ -6347,6 +6365,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -6400,6 +6419,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_name : M.IsAssociatedFunction.C Self "name" name.
+    Proof.
     Admitted.
     Global Typeclasses Opaque name.
     
@@ -6435,6 +6455,7 @@ Module abi.
     
     Global Instance AssociatedFunction_module_name :
       M.IsAssociatedFunction.C Self "module_name" module_name.
+    Proof.
     Admitted.
     Global Typeclasses Opaque module_name.
     
@@ -6488,6 +6509,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_doc : M.IsAssociatedFunction.C Self "doc" doc.
+    Proof.
     Admitted.
     Global Typeclasses Opaque doc.
     
@@ -6555,6 +6577,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_ty_args : M.IsAssociatedFunction.C Self "ty_args" ty_args.
+    Proof.
     Admitted.
     Global Typeclasses Opaque ty_args.
     
@@ -6614,6 +6637,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_args : M.IsAssociatedFunction.C Self "args" args.
+    Proof.
     Admitted.
     Global Typeclasses Opaque args.
   End Impl_move_core_types_abi_ScriptFunctionABI.
@@ -6657,6 +6681,7 @@ Module abi.
     
     Global Instance AssociatedFunction_is_script_fun_abi :
       M.IsAssociatedFunction.C Self "is_script_fun_abi" is_script_fun_abi.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_script_fun_abi.
     
@@ -6700,6 +6725,7 @@ Module abi.
     
     Global Instance AssociatedFunction_is_transaction_script_abi :
       M.IsAssociatedFunction.C Self "is_transaction_script_abi" is_transaction_script_abi.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_transaction_script_abi.
     
@@ -6736,13 +6762,14 @@ Module abi.
                           "move_core_types::abi::ScriptABI::TransactionScript",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let abi :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_core_types::abi::TransactionScriptABI" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -6768,13 +6795,14 @@ Module abi.
                           "move_core_types::abi::ScriptABI::ScriptFunction",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let abi :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_core_types::abi::ScriptFunctionABI" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -6799,6 +6827,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_name : M.IsAssociatedFunction.C Self "name" name.
+    Proof.
     Admitted.
     Global Typeclasses Opaque name.
     
@@ -6835,13 +6864,14 @@ Module abi.
                           "move_core_types::abi::ScriptABI::TransactionScript",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let abi :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_core_types::abi::TransactionScriptABI" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -6867,13 +6897,14 @@ Module abi.
                           "move_core_types::abi::ScriptABI::ScriptFunction",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let abi :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_core_types::abi::ScriptFunctionABI" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -6898,6 +6929,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_doc : M.IsAssociatedFunction.C Self "doc" doc.
+    Proof.
     Admitted.
     Global Typeclasses Opaque doc.
     
@@ -6942,13 +6974,14 @@ Module abi.
                           "move_core_types::abi::ScriptABI::TransactionScript",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let abi :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_core_types::abi::TransactionScriptABI" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -6982,13 +7015,14 @@ Module abi.
                           "move_core_types::abi::ScriptABI::ScriptFunction",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let abi :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_core_types::abi::ScriptFunctionABI" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -7021,6 +7055,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_ty_args : M.IsAssociatedFunction.C Self "ty_args" ty_args.
+    Proof.
     Admitted.
     Global Typeclasses Opaque ty_args.
     
@@ -7060,13 +7095,14 @@ Module abi.
                           "move_core_types::abi::ScriptABI::TransactionScript",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let abi :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_core_types::abi::TransactionScriptABI" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -7100,13 +7136,14 @@ Module abi.
                           "move_core_types::abi::ScriptABI::ScriptFunction",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let abi :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_core_types::abi::ScriptFunctionABI" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -7139,6 +7176,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_args : M.IsAssociatedFunction.C Self "args" args.
+    Proof.
     Admitted.
     Global Typeclasses Opaque args.
   End Impl_move_core_types_abi_ScriptABI.
@@ -7167,6 +7205,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -7220,6 +7259,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_name : M.IsAssociatedFunction.C Self "name" name.
+    Proof.
     Admitted.
     Global Typeclasses Opaque name.
     
@@ -7254,6 +7294,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_type_tag : M.IsAssociatedFunction.C Self "type_tag" type_tag.
+    Proof.
     Admitted.
     Global Typeclasses Opaque type_tag.
   End Impl_move_core_types_abi_ArgumentABI.
@@ -7280,6 +7321,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -7333,6 +7375,7 @@ Module abi.
       end.
     
     Global Instance AssociatedFunction_name : M.IsAssociatedFunction.C Self "name" name.
+    Proof.
     Admitted.
     Global Typeclasses Opaque name.
   End Impl_move_core_types_abi_TypeArgumentABI.

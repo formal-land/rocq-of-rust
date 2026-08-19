@@ -33,6 +33,7 @@ Module str.
     
     Global Instance Instance_IsFunction_utf8_first_byte :
       M.IsFunction.C "core::str::validations::utf8_first_byte" utf8_first_byte.
+    Proof.
     Admitted.
     Global Typeclasses Opaque utf8_first_byte.
     
@@ -75,6 +76,7 @@ Module str.
     
     Global Instance Instance_IsFunction_utf8_acc_cont_byte :
       M.IsFunction.C "core::str::validations::utf8_acc_cont_byte" utf8_acc_cont_byte.
+    Proof.
     Admitted.
     Global Typeclasses Opaque utf8_acc_cont_byte.
     
@@ -98,6 +100,7 @@ Module str.
     
     Global Instance Instance_IsFunction_utf8_is_cont_byte :
       M.IsFunction.C "core::str::validations::utf8_is_cont_byte" utf8_is_cont_byte.
+    Proof.
     Admitted.
     Global Typeclasses Opaque utf8_is_cont_byte.
     
@@ -576,6 +579,7 @@ Module str.
     
     Global Instance Instance_IsFunction_next_code_point :
       M.IsFunction.C "core::str::validations::next_code_point" next_code_point.
+    Proof.
     Admitted.
     Global Typeclasses Opaque next_code_point.
     
@@ -1043,6 +1047,7 @@ Module str.
     
     Global Instance Instance_IsFunction_next_code_point_reverse :
       M.IsFunction.C "core::str::validations::next_code_point_reverse" next_code_point_reverse.
+    Proof.
     Admitted.
     Global Typeclasses Opaque next_code_point_reverse.
     
@@ -1059,6 +1064,7 @@ Module str.
     
     Global Instance Instance_IsConstant_value_NONASCII_MASK :
       M.IsFunction.C "core::str::validations::NONASCII_MASK" value_NONASCII_MASK.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_NONASCII_MASK.
     
@@ -1094,6 +1100,7 @@ Module str.
     
     Global Instance Instance_IsFunction_contains_nonascii :
       M.IsFunction.C "core::str::validations::contains_nonascii" contains_nonascii.
+    Proof.
     Admitted.
     Global Typeclasses Opaque contains_nonascii.
     
@@ -3517,6 +3524,7 @@ Module str.
     
     Global Instance Instance_IsFunction_run_utf8_validation :
       M.IsFunction.C "core::str::validations::run_utf8_validation" run_utf8_validation.
+    Proof.
     Admitted.
     Global Typeclasses Opaque run_utf8_validation.
     
@@ -3534,6 +3542,7 @@ Module str.
       
       Global Instance Instance_IsConstant_value_USIZE_BYTES :
         M.IsFunction.C "core::str::validations::run_utf8_validation::USIZE_BYTES" value_USIZE_BYTES.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_USIZE_BYTES.
     End run_utf8_validation.
@@ -3822,6 +3831,7 @@ Module str.
     
     Global Instance Instance_IsConstant_value_UTF8_CHAR_WIDTH :
       M.IsFunction.C "core::str::validations::UTF8_CHAR_WIDTH" value_UTF8_CHAR_WIDTH.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_UTF8_CHAR_WIDTH.
     
@@ -3863,6 +3873,7 @@ Module str.
     
     Global Instance Instance_IsFunction_utf8_char_width :
       M.IsFunction.C "core::str::validations::utf8_char_width" utf8_char_width.
+    Proof.
     Admitted.
     Global Typeclasses Opaque utf8_char_width.
     
@@ -3871,6 +3882,7 @@ Module str.
     
     Global Instance Instance_IsConstant_value_CONT_MASK :
       M.IsFunction.C "core::str::validations::CONT_MASK" value_CONT_MASK.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_CONT_MASK.
   End validations.

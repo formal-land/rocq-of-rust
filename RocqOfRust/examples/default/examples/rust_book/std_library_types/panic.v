@@ -57,6 +57,7 @@ Definition division (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M
   end.
 
 Global Instance Instance_IsFunction_division : M.IsFunction.C "panic::division" division.
+Proof.
 Admitted.
 Global Typeclasses Opaque division.
 
@@ -133,5 +134,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "panic::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

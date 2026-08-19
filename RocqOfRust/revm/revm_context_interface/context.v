@@ -5918,7 +5918,12 @@ Module context.
                       "revm_context_interface::context::ContextError::Db",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ DbError ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ DbError ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "revm_context_interface::context::ContextError::Db"
                     []
@@ -5947,10 +5952,11 @@ Module context.
                       "revm_context_interface::context::ContextError::Custom",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "revm_context_interface::context::ContextError::Custom"
@@ -6023,7 +6029,12 @@ Module context.
                       "revm_context_interface::context::ContextError::Db",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ DbError ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ DbError ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -6065,10 +6076,11 @@ Module context.
                       "revm_context_interface::context::ContextError::Custom",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -6240,8 +6252,12 @@ Module context.
                               "revm_context_interface::context::ContextError::Db",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ DbError ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ DbError ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -6249,8 +6265,12 @@ Module context.
                               "revm_context_interface::context::ContextError::Db",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ DbError ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ DbError ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -6278,10 +6298,11 @@ Module context.
                               "revm_context_interface::context::ContextError::Custom",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -6290,10 +6311,11 @@ Module context.
                               "revm_context_interface::context::ContextError::Custom",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -6464,7 +6486,12 @@ Module context.
                           "revm_context_interface::context::ContextError::Db",
                           0
                         |) in
-                      let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ DbError ], γ1_0 |) in
+                      let _ := M.read (| γ1_0 |) in
+                      let __self_0 :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ DbError ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
                       M.call_closure (|
                         Ty.tuple [],
                         M.get_trait_method (|
@@ -6490,10 +6517,11 @@ Module context.
                           "revm_context_interface::context::ContextError::Custom",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -6658,8 +6686,12 @@ Module context.
                                   "revm_context_interface::context::ContextError::Db",
                                   0
                                 |) in
+                              let _ := M.read (| γ2_0 |) in
                               let __self_0 :=
-                                M.alloc (| Ty.apply (Ty.path "&") [] [ DbError ], γ2_0 |) in
+                                M.alloc (|
+                                  Ty.apply (Ty.path "&") [] [ DbError ],
+                                  M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                                |) in
                               let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                               let γ2_0 :=
                                 M.SubPointer.get_struct_tuple_field (|
@@ -6667,8 +6699,12 @@ Module context.
                                   "revm_context_interface::context::ContextError::Db",
                                   0
                                 |) in
+                              let _ := M.read (| γ2_0 |) in
                               let __arg1_0 :=
-                                M.alloc (| Ty.apply (Ty.path "&") [] [ DbError ], γ2_0 |) in
+                                M.alloc (|
+                                  Ty.apply (Ty.path "&") [] [ DbError ],
+                                  M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                                |) in
                               M.call_closure (|
                                 Ty.path "core::cmp::Ordering",
                                 M.get_trait_method (|
@@ -6702,10 +6738,11 @@ Module context.
                                   "revm_context_interface::context::ContextError::Custom",
                                   0
                                 |) in
+                              let _ := M.read (| γ2_0 |) in
                               let __self_0 :=
                                 M.alloc (|
                                   Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                                  γ2_0
+                                  M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                 |) in
                               let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                               let γ2_0 :=
@@ -6714,10 +6751,11 @@ Module context.
                                   "revm_context_interface::context::ContextError::Custom",
                                   0
                                 |) in
+                              let _ := M.read (| γ2_0 |) in
                               let __arg1_0 :=
                                 M.alloc (|
                                   Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                                  γ2_0
+                                  M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                 |) in
                               M.call_closure (|
                                 Ty.path "core::cmp::Ordering",
@@ -6877,7 +6915,12 @@ Module context.
                           "revm_context_interface::context::ContextError::Db",
                           0
                         |) in
-                      let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ DbError ], γ2_0 |) in
+                      let _ := M.read (| γ2_0 |) in
+                      let __self_0 :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ DbError ],
+                          M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                        |) in
                       let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                       let γ2_0 :=
                         M.SubPointer.get_struct_tuple_field (|
@@ -6885,7 +6928,12 @@ Module context.
                           "revm_context_interface::context::ContextError::Db",
                           0
                         |) in
-                      let __arg1_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ DbError ], γ2_0 |) in
+                      let _ := M.read (| γ2_0 |) in
+                      let __arg1_0 :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ DbError ],
+                          M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                        |) in
                       M.call_closure (|
                         Ty.apply
                           (Ty.path "core::option::Option")
@@ -6916,10 +6964,11 @@ Module context.
                           "revm_context_interface::context::ContextError::Custom",
                           0
                         |) in
+                      let _ := M.read (| γ2_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                          γ2_0
+                          M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                         |) in
                       let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                       let γ2_0 :=
@@ -6928,10 +6977,11 @@ Module context.
                           "revm_context_interface::context::ContextError::Custom",
                           0
                         |) in
+                      let _ := M.read (| γ2_0 |) in
                       let __arg1_0 :=
                         M.alloc (|
                           Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                          γ2_0
+                          M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -7725,6 +7775,7 @@ Module context.
     
     Global Instance AssociatedFunction_is_new_eq_present :
       M.IsAssociatedFunction.C Self "is_new_eq_present" is_new_eq_present.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_new_eq_present.
     
@@ -7782,6 +7833,7 @@ Module context.
     
     Global Instance AssociatedFunction_is_original_eq_present :
       M.IsAssociatedFunction.C Self "is_original_eq_present" is_original_eq_present.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_original_eq_present.
     
@@ -7839,6 +7891,7 @@ Module context.
     
     Global Instance AssociatedFunction_is_original_eq_new :
       M.IsAssociatedFunction.C Self "is_original_eq_new" is_original_eq_new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_original_eq_new.
     
@@ -7883,6 +7936,7 @@ Module context.
     
     Global Instance AssociatedFunction_is_original_zero :
       M.IsAssociatedFunction.C Self "is_original_zero" is_original_zero.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_original_zero.
     
@@ -7927,6 +7981,7 @@ Module context.
     
     Global Instance AssociatedFunction_is_present_zero :
       M.IsAssociatedFunction.C Self "is_present_zero" is_present_zero.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_present_zero.
     
@@ -7971,6 +8026,7 @@ Module context.
     
     Global Instance AssociatedFunction_is_new_zero :
       M.IsAssociatedFunction.C Self "is_new_zero" is_new_zero.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_new_zero.
   End Impl_revm_context_interface_context_SStoreResult.

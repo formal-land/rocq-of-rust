@@ -234,7 +234,12 @@ Module Impl_core_fmt_Debug_for_scoping_rules_lifetimes_structs_Either.
                     "scoping_rules_lifetimes_structs::Either::Num",
                     0
                   |) in
-                let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i32" ], γ1_0 |) in
+                let _ := M.read (| γ1_0 |) in
+                let __self_0 :=
+                  M.alloc (|
+                    Ty.apply (Ty.path "&") [] [ Ty.path "i32" ],
+                    M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                  |) in
                 M.call_closure (|
                   Ty.apply
                     (Ty.path "core::result::Result")
@@ -273,10 +278,11 @@ Module Impl_core_fmt_Debug_for_scoping_rules_lifetimes_structs_Either.
                     "scoping_rules_lifetimes_structs::Either::Ref",
                     0
                   |) in
+                let _ := M.read (| γ1_0 |) in
                 let __self_0 :=
                   M.alloc (|
                     Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ],
-                    γ1_0
+                    M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                   |) in
                 M.call_closure (|
                   Ty.apply
@@ -785,5 +791,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "scoping_rules_lifetimes_structs::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

@@ -16,6 +16,7 @@ Module str.
     
     Global Instance Instance_IsConstant_value_USIZE_SIZE :
       M.IsFunction.C "core::str::count::USIZE_SIZE" value_USIZE_SIZE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_USIZE_SIZE.
     
@@ -24,6 +25,7 @@ Module str.
     
     Global Instance Instance_IsConstant_value_UNROLL_INNER :
       M.IsFunction.C "core::str::count::UNROLL_INNER" value_UNROLL_INNER.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_UNROLL_INNER.
     
@@ -122,6 +124,7 @@ Module str.
     
     Global Instance Instance_IsFunction_count_chars :
       M.IsFunction.C "core::str::count::count_chars" count_chars.
+    Proof.
     Admitted.
     Global Typeclasses Opaque count_chars.
     
@@ -1660,6 +1663,7 @@ Module str.
     
     Global Instance Instance_IsFunction_do_count_chars :
       M.IsFunction.C "core::str::count::do_count_chars" do_count_chars.
+    Proof.
     Admitted.
     Global Typeclasses Opaque do_count_chars.
     
@@ -1669,6 +1673,7 @@ Module str.
       
       Global Instance Instance_IsConstant_value_CHUNK_SIZE :
         M.IsFunction.C "core::str::count::do_count_chars::CHUNK_SIZE" value_CHUNK_SIZE.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_CHUNK_SIZE.
     End do_count_chars.
@@ -1726,6 +1731,7 @@ Module str.
       M.IsFunction.C
         "core::str::count::contains_non_continuation_byte"
         contains_non_continuation_byte.
+    Proof.
     Admitted.
     Global Typeclasses Opaque contains_non_continuation_byte.
     
@@ -1743,6 +1749,7 @@ Module str.
       
       Global Instance Instance_IsConstant_value_LSB :
         M.IsFunction.C "core::str::count::contains_non_continuation_byte::LSB" value_LSB.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_LSB.
     End contains_non_continuation_byte.
@@ -1844,6 +1851,7 @@ Module str.
     
     Global Instance Instance_IsFunction_sum_bytes_in_usize :
       M.IsFunction.C "core::str::count::sum_bytes_in_usize" sum_bytes_in_usize.
+    Proof.
     Admitted.
     Global Typeclasses Opaque sum_bytes_in_usize.
     
@@ -1861,6 +1869,7 @@ Module str.
       
       Global Instance Instance_IsConstant_value_LSB_SHORTS :
         M.IsFunction.C "core::str::count::sum_bytes_in_usize::LSB_SHORTS" value_LSB_SHORTS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_LSB_SHORTS.
       
@@ -1877,6 +1886,7 @@ Module str.
       
       Global Instance Instance_IsConstant_value_SKIP_BYTES :
         M.IsFunction.C "core::str::count::sum_bytes_in_usize::SKIP_BYTES" value_SKIP_BYTES.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_SKIP_BYTES.
     End sum_bytes_in_usize.
@@ -1998,6 +2008,7 @@ Module str.
     
     Global Instance Instance_IsFunction_char_count_general_case :
       M.IsFunction.C "core::str::count::char_count_general_case" char_count_general_case.
+    Proof.
     Admitted.
     Global Typeclasses Opaque char_count_general_case.
   End count.

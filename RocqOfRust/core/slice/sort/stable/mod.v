@@ -215,6 +215,7 @@ Module slice.
       
       Global Instance Instance_IsFunction_sort :
         M.IsFunction.C "core::slice::sort::stable::sort" sort.
+      Proof.
       Admitted.
       Global Typeclasses Opaque sort.
       
@@ -230,6 +231,7 @@ Module slice.
           M.IsFunction.C
             "core::slice::sort::stable::sort::MAX_LEN_ALWAYS_INSERTION_SORT"
             value_MAX_LEN_ALWAYS_INSERTION_SORT.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_MAX_LEN_ALWAYS_INSERTION_SORT.
       End sort.
@@ -584,6 +586,7 @@ Module slice.
       
       Global Instance Instance_IsFunction_driftsort_main :
         M.IsFunction.C "core::slice::sort::stable::driftsort_main" driftsort_main.
+      Proof.
       Admitted.
       Global Typeclasses Opaque driftsort_main.
       
@@ -599,6 +602,7 @@ Module slice.
           M.IsFunction.C
             "core::slice::sort::stable::driftsort_main::MAX_FULL_ALLOC_BYTES"
             value_MAX_FULL_ALLOC_BYTES.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_MAX_FULL_ALLOC_BYTES.
       End driftsort_main.
@@ -668,6 +672,7 @@ Module slice.
         Global Instance AssociatedFunction_new :
           forall (N : Value.t) (T : Ty.t),
           M.IsAssociatedFunction.C (Self N T) "new" (new N T).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new.
         
@@ -892,6 +897,7 @@ Module slice.
         Global Instance AssociatedFunction_as_uninit_slice_mut :
           forall (N : Value.t) (T : Ty.t),
           M.IsAssociatedFunction.C (Self N T) "as_uninit_slice_mut" (as_uninit_slice_mut N T).
+        Proof.
         Admitted.
         Global Typeclasses Opaque as_uninit_slice_mut.
       End Impl_core_slice_sort_stable_AlignedStorage_N_T.

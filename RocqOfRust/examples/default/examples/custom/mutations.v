@@ -148,6 +148,7 @@ Definition get_a_ref (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : 
   end.
 
 Global Instance Instance_IsFunction_get_a_ref : M.IsFunction.C "mutations::get_a_ref" get_a_ref.
+Proof.
 Admitted.
 Global Typeclasses Opaque get_a_ref.
 
@@ -184,6 +185,7 @@ Definition get_b_mut (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : 
   end.
 
 Global Instance Instance_IsFunction_get_b_mut : M.IsFunction.C "mutations::get_b_mut" get_b_mut.
+Proof.
 Admitted.
 Global Typeclasses Opaque get_b_mut.
 
@@ -211,6 +213,7 @@ Definition duplicate (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : 
   end.
 
 Global Instance Instance_IsFunction_duplicate : M.IsFunction.C "mutations::duplicate" duplicate.
+Proof.
 Admitted.
 Global Typeclasses Opaque duplicate.
 
@@ -287,6 +290,7 @@ Definition apply_duplicate (ε : list Value.t) (τ : list Ty.t) (α : list Value
 
 Global Instance Instance_IsFunction_apply_duplicate :
   M.IsFunction.C "mutations::apply_duplicate" apply_duplicate.
+Proof.
 Admitted.
 Global Typeclasses Opaque apply_duplicate.
 
@@ -394,6 +398,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "mutations::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.
 
@@ -422,5 +427,6 @@ Definition incr (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_incr : M.IsFunction.C "mutations::incr" incr.
+Proof.
 Admitted.
 Global Typeclasses Opaque incr.

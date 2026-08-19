@@ -5,6 +5,7 @@ Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "inline_assembly_memory_address_operands::main" main.
+Proof.
 Admitted.
 
 Module main.
@@ -14,5 +15,6 @@ Module main.
     M.IsFunction.C
       "inline_assembly_memory_address_operands::main::load_fpu_control_word"
       load_fpu_control_word.
+  Proof.
   Admitted.
 End main.

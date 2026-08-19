@@ -6,6 +6,7 @@ Definition value_ADDRESS_BYTES (ε : list Value.t) (τ : list Ty.t) (α : list V
 
 Global Instance Instance_IsConstant_value_ADDRESS_BYTES :
   M.IsFunction.C "solana_address::ADDRESS_BYTES" value_ADDRESS_BYTES.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_ADDRESS_BYTES.
 
@@ -14,6 +15,7 @@ Definition value_MAX_SEED_LEN (ε : list Value.t) (τ : list Ty.t) (α : list Va
 
 Global Instance Instance_IsConstant_value_MAX_SEED_LEN :
   M.IsFunction.C "solana_address::MAX_SEED_LEN" value_MAX_SEED_LEN.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_MAX_SEED_LEN.
 
@@ -22,6 +24,7 @@ Definition value_MAX_SEEDS (ε : list Value.t) (τ : list Ty.t) (α : list Value
 
 Global Instance Instance_IsConstant_value_MAX_SEEDS :
   M.IsFunction.C "solana_address::MAX_SEEDS" value_MAX_SEEDS.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_MAX_SEEDS.
 
@@ -602,6 +605,7 @@ Module Impl_solana_address_Address.
   
   Global Instance AssociatedFunction_new_from_array :
     M.IsAssociatedFunction.C Self "new_from_array" new_from_array.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new_from_array.
   
@@ -620,6 +624,7 @@ Module Impl_solana_address_Address.
     end.
   
   Global Instance AssociatedFunction_to_bytes : M.IsAssociatedFunction.C Self "to_bytes" to_bytes.
+  Proof.
   Admitted.
   Global Typeclasses Opaque to_bytes.
   
@@ -651,6 +656,7 @@ Module Impl_solana_address_Address.
     end.
   
   Global Instance AssociatedFunction_as_array : M.IsAssociatedFunction.C Self "as_array" as_array.
+  Proof.
   Admitted.
   Global Typeclasses Opaque as_array.
 End Impl_solana_address_Address.

@@ -105,6 +105,7 @@ Module friends.
   
   Global Instance Instance_IsFunction_verify_module :
     M.IsFunction.C "move_bytecode_verifier::friends::verify_module" verify_module.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_module.
   
@@ -566,6 +567,7 @@ Module friends.
   
   Global Instance Instance_IsFunction_verify_module_impl :
     M.IsFunction.C "move_bytecode_verifier::friends::verify_module_impl" verify_module_impl.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_module_impl.
 End friends.

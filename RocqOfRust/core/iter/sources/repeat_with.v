@@ -24,6 +24,7 @@ Module iter.
       
       Global Instance Instance_IsFunction_repeat_with :
         M.IsFunction.C "core::iter::sources::repeat_with::repeat_with" repeat_with.
+      Proof.
       Admitted.
       Global Typeclasses Opaque repeat_with.
       

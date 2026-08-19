@@ -1101,6 +1101,7 @@ Module interpreter_action.
       
       Global Instance AssociatedFunction_created_address :
         M.IsAssociatedFunction.C Self "created_address" created_address.
+      Proof.
       Admitted.
       Global Typeclasses Opaque created_address.
     End Impl_revm_interpreter_interpreter_action_create_inputs_CreateInputs.

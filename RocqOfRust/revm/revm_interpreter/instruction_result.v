@@ -1453,6 +1453,7 @@ Module instruction_result.
       end.
     
     Global Instance AssociatedFunction_is_ok : M.IsAssociatedFunction.C Self "is_ok" is_ok.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_ok.
     
@@ -1590,6 +1591,7 @@ Module instruction_result.
     
     Global Instance AssociatedFunction_is_ok_or_revert :
       M.IsAssociatedFunction.C Self "is_ok_or_revert" is_ok_or_revert.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_ok_or_revert.
     
@@ -1677,6 +1679,7 @@ Module instruction_result.
     
     Global Instance AssociatedFunction_is_revert :
       M.IsAssociatedFunction.C Self "is_revert" is_revert.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_revert.
     
@@ -1899,6 +1902,7 @@ Module instruction_result.
       end.
     
     Global Instance AssociatedFunction_is_error : M.IsAssociatedFunction.C Self "is_error" is_error.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_error.
   End Impl_revm_interpreter_instruction_result_InstructionResult.
@@ -2330,13 +2334,14 @@ Module instruction_result.
                       "revm_interpreter::instruction_result::SuccessOrHalt::Success",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_context_interface::result::SuccessReason" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "revm_interpreter::instruction_result::SuccessOrHalt::Success"
@@ -2379,7 +2384,12 @@ Module instruction_result.
                       "revm_interpreter::instruction_result::SuccessOrHalt::Halt",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ HaltReasonTr ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ HaltReasonTr ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
                     []
@@ -2421,13 +2431,14 @@ Module instruction_result.
                       "revm_interpreter::instruction_result::SuccessOrHalt::Internal",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_interpreter::instruction_result::InternalResult" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "revm_interpreter::instruction_result::SuccessOrHalt::Internal"
@@ -2509,13 +2520,14 @@ Module instruction_result.
                       "revm_interpreter::instruction_result::SuccessOrHalt::Success",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_context_interface::result::SuccessReason" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -2590,7 +2602,12 @@ Module instruction_result.
                       "revm_interpreter::instruction_result::SuccessOrHalt::Halt",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ HaltReasonTr ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ HaltReasonTr ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -2659,13 +2676,14 @@ Module instruction_result.
                       "revm_interpreter::instruction_result::SuccessOrHalt::Internal",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_interpreter::instruction_result::InternalResult" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -2850,13 +2868,14 @@ Module instruction_result.
                               "revm_interpreter::instruction_result::SuccessOrHalt::Success",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "revm_context_interface::result::SuccessReason" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -2865,13 +2884,14 @@ Module instruction_result.
                               "revm_interpreter::instruction_result::SuccessOrHalt::Success",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "revm_context_interface::result::SuccessReason" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -2908,8 +2928,12 @@ Module instruction_result.
                               "revm_interpreter::instruction_result::SuccessOrHalt::Halt",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ HaltReasonTr ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ HaltReasonTr ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -2917,8 +2941,12 @@ Module instruction_result.
                               "revm_interpreter::instruction_result::SuccessOrHalt::Halt",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ HaltReasonTr ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ HaltReasonTr ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -2946,13 +2974,14 @@ Module instruction_result.
                               "revm_interpreter::instruction_result::SuccessOrHalt::Internal",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "revm_interpreter::instruction_result::InternalResult" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -2961,13 +2990,14 @@ Module instruction_result.
                               "revm_interpreter::instruction_result::SuccessOrHalt::Internal",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "revm_interpreter::instruction_result::InternalResult" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -3164,13 +3194,14 @@ Module instruction_result.
                           "revm_interpreter::instruction_result::SuccessOrHalt::Success",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "revm_context_interface::result::SuccessReason" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -3197,8 +3228,12 @@ Module instruction_result.
                           "revm_interpreter::instruction_result::SuccessOrHalt::Halt",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ HaltReasonTr ], γ1_0 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ HaltReasonTr ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
                       M.call_closure (|
                         Ty.tuple [],
                         M.get_trait_method (|
@@ -3224,13 +3259,14 @@ Module instruction_result.
                           "revm_interpreter::instruction_result::SuccessOrHalt::Internal",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "revm_interpreter::instruction_result::InternalResult" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -3315,6 +3351,7 @@ Module instruction_result.
     Global Instance AssociatedFunction_is_success :
       forall (HaltReasonTr : Ty.t),
       M.IsAssociatedFunction.C (Self HaltReasonTr) "is_success" (is_success HaltReasonTr).
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_success.
     
@@ -3381,6 +3418,7 @@ Module instruction_result.
     Global Instance AssociatedFunction_to_success :
       forall (HaltReasonTr : Ty.t),
       M.IsAssociatedFunction.C (Self HaltReasonTr) "to_success" (to_success HaltReasonTr).
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_success.
     
@@ -3428,6 +3466,7 @@ Module instruction_result.
     Global Instance AssociatedFunction_is_revert :
       forall (HaltReasonTr : Ty.t),
       M.IsAssociatedFunction.C (Self HaltReasonTr) "is_revert" (is_revert HaltReasonTr).
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_revert.
     
@@ -3476,6 +3515,7 @@ Module instruction_result.
     Global Instance AssociatedFunction_is_halt :
       forall (HaltReasonTr : Ty.t),
       M.IsAssociatedFunction.C (Self HaltReasonTr) "is_halt" (is_halt HaltReasonTr).
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_halt.
     
@@ -3534,6 +3574,7 @@ Module instruction_result.
     Global Instance AssociatedFunction_to_halt :
       forall (HaltReasonTr : Ty.t),
       M.IsAssociatedFunction.C (Self HaltReasonTr) "to_halt" (to_halt HaltReasonTr).
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_halt.
   End Impl_revm_interpreter_instruction_result_SuccessOrHalt_HaltReasonTr.

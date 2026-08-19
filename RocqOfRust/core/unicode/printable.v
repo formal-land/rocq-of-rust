@@ -833,6 +833,7 @@ Module unicode.
     
     Global Instance Instance_IsFunction_check :
       M.IsFunction.C "core::unicode::printable::check" check.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check.
     
@@ -1627,6 +1628,7 @@ Module unicode.
     
     Global Instance Instance_IsFunction_is_printable :
       M.IsFunction.C "core::unicode::printable::is_printable" is_printable.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_printable.
     
@@ -1757,6 +1759,7 @@ Module unicode.
     
     Global Instance Instance_IsConstant_value_SINGLETONS0U :
       M.IsFunction.C "core::unicode::printable::SINGLETONS0U" value_SINGLETONS0U.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SINGLETONS0U.
     
@@ -2086,6 +2089,7 @@ Module unicode.
     
     Global Instance Instance_IsConstant_value_SINGLETONS0L :
       M.IsFunction.C "core::unicode::printable::SINGLETONS0L" value_SINGLETONS0L.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SINGLETONS0L.
     
@@ -2232,6 +2236,7 @@ Module unicode.
     
     Global Instance Instance_IsConstant_value_SINGLETONS1U :
       M.IsFunction.C "core::unicode::printable::SINGLETONS1U" value_SINGLETONS1U.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SINGLETONS1U.
     
@@ -2489,6 +2494,7 @@ Module unicode.
     
     Global Instance Instance_IsConstant_value_SINGLETONS1L :
       M.IsFunction.C "core::unicode::printable::SINGLETONS1L" value_SINGLETONS1L.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SINGLETONS1L.
     
@@ -2826,6 +2832,7 @@ Module unicode.
     
     Global Instance Instance_IsConstant_value_NORMAL0 :
       M.IsFunction.C "core::unicode::printable::NORMAL0" value_NORMAL0.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_NORMAL0.
     
@@ -3375,6 +3382,7 @@ Module unicode.
     
     Global Instance Instance_IsConstant_value_NORMAL1 :
       M.IsFunction.C "core::unicode::printable::NORMAL1" value_NORMAL1.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_NORMAL1.
   End printable.

@@ -418,6 +418,7 @@ Module iter.
         Global Instance AssociatedFunction_new :
           forall (N : Value.t) (I : Ty.t),
           M.IsAssociatedFunction.C (Self N I) "new" (new N I).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new.
         
@@ -637,6 +638,7 @@ Module iter.
         Global Instance AssociatedFunction_into_remainder :
           forall (N : Value.t) (I : Ty.t),
           M.IsAssociatedFunction.C (Self N I) "into_remainder" (into_remainder N I).
+        Proof.
         Admitted.
         Global Typeclasses Opaque into_remainder.
         (*
@@ -1056,6 +1058,7 @@ Module iter.
         Global Instance AssociatedFunction_next_back_remainder :
           forall (N : Value.t) (I : Ty.t),
           M.IsAssociatedFunction.C (Self N I) "next_back_remainder" (next_back_remainder N I).
+        Proof.
         Admitted.
         Global Typeclasses Opaque next_back_remainder.
       End Impl_core_iter_adapters_array_chunks_ArrayChunks_N_I.

@@ -23,6 +23,7 @@ Require Import revm.revm_interpreter.simulate.interpreter.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import revm.revm_primitives.links.hardfork.
 Require Import revm.revm_primitives.simulate.hardfork.
+Require Import revm.revm_state.links.account_info.
 
 Definition extcodehash
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -44,7 +45,7 @@ Definition extcodehash
       interpreter.(Interpreter.runtime_flag) in
   let set_hash account interpreter host :=
     let code_hash :=
-      if account.(AccountInfoLoad.is_empty) then
+      if account_info_load_is_empty account then
         Impl_FixedBytes.ZERO
       else
         account_info_load_code_hash account in
@@ -90,6 +91,48 @@ Definition extcodehash
     | Result.Ok account => set_hash account interpreter host
     | Result.Err _ => (halt_fatal interpreter, host)
     end))).
+
+Ltac load_account_info_code_hash_eq host_eq H_load :=
+  lazymatch type of H_load with
+  | @Host.load_account_info_skip_cold_load _ _ _ _ ?IHost
+      ?self ?address true ?skip_cold_load =
+      (Result.Ok ?account, ?self_after) =>
+      lazymatch goal with
+      | |- Run.t _
+          (SimulateM.Call
+            (?interpreter :: ?self_after :: ?stack)%stack
+            (Impl_Deref_for_AccountInfoLoad.run_deref ?ref_account).(Run.run_f)
+            _) =>
+          let H_account_read := fresh "H_account_read" in
+          assert (H_account_read :
+            CanRead.t
+              (interpreter :: self_after :: stack)%stack
+              account
+              ref_account) by (
+            first [
+              apply CanRead.Immediate
+            |
+              cbn;
+              unshelve eapply CanRead.Mutable;
+              [repeat constructor | reflexivity]
+            ]
+          );
+          let ref_account_info := fresh "ref_account_info" in
+          let H_deref := fresh "H_deref" in
+          let H_is_empty := fresh "H_is_empty" in
+          let H_code_hash_read := fresh "H_code_hash_read" in
+          destruct
+            (Host.Eq.load_account_info_skip_cold_load_code_hash
+              (t := host_eq)
+              interpreter self self_after address skip_cold_load
+              account stack ref_account H_load H_account_read)
+            as (ref_account_info & H_deref & H_is_empty & H_code_hash_read);
+          eapply Run.Call; [exact H_deref |];
+          cbn;
+          eapply Run.Call; [exact H_is_empty |];
+          cbn
+      end
+  end.
 
 Lemma extcodehash_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -144,26 +187,268 @@ Proof.
     s. {
       apply HostEq.
     }
-    remember (IHost.(Host.load_account_info_skip_cold_load) host
-      (Impl_IntoAddress_for_U256.into_address (t0.(RefStub.projection) s))
-      true
-      (i[Impl_Gas.remaining s0] <? (2600 - 100) mod 2 ^ 64)) as account_load.
-    destruct account_load as [[account|err] host_after]; cbn.
-    1: destruct account.(AccountInfoLoad.is_cold); cbn.
-    all: admit.
+    destruct
+      (IHost.(Host.load_account_info_skip_cold_load) host
+        (Impl_IntoAddress_for_U256.into_address (t0.(RefStub.projection) s))
+        true
+        (i[Impl_Gas.remaining s0] <? (2600 - 100) mod 2 ^ 64))
+      as [[account|load_error] host_after] eqn:H_account_load; cbn.
+    +
+      destruct account as [account_info account_is_cold account_is_empty]; cbn in *.
+      destruct account_is_cold; cbn.
+      * setoid_rewrite H_account_load.
+        cbn.
+        s. {
+          apply constants.COLD_ACCOUNT_ACCESS_COST_ADDITIONAL_eq.
+        }
+        cbn.
+        unfold gas_macro.
+        s. {
+          apply Impl_Gas.record_cost_interpreter_eq.
+        }
+        destruct Impl_Gas.record_cost; cbn.
+        -- eapply Run.Call. {
+             apply Run.Pure.
+           }
+           cbn.
+           eapply Run.Call. {
+             apply Run.Pure.
+           }
+           cbn.
+           apply Run.LetUnfold.
+           cbn.
+           setoid_rewrite H_account_load.
+           cbn.
+           load_account_info_code_hash_eq HostEq H_account_load.
+           lazymatch goal with
+           | |- context[account_info_load_is_empty ?account] =>
+               destruct (account_info_load_is_empty account)
+                 eqn:H_account_is_empty
+           end; cbn.
+           ++ s. {
+                apply Impl_FixedBytes.ZERO_eq.
+              }
+              s. {
+                apply Impl_IntoU256_for_B256.into_u256_eq.
+              }
+              s.
+           ++ s. {
+                exact H_deref.
+              }
+              specialize (H_code_hash_read eq_refl).
+              inversion H_code_hash_read; subst; cbn.
+              ** s. {
+                   apply Impl_IntoU256_for_B256.into_u256_eq.
+                 }
+                 s.
+              ** destruct run; cbn in H5 |- *.
+                 unshelve eapply Run.GetCanAccess.
+                 { econstructor; eassumption. }
+                 cbn.
+                 rewrite H5.
+                 cbn.
+                 s. {
+                   apply Impl_IntoU256_for_B256.into_u256_eq.
+                 }
+                 s.
+        -- eapply Run.Call. {
+             apply Run.Pure.
+           }
+           cbn.
+           s. {
+             eapply halt_oog_eq;
+             exact InterpreterTypesEq.
+           }
+           cbn.
+           setoid_rewrite H_account_load.
+           cbn.
+           apply Run.Pure.
+      * setoid_rewrite H_account_load.
+        cbn.
+        apply Run.LetUnfold.
+        cbn.
+        eapply Run.Call. {
+          apply Run.Pure.
+        }
+        cbn.
+        apply Run.LetUnfold.
+        cbn.
+        setoid_rewrite H_account_load.
+        cbn.
+        load_account_info_code_hash_eq HostEq H_account_load.
+        lazymatch goal with
+        | |- context[account_info_load_is_empty ?account] =>
+            destruct (account_info_load_is_empty account)
+              eqn:H_account_is_empty
+        end; cbn.
+        -- s. {
+             apply Impl_FixedBytes.ZERO_eq.
+           }
+           s. {
+             apply Impl_IntoU256_for_B256.into_u256_eq.
+           }
+           s.
+        -- s. {
+             exact H_deref.
+           }
+           specialize (H_code_hash_read eq_refl).
+           inversion H_code_hash_read; subst; cbn.
+           ++ s. {
+                apply Impl_IntoU256_for_B256.into_u256_eq.
+              }
+              s.
+           ++ destruct run; cbn in H5 |- *.
+              unshelve eapply Run.GetCanAccess.
+              { econstructor; eassumption. }
+              cbn.
+              rewrite H5.
+              cbn.
+              s. {
+                apply Impl_IntoU256_for_B256.into_u256_eq.
+              }
+              s.
+    +
+      destruct load_error; cbn.
+      * setoid_rewrite H_account_load.
+        cbn [LoadError.IsLink].
+        s.
+        setoid_rewrite H_account_load.
+        cbn [LoadError.IsLink].
+        s.
+        with_strategy transparent [φ] cbn.
+        setoid_rewrite H_account_load.
+        cbn.
+        s. {
+          eapply halt_fatal_eq;
+          exact InterpreterTypesEq.
+        }
+        cbn.
+        s.
+        exact (f_equal snd H_account_load).
+      * setoid_rewrite H_account_load.
+        cbn [LoadError.IsLink].
+        s.
+        setoid_rewrite H_account_load.
+        cbn [LoadError.IsLink].
+        s. {
+          eapply halt_oog_eq;
+          exact InterpreterTypesEq.
+        }
+        cbn.
+        s.
+        exact (f_equal snd H_account_load).
   }
   { s. {
       apply Impl_SpecId.is_enabled_in_eq.
     }
     destruct Impl_SpecId.is_enabled_in; cbn.
-    { gas_macro_eq idtac.
+    - gas_macro_eq idtac.
       s. {
         apply HostEq.
       }
-      destruct _.(Host.load_account_info_skip_cold_load) as [[account|err] ?host]; cbn.
-      1: destruct account.(AccountInfoLoad.is_empty); cbn.
-      all: admit.
-    }
-    all: admit.
+      destruct
+        (IHost.(Host.load_account_info_skip_cold_load) host
+          (Impl_IntoAddress_for_U256.into_address (t0.(RefStub.projection) s))
+          true false)
+        as [[account|load_error] host_after] eqn:H_account_load; cbn.
+      + destruct account as [account_info account_is_cold account_is_empty]; cbn in *.
+        cbn.
+        apply Run.LetUnfold.
+        cbn.
+        load_account_info_code_hash_eq HostEq H_account_load.
+        lazymatch goal with
+        | |- context[account_info_load_is_empty ?account] =>
+            destruct (account_info_load_is_empty account)
+              eqn:H_account_is_empty
+        end; cbn.
+        -- s. {
+             apply Impl_FixedBytes.ZERO_eq.
+           }
+           s. {
+             apply Impl_IntoU256_for_B256.into_u256_eq.
+           }
+           s.
+        -- s. {
+             exact H_deref.
+           }
+           specialize (H_code_hash_read eq_refl).
+           inversion H_code_hash_read; subst; cbn.
+           ++ s. {
+                apply Impl_IntoU256_for_B256.into_u256_eq.
+              }
+              s.
+           ++ destruct run; cbn in H5 |- *.
+              unshelve eapply Run.GetCanAccess.
+              { econstructor; eassumption. }
+              cbn.
+              rewrite H5.
+              cbn.
+              s. {
+                apply Impl_IntoU256_for_B256.into_u256_eq.
+              }
+              s.
+      + cbn.
+        s. {
+          eapply halt_fatal_eq;
+          exact InterpreterTypesEq.
+        }
+        cbn.
+        apply Run.PureEq.
+        cbn.
+        repeat f_equal.
+    - gas_macro_eq idtac.
+      s. {
+        apply HostEq.
+      }
+      destruct
+        (IHost.(Host.load_account_info_skip_cold_load) host
+          (Impl_IntoAddress_for_U256.into_address (t0.(RefStub.projection) s))
+          true false)
+        as [[account|load_error] host_after] eqn:H_account_load; cbn.
+      + destruct account as [account_info account_is_cold account_is_empty]; cbn in *.
+        cbn.
+        apply Run.LetUnfold.
+        cbn.
+        load_account_info_code_hash_eq HostEq H_account_load.
+        lazymatch goal with
+        | |- context[account_info_load_is_empty ?account] =>
+            destruct (account_info_load_is_empty account)
+              eqn:H_account_is_empty
+        end; cbn.
+        -- s. {
+             apply Impl_FixedBytes.ZERO_eq.
+           }
+           s. {
+             apply Impl_IntoU256_for_B256.into_u256_eq.
+           }
+           s.
+        -- s. {
+             exact H_deref.
+           }
+           specialize (H_code_hash_read eq_refl).
+           inversion H_code_hash_read; subst; cbn.
+           ++ s. {
+                apply Impl_IntoU256_for_B256.into_u256_eq.
+              }
+              s.
+           ++ destruct run; cbn in H5 |- *.
+              unshelve eapply Run.GetCanAccess.
+              { econstructor; eassumption. }
+              cbn.
+              rewrite H5.
+              cbn.
+              s. {
+                apply Impl_IntoU256_for_B256.into_u256_eq.
+              }
+              s.
+      + cbn.
+        s. {
+          eapply halt_fatal_eq;
+          exact InterpreterTypesEq.
+        }
+        cbn.
+        apply Run.PureEq.
+        cbn.
+        repeat f_equal.
   }
-Admitted.
+Qed.

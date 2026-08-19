@@ -60,8 +60,12 @@ Module string.
                       "ruint::string::ParseError::InvalidDigit",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "char" ], γ1_0 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "char" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -106,7 +110,12 @@ Module string.
                       "ruint::string::ParseError::InvalidRadix",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -151,10 +160,11 @@ Module string.
                       "ruint::string::ParseError::BaseConvertError",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "ruint::base_convert::BaseConvertError" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -362,8 +372,12 @@ Module string.
                               "ruint::string::ParseError::InvalidDigit",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "char" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "char" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -371,8 +385,12 @@ Module string.
                               "ruint::string::ParseError::InvalidDigit",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "char" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "char" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -400,8 +418,12 @@ Module string.
                               "ruint::string::ParseError::InvalidRadix",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -409,8 +431,12 @@ Module string.
                               "ruint::string::ParseError::InvalidRadix",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -438,13 +464,14 @@ Module string.
                               "ruint::string::ParseError::BaseConvertError",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "ruint::base_convert::BaseConvertError" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -453,13 +480,14 @@ Module string.
                               "ruint::string::ParseError::BaseConvertError",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "ruint::base_convert::BaseConvertError" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -592,10 +620,11 @@ Module string.
                       "ruint::string::ParseError::BaseConvertError",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let e :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "ruint::base_convert::BaseConvertError" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "core::option::Option::Some"
@@ -704,10 +733,11 @@ Module string.
                       "ruint::string::ParseError::BaseConvertError",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let e :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "ruint::base_convert::BaseConvertError" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -737,7 +767,12 @@ Module string.
                       "ruint::string::ParseError::InvalidDigit",
                       0
                     |) in
-                  let c := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "char" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let c :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "char" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -846,7 +881,12 @@ Module string.
                       "ruint::string::ParseError::InvalidRadix",
                       0
                     |) in
-                  let r := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let r :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -1924,6 +1964,7 @@ Module string.
     Global Instance AssociatedFunction_from_str_radix :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "from_str_radix" (from_str_radix BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_str_radix.
   End Impl_ruint_Uint_BITS_LIMBS.

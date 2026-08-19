@@ -100,6 +100,7 @@ Module ptr.
   
   Global Instance Instance_IsFunction_copy_nonoverlapping :
     M.IsFunction.C "core::ptr::copy_nonoverlapping" copy_nonoverlapping.
+  Proof.
   Admitted.
   Global Typeclasses Opaque copy_nonoverlapping.
   
@@ -199,6 +200,7 @@ Module ptr.
     end.
   
   Global Instance Instance_IsFunction_copy : M.IsFunction.C "core::ptr::copy" copy.
+  Proof.
   Admitted.
   Global Typeclasses Opaque copy.
   
@@ -293,6 +295,7 @@ Module ptr.
   
   Global Instance Instance_IsFunction_write_bytes :
     M.IsFunction.C "core::ptr::write_bytes" write_bytes.
+  Proof.
   Admitted.
   Global Typeclasses Opaque write_bytes.
   
@@ -323,6 +326,7 @@ Module ptr.
   
   Global Instance Instance_IsFunction_drop_in_place :
     M.IsFunction.C "core::ptr::drop_in_place" drop_in_place.
+  Proof.
   Admitted.
   Global Typeclasses Opaque drop_in_place.
   
@@ -351,6 +355,7 @@ Module ptr.
     end.
   
   Global Instance Instance_IsFunction_null : M.IsFunction.C "core::ptr::null" null.
+  Proof.
   Admitted.
   Global Typeclasses Opaque null.
   
@@ -379,6 +384,7 @@ Module ptr.
     end.
   
   Global Instance Instance_IsFunction_null_mut : M.IsFunction.C "core::ptr::null_mut" null_mut.
+  Proof.
   Admitted.
   Global Typeclasses Opaque null_mut.
   
@@ -411,6 +417,7 @@ Module ptr.
   
   Global Instance Instance_IsFunction_without_provenance :
     M.IsFunction.C "core::ptr::without_provenance" without_provenance.
+  Proof.
   Admitted.
   Global Typeclasses Opaque without_provenance.
   
@@ -441,6 +448,7 @@ Module ptr.
     end.
   
   Global Instance Instance_IsFunction_dangling : M.IsFunction.C "core::ptr::dangling" dangling.
+  Proof.
   Admitted.
   Global Typeclasses Opaque dangling.
   
@@ -473,6 +481,7 @@ Module ptr.
   
   Global Instance Instance_IsFunction_without_provenance_mut :
     M.IsFunction.C "core::ptr::without_provenance_mut" without_provenance_mut.
+  Proof.
   Admitted.
   Global Typeclasses Opaque without_provenance_mut.
   
@@ -511,6 +520,7 @@ Module ptr.
   
   Global Instance Instance_IsFunction_dangling_mut :
     M.IsFunction.C "core::ptr::dangling_mut" dangling_mut.
+  Proof.
   Admitted.
   Global Typeclasses Opaque dangling_mut.
   
@@ -530,6 +540,7 @@ Module ptr.
   
   Global Instance Instance_IsFunction_with_exposed_provenance :
     M.IsFunction.C "core::ptr::with_exposed_provenance" with_exposed_provenance.
+  Proof.
   Admitted.
   Global Typeclasses Opaque with_exposed_provenance.
   
@@ -553,6 +564,7 @@ Module ptr.
   
   Global Instance Instance_IsFunction_with_exposed_provenance_mut :
     M.IsFunction.C "core::ptr::with_exposed_provenance_mut" with_exposed_provenance_mut.
+  Proof.
   Admitted.
   Global Typeclasses Opaque with_exposed_provenance_mut.
   
@@ -571,6 +583,7 @@ Module ptr.
     end.
   
   Global Instance Instance_IsFunction_from_ref : M.IsFunction.C "core::ptr::from_ref" from_ref.
+  Proof.
   Admitted.
   Global Typeclasses Opaque from_ref.
   
@@ -589,6 +602,7 @@ Module ptr.
     end.
   
   Global Instance Instance_IsFunction_from_mut : M.IsFunction.C "core::ptr::from_mut" from_mut.
+  Proof.
   Admitted.
   Global Typeclasses Opaque from_mut.
   
@@ -617,6 +631,7 @@ Module ptr.
   
   Global Instance Instance_IsFunction_slice_from_raw_parts :
     M.IsFunction.C "core::ptr::slice_from_raw_parts" slice_from_raw_parts.
+  Proof.
   Admitted.
   Global Typeclasses Opaque slice_from_raw_parts.
   
@@ -645,6 +660,7 @@ Module ptr.
   
   Global Instance Instance_IsFunction_slice_from_raw_parts_mut :
     M.IsFunction.C "core::ptr::slice_from_raw_parts_mut" slice_from_raw_parts_mut.
+  Proof.
   Admitted.
   Global Typeclasses Opaque slice_from_raw_parts_mut.
   
@@ -752,6 +768,7 @@ Module ptr.
     end.
   
   Global Instance Instance_IsFunction_swap : M.IsFunction.C "core::ptr::swap" swap.
+  Proof.
   Admitted.
   Global Typeclasses Opaque swap.
   
@@ -895,6 +912,7 @@ Module ptr.
   
   Global Instance Instance_IsFunction_swap_nonoverlapping :
     M.IsFunction.C "core::ptr::swap_nonoverlapping" swap_nonoverlapping.
+  Proof.
   Admitted.
   Global Typeclasses Opaque swap_nonoverlapping.
   
@@ -1100,6 +1118,7 @@ Module ptr.
   
   Global Instance Instance_IsFunction_swap_nonoverlapping_const :
     M.IsFunction.C "core::ptr::swap_nonoverlapping_const" swap_nonoverlapping_const.
+  Proof.
   Admitted.
   Global Typeclasses Opaque swap_nonoverlapping_const.
   
@@ -1163,6 +1182,7 @@ Module ptr.
   
   Global Instance Instance_IsFunction_swap_chunk :
     M.IsFunction.C "core::ptr::swap_chunk" swap_chunk.
+  Proof.
   Admitted.
   Global Typeclasses Opaque swap_chunk.
   
@@ -1516,6 +1536,7 @@ Module ptr.
   
   Global Instance Instance_IsFunction_swap_nonoverlapping_bytes :
     M.IsFunction.C "core::ptr::swap_nonoverlapping_bytes" swap_nonoverlapping_bytes.
+  Proof.
   Admitted.
   Global Typeclasses Opaque swap_nonoverlapping_bytes.
   
@@ -1798,6 +1819,7 @@ Module ptr.
       M.IsFunction.C
         "core::ptr::swap_nonoverlapping_bytes::swap_nonoverlapping_chunks"
         swap_nonoverlapping_chunks.
+    Proof.
     Admitted.
     Global Typeclasses Opaque swap_nonoverlapping_chunks.
     
@@ -2470,6 +2492,7 @@ Module ptr.
       M.IsFunction.C
         "core::ptr::swap_nonoverlapping_bytes::swap_nonoverlapping_short"
         swap_nonoverlapping_short.
+    Proof.
     Admitted.
     Global Typeclasses Opaque swap_nonoverlapping_short.
     
@@ -2490,6 +2513,7 @@ Module ptr.
     
     Global Instance Instance_IsConstant_value_CHUNK_SIZE :
       M.IsFunction.C "core::ptr::swap_nonoverlapping_bytes::CHUNK_SIZE" value_CHUNK_SIZE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_CHUNK_SIZE.
   End swap_nonoverlapping_bytes.
@@ -2584,6 +2608,7 @@ Module ptr.
     end.
   
   Global Instance Instance_IsFunction_replace : M.IsFunction.C "core::ptr::replace" replace.
+  Proof.
   Admitted.
   Global Typeclasses Opaque replace.
   
@@ -2694,6 +2719,7 @@ Module ptr.
     end.
   
   Global Instance Instance_IsFunction_read : M.IsFunction.C "core::ptr::read" read.
+  Proof.
   Admitted.
   Global Typeclasses Opaque read.
   
@@ -2773,6 +2799,7 @@ Module ptr.
   
   Global Instance Instance_IsFunction_read_unaligned :
     M.IsFunction.C "core::ptr::read_unaligned" read_unaligned.
+  Proof.
   Admitted.
   Global Typeclasses Opaque read_unaligned.
   
@@ -2868,6 +2895,7 @@ Module ptr.
     end.
   
   Global Instance Instance_IsFunction_write : M.IsFunction.C "core::ptr::write" write.
+  Proof.
   Admitted.
   Global Typeclasses Opaque write.
   
@@ -2919,6 +2947,7 @@ Module ptr.
   
   Global Instance Instance_IsFunction_write_unaligned :
     M.IsFunction.C "core::ptr::write_unaligned" write_unaligned.
+  Proof.
   Admitted.
   Global Typeclasses Opaque write_unaligned.
   
@@ -3000,6 +3029,7 @@ Module ptr.
   
   Global Instance Instance_IsFunction_read_volatile :
     M.IsFunction.C "core::ptr::read_volatile" read_volatile.
+  Proof.
   Admitted.
   Global Typeclasses Opaque read_volatile.
   
@@ -3081,6 +3111,7 @@ Module ptr.
   
   Global Instance Instance_IsFunction_write_volatile :
     M.IsFunction.C "core::ptr::write_volatile" write_volatile.
+  Proof.
   Admitted.
   Global Typeclasses Opaque write_volatile.
   
@@ -3689,6 +3720,7 @@ Module ptr.
   
   Global Instance Instance_IsFunction_align_offset :
     M.IsFunction.C "core::ptr::align_offset" align_offset.
+  Proof.
   Admitted.
   Global Typeclasses Opaque align_offset.
   
@@ -3923,6 +3955,7 @@ Module ptr.
     
     Global Instance Instance_IsFunction_mod_inv :
       M.IsFunction.C "core::ptr::align_offset::mod_inv" mod_inv.
+    Proof.
     Admitted.
     Global Typeclasses Opaque mod_inv.
     
@@ -3946,6 +3979,7 @@ Module ptr.
       
       Global Instance Instance_IsConstant_value_INV_TABLE_MOD_16 :
         M.IsFunction.C "core::ptr::align_offset::mod_inv::INV_TABLE_MOD_16" value_INV_TABLE_MOD_16.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_INV_TABLE_MOD_16.
       
@@ -3954,6 +3988,7 @@ Module ptr.
       
       Global Instance Instance_IsConstant_value_INV_TABLE_MOD :
         M.IsFunction.C "core::ptr::align_offset::mod_inv::INV_TABLE_MOD" value_INV_TABLE_MOD.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_INV_TABLE_MOD.
     End mod_inv.
@@ -3975,6 +4010,7 @@ Module ptr.
     end.
   
   Global Instance Instance_IsFunction_eq : M.IsFunction.C "core::ptr::eq" eq.
+  Proof.
   Admitted.
   Global Typeclasses Opaque eq.
   
@@ -4001,6 +4037,7 @@ Module ptr.
     end.
   
   Global Instance Instance_IsFunction_addr_eq : M.IsFunction.C "core::ptr::addr_eq" addr_eq.
+  Proof.
   Admitted.
   Global Typeclasses Opaque addr_eq.
   
@@ -4036,6 +4073,7 @@ Module ptr.
   
   Global Instance Instance_IsFunction_fn_addr_eq :
     M.IsFunction.C "core::ptr::fn_addr_eq" fn_addr_eq.
+  Proof.
   Admitted.
   Global Typeclasses Opaque fn_addr_eq.
   
@@ -4075,6 +4113,7 @@ Module ptr.
     end.
   
   Global Instance Instance_IsFunction_hash : M.IsFunction.C "core::ptr::hash" hash.
+  Proof.
   Admitted.
   Global Typeclasses Opaque hash.
   

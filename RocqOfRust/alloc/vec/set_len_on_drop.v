@@ -40,6 +40,7 @@ Module vec.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -84,6 +85,7 @@ Module vec.
       
       Global Instance AssociatedFunction_increment_len :
         M.IsAssociatedFunction.C Self "increment_len" increment_len.
+      Proof.
       Admitted.
       Global Typeclasses Opaque increment_len.
       
@@ -113,6 +115,7 @@ Module vec.
       
       Global Instance AssociatedFunction_current_len :
         M.IsAssociatedFunction.C Self "current_len" current_len.
+      Proof.
       Admitted.
       Global Typeclasses Opaque current_len.
     End Impl_alloc_vec_set_len_on_drop_SetLenOnDrop.

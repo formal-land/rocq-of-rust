@@ -71,6 +71,7 @@ Module bls12_381.
     
     Global Instance Instance_IsConstant_value_PRECOMPILE :
       M.IsFunction.C "revm_precompile::bls12_381::map_fp2_to_g2::PRECOMPILE" value_PRECOMPILE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PRECOMPILE.
     
@@ -1020,6 +1021,7 @@ Module bls12_381.
     
     Global Instance Instance_IsFunction_map_fp2_to_g2 :
       M.IsFunction.C "revm_precompile::bls12_381::map_fp2_to_g2::map_fp2_to_g2" map_fp2_to_g2.
+    Proof.
     Admitted.
     Global Typeclasses Opaque map_fp2_to_g2.
   End map_fp2_to_g2.

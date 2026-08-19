@@ -998,14 +998,16 @@ Module collections.
                           "alloc::collections::btree::set::DifferenceInner::Stitch",
                           "other_iter"
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let self_iter :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ] ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
+                      let _ := M.read (| γ1_1 |) in
                       let other_iter :=
                         M.alloc (|
                           Ty.apply
@@ -1018,7 +1020,7 @@ Module collections.
                                 [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ]
                                 ]
                             ],
-                          γ1_1
+                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -1179,14 +1181,16 @@ Module collections.
                           "alloc::collections::btree::set::DifferenceInner::Search",
                           "other_set"
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let self_iter :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ] ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
+                      let _ := M.read (| γ1_1 |) in
                       let other_set :=
                         M.alloc (|
                           Ty.apply
@@ -1203,7 +1207,7 @@ Module collections.
                                     [ T; A ]
                                 ]
                             ],
-                          γ1_1
+                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -1358,13 +1362,14 @@ Module collections.
                           "alloc::collections::btree::set::DifferenceInner::Iterate",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let x :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ] ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -1859,21 +1864,23 @@ Module collections.
                           "alloc::collections::btree::set::IntersectionInner::Stitch",
                           "b"
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let a :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ] ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
+                      let _ := M.read (| γ1_1 |) in
                       let b :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ] ],
-                          γ1_1
+                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -2022,14 +2029,16 @@ Module collections.
                           "alloc::collections::btree::set::IntersectionInner::Search",
                           "large_set"
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let small_iter :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ] ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
+                      let _ := M.read (| γ1_1 |) in
                       let large_set :=
                         M.alloc (|
                           Ty.apply
@@ -2046,7 +2055,7 @@ Module collections.
                                     [ T; A ]
                                 ]
                             ],
-                          γ1_1
+                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -2201,6 +2210,7 @@ Module collections.
                           "alloc::collections::btree::set::IntersectionInner::Answer",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let x :=
                         M.alloc (|
                           Ty.apply
@@ -2212,7 +2222,7 @@ Module collections.
                                 []
                                 [ Ty.apply (Ty.path "&") [] [ T ] ]
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -2592,6 +2602,7 @@ Module collections.
         M.IsFunction.C
           "alloc::collections::btree::set::ITER_PERFORMANCE_TIPPING_SIZE_DIFF"
           value_ITER_PERFORMANCE_TIPPING_SIZE_DIFF.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_ITER_PERFORMANCE_TIPPING_SIZE_DIFF.
       
@@ -2649,6 +2660,7 @@ Module collections.
         Global Instance AssociatedFunction_new :
           forall (T : Ty.t),
           M.IsAssociatedFunction.C (Self T) "new" (new T).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new.
       End Impl_alloc_collections_btree_set_BTreeSet_T_alloc_alloc_Global.
@@ -2697,6 +2709,7 @@ Module collections.
         Global Instance AssociatedFunction_new_in :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "new_in" (new_in T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new_in.
         
@@ -2763,6 +2776,7 @@ Module collections.
         Global Instance AssociatedFunction_range :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "range" (range T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque range.
         
@@ -3442,6 +3456,7 @@ Module collections.
         Global Instance AssociatedFunction_difference :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "difference" (difference T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque difference.
         
@@ -3531,6 +3546,7 @@ Module collections.
         Global Instance AssociatedFunction_symmetric_difference :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "symmetric_difference" (symmetric_difference T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque symmetric_difference.
         
@@ -4150,6 +4166,7 @@ Module collections.
         Global Instance AssociatedFunction_intersection :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "intersection" (intersection T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque intersection.
         
@@ -4231,6 +4248,7 @@ Module collections.
         Global Instance AssociatedFunction_union :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "union" (union T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque union.
         
@@ -4283,6 +4301,7 @@ Module collections.
         Global Instance AssociatedFunction_clear :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "clear" (clear T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque clear.
         
@@ -4343,6 +4362,7 @@ Module collections.
         Global Instance AssociatedFunction_contains :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "contains" (contains T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque contains.
         
@@ -4477,6 +4497,7 @@ Module collections.
         Global Instance AssociatedFunction_get :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "get" (get T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque get.
         
@@ -4588,6 +4609,7 @@ Module collections.
         Global Instance AssociatedFunction_is_disjoint :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "is_disjoint" (is_disjoint T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque is_disjoint.
         
@@ -5642,6 +5664,7 @@ Module collections.
         Global Instance AssociatedFunction_is_subset :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "is_subset" (is_subset T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque is_subset.
         
@@ -5698,6 +5721,7 @@ Module collections.
         Global Instance AssociatedFunction_is_superset :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "is_superset" (is_superset T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque is_superset.
         
@@ -5829,6 +5853,7 @@ Module collections.
         Global Instance AssociatedFunction_first :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "first" (first T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque first.
         
@@ -5960,6 +5985,7 @@ Module collections.
         Global Instance AssociatedFunction_last :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "last" (last T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque last.
         
@@ -6069,6 +6095,7 @@ Module collections.
         Global Instance AssociatedFunction_pop_first :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "pop_first" (pop_first T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque pop_first.
         
@@ -6178,6 +6205,7 @@ Module collections.
         Global Instance AssociatedFunction_pop_last :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "pop_last" (pop_last T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque pop_last.
         
@@ -6271,6 +6299,7 @@ Module collections.
         Global Instance AssociatedFunction_insert :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "insert" (insert T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque insert.
         
@@ -6325,6 +6354,7 @@ Module collections.
         Global Instance AssociatedFunction_replace :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "replace" (replace T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque replace.
         
@@ -6424,6 +6454,7 @@ Module collections.
         Global Instance AssociatedFunction_get_or_insert :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "get_or_insert" (get_or_insert T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque get_or_insert.
         
@@ -6492,6 +6523,7 @@ Module collections.
         Global Instance AssociatedFunction_get_or_insert_with :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "get_or_insert_with" (get_or_insert_with T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque get_or_insert_with.
         
@@ -6617,6 +6649,7 @@ Module collections.
         Global Instance AssociatedFunction_entry :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "entry" (entry T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque entry.
         
@@ -6698,6 +6731,7 @@ Module collections.
         Global Instance AssociatedFunction_remove :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "remove" (remove T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque remove.
         
@@ -6799,6 +6833,7 @@ Module collections.
         Global Instance AssociatedFunction_take :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "take" (take T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque take.
         
@@ -6929,6 +6964,7 @@ Module collections.
         Global Instance AssociatedFunction_retain :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "retain" (retain T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque retain.
         
@@ -7007,6 +7043,7 @@ Module collections.
         Global Instance AssociatedFunction_append :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "append" (append T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque append.
         
@@ -7077,6 +7114,7 @@ Module collections.
         Global Instance AssociatedFunction_split_off :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "split_off" (split_off T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque split_off.
         
@@ -7184,6 +7222,7 @@ Module collections.
         Global Instance AssociatedFunction_extract_if :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "extract_if" (extract_if T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque extract_if.
         
@@ -7243,6 +7282,7 @@ Module collections.
         Global Instance AssociatedFunction_iter :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "iter" (iter T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque iter.
         
@@ -7292,6 +7332,7 @@ Module collections.
         Global Instance AssociatedFunction_len :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "len" (len T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque len.
         
@@ -7341,6 +7382,7 @@ Module collections.
         Global Instance AssociatedFunction_is_empty :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "is_empty" (is_empty T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque is_empty.
         
@@ -7418,6 +7460,7 @@ Module collections.
         Global Instance AssociatedFunction_lower_bound :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "lower_bound" (lower_bound T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque lower_bound.
         
@@ -7495,6 +7538,7 @@ Module collections.
         Global Instance AssociatedFunction_lower_bound_mut :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "lower_bound_mut" (lower_bound_mut T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque lower_bound_mut.
         
@@ -7572,6 +7616,7 @@ Module collections.
         Global Instance AssociatedFunction_upper_bound :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "upper_bound" (upper_bound T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque upper_bound.
         
@@ -7649,6 +7694,7 @@ Module collections.
         Global Instance AssociatedFunction_upper_bound_mut :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "upper_bound_mut" (upper_bound_mut T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque upper_bound_mut.
         (*
@@ -7793,6 +7839,7 @@ Module collections.
         Global Instance AssociatedFunction_from_sorted_iter :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "from_sorted_iter" (from_sorted_iter T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque from_sorted_iter.
       End Impl_alloc_collections_btree_set_BTreeSet_T_A.
@@ -11568,6 +11615,7 @@ Module collections.
                                 "alloc::collections::btree::set::DifferenceInner::Stitch",
                                 "other_iter"
                               |) in
+                            let _ := M.read (| γ1_0 |) in
                             let self_iter :=
                               M.alloc (|
                                 Ty.apply
@@ -11579,8 +11627,9 @@ Module collections.
                                       []
                                       [ T ]
                                   ],
-                                γ1_0
+                                M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                               |) in
+                            let _ := M.read (| γ1_1 |) in
                             let other_iter :=
                               M.alloc (|
                                 Ty.apply
@@ -11597,7 +11646,7 @@ Module collections.
                                           [ T ]
                                       ]
                                   ],
-                                γ1_1
+                                M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                               |) in
                             Value.mkStructRecord
                               "alloc::collections::btree::set::DifferenceInner::Stitch"
@@ -11680,6 +11729,7 @@ Module collections.
                                 "alloc::collections::btree::set::DifferenceInner::Search",
                                 "other_set"
                               |) in
+                            let _ := M.read (| γ1_0 |) in
                             let self_iter :=
                               M.alloc (|
                                 Ty.apply
@@ -11691,8 +11741,9 @@ Module collections.
                                       []
                                       [ T ]
                                   ],
-                                γ1_0
+                                M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                               |) in
+                            let _ := M.read (| γ1_1 |) in
                             let other_set :=
                               M.alloc (|
                                 Ty.apply
@@ -11709,7 +11760,7 @@ Module collections.
                                           [ T; A ]
                                       ]
                                   ],
-                                γ1_1
+                                M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                               |) in
                             Value.mkStructRecord
                               "alloc::collections::btree::set::DifferenceInner::Search"
@@ -11756,6 +11807,7 @@ Module collections.
                                 "alloc::collections::btree::set::DifferenceInner::Iterate",
                                 0
                               |) in
+                            let _ := M.read (| γ1_0 |) in
                             let iter :=
                               M.alloc (|
                                 Ty.apply
@@ -11767,7 +11819,7 @@ Module collections.
                                       []
                                       [ T ]
                                   ],
-                                γ1_0
+                                M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                               |) in
                             Value.StructTuple
                               "alloc::collections::btree::set::DifferenceInner::Iterate"
@@ -11905,6 +11957,7 @@ Module collections.
                               "alloc::collections::btree::set::DifferenceInner::Stitch",
                               "other_iter"
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let self_iter :=
                             M.alloc (|
                               Ty.apply
@@ -11912,8 +11965,9 @@ Module collections.
                                 []
                                 [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ]
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                             |) in
+                          let _ := M.read (| γ1_1 |) in
                           let other_iter :=
                             M.alloc (|
                               Ty.apply
@@ -11930,7 +11984,7 @@ Module collections.
                                         [ T ]
                                     ]
                                 ],
-                              γ1_1
+                              M.borrow (| Pointer.Kind.MutRef, γ1_1 |)
                             |) in
                           M.read (|
                             let~ self_next : Ty.apply (Ty.path "&") [] [ T ] :=
@@ -12534,6 +12588,7 @@ Module collections.
                               "alloc::collections::btree::set::DifferenceInner::Search",
                               "other_set"
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let self_iter :=
                             M.alloc (|
                               Ty.apply
@@ -12541,8 +12596,9 @@ Module collections.
                                 []
                                 [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ]
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                             |) in
+                          let _ := M.read (| γ1_1 |) in
                           let other_set :=
                             M.alloc (|
                               Ty.apply
@@ -12559,7 +12615,7 @@ Module collections.
                                         [ T; A ]
                                     ]
                                 ],
-                              γ1_1
+                              M.borrow (| Pointer.Kind.MutRef, γ1_1 |)
                             |) in
                           M.never_to_any (|
                             M.read (|
@@ -12782,6 +12838,7 @@ Module collections.
                               "alloc::collections::btree::set::DifferenceInner::Iterate",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let iter :=
                             M.alloc (|
                               Ty.apply
@@ -12789,7 +12846,7 @@ Module collections.
                                 []
                                 [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ]
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                             |) in
                           M.call_closure (|
                             Ty.apply
@@ -12888,6 +12945,7 @@ Module collections.
                               "alloc::collections::btree::set::DifferenceInner::Stitch",
                               "other_iter"
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let self_iter :=
                             M.alloc (|
                               Ty.apply
@@ -12895,8 +12953,9 @@ Module collections.
                                 []
                                 [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ]
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                             |) in
+                          let _ := M.read (| γ1_1 |) in
                           let other_iter :=
                             M.alloc (|
                               Ty.apply
@@ -12913,7 +12972,7 @@ Module collections.
                                         [ T ]
                                     ]
                                 ],
-                              γ1_1
+                              M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                             |) in
                           Value.Tuple
                             [
@@ -12980,6 +13039,7 @@ Module collections.
                               "alloc::collections::btree::set::DifferenceInner::Search",
                               "other_set"
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let self_iter :=
                             M.alloc (|
                               Ty.apply
@@ -12987,8 +13047,9 @@ Module collections.
                                 []
                                 [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ]
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                             |) in
+                          let _ := M.read (| γ1_1 |) in
                           let other_set :=
                             M.alloc (|
                               Ty.apply
@@ -13005,7 +13066,7 @@ Module collections.
                                         [ T; A ]
                                     ]
                                 ],
-                              γ1_1
+                              M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                             |) in
                           Value.Tuple
                             [
@@ -13058,6 +13119,7 @@ Module collections.
                               "alloc::collections::btree::set::DifferenceInner::Iterate",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let iter :=
                             M.alloc (|
                               Ty.apply
@@ -13065,7 +13127,7 @@ Module collections.
                                 []
                                 [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ]
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                             |) in
                           Value.Tuple
                             [
@@ -13714,6 +13776,7 @@ Module collections.
                                 "alloc::collections::btree::set::IntersectionInner::Stitch",
                                 "b"
                               |) in
+                            let _ := M.read (| γ1_0 |) in
                             let a :=
                               M.alloc (|
                                 Ty.apply
@@ -13725,8 +13788,9 @@ Module collections.
                                       []
                                       [ T ]
                                   ],
-                                γ1_0
+                                M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                               |) in
+                            let _ := M.read (| γ1_1 |) in
                             let b :=
                               M.alloc (|
                                 Ty.apply
@@ -13738,7 +13802,7 @@ Module collections.
                                       []
                                       [ T ]
                                   ],
-                                γ1_1
+                                M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                               |) in
                             Value.mkStructRecord
                               "alloc::collections::btree::set::IntersectionInner::Stitch"
@@ -13803,6 +13867,7 @@ Module collections.
                                 "alloc::collections::btree::set::IntersectionInner::Search",
                                 "large_set"
                               |) in
+                            let _ := M.read (| γ1_0 |) in
                             let small_iter :=
                               M.alloc (|
                                 Ty.apply
@@ -13814,8 +13879,9 @@ Module collections.
                                       []
                                       [ T ]
                                   ],
-                                γ1_0
+                                M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                               |) in
+                            let _ := M.read (| γ1_1 |) in
                             let large_set :=
                               M.alloc (|
                                 Ty.apply
@@ -13832,7 +13898,7 @@ Module collections.
                                           [ T; A ]
                                       ]
                                   ],
-                                γ1_1
+                                M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                               |) in
                             Value.mkStructRecord
                               "alloc::collections::btree::set::IntersectionInner::Search"
@@ -13879,6 +13945,7 @@ Module collections.
                                 "alloc::collections::btree::set::IntersectionInner::Answer",
                                 0
                               |) in
+                            let _ := M.read (| γ1_0 |) in
                             let answer :=
                               M.alloc (|
                                 Ty.apply
@@ -13890,7 +13957,7 @@ Module collections.
                                       []
                                       [ Ty.apply (Ty.path "&") [] [ T ] ]
                                   ],
-                                γ1_0
+                                M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                               |) in
                             Value.StructTuple
                               "alloc::collections::btree::set::IntersectionInner::Answer"
@@ -14004,6 +14071,7 @@ Module collections.
                               "alloc::collections::btree::set::IntersectionInner::Stitch",
                               "b"
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let a :=
                             M.alloc (|
                               Ty.apply
@@ -14011,8 +14079,9 @@ Module collections.
                                 []
                                 [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ]
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                             |) in
+                          let _ := M.read (| γ1_1 |) in
                           let b :=
                             M.alloc (|
                               Ty.apply
@@ -14020,7 +14089,7 @@ Module collections.
                                 []
                                 [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ]
                                 ],
-                              γ1_1
+                              M.borrow (| Pointer.Kind.MutRef, γ1_1 |)
                             |) in
                           M.read (|
                             let~ a_next : Ty.apply (Ty.path "&") [] [ T ] :=
@@ -14707,6 +14776,7 @@ Module collections.
                               "alloc::collections::btree::set::IntersectionInner::Search",
                               "large_set"
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let small_iter :=
                             M.alloc (|
                               Ty.apply
@@ -14714,8 +14784,9 @@ Module collections.
                                 []
                                 [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ]
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                             |) in
+                          let _ := M.read (| γ1_1 |) in
                           let large_set :=
                             M.alloc (|
                               Ty.apply
@@ -14732,7 +14803,7 @@ Module collections.
                                         [ T; A ]
                                     ]
                                 ],
-                              γ1_1
+                              M.borrow (| Pointer.Kind.MutRef, γ1_1 |)
                             |) in
                           M.never_to_any (|
                             M.read (|
@@ -14949,6 +15020,7 @@ Module collections.
                               "alloc::collections::btree::set::IntersectionInner::Answer",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let answer :=
                             M.alloc (|
                               Ty.apply
@@ -14960,7 +15032,7 @@ Module collections.
                                     []
                                     [ Ty.apply (Ty.path "&") [] [ T ] ]
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                             |) in
                           M.call_closure (|
                             Ty.apply
@@ -15055,21 +15127,23 @@ Module collections.
                           "alloc::collections::btree::set::IntersectionInner::Stitch",
                           "b"
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let a :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ] ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
+                      let _ := M.read (| γ1_1 |) in
                       let b :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ] ],
-                          γ1_1
+                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                         |) in
                       Value.Tuple
                         [
@@ -15130,13 +15204,14 @@ Module collections.
                           "alloc::collections::btree::set::IntersectionInner::Search",
                           "small_iter"
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let small_iter :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.apply (Ty.path "alloc::collections::btree::set::Iter") [] [ T ] ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       Value.Tuple
                         [
@@ -16011,6 +16086,7 @@ Module collections.
         Global Instance AssociatedFunction_next :
           forall (K : Ty.t),
           M.IsAssociatedFunction.C (Self K) "next" (next K).
+        Proof.
         Admitted.
         Global Typeclasses Opaque next.
         
@@ -16139,6 +16215,7 @@ Module collections.
         Global Instance AssociatedFunction_prev :
           forall (K : Ty.t),
           M.IsAssociatedFunction.C (Self K) "prev" (prev K).
+        Proof.
         Admitted.
         Global Typeclasses Opaque prev.
         
@@ -16267,6 +16344,7 @@ Module collections.
         Global Instance AssociatedFunction_peek_next :
           forall (K : Ty.t),
           M.IsAssociatedFunction.C (Self K) "peek_next" (peek_next K).
+        Proof.
         Admitted.
         Global Typeclasses Opaque peek_next.
         
@@ -16395,6 +16473,7 @@ Module collections.
         Global Instance AssociatedFunction_peek_prev :
           forall (K : Ty.t),
           M.IsAssociatedFunction.C (Self K) "peek_prev" (peek_prev K).
+        Proof.
         Admitted.
         Global Typeclasses Opaque peek_prev.
       End Impl_alloc_collections_btree_set_Cursor_K.
@@ -16528,6 +16607,7 @@ Module collections.
         Global Instance AssociatedFunction_next :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "next" (next T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque next.
         
@@ -16656,6 +16736,7 @@ Module collections.
         Global Instance AssociatedFunction_prev :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "prev" (prev T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque prev.
         
@@ -16789,6 +16870,7 @@ Module collections.
         Global Instance AssociatedFunction_peek_next :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "peek_next" (peek_next T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque peek_next.
         
@@ -16922,6 +17004,7 @@ Module collections.
         Global Instance AssociatedFunction_peek_prev :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "peek_prev" (peek_prev T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque peek_prev.
         
@@ -16986,6 +17069,7 @@ Module collections.
         Global Instance AssociatedFunction_as_cursor :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "as_cursor" (as_cursor T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque as_cursor.
         
@@ -17046,6 +17130,7 @@ Module collections.
         Global Instance AssociatedFunction_with_mutable_key :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "with_mutable_key" (with_mutable_key T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque with_mutable_key.
         (*
@@ -17102,6 +17187,7 @@ Module collections.
         Global Instance AssociatedFunction_insert_after_unchecked :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "insert_after_unchecked" (insert_after_unchecked T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque insert_after_unchecked.
         
@@ -17162,6 +17248,7 @@ Module collections.
             (Self T A)
             "insert_before_unchecked"
             (insert_before_unchecked T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque insert_before_unchecked.
         
@@ -17222,6 +17309,7 @@ Module collections.
         Global Instance AssociatedFunction_insert_after :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "insert_after" (insert_after T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque insert_after.
         
@@ -17282,6 +17370,7 @@ Module collections.
         Global Instance AssociatedFunction_insert_before :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "insert_before" (insert_before T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque insert_before.
         
@@ -17382,6 +17471,7 @@ Module collections.
         Global Instance AssociatedFunction_remove_next :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "remove_next" (remove_next T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque remove_next.
         
@@ -17482,6 +17572,7 @@ Module collections.
         Global Instance AssociatedFunction_remove_prev :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "remove_prev" (remove_prev T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque remove_prev.
       End Impl_alloc_collections_btree_set_CursorMut_T_A.
@@ -17617,6 +17708,7 @@ Module collections.
         Global Instance AssociatedFunction_next :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "next" (next T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque next.
         
@@ -17747,6 +17839,7 @@ Module collections.
         Global Instance AssociatedFunction_prev :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "prev" (prev T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque prev.
         
@@ -17882,6 +17975,7 @@ Module collections.
         Global Instance AssociatedFunction_peek_next :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "peek_next" (peek_next T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque peek_next.
         
@@ -18017,6 +18111,7 @@ Module collections.
         Global Instance AssociatedFunction_peek_prev :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "peek_prev" (peek_prev T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque peek_prev.
         
@@ -18082,6 +18177,7 @@ Module collections.
         Global Instance AssociatedFunction_as_cursor :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "as_cursor" (as_cursor T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque as_cursor.
         (*
@@ -18139,6 +18235,7 @@ Module collections.
         Global Instance AssociatedFunction_insert_after_unchecked :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "insert_after_unchecked" (insert_after_unchecked T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque insert_after_unchecked.
         
@@ -18200,6 +18297,7 @@ Module collections.
             (Self T A)
             "insert_before_unchecked"
             (insert_before_unchecked T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque insert_before_unchecked.
         
@@ -18261,6 +18359,7 @@ Module collections.
         Global Instance AssociatedFunction_insert_after :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "insert_after" (insert_after T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque insert_after.
         
@@ -18322,6 +18421,7 @@ Module collections.
         Global Instance AssociatedFunction_insert_before :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "insert_before" (insert_before T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque insert_before.
         
@@ -18423,6 +18523,7 @@ Module collections.
         Global Instance AssociatedFunction_remove_next :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "remove_next" (remove_next T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque remove_next.
         
@@ -18524,6 +18625,7 @@ Module collections.
         Global Instance AssociatedFunction_remove_prev :
           forall (T A : Ty.t),
           M.IsAssociatedFunction.C (Self T A) "remove_prev" (remove_prev T A).
+        Proof.
         Admitted.
         Global Typeclasses Opaque remove_prev.
       End Impl_alloc_collections_btree_set_CursorMutKey_T_A.

@@ -315,6 +315,7 @@ Definition comp_sci_student_greeting (ε : list Value.t) (τ : list Ty.t) (α : 
 
 Global Instance Instance_IsFunction_comp_sci_student_greeting :
   M.IsFunction.C "supertraits::comp_sci_student_greeting" comp_sci_student_greeting.
+Proof.
 Admitted.
 Global Typeclasses Opaque comp_sci_student_greeting.
 
@@ -326,5 +327,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "supertraits::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

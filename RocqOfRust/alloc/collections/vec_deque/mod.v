@@ -467,6 +467,7 @@ Module collections.
       Global Instance AssociatedFunction_ptr :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "ptr" (ptr T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque ptr.
       
@@ -555,6 +556,7 @@ Module collections.
       Global Instance AssociatedFunction_push_unchecked :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "push_unchecked" (push_unchecked T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque push_unchecked.
       
@@ -660,6 +662,7 @@ Module collections.
       Global Instance AssociatedFunction_push_front_unchecked :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "push_front_unchecked" (push_front_unchecked T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque push_front_unchecked.
       
@@ -733,6 +736,7 @@ Module collections.
       Global Instance AssociatedFunction_buffer_read :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "buffer_read" (buffer_read T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque buffer_read.
       
@@ -824,6 +828,7 @@ Module collections.
       Global Instance AssociatedFunction_buffer_write :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "buffer_write" (buffer_write T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque buffer_write.
       
@@ -912,6 +917,7 @@ Module collections.
       Global Instance AssociatedFunction_buffer_range :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "buffer_range" (buffer_range T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque buffer_range.
       
@@ -962,6 +968,7 @@ Module collections.
       Global Instance AssociatedFunction_is_full :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "is_full" (is_full T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_full.
       
@@ -1012,6 +1019,7 @@ Module collections.
       Global Instance AssociatedFunction_wrap_add :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "wrap_add" (wrap_add T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque wrap_add.
       
@@ -1065,6 +1073,7 @@ Module collections.
       Global Instance AssociatedFunction_to_physical_idx :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "to_physical_idx" (to_physical_idx T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_physical_idx.
       
@@ -1131,6 +1140,7 @@ Module collections.
       Global Instance AssociatedFunction_wrap_sub :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "wrap_sub" (wrap_sub T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque wrap_sub.
       
@@ -2363,6 +2373,7 @@ Module collections.
       Global Instance AssociatedFunction_nonoverlapping_ranges :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "nonoverlapping_ranges" (nonoverlapping_ranges T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque nonoverlapping_ranges.
       
@@ -3039,6 +3050,7 @@ Module collections.
       Global Instance AssociatedFunction_copy :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "copy" (copy T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque copy.
       
@@ -3720,6 +3732,7 @@ Module collections.
       Global Instance AssociatedFunction_copy_nonoverlapping :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "copy_nonoverlapping" (copy_nonoverlapping T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque copy_nonoverlapping.
       
@@ -5042,6 +5055,7 @@ Module collections.
       Global Instance AssociatedFunction_wrap_copy :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "wrap_copy" (wrap_copy T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque wrap_copy.
       
@@ -5484,6 +5498,7 @@ Module collections.
       Global Instance AssociatedFunction_copy_slice :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "copy_slice" (copy_slice T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque copy_slice.
       
@@ -5963,6 +5978,7 @@ Module collections.
       Global Instance AssociatedFunction_copy_slice_reversed :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "copy_slice_reversed" (copy_slice_reversed T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque copy_slice_reversed.
       
@@ -6102,6 +6118,7 @@ Module collections.
       Global Instance AssociatedFunction_write_iter :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "write_iter" (write_iter T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque write_iter.
       
@@ -6413,6 +6430,7 @@ Module collections.
       Global Instance AssociatedFunction_write_iter_wrapping :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "write_iter_wrapping" (write_iter_wrapping T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque write_iter_wrapping.
       
@@ -6877,6 +6895,7 @@ Module collections.
           (Self T A)
           "handle_capacity_increase"
           (handle_capacity_increase T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque handle_capacity_increase.
       
@@ -6935,6 +6954,7 @@ Module collections.
       Global Instance AssociatedFunction_extract_if :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "extract_if" (extract_if T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque extract_if.
       (*
@@ -6973,6 +6993,7 @@ Module collections.
       Global Instance AssociatedFunction_new_in :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "new_in" (new_in T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_in.
       
@@ -7018,6 +7039,7 @@ Module collections.
       Global Instance AssociatedFunction_with_capacity_in :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "with_capacity_in" (with_capacity_in T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque with_capacity_in.
       
@@ -7256,6 +7278,7 @@ Module collections.
           (Self T A)
           "from_contiguous_raw_parts_in"
           (from_contiguous_raw_parts_in T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_contiguous_raw_parts_in.
       
@@ -7394,6 +7417,7 @@ Module collections.
       Global Instance AssociatedFunction_get :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "get" (get T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque get.
       
@@ -7532,6 +7556,7 @@ Module collections.
       Global Instance AssociatedFunction_get_mut :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "get_mut" (get_mut T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut.
       
@@ -7756,6 +7781,7 @@ Module collections.
       Global Instance AssociatedFunction_swap :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "swap" (swap T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque swap.
       
@@ -7818,6 +7844,7 @@ Module collections.
       Global Instance AssociatedFunction_capacity :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "capacity" (capacity T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque capacity.
       
@@ -7969,6 +7996,7 @@ Module collections.
       Global Instance AssociatedFunction_reserve_exact :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "reserve_exact" (reserve_exact T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque reserve_exact.
       
@@ -8117,6 +8145,7 @@ Module collections.
       Global Instance AssociatedFunction_reserve :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "reserve" (reserve T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque reserve.
       
@@ -8544,6 +8573,7 @@ Module collections.
       Global Instance AssociatedFunction_try_reserve_exact :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "try_reserve_exact" (try_reserve_exact T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque try_reserve_exact.
       
@@ -8971,6 +9001,7 @@ Module collections.
       Global Instance AssociatedFunction_try_reserve :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "try_reserve" (try_reserve T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque try_reserve.
       
@@ -9020,6 +9051,7 @@ Module collections.
       Global Instance AssociatedFunction_shrink_to_fit :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "shrink_to_fit" (shrink_to_fit T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque shrink_to_fit.
       
@@ -9936,6 +9968,7 @@ Module collections.
       Global Instance AssociatedFunction_shrink_to :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "shrink_to" (shrink_to T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque shrink_to.
       
@@ -10206,6 +10239,7 @@ Module collections.
       Global Instance AssociatedFunction_abort_shrink :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "abort_shrink" (abort_shrink T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque abort_shrink.
       
@@ -10603,6 +10637,7 @@ Module collections.
       Global Instance AssociatedFunction_truncate :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "truncate" (truncate T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque truncate.
       
@@ -11105,6 +11140,7 @@ Module collections.
       Global Instance AssociatedFunction_truncate_front :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "truncate_front" (truncate_front T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque truncate_front.
       
@@ -11156,6 +11192,7 @@ Module collections.
       Global Instance AssociatedFunction_allocator :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "allocator" (allocator T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque allocator.
       
@@ -11255,6 +11292,7 @@ Module collections.
       Global Instance AssociatedFunction_iter :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "iter" (iter T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque iter.
       
@@ -11360,6 +11398,7 @@ Module collections.
       Global Instance AssociatedFunction_iter_mut :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "iter_mut" (iter_mut T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque iter_mut.
       
@@ -11511,6 +11550,7 @@ Module collections.
       Global Instance AssociatedFunction_as_slices :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "as_slices" (as_slices T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_slices.
       
@@ -11667,6 +11707,7 @@ Module collections.
       Global Instance AssociatedFunction_as_mut_slices :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "as_mut_slices" (as_mut_slices T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_mut_slices.
       
@@ -11701,6 +11742,7 @@ Module collections.
       Global Instance AssociatedFunction_len :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "len" (len T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque len.
       
@@ -11742,6 +11784,7 @@ Module collections.
       Global Instance AssociatedFunction_is_empty :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "is_empty" (is_empty T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_empty.
       
@@ -12087,6 +12130,7 @@ Module collections.
       Global Instance AssociatedFunction_slice_ranges :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "slice_ranges" (slice_ranges T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque slice_ranges.
       
@@ -12255,6 +12299,7 @@ Module collections.
       Global Instance AssociatedFunction_range :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "range" (range T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque range.
       
@@ -12456,6 +12501,7 @@ Module collections.
       Global Instance AssociatedFunction_range_mut :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "range_mut" (range_mut T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque range_mut.
       
@@ -12600,6 +12646,7 @@ Module collections.
       Global Instance AssociatedFunction_drain :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "drain" (drain T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque drain.
       
@@ -12655,6 +12702,7 @@ Module collections.
       Global Instance AssociatedFunction_clear :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "clear" (clear T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque clear.
       
@@ -12756,6 +12804,7 @@ Module collections.
       Global Instance AssociatedFunction_contains :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "contains" (contains T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque contains.
       
@@ -12796,6 +12845,7 @@ Module collections.
       Global Instance AssociatedFunction_front :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "front" (front T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque front.
       
@@ -12836,6 +12886,7 @@ Module collections.
       Global Instance AssociatedFunction_front_mut :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "front_mut" (front_mut T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque front_mut.
       
@@ -12889,6 +12940,7 @@ Module collections.
       Global Instance AssociatedFunction_back :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "back" (back T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque back.
       
@@ -12942,6 +12994,7 @@ Module collections.
       Global Instance AssociatedFunction_back_mut :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "back_mut" (back_mut T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque back_mut.
       
@@ -13116,6 +13169,7 @@ Module collections.
       Global Instance AssociatedFunction_pop_front :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "pop_front" (pop_front T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque pop_front.
       
@@ -13280,6 +13334,7 @@ Module collections.
       Global Instance AssociatedFunction_pop_back :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "pop_back" (pop_back T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque pop_back.
       
@@ -13486,6 +13541,7 @@ Module collections.
       Global Instance AssociatedFunction_pop_front_if :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "pop_front_if" (pop_front_if T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque pop_front_if.
       
@@ -13692,6 +13748,7 @@ Module collections.
       Global Instance AssociatedFunction_pop_back_if :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "pop_back_if" (pop_back_if T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque pop_back_if.
       
@@ -13745,6 +13802,7 @@ Module collections.
       Global Instance AssociatedFunction_push_front :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "push_front" (push_front T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque push_front.
       
@@ -13923,6 +13981,7 @@ Module collections.
       Global Instance AssociatedFunction_push_front_mut :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "push_front_mut" (push_front_mut T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque push_front_mut.
       
@@ -13971,6 +14030,7 @@ Module collections.
       Global Instance AssociatedFunction_push_back :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "push_back" (push_back T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque push_back.
       
@@ -14140,6 +14200,7 @@ Module collections.
       Global Instance AssociatedFunction_push_back_mut :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "push_back_mut" (push_back_mut T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque push_back_mut.
       
@@ -14239,6 +14300,7 @@ Module collections.
       Global Instance AssociatedFunction_prepend :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "prepend" (prepend T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque prepend.
       
@@ -14317,6 +14379,7 @@ Module collections.
       Global Instance AssociatedFunction_extend_front :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "extend_front" (extend_front T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque extend_front.
       
@@ -14386,6 +14449,7 @@ Module collections.
       Global Instance AssociatedFunction_is_contiguous :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "is_contiguous" (is_contiguous T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_contiguous.
       
@@ -14538,6 +14602,7 @@ Module collections.
       Global Instance AssociatedFunction_swap_remove_front :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "swap_remove_front" (swap_remove_front T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque swap_remove_front.
       
@@ -14701,6 +14766,7 @@ Module collections.
       Global Instance AssociatedFunction_swap_remove_back :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "swap_remove_back" (swap_remove_back T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque swap_remove_back.
       
@@ -14751,6 +14817,7 @@ Module collections.
       Global Instance AssociatedFunction_insert :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "insert" (insert T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque insert.
       
@@ -15272,6 +15339,7 @@ Module collections.
       Global Instance AssociatedFunction_insert_mut :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "insert_mut" (insert_mut T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque insert_mut.
       
@@ -15586,6 +15654,7 @@ Module collections.
       Global Instance AssociatedFunction_remove :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "remove" (remove T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque remove.
       
@@ -16059,6 +16128,7 @@ Module collections.
       Global Instance AssociatedFunction_split_off :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "split_off" (split_off T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque split_off.
       
@@ -16436,6 +16506,7 @@ Module collections.
       Global Instance AssociatedFunction_append :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "append" (append T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque append.
       
@@ -16523,6 +16594,7 @@ Module collections.
       Global Instance AssociatedFunction_retain :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "retain" (retain T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque retain.
       
@@ -16993,6 +17065,7 @@ Module collections.
       Global Instance AssociatedFunction_retain_mut :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "retain_mut" (retain_mut T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque retain_mut.
       
@@ -17218,6 +17291,7 @@ Module collections.
       Global Instance AssociatedFunction_grow :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "grow" (grow T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque grow.
       
@@ -17381,6 +17455,7 @@ Module collections.
       Global Instance AssociatedFunction_resize_with :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "resize_with" (resize_with T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque resize_with.
       
@@ -18340,6 +18415,7 @@ Module collections.
       Global Instance AssociatedFunction_make_contiguous :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "make_contiguous" (make_contiguous T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque make_contiguous.
       
@@ -18504,6 +18580,7 @@ Module collections.
       Global Instance AssociatedFunction_rotate_left :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "rotate_left" (rotate_left T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque rotate_left.
       
@@ -18668,6 +18745,7 @@ Module collections.
       Global Instance AssociatedFunction_rotate_right :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "rotate_right" (rotate_right T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque rotate_right.
       
@@ -18856,6 +18934,7 @@ Module collections.
       Global Instance AssociatedFunction_rotate_left_inner :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "rotate_left_inner" (rotate_left_inner T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque rotate_left_inner.
       
@@ -19044,6 +19123,7 @@ Module collections.
       Global Instance AssociatedFunction_rotate_right_inner :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "rotate_right_inner" (rotate_right_inner T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque rotate_right_inner.
       
@@ -19125,6 +19205,7 @@ Module collections.
       Global Instance AssociatedFunction_binary_search :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "binary_search" (binary_search T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque binary_search.
       
@@ -19538,6 +19619,7 @@ Module collections.
       Global Instance AssociatedFunction_binary_search_by :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "binary_search_by" (binary_search_by T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque binary_search_by.
       
@@ -19648,6 +19730,7 @@ Module collections.
       Global Instance AssociatedFunction_binary_search_by_key :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "binary_search_by_key" (binary_search_by_key T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque binary_search_by_key.
       
@@ -19885,6 +19968,7 @@ Module collections.
       Global Instance AssociatedFunction_partition_point :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "partition_point" (partition_point T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque partition_point.
       (*
@@ -20026,6 +20110,7 @@ Module collections.
       Global Instance AssociatedFunction_resize :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "resize" (resize T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque resize.
       
@@ -20144,6 +20229,7 @@ Module collections.
       Global Instance AssociatedFunction_extend_from_within :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "extend_from_within" (extend_from_within T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque extend_from_within.
       
@@ -20262,6 +20348,7 @@ Module collections.
       Global Instance AssociatedFunction_prepend_from_within :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "prepend_from_within" (prepend_from_within T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque prepend_from_within.
     End Impl_alloc_collections_vec_deque_VecDeque_T_A.
@@ -20315,6 +20402,7 @@ Module collections.
       Global Instance AssociatedFunction_new :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "new" (new T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -20356,6 +20444,7 @@ Module collections.
       Global Instance AssociatedFunction_with_capacity :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "with_capacity" (with_capacity T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque with_capacity.
       
@@ -20586,6 +20675,7 @@ Module collections.
       Global Instance AssociatedFunction_try_with_capacity :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "try_with_capacity" (try_with_capacity T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque try_with_capacity.
     End Impl_alloc_collections_vec_deque_VecDeque_T_alloc_alloc_Global.
@@ -23083,6 +23173,7 @@ Module collections.
     
     Global Instance Instance_IsFunction_wrap_index :
       M.IsFunction.C "alloc::collections::vec_deque::wrap_index" wrap_index.
+    Proof.
     Admitted.
     Global Typeclasses Opaque wrap_index.
     

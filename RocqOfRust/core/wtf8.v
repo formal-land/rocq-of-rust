@@ -440,6 +440,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_from_u32_unchecked :
       M.IsAssociatedFunction.C Self "from_u32_unchecked" from_u32_unchecked.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_u32_unchecked.
     
@@ -589,6 +590,7 @@ Module wtf8.
       end.
     
     Global Instance AssociatedFunction_from_u32 : M.IsAssociatedFunction.C Self "from_u32" from_u32.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_u32.
     
@@ -618,6 +620,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_from_char :
       M.IsAssociatedFunction.C Self "from_char" from_char.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_char.
     
@@ -654,6 +657,7 @@ Module wtf8.
       end.
     
     Global Instance AssociatedFunction_to_u32 : M.IsAssociatedFunction.C Self "to_u32" to_u32.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_u32.
     
@@ -718,6 +722,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_to_lead_surrogate :
       M.IsAssociatedFunction.C Self "to_lead_surrogate" to_lead_surrogate.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_lead_surrogate.
     
@@ -782,6 +787,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_to_trail_surrogate :
       M.IsAssociatedFunction.C Self "to_trail_surrogate" to_trail_surrogate.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_trail_surrogate.
     
@@ -857,6 +863,7 @@ Module wtf8.
       end.
     
     Global Instance AssociatedFunction_to_char : M.IsAssociatedFunction.C Self "to_char" to_char.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_char.
     
@@ -899,6 +906,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_to_char_lossy :
       M.IsAssociatedFunction.C Self "to_char_lossy" to_char_lossy.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_char_lossy.
   End Impl_core_wtf8_CodePoint.
@@ -2764,6 +2772,7 @@ Module wtf8.
       end.
     
     Global Instance AssociatedFunction_from_str : M.IsAssociatedFunction.C Self "from_str" from_str.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_str.
     
@@ -2809,6 +2818,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_from_bytes_unchecked :
       M.IsAssociatedFunction.C Self "from_bytes_unchecked" from_bytes_unchecked.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_bytes_unchecked.
     
@@ -2867,6 +2877,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_from_mut_bytes_unchecked :
       M.IsAssociatedFunction.C Self "from_mut_bytes_unchecked" from_mut_bytes_unchecked.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_mut_bytes_unchecked.
     
@@ -2904,6 +2915,7 @@ Module wtf8.
       end.
     
     Global Instance AssociatedFunction_len : M.IsAssociatedFunction.C Self "len" len.
+    Proof.
     Admitted.
     Global Typeclasses Opaque len.
     
@@ -2941,6 +2953,7 @@ Module wtf8.
       end.
     
     Global Instance AssociatedFunction_is_empty : M.IsAssociatedFunction.C Self "is_empty" is_empty.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_empty.
     
@@ -3000,6 +3013,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_ascii_byte_at :
       M.IsAssociatedFunction.C Self "ascii_byte_at" ascii_byte_at.
+    Proof.
     Admitted.
     Global Typeclasses Opaque ascii_byte_at.
     
@@ -3045,6 +3059,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_code_points :
       M.IsAssociatedFunction.C Self "code_points" code_points.
+    Proof.
     Admitted.
     Global Typeclasses Opaque code_points.
     
@@ -3076,6 +3091,7 @@ Module wtf8.
       end.
     
     Global Instance AssociatedFunction_as_bytes : M.IsAssociatedFunction.C Self "as_bytes" as_bytes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_bytes.
     
@@ -3117,6 +3133,7 @@ Module wtf8.
       end.
     
     Global Instance AssociatedFunction_as_str : M.IsAssociatedFunction.C Self "as_str" as_str.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_str.
     
@@ -3149,6 +3166,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_encode_wide :
       M.IsAssociatedFunction.C Self "encode_wide" encode_wide.
+    Proof.
     Admitted.
     Global Typeclasses Opaque encode_wide.
     
@@ -3986,6 +4004,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_next_surrogate :
       M.IsAssociatedFunction.C Self "next_surrogate" next_surrogate.
+    Proof.
     Admitted.
     Global Typeclasses Opaque next_surrogate.
     
@@ -4063,6 +4082,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_final_lead_surrogate :
       M.IsAssociatedFunction.C Self "final_lead_surrogate" final_lead_surrogate.
+    Proof.
     Admitted.
     Global Typeclasses Opaque final_lead_surrogate.
     
@@ -4140,6 +4160,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_initial_trail_surrogate :
       M.IsAssociatedFunction.C Self "initial_trail_surrogate" initial_trail_surrogate.
+    Proof.
     Admitted.
     Global Typeclasses Opaque initial_trail_surrogate.
     
@@ -4178,6 +4199,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_make_ascii_lowercase :
       M.IsAssociatedFunction.C Self "make_ascii_lowercase" make_ascii_lowercase.
+    Proof.
     Admitted.
     Global Typeclasses Opaque make_ascii_lowercase.
     
@@ -4216,6 +4238,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_make_ascii_uppercase :
       M.IsAssociatedFunction.C Self "make_ascii_uppercase" make_ascii_uppercase.
+    Proof.
     Admitted.
     Global Typeclasses Opaque make_ascii_uppercase.
     
@@ -4253,6 +4276,7 @@ Module wtf8.
       end.
     
     Global Instance AssociatedFunction_is_ascii : M.IsAssociatedFunction.C Self "is_ascii" is_ascii.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_ascii.
     
@@ -4306,6 +4330,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_eq_ignore_ascii_case :
       M.IsAssociatedFunction.C Self "eq_ignore_ascii_case" eq_ignore_ascii_case.
+    Proof.
     Admitted.
     Global Typeclasses Opaque eq_ignore_ascii_case.
     (*
@@ -4433,6 +4458,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_is_code_point_boundary :
       M.IsAssociatedFunction.C Self "is_code_point_boundary" is_code_point_boundary.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_code_point_boundary.
     
@@ -5079,6 +5105,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_check_utf8_boundary :
       M.IsAssociatedFunction.C Self "check_utf8_boundary" check_utf8_boundary.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_utf8_boundary.
   End Impl_core_wtf8_Wtf8.
@@ -5578,6 +5605,7 @@ Module wtf8.
   
   Global Instance Instance_IsFunction_decode_surrogate :
     M.IsFunction.C "core::wtf8::decode_surrogate" decode_surrogate.
+  Proof.
   Admitted.
   Global Typeclasses Opaque decode_surrogate.
   
@@ -5690,6 +5718,7 @@ Module wtf8.
   
   Global Instance Instance_IsFunction_slice_unchecked :
     M.IsFunction.C "core::wtf8::slice_unchecked" slice_unchecked.
+  Proof.
   Admitted.
   Global Typeclasses Opaque slice_unchecked.
   
@@ -5914,6 +5943,7 @@ Module wtf8.
   
   Global Instance Instance_IsFunction_slice_error_fail :
     M.IsFunction.C "core::wtf8::slice_error_fail" slice_error_fail.
+  Proof.
   Admitted.
   Global Typeclasses Opaque slice_error_fail.
   

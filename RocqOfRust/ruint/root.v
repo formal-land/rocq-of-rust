@@ -579,6 +579,7 @@ Module root.
     Global Instance AssociatedFunction_root :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "root" (root BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque root.
   End Impl_ruint_Uint_BITS_LIMBS.

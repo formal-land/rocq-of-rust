@@ -17,6 +17,7 @@ Module convert.
     end.
   
   Global Instance Instance_IsFunction_identity : M.IsFunction.C "core::convert::identity" identity.
+  Proof.
   Admitted.
   Global Typeclasses Opaque identity.
   

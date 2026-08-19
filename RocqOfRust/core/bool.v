@@ -33,6 +33,7 @@ Module bool.
     
     Global Instance AssociatedFunction_then_some :
       M.IsAssociatedFunction.C Self "then_some" then_some.
+    Proof.
     Admitted.
     Global Typeclasses Opaque then_some.
     
@@ -81,6 +82,7 @@ Module bool.
       end.
     
     Global Instance AssociatedFunction_then_ : M.IsAssociatedFunction.C Self "then" then_.
+    Proof.
     Admitted.
     Global Typeclasses Opaque then_.
     
@@ -121,6 +123,7 @@ Module bool.
       end.
     
     Global Instance AssociatedFunction_ok_or : M.IsAssociatedFunction.C Self "ok_or" ok_or.
+    Proof.
     Admitted.
     Global Typeclasses Opaque ok_or.
     
@@ -176,6 +179,7 @@ Module bool.
     
     Global Instance AssociatedFunction_ok_or_else :
       M.IsAssociatedFunction.C Self "ok_or_else" ok_or_else.
+    Proof.
     Admitted.
     Global Typeclasses Opaque ok_or_else.
   End Impl_bool.

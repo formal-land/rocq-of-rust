@@ -288,7 +288,12 @@ Module asserting.
                 ltac:(M.monadic
                   (let γ0_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "core::option::Option::Some", 0 |) in
-                  let value := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ0_0 |) in
+                  let _ := M.read (| γ0_0 |) in
+                  let value :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ E ],
+                      M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -355,6 +360,7 @@ Module asserting.
     Global Instance AssociatedFunction_new :
       forall (M_ T : Ty.t),
       M.IsAssociatedFunction.C (Self M_ T) "new" (new M_ T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_core_asserting_Capture_M__T.

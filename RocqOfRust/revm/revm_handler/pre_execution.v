@@ -2081,6 +2081,7 @@ Module pre_execution.
   
   Global Instance Instance_IsFunction_load_accounts :
     M.IsFunction.C "revm_handler::pre_execution::load_accounts" load_accounts.
+  Proof.
   Admitted.
   Global Typeclasses Opaque load_accounts.
   
@@ -2173,6 +2174,7 @@ Module pre_execution.
     M.IsFunction.C
       "revm_handler::pre_execution::validate_account_nonce_and_code_with_components"
       validate_account_nonce_and_code_with_components.
+  Proof.
   Admitted.
   Global Typeclasses Opaque validate_account_nonce_and_code_with_components.
   
@@ -2590,6 +2592,7 @@ Module pre_execution.
     M.IsFunction.C
       "revm_handler::pre_execution::validate_account_nonce_and_code"
       validate_account_nonce_and_code.
+  Proof.
   Admitted.
   Global Typeclasses Opaque validate_account_nonce_and_code.
   
@@ -3115,6 +3118,7 @@ Module pre_execution.
   
   Global Instance Instance_IsFunction_calculate_caller_fee :
     M.IsFunction.C "revm_handler::pre_execution::calculate_caller_fee" calculate_caller_fee.
+  Proof.
   Admitted.
   Global Typeclasses Opaque calculate_caller_fee.
   
@@ -4376,6 +4380,7 @@ Module pre_execution.
     M.IsFunction.C
       "revm_handler::pre_execution::validate_against_state_and_deduct_caller"
       validate_against_state_and_deduct_caller.
+  Proof.
   Admitted.
   Global Typeclasses Opaque validate_against_state_and_deduct_caller.
   
@@ -5839,6 +5844,10 @@ Module pre_execution.
                                                                                       "core::option::Option::Some",
                                                                                       0
                                                                                     |) in
+                                                                                  let _ :=
+                                                                                    M.read (|
+                                                                                      γ1_0
+                                                                                    |) in
                                                                                   let bytecode :=
                                                                                     M.alloc (|
                                                                                       Ty.apply
@@ -5849,7 +5858,10 @@ Module pre_execution.
                                                                                           Ty.path
                                                                                             "revm_bytecode::bytecode::Bytecode"
                                                                                         ],
-                                                                                      γ1_0
+                                                                                      M.borrow (|
+                                                                                        Pointer.Kind.Ref,
+                                                                                        γ1_0
+                                                                                      |)
                                                                                     |) in
                                                                                   M.match_operator (|
                                                                                     Ty.tuple [],
@@ -6644,6 +6656,7 @@ Module pre_execution.
   
   Global Instance Instance_IsFunction_apply_eip7702_auth_list :
     M.IsFunction.C "revm_handler::pre_execution::apply_eip7702_auth_list" apply_eip7702_auth_list.
+  Proof.
   Admitted.
   Global Typeclasses Opaque apply_eip7702_auth_list.
 End pre_execution.

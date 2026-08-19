@@ -705,6 +705,7 @@ Module num.
     
     Global Instance Instance_IsFunction_pfe_empty :
       M.IsFunction.C "core::num::dec2flt::pfe_empty" pfe_empty.
+    Proof.
     Admitted.
     Global Typeclasses Opaque pfe_empty.
     
@@ -727,6 +728,7 @@ Module num.
     
     Global Instance Instance_IsFunction_pfe_invalid :
       M.IsFunction.C "core::num::dec2flt::pfe_invalid" pfe_invalid.
+    Proof.
     Admitted.
     Global Typeclasses Opaque pfe_invalid.
     
@@ -806,6 +808,7 @@ Module num.
     
     Global Instance Instance_IsFunction_biased_fp_to_float :
       M.IsFunction.C "core::num::dec2flt::biased_fp_to_float" biased_fp_to_float.
+    Proof.
     Admitted.
     Global Typeclasses Opaque biased_fp_to_float.
     
@@ -1463,6 +1466,7 @@ Module num.
     
     Global Instance Instance_IsFunction_dec2flt :
       M.IsFunction.C "core::num::dec2flt::dec2flt" dec2flt.
+    Proof.
     Admitted.
     Global Typeclasses Opaque dec2flt.
   End dec2flt.

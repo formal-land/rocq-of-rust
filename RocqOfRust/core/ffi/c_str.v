@@ -326,8 +326,12 @@ Module ffi.
                                 "core::ffi::c_str::FromBytesWithNulError::InteriorNul",
                                 "position"
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ2_0 |) in
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
                               M.SubPointer.get_struct_record_field (|
@@ -335,8 +339,12 @@ Module ffi.
                                 "core::ffi::c_str::FromBytesWithNulError::InteriorNul",
                                 "position"
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ2_0 |) in
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             M.call_closure (|
                               Ty.path "bool",
                               M.get_trait_method (|
@@ -437,8 +445,12 @@ Module ffi.
                         "core::ffi::c_str::FromBytesWithNulError::InteriorNul",
                         "position"
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     M.call_closure (|
                       Ty.apply
                         (Ty.path "core::result::Result")
@@ -556,8 +568,12 @@ Module ffi.
                         "core::ffi::c_str::FromBytesWithNulError::InteriorNul",
                         "position"
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let position :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     M.call_closure (|
                       Ty.apply
                         (Ty.path "core::result::Result")
@@ -1253,6 +1269,7 @@ Module ffi.
       
       Global Instance AssociatedFunction_from_ptr :
         M.IsAssociatedFunction.C Self "from_ptr" from_ptr.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_ptr.
       
@@ -1425,6 +1442,7 @@ Module ffi.
       
       Global Instance AssociatedFunction_from_bytes_until_nul :
         M.IsAssociatedFunction.C Self "from_bytes_until_nul" from_bytes_until_nul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_bytes_until_nul.
       
@@ -1597,6 +1615,7 @@ Module ffi.
       
       Global Instance AssociatedFunction_from_bytes_with_nul :
         M.IsAssociatedFunction.C Self "from_bytes_with_nul" from_bytes_with_nul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_bytes_with_nul.
       
@@ -1704,6 +1723,7 @@ Module ffi.
       
       Global Instance AssociatedFunction_from_bytes_with_nul_unchecked :
         M.IsAssociatedFunction.C Self "from_bytes_with_nul_unchecked" from_bytes_with_nul_unchecked.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_bytes_with_nul_unchecked.
       
@@ -1741,6 +1761,7 @@ Module ffi.
         end.
       
       Global Instance AssociatedFunction_as_ptr : M.IsAssociatedFunction.C Self "as_ptr" as_ptr.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_ptr.
       
@@ -1821,6 +1842,7 @@ Module ffi.
       
       Global Instance AssociatedFunction_as_non_null_ptr :
         M.IsAssociatedFunction.C Self "as_non_null_ptr" as_non_null_ptr.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_non_null_ptr.
       
@@ -1866,6 +1888,7 @@ Module ffi.
       
       Global Instance AssociatedFunction_count_bytes :
         M.IsAssociatedFunction.C Self "count_bytes" count_bytes.
+      Proof.
       Admitted.
       Global Typeclasses Opaque count_bytes.
       
@@ -1918,6 +1941,7 @@ Module ffi.
       
       Global Instance AssociatedFunction_is_empty :
         M.IsAssociatedFunction.C Self "is_empty" is_empty.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_empty.
       
@@ -1995,6 +2019,7 @@ Module ffi.
       
       Global Instance AssociatedFunction_to_bytes :
         M.IsAssociatedFunction.C Self "to_bytes" to_bytes.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_bytes.
       
@@ -2039,6 +2064,7 @@ Module ffi.
       
       Global Instance AssociatedFunction_to_bytes_with_nul :
         M.IsAssociatedFunction.C Self "to_bytes_with_nul" to_bytes_with_nul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_bytes_with_nul.
       
@@ -2062,6 +2088,7 @@ Module ffi.
         end.
       
       Global Instance AssociatedFunction_bytes : M.IsAssociatedFunction.C Self "bytes" bytes.
+      Proof.
       Admitted.
       Global Typeclasses Opaque bytes.
       
@@ -2109,6 +2136,7 @@ Module ffi.
         end.
       
       Global Instance AssociatedFunction_to_str : M.IsAssociatedFunction.C Self "to_str" to_str.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_str.
       
@@ -2148,6 +2176,7 @@ Module ffi.
         end.
       
       Global Instance AssociatedFunction_display : M.IsAssociatedFunction.C Self "display" display.
+      Proof.
       Admitted.
       Global Typeclasses Opaque display.
     End Impl_core_ffi_c_str_CStr.
@@ -2856,6 +2885,7 @@ Module ffi.
       end.
     
     Global Instance Instance_IsFunction_strlen : M.IsFunction.C "core::ffi::c_str::strlen" strlen.
+    Proof.
     Admitted.
     Global Typeclasses Opaque strlen.
     
@@ -2865,6 +2895,7 @@ Module ffi.
         
         Global Instance Instance_IsFunction_strlen :
           M.IsFunction.C "core::ffi::c_str::strlen::runtime::strlen" strlen.
+        Proof.
         Admitted.
       End runtime.
     End strlen.
@@ -3183,6 +3214,7 @@ Module ffi.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -3230,6 +3262,7 @@ Module ffi.
       
       Global Instance AssociatedFunction_is_empty :
         M.IsAssociatedFunction.C Self "is_empty" is_empty.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_empty.
     End Impl_core_ffi_c_str_Bytes.

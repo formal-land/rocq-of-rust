@@ -501,6 +501,7 @@ Module marker.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
     End Impl_core_marker_variance_PhantomCovariantLifetime.
@@ -1099,6 +1100,7 @@ Module marker.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
     End Impl_core_marker_variance_PhantomContravariantLifetime.
@@ -1701,6 +1703,7 @@ Module marker.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
     End Impl_core_marker_variance_PhantomInvariantLifetime.
@@ -1834,6 +1837,7 @@ Module marker.
       Global Instance AssociatedFunction_new :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "new" (new T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
     End Impl_core_marker_variance_PhantomCovariant_T.
@@ -2362,6 +2366,7 @@ Module marker.
       Global Instance AssociatedFunction_new :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "new" (new T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
     End Impl_core_marker_variance_PhantomContravariant_T.
@@ -2893,6 +2898,7 @@ Module marker.
       Global Instance AssociatedFunction_new :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "new" (new T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
     End Impl_core_marker_variance_PhantomInvariant_T.
@@ -3407,6 +3413,7 @@ Module marker.
     
     Global Instance Instance_IsFunction_variance :
       M.IsFunction.C "core::marker::variance::variance" variance.
+    Proof.
     Admitted.
     Global Typeclasses Opaque variance.
   End variance.

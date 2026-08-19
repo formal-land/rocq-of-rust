@@ -195,6 +195,7 @@ Module slice.
     
     Global Instance Instance_IsFunction_as_underlying :
       M.IsFunction.C "core::slice::cmp::as_underlying" as_underlying.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_underlying.
     
@@ -2344,6 +2345,7 @@ Module slice.
     
     Global Instance Instance_IsFunction_chaining_impl :
       M.IsFunction.C "core::slice::cmp::chaining_impl" chaining_impl.
+    Proof.
     Admitted.
     Global Typeclasses Opaque chaining_impl.
     

@@ -18,6 +18,7 @@ Require Import revm.revm_interpreter.instructions.simulate.utility.
 Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
+Require Import revm.revm_interpreter.simulate.interpreter.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import revm.revm_primitives.links.hardfork.
 Require Import revm.revm_primitives.simulate.hardfork.
@@ -50,16 +51,8 @@ Definition call
       interpreter.(Interpreter.runtime_flag) in
 
   if is_static && has_transfer then
-    let control :=
-      IInterpreterTypes
-          .(InterpreterTypes.LoopControl_for_Control)
-          .(LoopControl.set_instruction_result)
-        interpreter.(Interpreter.control)
-        instruction_result.InstructionResult.CallNotAllowedInsideStatic in
-    let interpreter :=
-      interpreter
-        <| Interpreter.control := control |> in
-    (interpreter, host)
+    (halt interpreter
+      instruction_result.InstructionResult.CallNotAllowedInsideStatic, host)
   else
 
   match call_helpers.get_memory_input_and_out_ranges interpreter with
@@ -137,4 +130,154 @@ Lemma call_eq
     )
   }}.
 Proof.
-Admitted.
+  intros.
+  with_strategy transparent [run_call]
+    unfold call, run_call;
+    cbn.
+  popn_macro_eq InterpreterTypesEq.
+  match goal with
+  | arr : array.t aliases.U256.t _ |- _ =>
+    destruct arr as [[local_gas_limit [to [value []]]]]
+  end.
+  lu.
+  cw Impl_IntoAddress_for_U256.into_address_eq.
+  lu.
+  cw TryFrom_Uint_for_u64.try_from_eq.
+  cw Impl_u64.max_eq.
+  cw @Impl_Result_T_E.unwrap_or_eq.
+  l. {
+    cw @Impl_Uint.is_zero_eq.
+    s.
+    reflexivity.
+  }
+  match goal with
+  | |- context[?e1 && ?e2] =>
+    set (condition1 := e1);
+    set (condition2 := e2)
+  end.
+  eapply Run.Let with (result :=
+    if condition1 then
+      if condition2 then
+        _
+      else
+        _
+    else
+      _
+  ). {
+    s. {
+      apply InterpreterTypesEq.
+    }
+    destruct IInterpreterTypes
+      .(InterpreterTypes.RuntimeFlag_for_RuntimeFlag)
+      .(RuntimeFlag.is_static).
+    { s.
+      destruct Impl_Uint.is_zero.
+      { s.
+        change false with condition2.
+        reflexivity.
+      }
+      { s. {
+          eapply halt_eq;
+          exact InterpreterTypesEq.
+        }
+        s.
+        reflexivity.
+      }
+    }
+    { s.
+      reflexivity.
+    }
+  }
+  s.
+  destruct (condition1 && condition2) eqn:H_conditions.
+  { replace condition1 with true by
+      (destruct condition1, condition2; cbn in H_conditions; congruence).
+    replace condition2 with true by
+      (destruct condition1, condition2; cbn in H_conditions; congruence).
+    s.
+  }
+  { set (if_result := if _ : bool then _ else _).
+    set (common_result := (Output.Success tt, _)) in if_result.
+    replace if_result with common_result. 2: {
+      unfold if_result.
+      destruct condition1, condition2; cbn in H_conditions; congruence.
+    }
+    unfold common_result, condition1, condition2.
+    s. {
+      s_apply @call_helpers.get_memory_input_and_out_ranges_eq.
+    }
+    destruct (call_helpers.get_memory_input_and_out_ranges
+      (interpreter <| Interpreter.stack := s |>)) as [
+        [[input return_memory_offset] |] interpreter'
+      ]; cbn.
+    2: p.
+    destruct (call_helpers.load_acc_and_calc_gas
+      interpreter'
+      host
+      (Impl_IntoAddress_for_U256.into_address to)
+      (negb (Impl_Uint.is_zero value))
+      true
+      (Impl_Result_T_E.unwrap_or
+        (TryFrom_Uint_for_u64.try_from local_gas_limit) Impl_u64.MAX)
+    ) as [[load_result interpreter''] host'] eqn:H_load_result; cbn.
+    s. {
+      pose proof (call_helpers.load_acc_and_calc_gas_eq
+        (IInterpreterTypes := IInterpreterTypes)
+        (InterpreterTypesEq := InterpreterTypesEq)
+        (IHost := IHost)
+        (HostEq := HostEq)
+        run_InterpreterTypes_for_WIRE
+        run_Host_for_H
+        interpreter'
+        host
+        (Impl_IntoAddress_for_U256.into_address to)
+        (negb (Impl_Uint.is_zero value))
+        true
+        (Impl_Result_T_E.unwrap_or
+          (TryFrom_Uint_for_u64.try_from local_gas_limit) Impl_u64.MAX)
+        [Impl_IntoAddress_for_U256.into_address to;
+         Impl_Result_T_E.unwrap_or
+           (TryFrom_Uint_for_u64.try_from local_gas_limit) Impl_u64.MAX;
+         negb (Impl_Uint.is_zero value);
+         tt]%stack
+      ) as H_load.
+      rewrite H_load_result in H_load; cbn in H_load.
+      with_strategy transparent [
+        call_helpers.instructions.contract.call_helpers.load_acc_and_calc_gas
+      ] cbn in H_load.
+      unfold context, ref_interpreter, ref_host,
+        Ref.immediate, Ref.cast_to in H_load |- *.
+      exact H_load.
+    }
+    destruct load_result as [load |]; cbn.
+    2: p.
+    lu.
+    s. {
+      apply InterpreterTypesEq.
+    }
+    s. {
+      apply InterpreterTypesEq.
+    }
+    s. {
+      match goal with
+      | |- {{ SimulateM.eval
+          (evaluate (boxed.Impl_Box.run_new ?call_inputs).(Run.run_f))
+          ?stack 🌲 _ }} =>
+        pose proof (@Impl_Box.new_eq
+          call_inputs.CallInputs.t
+          call_inputs.CallInputs.IsLink
+          stack
+          call_inputs
+        ) as H_box
+      end.
+      with_strategy transparent [
+        boxed.boxed.Impl_alloc_boxed_Box_T_alloc_alloc_Global.new
+      ] cbn in H_box.
+      exact H_box.
+    }
+    s. {
+      apply InterpreterTypesEq.
+    }
+    s.
+  }
+Qed.

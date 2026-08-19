@@ -138,6 +138,7 @@ Module instruction_consistency.
     
     Global Instance AssociatedFunction_verify_module :
       M.IsAssociatedFunction.C Self "verify_module" verify_module.
+    Proof.
     Admitted.
     Global Typeclasses Opaque verify_module.
     
@@ -480,6 +481,7 @@ Module instruction_consistency.
                                                             "core::option::Option::Some",
                                                             0
                                                           |) in
+                                                        let _ := M.read (| γ1_0 |) in
                                                         let code :=
                                                           M.alloc (|
                                                             Ty.apply
@@ -489,7 +491,7 @@ Module instruction_consistency.
                                                                 Ty.path
                                                                   "move_binary_format::file_format::CodeUnit"
                                                               ],
-                                                            γ1_0
+                                                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                           |) in
                                                         M.read (|
                                                           let~ checker :
@@ -729,6 +731,7 @@ Module instruction_consistency.
     
     Global Instance AssociatedFunction_verify_module_impl :
       M.IsAssociatedFunction.C Self "verify_module_impl" verify_module_impl.
+    Proof.
     Admitted.
     Global Typeclasses Opaque verify_module_impl.
     
@@ -1122,6 +1125,7 @@ Module instruction_consistency.
                                                             "move_binary_format::file_format::Bytecode::MutBorrowField",
                                                             0
                                                           |) in
+                                                        let _ := M.read (| γ1_0 |) in
                                                         let field_handle_index :=
                                                           M.alloc (|
                                                             Ty.apply
@@ -1131,7 +1135,7 @@ Module instruction_consistency.
                                                                 Ty.path
                                                                   "move_binary_format::file_format::FieldHandleIndex"
                                                               ],
-                                                            γ1_0
+                                                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                           |) in
                                                         M.read (|
                                                           let~ _ : Ty.tuple [] :=
@@ -1326,6 +1330,7 @@ Module instruction_consistency.
                                                             "move_binary_format::file_format::Bytecode::MutBorrowFieldGeneric",
                                                             0
                                                           |) in
+                                                        let _ := M.read (| γ1_0 |) in
                                                         let field_inst_index :=
                                                           M.alloc (|
                                                             Ty.apply
@@ -1335,7 +1340,7 @@ Module instruction_consistency.
                                                                 Ty.path
                                                                   "move_binary_format::file_format::FieldInstantiationIndex"
                                                               ],
-                                                            γ1_0
+                                                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                           |) in
                                                         M.read (|
                                                           let~ field_inst :
@@ -1579,6 +1584,7 @@ Module instruction_consistency.
                                                             "move_binary_format::file_format::Bytecode::ImmBorrowField",
                                                             0
                                                           |) in
+                                                        let _ := M.read (| γ1_0 |) in
                                                         let field_handle_index :=
                                                           M.alloc (|
                                                             Ty.apply
@@ -1588,7 +1594,7 @@ Module instruction_consistency.
                                                                 Ty.path
                                                                   "move_binary_format::file_format::FieldHandleIndex"
                                                               ],
-                                                            γ1_0
+                                                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                           |) in
                                                         M.read (|
                                                           let~ _ : Ty.tuple [] :=
@@ -1783,6 +1789,7 @@ Module instruction_consistency.
                                                             "move_binary_format::file_format::Bytecode::ImmBorrowFieldGeneric",
                                                             0
                                                           |) in
+                                                        let _ := M.read (| γ1_0 |) in
                                                         let field_inst_index :=
                                                           M.alloc (|
                                                             Ty.apply
@@ -1792,7 +1799,7 @@ Module instruction_consistency.
                                                                 Ty.path
                                                                   "move_binary_format::file_format::FieldInstantiationIndex"
                                                               ],
-                                                            γ1_0
+                                                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                           |) in
                                                         M.read (|
                                                           let~ field_inst :
@@ -2036,6 +2043,7 @@ Module instruction_consistency.
                                                             "move_binary_format::file_format::Bytecode::Call",
                                                             0
                                                           |) in
+                                                        let _ := M.read (| γ1_0 |) in
                                                         let idx :=
                                                           M.alloc (|
                                                             Ty.apply
@@ -2045,7 +2053,7 @@ Module instruction_consistency.
                                                                 Ty.path
                                                                   "move_binary_format::file_format::FunctionHandleIndex"
                                                               ],
-                                                            γ1_0
+                                                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                           |) in
                                                         M.read (|
                                                           let~ _ : Ty.tuple [] :=
@@ -2238,6 +2246,7 @@ Module instruction_consistency.
                                                             "move_binary_format::file_format::Bytecode::CallGeneric",
                                                             0
                                                           |) in
+                                                        let _ := M.read (| γ1_0 |) in
                                                         let idx :=
                                                           M.alloc (|
                                                             Ty.apply
@@ -2247,7 +2256,7 @@ Module instruction_consistency.
                                                                 Ty.path
                                                                   "move_binary_format::file_format::FunctionInstantiationIndex"
                                                               ],
-                                                            γ1_0
+                                                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                           |) in
                                                         M.read (|
                                                           let~ func_inst :
@@ -2487,6 +2496,7 @@ Module instruction_consistency.
                                                             "move_binary_format::file_format::Bytecode::Pack",
                                                             0
                                                           |) in
+                                                        let _ := M.read (| γ1_0 |) in
                                                         let idx :=
                                                           M.alloc (|
                                                             Ty.apply
@@ -2496,7 +2506,7 @@ Module instruction_consistency.
                                                                 Ty.path
                                                                   "move_binary_format::file_format::StructDefinitionIndex"
                                                               ],
-                                                            γ1_0
+                                                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                           |) in
                                                         M.read (|
                                                           let~ _ : Ty.tuple [] :=
@@ -2689,6 +2699,7 @@ Module instruction_consistency.
                                                             "move_binary_format::file_format::Bytecode::PackGeneric",
                                                             0
                                                           |) in
+                                                        let _ := M.read (| γ1_0 |) in
                                                         let idx :=
                                                           M.alloc (|
                                                             Ty.apply
@@ -2698,7 +2709,7 @@ Module instruction_consistency.
                                                                 Ty.path
                                                                   "move_binary_format::file_format::StructDefInstantiationIndex"
                                                               ],
-                                                            γ1_0
+                                                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                           |) in
                                                         M.read (|
                                                           let~ struct_inst :
@@ -2940,6 +2951,7 @@ Module instruction_consistency.
                                                             "move_binary_format::file_format::Bytecode::Unpack",
                                                             0
                                                           |) in
+                                                        let _ := M.read (| γ1_0 |) in
                                                         let idx :=
                                                           M.alloc (|
                                                             Ty.apply
@@ -2949,7 +2961,7 @@ Module instruction_consistency.
                                                                 Ty.path
                                                                   "move_binary_format::file_format::StructDefinitionIndex"
                                                               ],
-                                                            γ1_0
+                                                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                           |) in
                                                         M.read (|
                                                           let~ _ : Ty.tuple [] :=
@@ -3142,6 +3154,7 @@ Module instruction_consistency.
                                                             "move_binary_format::file_format::Bytecode::UnpackGeneric",
                                                             0
                                                           |) in
+                                                        let _ := M.read (| γ1_0 |) in
                                                         let idx :=
                                                           M.alloc (|
                                                             Ty.apply
@@ -3151,7 +3164,7 @@ Module instruction_consistency.
                                                                 Ty.path
                                                                   "move_binary_format::file_format::StructDefInstantiationIndex"
                                                               ],
-                                                            γ1_0
+                                                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                           |) in
                                                         M.read (|
                                                           let~ struct_inst :
@@ -3393,6 +3406,7 @@ Module instruction_consistency.
                                                             "move_binary_format::file_format::Bytecode::MutBorrowGlobalDeprecated",
                                                             0
                                                           |) in
+                                                        let _ := M.read (| γ1_0 |) in
                                                         let idx :=
                                                           M.alloc (|
                                                             Ty.apply
@@ -3402,7 +3416,7 @@ Module instruction_consistency.
                                                                 Ty.path
                                                                   "move_binary_format::file_format::StructDefinitionIndex"
                                                               ],
-                                                            γ1_0
+                                                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                           |) in
                                                         M.read (|
                                                           let~ _ : Ty.tuple [] :=
@@ -3595,6 +3609,7 @@ Module instruction_consistency.
                                                             "move_binary_format::file_format::Bytecode::MutBorrowGlobalGenericDeprecated",
                                                             0
                                                           |) in
+                                                        let _ := M.read (| γ1_0 |) in
                                                         let idx :=
                                                           M.alloc (|
                                                             Ty.apply
@@ -3604,7 +3619,7 @@ Module instruction_consistency.
                                                                 Ty.path
                                                                   "move_binary_format::file_format::StructDefInstantiationIndex"
                                                               ],
-                                                            γ1_0
+                                                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                           |) in
                                                         M.read (|
                                                           let~ struct_inst :
@@ -3846,6 +3861,7 @@ Module instruction_consistency.
                                                             "move_binary_format::file_format::Bytecode::ImmBorrowGlobalDeprecated",
                                                             0
                                                           |) in
+                                                        let _ := M.read (| γ1_0 |) in
                                                         let idx :=
                                                           M.alloc (|
                                                             Ty.apply
@@ -3855,7 +3871,7 @@ Module instruction_consistency.
                                                                 Ty.path
                                                                   "move_binary_format::file_format::StructDefinitionIndex"
                                                               ],
-                                                            γ1_0
+                                                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                           |) in
                                                         M.read (|
                                                           let~ _ : Ty.tuple [] :=
@@ -4048,6 +4064,7 @@ Module instruction_consistency.
                                                             "move_binary_format::file_format::Bytecode::ImmBorrowGlobalGenericDeprecated",
                                                             0
                                                           |) in
+                                                        let _ := M.read (| γ1_0 |) in
                                                         let idx :=
                                                           M.alloc (|
                                                             Ty.apply
@@ -4057,7 +4074,7 @@ Module instruction_consistency.
                                                                 Ty.path
                                                                   "move_binary_format::file_format::StructDefInstantiationIndex"
                                                               ],
-                                                            γ1_0
+                                                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                           |) in
                                                         M.read (|
                                                           let~ struct_inst :
@@ -4299,6 +4316,7 @@ Module instruction_consistency.
                                                             "move_binary_format::file_format::Bytecode::ExistsDeprecated",
                                                             0
                                                           |) in
+                                                        let _ := M.read (| γ1_0 |) in
                                                         let idx :=
                                                           M.alloc (|
                                                             Ty.apply
@@ -4308,7 +4326,7 @@ Module instruction_consistency.
                                                                 Ty.path
                                                                   "move_binary_format::file_format::StructDefinitionIndex"
                                                               ],
-                                                            γ1_0
+                                                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                           |) in
                                                         M.read (|
                                                           let~ _ : Ty.tuple [] :=
@@ -4501,6 +4519,7 @@ Module instruction_consistency.
                                                             "move_binary_format::file_format::Bytecode::ExistsGenericDeprecated",
                                                             0
                                                           |) in
+                                                        let _ := M.read (| γ1_0 |) in
                                                         let idx :=
                                                           M.alloc (|
                                                             Ty.apply
@@ -4510,7 +4529,7 @@ Module instruction_consistency.
                                                                 Ty.path
                                                                   "move_binary_format::file_format::StructDefInstantiationIndex"
                                                               ],
-                                                            γ1_0
+                                                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                           |) in
                                                         M.read (|
                                                           let~ struct_inst :
@@ -4752,6 +4771,7 @@ Module instruction_consistency.
                                                             "move_binary_format::file_format::Bytecode::MoveFromDeprecated",
                                                             0
                                                           |) in
+                                                        let _ := M.read (| γ1_0 |) in
                                                         let idx :=
                                                           M.alloc (|
                                                             Ty.apply
@@ -4761,7 +4781,7 @@ Module instruction_consistency.
                                                                 Ty.path
                                                                   "move_binary_format::file_format::StructDefinitionIndex"
                                                               ],
-                                                            γ1_0
+                                                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                           |) in
                                                         M.read (|
                                                           let~ _ : Ty.tuple [] :=
@@ -4954,6 +4974,7 @@ Module instruction_consistency.
                                                             "move_binary_format::file_format::Bytecode::MoveFromGenericDeprecated",
                                                             0
                                                           |) in
+                                                        let _ := M.read (| γ1_0 |) in
                                                         let idx :=
                                                           M.alloc (|
                                                             Ty.apply
@@ -4963,7 +4984,7 @@ Module instruction_consistency.
                                                                 Ty.path
                                                                   "move_binary_format::file_format::StructDefInstantiationIndex"
                                                               ],
-                                                            γ1_0
+                                                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                           |) in
                                                         M.read (|
                                                           let~ struct_inst :
@@ -5205,6 +5226,7 @@ Module instruction_consistency.
                                                             "move_binary_format::file_format::Bytecode::MoveToDeprecated",
                                                             0
                                                           |) in
+                                                        let _ := M.read (| γ1_0 |) in
                                                         let idx :=
                                                           M.alloc (|
                                                             Ty.apply
@@ -5214,7 +5236,7 @@ Module instruction_consistency.
                                                                 Ty.path
                                                                   "move_binary_format::file_format::StructDefinitionIndex"
                                                               ],
-                                                            γ1_0
+                                                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                           |) in
                                                         M.read (|
                                                           let~ _ : Ty.tuple [] :=
@@ -5407,6 +5429,7 @@ Module instruction_consistency.
                                                             "move_binary_format::file_format::Bytecode::MoveToGenericDeprecated",
                                                             0
                                                           |) in
+                                                        let _ := M.read (| γ1_0 |) in
                                                         let idx :=
                                                           M.alloc (|
                                                             Ty.apply
@@ -5416,7 +5439,7 @@ Module instruction_consistency.
                                                                 Ty.path
                                                                   "move_binary_format::file_format::StructDefInstantiationIndex"
                                                               ],
-                                                            γ1_0
+                                                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                           |) in
                                                         M.read (|
                                                           let~ struct_inst :
@@ -5677,13 +5700,17 @@ Module instruction_consistency.
                                                                     "move_binary_format::file_format::Bytecode::VecPack",
                                                                     1
                                                                   |) in
+                                                                let _ := M.read (| γ1_1 |) in
                                                                 let num :=
                                                                   M.alloc (|
                                                                     Ty.apply
                                                                       (Ty.path "&")
                                                                       []
                                                                       [ Ty.path "u64" ],
-                                                                    γ1_1
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      γ1_1
+                                                                    |)
                                                                   |) in
                                                                 Value.Tuple [ num ]));
                                                             fun γ =>
@@ -5702,13 +5729,17 @@ Module instruction_consistency.
                                                                     "move_binary_format::file_format::Bytecode::VecUnpack",
                                                                     1
                                                                   |) in
+                                                                let _ := M.read (| γ1_1 |) in
                                                                 let num :=
                                                                   M.alloc (|
                                                                     Ty.apply
                                                                       (Ty.path "&")
                                                                       []
                                                                       [ Ty.path "u64" ],
-                                                                    γ1_1
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      γ1_1
+                                                                    |)
                                                                   |) in
                                                                 Value.Tuple [ num ]))
                                                           ],
@@ -6496,6 +6527,7 @@ Module instruction_consistency.
     
     Global Instance AssociatedFunction_check_instructions :
       M.IsAssociatedFunction.C Self "check_instructions" check_instructions.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_instructions.
     
@@ -6599,6 +6631,7 @@ Module instruction_consistency.
     
     Global Instance AssociatedFunction_check_field_op :
       M.IsAssociatedFunction.C Self "check_field_op" check_field_op.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_field_op.
     
@@ -6651,6 +6684,7 @@ Module instruction_consistency.
     
     Global Instance AssociatedFunction_current_function :
       M.IsAssociatedFunction.C Self "current_function" current_function.
+    Proof.
     Admitted.
     Global Typeclasses Opaque current_function.
     
@@ -6896,6 +6930,7 @@ Module instruction_consistency.
     
     Global Instance AssociatedFunction_check_type_op :
       M.IsAssociatedFunction.C Self "check_type_op" check_type_op.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_type_op.
     
@@ -7101,6 +7136,7 @@ Module instruction_consistency.
     
     Global Instance AssociatedFunction_check_function_op :
       M.IsAssociatedFunction.C Self "check_function_op" check_function_op.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_function_op.
   End Impl_move_bytecode_verifier_instruction_consistency_InstructionConsistency.

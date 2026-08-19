@@ -307,6 +307,7 @@ Module iter.
         Global Instance AssociatedFunction_new :
           forall (N : Value.t) (I F : Ty.t),
           M.IsAssociatedFunction.C (Self N I F) "new" (new N I F).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new.
       End Impl_core_iter_adapters_map_windows_MapWindows_N_I_F.
@@ -364,6 +365,7 @@ Module iter.
         Global Instance AssociatedFunction_new :
           forall (N : Value.t) (I : Ty.t),
           M.IsAssociatedFunction.C (Self N I) "new" (new N I).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new.
         
@@ -660,6 +662,7 @@ Module iter.
                                   "core::option::Option::Some",
                                   0
                                 |) in
+                              let _ := M.read (| γ0_0 |) in
                               let buffer :=
                                 M.alloc (|
                                   Ty.apply
@@ -678,7 +681,7 @@ Module iter.
                                             "Item"
                                         ]
                                     ],
-                                  γ0_0
+                                  M.borrow (| Pointer.Kind.MutRef, γ0_0 |)
                                 |) in
                               M.match_operator (|
                                 Ty.tuple [],
@@ -1073,6 +1076,7 @@ Module iter.
         Global Instance AssociatedFunction_next_window :
           forall (N : Value.t) (I : Ty.t),
           M.IsAssociatedFunction.C (Self N I) "next_window" (next_window N I).
+        Proof.
         Admitted.
         Global Typeclasses Opaque next_window.
         
@@ -1143,7 +1147,12 @@ Module iter.
                               "core::option::Option::Some",
                               0
                             |) in
-                          let iter := M.alloc (| Ty.apply (Ty.path "&") [] [ I ], γ0_0 |) in
+                          let _ := M.read (| γ0_0 |) in
+                          let iter :=
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ I ],
+                              M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                            |) in
                           M.match_operator (|
                             Ty.tuple
                               [
@@ -1363,6 +1372,7 @@ Module iter.
         Global Instance AssociatedFunction_size_hint :
           forall (N : Value.t) (I : Ty.t),
           M.IsAssociatedFunction.C (Self N I) "size_hint" (size_hint N I).
+        Proof.
         Admitted.
         Global Typeclasses Opaque size_hint.
       End Impl_core_iter_adapters_map_windows_MapWindowsInner_N_I.
@@ -1636,6 +1646,7 @@ Module iter.
         Global Instance AssociatedFunction_try_from_iter :
           forall (N : Value.t) (T : Ty.t),
           M.IsAssociatedFunction.C (Self N T) "try_from_iter" (try_from_iter N T).
+        Proof.
         Admitted.
         Global Typeclasses Opaque try_from_iter.
         
@@ -1789,6 +1800,7 @@ Module iter.
         Global Instance AssociatedFunction_buffer_ptr :
           forall (N : Value.t) (T : Ty.t),
           M.IsAssociatedFunction.C (Self N T) "buffer_ptr" (buffer_ptr N T).
+        Proof.
         Admitted.
         Global Typeclasses Opaque buffer_ptr.
         
@@ -1942,6 +1954,7 @@ Module iter.
         Global Instance AssociatedFunction_buffer_mut_ptr :
           forall (N : Value.t) (T : Ty.t),
           M.IsAssociatedFunction.C (Self N T) "buffer_mut_ptr" (buffer_mut_ptr N T).
+        Proof.
         Admitted.
         Global Typeclasses Opaque buffer_mut_ptr.
         
@@ -2145,6 +2158,7 @@ Module iter.
         Global Instance AssociatedFunction_as_array_ref :
           forall (N : Value.t) (T : Ty.t),
           M.IsAssociatedFunction.C (Self N T) "as_array_ref" (as_array_ref N T).
+        Proof.
         Admitted.
         Global Typeclasses Opaque as_array_ref.
         
@@ -2384,6 +2398,7 @@ Module iter.
         Global Instance AssociatedFunction_as_uninit_array_mut :
           forall (N : Value.t) (T : Ty.t),
           M.IsAssociatedFunction.C (Self N T) "as_uninit_array_mut" (as_uninit_array_mut N T).
+        Proof.
         Admitted.
         Global Typeclasses Opaque as_uninit_array_mut.
         
@@ -2983,6 +2998,7 @@ Module iter.
         Global Instance AssociatedFunction_push :
           forall (N : Value.t) (T : Ty.t),
           M.IsAssociatedFunction.C (Self N T) "push" (push N T).
+        Proof.
         Admitted.
         Global Typeclasses Opaque push.
       End Impl_core_iter_adapters_map_windows_Buffer_N_T.

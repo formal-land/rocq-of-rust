@@ -7,6 +7,7 @@ Module blake2.
   
   Global Instance Instance_IsConstant_value_F_ROUND :
     M.IsFunction.C "revm_precompile::blake2::F_ROUND" value_F_ROUND.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_F_ROUND.
   
@@ -15,6 +16,7 @@ Module blake2.
   
   Global Instance Instance_IsConstant_value_INPUT_LENGTH :
     M.IsFunction.C "revm_precompile::blake2::INPUT_LENGTH" value_INPUT_LENGTH.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_INPUT_LENGTH.
   
@@ -79,6 +81,7 @@ Module blake2.
   
   Global Instance Instance_IsConstant_value_FUN :
     M.IsFunction.C "revm_precompile::blake2::FUN" value_FUN.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_FUN.
   
@@ -1616,6 +1619,7 @@ Module blake2.
     end.
   
   Global Instance Instance_IsFunction_run : M.IsFunction.C "revm_precompile::blake2::run" run.
+  Proof.
   Admitted.
   Global Typeclasses Opaque run.
   
@@ -1825,6 +1829,7 @@ Module blake2.
     
     Global Instance Instance_IsConstant_value_SIGMA :
       M.IsFunction.C "revm_precompile::blake2::algo::SIGMA" value_SIGMA.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SIGMA.
     
@@ -1847,6 +1852,7 @@ Module blake2.
     
     Global Instance Instance_IsConstant_value_IV :
       M.IsFunction.C "revm_precompile::blake2::algo::IV" value_IV.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_IV.
     
@@ -2053,6 +2059,7 @@ Module blake2.
       end.
     
     Global Instance Instance_IsFunction_g : M.IsFunction.C "revm_precompile::blake2::algo::g" g.
+    Proof.
     Admitted.
     Global Typeclasses Opaque g.
     
@@ -2689,6 +2696,7 @@ Module blake2.
     
     Global Instance Instance_IsFunction_compress :
       M.IsFunction.C "revm_precompile::blake2::algo::compress" compress.
+    Proof.
     Admitted.
     Global Typeclasses Opaque compress.
     
@@ -3052,6 +3060,7 @@ Module blake2.
     
     Global Instance Instance_IsFunction_round :
       M.IsFunction.C "revm_precompile::blake2::algo::round" round.
+    Proof.
     Admitted.
     Global Typeclasses Opaque round.
   End algo.

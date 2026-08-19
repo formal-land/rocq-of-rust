@@ -21,6 +21,7 @@ proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
 Global Instance Instance_IsConstant_value_LOREM_IPSUM :
   M.IsFunction.C "file_io_create::LOREM_IPSUM" value_LOREM_IPSUM.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_LOREM_IPSUM.
 
@@ -510,5 +511,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "file_io_create::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

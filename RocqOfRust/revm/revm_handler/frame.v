@@ -90,29 +90,37 @@ Module frame.
                       "revm_handler::frame::EthFrame",
                       "is_finished"
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __field_data :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "revm_handler::frame_data::FrameData" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
+                  let _ := M.read (| γ1_1 |) in
                   let __field_input :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_interpreter::interpreter_action::FrameInput" ],
-                      γ1_1
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                     |) in
+                  let _ := M.read (| γ1_2 |) in
                   let __field_depth :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_2 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_2 |)
+                    |) in
+                  let _ := M.read (| γ1_3 |) in
                   let __field_checkpoint :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_context_interface::journaled_state::JournalCheckpoint" ],
-                      γ1_3
+                      M.borrow (| Pointer.Kind.Ref, γ1_3 |)
                     |) in
+                  let _ := M.read (| γ1_4 |) in
                   let __field_interpreter :=
                     M.alloc (|
                       Ty.apply
@@ -120,10 +128,14 @@ Module frame.
                         []
                         [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ IW ]
                         ],
-                      γ1_4
+                      M.borrow (| Pointer.Kind.Ref, γ1_4 |)
                     |) in
+                  let _ := M.read (| γ1_5 |) in
                   let __field_is_finished :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], γ1_5 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_5 |)
+                    |) in
                   Value.mkStructRecord
                     "revm_handler::frame::EthFrame"
                     []
@@ -334,29 +346,37 @@ Module frame.
                       "revm_handler::frame::EthFrame",
                       "is_finished"
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __field_data :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "revm_handler::frame_data::FrameData" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
+                  let _ := M.read (| γ1_1 |) in
                   let __field_input :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_interpreter::interpreter_action::FrameInput" ],
-                      γ1_1
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                     |) in
+                  let _ := M.read (| γ1_2 |) in
                   let __field_depth :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_2 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_2 |)
+                    |) in
+                  let _ := M.read (| γ1_3 |) in
                   let __field_checkpoint :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "revm_context_interface::journaled_state::JournalCheckpoint" ],
-                      γ1_3
+                      M.borrow (| Pointer.Kind.Ref, γ1_3 |)
                     |) in
+                  let _ := M.read (| γ1_4 |) in
                   let __field_interpreter :=
                     M.alloc (|
                       Ty.apply
@@ -364,10 +384,14 @@ Module frame.
                         []
                         [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ IW ]
                         ],
-                      γ1_4
+                      M.borrow (| Pointer.Kind.Ref, γ1_4 |)
                     |) in
+                  let _ := M.read (| γ1_5 |) in
                   let __field_is_finished :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], γ1_5 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_5 |)
+                    |) in
                   M.read (|
                     let~ __builder : Ty.path "core::fmt::builders::DebugStruct" :=
                       M.call_closure (|
@@ -899,6 +923,7 @@ Module frame.
       end.
     
     Global Instance AssociatedFunction_invalid : M.IsAssociatedFunction.C Self "invalid" invalid.
+    Proof.
     Admitted.
     Global Typeclasses Opaque invalid.
     
@@ -998,6 +1023,7 @@ Module frame.
     
     Global Instance AssociatedFunction_do_default :
       M.IsAssociatedFunction.C Self "do_default" do_default.
+    Proof.
     Admitted.
     Global Typeclasses Opaque do_default.
     
@@ -1043,6 +1069,7 @@ Module frame.
     
     Global Instance AssociatedFunction_is_finished :
       M.IsAssociatedFunction.C Self "is_finished" is_finished.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_finished.
     
@@ -1094,6 +1121,7 @@ Module frame.
     
     Global Instance AssociatedFunction_set_finished :
       M.IsAssociatedFunction.C Self "set_finished" set_finished.
+    Proof.
     Admitted.
     Global Typeclasses Opaque set_finished.
     (*
@@ -1232,24 +1260,31 @@ Module frame.
                       "revm_handler::frame::EthFrame",
                       "is_finished"
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let data_ref :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&mut")
                         []
                         [ Ty.path "revm_handler::frame_data::FrameData" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                     |) in
+                  let _ := M.read (| γ1_1 |) in
                   let input_ref :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&mut")
                         []
                         [ Ty.path "revm_interpreter::interpreter_action::FrameInput" ],
-                      γ1_1
+                      M.borrow (| Pointer.Kind.MutRef, γ1_1 |)
                     |) in
+                  let _ := M.read (| γ1_2 |) in
                   let depth_ref :=
-                    M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "usize" ], γ1_2 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&mut") [] [ Ty.path "usize" ],
+                      M.borrow (| Pointer.Kind.MutRef, γ1_2 |)
+                    |) in
+                  let _ := M.read (| γ1_3 |) in
                   let interpreter :=
                     M.alloc (|
                       Ty.apply
@@ -1270,18 +1305,23 @@ Module frame.
                                 ]
                             ]
                         ],
-                      γ1_3
+                      M.borrow (| Pointer.Kind.MutRef, γ1_3 |)
                     |) in
+                  let _ := M.read (| γ1_4 |) in
                   let checkpoint_ref :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&mut")
                         []
                         [ Ty.path "revm_context_interface::journaled_state::JournalCheckpoint" ],
-                      γ1_4
+                      M.borrow (| Pointer.Kind.MutRef, γ1_4 |)
                     |) in
+                  let _ := M.read (| γ1_5 |) in
                   let is_finished_ref :=
-                    M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "bool" ], γ1_5 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&mut") [] [ Ty.path "bool" ],
+                      M.borrow (| Pointer.Kind.MutRef, γ1_5 |)
+                    |) in
                   M.read (|
                     let~ _ : Ty.tuple [] :=
                       M.write (| M.deref (| M.read (| data_ref |) |), M.read (| data |) |) in
@@ -1338,6 +1378,7 @@ Module frame.
       end.
     
     Global Instance AssociatedFunction_clear : M.IsAssociatedFunction.C Self "clear" clear.
+    Proof.
     Admitted.
     Global Typeclasses Opaque clear.
     
@@ -4058,6 +4099,7 @@ Module frame.
     
     Global Instance AssociatedFunction_make_call_frame :
       M.IsAssociatedFunction.C Self "make_call_frame" make_call_frame.
+    Proof.
     Admitted.
     Global Typeclasses Opaque make_call_frame.
     
@@ -6411,6 +6453,7 @@ Module frame.
     
     Global Instance AssociatedFunction_make_create_frame :
       M.IsAssociatedFunction.C Self "make_create_frame" make_create_frame.
+    Proof.
     Admitted.
     Global Typeclasses Opaque make_create_frame.
     
@@ -6777,6 +6820,7 @@ Module frame.
     
     Global Instance AssociatedFunction_init_with_context :
       M.IsAssociatedFunction.C Self "init_with_context" init_with_context.
+    Proof.
     Admitted.
     Global Typeclasses Opaque init_with_context.
     (*
@@ -7154,13 +7198,14 @@ Module frame.
                               "revm_handler::frame_data::FrameData::Call",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let frame :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "revm_handler::frame_data::CallFrame" ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                             |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
@@ -7397,13 +7442,14 @@ Module frame.
                               "revm_handler::frame_data::FrameData::Create",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let frame :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "revm_handler::frame_data::CreateFrame" ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                             |) in
                           M.read (|
                             let~ max_code_size : Ty.path "usize" :=
@@ -7666,6 +7712,7 @@ Module frame.
     
     Global Instance AssociatedFunction_process_next_action :
       M.IsAssociatedFunction.C Self "process_next_action" process_next_action.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_next_action.
     
@@ -9495,6 +9542,7 @@ Module frame.
     
     Global Instance AssociatedFunction_return_result :
       M.IsAssociatedFunction.C Self "return_result" return_result.
+    Proof.
     Admitted.
     Global Typeclasses Opaque return_result.
   End Impl_revm_handler_frame_EthFrame_revm_interpreter_interpreter_EthInterpreter_Tuple__revm_interpreter_interpreter_shared_memory_SharedMemory.
@@ -10282,6 +10330,7 @@ Module frame.
   
   Global Instance Instance_IsFunction_return_create :
     M.IsFunction.C "revm_handler::frame::return_create" return_create.
+  Proof.
   Admitted.
   Global Typeclasses Opaque return_create.
 End frame.

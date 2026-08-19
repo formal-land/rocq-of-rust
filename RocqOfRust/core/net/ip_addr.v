@@ -212,13 +212,14 @@ Module net.
                                 "core::net::ip_addr::IpAddr::V4",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "core::net::ip_addr::Ipv4Addr" ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
@@ -227,13 +228,14 @@ Module net.
                                 "core::net::ip_addr::IpAddr::V4",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "core::net::ip_addr::Ipv4Addr" ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             M.call_closure (|
                               Ty.path "bool",
@@ -270,13 +272,14 @@ Module net.
                                 "core::net::ip_addr::IpAddr::V6",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "core::net::ip_addr::Ipv6Addr" ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
@@ -285,13 +288,14 @@ Module net.
                                 "core::net::ip_addr::IpAddr::V6",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "core::net::ip_addr::Ipv6Addr" ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             M.call_closure (|
                               Ty.path "bool",
@@ -403,10 +407,11 @@ Module net.
                             "core::net::ip_addr::IpAddr::V4",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let __self_0 :=
                           M.alloc (|
                             Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.call_closure (|
                           Ty.tuple [],
@@ -433,10 +438,11 @@ Module net.
                             "core::net::ip_addr::IpAddr::V6",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let __self_0 :=
                           M.alloc (|
                             Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.call_closure (|
                           Ty.tuple [],
@@ -533,10 +539,11 @@ Module net.
                             "core::net::ip_addr::IpAddr::V4",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __self_0 :=
                           M.alloc (|
                             Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ],
-                            γ2_0
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                           |) in
                         let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                         let γ2_0 :=
@@ -545,10 +552,11 @@ Module net.
                             "core::net::ip_addr::IpAddr::V4",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __arg1_0 :=
                           M.alloc (|
                             Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ],
-                            γ2_0
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                           |) in
                         M.call_closure (|
                           Ty.apply
@@ -580,10 +588,11 @@ Module net.
                             "core::net::ip_addr::IpAddr::V6",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __self_0 :=
                           M.alloc (|
                             Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ],
-                            γ2_0
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                           |) in
                         let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                         let γ2_0 :=
@@ -592,10 +601,11 @@ Module net.
                             "core::net::ip_addr::IpAddr::V6",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __arg1_0 :=
                           M.alloc (|
                             Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ],
-                            γ2_0
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                           |) in
                         M.call_closure (|
                           Ty.apply
@@ -753,13 +763,14 @@ Module net.
                                     "core::net::ip_addr::IpAddr::V4",
                                     0
                                   |) in
+                                let _ := M.read (| γ2_0 |) in
                                 let __self_0 :=
                                   M.alloc (|
                                     Ty.apply
                                       (Ty.path "&")
                                       []
                                       [ Ty.path "core::net::ip_addr::Ipv4Addr" ],
-                                    γ2_0
+                                    M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                   |) in
                                 let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                                 let γ2_0 :=
@@ -768,13 +779,14 @@ Module net.
                                     "core::net::ip_addr::IpAddr::V4",
                                     0
                                   |) in
+                                let _ := M.read (| γ2_0 |) in
                                 let __arg1_0 :=
                                   M.alloc (|
                                     Ty.apply
                                       (Ty.path "&")
                                       []
                                       [ Ty.path "core::net::ip_addr::Ipv4Addr" ],
-                                    γ2_0
+                                    M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                   |) in
                                 M.call_closure (|
                                   Ty.path "core::cmp::Ordering",
@@ -809,13 +821,14 @@ Module net.
                                     "core::net::ip_addr::IpAddr::V6",
                                     0
                                   |) in
+                                let _ := M.read (| γ2_0 |) in
                                 let __self_0 :=
                                   M.alloc (|
                                     Ty.apply
                                       (Ty.path "&")
                                       []
                                       [ Ty.path "core::net::ip_addr::Ipv6Addr" ],
-                                    γ2_0
+                                    M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                   |) in
                                 let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                                 let γ2_0 :=
@@ -824,13 +837,14 @@ Module net.
                                     "core::net::ip_addr::IpAddr::V6",
                                     0
                                   |) in
+                                let _ := M.read (| γ2_0 |) in
                                 let __arg1_0 :=
                                   M.alloc (|
                                     Ty.apply
                                       (Ty.path "&")
                                       []
                                       [ Ty.path "core::net::ip_addr::Ipv6Addr" ],
-                                    γ2_0
+                                    M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                   |) in
                                 M.call_closure (|
                                   Ty.path "core::cmp::Ordering",
@@ -1787,10 +1801,11 @@ Module net.
                         "core::net::ip_addr::IpAddr::V4",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let ip :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.path "bool",
@@ -1811,10 +1826,11 @@ Module net.
                         "core::net::ip_addr::IpAddr::V6",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let ip :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.path "bool",
@@ -1833,6 +1849,7 @@ Module net.
       
       Global Instance AssociatedFunction_is_unspecified :
         M.IsAssociatedFunction.C Self "is_unspecified" is_unspecified.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_unspecified.
       
@@ -1866,10 +1883,11 @@ Module net.
                         "core::net::ip_addr::IpAddr::V4",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let ip :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.path "bool",
@@ -1890,10 +1908,11 @@ Module net.
                         "core::net::ip_addr::IpAddr::V6",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let ip :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.path "bool",
@@ -1912,6 +1931,7 @@ Module net.
       
       Global Instance AssociatedFunction_is_loopback :
         M.IsAssociatedFunction.C Self "is_loopback" is_loopback.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_loopback.
       
@@ -1945,10 +1965,11 @@ Module net.
                         "core::net::ip_addr::IpAddr::V4",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let ip :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.path "bool",
@@ -1969,10 +1990,11 @@ Module net.
                         "core::net::ip_addr::IpAddr::V6",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let ip :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.path "bool",
@@ -1991,6 +2013,7 @@ Module net.
       
       Global Instance AssociatedFunction_is_global :
         M.IsAssociatedFunction.C Self "is_global" is_global.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_global.
       
@@ -2024,10 +2047,11 @@ Module net.
                         "core::net::ip_addr::IpAddr::V4",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let ip :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.path "bool",
@@ -2048,10 +2072,11 @@ Module net.
                         "core::net::ip_addr::IpAddr::V6",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let ip :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.path "bool",
@@ -2070,6 +2095,7 @@ Module net.
       
       Global Instance AssociatedFunction_is_multicast :
         M.IsAssociatedFunction.C Self "is_multicast" is_multicast.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_multicast.
       
@@ -2103,10 +2129,11 @@ Module net.
                         "core::net::ip_addr::IpAddr::V4",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let ip :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.path "bool",
@@ -2127,10 +2154,11 @@ Module net.
                         "core::net::ip_addr::IpAddr::V6",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let ip :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.path "bool",
@@ -2149,6 +2177,7 @@ Module net.
       
       Global Instance AssociatedFunction_is_documentation :
         M.IsAssociatedFunction.C Self "is_documentation" is_documentation.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_documentation.
       
@@ -2182,10 +2211,11 @@ Module net.
                         "core::net::ip_addr::IpAddr::V4",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let ip :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.path "bool",
@@ -2206,10 +2236,11 @@ Module net.
                         "core::net::ip_addr::IpAddr::V6",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let ip :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.path "bool",
@@ -2228,6 +2259,7 @@ Module net.
       
       Global Instance AssociatedFunction_is_benchmarking :
         M.IsAssociatedFunction.C Self "is_benchmarking" is_benchmarking.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_benchmarking.
       
@@ -2266,6 +2298,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_is_ipv4 : M.IsAssociatedFunction.C Self "is_ipv4" is_ipv4.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_ipv4.
       
@@ -2304,6 +2337,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_is_ipv6 : M.IsAssociatedFunction.C Self "is_ipv6" is_ipv6.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_ipv6.
       
@@ -2347,10 +2381,11 @@ Module net.
                         "core::net::ip_addr::IpAddr::V6",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let v6 :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.path "core::net::ip_addr::IpAddr",
@@ -2369,6 +2404,7 @@ Module net.
       
       Global Instance AssociatedFunction_to_canonical :
         M.IsAssociatedFunction.C Self "to_canonical" to_canonical.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_canonical.
       
@@ -2405,10 +2441,11 @@ Module net.
                             "core::net::ip_addr::IpAddr::V4",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let ip :=
                           M.alloc (|
                             Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.borrow (|
                           Pointer.Kind.Ref,
@@ -2469,10 +2506,11 @@ Module net.
                             "core::net::ip_addr::IpAddr::V6",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let ip :=
                           M.alloc (|
                             Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.borrow (|
                           Pointer.Kind.Ref,
@@ -2533,6 +2571,7 @@ Module net.
       
       Global Instance AssociatedFunction_as_octets :
         M.IsAssociatedFunction.C Self "as_octets" as_octets.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_octets.
     End Impl_core_net_ip_addr_IpAddr.
@@ -2565,6 +2604,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -2575,6 +2615,7 @@ Module net.
       
       Global Instance AssociatedConstant_value_BITS :
         M.IsAssociatedFunction.C Self "BITS" value_BITS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_BITS.
       
@@ -2605,6 +2646,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_to_bits : M.IsAssociatedFunction.C Self "to_bits" to_bits.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_bits.
       
@@ -2638,6 +2680,7 @@ Module net.
       
       Global Instance AssociatedFunction_from_bits :
         M.IsAssociatedFunction.C Self "from_bits" from_bits.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_bits.
       
@@ -2661,6 +2704,7 @@ Module net.
       
       Global Instance AssociatedConstant_value_LOCALHOST :
         M.IsAssociatedFunction.C Self "LOCALHOST" value_LOCALHOST.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_LOCALHOST.
       
@@ -2684,6 +2728,7 @@ Module net.
       
       Global Instance AssociatedConstant_value_UNSPECIFIED :
         M.IsAssociatedFunction.C Self "UNSPECIFIED" value_UNSPECIFIED.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_UNSPECIFIED.
       
@@ -2707,6 +2752,7 @@ Module net.
       
       Global Instance AssociatedConstant_value_BROADCAST :
         M.IsAssociatedFunction.C Self "BROADCAST" value_BROADCAST.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_BROADCAST.
       
@@ -2735,6 +2781,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_octets : M.IsAssociatedFunction.C Self "octets" octets.
+      Proof.
       Admitted.
       Global Typeclasses Opaque octets.
       
@@ -2762,6 +2809,7 @@ Module net.
       
       Global Instance AssociatedFunction_from_octets :
         M.IsAssociatedFunction.C Self "from_octets" from_octets.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_octets.
       
@@ -2797,6 +2845,7 @@ Module net.
       
       Global Instance AssociatedFunction_as_octets :
         M.IsAssociatedFunction.C Self "as_octets" as_octets.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_octets.
       
@@ -2839,6 +2888,7 @@ Module net.
       
       Global Instance AssociatedFunction_is_unspecified :
         M.IsAssociatedFunction.C Self "is_unspecified" is_unspecified.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_unspecified.
       
@@ -2892,6 +2942,7 @@ Module net.
       
       Global Instance AssociatedFunction_is_loopback :
         M.IsAssociatedFunction.C Self "is_loopback" is_loopback.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_loopback.
       
@@ -2996,6 +3047,7 @@ Module net.
       
       Global Instance AssociatedFunction_is_private :
         M.IsAssociatedFunction.C Self "is_private" is_private.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_private.
       
@@ -3053,6 +3105,7 @@ Module net.
       
       Global Instance AssociatedFunction_is_link_local :
         M.IsAssociatedFunction.C Self "is_link_local" is_link_local.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_link_local.
       
@@ -3441,6 +3494,7 @@ Module net.
       
       Global Instance AssociatedFunction_is_global :
         M.IsAssociatedFunction.C Self "is_global" is_global.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_global.
       
@@ -3535,6 +3589,7 @@ Module net.
       
       Global Instance AssociatedFunction_is_shared :
         M.IsAssociatedFunction.C Self "is_shared" is_shared.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_shared.
       
@@ -3629,6 +3684,7 @@ Module net.
       
       Global Instance AssociatedFunction_is_benchmarking :
         M.IsAssociatedFunction.C Self "is_benchmarking" is_benchmarking.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_benchmarking.
       
@@ -3708,6 +3764,7 @@ Module net.
       
       Global Instance AssociatedFunction_is_reserved :
         M.IsAssociatedFunction.C Self "is_reserved" is_reserved.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_reserved.
       
@@ -3795,6 +3852,7 @@ Module net.
       
       Global Instance AssociatedFunction_is_multicast :
         M.IsAssociatedFunction.C Self "is_multicast" is_multicast.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_multicast.
       
@@ -3870,6 +3928,7 @@ Module net.
       
       Global Instance AssociatedFunction_is_broadcast :
         M.IsAssociatedFunction.C Self "is_broadcast" is_broadcast.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_broadcast.
       
@@ -3990,6 +4049,7 @@ Module net.
       
       Global Instance AssociatedFunction_is_documentation :
         M.IsAssociatedFunction.C Self "is_documentation" is_documentation.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_documentation.
       
@@ -4067,6 +4127,7 @@ Module net.
       
       Global Instance AssociatedFunction_to_ipv6_compatible :
         M.IsAssociatedFunction.C Self "to_ipv6_compatible" to_ipv6_compatible.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_ipv6_compatible.
       
@@ -4144,6 +4205,7 @@ Module net.
       
       Global Instance AssociatedFunction_to_ipv6_mapped :
         M.IsAssociatedFunction.C Self "to_ipv6_mapped" to_ipv6_mapped.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_ipv6_mapped.
     End Impl_core_net_ip_addr_Ipv4Addr.
@@ -4186,10 +4248,11 @@ Module net.
                         "core::net::ip_addr::IpAddr::V4",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let ip :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -4219,10 +4282,11 @@ Module net.
                         "core::net::ip_addr::IpAddr::V6",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let ip :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -5027,10 +5091,11 @@ Module net.
                         "core::net::ip_addr::IpAddr::V4",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let v4 :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.path "bool",
@@ -5108,10 +5173,11 @@ Module net.
                         "core::net::ip_addr::IpAddr::V4",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let v4 :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.path "bool",
@@ -5244,10 +5310,11 @@ Module net.
                         "core::net::ip_addr::IpAddr::V4",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let v4 :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -5334,10 +5401,11 @@ Module net.
                         "core::net::ip_addr::IpAddr::V4",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let v4 :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -5733,6 +5801,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -5743,6 +5812,7 @@ Module net.
       
       Global Instance AssociatedConstant_value_BITS :
         M.IsAssociatedFunction.C Self "BITS" value_BITS.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_BITS.
       
@@ -5773,6 +5843,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_to_bits : M.IsAssociatedFunction.C Self "to_bits" to_bits.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_bits.
       
@@ -5806,6 +5877,7 @@ Module net.
       
       Global Instance AssociatedFunction_from_bits :
         M.IsAssociatedFunction.C Self "from_bits" from_bits.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_bits.
       
@@ -5833,6 +5905,7 @@ Module net.
       
       Global Instance AssociatedConstant_value_LOCALHOST :
         M.IsAssociatedFunction.C Self "LOCALHOST" value_LOCALHOST.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_LOCALHOST.
       
@@ -5860,6 +5933,7 @@ Module net.
       
       Global Instance AssociatedConstant_value_UNSPECIFIED :
         M.IsAssociatedFunction.C Self "UNSPECIFIED" value_UNSPECIFIED.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_UNSPECIFIED.
       
@@ -5993,6 +6067,7 @@ Module net.
       
       Global Instance AssociatedFunction_segments :
         M.IsAssociatedFunction.C Self "segments" segments.
+      Proof.
       Admitted.
       Global Typeclasses Opaque segments.
       
@@ -6059,6 +6134,7 @@ Module net.
       
       Global Instance AssociatedFunction_from_segments :
         M.IsAssociatedFunction.C Self "from_segments" from_segments.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_segments.
       
@@ -6134,6 +6210,7 @@ Module net.
       
       Global Instance AssociatedFunction_is_unspecified :
         M.IsAssociatedFunction.C Self "is_unspecified" is_unspecified.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_unspecified.
       
@@ -6209,6 +6286,7 @@ Module net.
       
       Global Instance AssociatedFunction_is_loopback :
         M.IsAssociatedFunction.C Self "is_loopback" is_loopback.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_loopback.
       
@@ -6992,6 +7070,7 @@ Module net.
       
       Global Instance AssociatedFunction_is_global :
         M.IsAssociatedFunction.C Self "is_global" is_global.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_global.
       
@@ -7052,6 +7131,7 @@ Module net.
       
       Global Instance AssociatedFunction_is_unique_local :
         M.IsAssociatedFunction.C Self "is_unique_local" is_unique_local.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_unique_local.
       
@@ -7090,6 +7170,7 @@ Module net.
       
       Global Instance AssociatedFunction_is_unicast :
         M.IsAssociatedFunction.C Self "is_unicast" is_unicast.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_unicast.
       
@@ -7150,6 +7231,7 @@ Module net.
       
       Global Instance AssociatedFunction_is_unicast_link_local :
         M.IsAssociatedFunction.C Self "is_unicast_link_local" is_unicast_link_local.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_unicast_link_local.
       
@@ -7252,6 +7334,7 @@ Module net.
       
       Global Instance AssociatedFunction_is_documentation :
         M.IsAssociatedFunction.C Self "is_documentation" is_documentation.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_documentation.
       
@@ -7373,6 +7456,7 @@ Module net.
       
       Global Instance AssociatedFunction_is_benchmarking :
         M.IsAssociatedFunction.C Self "is_benchmarking" is_benchmarking.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_benchmarking.
       
@@ -7525,6 +7609,7 @@ Module net.
       
       Global Instance AssociatedFunction_is_unicast_global :
         M.IsAssociatedFunction.C Self "is_unicast_global" is_unicast_global.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_unicast_global.
       
@@ -7773,6 +7858,7 @@ Module net.
       
       Global Instance AssociatedFunction_multicast_scope :
         M.IsAssociatedFunction.C Self "multicast_scope" multicast_scope.
+      Proof.
       Admitted.
       Global Typeclasses Opaque multicast_scope.
       
@@ -7833,6 +7919,7 @@ Module net.
       
       Global Instance AssociatedFunction_is_multicast :
         M.IsAssociatedFunction.C Self "is_multicast" is_multicast.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_multicast.
       
@@ -7918,6 +8005,7 @@ Module net.
       
       Global Instance AssociatedFunction_is_ipv4_mapped :
         M.IsAssociatedFunction.C Self "is_ipv4_mapped" is_ipv4_mapped.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_ipv4_mapped.
       
@@ -8074,6 +8162,7 @@ Module net.
       
       Global Instance AssociatedFunction_to_ipv4_mapped :
         M.IsAssociatedFunction.C Self "to_ipv4_mapped" to_ipv4_mapped.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_ipv4_mapped.
       
@@ -8290,6 +8379,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_to_ipv4 : M.IsAssociatedFunction.C Self "to_ipv4" to_ipv4.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_ipv4.
       
@@ -8378,6 +8468,7 @@ Module net.
       
       Global Instance AssociatedFunction_to_canonical :
         M.IsAssociatedFunction.C Self "to_canonical" to_canonical.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_canonical.
       
@@ -8406,6 +8497,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_octets : M.IsAssociatedFunction.C Self "octets" octets.
+      Proof.
       Admitted.
       Global Typeclasses Opaque octets.
       
@@ -8433,6 +8525,7 @@ Module net.
       
       Global Instance AssociatedFunction_from_octets :
         M.IsAssociatedFunction.C Self "from_octets" from_octets.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_octets.
       
@@ -8468,6 +8561,7 @@ Module net.
       
       Global Instance AssociatedFunction_as_octets :
         M.IsAssociatedFunction.C Self "as_octets" as_octets.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_octets.
     End Impl_core_net_ip_addr_Ipv6Addr.
@@ -10233,10 +10327,11 @@ Module net.
                         "core::net::ip_addr::IpAddr::V6",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let v6 :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.path "bool",
@@ -10313,10 +10408,11 @@ Module net.
                         "core::net::ip_addr::IpAddr::V6",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let v6 :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.path "bool",
@@ -10454,10 +10550,11 @@ Module net.
                         "core::net::ip_addr::IpAddr::V6",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let v6 :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -10544,10 +10641,11 @@ Module net.
                         "core::net::ip_addr::IpAddr::V6",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let v6 :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply

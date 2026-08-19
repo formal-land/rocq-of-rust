@@ -203,6 +203,7 @@ Module processor.
       M.IsFunction.C
         "pinocchio_token_program::processor::transfer::process_transfer"
         process_transfer.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_transfer.
   End transfer.

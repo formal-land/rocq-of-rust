@@ -181,6 +181,7 @@ Definition drink (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_drink : M.IsFunction.C "panic::drink" drink.
+Proof.
 Admitted.
 Global Typeclasses Opaque drink.
 
@@ -213,5 +214,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "panic::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

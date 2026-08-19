@@ -101,6 +101,7 @@ Module Impl_mother_Mapping_K_V.
   Global Instance AssociatedFunction_get :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "get" (get K V).
+  Proof.
   Admitted.
   Global Typeclasses Opaque get.
   
@@ -134,6 +135,7 @@ Module Impl_mother_Mapping_K_V.
   Global Instance AssociatedFunction_insert :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "insert" (insert K V).
+  Proof.
   Admitted.
   Global Typeclasses Opaque insert.
 End Impl_mother_Mapping_K_V.
@@ -918,8 +920,12 @@ Module Impl_core_cmp_PartialEq_mother_Status_for_mother_Status.
                             "mother::Status::EndingPeriod",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __self_0 :=
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], γ2_0 |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                          |) in
                         let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                         let γ2_0 :=
                           M.SubPointer.get_struct_tuple_field (|
@@ -927,8 +933,12 @@ Module Impl_core_cmp_PartialEq_mother_Status_for_mother_Status.
                             "mother::Status::EndingPeriod",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __arg1_0 :=
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], γ2_0 |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                          |) in
                         M.call_closure (|
                           Ty.path "bool",
                           M.get_trait_method (|
@@ -956,10 +966,11 @@ Module Impl_core_cmp_PartialEq_mother_Status_for_mother_Status.
                             "mother::Status::Ended",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __self_0 :=
                           M.alloc (|
                             Ty.apply (Ty.path "&") [] [ Ty.path "mother::Outline" ],
-                            γ2_0
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                           |) in
                         let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                         let γ2_0 :=
@@ -968,10 +979,11 @@ Module Impl_core_cmp_PartialEq_mother_Status_for_mother_Status.
                             "mother::Status::Ended",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __arg1_0 :=
                           M.alloc (|
                             Ty.apply (Ty.path "&") [] [ Ty.path "mother::Outline" ],
-                            γ2_0
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                           |) in
                         M.call_closure (|
                           Ty.path "bool",
@@ -1000,8 +1012,12 @@ Module Impl_core_cmp_PartialEq_mother_Status_for_mother_Status.
                             "mother::Status::RfDelay",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __self_0 :=
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], γ2_0 |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                          |) in
                         let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                         let γ2_0 :=
                           M.SubPointer.get_struct_tuple_field (|
@@ -1009,8 +1025,12 @@ Module Impl_core_cmp_PartialEq_mother_Status_for_mother_Status.
                             "mother::Status::RfDelay",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __arg1_0 :=
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], γ2_0 |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                          |) in
                         M.call_closure (|
                           Ty.path "bool",
                           M.get_trait_method (|
@@ -1112,7 +1132,12 @@ Module Impl_core_clone_Clone_for_mother_Status.
                 (let γ := M.deref (| M.read (| γ |) |) in
                 let γ1_0 :=
                   M.SubPointer.get_struct_tuple_field (| γ, "mother::Status::EndingPeriod", 0 |) in
-                let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], γ1_0 |) in
+                let _ := M.read (| γ1_0 |) in
+                let __self_0 :=
+                  M.alloc (|
+                    Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                    M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                  |) in
                 Value.StructTuple
                   "mother::Status::EndingPeriod"
                   []
@@ -1137,8 +1162,12 @@ Module Impl_core_clone_Clone_for_mother_Status.
                 (let γ := M.deref (| M.read (| γ |) |) in
                 let γ1_0 :=
                   M.SubPointer.get_struct_tuple_field (| γ, "mother::Status::Ended", 0 |) in
+                let _ := M.read (| γ1_0 |) in
                 let __self_0 :=
-                  M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "mother::Outline" ], γ1_0 |) in
+                  M.alloc (|
+                    Ty.apply (Ty.path "&") [] [ Ty.path "mother::Outline" ],
+                    M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                  |) in
                 Value.StructTuple
                   "mother::Status::Ended"
                   []
@@ -1163,7 +1192,12 @@ Module Impl_core_clone_Clone_for_mother_Status.
                 (let γ := M.deref (| M.read (| γ |) |) in
                 let γ1_0 :=
                   M.SubPointer.get_struct_tuple_field (| γ, "mother::Status::RfDelay", 0 |) in
-                let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], γ1_0 |) in
+                let _ := M.read (| γ1_0 |) in
+                let __self_0 :=
+                  M.alloc (|
+                    Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                    M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                  |) in
                 Value.StructTuple
                   "mother::Status::RfDelay"
                   []
@@ -2028,10 +2062,11 @@ Module Impl_core_cmp_PartialEq_mother_Failure_for_mother_Failure.
                             "mother::Failure::Revert",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __self_0 :=
                           M.alloc (|
                             Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                            γ2_0
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                           |) in
                         let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                         let γ2_0 :=
@@ -2040,10 +2075,11 @@ Module Impl_core_cmp_PartialEq_mother_Failure_for_mother_Failure.
                             "mother::Failure::Revert",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __arg1_0 :=
                           M.alloc (|
                             Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                            γ2_0
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                           |) in
                         M.call_closure (|
                           Ty.path "bool",
@@ -2159,6 +2195,7 @@ Module Impl_mother_Env.
     end.
   
   Global Instance AssociatedFunction_caller : M.IsAssociatedFunction.C Self "caller" caller.
+  Proof.
   Admitted.
   Global Typeclasses Opaque caller.
   
@@ -2185,6 +2222,7 @@ Module Impl_mother_Env.
   
   Global Instance AssociatedFunction_emit_event :
     M.IsAssociatedFunction.C Self "emit_event" emit_event.
+  Proof.
   Admitted.
   Global Typeclasses Opaque emit_event.
 End Impl_mother_Env.
@@ -2285,6 +2323,7 @@ Module Impl_mother_Mother.
     end.
   
   Global Instance AssociatedFunction_init_env : M.IsAssociatedFunction.C Self "init_env" init_env.
+  Proof.
   Admitted.
   Global Typeclasses Opaque init_env.
   
@@ -2307,6 +2346,7 @@ Module Impl_mother_Mother.
     end.
   
   Global Instance AssociatedFunction_env : M.IsAssociatedFunction.C Self "env" env.
+  Proof.
   Admitted.
   Global Typeclasses Opaque env.
   
@@ -2354,6 +2394,7 @@ Module Impl_mother_Mother.
     end.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new.
   
@@ -2384,6 +2425,7 @@ Module Impl_mother_Mother.
   
   Global Instance AssociatedFunction_new_default :
     M.IsAssociatedFunction.C Self "new_default" new_default.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new_default.
   
@@ -2470,6 +2512,7 @@ Module Impl_mother_Mother.
   
   Global Instance AssociatedFunction_failed_new :
     M.IsAssociatedFunction.C Self "failed_new" failed_new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque failed_new.
   
@@ -2540,6 +2583,7 @@ Module Impl_mother_Mother.
   
   Global Instance AssociatedFunction_echo_auction :
     M.IsAssociatedFunction.C Self "echo_auction" echo_auction.
+  Proof.
   Admitted.
   Global Typeclasses Opaque echo_auction.
   
@@ -2638,6 +2682,7 @@ Module Impl_mother_Mother.
   
   Global Instance AssociatedFunction_revert_or_trap :
     M.IsAssociatedFunction.C Self "revert_or_trap" revert_or_trap.
+  Proof.
   Admitted.
   Global Typeclasses Opaque revert_or_trap.
   
@@ -2747,6 +2792,7 @@ Module Impl_mother_Mother.
   
   Global Instance AssociatedFunction_debug_log :
     M.IsAssociatedFunction.C Self "debug_log" debug_log.
+  Proof.
   Admitted.
   Global Typeclasses Opaque debug_log.
 End Impl_mother_Mother.

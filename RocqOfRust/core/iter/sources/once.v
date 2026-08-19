@@ -40,6 +40,7 @@ Module iter.
       
       Global Instance Instance_IsFunction_once :
         M.IsFunction.C "core::iter::sources::once::once" once.
+      Proof.
       Admitted.
       Global Typeclasses Opaque once.
       

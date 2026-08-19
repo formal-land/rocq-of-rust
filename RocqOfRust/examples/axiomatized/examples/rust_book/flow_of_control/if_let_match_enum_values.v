@@ -31,4 +31,5 @@ Axiom IsDiscriminant_Foo_Qux : M.IsDiscriminant "if_let_match_enum_values::Foo::
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "if_let_match_enum_values::main" main.
+Proof.
 Admitted.

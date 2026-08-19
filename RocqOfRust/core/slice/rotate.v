@@ -269,6 +269,7 @@ Module slice.
     
     Global Instance Instance_IsFunction_ptr_rotate :
       M.IsFunction.C "core::slice::rotate::ptr_rotate" ptr_rotate.
+    Proof.
     Admitted.
     Global Typeclasses Opaque ptr_rotate.
     
@@ -597,6 +598,7 @@ Module slice.
     
     Global Instance Instance_IsFunction_ptr_rotate_memmove :
       M.IsFunction.C "core::slice::rotate::ptr_rotate_memmove" ptr_rotate_memmove.
+    Proof.
     Admitted.
     Global Typeclasses Opaque ptr_rotate_memmove.
     
@@ -1109,6 +1111,7 @@ Module slice.
     
     Global Instance Instance_IsFunction_ptr_rotate_gcd :
       M.IsFunction.C "core::slice::rotate::ptr_rotate_gcd" ptr_rotate_gcd.
+    Proof.
     Admitted.
     Global Typeclasses Opaque ptr_rotate_gcd.
     
@@ -1408,6 +1411,7 @@ Module slice.
     
     Global Instance Instance_IsFunction_ptr_rotate_swap :
       M.IsFunction.C "core::slice::rotate::ptr_rotate_swap" ptr_rotate_swap.
+    Proof.
     Admitted.
     Global Typeclasses Opaque ptr_rotate_swap.
     
@@ -1447,6 +1451,7 @@ Module slice.
     
     Global Instance Instance_IsFunction_const_min :
       M.IsFunction.C "core::slice::rotate::const_min" const_min.
+    Proof.
     Admitted.
     Global Typeclasses Opaque const_min.
   End rotate.

@@ -485,6 +485,7 @@ Module alloc.
       
       Global Instance AssociatedFunction_from_size_align :
         M.IsAssociatedFunction.C Self "from_size_align" from_size_align.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_size_align.
       
@@ -587,6 +588,7 @@ Module alloc.
       
       Global Instance AssociatedFunction_is_size_align_valid :
         M.IsAssociatedFunction.C Self "is_size_align_valid" is_size_align_valid.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_size_align_valid.
       
@@ -650,6 +652,7 @@ Module alloc.
       
       Global Instance AssociatedFunction_max_size_for_align :
         M.IsAssociatedFunction.C Self "max_size_for_align" max_size_for_align.
+      Proof.
       Admitted.
       Global Typeclasses Opaque max_size_for_align.
       
@@ -755,6 +758,7 @@ Module alloc.
       
       Global Instance AssociatedFunction_from_size_alignment :
         M.IsAssociatedFunction.C Self "from_size_alignment" from_size_alignment.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_size_alignment.
       
@@ -844,6 +848,7 @@ Module alloc.
       
       Global Instance AssociatedFunction_from_size_align_unchecked :
         M.IsAssociatedFunction.C Self "from_size_align_unchecked" from_size_align_unchecked.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_size_align_unchecked.
       
@@ -872,6 +877,7 @@ Module alloc.
         end.
       
       Global Instance AssociatedFunction_size : M.IsAssociatedFunction.C Self "size" size.
+      Proof.
       Admitted.
       Global Typeclasses Opaque size.
       
@@ -911,6 +917,7 @@ Module alloc.
         end.
       
       Global Instance AssociatedFunction_align : M.IsAssociatedFunction.C Self "align" align.
+      Proof.
       Admitted.
       Global Typeclasses Opaque align.
       
@@ -933,6 +940,7 @@ Module alloc.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -990,6 +998,7 @@ Module alloc.
       
       Global Instance AssociatedFunction_for_value :
         M.IsAssociatedFunction.C Self "for_value" for_value.
+      Proof.
       Admitted.
       Global Typeclasses Opaque for_value.
       
@@ -1048,6 +1057,7 @@ Module alloc.
       
       Global Instance AssociatedFunction_for_value_raw :
         M.IsAssociatedFunction.C Self "for_value_raw" for_value_raw.
+      Proof.
       Admitted.
       Global Typeclasses Opaque for_value_raw.
       
@@ -1099,6 +1109,7 @@ Module alloc.
       
       Global Instance AssociatedFunction_dangling :
         M.IsAssociatedFunction.C Self "dangling" dangling.
+      Proof.
       Admitted.
       Global Typeclasses Opaque dangling.
       
@@ -1218,6 +1229,7 @@ Module alloc.
       
       Global Instance AssociatedFunction_align_to :
         M.IsAssociatedFunction.C Self "align_to" align_to.
+      Proof.
       Admitted.
       Global Typeclasses Opaque align_to.
       
@@ -1327,6 +1339,7 @@ Module alloc.
       
       Global Instance AssociatedFunction_padding_needed_for :
         M.IsAssociatedFunction.C Self "padding_needed_for" padding_needed_for.
+      Proof.
       Admitted.
       Global Typeclasses Opaque padding_needed_for.
       
@@ -1426,6 +1439,7 @@ Module alloc.
           Self
           "size_rounded_up_to_custom_align"
           size_rounded_up_to_custom_align.
+      Proof.
       Admitted.
       Global Typeclasses Opaque size_rounded_up_to_custom_align.
       
@@ -1502,6 +1516,7 @@ Module alloc.
       
       Global Instance AssociatedFunction_pad_to_align :
         M.IsAssociatedFunction.C Self "pad_to_align" pad_to_align.
+      Proof.
       Admitted.
       Global Typeclasses Opaque pad_to_align.
       
@@ -1631,6 +1646,7 @@ Module alloc.
         end.
       
       Global Instance AssociatedFunction_repeat : M.IsAssociatedFunction.C Self "repeat" repeat.
+      Proof.
       Admitted.
       Global Typeclasses Opaque repeat.
       
@@ -1803,6 +1819,7 @@ Module alloc.
         end.
       
       Global Instance AssociatedFunction_extend : M.IsAssociatedFunction.C Self "extend" extend.
+      Proof.
       Admitted.
       Global Typeclasses Opaque extend.
       
@@ -1903,6 +1920,7 @@ Module alloc.
       
       Global Instance AssociatedFunction_repeat_packed :
         M.IsAssociatedFunction.C Self "repeat_packed" repeat_packed.
+      Proof.
       Admitted.
       Global Typeclasses Opaque repeat_packed.
       
@@ -1987,6 +2005,7 @@ Module alloc.
       
       Global Instance AssociatedFunction_extend_packed :
         M.IsAssociatedFunction.C Self "extend_packed" extend_packed.
+      Proof.
       Admitted.
       Global Typeclasses Opaque extend_packed.
       
@@ -2064,6 +2083,7 @@ Module alloc.
         end.
       
       Global Instance AssociatedFunction_array : M.IsAssociatedFunction.C Self "array" array.
+      Proof.
       Admitted.
       Global Typeclasses Opaque array.
       
@@ -2093,6 +2113,7 @@ Module alloc.
       
       Global Instance AssociatedFunction_alignment :
         M.IsAssociatedFunction.C Self "alignment" alignment.
+      Proof.
       Admitted.
       Global Typeclasses Opaque alignment.
     End Impl_core_alloc_layout_Layout.

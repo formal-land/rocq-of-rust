@@ -1803,7 +1803,12 @@ Module journaled_state.
                       "revm_context_interface::journaled_state::JournalLoadError::DBError",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ E ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "revm_context_interface::journaled_state::JournalLoadError::DBError"
                     []
@@ -1884,7 +1889,12 @@ Module journaled_state.
                       "revm_context_interface::journaled_state::JournalLoadError::DBError",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ E ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -2086,7 +2096,12 @@ Module journaled_state.
                               "revm_context_interface::journaled_state::JournalLoadError::DBError",
                               0
                             |) in
-                          let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ2_0 |) in
+                          let _ := M.read (| γ2_0 |) in
+                          let __self_0 :=
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ E ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -2094,7 +2109,12 @@ Module journaled_state.
                               "revm_context_interface::journaled_state::JournalLoadError::DBError",
                               0
                             |) in
-                          let __arg1_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ2_0 |) in
+                          let _ := M.read (| γ2_0 |) in
+                          let __arg1_0 :=
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ E ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -2253,7 +2273,12 @@ Module journaled_state.
                           "revm_context_interface::journaled_state::JournalLoadError::DBError",
                           0
                         |) in
-                      let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ1_0 |) in
+                      let _ := M.read (| γ1_0 |) in
+                      let __self_0 :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ E ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
                       M.call_closure (|
                         Ty.tuple [],
                         M.get_trait_method (| "core::hash::Hash", E, [], [], "hash", [], [ __H ] |),
@@ -2330,6 +2355,7 @@ Module journaled_state.
     Global Instance AssociatedFunction_is_db_error :
       forall (E : Ty.t),
       M.IsAssociatedFunction.C (Self E) "is_db_error" (is_db_error E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_db_error.
     
@@ -2383,6 +2409,7 @@ Module journaled_state.
     Global Instance AssociatedFunction_is_cold_load_skipped :
       forall (E : Ty.t),
       M.IsAssociatedFunction.C (Self E) "is_cold_load_skipped" (is_cold_load_skipped E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_cold_load_skipped.
     
@@ -2432,6 +2459,7 @@ Module journaled_state.
     Global Instance AssociatedFunction_take_db_error :
       forall (E : Ty.t),
       M.IsAssociatedFunction.C (Self E) "take_db_error" (take_db_error E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque take_db_error.
     
@@ -2505,6 +2533,7 @@ Module journaled_state.
     Global Instance AssociatedFunction_unwrap_db_error :
       forall (E : Ty.t),
       M.IsAssociatedFunction.C (Self E) "unwrap_db_error" (unwrap_db_error E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque unwrap_db_error.
     
@@ -2575,6 +2604,7 @@ Module journaled_state.
     Global Instance AssociatedFunction_into_parts :
       forall (E : Ty.t),
       M.IsAssociatedFunction.C (Self E) "into_parts" (into_parts E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_parts.
   End Impl_revm_context_interface_journaled_state_JournalLoadError_E.
@@ -3830,6 +3860,7 @@ Module journaled_state.
     Global Instance AssociatedFunction_new :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "new" (new T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -3901,6 +3932,7 @@ Module journaled_state.
     Global Instance AssociatedFunction_map :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "map" (map T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque map.
   End Impl_revm_context_interface_journaled_state_StateLoad_T.
@@ -4878,6 +4910,7 @@ Module journaled_state.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -4955,6 +4988,7 @@ Module journaled_state.
     
     Global Instance AssociatedFunction_into_state_load :
       M.IsAssociatedFunction.C Self "into_state_load" into_state_load.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_state_load.
   End Impl_revm_context_interface_journaled_state_AccountInfoLoad.

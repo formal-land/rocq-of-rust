@@ -1158,6 +1158,7 @@ Module str.
                                 "core::str::pattern::Utf8Pattern::StringPattern",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
                               M.alloc (|
                                 Ty.apply
@@ -1169,7 +1170,7 @@ Module str.
                                       []
                                       [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
                                   ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
@@ -1178,6 +1179,7 @@ Module str.
                                 "core::str::pattern::Utf8Pattern::StringPattern",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
                               M.alloc (|
                                 Ty.apply
@@ -1189,7 +1191,7 @@ Module str.
                                       []
                                       [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
                                   ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             M.call_closure (|
                               Ty.path "bool",
@@ -1236,8 +1238,12 @@ Module str.
                                 "core::str::pattern::Utf8Pattern::CharPattern",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "char" ], γ2_0 |) in
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "char" ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
                               M.SubPointer.get_struct_tuple_field (|
@@ -1245,8 +1251,12 @@ Module str.
                                 "core::str::pattern::Utf8Pattern::CharPattern",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "char" ], γ2_0 |) in
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "char" ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             M.call_closure (|
                               Ty.path "bool",
                               M.get_trait_method (|
@@ -1320,6 +1330,7 @@ Module str.
                         "core::str::pattern::Utf8Pattern::StringPattern",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
@@ -1331,7 +1342,7 @@ Module str.
                               []
                               [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -1387,8 +1398,12 @@ Module str.
                         "core::str::pattern::Utf8Pattern::CharPattern",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "char" ], γ1_0 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "char" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     M.call_closure (|
                       Ty.apply
                         (Ty.path "core::result::Result")
@@ -1645,10 +1660,18 @@ Module str.
                                 "core::str::pattern::SearchStep::Match",
                                 1
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ2_0 |) in
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
+                            let _ := M.read (| γ2_1 |) in
                             let __self_1 :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ2_1 |) in
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                              |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
                               M.SubPointer.get_struct_tuple_field (|
@@ -1662,10 +1685,18 @@ Module str.
                                 "core::str::pattern::SearchStep::Match",
                                 1
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ2_0 |) in
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
+                            let _ := M.read (| γ2_1 |) in
                             let __arg1_1 :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ2_1 |) in
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                              |) in
                             LogicalOp.and (|
                               M.call_closure (|
                                 Ty.path "bool",
@@ -1718,10 +1749,18 @@ Module str.
                                 "core::str::pattern::SearchStep::Reject",
                                 1
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ2_0 |) in
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
+                            let _ := M.read (| γ2_1 |) in
                             let __self_1 :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ2_1 |) in
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                              |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
                               M.SubPointer.get_struct_tuple_field (|
@@ -1735,10 +1774,18 @@ Module str.
                                 "core::str::pattern::SearchStep::Reject",
                                 1
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ2_0 |) in
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
+                            let _ := M.read (| γ2_1 |) in
                             let __arg1_1 :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ2_1 |) in
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                              |) in
                             LogicalOp.and (|
                               M.call_closure (|
                                 Ty.path "bool",
@@ -1829,10 +1876,18 @@ Module str.
                         "core::str::pattern::SearchStep::Match",
                         1
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
+                    let _ := M.read (| γ1_1 |) in
                     let __self_1 :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_1 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                      |) in
                     M.call_closure (|
                       Ty.apply
                         (Ty.path "core::result::Result")
@@ -1894,10 +1949,18 @@ Module str.
                         "core::str::pattern::SearchStep::Reject",
                         1
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
+                    let _ := M.read (| γ1_1 |) in
                     let __self_1 :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_1 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                      |) in
                     M.call_closure (|
                       Ty.apply
                         (Ty.path "core::result::Result")
@@ -3074,6 +3137,7 @@ Module str.
       
       Global Instance AssociatedFunction_utf8_size :
         M.IsAssociatedFunction.C Self "utf8_size" utf8_size.
+      Proof.
       Admitted.
       Global Typeclasses Opaque utf8_size.
     End Impl_core_str_pattern_CharSearcher.
@@ -12988,10 +13052,11 @@ Module str.
                         "core::str::pattern::StrSearcherImpl::Empty",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "core::str::pattern::EmptyNeedle" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     Value.StructTuple
                       "core::str::pattern::StrSearcherImpl::Empty"
@@ -13021,10 +13086,11 @@ Module str.
                         "core::str::pattern::StrSearcherImpl::TwoWay",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "core::str::pattern::TwoWaySearcher" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     Value.StructTuple
                       "core::str::pattern::StrSearcherImpl::TwoWay"
@@ -13090,10 +13156,11 @@ Module str.
                         "core::str::pattern::StrSearcherImpl::Empty",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "core::str::pattern::EmptyNeedle" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -13144,10 +13211,11 @@ Module str.
                         "core::str::pattern::StrSearcherImpl::TwoWay",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "core::str::pattern::TwoWaySearcher" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -13711,6 +13779,7 @@ Module str.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
     End Impl_core_str_pattern_StrSearcher.
@@ -13821,13 +13890,14 @@ Module str.
                             "core::str::pattern::StrSearcherImpl::Empty",
                             0
                           |) in
+                        let _ := M.read (| γ0_0 |) in
                         let searcher :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&mut")
                               []
                               [ Ty.path "core::str::pattern::EmptyNeedle" ],
-                            γ0_0
+                            M.borrow (| Pointer.Kind.MutRef, γ0_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -14082,13 +14152,14 @@ Module str.
                             "core::str::pattern::StrSearcherImpl::TwoWay",
                             0
                           |) in
+                        let _ := M.read (| γ0_0 |) in
                         let searcher :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&mut")
                               []
                               [ Ty.path "core::str::pattern::TwoWaySearcher" ],
-                            γ0_0
+                            M.borrow (| Pointer.Kind.MutRef, γ0_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -14579,13 +14650,14 @@ Module str.
                             "core::str::pattern::StrSearcherImpl::TwoWay",
                             0
                           |) in
+                        let _ := M.read (| γ0_0 |) in
                         let searcher :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&mut")
                               []
                               [ Ty.path "core::str::pattern::TwoWaySearcher" ],
-                            γ0_0
+                            M.borrow (| Pointer.Kind.MutRef, γ0_0 |)
                           |) in
                         M.read (|
                           let~ is_long : Ty.path "bool" :=
@@ -14893,13 +14965,14 @@ Module str.
                             "core::str::pattern::StrSearcherImpl::Empty",
                             0
                           |) in
+                        let _ := M.read (| γ0_0 |) in
                         let searcher :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&mut")
                               []
                               [ Ty.path "core::str::pattern::EmptyNeedle" ],
-                            γ0_0
+                            M.borrow (| Pointer.Kind.MutRef, γ0_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -15154,13 +15227,14 @@ Module str.
                             "core::str::pattern::StrSearcherImpl::TwoWay",
                             0
                           |) in
+                        let _ := M.read (| γ0_0 |) in
                         let searcher :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&mut")
                               []
                               [ Ty.path "core::str::pattern::TwoWaySearcher" ],
-                            γ0_0
+                            M.borrow (| Pointer.Kind.MutRef, γ0_0 |)
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -15628,13 +15702,14 @@ Module str.
                             "core::str::pattern::StrSearcherImpl::TwoWay",
                             0
                           |) in
+                        let _ := M.read (| γ0_0 |) in
                         let searcher :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&mut")
                               []
                               [ Ty.path "core::str::pattern::TwoWaySearcher" ],
-                            γ0_0
+                            M.borrow (| Pointer.Kind.MutRef, γ0_0 |)
                           |) in
                         M.read (|
                           let~ is_long : Ty.path "bool" :=
@@ -17146,6 +17221,7 @@ Module str.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -17247,6 +17323,7 @@ Module str.
       
       Global Instance AssociatedFunction_byteset_create :
         M.IsAssociatedFunction.C Self "byteset_create" byteset_create.
+      Proof.
       Admitted.
       Global Typeclasses Opaque byteset_create.
       
@@ -17304,6 +17381,7 @@ Module str.
       
       Global Instance AssociatedFunction_byteset_contains :
         M.IsAssociatedFunction.C Self "byteset_contains" byteset_contains.
+      Proof.
       Admitted.
       Global Typeclasses Opaque byteset_contains.
       
@@ -18662,6 +18740,7 @@ Module str.
         end.
       
       Global Instance AssociatedFunction_next : M.IsAssociatedFunction.C Self "next" next.
+      Proof.
       Admitted.
       Global Typeclasses Opaque next.
       
@@ -20099,6 +20178,7 @@ Module str.
       
       Global Instance AssociatedFunction_next_back :
         M.IsAssociatedFunction.C Self "next_back" next_back.
+      Proof.
       Admitted.
       Global Typeclasses Opaque next_back.
       
@@ -20465,6 +20545,7 @@ Module str.
       
       Global Instance AssociatedFunction_maximal_suffix :
         M.IsAssociatedFunction.C Self "maximal_suffix" maximal_suffix.
+      Proof.
       Admitted.
       Global Typeclasses Opaque maximal_suffix.
       
@@ -20950,6 +21031,7 @@ Module str.
       
       Global Instance AssociatedFunction_reverse_maximal_suffix :
         M.IsAssociatedFunction.C Self "reverse_maximal_suffix" reverse_maximal_suffix.
+      Proof.
       Admitted.
       Global Typeclasses Opaque reverse_maximal_suffix.
     End Impl_core_str_pattern_TwoWaySearcher.
@@ -23553,6 +23635,7 @@ Module str.
     
     Global Instance Instance_IsFunction_simd_contains :
       M.IsFunction.C "core::str::pattern::simd_contains" simd_contains.
+    Proof.
     Admitted.
     Global Typeclasses Opaque simd_contains.
     
@@ -23562,6 +23645,7 @@ Module str.
       
       Global Instance Instance_IsConstant_value_UNROLL :
         M.IsFunction.C "core::str::pattern::simd_contains::UNROLL" value_UNROLL.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_UNROLL.
     End simd_contains.
@@ -24517,6 +24601,7 @@ Module str.
     
     Global Instance Instance_IsFunction_small_slice_eq :
       M.IsFunction.C "core::str::pattern::small_slice_eq" small_slice_eq.
+    Proof.
     Admitted.
     Global Typeclasses Opaque small_slice_eq.
   End pattern.

@@ -2164,6 +2164,7 @@ Module map.
     
     Global Instance Instance_IsFunction_write_bytes_unrolled :
       M.IsFunction.C "alloy_primitives::map::fixed::write_bytes_unrolled" write_bytes_unrolled.
+    Proof.
     Admitted.
     Global Typeclasses Opaque write_bytes_unrolled.
   End fixed.

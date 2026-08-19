@@ -116,6 +116,7 @@ Module iter.
         Global Instance AssociatedFunction_new :
           forall (I F : Ty.t),
           M.IsAssociatedFunction.C (Self I F) "new" (new I F).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new.
         (*
@@ -169,6 +170,7 @@ Module iter.
                               "core::option::Option::Some",
                               0
                             |) in
+                          let _ := M.read (| γ0_0 |) in
                           let a :=
                             M.alloc (|
                               Ty.apply
@@ -182,7 +184,7 @@ Module iter.
                                     I
                                     "Item"
                                 ],
-                              γ0_0
+                              M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                             |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
@@ -239,6 +241,7 @@ Module iter.
         Global Instance AssociatedFunction_do_inspect :
           forall (I F : Ty.t),
           M.IsAssociatedFunction.C (Self I F) "do_inspect" (do_inspect I F).
+        Proof.
         Admitted.
         Global Typeclasses Opaque do_inspect.
       End Impl_core_iter_adapters_inspect_Inspect_I_F.
@@ -456,6 +459,7 @@ Module iter.
       
       Global Instance Instance_IsFunction_inspect_fold :
         M.IsFunction.C "core::iter::adapters::inspect::inspect_fold" inspect_fold.
+      Proof.
       Admitted.
       Global Typeclasses Opaque inspect_fold.
       
@@ -556,6 +560,7 @@ Module iter.
       
       Global Instance Instance_IsFunction_inspect_try_fold :
         M.IsFunction.C "core::iter::adapters::inspect::inspect_try_fold" inspect_try_fold.
+      Proof.
       Admitted.
       Global Typeclasses Opaque inspect_try_fold.
       

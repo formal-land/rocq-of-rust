@@ -225,6 +225,7 @@ Module constant.
                         "move_binary_format::file_format::SignatureToken::Vector",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let v :=
                       M.alloc (|
                         Ty.apply
@@ -239,7 +240,7 @@ Module constant.
                                 Ty.path "alloc::alloc::Global"
                               ]
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     Value.StructTuple
                       "core::option::Option::Some"
@@ -519,6 +520,7 @@ Module constant.
   
   Global Instance Instance_IsFunction_sig_to_ty :
     M.IsFunction.C "move_binary_format::constant::sig_to_ty" sig_to_ty.
+  Proof.
   Admitted.
   Global Typeclasses Opaque sig_to_ty.
   
@@ -722,6 +724,7 @@ Module constant.
                         "move_core_types::runtime_value::MoveTypeLayout::Vector",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let v :=
                       M.alloc (|
                         Ty.apply
@@ -736,7 +739,7 @@ Module constant.
                                 Ty.path "alloc::alloc::Global"
                               ]
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     Value.StructTuple
                       "core::option::Option::Some"
@@ -982,6 +985,7 @@ Module constant.
   
   Global Instance Instance_IsFunction_ty_to_sig :
     M.IsFunction.C "move_binary_format::constant::ty_to_sig" ty_to_sig.
+  Proof.
   Admitted.
   Global Typeclasses Opaque ty_to_sig.
   
@@ -1292,6 +1296,7 @@ Module constant.
     
     Global Instance AssociatedFunction_serialize_constant :
       M.IsAssociatedFunction.C Self "serialize_constant" serialize_constant.
+    Proof.
     Admitted.
     Global Typeclasses Opaque serialize_constant.
     
@@ -1535,6 +1540,7 @@ Module constant.
     
     Global Instance AssociatedFunction_deserialize_constant :
       M.IsAssociatedFunction.C Self "deserialize_constant" deserialize_constant.
+    Proof.
     Admitted.
     Global Typeclasses Opaque deserialize_constant.
   End Impl_move_binary_format_file_format_Constant.

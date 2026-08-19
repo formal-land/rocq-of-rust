@@ -751,6 +751,7 @@ Module string.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -792,6 +793,7 @@ Module string.
     
     Global Instance AssociatedFunction_with_capacity :
       M.IsAssociatedFunction.C Self "with_capacity" with_capacity.
+    Proof.
     Admitted.
     Global Typeclasses Opaque with_capacity.
     
@@ -991,6 +993,7 @@ Module string.
     
     Global Instance AssociatedFunction_try_with_capacity :
       M.IsAssociatedFunction.C Self "try_with_capacity" try_with_capacity.
+    Proof.
     Admitted.
     Global Typeclasses Opaque try_with_capacity.
     
@@ -1105,6 +1108,7 @@ Module string.
     
     Global Instance AssociatedFunction_from_utf8 :
       M.IsAssociatedFunction.C Self "from_utf8" from_utf8.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_utf8.
     
@@ -1847,6 +1851,7 @@ Module string.
     
     Global Instance AssociatedFunction_from_utf8_lossy :
       M.IsAssociatedFunction.C Self "from_utf8_lossy" from_utf8_lossy.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_utf8_lossy.
     
@@ -1949,6 +1954,7 @@ Module string.
     
     Global Instance AssociatedFunction_from_utf8_lossy_owned :
       M.IsAssociatedFunction.C Self "from_utf8_lossy_owned" from_utf8_lossy_owned.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_utf8_lossy_owned.
     
@@ -2346,6 +2352,7 @@ Module string.
     
     Global Instance AssociatedFunction_from_utf16 :
       M.IsAssociatedFunction.C Self "from_utf16" from_utf16.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_utf16.
     
@@ -2568,6 +2575,7 @@ Module string.
     
     Global Instance AssociatedFunction_from_utf16_lossy :
       M.IsAssociatedFunction.C Self "from_utf16_lossy" from_utf16_lossy.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_utf16_lossy.
     
@@ -3147,6 +3155,7 @@ Module string.
     
     Global Instance AssociatedFunction_from_utf16le :
       M.IsAssociatedFunction.C Self "from_utf16le" from_utf16le.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_utf16le.
     
@@ -3255,8 +3264,12 @@ Module string.
                     |) in
                   let γ1_2 := M.deref (| M.read (| γ1_2 |) |) in
                   let γ3_0 := M.SubPointer.get_slice_index (| γ1_2, 0 |) in
+                  let _ := M.read (| γ3_0 |) in
                   let _remainder :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ3_0 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ3_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.path "alloc::string::String",
                     M.get_trait_method (|
@@ -3923,6 +3936,7 @@ Module string.
     
     Global Instance AssociatedFunction_from_utf16le_lossy :
       M.IsAssociatedFunction.C Self "from_utf16le_lossy" from_utf16le_lossy.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_utf16le_lossy.
     
@@ -4502,6 +4516,7 @@ Module string.
     
     Global Instance AssociatedFunction_from_utf16be :
       M.IsAssociatedFunction.C Self "from_utf16be" from_utf16be.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_utf16be.
     
@@ -4610,8 +4625,12 @@ Module string.
                     |) in
                   let γ1_2 := M.deref (| M.read (| γ1_2 |) |) in
                   let γ3_0 := M.SubPointer.get_slice_index (| γ1_2, 0 |) in
+                  let _ := M.read (| γ3_0 |) in
                   let _remainder :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ3_0 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ3_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.path "alloc::string::String",
                     M.get_trait_method (|
@@ -5278,6 +5297,7 @@ Module string.
     
     Global Instance AssociatedFunction_from_utf16be_lossy :
       M.IsAssociatedFunction.C Self "from_utf16be_lossy" from_utf16be_lossy.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_utf16be_lossy.
     
@@ -5314,6 +5334,7 @@ Module string.
     
     Global Instance AssociatedFunction_into_raw_parts :
       M.IsAssociatedFunction.C Self "into_raw_parts" into_raw_parts.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_raw_parts.
     
@@ -5357,6 +5378,7 @@ Module string.
     
     Global Instance AssociatedFunction_from_raw_parts :
       M.IsAssociatedFunction.C Self "from_raw_parts" from_raw_parts.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_raw_parts.
     
@@ -5383,6 +5405,7 @@ Module string.
     
     Global Instance AssociatedFunction_from_utf8_unchecked :
       M.IsAssociatedFunction.C Self "from_utf8_unchecked" from_utf8_unchecked.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_utf8_unchecked.
     
@@ -5404,6 +5427,7 @@ Module string.
     
     Global Instance AssociatedFunction_into_bytes :
       M.IsAssociatedFunction.C Self "into_bytes" into_bytes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_bytes.
     
@@ -5465,6 +5489,7 @@ Module string.
       end.
     
     Global Instance AssociatedFunction_as_str : M.IsAssociatedFunction.C Self "as_str" as_str.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_str.
     
@@ -5537,6 +5562,7 @@ Module string.
     
     Global Instance AssociatedFunction_as_mut_str :
       M.IsAssociatedFunction.C Self "as_mut_str" as_mut_str.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_mut_str.
     
@@ -5588,6 +5614,7 @@ Module string.
       end.
     
     Global Instance AssociatedFunction_push_str : M.IsAssociatedFunction.C Self "push_str" push_str.
+    Proof.
     Admitted.
     Global Typeclasses Opaque push_str.
     
@@ -5824,6 +5851,7 @@ Module string.
     
     Global Instance AssociatedFunction_extend_from_within :
       M.IsAssociatedFunction.C Self "extend_from_within" extend_from_within.
+    Proof.
     Admitted.
     Global Typeclasses Opaque extend_from_within.
     
@@ -5864,6 +5892,7 @@ Module string.
       end.
     
     Global Instance AssociatedFunction_capacity : M.IsAssociatedFunction.C Self "capacity" capacity.
+    Proof.
     Admitted.
     Global Typeclasses Opaque capacity.
     
@@ -5906,6 +5935,7 @@ Module string.
       end.
     
     Global Instance AssociatedFunction_reserve : M.IsAssociatedFunction.C Self "reserve" reserve.
+    Proof.
     Admitted.
     Global Typeclasses Opaque reserve.
     
@@ -5949,6 +5979,7 @@ Module string.
     
     Global Instance AssociatedFunction_reserve_exact :
       M.IsAssociatedFunction.C Self "reserve_exact" reserve_exact.
+    Proof.
     Admitted.
     Global Typeclasses Opaque reserve_exact.
     
@@ -5995,6 +6026,7 @@ Module string.
     
     Global Instance AssociatedFunction_try_reserve :
       M.IsAssociatedFunction.C Self "try_reserve" try_reserve.
+    Proof.
     Admitted.
     Global Typeclasses Opaque try_reserve.
     
@@ -6041,6 +6073,7 @@ Module string.
     
     Global Instance AssociatedFunction_try_reserve_exact :
       M.IsAssociatedFunction.C Self "try_reserve_exact" try_reserve_exact.
+    Proof.
     Admitted.
     Global Typeclasses Opaque try_reserve_exact.
     
@@ -6082,6 +6115,7 @@ Module string.
     
     Global Instance AssociatedFunction_shrink_to_fit :
       M.IsAssociatedFunction.C Self "shrink_to_fit" shrink_to_fit.
+    Proof.
     Admitted.
     Global Typeclasses Opaque shrink_to_fit.
     
@@ -6125,6 +6159,7 @@ Module string.
     
     Global Instance AssociatedFunction_shrink_to :
       M.IsAssociatedFunction.C Self "shrink_to" shrink_to.
+    Proof.
     Admitted.
     Global Typeclasses Opaque shrink_to.
     
@@ -6255,6 +6290,7 @@ Module string.
       end.
     
     Global Instance AssociatedFunction_push : M.IsAssociatedFunction.C Self "push" push.
+    Proof.
     Admitted.
     Global Typeclasses Opaque push.
     
@@ -6300,6 +6336,7 @@ Module string.
       end.
     
     Global Instance AssociatedFunction_as_bytes : M.IsAssociatedFunction.C Self "as_bytes" as_bytes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_bytes.
     
@@ -6446,6 +6483,7 @@ Module string.
       end.
     
     Global Instance AssociatedFunction_truncate : M.IsAssociatedFunction.C Self "truncate" truncate.
+    Proof.
     Admitted.
     Global Typeclasses Opaque truncate.
     
@@ -6700,6 +6738,7 @@ Module string.
       end.
     
     Global Instance AssociatedFunction_pop : M.IsAssociatedFunction.C Self "pop" pop.
+    Proof.
     Admitted.
     Global Typeclasses Opaque pop.
     
@@ -6970,6 +7009,7 @@ Module string.
       end.
     
     Global Instance AssociatedFunction_remove : M.IsAssociatedFunction.C Self "remove" remove.
+    Proof.
     Admitted.
     Global Typeclasses Opaque remove.
     
@@ -7836,6 +7876,7 @@ Module string.
     
     Global Instance AssociatedFunction_remove_matches :
       M.IsAssociatedFunction.C Self "remove_matches" remove_matches.
+    Proof.
     Admitted.
     Global Typeclasses Opaque remove_matches.
     
@@ -8371,6 +8412,7 @@ Module string.
       end.
     
     Global Instance AssociatedFunction_retain : M.IsAssociatedFunction.C Self "retain" retain.
+    Proof.
     Admitted.
     Global Typeclasses Opaque retain.
     
@@ -8666,6 +8708,7 @@ Module string.
       end.
     
     Global Instance AssociatedFunction_insert : M.IsAssociatedFunction.C Self "insert" insert.
+    Proof.
     Admitted.
     Global Typeclasses Opaque insert.
     
@@ -8964,6 +9007,7 @@ Module string.
     
     Global Instance AssociatedFunction_insert_str :
       M.IsAssociatedFunction.C Self "insert_str" insert_str.
+    Proof.
     Admitted.
     Global Typeclasses Opaque insert_str.
     
@@ -9001,6 +9045,7 @@ Module string.
     
     Global Instance AssociatedFunction_as_mut_vec :
       M.IsAssociatedFunction.C Self "as_mut_vec" as_mut_vec.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_mut_vec.
     
@@ -9041,6 +9086,7 @@ Module string.
       end.
     
     Global Instance AssociatedFunction_len : M.IsAssociatedFunction.C Self "len" len.
+    Proof.
     Admitted.
     Global Typeclasses Opaque len.
     
@@ -9071,6 +9117,7 @@ Module string.
       end.
     
     Global Instance AssociatedFunction_is_empty : M.IsAssociatedFunction.C Self "is_empty" is_empty.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_empty.
     
@@ -9202,6 +9249,7 @@ Module string.
     
     Global Instance AssociatedFunction_split_off :
       M.IsAssociatedFunction.C Self "split_off" split_off.
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_off.
     
@@ -9242,6 +9290,7 @@ Module string.
       end.
     
     Global Instance AssociatedFunction_clear : M.IsAssociatedFunction.C Self "clear" clear.
+    Proof.
     Admitted.
     Global Typeclasses Opaque clear.
     
@@ -9536,6 +9585,7 @@ Module string.
       end.
     
     Global Instance AssociatedFunction_drain : M.IsAssociatedFunction.C Self "drain" drain.
+    Proof.
     Admitted.
     Global Typeclasses Opaque drain.
     
@@ -9594,6 +9644,7 @@ Module string.
     
     Global Instance AssociatedFunction_into_chars :
       M.IsAssociatedFunction.C Self "into_chars" into_chars.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_chars.
     
@@ -10073,6 +10124,7 @@ Module string.
     
     Global Instance AssociatedFunction_replace_range :
       M.IsAssociatedFunction.C Self "replace_range" replace_range.
+    Proof.
     Admitted.
     Global Typeclasses Opaque replace_range.
     
@@ -10236,6 +10288,7 @@ Module string.
     
     Global Instance AssociatedFunction_replace_first :
       M.IsAssociatedFunction.C Self "replace_first" replace_first.
+    Proof.
     Admitted.
     Global Typeclasses Opaque replace_first.
     
@@ -10402,6 +10455,7 @@ Module string.
     
     Global Instance AssociatedFunction_replace_last :
       M.IsAssociatedFunction.C Self "replace_last" replace_last.
+    Proof.
     Admitted.
     Global Typeclasses Opaque replace_last.
     
@@ -10464,6 +10518,7 @@ Module string.
     
     Global Instance AssociatedFunction_into_boxed_str :
       M.IsAssociatedFunction.C Self "into_boxed_str" into_boxed_str.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_boxed_str.
     
@@ -10537,6 +10592,7 @@ Module string.
       end.
     
     Global Instance AssociatedFunction_leak : M.IsAssociatedFunction.C Self "leak" leak.
+    Proof.
     Admitted.
     Global Typeclasses Opaque leak.
   End Impl_alloc_string_String.
@@ -10598,6 +10654,7 @@ Module string.
       end.
     
     Global Instance AssociatedFunction_as_bytes : M.IsAssociatedFunction.C Self "as_bytes" as_bytes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_bytes.
     
@@ -11088,6 +11145,7 @@ Module string.
     
     Global Instance AssociatedFunction_into_utf8_lossy :
       M.IsAssociatedFunction.C Self "into_utf8_lossy" into_utf8_lossy.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_utf8_lossy.
     
@@ -11109,6 +11167,7 @@ Module string.
     
     Global Instance AssociatedFunction_into_bytes :
       M.IsAssociatedFunction.C Self "into_bytes" into_bytes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_bytes.
     
@@ -11138,6 +11197,7 @@ Module string.
     
     Global Instance AssociatedFunction_utf8_error :
       M.IsAssociatedFunction.C Self "utf8_error" utf8_error.
+    Proof.
     Admitted.
     Global Typeclasses Opaque utf8_error.
   End Impl_alloc_string_FromUtf8Error.
@@ -22130,6 +22190,7 @@ Module string.
       end.
     
     Global Instance AssociatedFunction_as_str : M.IsAssociatedFunction.C Self "as_str" as_str.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_str.
     
@@ -22192,6 +22253,7 @@ Module string.
     
     Global Instance AssociatedFunction_into_string :
       M.IsAssociatedFunction.C Self "into_string" into_string.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_string.
     
@@ -22231,6 +22293,7 @@ Module string.
       end.
     
     Global Instance AssociatedFunction_iter : M.IsAssociatedFunction.C Self "iter" iter.
+    Proof.
     Admitted.
     Global Typeclasses Opaque iter.
   End Impl_alloc_string_IntoChars.
@@ -23097,6 +23160,7 @@ Module string.
       end.
     
     Global Instance AssociatedFunction_as_str : M.IsAssociatedFunction.C Self "as_str" as_str.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_str.
   End Impl_alloc_string_Drain.

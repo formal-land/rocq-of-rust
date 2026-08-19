@@ -461,6 +461,7 @@ Module validation.
   
   Global Instance Instance_IsFunction_validate_env :
     M.IsFunction.C "revm_handler::validation::validate_env" validate_env.
+  Proof.
   Admitted.
   Global Typeclasses Opaque validate_env.
   
@@ -572,6 +573,7 @@ Module validation.
   
   Global Instance Instance_IsFunction_validate_legacy_gas_price :
     M.IsFunction.C "revm_handler::validation::validate_legacy_gas_price" validate_legacy_gas_price.
+  Proof.
   Admitted.
   Global Typeclasses Opaque validate_legacy_gas_price.
   
@@ -769,6 +771,7 @@ Module validation.
   
   Global Instance Instance_IsFunction_validate_priority_fee_tx :
     M.IsFunction.C "revm_handler::validation::validate_priority_fee_tx" validate_priority_fee_tx.
+  Proof.
   Admitted.
   Global Typeclasses Opaque validate_priority_fee_tx.
   
@@ -1337,6 +1340,7 @@ Module validation.
   
   Global Instance Instance_IsFunction_validate_eip4844_tx :
     M.IsFunction.C "revm_handler::validation::validate_eip4844_tx" validate_eip4844_tx.
+  Proof.
   Admitted.
   Global Typeclasses Opaque validate_eip4844_tx.
   
@@ -4253,6 +4257,7 @@ Module validation.
   
   Global Instance Instance_IsFunction_validate_tx_env :
     M.IsFunction.C "revm_handler::validation::validate_tx_env" validate_tx_env.
+  Proof.
   Admitted.
   Global Typeclasses Opaque validate_tx_env.
   
@@ -4549,6 +4554,7 @@ Module validation.
   
   Global Instance Instance_IsFunction_validate_initial_tx_gas :
     M.IsFunction.C "revm_handler::validation::validate_initial_tx_gas" validate_initial_tx_gas.
+  Proof.
   Admitted.
   Global Typeclasses Opaque validate_initial_tx_gas.
 End validation.

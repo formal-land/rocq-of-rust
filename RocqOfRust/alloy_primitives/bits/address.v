@@ -118,10 +118,11 @@ Module bits.
                         "alloy_primitives::bits::address::AddressError::Hex",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "const_hex::error::FromHexError" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -273,10 +274,11 @@ Module bits.
                         "alloy_primitives::bits::address::AddressError::Hex",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let err :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "const_hex::error::FromHexError" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     Value.StructTuple
                       "core::option::Option::Some"
@@ -366,10 +368,11 @@ Module bits.
                         "alloy_primitives::bits::address::AddressError::Hex",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let err :=
                       M.alloc (|
                         Ty.apply (Ty.path "&") [] [ Ty.path "const_hex::error::FromHexError" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -1181,6 +1184,7 @@ Module bits.
       
       Global Instance AssociatedFunction_from_word :
         M.IsAssociatedFunction.C Self "from_word" from_word.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_word.
       
@@ -1324,6 +1328,7 @@ Module bits.
       
       Global Instance AssociatedFunction_into_word :
         M.IsAssociatedFunction.C Self "into_word" into_word.
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_word.
       
@@ -1395,6 +1400,7 @@ Module bits.
       
       Global Instance AssociatedFunction_parse_checksummed :
         M.IsAssociatedFunction.C Self "parse_checksummed" parse_checksummed.
+      Proof.
       Admitted.
       Global Typeclasses Opaque parse_checksummed.
       
@@ -1471,6 +1477,7 @@ Module bits.
       
       Global Instance AssociatedFunction_to_checksum :
         M.IsAssociatedFunction.C Self "to_checksum" to_checksum.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_checksum.
       
@@ -1665,6 +1672,7 @@ Module bits.
       
       Global Instance AssociatedFunction_to_checksum_raw :
         M.IsAssociatedFunction.C Self "to_checksum_raw" to_checksum_raw.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_checksum_raw.
       
@@ -1724,6 +1732,7 @@ Module bits.
       
       Global Instance AssociatedFunction_to_checksum_buffer :
         M.IsAssociatedFunction.C Self "to_checksum_buffer" to_checksum_buffer.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_checksum_buffer.
       
@@ -2391,6 +2400,7 @@ Module bits.
       
       Global Instance AssociatedFunction_to_checksum_inner :
         M.IsAssociatedFunction.C Self "to_checksum_inner" to_checksum_inner.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_checksum_inner.
       
@@ -2515,6 +2525,7 @@ Module bits.
       
       Global Instance AssociatedFunction_create2_from_code :
         M.IsAssociatedFunction.C Self "create2_from_code" create2_from_code.
+      Proof.
       Admitted.
       Global Typeclasses Opaque create2_from_code.
       
@@ -2617,6 +2628,7 @@ Module bits.
         end.
       
       Global Instance AssociatedFunction_create2 : M.IsAssociatedFunction.C Self "create2" create2.
+      Proof.
       Admitted.
       Global Typeclasses Opaque create2.
       
@@ -2949,6 +2961,7 @@ Module bits.
       
       Global Instance AssociatedFunction__create2 :
         M.IsAssociatedFunction.C Self "_create2" _create2.
+      Proof.
       Admitted.
       Global Typeclasses Opaque _create2.
       
@@ -3181,6 +3194,7 @@ Module bits.
       
       Global Instance AssociatedFunction_from_raw_public_key :
         M.IsAssociatedFunction.C Self "from_raw_public_key" from_raw_public_key.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_raw_public_key.
     End Impl_alloy_primitives_bits_address_Address.
@@ -3442,6 +3456,7 @@ Module bits.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -3561,6 +3576,7 @@ Module bits.
         end.
       
       Global Instance AssociatedFunction_format : M.IsAssociatedFunction.C Self "format" format.
+      Proof.
       Admitted.
       Global Typeclasses Opaque format.
       
@@ -3656,6 +3672,7 @@ Module bits.
         end.
       
       Global Instance AssociatedFunction_as_str : M.IsAssociatedFunction.C Self "as_str" as_str.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_str.
       
@@ -3769,6 +3786,7 @@ Module bits.
       
       Global Instance AssociatedFunction_as_mut_str :
         M.IsAssociatedFunction.C Self "as_mut_str" as_mut_str.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_mut_str.
       
@@ -3823,6 +3841,7 @@ Module bits.
       
       Global Instance AssociatedFunction_to_string :
         M.IsAssociatedFunction.C Self "to_string" to_string.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_string.
       
@@ -3871,6 +3890,7 @@ Module bits.
       
       Global Instance AssociatedFunction_into_inner :
         M.IsAssociatedFunction.C Self "into_inner" into_inner.
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_inner.
     End Impl_alloy_primitives_bits_address_AddressChecksumBuffer.

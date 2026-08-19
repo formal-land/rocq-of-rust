@@ -893,6 +893,7 @@ Module boxed.
       M.IsFunction.C
         "alloc::boxed::convert::boxed_slice_as_array_unchecked"
         boxed_slice_as_array_unchecked.
+    Proof.
     Admitted.
     Global Typeclasses Opaque boxed_slice_as_array_unchecked.
     
@@ -1359,6 +1360,7 @@ Module boxed.
       Global Instance AssociatedFunction_downcast :
         forall (A : Ty.t),
         M.IsAssociatedFunction.C (Self A) "downcast" (downcast A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque downcast.
       
@@ -1533,6 +1535,7 @@ Module boxed.
       Global Instance AssociatedFunction_downcast_unchecked :
         forall (A : Ty.t),
         M.IsAssociatedFunction.C (Self A) "downcast_unchecked" (downcast_unchecked A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque downcast_unchecked.
     End Impl_alloc_boxed_Box_Dyn_core_any_Any_Trait_A.
@@ -1703,6 +1706,7 @@ Module boxed.
       Global Instance AssociatedFunction_downcast :
         forall (A : Ty.t),
         M.IsAssociatedFunction.C (Self A) "downcast" (downcast A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque downcast.
       
@@ -1934,6 +1938,7 @@ Module boxed.
       Global Instance AssociatedFunction_downcast_unchecked :
         forall (A : Ty.t),
         M.IsAssociatedFunction.C (Self A) "downcast_unchecked" (downcast_unchecked A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque downcast_unchecked.
     End Impl_alloc_boxed_Box_Dyn_core_any_Any_Trait_core_marker_Send_AutoTrait_A.
@@ -2134,6 +2139,7 @@ Module boxed.
       Global Instance AssociatedFunction_downcast :
         forall (A : Ty.t),
         M.IsAssociatedFunction.C (Self A) "downcast" (downcast A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque downcast.
       
@@ -2383,6 +2389,7 @@ Module boxed.
       Global Instance AssociatedFunction_downcast_unchecked :
         forall (A : Ty.t),
         M.IsAssociatedFunction.C (Self A) "downcast_unchecked" (downcast_unchecked A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque downcast_unchecked.
     End Impl_alloc_boxed_Box_Dyn_core_any_Any_Trait_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait_A.
@@ -3592,6 +3599,7 @@ Module boxed.
       
       Global Instance AssociatedFunction_downcast :
         M.IsAssociatedFunction.C Self "downcast" downcast.
+      Proof.
       Admitted.
       Global Typeclasses Opaque downcast.
     End Impl_Dyn_core_error_Error_Trait.
@@ -3959,6 +3967,7 @@ Module boxed.
       
       Global Instance AssociatedFunction_downcast :
         M.IsAssociatedFunction.C Self "downcast" downcast.
+      Proof.
       Admitted.
       Global Typeclasses Opaque downcast.
     End Impl_Dyn_core_error_Error_Trait_core_marker_Send_AutoTrait.
@@ -4350,6 +4359,7 @@ Module boxed.
       
       Global Instance AssociatedFunction_downcast :
         M.IsAssociatedFunction.C Self "downcast" downcast.
+      Proof.
       Admitted.
       Global Typeclasses Opaque downcast.
     End Impl_Dyn_core_error_Error_Trait_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait.

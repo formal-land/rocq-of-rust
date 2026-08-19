@@ -1057,6 +1057,7 @@ Module intrinsics.
     
     Global Instance Instance_IsFunction_wide_mul_u128 :
       M.IsFunction.C "core::intrinsics::fallback::wide_mul_u128" wide_mul_u128.
+    Proof.
     Admitted.
     Global Typeclasses Opaque wide_mul_u128.
     
@@ -1098,6 +1099,7 @@ Module intrinsics.
       
       Global Instance Instance_IsFunction_to_low_high :
         M.IsFunction.C "core::intrinsics::fallback::wide_mul_u128::to_low_high" to_low_high.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_low_high.
       
@@ -1113,6 +1115,7 @@ Module intrinsics.
         
         Global Instance Instance_IsConstant_value_MASK :
           M.IsFunction.C "core::intrinsics::fallback::wide_mul_u128::to_low_high::MASK" value_MASK.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_MASK.
       End to_low_high.
@@ -1155,6 +1158,7 @@ Module intrinsics.
       
       Global Instance Instance_IsFunction_from_low_high :
         M.IsFunction.C "core::intrinsics::fallback::wide_mul_u128::from_low_high" from_low_high.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_low_high.
       
@@ -1274,6 +1278,7 @@ Module intrinsics.
       
       Global Instance Instance_IsFunction_scalar_mul :
         M.IsFunction.C "core::intrinsics::fallback::wide_mul_u128::scalar_mul" scalar_mul.
+      Proof.
       Admitted.
       Global Typeclasses Opaque scalar_mul.
     End wide_mul_u128.

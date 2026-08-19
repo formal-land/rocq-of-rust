@@ -678,5 +678,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "iterating_over_results_collect_via_map_err_and_filter_map::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

@@ -28,12 +28,14 @@ Export (hints) Sign.
 
 Module Impl_PartialEq_for_Sign.
   Instance run : PartialEq.Run Sign.t Sign.t.
+  Proof.
   Admitted.
 End Impl_PartialEq_for_Sign.
 Export (hints) Impl_PartialEq_for_Sign.
 
 Module Impl_Ord_for_Sign.
   Instance run : Ord.Run Sign.t.
+  Proof.
   Admitted.
 End Impl_Ord_for_Sign.
 Export (hints) Impl_Ord_for_Sign.

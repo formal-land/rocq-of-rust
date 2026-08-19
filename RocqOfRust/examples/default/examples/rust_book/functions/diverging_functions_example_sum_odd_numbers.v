@@ -167,6 +167,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "diverging_functions_example_sum_odd_numbers::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.
 
@@ -363,6 +364,7 @@ Module main.
     M.IsFunction.C
       "diverging_functions_example_sum_odd_numbers::main::sum_odd_numbers"
       sum_odd_numbers.
+  Proof.
   Admitted.
   Global Typeclasses Opaque sum_odd_numbers.
 End main.

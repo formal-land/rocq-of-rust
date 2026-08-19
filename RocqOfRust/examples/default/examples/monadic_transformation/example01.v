@@ -16,6 +16,7 @@ Definition id (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_id : M.IsFunction.C "example01::id" id.
+Proof.
 Admitted.
 Global Typeclasses Opaque id.
 
@@ -32,6 +33,7 @@ Definition tri (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_tri : M.IsFunction.C "example01::tri" tri.
+Proof.
 Admitted.
 Global Typeclasses Opaque tri.
 
@@ -133,5 +135,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "example01::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

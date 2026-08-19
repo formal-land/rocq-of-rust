@@ -42,6 +42,7 @@ Module str.
   
   Global Instance Instance_IsFunction_slice_error_fail :
     M.IsFunction.C "core::str::slice_error_fail" slice_error_fail.
+  Proof.
   Admitted.
   Global Typeclasses Opaque slice_error_fail.
   
@@ -102,6 +103,7 @@ Module str.
   
   Global Instance Instance_IsFunction_slice_error_fail_ct :
     M.IsFunction.C "core::str::slice_error_fail_ct" slice_error_fail_ct.
+  Proof.
   Admitted.
   Global Typeclasses Opaque slice_error_fail_ct.
   
@@ -1031,6 +1033,7 @@ Module str.
   
   Global Instance Instance_IsFunction_slice_error_fail_rt :
     M.IsFunction.C "core::str::slice_error_fail_rt" slice_error_fail_rt.
+  Proof.
   Admitted.
   Global Typeclasses Opaque slice_error_fail_rt.
   
@@ -1040,6 +1043,7 @@ Module str.
     
     Global Instance Instance_IsConstant_value_MAX_DISPLAY_LENGTH :
       M.IsFunction.C "core::str::slice_error_fail_rt::MAX_DISPLAY_LENGTH" value_MAX_DISPLAY_LENGTH.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MAX_DISPLAY_LENGTH.
   End slice_error_fail_rt.
@@ -1082,6 +1086,7 @@ Module str.
       end.
     
     Global Instance AssociatedFunction_len : M.IsAssociatedFunction.C Self "len" len.
+    Proof.
     Admitted.
     Global Typeclasses Opaque len.
     
@@ -1111,6 +1116,7 @@ Module str.
       end.
     
     Global Instance AssociatedFunction_is_empty : M.IsAssociatedFunction.C Self "is_empty" is_empty.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_empty.
     
@@ -1142,6 +1148,7 @@ Module str.
     
     Global Instance AssociatedFunction_from_utf8 :
       M.IsAssociatedFunction.C Self "from_utf8" from_utf8.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_utf8.
     
@@ -1175,6 +1182,7 @@ Module str.
     
     Global Instance AssociatedFunction_from_utf8_mut :
       M.IsAssociatedFunction.C Self "from_utf8_mut" from_utf8_mut.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_utf8_mut.
     
@@ -1208,6 +1216,7 @@ Module str.
     
     Global Instance AssociatedFunction_from_utf8_unchecked :
       M.IsAssociatedFunction.C Self "from_utf8_unchecked" from_utf8_unchecked.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_utf8_unchecked.
     
@@ -1251,6 +1260,7 @@ Module str.
     
     Global Instance AssociatedFunction_from_utf8_unchecked_mut :
       M.IsAssociatedFunction.C Self "from_utf8_unchecked_mut" from_utf8_unchecked_mut.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_utf8_unchecked_mut.
     
@@ -1402,6 +1412,7 @@ Module str.
     
     Global Instance AssociatedFunction_is_char_boundary :
       M.IsAssociatedFunction.C Self "is_char_boundary" is_char_boundary.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_char_boundary.
     
@@ -1661,6 +1672,7 @@ Module str.
     
     Global Instance AssociatedFunction_floor_char_boundary :
       M.IsAssociatedFunction.C Self "floor_char_boundary" floor_char_boundary.
+    Proof.
     Admitted.
     Global Typeclasses Opaque floor_char_boundary.
     
@@ -1928,6 +1940,7 @@ Module str.
     
     Global Instance AssociatedFunction_ceil_char_boundary :
       M.IsAssociatedFunction.C Self "ceil_char_boundary" ceil_char_boundary.
+    Proof.
     Admitted.
     Global Typeclasses Opaque ceil_char_boundary.
     
@@ -1958,6 +1971,7 @@ Module str.
       end.
     
     Global Instance AssociatedFunction_as_bytes : M.IsAssociatedFunction.C Self "as_bytes" as_bytes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_bytes.
     
@@ -2015,6 +2029,7 @@ Module str.
     
     Global Instance AssociatedFunction_as_bytes_mut :
       M.IsAssociatedFunction.C Self "as_bytes_mut" as_bytes_mut.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_bytes_mut.
     
@@ -2041,6 +2056,7 @@ Module str.
       end.
     
     Global Instance AssociatedFunction_as_ptr : M.IsAssociatedFunction.C Self "as_ptr" as_ptr.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_ptr.
     
@@ -2068,6 +2084,7 @@ Module str.
     
     Global Instance AssociatedFunction_as_mut_ptr :
       M.IsAssociatedFunction.C Self "as_mut_ptr" as_mut_ptr.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_mut_ptr.
     
@@ -2114,6 +2131,7 @@ Module str.
       end.
     
     Global Instance AssociatedFunction_get : M.IsAssociatedFunction.C Self "get" get.
+    Proof.
     Admitted.
     Global Typeclasses Opaque get.
     
@@ -2160,6 +2178,7 @@ Module str.
       end.
     
     Global Instance AssociatedFunction_get_mut : M.IsAssociatedFunction.C Self "get_mut" get_mut.
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_mut.
     
@@ -2218,6 +2237,7 @@ Module str.
     
     Global Instance AssociatedFunction_get_unchecked :
       M.IsAssociatedFunction.C Self "get_unchecked" get_unchecked.
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_unchecked.
     
@@ -2289,6 +2309,7 @@ Module str.
     
     Global Instance AssociatedFunction_get_unchecked_mut :
       M.IsAssociatedFunction.C Self "get_unchecked_mut" get_unchecked_mut.
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_unchecked_mut.
     
@@ -2342,6 +2363,7 @@ Module str.
     
     Global Instance AssociatedFunction_slice_unchecked :
       M.IsAssociatedFunction.C Self "slice_unchecked" slice_unchecked.
+    Proof.
     Admitted.
     Global Typeclasses Opaque slice_unchecked.
     
@@ -2408,6 +2430,7 @@ Module str.
     
     Global Instance AssociatedFunction_slice_mut_unchecked :
       M.IsAssociatedFunction.C Self "slice_mut_unchecked" slice_mut_unchecked.
+    Proof.
     Admitted.
     Global Typeclasses Opaque slice_mut_unchecked.
     
@@ -2493,6 +2516,7 @@ Module str.
       end.
     
     Global Instance AssociatedFunction_split_at : M.IsAssociatedFunction.C Self "split_at" split_at.
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_at.
     
@@ -2568,6 +2592,7 @@ Module str.
     
     Global Instance AssociatedFunction_split_at_mut :
       M.IsAssociatedFunction.C Self "split_at_mut" split_at_mut.
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_at_mut.
     
@@ -2660,6 +2685,7 @@ Module str.
     
     Global Instance AssociatedFunction_split_at_checked :
       M.IsAssociatedFunction.C Self "split_at_checked" split_at_checked.
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_at_checked.
     
@@ -2757,6 +2783,7 @@ Module str.
     
     Global Instance AssociatedFunction_split_at_mut_checked :
       M.IsAssociatedFunction.C Self "split_at_mut_checked" split_at_mut_checked.
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_at_mut_checked.
     
@@ -2880,6 +2907,7 @@ Module str.
     
     Global Instance AssociatedFunction_split_at_unchecked :
       M.IsAssociatedFunction.C Self "split_at_unchecked" split_at_unchecked.
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_at_unchecked.
     
@@ -3003,6 +3031,7 @@ Module str.
     
     Global Instance AssociatedFunction_split_at_mut_unchecked :
       M.IsAssociatedFunction.C Self "split_at_mut_unchecked" split_at_mut_unchecked.
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_at_mut_unchecked.
     
@@ -3051,6 +3080,7 @@ Module str.
       end.
     
     Global Instance AssociatedFunction_chars : M.IsAssociatedFunction.C Self "chars" chars.
+    Proof.
     Admitted.
     Global Typeclasses Opaque chars.
     
@@ -3082,6 +3112,7 @@ Module str.
     
     Global Instance AssociatedFunction_char_indices :
       M.IsAssociatedFunction.C Self "char_indices" char_indices.
+    Proof.
     Admitted.
     Global Typeclasses Opaque char_indices.
     
@@ -3146,6 +3177,7 @@ Module str.
       end.
     
     Global Instance AssociatedFunction_bytes : M.IsAssociatedFunction.C Self "bytes" bytes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque bytes.
     
@@ -3214,6 +3246,7 @@ Module str.
     
     Global Instance AssociatedFunction_split_whitespace :
       M.IsAssociatedFunction.C Self "split_whitespace" split_whitespace.
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_whitespace.
     
@@ -3358,6 +3391,7 @@ Module str.
     
     Global Instance AssociatedFunction_split_ascii_whitespace :
       M.IsAssociatedFunction.C Self "split_ascii_whitespace" split_ascii_whitespace.
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_ascii_whitespace.
     
@@ -3415,6 +3449,7 @@ Module str.
       end.
     
     Global Instance AssociatedFunction_lines : M.IsAssociatedFunction.C Self "lines" lines.
+    Proof.
     Admitted.
     Global Typeclasses Opaque lines.
     
@@ -3444,6 +3479,7 @@ Module str.
     
     Global Instance AssociatedFunction_lines_any :
       M.IsAssociatedFunction.C Self "lines_any" lines_any.
+    Proof.
     Admitted.
     Global Typeclasses Opaque lines_any.
     
@@ -3475,6 +3511,7 @@ Module str.
     
     Global Instance AssociatedFunction_encode_utf16 :
       M.IsAssociatedFunction.C Self "encode_utf16" encode_utf16.
+    Proof.
     Admitted.
     Global Typeclasses Opaque encode_utf16.
     
@@ -3506,6 +3543,7 @@ Module str.
       end.
     
     Global Instance AssociatedFunction_contains : M.IsAssociatedFunction.C Self "contains" contains.
+    Proof.
     Admitted.
     Global Typeclasses Opaque contains.
     
@@ -3538,6 +3576,7 @@ Module str.
     
     Global Instance AssociatedFunction_starts_with :
       M.IsAssociatedFunction.C Self "starts_with" starts_with.
+    Proof.
     Admitted.
     Global Typeclasses Opaque starts_with.
     
@@ -3573,6 +3612,7 @@ Module str.
     
     Global Instance AssociatedFunction_ends_with :
       M.IsAssociatedFunction.C Self "ends_with" ends_with.
+    Proof.
     Admitted.
     Global Typeclasses Opaque ends_with.
     
@@ -3667,6 +3707,7 @@ Module str.
       end.
     
     Global Instance AssociatedFunction_find : M.IsAssociatedFunction.C Self "find" find.
+    Proof.
     Admitted.
     Global Typeclasses Opaque find.
     
@@ -3764,6 +3805,7 @@ Module str.
       end.
     
     Global Instance AssociatedFunction_rfind : M.IsAssociatedFunction.C Self "rfind" rfind.
+    Proof.
     Admitted.
     Global Typeclasses Opaque rfind.
     
@@ -3826,6 +3868,7 @@ Module str.
       end.
     
     Global Instance AssociatedFunction_split : M.IsAssociatedFunction.C Self "split" split.
+    Proof.
     Admitted.
     Global Typeclasses Opaque split.
     
@@ -3889,6 +3932,7 @@ Module str.
     
     Global Instance AssociatedFunction_split_inclusive :
       M.IsAssociatedFunction.C Self "split_inclusive" split_inclusive.
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_inclusive.
     
@@ -3933,6 +3977,7 @@ Module str.
       end.
     
     Global Instance AssociatedFunction_rsplit : M.IsAssociatedFunction.C Self "rsplit" rsplit.
+    Proof.
     Admitted.
     Global Typeclasses Opaque rsplit.
     
@@ -3977,6 +4022,7 @@ Module str.
     
     Global Instance AssociatedFunction_split_terminator :
       M.IsAssociatedFunction.C Self "split_terminator" split_terminator.
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_terminator.
     
@@ -4022,6 +4068,7 @@ Module str.
     
     Global Instance AssociatedFunction_rsplit_terminator :
       M.IsAssociatedFunction.C Self "rsplit_terminator" rsplit_terminator.
+    Proof.
     Admitted.
     Global Typeclasses Opaque rsplit_terminator.
     
@@ -4072,6 +4119,7 @@ Module str.
       end.
     
     Global Instance AssociatedFunction_splitn : M.IsAssociatedFunction.C Self "splitn" splitn.
+    Proof.
     Admitted.
     Global Typeclasses Opaque splitn.
     
@@ -4118,6 +4166,7 @@ Module str.
       end.
     
     Global Instance AssociatedFunction_rsplitn : M.IsAssociatedFunction.C Self "rsplitn" rsplitn.
+    Proof.
     Admitted.
     Global Typeclasses Opaque rsplitn.
     
@@ -4419,6 +4468,7 @@ Module str.
     
     Global Instance AssociatedFunction_split_once :
       M.IsAssociatedFunction.C Self "split_once" split_once.
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_once.
     
@@ -4723,6 +4773,7 @@ Module str.
     
     Global Instance AssociatedFunction_rsplit_once :
       M.IsAssociatedFunction.C Self "rsplit_once" rsplit_once.
+    Proof.
     Admitted.
     Global Typeclasses Opaque rsplit_once.
     
@@ -4769,6 +4820,7 @@ Module str.
       end.
     
     Global Instance AssociatedFunction_matches : M.IsAssociatedFunction.C Self "matches" matches.
+    Proof.
     Admitted.
     Global Typeclasses Opaque matches.
     
@@ -4813,6 +4865,7 @@ Module str.
       end.
     
     Global Instance AssociatedFunction_rmatches : M.IsAssociatedFunction.C Self "rmatches" rmatches.
+    Proof.
     Admitted.
     Global Typeclasses Opaque rmatches.
     
@@ -4860,6 +4913,7 @@ Module str.
     
     Global Instance AssociatedFunction_match_indices :
       M.IsAssociatedFunction.C Self "match_indices" match_indices.
+    Proof.
     Admitted.
     Global Typeclasses Opaque match_indices.
     
@@ -4905,6 +4959,7 @@ Module str.
     
     Global Instance AssociatedFunction_rmatch_indices :
       M.IsAssociatedFunction.C Self "rmatch_indices" rmatch_indices.
+    Proof.
     Admitted.
     Global Typeclasses Opaque rmatch_indices.
     
@@ -4940,6 +4995,7 @@ Module str.
       end.
     
     Global Instance AssociatedFunction_trim : M.IsAssociatedFunction.C Self "trim" trim.
+    Proof.
     Admitted.
     Global Typeclasses Opaque trim.
     
@@ -4976,6 +5032,7 @@ Module str.
     
     Global Instance AssociatedFunction_trim_start :
       M.IsAssociatedFunction.C Self "trim_start" trim_start.
+    Proof.
     Admitted.
     Global Typeclasses Opaque trim_start.
     
@@ -5011,6 +5068,7 @@ Module str.
       end.
     
     Global Instance AssociatedFunction_trim_end : M.IsAssociatedFunction.C Self "trim_end" trim_end.
+    Proof.
     Admitted.
     Global Typeclasses Opaque trim_end.
     
@@ -5039,6 +5097,7 @@ Module str.
     
     Global Instance AssociatedFunction_trim_left :
       M.IsAssociatedFunction.C Self "trim_left" trim_left.
+    Proof.
     Admitted.
     Global Typeclasses Opaque trim_left.
     
@@ -5067,6 +5126,7 @@ Module str.
     
     Global Instance AssociatedFunction_trim_right :
       M.IsAssociatedFunction.C Self "trim_right" trim_right.
+    Proof.
     Admitted.
     Global Typeclasses Opaque trim_right.
     
@@ -5250,6 +5310,7 @@ Module str.
     
     Global Instance AssociatedFunction_trim_matches :
       M.IsAssociatedFunction.C Self "trim_matches" trim_matches.
+    Proof.
     Admitted.
     Global Typeclasses Opaque trim_matches.
     
@@ -5383,6 +5444,7 @@ Module str.
     
     Global Instance AssociatedFunction_trim_start_matches :
       M.IsAssociatedFunction.C Self "trim_start_matches" trim_start_matches.
+    Proof.
     Admitted.
     Global Typeclasses Opaque trim_start_matches.
     
@@ -5419,6 +5481,7 @@ Module str.
     
     Global Instance AssociatedFunction_strip_prefix :
       M.IsAssociatedFunction.C Self "strip_prefix" strip_prefix.
+    Proof.
     Admitted.
     Global Typeclasses Opaque strip_prefix.
     
@@ -5458,6 +5521,7 @@ Module str.
     
     Global Instance AssociatedFunction_strip_suffix :
       M.IsAssociatedFunction.C Self "strip_suffix" strip_suffix.
+    Proof.
     Admitted.
     Global Typeclasses Opaque strip_suffix.
     
@@ -5619,6 +5683,7 @@ Module str.
     
     Global Instance AssociatedFunction_strip_circumfix :
       M.IsAssociatedFunction.C Self "strip_circumfix" strip_circumfix.
+    Proof.
     Admitted.
     Global Typeclasses Opaque strip_circumfix.
     
@@ -5677,6 +5742,7 @@ Module str.
     
     Global Instance AssociatedFunction_trim_prefix :
       M.IsAssociatedFunction.C Self "trim_prefix" trim_prefix.
+    Proof.
     Admitted.
     Global Typeclasses Opaque trim_prefix.
     
@@ -5738,6 +5804,7 @@ Module str.
     
     Global Instance AssociatedFunction_trim_suffix :
       M.IsAssociatedFunction.C Self "trim_suffix" trim_suffix.
+    Proof.
     Admitted.
     Global Typeclasses Opaque trim_suffix.
     
@@ -5861,6 +5928,7 @@ Module str.
     
     Global Instance AssociatedFunction_trim_end_matches :
       M.IsAssociatedFunction.C Self "trim_end_matches" trim_end_matches.
+    Proof.
     Admitted.
     Global Typeclasses Opaque trim_end_matches.
     
@@ -5891,6 +5959,7 @@ Module str.
     
     Global Instance AssociatedFunction_trim_left_matches :
       M.IsAssociatedFunction.C Self "trim_left_matches" trim_left_matches.
+    Proof.
     Admitted.
     Global Typeclasses Opaque trim_left_matches.
     
@@ -5924,6 +5993,7 @@ Module str.
     
     Global Instance AssociatedFunction_trim_right_matches :
       M.IsAssociatedFunction.C Self "trim_right_matches" trim_right_matches.
+    Proof.
     Admitted.
     Global Typeclasses Opaque trim_right_matches.
     
@@ -5949,6 +6019,7 @@ Module str.
       end.
     
     Global Instance AssociatedFunction_parse : M.IsAssociatedFunction.C Self "parse" parse.
+    Proof.
     Admitted.
     Global Typeclasses Opaque parse.
     
@@ -5990,6 +6061,7 @@ Module str.
       end.
     
     Global Instance AssociatedFunction_is_ascii : M.IsAssociatedFunction.C Self "is_ascii" is_ascii.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_ascii.
     
@@ -6037,6 +6109,7 @@ Module str.
       end.
     
     Global Instance AssociatedFunction_as_ascii : M.IsAssociatedFunction.C Self "as_ascii" as_ascii.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_ascii.
     
@@ -6142,6 +6215,7 @@ Module str.
     
     Global Instance AssociatedFunction_as_ascii_unchecked :
       M.IsAssociatedFunction.C Self "as_ascii_unchecked" as_ascii_unchecked.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_ascii_unchecked.
     
@@ -6192,6 +6266,7 @@ Module str.
     
     Global Instance AssociatedFunction_eq_ignore_ascii_case :
       M.IsAssociatedFunction.C Self "eq_ignore_ascii_case" eq_ignore_ascii_case.
+    Proof.
     Admitted.
     Global Typeclasses Opaque eq_ignore_ascii_case.
     
@@ -6239,6 +6314,7 @@ Module str.
     
     Global Instance AssociatedFunction_make_ascii_uppercase :
       M.IsAssociatedFunction.C Self "make_ascii_uppercase" make_ascii_uppercase.
+    Proof.
     Admitted.
     Global Typeclasses Opaque make_ascii_uppercase.
     
@@ -6286,6 +6362,7 @@ Module str.
     
     Global Instance AssociatedFunction_make_ascii_lowercase :
       M.IsAssociatedFunction.C Self "make_ascii_lowercase" make_ascii_lowercase.
+    Proof.
     Admitted.
     Global Typeclasses Opaque make_ascii_lowercase.
     
@@ -6349,6 +6426,7 @@ Module str.
     
     Global Instance AssociatedFunction_trim_ascii_start :
       M.IsAssociatedFunction.C Self "trim_ascii_start" trim_ascii_start.
+    Proof.
     Admitted.
     Global Typeclasses Opaque trim_ascii_start.
     
@@ -6412,6 +6490,7 @@ Module str.
     
     Global Instance AssociatedFunction_trim_ascii_end :
       M.IsAssociatedFunction.C Self "trim_ascii_end" trim_ascii_end.
+    Proof.
     Admitted.
     Global Typeclasses Opaque trim_ascii_end.
     
@@ -6475,6 +6554,7 @@ Module str.
     
     Global Instance AssociatedFunction_trim_ascii :
       M.IsAssociatedFunction.C Self "trim_ascii" trim_ascii.
+    Proof.
     Admitted.
     Global Typeclasses Opaque trim_ascii.
     
@@ -6716,6 +6796,7 @@ Module str.
     
     Global Instance AssociatedFunction_escape_debug :
       M.IsAssociatedFunction.C Self "escape_debug" escape_debug.
+    Proof.
     Admitted.
     Global Typeclasses Opaque escape_debug.
     
@@ -6768,6 +6849,7 @@ Module str.
     
     Global Instance AssociatedFunction_escape_default :
       M.IsAssociatedFunction.C Self "escape_default" escape_default.
+    Proof.
     Admitted.
     Global Typeclasses Opaque escape_default.
     
@@ -6820,6 +6902,7 @@ Module str.
     
     Global Instance AssociatedFunction_escape_unicode :
       M.IsAssociatedFunction.C Self "escape_unicode" escape_unicode.
+    Proof.
     Admitted.
     Global Typeclasses Opaque escape_unicode.
     
@@ -6873,6 +6956,7 @@ Module str.
     
     Global Instance AssociatedFunction_substr_range :
       M.IsAssociatedFunction.C Self "substr_range" substr_range.
+    Proof.
     Admitted.
     Global Typeclasses Opaque substr_range.
     
@@ -6891,6 +6975,7 @@ Module str.
       end.
     
     Global Instance AssociatedFunction_as_str : M.IsAssociatedFunction.C Self "as_str" as_str.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_str.
   End Impl_str.

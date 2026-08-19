@@ -15,6 +15,7 @@ Module Impl_Iterator_for_IntoIter.
 
   Instance run (T : Set) (N : usize) `{Link T} :
     Iterator.Run (Self T N) T.
+  Proof.
   Admitted.
 End Impl_Iterator_for_IntoIter.
 Export (hints) Impl_Iterator_for_IntoIter.
@@ -42,6 +43,7 @@ Module Impl_IntoIterator_for_Array.
 
   Instance run (T : Set) (N : usize) `{Link T} :
     IntoIterator.Run (Self T N) (types T N).
+  Proof.
   Admitted.
 End Impl_IntoIterator_for_Array.
 Export (hints) Impl_IntoIterator_for_Array.

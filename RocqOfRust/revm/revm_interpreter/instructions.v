@@ -173,6 +173,7 @@ Module instructions.
     Global Instance AssociatedFunction_new :
       forall (W H : Ty.t),
       M.IsAssociatedFunction.C (Self W H) "new" (new W H).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -238,6 +239,7 @@ Module instructions.
     Global Instance AssociatedFunction_unknown :
       forall (W H : Ty.t),
       M.IsAssociatedFunction.C (Self W H) "unknown" (unknown W H).
+    Proof.
     Admitted.
     Global Typeclasses Opaque unknown.
     
@@ -281,6 +283,7 @@ Module instructions.
     Global Instance AssociatedFunction_execute :
       forall (W H : Ty.t),
       M.IsAssociatedFunction.C (Self W H) "execute" (execute W H).
+    Proof.
     Admitted.
     Global Typeclasses Opaque execute.
     
@@ -315,6 +318,7 @@ Module instructions.
     Global Instance AssociatedFunction_static_gas :
       forall (W H : Ty.t),
       M.IsAssociatedFunction.C (Self W H) "static_gas" (static_gas W H).
+    Proof.
     Admitted.
     Global Typeclasses Opaque static_gas.
   End Impl_revm_interpreter_instructions_Instruction_W_H.
@@ -400,6 +404,7 @@ Module instructions.
   
   Global Instance Instance_IsFunction_instruction_table :
     M.IsFunction.C "revm_interpreter::instructions::instruction_table" instruction_table.
+  Proof.
   Admitted.
   Global Typeclasses Opaque instruction_table.
   
@@ -9033,6 +9038,7 @@ Module instructions.
   
   Global Instance Instance_IsFunction_instruction_table_impl :
     M.IsFunction.C "revm_interpreter::instructions::instruction_table_impl" instruction_table_impl.
+  Proof.
   Admitted.
   Global Typeclasses Opaque instruction_table_impl.
 End instructions.

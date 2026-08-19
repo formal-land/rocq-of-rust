@@ -82,6 +82,7 @@ Module collections.
                           "alloc::collections::btree::merge_iter::Peeked::A",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
@@ -95,7 +96,7 @@ Module collections.
                                 I
                                 "Item"
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       Value.StructTuple
                         "alloc::collections::btree::merge_iter::Peeked::A"
@@ -135,6 +136,7 @@ Module collections.
                           "alloc::collections::btree::merge_iter::Peeked::B",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
@@ -148,7 +150,7 @@ Module collections.
                                 I
                                 "Item"
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       Value.StructTuple
                         "alloc::collections::btree::merge_iter::Peeked::B"
@@ -230,6 +232,7 @@ Module collections.
                           "alloc::collections::btree::merge_iter::Peeked::A",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
@@ -243,7 +246,7 @@ Module collections.
                                 I
                                 "Item"
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -304,6 +307,7 @@ Module collections.
                           "alloc::collections::btree::merge_iter::Peeked::B",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
@@ -317,7 +321,7 @@ Module collections.
                                 I
                                 "Item"
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -768,6 +772,7 @@ Module collections.
         Global Instance AssociatedFunction_new :
           forall (I : Ty.t),
           M.IsAssociatedFunction.C (Self I) "new" (new I).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new.
         
@@ -1174,6 +1179,7 @@ Module collections.
                               "core::option::Option::Some",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let a1 :=
                             M.alloc (|
                               Ty.apply
@@ -1187,7 +1193,7 @@ Module collections.
                                     I
                                     "Item"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -1196,6 +1202,7 @@ Module collections.
                               "core::option::Option::Some",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let b1 :=
                             M.alloc (|
                               Ty.apply
@@ -1209,7 +1216,7 @@ Module collections.
                                     I
                                     "Item"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.match_operator (|
                             Ty.tuple [],
@@ -1501,6 +1508,7 @@ Module collections.
         Global Instance AssociatedFunction_nexts :
           forall (I : Ty.t),
           M.IsAssociatedFunction.C (Self I) "nexts" (nexts I).
+        Proof.
         Admitted.
         Global Typeclasses Opaque nexts.
         
@@ -1735,6 +1743,7 @@ Module collections.
         Global Instance AssociatedFunction_lens :
           forall (I : Ty.t),
           M.IsAssociatedFunction.C (Self I) "lens" (lens I).
+        Proof.
         Admitted.
         Global Typeclasses Opaque lens.
       End Impl_alloc_collections_btree_merge_iter_MergeIterInner_I.

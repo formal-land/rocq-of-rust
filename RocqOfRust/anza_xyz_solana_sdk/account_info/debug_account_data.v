@@ -13,6 +13,7 @@ Module debug_account_data.
     M.IsFunction.C
       "solana_account_info::debug_account_data::MAX_DEBUG_ACCOUNT_DATA"
       value_MAX_DEBUG_ACCOUNT_DATA.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MAX_DEBUG_ACCOUNT_DATA.
   
@@ -198,6 +199,7 @@ Module debug_account_data.
   
   Global Instance Instance_IsFunction_debug_account_data :
     M.IsFunction.C "solana_account_info::debug_account_data::debug_account_data" debug_account_data.
+  Proof.
   Admitted.
   Global Typeclasses Opaque debug_account_data.
   

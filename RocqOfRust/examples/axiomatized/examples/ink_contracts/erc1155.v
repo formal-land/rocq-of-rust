@@ -36,6 +36,7 @@ Module Impl_erc1155_Mapping_K_V.
   Global Instance AssociatedFunction_contains :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "contains" (contains K V).
+  Proof.
   Admitted.
   
   Parameter get : forall (K V : Ty.t), (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -43,6 +44,7 @@ Module Impl_erc1155_Mapping_K_V.
   Global Instance AssociatedFunction_get :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "get" (get K V).
+  Proof.
   Admitted.
   
   Parameter insert : forall (K V : Ty.t), (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -50,6 +52,7 @@ Module Impl_erc1155_Mapping_K_V.
   Global Instance AssociatedFunction_insert :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "insert" (insert K V).
+  Proof.
   Admitted.
   
   Parameter remove : forall (K V : Ty.t), (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -57,6 +60,7 @@ Module Impl_erc1155_Mapping_K_V.
   Global Instance AssociatedFunction_remove :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "remove" (remove K V).
+  Proof.
   Admitted.
   
   Parameter size : forall (K V : Ty.t), (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -64,6 +68,7 @@ Module Impl_erc1155_Mapping_K_V.
   Global Instance AssociatedFunction_size :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "size" (size K V).
+  Proof.
   Admitted.
   
   Parameter take : forall (K V : Ty.t), (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -71,6 +76,7 @@ Module Impl_erc1155_Mapping_K_V.
   Global Instance AssociatedFunction_take :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "take" (take K V).
+  Proof.
   Admitted.
 End Impl_erc1155_Mapping_K_V.
 
@@ -189,12 +195,14 @@ Parameter zero_address : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_zero_address :
   M.IsFunction.C "erc1155::zero_address" zero_address.
+Proof.
 Admitted.
 
 Parameter value_ON_ERC_1155_RECEIVED_SELECTOR : PolymorphicFunction.t.
 
 Global Instance Instance_IsConstant_value_ON_ERC_1155_RECEIVED_SELECTOR :
   M.IsFunction.C "erc1155::ON_ERC_1155_RECEIVED_SELECTOR" value_ON_ERC_1155_RECEIVED_SELECTOR.
+Proof.
 Admitted.
 
 Parameter _ON_ERC_1155_BATCH_RECEIVED_SELECTOR : PolymorphicFunction.t.
@@ -203,6 +211,7 @@ Global Instance Instance_IsConstant__ON_ERC_1155_BATCH_RECEIVED_SELECTOR :
   M.IsFunction.C
     "erc1155::_ON_ERC_1155_BATCH_RECEIVED_SELECTOR"
     _ON_ERC_1155_BATCH_RECEIVED_SELECTOR.
+Proof.
 Admitted.
 
 Axiom TokenId : (Ty.path "erc1155::TokenId") = (Ty.path "u128").
@@ -377,12 +386,14 @@ Module Impl_erc1155_Env.
   Parameter caller : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_caller : M.IsAssociatedFunction.C Self "caller" caller.
+  Proof.
   Admitted.
   
   Parameter emit_event : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_emit_event :
     M.IsAssociatedFunction.C Self "emit_event" emit_event.
+  Proof.
   Admitted.
 End Impl_erc1155_Env.
 
@@ -428,38 +439,45 @@ Module Impl_erc1155_Contract.
   Parameter init_env : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_init_env : M.IsAssociatedFunction.C Self "init_env" init_env.
+  Proof.
   Admitted.
   
   Parameter env : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_env : M.IsAssociatedFunction.C Self "env" env.
+  Proof.
   Admitted.
   
   Parameter new : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   
   Parameter create : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_create : M.IsAssociatedFunction.C Self "create" create.
+  Proof.
   Admitted.
   
   Parameter mint : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_mint : M.IsAssociatedFunction.C Self "mint" mint.
+  Proof.
   Admitted.
   
   Parameter perform_transfer : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_perform_transfer :
     M.IsAssociatedFunction.C Self "perform_transfer" perform_transfer.
+  Proof.
   Admitted.
   
   Parameter transfer_acceptance_check : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_transfer_acceptance_check :
     M.IsAssociatedFunction.C Self "transfer_acceptance_check" transfer_acceptance_check.
+  Proof.
   Admitted.
 End Impl_erc1155_Contract.
 

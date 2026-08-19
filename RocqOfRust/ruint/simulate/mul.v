@@ -18,5 +18,6 @@ Module Impl_Uint.
         stack
       )
     }}.
+  Proof.
   Admitted.
 End Impl_Uint.

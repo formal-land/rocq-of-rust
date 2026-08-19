@@ -38,6 +38,7 @@ Module signature.
     
     Global Instance Instance_IsConstant_value_SECP256K1N_ORDER :
       M.IsFunction.C "alloy_primitives::signature::sig::SECP256K1N_ORDER" value_SECP256K1N_ORDER.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SECP256K1N_ORDER.
     
@@ -1412,6 +1413,7 @@ Module signature.
       
       Global Instance AssociatedFunction_test_signature :
         M.IsAssociatedFunction.C Self "test_signature" test_signature.
+      Proof.
       Admitted.
       Global Typeclasses Opaque test_signature.
       
@@ -1450,6 +1452,7 @@ Module signature.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -1596,6 +1599,7 @@ Module signature.
       
       Global Instance AssociatedFunction_from_scalars_and_parity :
         M.IsAssociatedFunction.C Self "from_scalars_and_parity" from_scalars_and_parity.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_scalars_and_parity.
       
@@ -1841,6 +1845,7 @@ Module signature.
       
       Global Instance AssociatedFunction_normalize_s :
         M.IsAssociatedFunction.C Self "normalize_s" normalize_s.
+      Proof.
       Admitted.
       Global Typeclasses Opaque normalize_s.
       
@@ -2019,6 +2024,7 @@ Module signature.
       
       Global Instance AssociatedFunction_from_bytes_and_parity :
         M.IsAssociatedFunction.C Self "from_bytes_and_parity" from_bytes_and_parity.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_bytes_and_parity.
       
@@ -2271,6 +2277,7 @@ Module signature.
       
       Global Instance AssociatedFunction_from_rs_and_parity :
         M.IsAssociatedFunction.C Self "from_rs_and_parity" from_rs_and_parity.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_rs_and_parity.
       
@@ -2322,6 +2329,7 @@ Module signature.
       
       Global Instance AssociatedFunction_with_chain_id :
         M.IsAssociatedFunction.C Self "with_chain_id" with_chain_id.
+      Proof.
       Admitted.
       Global Typeclasses Opaque with_chain_id.
       
@@ -2371,6 +2379,7 @@ Module signature.
       
       Global Instance AssociatedFunction_with_parity_bool :
         M.IsAssociatedFunction.C Self "with_parity_bool" with_parity_bool.
+      Proof.
       Admitted.
       Global Typeclasses Opaque with_parity_bool.
       
@@ -2399,6 +2408,7 @@ Module signature.
         end.
       
       Global Instance AssociatedFunction_r : M.IsAssociatedFunction.C Self "r" r.
+      Proof.
       Admitted.
       Global Typeclasses Opaque r.
       
@@ -2427,6 +2437,7 @@ Module signature.
         end.
       
       Global Instance AssociatedFunction_s : M.IsAssociatedFunction.C Self "s" s.
+      Proof.
       Admitted.
       Global Typeclasses Opaque s.
       
@@ -2455,6 +2466,7 @@ Module signature.
         end.
       
       Global Instance AssociatedFunction_v : M.IsAssociatedFunction.C Self "v" v.
+      Proof.
       Admitted.
       Global Typeclasses Opaque v.
       
@@ -2496,6 +2508,7 @@ Module signature.
       
       Global Instance AssociatedFunction_chain_id :
         M.IsAssociatedFunction.C Self "chain_id" chain_id.
+      Proof.
       Admitted.
       Global Typeclasses Opaque chain_id.
       
@@ -2545,6 +2558,7 @@ Module signature.
       
       Global Instance AssociatedFunction_has_eip155_value :
         M.IsAssociatedFunction.C Self "has_eip155_value" has_eip155_value.
+      Proof.
       Admitted.
       Global Typeclasses Opaque has_eip155_value.
       
@@ -2850,6 +2864,7 @@ Module signature.
       
       Global Instance AssociatedFunction_as_bytes :
         M.IsAssociatedFunction.C Self "as_bytes" as_bytes.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_bytes.
       
@@ -2906,6 +2921,7 @@ Module signature.
       
       Global Instance AssociatedFunction_with_parity :
         M.IsAssociatedFunction.C Self "with_parity" with_parity.
+      Proof.
       Admitted.
       Global Typeclasses Opaque with_parity.
     End Impl_alloy_primitives_signature_sig_Signature.

@@ -533,6 +533,7 @@ Module journal.
     Global Instance AssociatedFunction_new_with_inner :
       forall (DB ENTRY : Ty.t),
       M.IsAssociatedFunction.C (Self DB ENTRY) "new_with_inner" (new_with_inner DB ENTRY).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_with_inner.
     
@@ -569,6 +570,7 @@ Module journal.
     Global Instance AssociatedFunction_into_init :
       forall (DB ENTRY : Ty.t),
       M.IsAssociatedFunction.C (Self DB ENTRY) "into_init" (into_init DB ENTRY).
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_init.
     (*
@@ -622,6 +624,7 @@ Module journal.
     Global Instance AssociatedFunction_to_inner :
       forall (DB ENTRY : Ty.t),
       M.IsAssociatedFunction.C (Self DB ENTRY) "to_inner" (to_inner DB ENTRY).
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_inner.
   End Impl_revm_context_journal_Journal_DB_ENTRY.

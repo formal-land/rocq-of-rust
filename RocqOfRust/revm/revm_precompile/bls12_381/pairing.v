@@ -65,6 +65,7 @@ Module bls12_381.
     
     Global Instance Instance_IsConstant_value_PRECOMPILE :
       M.IsFunction.C "revm_precompile::bls12_381::pairing::PRECOMPILE" value_PRECOMPILE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PRECOMPILE.
     
@@ -2032,6 +2033,7 @@ Module bls12_381.
     
     Global Instance Instance_IsFunction_pairing :
       M.IsFunction.C "revm_precompile::bls12_381::pairing::pairing" pairing.
+    Proof.
     Admitted.
     Global Typeclasses Opaque pairing.
   End pairing.

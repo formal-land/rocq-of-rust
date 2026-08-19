@@ -749,6 +749,7 @@ Module opcode.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -785,6 +786,7 @@ Module opcode.
     
     Global Instance AssociatedFunction_is_jumpdest :
       M.IsAssociatedFunction.C Self "is_jumpdest" is_jumpdest.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_jumpdest.
     
@@ -849,6 +851,7 @@ Module opcode.
     
     Global Instance AssociatedFunction_is_jumpdest_by_op :
       M.IsAssociatedFunction.C Self "is_jumpdest_by_op" is_jumpdest_by_op.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_jumpdest_by_op.
     
@@ -876,6 +879,7 @@ Module opcode.
       end.
     
     Global Instance AssociatedFunction_is_jump : M.IsAssociatedFunction.C Self "is_jump" is_jump.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_jump.
     
@@ -940,6 +944,7 @@ Module opcode.
     
     Global Instance AssociatedFunction_is_jump_by_op :
       M.IsAssociatedFunction.C Self "is_jump_by_op" is_jump_by_op.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_jump_by_op.
     
@@ -984,6 +989,7 @@ Module opcode.
       end.
     
     Global Instance AssociatedFunction_is_push : M.IsAssociatedFunction.C Self "is_push" is_push.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_push.
     
@@ -1048,6 +1054,7 @@ Module opcode.
     
     Global Instance AssociatedFunction_is_push_by_op :
       M.IsAssociatedFunction.C Self "is_push_by_op" is_push_by_op.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_push_by_op.
     
@@ -1067,6 +1074,7 @@ Module opcode.
     
     Global Instance AssociatedFunction_new_unchecked :
       M.IsAssociatedFunction.C Self "new_unchecked" new_unchecked.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_unchecked.
     
@@ -1111,6 +1119,7 @@ Module opcode.
       end.
     
     Global Instance AssociatedFunction_as_str : M.IsAssociatedFunction.C Self "as_str" as_str.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_str.
     
@@ -1175,6 +1184,7 @@ Module opcode.
     
     Global Instance AssociatedFunction_name_by_op :
       M.IsAssociatedFunction.C Self "name_by_op" name_by_op.
+    Proof.
     Admitted.
     Global Typeclasses Opaque name_by_op.
     
@@ -1223,6 +1233,7 @@ Module opcode.
       end.
     
     Global Instance AssociatedFunction_inputs : M.IsAssociatedFunction.C Self "inputs" inputs.
+    Proof.
     Admitted.
     Global Typeclasses Opaque inputs.
     
@@ -1271,6 +1282,7 @@ Module opcode.
       end.
     
     Global Instance AssociatedFunction_outputs : M.IsAssociatedFunction.C Self "outputs" outputs.
+    Proof.
     Admitted.
     Global Typeclasses Opaque outputs.
     
@@ -1319,6 +1331,7 @@ Module opcode.
       end.
     
     Global Instance AssociatedFunction_io_diff : M.IsAssociatedFunction.C Self "io_diff" io_diff.
+    Proof.
     Admitted.
     Global Typeclasses Opaque io_diff.
     
@@ -1398,6 +1411,7 @@ Module opcode.
     
     Global Instance AssociatedFunction_info_by_op :
       M.IsAssociatedFunction.C Self "info_by_op" info_by_op.
+    Proof.
     Admitted.
     Global Typeclasses Opaque info_by_op.
     
@@ -1428,6 +1442,7 @@ Module opcode.
       end.
     
     Global Instance AssociatedFunction_as_usize : M.IsAssociatedFunction.C Self "as_usize" as_usize.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_usize.
     
@@ -1518,6 +1533,7 @@ Module opcode.
       end.
     
     Global Instance AssociatedFunction_info : M.IsAssociatedFunction.C Self "info" info.
+    Proof.
     Admitted.
     Global Typeclasses Opaque info.
     
@@ -1574,6 +1590,7 @@ Module opcode.
     
     Global Instance AssociatedFunction_input_output :
       M.IsAssociatedFunction.C Self "input_output" input_output.
+    Proof.
     Admitted.
     Global Typeclasses Opaque input_output.
     
@@ -1594,6 +1611,7 @@ Module opcode.
       end.
     
     Global Instance AssociatedFunction_get : M.IsAssociatedFunction.C Self "get" get.
+    Proof.
     Admitted.
     Global Typeclasses Opaque get.
     
@@ -1803,6 +1821,7 @@ Module opcode.
     
     Global Instance AssociatedFunction_modifies_memory :
       M.IsAssociatedFunction.C Self "modifies_memory" modifies_memory.
+    Proof.
     Admitted.
     Global Typeclasses Opaque modifies_memory.
     
@@ -1873,6 +1892,7 @@ Module opcode.
       end.
     
     Global Instance AssociatedFunction_is_valid : M.IsAssociatedFunction.C Self "is_valid" is_valid.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_valid.
     (*             pub const $name: Self = Self($val); *)
@@ -1885,6 +1905,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_STOP : M.IsAssociatedFunction.C Self "STOP" value_STOP.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_STOP.
     
@@ -1898,6 +1919,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_ADD : M.IsAssociatedFunction.C Self "ADD" value_ADD.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ADD.
     
@@ -1911,6 +1933,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_MUL : M.IsAssociatedFunction.C Self "MUL" value_MUL.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MUL.
     
@@ -1924,6 +1947,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_SUB : M.IsAssociatedFunction.C Self "SUB" value_SUB.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SUB.
     
@@ -1937,6 +1961,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_DIV : M.IsAssociatedFunction.C Self "DIV" value_DIV.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_DIV.
     
@@ -1950,6 +1975,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_SDIV : M.IsAssociatedFunction.C Self "SDIV" value_SDIV.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SDIV.
     
@@ -1963,6 +1989,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_MOD : M.IsAssociatedFunction.C Self "MOD" value_MOD.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MOD.
     
@@ -1976,6 +2003,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_SMOD : M.IsAssociatedFunction.C Self "SMOD" value_SMOD.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SMOD.
     
@@ -1990,6 +2018,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_ADDMOD :
       M.IsAssociatedFunction.C Self "ADDMOD" value_ADDMOD.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ADDMOD.
     
@@ -2004,6 +2033,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_MULMOD :
       M.IsAssociatedFunction.C Self "MULMOD" value_MULMOD.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MULMOD.
     
@@ -2021,6 +2051,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_EXP : M.IsAssociatedFunction.C Self "EXP" value_EXP.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_EXP.
     
@@ -2039,6 +2070,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_SIGNEXTEND :
       M.IsAssociatedFunction.C Self "SIGNEXTEND" value_SIGNEXTEND.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SIGNEXTEND.
     
@@ -2056,6 +2088,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_LT : M.IsAssociatedFunction.C Self "LT" value_LT.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_LT.
     
@@ -2073,6 +2106,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_GT : M.IsAssociatedFunction.C Self "GT" value_GT.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_GT.
     
@@ -2090,6 +2124,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_SLT : M.IsAssociatedFunction.C Self "SLT" value_SLT.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SLT.
     
@@ -2107,6 +2142,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_SGT : M.IsAssociatedFunction.C Self "SGT" value_SGT.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SGT.
     
@@ -2124,6 +2160,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_EQ : M.IsAssociatedFunction.C Self "EQ" value_EQ.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_EQ.
     
@@ -2142,6 +2179,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_ISZERO :
       M.IsAssociatedFunction.C Self "ISZERO" value_ISZERO.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ISZERO.
     
@@ -2159,6 +2197,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_AND : M.IsAssociatedFunction.C Self "AND" value_AND.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_AND.
     
@@ -2176,6 +2215,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_OR : M.IsAssociatedFunction.C Self "OR" value_OR.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_OR.
     
@@ -2193,6 +2233,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_XOR : M.IsAssociatedFunction.C Self "XOR" value_XOR.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_XOR.
     
@@ -2210,6 +2251,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_NOT : M.IsAssociatedFunction.C Self "NOT" value_NOT.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_NOT.
     
@@ -2227,6 +2269,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_BYTE : M.IsAssociatedFunction.C Self "BYTE" value_BYTE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_BYTE.
     
@@ -2244,6 +2287,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_SHL : M.IsAssociatedFunction.C Self "SHL" value_SHL.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SHL.
     
@@ -2261,6 +2305,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_SHR : M.IsAssociatedFunction.C Self "SHR" value_SHR.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SHR.
     
@@ -2278,6 +2323,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_SAR : M.IsAssociatedFunction.C Self "SAR" value_SAR.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SAR.
     
@@ -2295,6 +2341,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_CLZ : M.IsAssociatedFunction.C Self "CLZ" value_CLZ.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_CLZ.
     
@@ -2313,6 +2360,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_KECCAK256 :
       M.IsAssociatedFunction.C Self "KECCAK256" value_KECCAK256.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_KECCAK256.
     
@@ -2331,6 +2379,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_ADDRESS :
       M.IsAssociatedFunction.C Self "ADDRESS" value_ADDRESS.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ADDRESS.
     
@@ -2349,6 +2398,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_BALANCE :
       M.IsAssociatedFunction.C Self "BALANCE" value_BALANCE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_BALANCE.
     
@@ -2367,6 +2417,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_ORIGIN :
       M.IsAssociatedFunction.C Self "ORIGIN" value_ORIGIN.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ORIGIN.
     
@@ -2385,6 +2436,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_CALLER :
       M.IsAssociatedFunction.C Self "CALLER" value_CALLER.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_CALLER.
     
@@ -2403,6 +2455,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_CALLVALUE :
       M.IsAssociatedFunction.C Self "CALLVALUE" value_CALLVALUE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_CALLVALUE.
     
@@ -2421,6 +2474,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_CALLDATALOAD :
       M.IsAssociatedFunction.C Self "CALLDATALOAD" value_CALLDATALOAD.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_CALLDATALOAD.
     
@@ -2439,6 +2493,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_CALLDATASIZE :
       M.IsAssociatedFunction.C Self "CALLDATASIZE" value_CALLDATASIZE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_CALLDATASIZE.
     
@@ -2457,6 +2512,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_CALLDATACOPY :
       M.IsAssociatedFunction.C Self "CALLDATACOPY" value_CALLDATACOPY.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_CALLDATACOPY.
     
@@ -2475,6 +2531,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_CODESIZE :
       M.IsAssociatedFunction.C Self "CODESIZE" value_CODESIZE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_CODESIZE.
     
@@ -2493,6 +2550,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_CODECOPY :
       M.IsAssociatedFunction.C Self "CODECOPY" value_CODECOPY.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_CODECOPY.
     
@@ -2511,6 +2569,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_GASPRICE :
       M.IsAssociatedFunction.C Self "GASPRICE" value_GASPRICE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_GASPRICE.
     
@@ -2529,6 +2588,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_EXTCODESIZE :
       M.IsAssociatedFunction.C Self "EXTCODESIZE" value_EXTCODESIZE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_EXTCODESIZE.
     
@@ -2547,6 +2607,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_EXTCODECOPY :
       M.IsAssociatedFunction.C Self "EXTCODECOPY" value_EXTCODECOPY.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_EXTCODECOPY.
     
@@ -2565,6 +2626,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_RETURNDATASIZE :
       M.IsAssociatedFunction.C Self "RETURNDATASIZE" value_RETURNDATASIZE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_RETURNDATASIZE.
     
@@ -2583,6 +2645,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_RETURNDATACOPY :
       M.IsAssociatedFunction.C Self "RETURNDATACOPY" value_RETURNDATACOPY.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_RETURNDATACOPY.
     
@@ -2601,6 +2664,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_EXTCODEHASH :
       M.IsAssociatedFunction.C Self "EXTCODEHASH" value_EXTCODEHASH.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_EXTCODEHASH.
     
@@ -2619,6 +2683,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_BLOCKHASH :
       M.IsAssociatedFunction.C Self "BLOCKHASH" value_BLOCKHASH.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_BLOCKHASH.
     
@@ -2637,6 +2702,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_COINBASE :
       M.IsAssociatedFunction.C Self "COINBASE" value_COINBASE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_COINBASE.
     
@@ -2655,6 +2721,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_TIMESTAMP :
       M.IsAssociatedFunction.C Self "TIMESTAMP" value_TIMESTAMP.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_TIMESTAMP.
     
@@ -2673,6 +2740,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_NUMBER :
       M.IsAssociatedFunction.C Self "NUMBER" value_NUMBER.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_NUMBER.
     
@@ -2691,6 +2759,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_DIFFICULTY :
       M.IsAssociatedFunction.C Self "DIFFICULTY" value_DIFFICULTY.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_DIFFICULTY.
     
@@ -2709,6 +2778,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_GASLIMIT :
       M.IsAssociatedFunction.C Self "GASLIMIT" value_GASLIMIT.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_GASLIMIT.
     
@@ -2727,6 +2797,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_CHAINID :
       M.IsAssociatedFunction.C Self "CHAINID" value_CHAINID.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_CHAINID.
     
@@ -2745,6 +2816,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_SELFBALANCE :
       M.IsAssociatedFunction.C Self "SELFBALANCE" value_SELFBALANCE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SELFBALANCE.
     
@@ -2763,6 +2835,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_BASEFEE :
       M.IsAssociatedFunction.C Self "BASEFEE" value_BASEFEE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_BASEFEE.
     
@@ -2781,6 +2854,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_BLOBHASH :
       M.IsAssociatedFunction.C Self "BLOBHASH" value_BLOBHASH.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_BLOBHASH.
     
@@ -2799,6 +2873,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_BLOBBASEFEE :
       M.IsAssociatedFunction.C Self "BLOBBASEFEE" value_BLOBBASEFEE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_BLOBBASEFEE.
     
@@ -2816,6 +2891,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_POP : M.IsAssociatedFunction.C Self "POP" value_POP.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_POP.
     
@@ -2834,6 +2910,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_MLOAD :
       M.IsAssociatedFunction.C Self "MLOAD" value_MLOAD.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MLOAD.
     
@@ -2852,6 +2929,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_MSTORE :
       M.IsAssociatedFunction.C Self "MSTORE" value_MSTORE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MSTORE.
     
@@ -2870,6 +2948,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_MSTORE8 :
       M.IsAssociatedFunction.C Self "MSTORE8" value_MSTORE8.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MSTORE8.
     
@@ -2888,6 +2967,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_SLOAD :
       M.IsAssociatedFunction.C Self "SLOAD" value_SLOAD.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SLOAD.
     
@@ -2906,6 +2986,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_SSTORE :
       M.IsAssociatedFunction.C Self "SSTORE" value_SSTORE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SSTORE.
     
@@ -2923,6 +3004,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_JUMP : M.IsAssociatedFunction.C Self "JUMP" value_JUMP.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_JUMP.
     
@@ -2941,6 +3023,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_JUMPI :
       M.IsAssociatedFunction.C Self "JUMPI" value_JUMPI.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_JUMPI.
     
@@ -2958,6 +3041,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_PC : M.IsAssociatedFunction.C Self "PC" value_PC.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PC.
     
@@ -2976,6 +3060,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_MSIZE :
       M.IsAssociatedFunction.C Self "MSIZE" value_MSIZE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MSIZE.
     
@@ -2993,6 +3078,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_GAS : M.IsAssociatedFunction.C Self "GAS" value_GAS.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_GAS.
     
@@ -3011,6 +3097,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_JUMPDEST :
       M.IsAssociatedFunction.C Self "JUMPDEST" value_JUMPDEST.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_JUMPDEST.
     
@@ -3029,6 +3116,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_TLOAD :
       M.IsAssociatedFunction.C Self "TLOAD" value_TLOAD.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_TLOAD.
     
@@ -3047,6 +3135,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_TSTORE :
       M.IsAssociatedFunction.C Self "TSTORE" value_TSTORE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_TSTORE.
     
@@ -3065,6 +3154,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_MCOPY :
       M.IsAssociatedFunction.C Self "MCOPY" value_MCOPY.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MCOPY.
     
@@ -3083,6 +3173,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_PUSH0 :
       M.IsAssociatedFunction.C Self "PUSH0" value_PUSH0.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PUSH0.
     
@@ -3101,6 +3192,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_PUSH1 :
       M.IsAssociatedFunction.C Self "PUSH1" value_PUSH1.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PUSH1.
     
@@ -3119,6 +3211,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_PUSH2 :
       M.IsAssociatedFunction.C Self "PUSH2" value_PUSH2.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PUSH2.
     
@@ -3137,6 +3230,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_PUSH3 :
       M.IsAssociatedFunction.C Self "PUSH3" value_PUSH3.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PUSH3.
     
@@ -3155,6 +3249,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_PUSH4 :
       M.IsAssociatedFunction.C Self "PUSH4" value_PUSH4.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PUSH4.
     
@@ -3173,6 +3268,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_PUSH5 :
       M.IsAssociatedFunction.C Self "PUSH5" value_PUSH5.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PUSH5.
     
@@ -3191,6 +3287,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_PUSH6 :
       M.IsAssociatedFunction.C Self "PUSH6" value_PUSH6.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PUSH6.
     
@@ -3209,6 +3306,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_PUSH7 :
       M.IsAssociatedFunction.C Self "PUSH7" value_PUSH7.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PUSH7.
     
@@ -3227,6 +3325,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_PUSH8 :
       M.IsAssociatedFunction.C Self "PUSH8" value_PUSH8.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PUSH8.
     
@@ -3245,6 +3344,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_PUSH9 :
       M.IsAssociatedFunction.C Self "PUSH9" value_PUSH9.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PUSH9.
     
@@ -3263,6 +3363,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_PUSH10 :
       M.IsAssociatedFunction.C Self "PUSH10" value_PUSH10.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PUSH10.
     
@@ -3281,6 +3382,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_PUSH11 :
       M.IsAssociatedFunction.C Self "PUSH11" value_PUSH11.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PUSH11.
     
@@ -3299,6 +3401,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_PUSH12 :
       M.IsAssociatedFunction.C Self "PUSH12" value_PUSH12.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PUSH12.
     
@@ -3317,6 +3420,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_PUSH13 :
       M.IsAssociatedFunction.C Self "PUSH13" value_PUSH13.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PUSH13.
     
@@ -3335,6 +3439,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_PUSH14 :
       M.IsAssociatedFunction.C Self "PUSH14" value_PUSH14.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PUSH14.
     
@@ -3353,6 +3458,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_PUSH15 :
       M.IsAssociatedFunction.C Self "PUSH15" value_PUSH15.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PUSH15.
     
@@ -3371,6 +3477,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_PUSH16 :
       M.IsAssociatedFunction.C Self "PUSH16" value_PUSH16.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PUSH16.
     
@@ -3389,6 +3496,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_PUSH17 :
       M.IsAssociatedFunction.C Self "PUSH17" value_PUSH17.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PUSH17.
     
@@ -3407,6 +3515,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_PUSH18 :
       M.IsAssociatedFunction.C Self "PUSH18" value_PUSH18.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PUSH18.
     
@@ -3425,6 +3534,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_PUSH19 :
       M.IsAssociatedFunction.C Self "PUSH19" value_PUSH19.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PUSH19.
     
@@ -3443,6 +3553,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_PUSH20 :
       M.IsAssociatedFunction.C Self "PUSH20" value_PUSH20.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PUSH20.
     
@@ -3461,6 +3572,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_PUSH21 :
       M.IsAssociatedFunction.C Self "PUSH21" value_PUSH21.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PUSH21.
     
@@ -3479,6 +3591,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_PUSH22 :
       M.IsAssociatedFunction.C Self "PUSH22" value_PUSH22.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PUSH22.
     
@@ -3497,6 +3610,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_PUSH23 :
       M.IsAssociatedFunction.C Self "PUSH23" value_PUSH23.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PUSH23.
     
@@ -3515,6 +3629,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_PUSH24 :
       M.IsAssociatedFunction.C Self "PUSH24" value_PUSH24.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PUSH24.
     
@@ -3533,6 +3648,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_PUSH25 :
       M.IsAssociatedFunction.C Self "PUSH25" value_PUSH25.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PUSH25.
     
@@ -3551,6 +3667,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_PUSH26 :
       M.IsAssociatedFunction.C Self "PUSH26" value_PUSH26.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PUSH26.
     
@@ -3569,6 +3686,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_PUSH27 :
       M.IsAssociatedFunction.C Self "PUSH27" value_PUSH27.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PUSH27.
     
@@ -3587,6 +3705,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_PUSH28 :
       M.IsAssociatedFunction.C Self "PUSH28" value_PUSH28.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PUSH28.
     
@@ -3605,6 +3724,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_PUSH29 :
       M.IsAssociatedFunction.C Self "PUSH29" value_PUSH29.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PUSH29.
     
@@ -3623,6 +3743,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_PUSH30 :
       M.IsAssociatedFunction.C Self "PUSH30" value_PUSH30.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PUSH30.
     
@@ -3641,6 +3762,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_PUSH31 :
       M.IsAssociatedFunction.C Self "PUSH31" value_PUSH31.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PUSH31.
     
@@ -3659,6 +3781,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_PUSH32 :
       M.IsAssociatedFunction.C Self "PUSH32" value_PUSH32.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PUSH32.
     
@@ -3676,6 +3799,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_DUP1 : M.IsAssociatedFunction.C Self "DUP1" value_DUP1.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_DUP1.
     
@@ -3693,6 +3817,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_DUP2 : M.IsAssociatedFunction.C Self "DUP2" value_DUP2.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_DUP2.
     
@@ -3710,6 +3835,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_DUP3 : M.IsAssociatedFunction.C Self "DUP3" value_DUP3.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_DUP3.
     
@@ -3727,6 +3853,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_DUP4 : M.IsAssociatedFunction.C Self "DUP4" value_DUP4.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_DUP4.
     
@@ -3744,6 +3871,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_DUP5 : M.IsAssociatedFunction.C Self "DUP5" value_DUP5.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_DUP5.
     
@@ -3761,6 +3889,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_DUP6 : M.IsAssociatedFunction.C Self "DUP6" value_DUP6.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_DUP6.
     
@@ -3778,6 +3907,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_DUP7 : M.IsAssociatedFunction.C Self "DUP7" value_DUP7.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_DUP7.
     
@@ -3795,6 +3925,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_DUP8 : M.IsAssociatedFunction.C Self "DUP8" value_DUP8.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_DUP8.
     
@@ -3812,6 +3943,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_DUP9 : M.IsAssociatedFunction.C Self "DUP9" value_DUP9.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_DUP9.
     
@@ -3830,6 +3962,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_DUP10 :
       M.IsAssociatedFunction.C Self "DUP10" value_DUP10.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_DUP10.
     
@@ -3848,6 +3981,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_DUP11 :
       M.IsAssociatedFunction.C Self "DUP11" value_DUP11.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_DUP11.
     
@@ -3866,6 +4000,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_DUP12 :
       M.IsAssociatedFunction.C Self "DUP12" value_DUP12.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_DUP12.
     
@@ -3884,6 +4019,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_DUP13 :
       M.IsAssociatedFunction.C Self "DUP13" value_DUP13.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_DUP13.
     
@@ -3902,6 +4038,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_DUP14 :
       M.IsAssociatedFunction.C Self "DUP14" value_DUP14.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_DUP14.
     
@@ -3920,6 +4057,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_DUP15 :
       M.IsAssociatedFunction.C Self "DUP15" value_DUP15.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_DUP15.
     
@@ -3938,6 +4076,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_DUP16 :
       M.IsAssociatedFunction.C Self "DUP16" value_DUP16.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_DUP16.
     
@@ -3956,6 +4095,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_SWAP1 :
       M.IsAssociatedFunction.C Self "SWAP1" value_SWAP1.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SWAP1.
     
@@ -3974,6 +4114,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_SWAP2 :
       M.IsAssociatedFunction.C Self "SWAP2" value_SWAP2.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SWAP2.
     
@@ -3992,6 +4133,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_SWAP3 :
       M.IsAssociatedFunction.C Self "SWAP3" value_SWAP3.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SWAP3.
     
@@ -4010,6 +4152,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_SWAP4 :
       M.IsAssociatedFunction.C Self "SWAP4" value_SWAP4.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SWAP4.
     
@@ -4028,6 +4171,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_SWAP5 :
       M.IsAssociatedFunction.C Self "SWAP5" value_SWAP5.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SWAP5.
     
@@ -4046,6 +4190,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_SWAP6 :
       M.IsAssociatedFunction.C Self "SWAP6" value_SWAP6.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SWAP6.
     
@@ -4064,6 +4209,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_SWAP7 :
       M.IsAssociatedFunction.C Self "SWAP7" value_SWAP7.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SWAP7.
     
@@ -4082,6 +4228,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_SWAP8 :
       M.IsAssociatedFunction.C Self "SWAP8" value_SWAP8.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SWAP8.
     
@@ -4100,6 +4247,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_SWAP9 :
       M.IsAssociatedFunction.C Self "SWAP9" value_SWAP9.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SWAP9.
     
@@ -4118,6 +4266,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_SWAP10 :
       M.IsAssociatedFunction.C Self "SWAP10" value_SWAP10.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SWAP10.
     
@@ -4136,6 +4285,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_SWAP11 :
       M.IsAssociatedFunction.C Self "SWAP11" value_SWAP11.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SWAP11.
     
@@ -4154,6 +4304,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_SWAP12 :
       M.IsAssociatedFunction.C Self "SWAP12" value_SWAP12.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SWAP12.
     
@@ -4172,6 +4323,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_SWAP13 :
       M.IsAssociatedFunction.C Self "SWAP13" value_SWAP13.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SWAP13.
     
@@ -4190,6 +4342,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_SWAP14 :
       M.IsAssociatedFunction.C Self "SWAP14" value_SWAP14.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SWAP14.
     
@@ -4208,6 +4361,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_SWAP15 :
       M.IsAssociatedFunction.C Self "SWAP15" value_SWAP15.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SWAP15.
     
@@ -4226,6 +4380,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_SWAP16 :
       M.IsAssociatedFunction.C Self "SWAP16" value_SWAP16.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SWAP16.
     
@@ -4243,6 +4398,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_LOG0 : M.IsAssociatedFunction.C Self "LOG0" value_LOG0.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_LOG0.
     
@@ -4260,6 +4416,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_LOG1 : M.IsAssociatedFunction.C Self "LOG1" value_LOG1.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_LOG1.
     
@@ -4277,6 +4434,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_LOG2 : M.IsAssociatedFunction.C Self "LOG2" value_LOG2.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_LOG2.
     
@@ -4294,6 +4452,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_LOG3 : M.IsAssociatedFunction.C Self "LOG3" value_LOG3.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_LOG3.
     
@@ -4311,6 +4470,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_LOG4 : M.IsAssociatedFunction.C Self "LOG4" value_LOG4.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_LOG4.
     
@@ -4329,6 +4489,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_CREATE :
       M.IsAssociatedFunction.C Self "CREATE" value_CREATE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_CREATE.
     
@@ -4346,6 +4507,7 @@ Module opcode.
         |))).
     
     Global Instance AssociatedConstant_value_CALL : M.IsAssociatedFunction.C Self "CALL" value_CALL.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_CALL.
     
@@ -4364,6 +4526,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_CALLCODE :
       M.IsAssociatedFunction.C Self "CALLCODE" value_CALLCODE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_CALLCODE.
     
@@ -4382,6 +4545,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_RETURN :
       M.IsAssociatedFunction.C Self "RETURN" value_RETURN.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_RETURN.
     
@@ -4400,6 +4564,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_DELEGATECALL :
       M.IsAssociatedFunction.C Self "DELEGATECALL" value_DELEGATECALL.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_DELEGATECALL.
     
@@ -4418,6 +4583,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_CREATE2 :
       M.IsAssociatedFunction.C Self "CREATE2" value_CREATE2.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_CREATE2.
     
@@ -4436,6 +4602,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_STATICCALL :
       M.IsAssociatedFunction.C Self "STATICCALL" value_STATICCALL.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_STATICCALL.
     
@@ -4454,6 +4621,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_REVERT :
       M.IsAssociatedFunction.C Self "REVERT" value_REVERT.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_REVERT.
     
@@ -4472,6 +4640,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_INVALID :
       M.IsAssociatedFunction.C Self "INVALID" value_INVALID.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_INVALID.
     
@@ -4490,6 +4659,7 @@ Module opcode.
     
     Global Instance AssociatedConstant_value_SELFDESTRUCT :
       M.IsAssociatedFunction.C Self "SELFDESTRUCT" value_SELFDESTRUCT.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SELFDESTRUCT.
   End Impl_revm_bytecode_opcode_OpCode.
@@ -6465,6 +6635,7 @@ Module opcode.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -6549,6 +6720,7 @@ Module opcode.
       end.
     
     Global Instance AssociatedFunction_name : M.IsAssociatedFunction.C Self "name" name.
+    Proof.
     Admitted.
     Global Typeclasses Opaque name.
     
@@ -6594,6 +6766,7 @@ Module opcode.
       end.
     
     Global Instance AssociatedFunction_io_diff : M.IsAssociatedFunction.C Self "io_diff" io_diff.
+    Proof.
     Admitted.
     Global Typeclasses Opaque io_diff.
     
@@ -6622,6 +6795,7 @@ Module opcode.
       end.
     
     Global Instance AssociatedFunction_inputs : M.IsAssociatedFunction.C Self "inputs" inputs.
+    Proof.
     Admitted.
     Global Typeclasses Opaque inputs.
     
@@ -6650,6 +6824,7 @@ Module opcode.
       end.
     
     Global Instance AssociatedFunction_outputs : M.IsAssociatedFunction.C Self "outputs" outputs.
+    Proof.
     Admitted.
     Global Typeclasses Opaque outputs.
     
@@ -6679,6 +6854,7 @@ Module opcode.
     
     Global Instance AssociatedFunction_is_terminating :
       M.IsAssociatedFunction.C Self "is_terminating" is_terminating.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_terminating.
     
@@ -6708,6 +6884,7 @@ Module opcode.
     
     Global Instance AssociatedFunction_immediate_size :
       M.IsAssociatedFunction.C Self "immediate_size" immediate_size.
+    Proof.
     Admitted.
     Global Typeclasses Opaque immediate_size.
   End Impl_revm_bytecode_opcode_OpCodeInfo.
@@ -6741,6 +6918,7 @@ Module opcode.
   
   Global Instance Instance_IsFunction_immediate_size :
     M.IsFunction.C "revm_bytecode::opcode::immediate_size" immediate_size.
+  Proof.
   Admitted.
   Global Typeclasses Opaque immediate_size.
   
@@ -6772,6 +6950,7 @@ Module opcode.
   
   Global Instance Instance_IsFunction_terminating :
     M.IsFunction.C "revm_bytecode::opcode::terminating" terminating.
+  Proof.
   Admitted.
   Global Typeclasses Opaque terminating.
   
@@ -6815,6 +6994,7 @@ Module opcode.
   
   Global Instance Instance_IsFunction_stack_io :
     M.IsFunction.C "revm_bytecode::opcode::stack_io" stack_io.
+  Proof.
   Admitted.
   Global Typeclasses Opaque stack_io.
   
@@ -6823,6 +7003,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_NOP :
     M.IsFunction.C "revm_bytecode::opcode::NOP" value_NOP.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_NOP.
   
@@ -6831,6 +7012,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_STOP :
     M.IsFunction.C "revm_bytecode::opcode::STOP" value_STOP.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_STOP.
   
@@ -6839,6 +7021,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_ADD :
     M.IsFunction.C "revm_bytecode::opcode::ADD" value_ADD.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_ADD.
   
@@ -6847,6 +7030,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_MUL :
     M.IsFunction.C "revm_bytecode::opcode::MUL" value_MUL.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MUL.
   
@@ -6855,6 +7039,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_SUB :
     M.IsFunction.C "revm_bytecode::opcode::SUB" value_SUB.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SUB.
   
@@ -6863,6 +7048,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_DIV :
     M.IsFunction.C "revm_bytecode::opcode::DIV" value_DIV.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_DIV.
   
@@ -6871,6 +7057,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_SDIV :
     M.IsFunction.C "revm_bytecode::opcode::SDIV" value_SDIV.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SDIV.
   
@@ -6879,6 +7066,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_MOD :
     M.IsFunction.C "revm_bytecode::opcode::MOD" value_MOD.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MOD.
   
@@ -6887,6 +7075,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_SMOD :
     M.IsFunction.C "revm_bytecode::opcode::SMOD" value_SMOD.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SMOD.
   
@@ -6895,6 +7084,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_ADDMOD :
     M.IsFunction.C "revm_bytecode::opcode::ADDMOD" value_ADDMOD.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_ADDMOD.
   
@@ -6903,6 +7093,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_MULMOD :
     M.IsFunction.C "revm_bytecode::opcode::MULMOD" value_MULMOD.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MULMOD.
   
@@ -6911,6 +7102,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_EXP :
     M.IsFunction.C "revm_bytecode::opcode::EXP" value_EXP.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_EXP.
   
@@ -6919,6 +7111,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_SIGNEXTEND :
     M.IsFunction.C "revm_bytecode::opcode::SIGNEXTEND" value_SIGNEXTEND.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SIGNEXTEND.
   
@@ -6927,6 +7120,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_LT :
     M.IsFunction.C "revm_bytecode::opcode::LT" value_LT.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_LT.
   
@@ -6935,6 +7129,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_GT :
     M.IsFunction.C "revm_bytecode::opcode::GT" value_GT.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_GT.
   
@@ -6943,6 +7138,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_SLT :
     M.IsFunction.C "revm_bytecode::opcode::SLT" value_SLT.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SLT.
   
@@ -6951,6 +7147,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_SGT :
     M.IsFunction.C "revm_bytecode::opcode::SGT" value_SGT.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SGT.
   
@@ -6959,6 +7156,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_EQ :
     M.IsFunction.C "revm_bytecode::opcode::EQ" value_EQ.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_EQ.
   
@@ -6967,6 +7165,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_ISZERO :
     M.IsFunction.C "revm_bytecode::opcode::ISZERO" value_ISZERO.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_ISZERO.
   
@@ -6975,6 +7174,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_AND :
     M.IsFunction.C "revm_bytecode::opcode::AND" value_AND.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_AND.
   
@@ -6983,6 +7183,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_OR :
     M.IsFunction.C "revm_bytecode::opcode::OR" value_OR.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_OR.
   
@@ -6991,6 +7192,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_XOR :
     M.IsFunction.C "revm_bytecode::opcode::XOR" value_XOR.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_XOR.
   
@@ -6999,6 +7201,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_NOT :
     M.IsFunction.C "revm_bytecode::opcode::NOT" value_NOT.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_NOT.
   
@@ -7007,6 +7210,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_BYTE :
     M.IsFunction.C "revm_bytecode::opcode::BYTE" value_BYTE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_BYTE.
   
@@ -7015,6 +7219,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_SHL :
     M.IsFunction.C "revm_bytecode::opcode::SHL" value_SHL.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SHL.
   
@@ -7023,6 +7228,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_SHR :
     M.IsFunction.C "revm_bytecode::opcode::SHR" value_SHR.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SHR.
   
@@ -7031,6 +7237,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_SAR :
     M.IsFunction.C "revm_bytecode::opcode::SAR" value_SAR.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SAR.
   
@@ -7039,6 +7246,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_CLZ :
     M.IsFunction.C "revm_bytecode::opcode::CLZ" value_CLZ.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_CLZ.
   
@@ -7047,6 +7255,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_KECCAK256 :
     M.IsFunction.C "revm_bytecode::opcode::KECCAK256" value_KECCAK256.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_KECCAK256.
   
@@ -7055,6 +7264,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_ADDRESS :
     M.IsFunction.C "revm_bytecode::opcode::ADDRESS" value_ADDRESS.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_ADDRESS.
   
@@ -7063,6 +7273,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_BALANCE :
     M.IsFunction.C "revm_bytecode::opcode::BALANCE" value_BALANCE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_BALANCE.
   
@@ -7071,6 +7282,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_ORIGIN :
     M.IsFunction.C "revm_bytecode::opcode::ORIGIN" value_ORIGIN.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_ORIGIN.
   
@@ -7079,6 +7291,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_CALLER :
     M.IsFunction.C "revm_bytecode::opcode::CALLER" value_CALLER.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_CALLER.
   
@@ -7087,6 +7300,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_CALLVALUE :
     M.IsFunction.C "revm_bytecode::opcode::CALLVALUE" value_CALLVALUE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_CALLVALUE.
   
@@ -7095,6 +7309,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_CALLDATALOAD :
     M.IsFunction.C "revm_bytecode::opcode::CALLDATALOAD" value_CALLDATALOAD.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_CALLDATALOAD.
   
@@ -7103,6 +7318,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_CALLDATASIZE :
     M.IsFunction.C "revm_bytecode::opcode::CALLDATASIZE" value_CALLDATASIZE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_CALLDATASIZE.
   
@@ -7111,6 +7327,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_CALLDATACOPY :
     M.IsFunction.C "revm_bytecode::opcode::CALLDATACOPY" value_CALLDATACOPY.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_CALLDATACOPY.
   
@@ -7119,6 +7336,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_CODESIZE :
     M.IsFunction.C "revm_bytecode::opcode::CODESIZE" value_CODESIZE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_CODESIZE.
   
@@ -7127,6 +7345,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_CODECOPY :
     M.IsFunction.C "revm_bytecode::opcode::CODECOPY" value_CODECOPY.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_CODECOPY.
   
@@ -7135,6 +7354,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_GASPRICE :
     M.IsFunction.C "revm_bytecode::opcode::GASPRICE" value_GASPRICE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_GASPRICE.
   
@@ -7143,6 +7363,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_EXTCODESIZE :
     M.IsFunction.C "revm_bytecode::opcode::EXTCODESIZE" value_EXTCODESIZE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_EXTCODESIZE.
   
@@ -7151,6 +7372,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_EXTCODECOPY :
     M.IsFunction.C "revm_bytecode::opcode::EXTCODECOPY" value_EXTCODECOPY.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_EXTCODECOPY.
   
@@ -7159,6 +7381,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_RETURNDATASIZE :
     M.IsFunction.C "revm_bytecode::opcode::RETURNDATASIZE" value_RETURNDATASIZE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_RETURNDATASIZE.
   
@@ -7167,6 +7390,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_RETURNDATACOPY :
     M.IsFunction.C "revm_bytecode::opcode::RETURNDATACOPY" value_RETURNDATACOPY.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_RETURNDATACOPY.
   
@@ -7175,6 +7399,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_EXTCODEHASH :
     M.IsFunction.C "revm_bytecode::opcode::EXTCODEHASH" value_EXTCODEHASH.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_EXTCODEHASH.
   
@@ -7183,6 +7408,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_BLOCKHASH :
     M.IsFunction.C "revm_bytecode::opcode::BLOCKHASH" value_BLOCKHASH.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_BLOCKHASH.
   
@@ -7191,6 +7417,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_COINBASE :
     M.IsFunction.C "revm_bytecode::opcode::COINBASE" value_COINBASE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_COINBASE.
   
@@ -7199,6 +7426,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_TIMESTAMP :
     M.IsFunction.C "revm_bytecode::opcode::TIMESTAMP" value_TIMESTAMP.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_TIMESTAMP.
   
@@ -7207,6 +7435,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_NUMBER :
     M.IsFunction.C "revm_bytecode::opcode::NUMBER" value_NUMBER.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_NUMBER.
   
@@ -7215,6 +7444,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_DIFFICULTY :
     M.IsFunction.C "revm_bytecode::opcode::DIFFICULTY" value_DIFFICULTY.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_DIFFICULTY.
   
@@ -7223,6 +7453,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_GASLIMIT :
     M.IsFunction.C "revm_bytecode::opcode::GASLIMIT" value_GASLIMIT.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_GASLIMIT.
   
@@ -7231,6 +7462,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_CHAINID :
     M.IsFunction.C "revm_bytecode::opcode::CHAINID" value_CHAINID.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_CHAINID.
   
@@ -7239,6 +7471,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_SELFBALANCE :
     M.IsFunction.C "revm_bytecode::opcode::SELFBALANCE" value_SELFBALANCE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SELFBALANCE.
   
@@ -7247,6 +7480,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_BASEFEE :
     M.IsFunction.C "revm_bytecode::opcode::BASEFEE" value_BASEFEE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_BASEFEE.
   
@@ -7255,6 +7489,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_BLOBHASH :
     M.IsFunction.C "revm_bytecode::opcode::BLOBHASH" value_BLOBHASH.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_BLOBHASH.
   
@@ -7263,6 +7498,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_BLOBBASEFEE :
     M.IsFunction.C "revm_bytecode::opcode::BLOBBASEFEE" value_BLOBBASEFEE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_BLOBBASEFEE.
   
@@ -7271,6 +7507,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_POP :
     M.IsFunction.C "revm_bytecode::opcode::POP" value_POP.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_POP.
   
@@ -7279,6 +7516,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_MLOAD :
     M.IsFunction.C "revm_bytecode::opcode::MLOAD" value_MLOAD.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MLOAD.
   
@@ -7287,6 +7525,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_MSTORE :
     M.IsFunction.C "revm_bytecode::opcode::MSTORE" value_MSTORE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MSTORE.
   
@@ -7295,6 +7534,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_MSTORE8 :
     M.IsFunction.C "revm_bytecode::opcode::MSTORE8" value_MSTORE8.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MSTORE8.
   
@@ -7303,6 +7543,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_SLOAD :
     M.IsFunction.C "revm_bytecode::opcode::SLOAD" value_SLOAD.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SLOAD.
   
@@ -7311,6 +7552,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_SSTORE :
     M.IsFunction.C "revm_bytecode::opcode::SSTORE" value_SSTORE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SSTORE.
   
@@ -7319,6 +7561,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_JUMP :
     M.IsFunction.C "revm_bytecode::opcode::JUMP" value_JUMP.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_JUMP.
   
@@ -7327,6 +7570,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_JUMPI :
     M.IsFunction.C "revm_bytecode::opcode::JUMPI" value_JUMPI.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_JUMPI.
   
@@ -7335,6 +7579,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_PC :
     M.IsFunction.C "revm_bytecode::opcode::PC" value_PC.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PC.
   
@@ -7343,6 +7588,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_MSIZE :
     M.IsFunction.C "revm_bytecode::opcode::MSIZE" value_MSIZE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MSIZE.
   
@@ -7351,6 +7597,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_GAS :
     M.IsFunction.C "revm_bytecode::opcode::GAS" value_GAS.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_GAS.
   
@@ -7359,6 +7606,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_JUMPDEST :
     M.IsFunction.C "revm_bytecode::opcode::JUMPDEST" value_JUMPDEST.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_JUMPDEST.
   
@@ -7367,6 +7615,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_TLOAD :
     M.IsFunction.C "revm_bytecode::opcode::TLOAD" value_TLOAD.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_TLOAD.
   
@@ -7375,6 +7624,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_TSTORE :
     M.IsFunction.C "revm_bytecode::opcode::TSTORE" value_TSTORE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_TSTORE.
   
@@ -7383,6 +7633,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_MCOPY :
     M.IsFunction.C "revm_bytecode::opcode::MCOPY" value_MCOPY.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MCOPY.
   
@@ -7391,6 +7642,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_PUSH0 :
     M.IsFunction.C "revm_bytecode::opcode::PUSH0" value_PUSH0.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PUSH0.
   
@@ -7399,6 +7651,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_PUSH1 :
     M.IsFunction.C "revm_bytecode::opcode::PUSH1" value_PUSH1.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PUSH1.
   
@@ -7407,6 +7660,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_PUSH2 :
     M.IsFunction.C "revm_bytecode::opcode::PUSH2" value_PUSH2.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PUSH2.
   
@@ -7415,6 +7669,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_PUSH3 :
     M.IsFunction.C "revm_bytecode::opcode::PUSH3" value_PUSH3.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PUSH3.
   
@@ -7423,6 +7678,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_PUSH4 :
     M.IsFunction.C "revm_bytecode::opcode::PUSH4" value_PUSH4.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PUSH4.
   
@@ -7431,6 +7687,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_PUSH5 :
     M.IsFunction.C "revm_bytecode::opcode::PUSH5" value_PUSH5.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PUSH5.
   
@@ -7439,6 +7696,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_PUSH6 :
     M.IsFunction.C "revm_bytecode::opcode::PUSH6" value_PUSH6.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PUSH6.
   
@@ -7447,6 +7705,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_PUSH7 :
     M.IsFunction.C "revm_bytecode::opcode::PUSH7" value_PUSH7.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PUSH7.
   
@@ -7455,6 +7714,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_PUSH8 :
     M.IsFunction.C "revm_bytecode::opcode::PUSH8" value_PUSH8.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PUSH8.
   
@@ -7463,6 +7723,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_PUSH9 :
     M.IsFunction.C "revm_bytecode::opcode::PUSH9" value_PUSH9.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PUSH9.
   
@@ -7471,6 +7732,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_PUSH10 :
     M.IsFunction.C "revm_bytecode::opcode::PUSH10" value_PUSH10.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PUSH10.
   
@@ -7479,6 +7741,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_PUSH11 :
     M.IsFunction.C "revm_bytecode::opcode::PUSH11" value_PUSH11.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PUSH11.
   
@@ -7487,6 +7750,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_PUSH12 :
     M.IsFunction.C "revm_bytecode::opcode::PUSH12" value_PUSH12.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PUSH12.
   
@@ -7495,6 +7759,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_PUSH13 :
     M.IsFunction.C "revm_bytecode::opcode::PUSH13" value_PUSH13.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PUSH13.
   
@@ -7503,6 +7768,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_PUSH14 :
     M.IsFunction.C "revm_bytecode::opcode::PUSH14" value_PUSH14.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PUSH14.
   
@@ -7511,6 +7777,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_PUSH15 :
     M.IsFunction.C "revm_bytecode::opcode::PUSH15" value_PUSH15.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PUSH15.
   
@@ -7519,6 +7786,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_PUSH16 :
     M.IsFunction.C "revm_bytecode::opcode::PUSH16" value_PUSH16.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PUSH16.
   
@@ -7527,6 +7795,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_PUSH17 :
     M.IsFunction.C "revm_bytecode::opcode::PUSH17" value_PUSH17.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PUSH17.
   
@@ -7535,6 +7804,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_PUSH18 :
     M.IsFunction.C "revm_bytecode::opcode::PUSH18" value_PUSH18.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PUSH18.
   
@@ -7543,6 +7813,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_PUSH19 :
     M.IsFunction.C "revm_bytecode::opcode::PUSH19" value_PUSH19.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PUSH19.
   
@@ -7551,6 +7822,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_PUSH20 :
     M.IsFunction.C "revm_bytecode::opcode::PUSH20" value_PUSH20.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PUSH20.
   
@@ -7559,6 +7831,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_PUSH21 :
     M.IsFunction.C "revm_bytecode::opcode::PUSH21" value_PUSH21.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PUSH21.
   
@@ -7567,6 +7840,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_PUSH22 :
     M.IsFunction.C "revm_bytecode::opcode::PUSH22" value_PUSH22.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PUSH22.
   
@@ -7575,6 +7849,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_PUSH23 :
     M.IsFunction.C "revm_bytecode::opcode::PUSH23" value_PUSH23.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PUSH23.
   
@@ -7583,6 +7858,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_PUSH24 :
     M.IsFunction.C "revm_bytecode::opcode::PUSH24" value_PUSH24.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PUSH24.
   
@@ -7591,6 +7867,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_PUSH25 :
     M.IsFunction.C "revm_bytecode::opcode::PUSH25" value_PUSH25.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PUSH25.
   
@@ -7599,6 +7876,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_PUSH26 :
     M.IsFunction.C "revm_bytecode::opcode::PUSH26" value_PUSH26.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PUSH26.
   
@@ -7607,6 +7885,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_PUSH27 :
     M.IsFunction.C "revm_bytecode::opcode::PUSH27" value_PUSH27.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PUSH27.
   
@@ -7615,6 +7894,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_PUSH28 :
     M.IsFunction.C "revm_bytecode::opcode::PUSH28" value_PUSH28.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PUSH28.
   
@@ -7623,6 +7903,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_PUSH29 :
     M.IsFunction.C "revm_bytecode::opcode::PUSH29" value_PUSH29.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PUSH29.
   
@@ -7631,6 +7912,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_PUSH30 :
     M.IsFunction.C "revm_bytecode::opcode::PUSH30" value_PUSH30.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PUSH30.
   
@@ -7639,6 +7921,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_PUSH31 :
     M.IsFunction.C "revm_bytecode::opcode::PUSH31" value_PUSH31.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PUSH31.
   
@@ -7647,6 +7930,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_PUSH32 :
     M.IsFunction.C "revm_bytecode::opcode::PUSH32" value_PUSH32.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PUSH32.
   
@@ -7655,6 +7939,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_DUP1 :
     M.IsFunction.C "revm_bytecode::opcode::DUP1" value_DUP1.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_DUP1.
   
@@ -7663,6 +7948,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_DUP2 :
     M.IsFunction.C "revm_bytecode::opcode::DUP2" value_DUP2.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_DUP2.
   
@@ -7671,6 +7957,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_DUP3 :
     M.IsFunction.C "revm_bytecode::opcode::DUP3" value_DUP3.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_DUP3.
   
@@ -7679,6 +7966,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_DUP4 :
     M.IsFunction.C "revm_bytecode::opcode::DUP4" value_DUP4.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_DUP4.
   
@@ -7687,6 +7975,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_DUP5 :
     M.IsFunction.C "revm_bytecode::opcode::DUP5" value_DUP5.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_DUP5.
   
@@ -7695,6 +7984,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_DUP6 :
     M.IsFunction.C "revm_bytecode::opcode::DUP6" value_DUP6.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_DUP6.
   
@@ -7703,6 +7993,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_DUP7 :
     M.IsFunction.C "revm_bytecode::opcode::DUP7" value_DUP7.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_DUP7.
   
@@ -7711,6 +8002,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_DUP8 :
     M.IsFunction.C "revm_bytecode::opcode::DUP8" value_DUP8.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_DUP8.
   
@@ -7719,6 +8011,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_DUP9 :
     M.IsFunction.C "revm_bytecode::opcode::DUP9" value_DUP9.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_DUP9.
   
@@ -7727,6 +8020,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_DUP10 :
     M.IsFunction.C "revm_bytecode::opcode::DUP10" value_DUP10.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_DUP10.
   
@@ -7735,6 +8029,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_DUP11 :
     M.IsFunction.C "revm_bytecode::opcode::DUP11" value_DUP11.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_DUP11.
   
@@ -7743,6 +8038,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_DUP12 :
     M.IsFunction.C "revm_bytecode::opcode::DUP12" value_DUP12.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_DUP12.
   
@@ -7751,6 +8047,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_DUP13 :
     M.IsFunction.C "revm_bytecode::opcode::DUP13" value_DUP13.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_DUP13.
   
@@ -7759,6 +8056,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_DUP14 :
     M.IsFunction.C "revm_bytecode::opcode::DUP14" value_DUP14.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_DUP14.
   
@@ -7767,6 +8065,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_DUP15 :
     M.IsFunction.C "revm_bytecode::opcode::DUP15" value_DUP15.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_DUP15.
   
@@ -7775,6 +8074,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_DUP16 :
     M.IsFunction.C "revm_bytecode::opcode::DUP16" value_DUP16.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_DUP16.
   
@@ -7783,6 +8083,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_SWAP1 :
     M.IsFunction.C "revm_bytecode::opcode::SWAP1" value_SWAP1.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SWAP1.
   
@@ -7791,6 +8092,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_SWAP2 :
     M.IsFunction.C "revm_bytecode::opcode::SWAP2" value_SWAP2.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SWAP2.
   
@@ -7799,6 +8101,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_SWAP3 :
     M.IsFunction.C "revm_bytecode::opcode::SWAP3" value_SWAP3.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SWAP3.
   
@@ -7807,6 +8110,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_SWAP4 :
     M.IsFunction.C "revm_bytecode::opcode::SWAP4" value_SWAP4.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SWAP4.
   
@@ -7815,6 +8119,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_SWAP5 :
     M.IsFunction.C "revm_bytecode::opcode::SWAP5" value_SWAP5.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SWAP5.
   
@@ -7823,6 +8128,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_SWAP6 :
     M.IsFunction.C "revm_bytecode::opcode::SWAP6" value_SWAP6.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SWAP6.
   
@@ -7831,6 +8137,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_SWAP7 :
     M.IsFunction.C "revm_bytecode::opcode::SWAP7" value_SWAP7.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SWAP7.
   
@@ -7839,6 +8146,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_SWAP8 :
     M.IsFunction.C "revm_bytecode::opcode::SWAP8" value_SWAP8.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SWAP8.
   
@@ -7847,6 +8155,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_SWAP9 :
     M.IsFunction.C "revm_bytecode::opcode::SWAP9" value_SWAP9.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SWAP9.
   
@@ -7855,6 +8164,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_SWAP10 :
     M.IsFunction.C "revm_bytecode::opcode::SWAP10" value_SWAP10.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SWAP10.
   
@@ -7863,6 +8173,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_SWAP11 :
     M.IsFunction.C "revm_bytecode::opcode::SWAP11" value_SWAP11.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SWAP11.
   
@@ -7871,6 +8182,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_SWAP12 :
     M.IsFunction.C "revm_bytecode::opcode::SWAP12" value_SWAP12.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SWAP12.
   
@@ -7879,6 +8191,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_SWAP13 :
     M.IsFunction.C "revm_bytecode::opcode::SWAP13" value_SWAP13.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SWAP13.
   
@@ -7887,6 +8200,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_SWAP14 :
     M.IsFunction.C "revm_bytecode::opcode::SWAP14" value_SWAP14.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SWAP14.
   
@@ -7895,6 +8209,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_SWAP15 :
     M.IsFunction.C "revm_bytecode::opcode::SWAP15" value_SWAP15.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SWAP15.
   
@@ -7903,6 +8218,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_SWAP16 :
     M.IsFunction.C "revm_bytecode::opcode::SWAP16" value_SWAP16.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SWAP16.
   
@@ -7911,6 +8227,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_LOG0 :
     M.IsFunction.C "revm_bytecode::opcode::LOG0" value_LOG0.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_LOG0.
   
@@ -7919,6 +8236,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_LOG1 :
     M.IsFunction.C "revm_bytecode::opcode::LOG1" value_LOG1.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_LOG1.
   
@@ -7927,6 +8245,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_LOG2 :
     M.IsFunction.C "revm_bytecode::opcode::LOG2" value_LOG2.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_LOG2.
   
@@ -7935,6 +8254,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_LOG3 :
     M.IsFunction.C "revm_bytecode::opcode::LOG3" value_LOG3.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_LOG3.
   
@@ -7943,6 +8263,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_LOG4 :
     M.IsFunction.C "revm_bytecode::opcode::LOG4" value_LOG4.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_LOG4.
   
@@ -7951,6 +8272,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_CREATE :
     M.IsFunction.C "revm_bytecode::opcode::CREATE" value_CREATE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_CREATE.
   
@@ -7959,6 +8281,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_CALL :
     M.IsFunction.C "revm_bytecode::opcode::CALL" value_CALL.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_CALL.
   
@@ -7967,6 +8290,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_CALLCODE :
     M.IsFunction.C "revm_bytecode::opcode::CALLCODE" value_CALLCODE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_CALLCODE.
   
@@ -7975,6 +8299,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_RETURN :
     M.IsFunction.C "revm_bytecode::opcode::RETURN" value_RETURN.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_RETURN.
   
@@ -7983,6 +8308,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_DELEGATECALL :
     M.IsFunction.C "revm_bytecode::opcode::DELEGATECALL" value_DELEGATECALL.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_DELEGATECALL.
   
@@ -7991,6 +8317,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_CREATE2 :
     M.IsFunction.C "revm_bytecode::opcode::CREATE2" value_CREATE2.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_CREATE2.
   
@@ -7999,6 +8326,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_STATICCALL :
     M.IsFunction.C "revm_bytecode::opcode::STATICCALL" value_STATICCALL.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_STATICCALL.
   
@@ -8007,6 +8335,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_REVERT :
     M.IsFunction.C "revm_bytecode::opcode::REVERT" value_REVERT.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_REVERT.
   
@@ -8015,6 +8344,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_INVALID :
     M.IsFunction.C "revm_bytecode::opcode::INVALID" value_INVALID.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_INVALID.
   
@@ -8023,6 +8353,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_SELFDESTRUCT :
     M.IsFunction.C "revm_bytecode::opcode::SELFDESTRUCT" value_SELFDESTRUCT.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SELFDESTRUCT.
   
@@ -20308,6 +20639,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_OPCODE_INFO :
     M.IsFunction.C "revm_bytecode::opcode::OPCODE_INFO" value_OPCODE_INFO.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_OPCODE_INFO.
   
@@ -22687,6 +23019,7 @@ Module opcode.
   
   Global Instance Instance_IsConstant_value_NAME_TO_OPCODE :
     M.IsFunction.C "revm_bytecode::opcode::NAME_TO_OPCODE" value_NAME_TO_OPCODE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_NAME_TO_OPCODE.
 End opcode.

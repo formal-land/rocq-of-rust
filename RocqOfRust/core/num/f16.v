@@ -7,6 +7,7 @@ Module f16.
       ltac:(M.monadic UnsupportedLiteral).
     
     Global Instance Instance_IsConstant_value_PI : M.IsFunction.C "core::f16::consts::PI" value_PI.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PI.
     
@@ -15,6 +16,7 @@ Module f16.
     
     Global Instance Instance_IsConstant_value_TAU :
       M.IsFunction.C "core::f16::consts::TAU" value_TAU.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_TAU.
     
@@ -23,6 +25,7 @@ Module f16.
     
     Global Instance Instance_IsConstant_value_PHI :
       M.IsFunction.C "core::f16::consts::PHI" value_PHI.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PHI.
     
@@ -31,6 +34,7 @@ Module f16.
     
     Global Instance Instance_IsConstant_value_EGAMMA :
       M.IsFunction.C "core::f16::consts::EGAMMA" value_EGAMMA.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_EGAMMA.
     
@@ -39,6 +43,7 @@ Module f16.
     
     Global Instance Instance_IsConstant_value_FRAC_PI_2 :
       M.IsFunction.C "core::f16::consts::FRAC_PI_2" value_FRAC_PI_2.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_FRAC_PI_2.
     
@@ -47,6 +52,7 @@ Module f16.
     
     Global Instance Instance_IsConstant_value_FRAC_PI_3 :
       M.IsFunction.C "core::f16::consts::FRAC_PI_3" value_FRAC_PI_3.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_FRAC_PI_3.
     
@@ -55,6 +61,7 @@ Module f16.
     
     Global Instance Instance_IsConstant_value_FRAC_PI_4 :
       M.IsFunction.C "core::f16::consts::FRAC_PI_4" value_FRAC_PI_4.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_FRAC_PI_4.
     
@@ -63,6 +70,7 @@ Module f16.
     
     Global Instance Instance_IsConstant_value_FRAC_PI_6 :
       M.IsFunction.C "core::f16::consts::FRAC_PI_6" value_FRAC_PI_6.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_FRAC_PI_6.
     
@@ -71,6 +79,7 @@ Module f16.
     
     Global Instance Instance_IsConstant_value_FRAC_PI_8 :
       M.IsFunction.C "core::f16::consts::FRAC_PI_8" value_FRAC_PI_8.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_FRAC_PI_8.
     
@@ -79,6 +88,7 @@ Module f16.
     
     Global Instance Instance_IsConstant_value_FRAC_1_PI :
       M.IsFunction.C "core::f16::consts::FRAC_1_PI" value_FRAC_1_PI.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_FRAC_1_PI.
     
@@ -87,6 +97,7 @@ Module f16.
     
     Global Instance Instance_IsConstant_value_FRAC_1_SQRT_PI :
       M.IsFunction.C "core::f16::consts::FRAC_1_SQRT_PI" value_FRAC_1_SQRT_PI.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_FRAC_1_SQRT_PI.
     
@@ -95,6 +106,7 @@ Module f16.
     
     Global Instance Instance_IsConstant_value_FRAC_1_SQRT_2PI :
       M.IsFunction.C "core::f16::consts::FRAC_1_SQRT_2PI" value_FRAC_1_SQRT_2PI.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_FRAC_1_SQRT_2PI.
     
@@ -103,6 +115,7 @@ Module f16.
     
     Global Instance Instance_IsConstant_value_FRAC_2_PI :
       M.IsFunction.C "core::f16::consts::FRAC_2_PI" value_FRAC_2_PI.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_FRAC_2_PI.
     
@@ -111,6 +124,7 @@ Module f16.
     
     Global Instance Instance_IsConstant_value_FRAC_2_SQRT_PI :
       M.IsFunction.C "core::f16::consts::FRAC_2_SQRT_PI" value_FRAC_2_SQRT_PI.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_FRAC_2_SQRT_PI.
     
@@ -119,6 +133,7 @@ Module f16.
     
     Global Instance Instance_IsConstant_value_SQRT_2 :
       M.IsFunction.C "core::f16::consts::SQRT_2" value_SQRT_2.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SQRT_2.
     
@@ -127,6 +142,7 @@ Module f16.
     
     Global Instance Instance_IsConstant_value_FRAC_1_SQRT_2 :
       M.IsFunction.C "core::f16::consts::FRAC_1_SQRT_2" value_FRAC_1_SQRT_2.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_FRAC_1_SQRT_2.
     
@@ -135,6 +151,7 @@ Module f16.
     
     Global Instance Instance_IsConstant_value_SQRT_3 :
       M.IsFunction.C "core::f16::consts::SQRT_3" value_SQRT_3.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SQRT_3.
     
@@ -143,6 +160,7 @@ Module f16.
     
     Global Instance Instance_IsConstant_value_FRAC_1_SQRT_3 :
       M.IsFunction.C "core::f16::consts::FRAC_1_SQRT_3" value_FRAC_1_SQRT_3.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_FRAC_1_SQRT_3.
     
@@ -150,6 +168,7 @@ Module f16.
       ltac:(M.monadic UnsupportedLiteral).
     
     Global Instance Instance_IsConstant_value_E : M.IsFunction.C "core::f16::consts::E" value_E.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_E.
     
@@ -158,6 +177,7 @@ Module f16.
     
     Global Instance Instance_IsConstant_value_LOG2_10 :
       M.IsFunction.C "core::f16::consts::LOG2_10" value_LOG2_10.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_LOG2_10.
     
@@ -166,6 +186,7 @@ Module f16.
     
     Global Instance Instance_IsConstant_value_LOG2_E :
       M.IsFunction.C "core::f16::consts::LOG2_E" value_LOG2_E.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_LOG2_E.
     
@@ -174,6 +195,7 @@ Module f16.
     
     Global Instance Instance_IsConstant_value_LOG10_2 :
       M.IsFunction.C "core::f16::consts::LOG10_2" value_LOG10_2.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_LOG10_2.
     
@@ -182,6 +204,7 @@ Module f16.
     
     Global Instance Instance_IsConstant_value_LOG10_E :
       M.IsFunction.C "core::f16::consts::LOG10_E" value_LOG10_E.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_LOG10_E.
     
@@ -190,6 +213,7 @@ Module f16.
     
     Global Instance Instance_IsConstant_value_LN_2 :
       M.IsFunction.C "core::f16::consts::LN_2" value_LN_2.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_LN_2.
     
@@ -198,6 +222,7 @@ Module f16.
     
     Global Instance Instance_IsConstant_value_LN_10 :
       M.IsFunction.C "core::f16::consts::LN_10" value_LN_10.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_LN_10.
   End consts.
@@ -212,6 +237,7 @@ Module f16.
     
     Global Instance AssociatedConstant_value_RADIX :
       M.IsAssociatedFunction.C Self "RADIX" value_RADIX.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_RADIX.
     
@@ -222,6 +248,7 @@ Module f16.
     
     Global Instance AssociatedConstant_value_MANTISSA_DIGITS :
       M.IsAssociatedFunction.C Self "MANTISSA_DIGITS" value_MANTISSA_DIGITS.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MANTISSA_DIGITS.
     
@@ -232,6 +259,7 @@ Module f16.
     
     Global Instance AssociatedConstant_value_DIGITS :
       M.IsAssociatedFunction.C Self "DIGITS" value_DIGITS.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_DIGITS.
     
@@ -242,6 +270,7 @@ Module f16.
     
     Global Instance AssociatedConstant_value_EPSILON :
       M.IsAssociatedFunction.C Self "EPSILON" value_EPSILON.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_EPSILON.
     
@@ -251,6 +280,7 @@ Module f16.
       ltac:(M.monadic UnsupportedLiteral).
     
     Global Instance AssociatedConstant_value_MIN : M.IsAssociatedFunction.C Self "MIN" value_MIN.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MIN.
     
@@ -261,6 +291,7 @@ Module f16.
     
     Global Instance AssociatedConstant_value_MIN_POSITIVE :
       M.IsAssociatedFunction.C Self "MIN_POSITIVE" value_MIN_POSITIVE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MIN_POSITIVE.
     
@@ -270,6 +301,7 @@ Module f16.
       ltac:(M.monadic UnsupportedLiteral).
     
     Global Instance AssociatedConstant_value_MAX : M.IsAssociatedFunction.C Self "MAX" value_MAX.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MAX.
     
@@ -280,6 +312,7 @@ Module f16.
     
     Global Instance AssociatedConstant_value_MIN_EXP :
       M.IsAssociatedFunction.C Self "MIN_EXP" value_MIN_EXP.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MIN_EXP.
     
@@ -290,6 +323,7 @@ Module f16.
     
     Global Instance AssociatedConstant_value_MAX_EXP :
       M.IsAssociatedFunction.C Self "MAX_EXP" value_MAX_EXP.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MAX_EXP.
     
@@ -300,6 +334,7 @@ Module f16.
     
     Global Instance AssociatedConstant_value_MIN_10_EXP :
       M.IsAssociatedFunction.C Self "MIN_10_EXP" value_MIN_10_EXP.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MIN_10_EXP.
     
@@ -310,6 +345,7 @@ Module f16.
     
     Global Instance AssociatedConstant_value_MAX_10_EXP :
       M.IsAssociatedFunction.C Self "MAX_10_EXP" value_MAX_10_EXP.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MAX_10_EXP.
     
@@ -327,6 +363,7 @@ Module f16.
         |))).
     
     Global Instance AssociatedConstant_value_NAN : M.IsAssociatedFunction.C Self "NAN" value_NAN.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_NAN.
     
@@ -345,6 +382,7 @@ Module f16.
     
     Global Instance AssociatedConstant_value_INFINITY :
       M.IsAssociatedFunction.C Self "INFINITY" value_INFINITY.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_INFINITY.
     
@@ -363,6 +401,7 @@ Module f16.
     
     Global Instance AssociatedConstant_value_NEG_INFINITY :
       M.IsAssociatedFunction.C Self "NEG_INFINITY" value_NEG_INFINITY.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_NEG_INFINITY.
     
@@ -373,6 +412,7 @@ Module f16.
     
     Global Instance AssociatedConstant_value_SIGN_MASK :
       M.IsAssociatedFunction.C Self "SIGN_MASK" value_SIGN_MASK.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SIGN_MASK.
     
@@ -383,6 +423,7 @@ Module f16.
     
     Global Instance AssociatedConstant_value_EXP_MASK :
       M.IsAssociatedFunction.C Self "EXP_MASK" value_EXP_MASK.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_EXP_MASK.
     
@@ -393,6 +434,7 @@ Module f16.
     
     Global Instance AssociatedConstant_value_MAN_MASK :
       M.IsAssociatedFunction.C Self "MAN_MASK" value_MAN_MASK.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MAN_MASK.
     
@@ -403,6 +445,7 @@ Module f16.
     
     Global Instance AssociatedConstant_value_TINY_BITS :
       M.IsAssociatedFunction.C Self "TINY_BITS" value_TINY_BITS.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_TINY_BITS.
     
@@ -424,6 +467,7 @@ Module f16.
     
     Global Instance AssociatedConstant_value_NEG_TINY_BITS :
       M.IsAssociatedFunction.C Self "NEG_TINY_BITS" value_NEG_TINY_BITS.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_NEG_TINY_BITS.
     
@@ -442,6 +486,7 @@ Module f16.
       end.
     
     Global Instance AssociatedFunction_is_nan : M.IsAssociatedFunction.C Self "is_nan" is_nan.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_nan.
     
@@ -486,6 +531,7 @@ Module f16.
     
     Global Instance AssociatedFunction_is_infinite :
       M.IsAssociatedFunction.C Self "is_infinite" is_infinite.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_infinite.
     
@@ -518,6 +564,7 @@ Module f16.
     
     Global Instance AssociatedFunction_is_finite :
       M.IsAssociatedFunction.C Self "is_finite" is_finite.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_finite.
     
@@ -554,6 +601,7 @@ Module f16.
     
     Global Instance AssociatedFunction_is_subnormal :
       M.IsAssociatedFunction.C Self "is_subnormal" is_subnormal.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_subnormal.
     
@@ -590,6 +638,7 @@ Module f16.
     
     Global Instance AssociatedFunction_is_normal :
       M.IsAssociatedFunction.C Self "is_normal" is_normal.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_normal.
     
@@ -708,6 +757,7 @@ Module f16.
       end.
     
     Global Instance AssociatedFunction_classify : M.IsAssociatedFunction.C Self "classify" classify.
+    Proof.
     Admitted.
     Global Typeclasses Opaque classify.
     
@@ -737,6 +787,7 @@ Module f16.
     
     Global Instance AssociatedFunction_is_sign_positive :
       M.IsAssociatedFunction.C Self "is_sign_positive" is_sign_positive.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_sign_positive.
     
@@ -781,6 +832,7 @@ Module f16.
     
     Global Instance AssociatedFunction_is_sign_negative :
       M.IsAssociatedFunction.C Self "is_sign_negative" is_sign_negative.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_sign_negative.
     
@@ -959,6 +1011,7 @@ Module f16.
       end.
     
     Global Instance AssociatedFunction_next_up : M.IsAssociatedFunction.C Self "next_up" next_up.
+    Proof.
     Admitted.
     Global Typeclasses Opaque next_up.
     
@@ -1142,6 +1195,7 @@ Module f16.
     
     Global Instance AssociatedFunction_next_down :
       M.IsAssociatedFunction.C Self "next_down" next_down.
+    Proof.
     Admitted.
     Global Typeclasses Opaque next_down.
     
@@ -1164,6 +1218,7 @@ Module f16.
       end.
     
     Global Instance AssociatedFunction_recip : M.IsAssociatedFunction.C Self "recip" recip.
+    Proof.
     Admitted.
     Global Typeclasses Opaque recip.
     
@@ -1193,6 +1248,7 @@ Module f16.
     
     Global Instance AssociatedFunction_to_degrees :
       M.IsAssociatedFunction.C Self "to_degrees" to_degrees.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_degrees.
     
@@ -1222,6 +1278,7 @@ Module f16.
     
     Global Instance AssociatedFunction_to_radians :
       M.IsAssociatedFunction.C Self "to_radians" to_radians.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_radians.
     
@@ -1245,6 +1302,7 @@ Module f16.
       end.
     
     Global Instance AssociatedFunction_max : M.IsAssociatedFunction.C Self "max" max.
+    Proof.
     Admitted.
     Global Typeclasses Opaque max.
     
@@ -1268,6 +1326,7 @@ Module f16.
       end.
     
     Global Instance AssociatedFunction_min : M.IsAssociatedFunction.C Self "min" min.
+    Proof.
     Admitted.
     Global Typeclasses Opaque min.
     
@@ -1291,6 +1350,7 @@ Module f16.
       end.
     
     Global Instance AssociatedFunction_maximum : M.IsAssociatedFunction.C Self "maximum" maximum.
+    Proof.
     Admitted.
     Global Typeclasses Opaque maximum.
     
@@ -1314,6 +1374,7 @@ Module f16.
       end.
     
     Global Instance AssociatedFunction_minimum : M.IsAssociatedFunction.C Self "minimum" minimum.
+    Proof.
     Admitted.
     Global Typeclasses Opaque minimum.
     
@@ -1445,6 +1506,7 @@ Module f16.
       end.
     
     Global Instance AssociatedFunction_midpoint : M.IsAssociatedFunction.C Self "midpoint" midpoint.
+    Proof.
     Admitted.
     Global Typeclasses Opaque midpoint.
     
@@ -1481,6 +1543,7 @@ Module f16.
     
     Global Instance AssociatedFunction_to_int_unchecked :
       M.IsAssociatedFunction.C Self "to_int_unchecked" to_int_unchecked.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_int_unchecked.
     
@@ -1508,6 +1571,7 @@ Module f16.
       end.
     
     Global Instance AssociatedFunction_to_bits : M.IsAssociatedFunction.C Self "to_bits" to_bits.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_bits.
     
@@ -1537,6 +1601,7 @@ Module f16.
     
     Global Instance AssociatedFunction_from_bits :
       M.IsAssociatedFunction.C Self "from_bits" from_bits.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_bits.
     
@@ -1566,6 +1631,7 @@ Module f16.
     
     Global Instance AssociatedFunction_to_be_bytes :
       M.IsAssociatedFunction.C Self "to_be_bytes" to_be_bytes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_be_bytes.
     
@@ -1595,6 +1661,7 @@ Module f16.
     
     Global Instance AssociatedFunction_to_le_bytes :
       M.IsAssociatedFunction.C Self "to_le_bytes" to_le_bytes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_le_bytes.
     
@@ -1624,6 +1691,7 @@ Module f16.
     
     Global Instance AssociatedFunction_to_ne_bytes :
       M.IsAssociatedFunction.C Self "to_ne_bytes" to_ne_bytes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_ne_bytes.
     
@@ -1657,6 +1725,7 @@ Module f16.
     
     Global Instance AssociatedFunction_from_be_bytes :
       M.IsAssociatedFunction.C Self "from_be_bytes" from_be_bytes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_be_bytes.
     
@@ -1690,6 +1759,7 @@ Module f16.
     
     Global Instance AssociatedFunction_from_le_bytes :
       M.IsAssociatedFunction.C Self "from_le_bytes" from_le_bytes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_le_bytes.
     
@@ -1723,6 +1793,7 @@ Module f16.
     
     Global Instance AssociatedFunction_from_ne_bytes :
       M.IsAssociatedFunction.C Self "from_ne_bytes" from_ne_bytes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_ne_bytes.
     
@@ -1858,6 +1929,7 @@ Module f16.
     
     Global Instance AssociatedFunction_total_cmp :
       M.IsAssociatedFunction.C Self "total_cmp" total_cmp.
+    Proof.
     Admitted.
     Global Typeclasses Opaque total_cmp.
     
@@ -1981,6 +2053,7 @@ Module f16.
       end.
     
     Global Instance AssociatedFunction_clamp : M.IsAssociatedFunction.C Self "clamp" clamp.
+    Proof.
     Admitted.
     Global Typeclasses Opaque clamp.
     
@@ -2066,6 +2139,7 @@ Module f16.
     
     Global Instance AssociatedFunction_clamp_magnitude :
       M.IsAssociatedFunction.C Self "clamp_magnitude" clamp_magnitude.
+    Proof.
     Admitted.
     Global Typeclasses Opaque clamp_magnitude.
     
@@ -2112,6 +2186,7 @@ Module f16.
       end.
     
     Global Instance AssociatedFunction_abs : M.IsAssociatedFunction.C Self "abs" abs.
+    Proof.
     Admitted.
     Global Typeclasses Opaque abs.
     
@@ -2155,6 +2230,7 @@ Module f16.
       end.
     
     Global Instance AssociatedFunction_signum : M.IsAssociatedFunction.C Self "signum" signum.
+    Proof.
     Admitted.
     Global Typeclasses Opaque signum.
     
@@ -2178,6 +2254,7 @@ Module f16.
       end.
     
     Global Instance AssociatedFunction_copysign : M.IsAssociatedFunction.C Self "copysign" copysign.
+    Proof.
     Admitted.
     Global Typeclasses Opaque copysign.
     
@@ -2202,6 +2279,7 @@ Module f16.
     
     Global Instance AssociatedFunction_algebraic_add :
       M.IsAssociatedFunction.C Self "algebraic_add" algebraic_add.
+    Proof.
     Admitted.
     Global Typeclasses Opaque algebraic_add.
     
@@ -2226,6 +2304,7 @@ Module f16.
     
     Global Instance AssociatedFunction_algebraic_sub :
       M.IsAssociatedFunction.C Self "algebraic_sub" algebraic_sub.
+    Proof.
     Admitted.
     Global Typeclasses Opaque algebraic_sub.
     
@@ -2250,6 +2329,7 @@ Module f16.
     
     Global Instance AssociatedFunction_algebraic_mul :
       M.IsAssociatedFunction.C Self "algebraic_mul" algebraic_mul.
+    Proof.
     Admitted.
     Global Typeclasses Opaque algebraic_mul.
     
@@ -2274,6 +2354,7 @@ Module f16.
     
     Global Instance AssociatedFunction_algebraic_div :
       M.IsAssociatedFunction.C Self "algebraic_div" algebraic_div.
+    Proof.
     Admitted.
     Global Typeclasses Opaque algebraic_div.
     
@@ -2298,6 +2379,7 @@ Module f16.
     
     Global Instance AssociatedFunction_algebraic_rem :
       M.IsAssociatedFunction.C Self "algebraic_rem" algebraic_rem.
+    Proof.
     Admitted.
     Global Typeclasses Opaque algebraic_rem.
     (*
@@ -2319,6 +2401,7 @@ Module f16.
       end.
     
     Global Instance AssociatedFunction_floor : M.IsAssociatedFunction.C Self "floor" floor.
+    Proof.
     Admitted.
     Global Typeclasses Opaque floor.
     
@@ -2341,6 +2424,7 @@ Module f16.
       end.
     
     Global Instance AssociatedFunction_ceil : M.IsAssociatedFunction.C Self "ceil" ceil.
+    Proof.
     Admitted.
     Global Typeclasses Opaque ceil.
     
@@ -2363,6 +2447,7 @@ Module f16.
       end.
     
     Global Instance AssociatedFunction_round : M.IsAssociatedFunction.C Self "round" round.
+    Proof.
     Admitted.
     Global Typeclasses Opaque round.
     
@@ -2386,6 +2471,7 @@ Module f16.
     
     Global Instance AssociatedFunction_round_ties_even :
       M.IsAssociatedFunction.C Self "round_ties_even" round_ties_even.
+    Proof.
     Admitted.
     Global Typeclasses Opaque round_ties_even.
     
@@ -2408,6 +2494,7 @@ Module f16.
       end.
     
     Global Instance AssociatedFunction_trunc : M.IsAssociatedFunction.C Self "trunc" trunc.
+    Proof.
     Admitted.
     Global Typeclasses Opaque trunc.
     
@@ -2437,6 +2524,7 @@ Module f16.
       end.
     
     Global Instance AssociatedFunction_fract : M.IsAssociatedFunction.C Self "fract" fract.
+    Proof.
     Admitted.
     Global Typeclasses Opaque fract.
     
@@ -2461,6 +2549,7 @@ Module f16.
       end.
     
     Global Instance AssociatedFunction_mul_add : M.IsAssociatedFunction.C Self "mul_add" mul_add.
+    Proof.
     Admitted.
     Global Typeclasses Opaque mul_add.
     
@@ -2570,6 +2659,7 @@ Module f16.
     
     Global Instance AssociatedFunction_div_euclid :
       M.IsAssociatedFunction.C Self "div_euclid" div_euclid.
+    Proof.
     Admitted.
     Global Typeclasses Opaque div_euclid.
     
@@ -2632,6 +2722,7 @@ Module f16.
     
     Global Instance AssociatedFunction_rem_euclid :
       M.IsAssociatedFunction.C Self "rem_euclid" rem_euclid.
+    Proof.
     Admitted.
     Global Typeclasses Opaque rem_euclid.
     
@@ -2655,6 +2746,7 @@ Module f16.
       end.
     
     Global Instance AssociatedFunction_powi : M.IsAssociatedFunction.C Self "powi" powi.
+    Proof.
     Admitted.
     Global Typeclasses Opaque powi.
     
@@ -2677,6 +2769,7 @@ Module f16.
       end.
     
     Global Instance AssociatedFunction_sqrt : M.IsAssociatedFunction.C Self "sqrt" sqrt.
+    Proof.
     Admitted.
     Global Typeclasses Opaque sqrt.
     
@@ -2701,6 +2794,7 @@ Module f16.
       end.
     
     Global Instance AssociatedFunction_cbrt : M.IsAssociatedFunction.C Self "cbrt" cbrt.
+    Proof.
     Admitted.
     Global Typeclasses Opaque cbrt.
   End Impl_f16.

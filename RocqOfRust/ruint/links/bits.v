@@ -15,6 +15,7 @@ Module Impl_Uint.
     Run.Trait
       (bits.Impl_ruint_Uint_BITS_LIMBS.bit (φ BITS) (φ LIMBS)) [] [] [ φ self; φ index ]
       bool.
+  Proof.
   Admitted.
   Global Opaque run_bit.
 
@@ -26,6 +27,7 @@ Module Impl_Uint.
     Run.Trait
       (bits.Impl_ruint_Uint_BITS_LIMBS.byte (φ BITS) (φ LIMBS)) [] [] [ φ self; φ index ]
       u8.
+  Proof.
   Admitted.
   Global Opaque run_byte.
 
@@ -36,6 +38,7 @@ Module Impl_Uint.
     Run.Trait
       (bits.Impl_ruint_Uint_BITS_LIMBS.leading_zeros (φ BITS) (φ LIMBS)) [] [] [ φ self ]
       usize.
+  Proof.
   Admitted.
   Global Opaque run_leading_zeros.
 
@@ -47,6 +50,7 @@ Module Impl_Uint.
     Run.Trait
       (bits.Impl_ruint_Uint_BITS_LIMBS.arithmetic_shr (φ BITS) (φ LIMBS)) [] [] [ φ self; φ rhs ]
       (Self BITS LIMBS).
+  Proof.
   Admitted.
   Global Opaque run_arithmetic_shr.
 End Impl_Uint.
@@ -58,6 +62,7 @@ Module Impl_BitAnd_for_Uint.
 
   Instance run (BITS LIMBS : usize) :
     BitAnd.Run (Self BITS LIMBS) (Self BITS LIMBS) (Self BITS LIMBS).
+  Proof.
   Admitted.
 End Impl_BitAnd_for_Uint.
 Export (hints) Impl_BitAnd_for_Uint.
@@ -68,6 +73,7 @@ Module Impl_BitOr_for_Uint.
 
   Instance run (BITS LIMBS : usize) :
     BitOr.Run (Self BITS LIMBS) (Self BITS LIMBS) (Self BITS LIMBS).
+  Proof.
   Admitted.
 End Impl_BitOr_for_Uint.
 Export (hints) Impl_BitOr_for_Uint.
@@ -78,6 +84,7 @@ Module Impl_BitXor_for_Uint.
 
   Instance run (BITS LIMBS : usize) :
     BitXor.Run (Self BITS LIMBS) (Self BITS LIMBS) (Self BITS LIMBS).
+  Proof.
   Admitted.
 End Impl_BitXor_for_Uint.
 Export (hints) Impl_BitXor_for_Uint.
@@ -88,6 +95,7 @@ Module Impl_Shl_for_Uint.
 
   Instance run (BITS LIMBS : usize) :
     Shl.Run (Self BITS LIMBS) usize (Self BITS LIMBS).
+  Proof.
   Admitted.
 End Impl_Shl_for_Uint.
 Export (hints) Impl_Shl_for_Uint.
@@ -98,6 +106,7 @@ Module Impl_Shr_for_Uint.
 
   Instance run (BITS LIMBS : usize) :
     Shr.Run (Self BITS LIMBS) usize (Self BITS LIMBS).
+  Proof.
   Admitted.
 End Impl_Shr_for_Uint.
 Export (hints) Impl_Shr_for_Uint.
@@ -108,6 +117,7 @@ Module Impl_Not_for_Uint.
 
   Instance run (BITS LIMBS : usize) :
     Not.Run (Self BITS LIMBS) (Self BITS LIMBS).
+  Proof.
   Admitted.
 End Impl_Not_for_Uint.
 Export (hints) Impl_Not_for_Uint.

@@ -115,15 +115,20 @@ Module processor.
                       (let γ := M.deref (| M.read (| γ |) |) in
                       let γ1_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
                       let γ1_rest := M.SubPointer.get_slice_rest (| γ, 1, 0 |) in
+                      let _ := M.read (| γ1_0 |) in
                       let has_amount :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
+                      let _ := M.read (| γ1_rest |) in
                       let maybe_amount :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                          γ1_rest
+                          M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                         |) in
                       M.read (|
                         let~ maybe_amount :
@@ -409,30 +414,34 @@ Module processor.
                                   let γ1_1 := M.SubPointer.get_slice_index (| γ, 1 |) in
                                   let γ1_2 := M.SubPointer.get_slice_index (| γ, 2 |) in
                                   let γ1_rest := M.SubPointer.get_slice_rest (| γ, 3, 0 |) in
+                                  let _ := M.read (| γ1_0 |) in
                                   let source_account_info :=
                                     M.alloc (|
                                       Ty.apply
                                         (Ty.path "&")
                                         []
                                         [ Ty.path "pinocchio::account_info::AccountInfo" ],
-                                      γ1_0
+                                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                     |) in
+                                  let _ := M.read (| γ1_1 |) in
                                   let destination_account_info :=
                                     M.alloc (|
                                       Ty.apply
                                         (Ty.path "&")
                                         []
                                         [ Ty.path "pinocchio::account_info::AccountInfo" ],
-                                      γ1_1
+                                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                                     |) in
+                                  let _ := M.read (| γ1_2 |) in
                                   let authority_info :=
                                     M.alloc (|
                                       Ty.apply
                                         (Ty.path "&")
                                         []
                                         [ Ty.path "pinocchio::account_info::AccountInfo" ],
-                                      γ1_2
+                                      M.borrow (| Pointer.Kind.Ref, γ1_2 |)
                                     |) in
+                                  let _ := M.read (| γ1_rest |) in
                                   let remaining :=
                                     M.alloc (|
                                       Ty.apply
@@ -444,7 +453,7 @@ Module processor.
                                             []
                                             [ Ty.path "pinocchio::account_info::AccountInfo" ]
                                         ],
-                                      γ1_rest
+                                      M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                     |) in
                                   M.read (|
                                     let~ source_account :
@@ -1541,6 +1550,7 @@ Module processor.
       M.IsFunction.C
         "pinocchio_token_program::processor::unwrap_lamports::process_unwrap_lamports"
         process_unwrap_lamports.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_unwrap_lamports.
   End unwrap_lamports.

@@ -146,6 +146,7 @@ Module Impl_basic_contract_caller_OtherContract.
     end.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new.
   
@@ -191,6 +192,7 @@ Module Impl_basic_contract_caller_OtherContract.
     end.
   
   Global Instance AssociatedFunction_flip : M.IsAssociatedFunction.C Self "flip" flip.
+  Proof.
   Admitted.
   Global Typeclasses Opaque flip.
   
@@ -219,6 +221,7 @@ Module Impl_basic_contract_caller_OtherContract.
     end.
   
   Global Instance AssociatedFunction_get : M.IsAssociatedFunction.C Self "get" get.
+  Proof.
   Admitted.
   Global Typeclasses Opaque get.
 End Impl_basic_contract_caller_OtherContract.
@@ -277,6 +280,7 @@ Module Impl_basic_contract_caller_BasicContractCaller.
     end.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new.
   
@@ -344,6 +348,7 @@ Module Impl_basic_contract_caller_BasicContractCaller.
   
   Global Instance AssociatedFunction_flip_and_get :
     M.IsAssociatedFunction.C Self "flip_and_get" flip_and_get.
+  Proof.
   Admitted.
   Global Typeclasses Opaque flip_and_get.
 End Impl_basic_contract_caller_BasicContractCaller.

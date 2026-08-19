@@ -10,6 +10,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_MIN_19DIGIT_INT :
         M.IsFunction.C "core::num::dec2flt::parse::MIN_19DIGIT_INT" value_MIN_19DIGIT_INT.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_MIN_19DIGIT_INT.
       
@@ -142,6 +143,7 @@ Module num.
       
       Global Instance Instance_IsFunction_parse_8digits :
         M.IsFunction.C "core::num::dec2flt::parse::parse_8digits" parse_8digits.
+      Proof.
       Admitted.
       Global Typeclasses Opaque parse_8digits.
       
@@ -152,6 +154,7 @@ Module num.
         
         Global Instance Instance_IsConstant_value_MASK :
           M.IsFunction.C "core::num::dec2flt::parse::parse_8digits::MASK" value_MASK.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_MASK.
         
@@ -161,6 +164,7 @@ Module num.
         
         Global Instance Instance_IsConstant_value_MUL1 :
           M.IsFunction.C "core::num::dec2flt::parse::parse_8digits::MUL1" value_MUL1.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_MUL1.
         
@@ -170,6 +174,7 @@ Module num.
         
         Global Instance Instance_IsConstant_value_MUL2 :
           M.IsFunction.C "core::num::dec2flt::parse::parse_8digits::MUL2" value_MUL2.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_MUL2.
       End parse_8digits.
@@ -506,6 +511,7 @@ Module num.
       
       Global Instance Instance_IsFunction_try_parse_digits :
         M.IsFunction.C "core::num::dec2flt::parse::try_parse_digits" try_parse_digits.
+      Proof.
       Admitted.
       Global Typeclasses Opaque try_parse_digits.
       
@@ -777,6 +783,7 @@ Module num.
       
       Global Instance Instance_IsFunction_try_parse_19digits :
         M.IsFunction.C "core::num::dec2flt::parse::try_parse_19digits" try_parse_19digits.
+      Proof.
       Admitted.
       Global Typeclasses Opaque try_parse_19digits.
       
@@ -1178,6 +1185,7 @@ Module num.
       
       Global Instance Instance_IsFunction_parse_scientific :
         M.IsFunction.C "core::num::dec2flt::parse::parse_scientific" parse_scientific.
+      Proof.
       Admitted.
       Global Typeclasses Opaque parse_scientific.
       
@@ -2432,6 +2440,7 @@ Module num.
       
       Global Instance Instance_IsFunction_parse_partial_number :
         M.IsFunction.C "core::num::dec2flt::parse::parse_partial_number" parse_partial_number.
+      Proof.
       Admitted.
       Global Typeclasses Opaque parse_partial_number.
       
@@ -2582,6 +2591,7 @@ Module num.
       
       Global Instance Instance_IsFunction_parse_number :
         M.IsFunction.C "core::num::dec2flt::parse::parse_number" parse_number.
+      Proof.
       Admitted.
       Global Typeclasses Opaque parse_number.
       
@@ -2948,6 +2958,7 @@ Module num.
       
       Global Instance Instance_IsFunction_parse_inf_nan :
         M.IsFunction.C "core::num::dec2flt::parse::parse_inf_nan" parse_inf_nan.
+      Proof.
       Admitted.
       Global Typeclasses Opaque parse_inf_nan.
       
@@ -2957,6 +2968,7 @@ Module num.
         
         Global Instance Instance_IsConstant_value_INF_3 :
           M.IsFunction.C "core::num::dec2flt::parse::parse_inf_nan::INF_3" value_INF_3.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_INF_3.
         
@@ -2966,6 +2978,7 @@ Module num.
         
         Global Instance Instance_IsConstant_value_INF_8 :
           M.IsFunction.C "core::num::dec2flt::parse::parse_inf_nan::INF_8" value_INF_8.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_INF_8.
         
@@ -2974,6 +2987,7 @@ Module num.
         
         Global Instance Instance_IsConstant_value_NAN :
           M.IsFunction.C "core::num::dec2flt::parse::parse_inf_nan::NAN" value_NAN.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_NAN.
       End parse_inf_nan.

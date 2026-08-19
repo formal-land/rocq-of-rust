@@ -2431,6 +2431,7 @@ Module tx.
     
     Global Instance AssociatedFunction_new_bench :
       M.IsAssociatedFunction.C Self "new_bench" new_bench.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_bench.
     
@@ -2916,6 +2917,7 @@ Module tx.
     
     Global Instance AssociatedFunction_derive_tx_type :
       M.IsAssociatedFunction.C Self "derive_tx_type" derive_tx_type.
+    Proof.
     Admitted.
     Global Typeclasses Opaque derive_tx_type.
     
@@ -3109,6 +3111,7 @@ Module tx.
     
     Global Instance AssociatedFunction_set_signed_authorization :
       M.IsAssociatedFunction.C Self "set_signed_authorization" set_signed_authorization.
+    Proof.
     Admitted.
     Global Typeclasses Opaque set_signed_authorization.
     
@@ -3306,6 +3309,7 @@ Module tx.
     
     Global Instance AssociatedFunction_set_recovered_authorization :
       M.IsAssociatedFunction.C Self "set_recovered_authorization" set_recovered_authorization.
+    Proof.
     Admitted.
     Global Typeclasses Opaque set_recovered_authorization.
     (*
@@ -3326,6 +3330,7 @@ Module tx.
       end.
     
     Global Instance AssociatedFunction_builder : M.IsAssociatedFunction.C Self "builder" builder.
+    Proof.
     Admitted.
     Global Typeclasses Opaque builder.
     
@@ -3359,6 +3364,7 @@ Module tx.
     
     Global Instance AssociatedFunction_builder_for_bench :
       M.IsAssociatedFunction.C Self "builder_for_bench" builder_for_bench.
+    Proof.
     Admitted.
     Global Typeclasses Opaque builder_for_bench.
     
@@ -3750,6 +3756,7 @@ Module tx.
       end.
     
     Global Instance AssociatedFunction_modify : M.IsAssociatedFunction.C Self "modify" modify.
+    Proof.
     Admitted.
     Global Typeclasses Opaque modify.
   End Impl_revm_context_tx_TxEnv.
@@ -5569,6 +5576,7 @@ Module tx.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -5601,6 +5609,7 @@ Module tx.
       end.
     
     Global Instance AssociatedFunction_tx_type : M.IsAssociatedFunction.C Self "tx_type" tx_type.
+    Proof.
     Admitted.
     Global Typeclasses Opaque tx_type.
     
@@ -5630,6 +5639,7 @@ Module tx.
     
     Global Instance AssociatedFunction_get_tx_type :
       M.IsAssociatedFunction.C Self "get_tx_type" get_tx_type.
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_tx_type.
     
@@ -5661,6 +5671,7 @@ Module tx.
       end.
     
     Global Instance AssociatedFunction_caller : M.IsAssociatedFunction.C Self "caller" caller.
+    Proof.
     Admitted.
     Global Typeclasses Opaque caller.
     
@@ -5693,6 +5704,7 @@ Module tx.
     
     Global Instance AssociatedFunction_gas_limit :
       M.IsAssociatedFunction.C Self "gas_limit" gas_limit.
+    Proof.
     Admitted.
     Global Typeclasses Opaque gas_limit.
     
@@ -5725,6 +5737,7 @@ Module tx.
     
     Global Instance AssociatedFunction_max_fee_per_gas :
       M.IsAssociatedFunction.C Self "max_fee_per_gas" max_fee_per_gas.
+    Proof.
     Admitted.
     Global Typeclasses Opaque max_fee_per_gas.
     
@@ -5757,6 +5770,7 @@ Module tx.
     
     Global Instance AssociatedFunction_gas_price :
       M.IsAssociatedFunction.C Self "gas_price" gas_price.
+    Proof.
     Admitted.
     Global Typeclasses Opaque gas_price.
     
@@ -5788,6 +5802,7 @@ Module tx.
       end.
     
     Global Instance AssociatedFunction_kind : M.IsAssociatedFunction.C Self "kind" kind.
+    Proof.
     Admitted.
     Global Typeclasses Opaque kind.
     
@@ -5823,6 +5838,7 @@ Module tx.
       end.
     
     Global Instance AssociatedFunction_call : M.IsAssociatedFunction.C Self "call" call.
+    Proof.
     Admitted.
     Global Typeclasses Opaque call.
     
@@ -5853,6 +5869,7 @@ Module tx.
       end.
     
     Global Instance AssociatedFunction_create : M.IsAssociatedFunction.C Self "create" create.
+    Proof.
     Admitted.
     Global Typeclasses Opaque create.
     
@@ -5881,6 +5898,7 @@ Module tx.
       end.
     
     Global Instance AssociatedFunction_to : M.IsAssociatedFunction.C Self "to" to.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to.
     
@@ -5919,6 +5937,7 @@ Module tx.
       end.
     
     Global Instance AssociatedFunction_value : M.IsAssociatedFunction.C Self "value" value.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value.
     
@@ -5950,6 +5969,7 @@ Module tx.
       end.
     
     Global Instance AssociatedFunction_data : M.IsAssociatedFunction.C Self "data" data.
+    Proof.
     Admitted.
     Global Typeclasses Opaque data.
     
@@ -5981,6 +6001,7 @@ Module tx.
       end.
     
     Global Instance AssociatedFunction_nonce : M.IsAssociatedFunction.C Self "nonce" nonce.
+    Proof.
     Admitted.
     Global Typeclasses Opaque nonce.
     
@@ -6016,6 +6037,7 @@ Module tx.
       end.
     
     Global Instance AssociatedFunction_chain_id : M.IsAssociatedFunction.C Self "chain_id" chain_id.
+    Proof.
     Admitted.
     Global Typeclasses Opaque chain_id.
     
@@ -6048,6 +6070,7 @@ Module tx.
     
     Global Instance AssociatedFunction_access_list :
       M.IsAssociatedFunction.C Self "access_list" access_list.
+    Proof.
     Admitted.
     Global Typeclasses Opaque access_list.
     
@@ -6084,6 +6107,7 @@ Module tx.
     
     Global Instance AssociatedFunction_gas_priority_fee :
       M.IsAssociatedFunction.C Self "gas_priority_fee" gas_priority_fee.
+    Proof.
     Admitted.
     Global Typeclasses Opaque gas_priority_fee.
     
@@ -6129,6 +6153,7 @@ Module tx.
     
     Global Instance AssociatedFunction_blob_hashes :
       M.IsAssociatedFunction.C Self "blob_hashes" blob_hashes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque blob_hashes.
     
@@ -6161,6 +6186,7 @@ Module tx.
     
     Global Instance AssociatedFunction_max_fee_per_blob_gas :
       M.IsAssociatedFunction.C Self "max_fee_per_blob_gas" max_fee_per_blob_gas.
+    Proof.
     Admitted.
     Global Typeclasses Opaque max_fee_per_blob_gas.
     
@@ -6212,6 +6238,7 @@ Module tx.
     
     Global Instance AssociatedFunction_authorization_list :
       M.IsAssociatedFunction.C Self "authorization_list" authorization_list.
+    Proof.
     Admitted.
     Global Typeclasses Opaque authorization_list.
     
@@ -6406,6 +6433,7 @@ Module tx.
     
     Global Instance AssociatedFunction_authorization_list_signed :
       M.IsAssociatedFunction.C Self "authorization_list_signed" authorization_list_signed.
+    Proof.
     Admitted.
     Global Typeclasses Opaque authorization_list_signed.
     
@@ -6600,6 +6628,7 @@ Module tx.
     
     Global Instance AssociatedFunction_authorization_list_recovered :
       M.IsAssociatedFunction.C Self "authorization_list_recovered" authorization_list_recovered.
+    Proof.
     Admitted.
     Global Typeclasses Opaque authorization_list_recovered.
     
@@ -8093,6 +8122,7 @@ Module tx.
     
     Global Instance AssociatedFunction_build_fill :
       M.IsAssociatedFunction.C Self "build_fill" build_fill.
+    Proof.
     Admitted.
     Global Typeclasses Opaque build_fill.
     
@@ -9082,6 +9112,7 @@ Module tx.
       end.
     
     Global Instance AssociatedFunction_build : M.IsAssociatedFunction.C Self "build" build.
+    Proof.
     Admitted.
     Global Typeclasses Opaque build.
   End Impl_revm_context_tx_TxEnvBuilder.
@@ -9213,10 +9244,11 @@ Module tx.
                       "revm_context::tx::TxEnvBuildError::DeriveErr",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "revm_context::tx::DeriveTxTypeError" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -9440,13 +9472,14 @@ Module tx.
                           "revm_context::tx::TxEnvBuildError::DeriveErr",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "revm_context::tx::DeriveTxTypeError" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -9563,13 +9596,14 @@ Module tx.
                               "revm_context::tx::TxEnvBuildError::DeriveErr",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "revm_context::tx::DeriveTxTypeError" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -9578,13 +9612,14 @@ Module tx.
                               "revm_context::tx::TxEnvBuildError::DeriveErr",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "revm_context::tx::DeriveTxTypeError" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -9726,13 +9761,14 @@ Module tx.
                           "revm_context::tx::TxEnvBuildError::DeriveErr",
                           0
                         |) in
+                      let _ := M.read (| γ2_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "revm_context::tx::DeriveTxTypeError" ],
-                          γ2_0
+                          M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                         |) in
                       let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                       let γ2_0 :=
@@ -9741,13 +9777,14 @@ Module tx.
                           "revm_context::tx::TxEnvBuildError::DeriveErr",
                           0
                         |) in
+                      let _ := M.read (| γ2_0 |) in
                       let __arg1_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "revm_context::tx::DeriveTxTypeError" ],
-                          γ2_0
+                          M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -9911,13 +9948,14 @@ Module tx.
                                   "revm_context::tx::TxEnvBuildError::DeriveErr",
                                   0
                                 |) in
+                              let _ := M.read (| γ2_0 |) in
                               let __self_0 :=
                                 M.alloc (|
                                   Ty.apply
                                     (Ty.path "&")
                                     []
                                     [ Ty.path "revm_context::tx::DeriveTxTypeError" ],
-                                  γ2_0
+                                  M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                 |) in
                               let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                               let γ2_0 :=
@@ -9926,13 +9964,14 @@ Module tx.
                                   "revm_context::tx::TxEnvBuildError::DeriveErr",
                                   0
                                 |) in
+                              let _ := M.read (| γ2_0 |) in
                               let __arg1_0 :=
                                 M.alloc (|
                                   Ty.apply
                                     (Ty.path "&")
                                     []
                                     [ Ty.path "revm_context::tx::DeriveTxTypeError" ],
-                                  γ2_0
+                                  M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                 |) in
                               M.call_closure (|
                                 Ty.path "core::cmp::Ordering",

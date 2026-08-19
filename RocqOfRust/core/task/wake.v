@@ -249,6 +249,7 @@ Module task.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -299,6 +300,7 @@ Module task.
       
       Global Instance AssociatedConstant_value_NOOP :
         M.IsAssociatedFunction.C Self "NOOP" value_NOOP.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_NOOP.
     End Impl_core_task_wake_RawWaker.
@@ -762,6 +764,7 @@ Module task.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
     End Impl_core_task_wake_RawWakerVTable.
@@ -821,6 +824,7 @@ Module task.
                         "core::task::wake::ExtData::Some",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
                       M.alloc (|
                         Ty.apply
@@ -832,7 +836,7 @@ Module task.
                               []
                               [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -888,7 +892,12 @@ Module task.
                         "core::task::wake::ExtData::None",
                         0
                       |) in
-                    let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.tuple [] ], γ1_0 |) in
+                    let _ := M.read (| γ1_0 |) in
+                    let __self_0 :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.tuple [] ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     M.call_closure (|
                       Ty.apply
                         (Ty.path "core::result::Result")
@@ -1012,6 +1021,7 @@ Module task.
       
       Global Instance AssociatedFunction_from_waker :
         M.IsAssociatedFunction.C Self "from_waker" from_waker.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_waker.
       
@@ -1050,6 +1060,7 @@ Module task.
         end.
       
       Global Instance AssociatedFunction_waker : M.IsAssociatedFunction.C Self "waker" waker.
+      Proof.
       Admitted.
       Global Typeclasses Opaque waker.
       
@@ -1089,6 +1100,7 @@ Module task.
       
       Global Instance AssociatedFunction_local_waker :
         M.IsAssociatedFunction.C Self "local_waker" local_waker.
+      Proof.
       Admitted.
       Global Typeclasses Opaque local_waker.
       
@@ -1164,6 +1176,7 @@ Module task.
                                         "core::task::wake::ExtData::Some",
                                         0
                                       |) in
+                                    let _ := M.read (| γ1_0 |) in
                                     let data :=
                                       M.alloc (|
                                         Ty.apply
@@ -1175,7 +1188,7 @@ Module task.
                                               []
                                               [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]
                                           ],
-                                        γ1_0
+                                        M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                                       |) in
                                     M.call_closure (|
                                       Ty.apply
@@ -1208,10 +1221,11 @@ Module task.
                                         "core::task::wake::ExtData::None",
                                         0
                                       |) in
+                                    let _ := M.read (| γ1_0 |) in
                                     let unit_ :=
                                       M.alloc (|
                                         Ty.apply (Ty.path "&mut") [] [ Ty.tuple [] ],
-                                        γ1_0
+                                        M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                                       |) in
                                     M.call_closure (|
                                       Ty.apply
@@ -1246,6 +1260,7 @@ Module task.
         end.
       
       Global Instance AssociatedFunction_ext : M.IsAssociatedFunction.C Self "ext" ext.
+      Proof.
       Admitted.
       Global Typeclasses Opaque ext.
     End Impl_core_task_wake_Context.
@@ -1667,6 +1682,7 @@ Module task.
       
       Global Instance AssociatedFunction_from_waker :
         M.IsAssociatedFunction.C Self "from_waker" from_waker.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_waker.
       
@@ -1723,6 +1739,7 @@ Module task.
                             "core::task::wake::ExtData::Some",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let ext :=
                           M.alloc (|
                             Ty.apply
@@ -1734,7 +1751,7 @@ Module task.
                                   []
                                   [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]
                               ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                           |) in
                         Value.StructTuple
                           "core::task::wake::ExtData::Some"
@@ -1837,6 +1854,7 @@ Module task.
         end.
       
       Global Instance AssociatedFunction_from : M.IsAssociatedFunction.C Self "from" from.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from.
       
@@ -1860,6 +1878,7 @@ Module task.
         end.
       
       Global Instance AssociatedFunction_waker : M.IsAssociatedFunction.C Self "waker" waker.
+      Proof.
       Admitted.
       Global Typeclasses Opaque waker.
       
@@ -1886,6 +1905,7 @@ Module task.
       
       Global Instance AssociatedFunction_local_waker :
         M.IsAssociatedFunction.C Self "local_waker" local_waker.
+      Proof.
       Admitted.
       Global Typeclasses Opaque local_waker.
       
@@ -1933,6 +1953,7 @@ Module task.
         end.
       
       Global Instance AssociatedFunction_ext : M.IsAssociatedFunction.C Self "ext" ext.
+      Proof.
       Admitted.
       Global Typeclasses Opaque ext.
       
@@ -2038,6 +2059,7 @@ Module task.
         end.
       
       Global Instance AssociatedFunction_build : M.IsAssociatedFunction.C Self "build" build.
+      Proof.
       Admitted.
       Global Typeclasses Opaque build.
     End Impl_core_task_wake_ContextBuilder.
@@ -2206,6 +2228,7 @@ Module task.
         end.
       
       Global Instance AssociatedFunction_wake : M.IsAssociatedFunction.C Self "wake" wake.
+      Proof.
       Admitted.
       Global Typeclasses Opaque wake.
       
@@ -2264,6 +2287,7 @@ Module task.
       
       Global Instance AssociatedFunction_wake_by_ref :
         M.IsAssociatedFunction.C Self "wake_by_ref" wake_by_ref.
+      Proof.
       Admitted.
       Global Typeclasses Opaque wake_by_ref.
       
@@ -2383,6 +2407,7 @@ Module task.
       
       Global Instance AssociatedFunction_will_wake :
         M.IsAssociatedFunction.C Self "will_wake" will_wake.
+      Proof.
       Admitted.
       Global Typeclasses Opaque will_wake.
       
@@ -2417,6 +2442,7 @@ Module task.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -2436,6 +2462,7 @@ Module task.
       
       Global Instance AssociatedFunction_from_raw :
         M.IsAssociatedFunction.C Self "from_raw" from_raw.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_raw.
       
@@ -2459,6 +2486,7 @@ Module task.
         end.
       
       Global Instance AssociatedFunction_noop : M.IsAssociatedFunction.C Self "noop" noop.
+      Proof.
       Admitted.
       Global Typeclasses Opaque noop.
       
@@ -2488,6 +2516,7 @@ Module task.
         end.
       
       Global Instance AssociatedFunction_data : M.IsAssociatedFunction.C Self "data" data.
+      Proof.
       Admitted.
       Global Typeclasses Opaque data.
       
@@ -2517,6 +2546,7 @@ Module task.
         end.
       
       Global Instance AssociatedFunction_vtable : M.IsAssociatedFunction.C Self "vtable" vtable.
+      Proof.
       Admitted.
       Global Typeclasses Opaque vtable.
       
@@ -2596,6 +2626,7 @@ Module task.
       
       Global Instance AssociatedFunction_from_fn_ptr :
         M.IsAssociatedFunction.C Self "from_fn_ptr" from_fn_ptr.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_fn_ptr.
     End Impl_core_task_wake_Waker.
@@ -3170,6 +3201,7 @@ Module task.
         end.
       
       Global Instance AssociatedFunction_wake : M.IsAssociatedFunction.C Self "wake" wake.
+      Proof.
       Admitted.
       Global Typeclasses Opaque wake.
       
@@ -3231,6 +3263,7 @@ Module task.
       
       Global Instance AssociatedFunction_wake_by_ref :
         M.IsAssociatedFunction.C Self "wake_by_ref" wake_by_ref.
+      Proof.
       Admitted.
       Global Typeclasses Opaque wake_by_ref.
       
@@ -3353,6 +3386,7 @@ Module task.
       
       Global Instance AssociatedFunction_will_wake :
         M.IsAssociatedFunction.C Self "will_wake" will_wake.
+      Proof.
       Admitted.
       Global Typeclasses Opaque will_wake.
       
@@ -3387,6 +3421,7 @@ Module task.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -3410,6 +3445,7 @@ Module task.
       
       Global Instance AssociatedFunction_from_raw :
         M.IsAssociatedFunction.C Self "from_raw" from_raw.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_raw.
       
@@ -3433,6 +3469,7 @@ Module task.
         end.
       
       Global Instance AssociatedFunction_noop : M.IsAssociatedFunction.C Self "noop" noop.
+      Proof.
       Admitted.
       Global Typeclasses Opaque noop.
       
@@ -3465,6 +3502,7 @@ Module task.
         end.
       
       Global Instance AssociatedFunction_data : M.IsAssociatedFunction.C Self "data" data.
+      Proof.
       Admitted.
       Global Typeclasses Opaque data.
       
@@ -3497,6 +3535,7 @@ Module task.
         end.
       
       Global Instance AssociatedFunction_vtable : M.IsAssociatedFunction.C Self "vtable" vtable.
+      Proof.
       Admitted.
       Global Typeclasses Opaque vtable.
       
@@ -3576,6 +3615,7 @@ Module task.
       
       Global Instance AssociatedFunction_from_fn_ptr :
         M.IsAssociatedFunction.C Self "from_fn_ptr" from_fn_ptr.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_fn_ptr.
     End Impl_core_task_wake_LocalWaker.

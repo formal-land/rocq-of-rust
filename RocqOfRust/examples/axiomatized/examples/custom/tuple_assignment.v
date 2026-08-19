@@ -5,4 +5,5 @@ Parameter tuple_assignment : (list Value.t) -> (list Ty.t) -> (list Value.t) -> 
 
 Global Instance Instance_IsFunction_tuple_assignment :
   M.IsFunction.C "tuple_assignment::tuple_assignment" tuple_assignment.
+Proof.
 Admitted.

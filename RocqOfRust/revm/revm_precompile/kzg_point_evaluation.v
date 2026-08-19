@@ -64,6 +64,7 @@ Module kzg_point_evaluation.
   
   Global Instance Instance_IsConstant_value_POINT_EVALUATION :
     M.IsFunction.C "revm_precompile::kzg_point_evaluation::POINT_EVALUATION" value_POINT_EVALUATION.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_POINT_EVALUATION.
   
@@ -80,6 +81,7 @@ Module kzg_point_evaluation.
   
   Global Instance Instance_IsConstant_value_ADDRESS :
     M.IsFunction.C "revm_precompile::kzg_point_evaluation::ADDRESS" value_ADDRESS.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_ADDRESS.
   
@@ -88,6 +90,7 @@ Module kzg_point_evaluation.
   
   Global Instance Instance_IsConstant_value_GAS_COST :
     M.IsFunction.C "revm_precompile::kzg_point_evaluation::GAS_COST" value_GAS_COST.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_GAS_COST.
   
@@ -102,6 +105,7 @@ Module kzg_point_evaluation.
     M.IsFunction.C
       "revm_precompile::kzg_point_evaluation::VERSIONED_HASH_VERSION_KZG"
       value_VERSIONED_HASH_VERSION_KZG.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_VERSIONED_HASH_VERSION_KZG.
   
@@ -128,6 +132,7 @@ Module kzg_point_evaluation.
   
   Global Instance Instance_IsConstant_value_RETURN_VALUE :
     M.IsFunction.C "revm_precompile::kzg_point_evaluation::RETURN_VALUE" value_RETURN_VALUE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_RETURN_VALUE.
   
@@ -1105,6 +1110,7 @@ Module kzg_point_evaluation.
   
   Global Instance Instance_IsFunction_run :
     M.IsFunction.C "revm_precompile::kzg_point_evaluation::run" run.
+  Proof.
   Admitted.
   Global Typeclasses Opaque run.
   
@@ -1174,6 +1180,7 @@ Module kzg_point_evaluation.
     M.IsFunction.C
       "revm_precompile::kzg_point_evaluation::kzg_to_versioned_hash"
       kzg_to_versioned_hash.
+  Proof.
   Admitted.
   Global Typeclasses Opaque kzg_to_versioned_hash.
   
@@ -1717,6 +1724,7 @@ Module kzg_point_evaluation.
   
   Global Instance Instance_IsFunction_verify_kzg_proof :
     M.IsFunction.C "revm_precompile::kzg_point_evaluation::verify_kzg_proof" verify_kzg_proof.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_kzg_proof.
 End kzg_point_evaluation.

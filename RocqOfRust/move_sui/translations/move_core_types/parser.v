@@ -275,10 +275,11 @@ Module parser.
                               "move_core_types::parser::Token::Whitespace",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -287,10 +288,11 @@ Module parser.
                               "move_core_types::parser::Token::Whitespace",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -319,10 +321,11 @@ Module parser.
                               "move_core_types::parser::Token::Name",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -331,10 +334,11 @@ Module parser.
                               "move_core_types::parser::Token::Name",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -363,10 +367,11 @@ Module parser.
                               "move_core_types::parser::Token::Address",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -375,10 +380,11 @@ Module parser.
                               "move_core_types::parser::Token::Address",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -407,10 +413,11 @@ Module parser.
                               "move_core_types::parser::Token::U8",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -419,10 +426,11 @@ Module parser.
                               "move_core_types::parser::Token::U8",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -451,10 +459,11 @@ Module parser.
                               "move_core_types::parser::Token::U16",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -463,10 +472,11 @@ Module parser.
                               "move_core_types::parser::Token::U16",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -495,10 +505,11 @@ Module parser.
                               "move_core_types::parser::Token::U32",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -507,10 +518,11 @@ Module parser.
                               "move_core_types::parser::Token::U32",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -539,10 +551,11 @@ Module parser.
                               "move_core_types::parser::Token::U64",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -551,10 +564,11 @@ Module parser.
                               "move_core_types::parser::Token::U64",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -583,10 +597,11 @@ Module parser.
                               "move_core_types::parser::Token::U128",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -595,10 +610,11 @@ Module parser.
                               "move_core_types::parser::Token::U128",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -627,10 +643,11 @@ Module parser.
                               "move_core_types::parser::Token::U256",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -639,10 +656,11 @@ Module parser.
                               "move_core_types::parser::Token::U256",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -671,10 +689,11 @@ Module parser.
                               "move_core_types::parser::Token::Bytes",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -683,10 +702,11 @@ Module parser.
                               "move_core_types::parser::Token::Bytes",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -956,10 +976,11 @@ Module parser.
                       "move_core_types::parser::Token::Whitespace",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -1005,10 +1026,11 @@ Module parser.
                       "move_core_types::parser::Token::Name",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -1054,10 +1076,11 @@ Module parser.
                       "move_core_types::parser::Token::Address",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -1103,10 +1126,11 @@ Module parser.
                       "move_core_types::parser::Token::U8",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -1152,10 +1176,11 @@ Module parser.
                       "move_core_types::parser::Token::U16",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -1201,10 +1226,11 @@ Module parser.
                       "move_core_types::parser::Token::U32",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -1250,10 +1276,11 @@ Module parser.
                       "move_core_types::parser::Token::U64",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -1299,10 +1326,11 @@ Module parser.
                       "move_core_types::parser::Token::U128",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -1348,10 +1376,11 @@ Module parser.
                       "move_core_types::parser::Token::U256",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -1397,10 +1426,11 @@ Module parser.
                       "move_core_types::parser::Token::Bytes",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -1631,6 +1661,7 @@ Module parser.
     
     Global Instance AssociatedFunction_is_whitespace :
       M.IsAssociatedFunction.C Self "is_whitespace" is_whitespace.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_whitespace.
   End Impl_move_core_types_parser_Token.
@@ -2209,6 +2240,7 @@ Module parser.
   
   Global Instance Instance_IsFunction_token_as_name :
     M.IsFunction.C "move_core_types::parser::token_as_name" token_as_name.
+  Proof.
   Admitted.
   Global Typeclasses Opaque token_as_name.
   
@@ -2305,6 +2337,7 @@ Module parser.
   
   Global Instance Instance_IsFunction_name_token :
     M.IsFunction.C "move_core_types::parser::name_token" name_token.
+  Proof.
   Admitted.
   Global Typeclasses Opaque name_token.
   
@@ -2875,6 +2908,7 @@ Module parser.
   
   Global Instance Instance_IsFunction_next_number :
     M.IsFunction.C "move_core_types::parser::next_number" next_number.
+  Proof.
   Admitted.
   Global Typeclasses Opaque next_number.
   
@@ -5534,6 +5568,7 @@ Module parser.
   
   Global Instance Instance_IsFunction_next_token :
     M.IsFunction.C "move_core_types::parser::next_token" next_token.
+  Proof.
   Admitted.
   Global Typeclasses Opaque next_token.
   
@@ -5941,6 +5976,7 @@ Module parser.
   
   Global Instance Instance_IsFunction_tokenize :
     M.IsFunction.C "move_core_types::parser::tokenize" tokenize.
+  Proof.
   Admitted.
   Global Typeclasses Opaque tokenize.
   
@@ -6009,6 +6045,7 @@ Module parser.
     Global Instance AssociatedFunction_new :
       forall (I : Ty.t),
       M.IsAssociatedFunction.C (Self I) "new" (new I).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -6134,6 +6171,7 @@ Module parser.
     Global Instance AssociatedFunction_next :
       forall (I : Ty.t),
       M.IsAssociatedFunction.C (Self I) "next" (next I).
+    Proof.
     Admitted.
     Global Typeclasses Opaque next.
     
@@ -6183,6 +6221,7 @@ Module parser.
     Global Instance AssociatedFunction_peek :
       forall (I : Ty.t),
       M.IsAssociatedFunction.C (Self I) "peek" (peek I).
+    Proof.
     Admitted.
     Global Typeclasses Opaque peek.
     
@@ -6563,6 +6602,7 @@ Module parser.
     Global Instance AssociatedFunction_consume :
       forall (I : Ty.t),
       M.IsAssociatedFunction.C (Self I) "consume" (consume I).
+    Proof.
     Admitted.
     Global Typeclasses Opaque consume.
     
@@ -7408,6 +7448,7 @@ Module parser.
     Global Instance AssociatedFunction_parse_comma_list :
       forall (I : Ty.t),
       M.IsAssociatedFunction.C (Self I) "parse_comma_list" (parse_comma_list I).
+    Proof.
     Admitted.
     Global Typeclasses Opaque parse_comma_list.
     
@@ -7757,6 +7798,7 @@ Module parser.
     Global Instance AssociatedFunction_parse_string :
       forall (I : Ty.t),
       M.IsAssociatedFunction.C (Self I) "parse_string" (parse_string I).
+    Proof.
     Admitted.
     Global Typeclasses Opaque parse_string.
     
@@ -10697,6 +10739,7 @@ Module parser.
     Global Instance AssociatedFunction_parse_type_tag :
       forall (I : Ty.t),
       M.IsAssociatedFunction.C (Self I) "parse_type_tag" (parse_type_tag I).
+    Proof.
     Admitted.
     Global Typeclasses Opaque parse_type_tag.
     
@@ -12752,6 +12795,7 @@ Module parser.
     Global Instance AssociatedFunction_parse_transaction_argument :
       forall (I : Ty.t),
       M.IsAssociatedFunction.C (Self I) "parse_transaction_argument" (parse_transaction_argument I).
+    Proof.
     Admitted.
     Global Typeclasses Opaque parse_transaction_argument.
   End Impl_move_core_types_parser_Parser_I.
@@ -13453,6 +13497,7 @@ Module parser.
     end.
   
   Global Instance Instance_IsFunction_parse : M.IsFunction.C "move_core_types::parser::parse" parse.
+  Proof.
   Admitted.
   Global Typeclasses Opaque parse.
   
@@ -13762,6 +13807,7 @@ Module parser.
   
   Global Instance Instance_IsFunction_parse_string_list :
     M.IsFunction.C "move_core_types::parser::parse_string_list" parse_string_list.
+  Proof.
   Admitted.
   Global Typeclasses Opaque parse_string_list.
   
@@ -14087,6 +14133,7 @@ Module parser.
   
   Global Instance Instance_IsFunction_parse_type_tags :
     M.IsFunction.C "move_core_types::parser::parse_type_tags" parse_type_tags.
+  Proof.
   Admitted.
   Global Typeclasses Opaque parse_type_tags.
   
@@ -14240,6 +14287,7 @@ Module parser.
   
   Global Instance Instance_IsFunction_parse_type_tag :
     M.IsFunction.C "move_core_types::parser::parse_type_tag" parse_type_tag.
+  Proof.
   Admitted.
   Global Typeclasses Opaque parse_type_tag.
   
@@ -14579,6 +14627,7 @@ Module parser.
     M.IsFunction.C
       "move_core_types::parser::parse_transaction_arguments"
       parse_transaction_arguments.
+  Proof.
   Admitted.
   Global Typeclasses Opaque parse_transaction_arguments.
   
@@ -14738,6 +14787,7 @@ Module parser.
   
   Global Instance Instance_IsFunction_parse_transaction_argument :
     M.IsFunction.C "move_core_types::parser::parse_transaction_argument" parse_transaction_argument.
+  Proof.
   Admitted.
   Global Typeclasses Opaque parse_transaction_argument.
   
@@ -15462,6 +15512,7 @@ Module parser.
   
   Global Instance Instance_IsFunction_parse_struct_tag :
     M.IsFunction.C "move_core_types::parser::parse_struct_tag" parse_struct_tag.
+  Proof.
   Admitted.
   Global Typeclasses Opaque parse_struct_tag.
 End parser.

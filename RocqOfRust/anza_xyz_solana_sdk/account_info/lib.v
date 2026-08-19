@@ -20,6 +20,7 @@ Global Instance Instance_IsConstant_value_MAX_PERMITTED_DATA_INCREASE :
   M.IsFunction.C
     "solana_account_info::MAX_PERMITTED_DATA_INCREASE"
     value_MAX_PERMITTED_DATA_INCREASE.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_MAX_PERMITTED_DATA_INCREASE.
 
@@ -1087,6 +1088,7 @@ Module Impl_solana_account_info_AccountInfo.
   
   Global Instance AssociatedFunction_signer_key :
     M.IsAssociatedFunction.C Self "signer_key" signer_key.
+  Proof.
   Admitted.
   Global Typeclasses Opaque signer_key.
   
@@ -1121,6 +1123,7 @@ Module Impl_solana_account_info_AccountInfo.
   
   Global Instance AssociatedFunction_unsigned_key :
     M.IsAssociatedFunction.C Self "unsigned_key" unsigned_key.
+  Proof.
   Admitted.
   Global Typeclasses Opaque unsigned_key.
   
@@ -1237,6 +1240,7 @@ Module Impl_solana_account_info_AccountInfo.
     end.
   
   Global Instance AssociatedFunction_lamports : M.IsAssociatedFunction.C Self "lamports" lamports.
+  Proof.
   Admitted.
   Global Typeclasses Opaque lamports.
   
@@ -1472,6 +1476,7 @@ Module Impl_solana_account_info_AccountInfo.
   
   Global Instance AssociatedFunction_try_lamports :
     M.IsAssociatedFunction.C Self "try_lamports" try_lamports.
+  Proof.
   Admitted.
   Global Typeclasses Opaque try_lamports.
   
@@ -1536,6 +1541,7 @@ Module Impl_solana_account_info_AccountInfo.
   
   Global Instance AssociatedFunction_original_data_len :
     M.IsAssociatedFunction.C Self "original_data_len" original_data_len.
+  Proof.
   Admitted.
   Global Typeclasses Opaque original_data_len.
   
@@ -1702,6 +1708,7 @@ Module Impl_solana_account_info_AccountInfo.
     end.
   
   Global Instance AssociatedFunction_data_len : M.IsAssociatedFunction.C Self "data_len" data_len.
+  Proof.
   Admitted.
   Global Typeclasses Opaque data_len.
   
@@ -2012,6 +2019,7 @@ Module Impl_solana_account_info_AccountInfo.
   
   Global Instance AssociatedFunction_try_data_len :
     M.IsAssociatedFunction.C Self "try_data_len" try_data_len.
+  Proof.
   Admitted.
   Global Typeclasses Opaque try_data_len.
   
@@ -2179,6 +2187,7 @@ Module Impl_solana_account_info_AccountInfo.
   
   Global Instance AssociatedFunction_data_is_empty :
     M.IsAssociatedFunction.C Self "data_is_empty" data_is_empty.
+  Proof.
   Admitted.
   Global Typeclasses Opaque data_is_empty.
   
@@ -2489,6 +2498,7 @@ Module Impl_solana_account_info_AccountInfo.
   
   Global Instance AssociatedFunction_try_data_is_empty :
     M.IsAssociatedFunction.C Self "try_data_is_empty" try_data_is_empty.
+  Proof.
   Admitted.
   Global Typeclasses Opaque try_data_is_empty.
   
@@ -2635,6 +2645,7 @@ Module Impl_solana_account_info_AccountInfo.
   
   Global Instance AssociatedFunction_try_borrow_lamports :
     M.IsAssociatedFunction.C Self "try_borrow_lamports" try_borrow_lamports.
+  Proof.
   Admitted.
   Global Typeclasses Opaque try_borrow_lamports.
   
@@ -2781,6 +2792,7 @@ Module Impl_solana_account_info_AccountInfo.
   
   Global Instance AssociatedFunction_try_borrow_mut_lamports :
     M.IsAssociatedFunction.C Self "try_borrow_mut_lamports" try_borrow_mut_lamports.
+  Proof.
   Admitted.
   Global Typeclasses Opaque try_borrow_mut_lamports.
   
@@ -2944,6 +2956,7 @@ Module Impl_solana_account_info_AccountInfo.
   
   Global Instance AssociatedFunction_try_borrow_data :
     M.IsAssociatedFunction.C Self "try_borrow_data" try_borrow_data.
+  Proof.
   Admitted.
   Global Typeclasses Opaque try_borrow_data.
   
@@ -3107,6 +3120,7 @@ Module Impl_solana_account_info_AccountInfo.
   
   Global Instance AssociatedFunction_try_borrow_mut_data :
     M.IsAssociatedFunction.C Self "try_borrow_mut_data" try_borrow_mut_data.
+  Proof.
   Admitted.
   Global Typeclasses Opaque try_borrow_mut_data.
   
@@ -3765,6 +3779,7 @@ Module Impl_solana_account_info_AccountInfo.
     end.
   
   Global Instance AssociatedFunction_resize : M.IsAssociatedFunction.C Self "resize" resize.
+  Proof.
   Admitted.
   Global Typeclasses Opaque resize.
   
@@ -3853,6 +3868,7 @@ Module Impl_solana_account_info_AccountInfo.
     end.
   
   Global Instance AssociatedFunction_assign : M.IsAssociatedFunction.C Self "assign" assign.
+  Proof.
   Admitted.
   Global Typeclasses Opaque assign.
   
@@ -4024,6 +4040,7 @@ Module Impl_solana_account_info_AccountInfo.
     end.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new.
 End Impl_solana_account_info_AccountInfo.
@@ -4397,12 +4414,18 @@ Module Impl_solana_account_info_IntoAccountInfo_where_solana_account_info_Accoun
                 (let γ := M.deref (| M.read (| γ |) |) in
                 let γ1_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                 let γ1_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                let _ := M.read (| γ1_0 |) in
                 let key :=
                   M.alloc (|
                     Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                    γ1_0
+                    M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                   |) in
-                let account := M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ1_1 |) in
+                let _ := M.read (| γ1_1 |) in
+                let account :=
+                  M.alloc (|
+                    Ty.apply (Ty.path "&mut") [] [ T ],
+                    M.borrow (| Pointer.Kind.MutRef, γ1_1 |)
+                  |) in
                 M.match_operator (|
                   Ty.path "solana_account_info::AccountInfo",
                   M.alloc (|
@@ -4551,6 +4574,7 @@ Definition next_account_info (ε : list Value.t) (τ : list Ty.t) (α : list Val
 
 Global Instance Instance_IsFunction_next_account_info :
   M.IsFunction.C "solana_account_info::next_account_info" next_account_info.
+Proof.
 Admitted.
 Global Typeclasses Opaque next_account_info.
 
@@ -4870,6 +4894,7 @@ Definition next_account_infos (ε : list Value.t) (τ : list Ty.t) (α : list Va
 
 Global Instance Instance_IsFunction_next_account_infos :
   M.IsFunction.C "solana_account_info::next_account_infos" next_account_infos.
+Proof.
 Admitted.
 Global Typeclasses Opaque next_account_infos.
 
@@ -7064,5 +7089,6 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
 
 Global Instance Instance_IsFunction_check_type_assumptions :
   M.IsFunction.C "solana_account_info::check_type_assumptions" check_type_assumptions.
+Proof.
 Admitted.
 Global Typeclasses Opaque check_type_assumptions.

@@ -454,14 +454,16 @@ Module script_signature.
                                                       M.SubPointer.get_tuple_field (| γ, 0 |) in
                                                     let γ1_1 :=
                                                       M.SubPointer.get_tuple_field (| γ, 1 |) in
+                                                    let _ := M.read (| γ1_0 |) in
                                                     let _idx :=
                                                       M.alloc (|
                                                         Ty.apply
                                                           (Ty.path "&")
                                                           []
                                                           [ Ty.path "usize" ],
-                                                        γ1_0
+                                                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                       |) in
+                                                    let _ := M.read (| γ1_1 |) in
                                                     let fdef :=
                                                       M.alloc (|
                                                         Ty.apply
@@ -476,7 +478,7 @@ Module script_signature.
                                                                   "move_binary_format::file_format::FunctionDefinition"
                                                               ]
                                                           ],
-                                                        γ1_1
+                                                        M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                                                       |) in
                                                     M.read (|
                                                       M.SubPointer.get_struct_record_field (|
@@ -857,6 +859,7 @@ Module script_signature.
   
   Global Instance Instance_IsFunction_verify_module :
     M.IsFunction.C "move_bytecode_verifier::script_signature::verify_module" verify_module.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_module.
   
@@ -1112,6 +1115,7 @@ Module script_signature.
                                       (let γ := M.deref (| M.read (| γ |) |) in
                                       let γ1_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                                       let γ1_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                                      let _ := M.read (| γ1_1 |) in
                                       let fdef :=
                                         M.alloc (|
                                           Ty.apply
@@ -1126,7 +1130,7 @@ Module script_signature.
                                                     "move_binary_format::file_format::FunctionDefinition"
                                                 ]
                                             ],
-                                          γ1_1
+                                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                                         |) in
                                       M.call_closure (|
                                         Ty.path "bool",
@@ -1605,6 +1609,7 @@ Module script_signature.
     M.IsFunction.C
       "move_bytecode_verifier::script_signature::verify_module_function_signature_by_name"
       verify_module_function_signature_by_name.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_module_function_signature_by_name.
   
@@ -1873,6 +1878,7 @@ Module script_signature.
     M.IsFunction.C
       "move_bytecode_verifier::script_signature::verify_module_function_signature"
       verify_module_function_signature.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_module_function_signature.
   
@@ -2155,6 +2161,7 @@ Module script_signature.
     M.IsFunction.C
       "move_bytecode_verifier::script_signature::verify_main_signature_impl"
       verify_main_signature_impl.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_main_signature_impl.
   
@@ -2204,6 +2211,7 @@ Module script_signature.
     M.IsFunction.C
       "move_bytecode_verifier::script_signature::no_additional_script_signature_checks"
       no_additional_script_signature_checks.
+  Proof.
   Admitted.
   Global Typeclasses Opaque no_additional_script_signature_checks.
   
@@ -2805,6 +2813,7 @@ Module script_signature.
                                                               "move_binary_format::file_format::SignatureToken::Reference",
                                                               0
                                                             |) in
+                                                          let _ := M.read (| γ2_0 |) in
                                                           let inner :=
                                                             M.alloc (|
                                                               Ty.apply
@@ -2820,7 +2829,7 @@ Module script_signature.
                                                                       Ty.path "alloc::alloc::Global"
                                                                     ]
                                                                 ],
-                                                              γ2_0
+                                                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                                             |) in
                                                           let γ :=
                                                             M.alloc (|
@@ -3330,6 +3339,7 @@ Module script_signature.
     M.IsFunction.C
       "move_bytecode_verifier::script_signature::legacy_script_signature_checks"
       legacy_script_signature_checks.
+  Proof.
   Admitted.
   Global Typeclasses Opaque legacy_script_signature_checks.
 End script_signature.

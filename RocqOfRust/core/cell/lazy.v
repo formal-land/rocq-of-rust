@@ -95,6 +95,7 @@ Module cell.
       Global Instance AssociatedFunction_new :
         forall (T F : Ty.t),
         M.IsAssociatedFunction.C (Self T F) "new" (new T F).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -188,6 +189,7 @@ Module cell.
       Global Instance AssociatedFunction_into_inner :
         forall (T F : Ty.t),
         M.IsAssociatedFunction.C (Self T F) "into_inner" (into_inner T F).
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_inner.
       
@@ -271,7 +273,12 @@ Module cell.
                             "core::cell::lazy::State::Init",
                             0
                           |) in
-                        let data := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                        let _ := M.read (| γ1_0 |) in
+                        let data :=
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ T ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                          |) in
                         M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |)));
                     fun γ =>
                       ltac:(M.monadic
@@ -318,6 +325,7 @@ Module cell.
       Global Instance AssociatedFunction_force :
         forall (T F : Ty.t),
         M.IsAssociatedFunction.C (Self T F) "force" (force T F).
+      Proof.
       Admitted.
       Global Typeclasses Opaque force.
       
@@ -434,8 +442,12 @@ Module cell.
                                     "core::cell::lazy::State::Init",
                                     0
                                   |) in
+                                let _ := M.read (| γ1_0 |) in
                                 let data :=
-                                  M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ1_0 |) in
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "&mut") [] [ T ],
+                                    M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
+                                  |) in
                                 M.borrow (|
                                   Pointer.Kind.MutRef,
                                   M.deref (| M.read (| data |) |)
@@ -495,6 +507,7 @@ Module cell.
       Global Instance AssociatedFunction_force_mut :
         forall (T F : Ty.t),
         M.IsAssociatedFunction.C (Self T F) "force_mut" (force_mut T F).
+      Proof.
       Admitted.
       Global Typeclasses Opaque force_mut.
       
@@ -726,8 +739,12 @@ Module cell.
                                         "core::cell::lazy::State::Init",
                                         0
                                       |) in
+                                    let _ := M.read (| γ1_0 |) in
                                     let data :=
-                                      M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                                      M.alloc (|
+                                        Ty.apply (Ty.path "&") [] [ T ],
+                                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                                      |) in
                                     M.borrow (|
                                       Pointer.Kind.Ref,
                                       M.deref (| M.read (| data |) |)
@@ -760,6 +777,7 @@ Module cell.
       Global Instance AssociatedFunction_really_init :
         forall (T F : Ty.t),
         M.IsAssociatedFunction.C (Self T F) "really_init" (really_init T F).
+      Proof.
       Admitted.
       Global Typeclasses Opaque really_init.
       (*
@@ -833,7 +851,12 @@ Module cell.
                             "core::cell::lazy::State::Init",
                             0
                           |) in
-                        let data := M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ1_0 |) in
+                        let _ := M.read (| γ1_0 |) in
+                        let data :=
+                          M.alloc (|
+                            Ty.apply (Ty.path "&mut") [] [ T ],
+                            M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
+                          |) in
                         Value.StructTuple
                           "core::option::Option::Some"
                           []
@@ -856,6 +879,7 @@ Module cell.
       Global Instance AssociatedFunction_get_mut :
         forall (T F : Ty.t),
         M.IsAssociatedFunction.C (Self T F) "get_mut" (get_mut T F).
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut.
       
@@ -936,7 +960,12 @@ Module cell.
                             "core::cell::lazy::State::Init",
                             0
                           |) in
-                        let data := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                        let _ := M.read (| γ1_0 |) in
+                        let data :=
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ T ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                          |) in
                         Value.StructTuple
                           "core::option::Option::Some"
                           []
@@ -959,6 +988,7 @@ Module cell.
       Global Instance AssociatedFunction_get :
         forall (T F : Ty.t),
         M.IsAssociatedFunction.C (Self T F) "get" (get T F).
+      Proof.
       Admitted.
       Global Typeclasses Opaque get.
     End Impl_core_cell_lazy_LazyCell_T_F.
@@ -1345,6 +1375,7 @@ Module cell.
     
     Global Instance Instance_IsFunction_panic_poisoned :
       M.IsFunction.C "core::cell::lazy::panic_poisoned" panic_poisoned.
+    Proof.
     Admitted.
     Global Typeclasses Opaque panic_poisoned.
   End lazy.

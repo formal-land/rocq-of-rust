@@ -534,6 +534,7 @@ Module mem.
       Global Instance AssociatedFunction_new :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "new" (new T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -565,6 +566,7 @@ Module mem.
       Global Instance AssociatedFunction_into_inner :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "into_inner" (into_inner T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_inner.
       
@@ -613,6 +615,7 @@ Module mem.
       Global Instance AssociatedFunction_take :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "take" (take T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque take.
       (*
@@ -664,6 +667,7 @@ Module mem.
       Global Instance AssociatedFunction_drop :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "drop" (drop T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque drop.
     End Impl_core_mem_manually_drop_ManuallyDrop_T.

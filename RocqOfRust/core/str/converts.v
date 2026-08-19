@@ -88,6 +88,7 @@ Module str.
     
     Global Instance Instance_IsFunction_from_utf8 :
       M.IsFunction.C "core::str::converts::from_utf8" from_utf8.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_utf8.
     
@@ -187,6 +188,7 @@ Module str.
     
     Global Instance Instance_IsFunction_from_utf8_mut :
       M.IsFunction.C "core::str::converts::from_utf8_mut" from_utf8_mut.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_utf8_mut.
     
@@ -223,6 +225,7 @@ Module str.
     
     Global Instance Instance_IsFunction_from_utf8_unchecked :
       M.IsFunction.C "core::str::converts::from_utf8_unchecked" from_utf8_unchecked.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_utf8_unchecked.
     
@@ -284,6 +287,7 @@ Module str.
     
     Global Instance Instance_IsFunction_from_utf8_unchecked_mut :
       M.IsFunction.C "core::str::converts::from_utf8_unchecked_mut" from_utf8_unchecked_mut.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_utf8_unchecked_mut.
     
@@ -323,6 +327,7 @@ Module str.
     
     Global Instance Instance_IsFunction_from_raw_parts :
       M.IsFunction.C "core::str::converts::from_raw_parts" from_raw_parts.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_raw_parts.
     
@@ -372,6 +377,7 @@ Module str.
     
     Global Instance Instance_IsFunction_from_raw_parts_mut :
       M.IsFunction.C "core::str::converts::from_raw_parts_mut" from_raw_parts_mut.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_raw_parts_mut.
   End converts.

@@ -1444,6 +1444,7 @@ Module loop_summary.
                                                           "move_bytecode_verifier::loop_summary::new::Exploration::InProgress",
                                                           0
                                                         |) in
+                                                      let _ := M.read (| γ1_0 |) in
                                                       let to_node :=
                                                         M.alloc (|
                                                           Ty.apply
@@ -1453,7 +1454,7 @@ Module loop_summary.
                                                               Ty.path
                                                                 "move_bytecode_verifier::loop_summary::NodeId"
                                                             ],
-                                                          γ1_0
+                                                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                         |) in
                                                       M.call_closure (|
                                                         Ty.tuple [],
@@ -1555,6 +1556,7 @@ Module loop_summary.
                                                           "move_bytecode_verifier::loop_summary::new::Exploration::Done",
                                                           0
                                                         |) in
+                                                      let _ := M.read (| γ1_0 |) in
                                                       let to_node :=
                                                         M.alloc (|
                                                           Ty.apply
@@ -1564,7 +1566,7 @@ Module loop_summary.
                                                               Ty.path
                                                                 "move_bytecode_verifier::loop_summary::NodeId"
                                                             ],
-                                                          γ1_0
+                                                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                         |) in
                                                       M.call_closure (|
                                                         Ty.tuple [],
@@ -2171,6 +2173,7 @@ Module loop_summary.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -2293,6 +2296,7 @@ Module loop_summary.
     
     Global Instance AssociatedFunction_is_descendant :
       M.IsAssociatedFunction.C Self "is_descendant" is_descendant.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_descendant.
     
@@ -2398,6 +2402,7 @@ Module loop_summary.
       end.
     
     Global Instance AssociatedFunction_preorder : M.IsAssociatedFunction.C Self "preorder" preorder.
+    Proof.
     Admitted.
     Global Typeclasses Opaque preorder.
     
@@ -2465,6 +2470,7 @@ Module loop_summary.
       end.
     
     Global Instance AssociatedFunction_block : M.IsAssociatedFunction.C Self "block" block.
+    Proof.
     Admitted.
     Global Typeclasses Opaque block.
     
@@ -2559,6 +2565,7 @@ Module loop_summary.
     
     Global Instance AssociatedFunction_back_edges :
       M.IsAssociatedFunction.C Self "back_edges" back_edges.
+    Proof.
     Admitted.
     Global Typeclasses Opaque back_edges.
     
@@ -2653,6 +2660,7 @@ Module loop_summary.
     
     Global Instance AssociatedFunction_pred_edges :
       M.IsAssociatedFunction.C Self "pred_edges" pred_edges.
+    Proof.
     Admitted.
     Global Typeclasses Opaque pred_edges.
   End Impl_move_bytecode_verifier_loop_summary_LoopSummary.
@@ -2822,6 +2830,7 @@ Module loop_summary.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -3282,6 +3291,7 @@ Module loop_summary.
     
     Global Instance AssociatedFunction_containing_loop :
       M.IsAssociatedFunction.C Self "containing_loop" containing_loop.
+    Proof.
     Admitted.
     Global Typeclasses Opaque containing_loop.
     
@@ -4033,6 +4043,7 @@ Module loop_summary.
     
     Global Instance AssociatedFunction_collapse_loop :
       M.IsAssociatedFunction.C Self "collapse_loop" collapse_loop.
+    Proof.
     Admitted.
     Global Typeclasses Opaque collapse_loop.
     
@@ -4106,6 +4117,7 @@ Module loop_summary.
       end.
     
     Global Instance AssociatedFunction_parent : M.IsAssociatedFunction.C Self "parent" parent.
+    Proof.
     Admitted.
     Global Typeclasses Opaque parent.
     
@@ -4191,6 +4203,7 @@ Module loop_summary.
     
     Global Instance AssociatedFunction_parent_mut :
       M.IsAssociatedFunction.C Self "parent_mut" parent_mut.
+    Proof.
     Admitted.
     Global Typeclasses Opaque parent_mut.
     
@@ -4258,6 +4271,7 @@ Module loop_summary.
       end.
     
     Global Instance AssociatedFunction_depth : M.IsAssociatedFunction.C Self "depth" depth.
+    Proof.
     Admitted.
     Global Typeclasses Opaque depth.
     
@@ -4337,6 +4351,7 @@ Module loop_summary.
     
     Global Instance AssociatedFunction_depth_mut :
       M.IsAssociatedFunction.C Self "depth_mut" depth_mut.
+    Proof.
     Admitted.
     Global Typeclasses Opaque depth_mut.
   End Impl_move_bytecode_verifier_loop_summary_LoopPartition.
@@ -4387,6 +4402,7 @@ Module loop_summary.
       end.
     
     Global Instance AssociatedFunction_bump : M.IsAssociatedFunction.C Self "bump" bump.
+    Proof.
     Admitted.
     Global Typeclasses Opaque bump.
   End Impl_move_bytecode_verifier_loop_summary_NodeId.

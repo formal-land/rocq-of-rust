@@ -86,6 +86,7 @@ Module Impl_enums_type_aliases_v2_VeryVerboseEnumOfThingsToDoWithNumbers.
     end.
   
   Global Instance AssociatedFunction_run : M.IsAssociatedFunction.C Self "run" run.
+  Proof.
   Admitted.
   Global Typeclasses Opaque run.
 End Impl_enums_type_aliases_v2_VeryVerboseEnumOfThingsToDoWithNumbers.

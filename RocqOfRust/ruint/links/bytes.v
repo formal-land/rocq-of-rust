@@ -16,6 +16,7 @@ Module Impl_Uint.
     Run.Trait
       (bytes.Impl_ruint_Uint_BITS_LIMBS.to_be_bytes (φ BITS) (φ LIMBS)) [ φ BYTES ] [] [ φ x ]
       (array.t u8 BYTES).
+  Proof.
   Admitted.
   Global Opaque run_to_be_bytes.
 
@@ -26,6 +27,7 @@ Module Impl_Uint.
     Run.Trait
       (bytes.Impl_ruint_Uint_BITS_LIMBS.from_be_bytes (φ BITS) (φ LIMBS)) [ φ BYTES ] [] [ φ bytes ]
       (Self BITS LIMBS).
+  Proof.
   Admitted.
   Global Opaque run_from_be_bytes.
 
@@ -36,6 +38,7 @@ Module Impl_Uint.
     Run.Trait
       (bytes.Impl_ruint_Uint_BITS_LIMBS.try_from_be_slice (φ BITS) (φ LIMBS)) [] [] [ φ bytes ]
       (option (Self BITS LIMBS)).
+  Proof.
   Admitted.
   Global Opaque run_try_from_be_slice.
 End Impl_Uint.

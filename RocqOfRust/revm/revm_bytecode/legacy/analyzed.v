@@ -1184,6 +1184,7 @@ Module legacy.
         end.
       
       Global Instance AssociatedFunction_analyze : M.IsAssociatedFunction.C Self "analyze" analyze.
+      Proof.
       Admitted.
       Global Typeclasses Opaque analyze.
       
@@ -1442,6 +1443,7 @@ Module legacy.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -1480,6 +1482,7 @@ Module legacy.
       
       Global Instance AssociatedFunction_bytecode :
         M.IsAssociatedFunction.C Self "bytecode" bytecode.
+      Proof.
       Admitted.
       Global Typeclasses Opaque bytecode.
       
@@ -1512,6 +1515,7 @@ Module legacy.
       
       Global Instance AssociatedFunction_original_len :
         M.IsAssociatedFunction.C Self "original_len" original_len.
+      Proof.
       Admitted.
       Global Typeclasses Opaque original_len.
       
@@ -1570,6 +1574,7 @@ Module legacy.
       
       Global Instance AssociatedFunction_original_bytes :
         M.IsAssociatedFunction.C Self "original_bytes" original_bytes.
+      Proof.
       Admitted.
       Global Typeclasses Opaque original_bytes.
       
@@ -1682,6 +1687,7 @@ Module legacy.
       
       Global Instance AssociatedFunction_original_byte_slice :
         M.IsAssociatedFunction.C Self "original_byte_slice" original_byte_slice.
+      Proof.
       Admitted.
       Global Typeclasses Opaque original_byte_slice.
       
@@ -1720,6 +1726,7 @@ Module legacy.
       
       Global Instance AssociatedFunction_jump_table :
         M.IsAssociatedFunction.C Self "jump_table" jump_table.
+      Proof.
       Admitted.
       Global Typeclasses Opaque jump_table.
     End Impl_revm_bytecode_legacy_analyzed_LegacyAnalyzedBytecode.

@@ -1546,6 +1546,7 @@ Module processor.
     
     Global Instance AssociatedFunction__process_initialize_mint :
       M.IsAssociatedFunction.C Self "_process_initialize_mint" _process_initialize_mint.
+    Proof.
     Admitted.
     Global Typeclasses Opaque _process_initialize_mint.
     
@@ -1605,6 +1606,7 @@ Module processor.
     
     Global Instance AssociatedFunction_process_initialize_mint :
       M.IsAssociatedFunction.C Self "process_initialize_mint" process_initialize_mint.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_initialize_mint.
     
@@ -1664,6 +1666,7 @@ Module processor.
     
     Global Instance AssociatedFunction_process_initialize_mint2 :
       M.IsAssociatedFunction.C Self "process_initialize_mint2" process_initialize_mint2.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_initialize_mint2.
     
@@ -4523,6 +4526,7 @@ Module processor.
     
     Global Instance AssociatedFunction__process_initialize_account :
       M.IsAssociatedFunction.C Self "_process_initialize_account" _process_initialize_account.
+    Proof.
     Admitted.
     Global Typeclasses Opaque _process_initialize_account.
     
@@ -4582,6 +4586,7 @@ Module processor.
     
     Global Instance AssociatedFunction_process_initialize_account :
       M.IsAssociatedFunction.C Self "process_initialize_account" process_initialize_account.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_initialize_account.
     
@@ -4648,6 +4653,7 @@ Module processor.
     
     Global Instance AssociatedFunction_process_initialize_account2 :
       M.IsAssociatedFunction.C Self "process_initialize_account2" process_initialize_account2.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_initialize_account2.
     
@@ -4714,6 +4720,7 @@ Module processor.
     
     Global Instance AssociatedFunction_process_initialize_account3 :
       M.IsAssociatedFunction.C Self "process_initialize_account3" process_initialize_account3.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_initialize_account3.
     
@@ -6660,6 +6667,7 @@ Module processor.
     
     Global Instance AssociatedFunction__process_initialize_multisig :
       M.IsAssociatedFunction.C Self "_process_initialize_multisig" _process_initialize_multisig.
+    Proof.
     Admitted.
     Global Typeclasses Opaque _process_initialize_multisig.
     
@@ -6707,6 +6715,7 @@ Module processor.
     
     Global Instance AssociatedFunction_process_initialize_multisig :
       M.IsAssociatedFunction.C Self "process_initialize_multisig" process_initialize_multisig.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_initialize_multisig.
     
@@ -6754,6 +6763,7 @@ Module processor.
     
     Global Instance AssociatedFunction_process_initialize_multisig2 :
       M.IsAssociatedFunction.C Self "process_initialize_multisig2" process_initialize_multisig2.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_initialize_multisig2.
     
@@ -9057,10 +9067,11 @@ Module processor.
                               "solana_program_option::COption::Some",
                               0
                             |) in
+                          let _ := M.read (| γ0_0 |) in
                           let delegate :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                              γ0_0
+                              M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                             |) in
                           let γ :=
                             M.alloc (|
@@ -11679,6 +11690,7 @@ Module processor.
     
     Global Instance AssociatedFunction_process_transfer :
       M.IsAssociatedFunction.C Self "process_transfer" process_transfer.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_transfer.
     
@@ -13921,6 +13933,7 @@ Module processor.
     
     Global Instance AssociatedFunction_process_approve :
       M.IsAssociatedFunction.C Self "process_approve" process_approve.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_approve.
     
@@ -15192,6 +15205,7 @@ Module processor.
     
     Global Instance AssociatedFunction_process_revoke :
       M.IsAssociatedFunction.C Self "process_revoke" process_revoke.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_revoke.
     
@@ -18789,6 +18803,7 @@ Module processor.
     
     Global Instance AssociatedFunction_process_set_authority :
       M.IsAssociatedFunction.C Self "process_set_authority" process_set_authority.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_set_authority.
     
@@ -21749,6 +21764,7 @@ Module processor.
     
     Global Instance AssociatedFunction_process_mint_to :
       M.IsAssociatedFunction.C Self "process_mint_to" process_mint_to.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_mint_to.
     
@@ -23361,13 +23377,14 @@ Module processor.
                                       "solana_program_option::COption::Some",
                                       0
                                     |) in
+                                  let _ := M.read (| γ0_0 |) in
                                   let delegate :=
                                     M.alloc (|
                                       Ty.apply
                                         (Ty.path "&")
                                         []
                                         [ Ty.path "solana_address::Address" ],
-                                      γ0_0
+                                      M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                                     |) in
                                   let γ :=
                                     M.alloc (|
@@ -25345,6 +25362,7 @@ Module processor.
     
     Global Instance AssociatedFunction_process_burn :
       M.IsAssociatedFunction.C Self "process_burn" process_burn.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_burn.
     
@@ -27195,6 +27213,7 @@ Module processor.
     
     Global Instance AssociatedFunction_process_close_account :
       M.IsAssociatedFunction.C Self "process_close_account" process_close_account.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_close_account.
     
@@ -29175,6 +29194,7 @@ Module processor.
     
     Global Instance AssociatedFunction_process_toggle_freeze_account :
       M.IsAssociatedFunction.C Self "process_toggle_freeze_account" process_toggle_freeze_account.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_toggle_freeze_account.
     
@@ -30479,6 +30499,7 @@ Module processor.
     
     Global Instance AssociatedFunction_process_sync_native :
       M.IsAssociatedFunction.C Self "process_sync_native" process_sync_native.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_sync_native.
     
@@ -31337,6 +31358,7 @@ Module processor.
     
     Global Instance AssociatedFunction_process_get_account_data_size :
       M.IsAssociatedFunction.C Self "process_get_account_data_size" process_get_account_data_size.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_get_account_data_size.
     
@@ -31962,6 +31984,7 @@ Module processor.
         Self
         "process_initialize_immutable_owner"
         process_initialize_immutable_owner.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_initialize_immutable_owner.
     
@@ -32797,6 +32820,7 @@ Module processor.
     
     Global Instance AssociatedFunction_process_amount_to_ui_amount :
       M.IsAssociatedFunction.C Self "process_amount_to_ui_amount" process_amount_to_ui_amount.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_amount_to_ui_amount.
     
@@ -33761,6 +33785,7 @@ Module processor.
     
     Global Instance AssociatedFunction_process_ui_amount_to_amount :
       M.IsAssociatedFunction.C Self "process_ui_amount_to_amount" process_ui_amount_to_amount.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_ui_amount_to_amount.
     
@@ -35442,6 +35467,7 @@ Module processor.
       end.
     
     Global Instance AssociatedFunction_process : M.IsAssociatedFunction.C Self "process" process.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process.
     
@@ -35540,6 +35566,7 @@ Module processor.
     
     Global Instance AssociatedFunction_check_account_owner :
       M.IsAssociatedFunction.C Self "check_account_owner" check_account_owner.
+    Proof.
     Admitted.
     Global Typeclasses Opaque check_account_owner.
     
@@ -35617,6 +35644,7 @@ Module processor.
     
     Global Instance AssociatedFunction_cmp_pubkeys :
       M.IsAssociatedFunction.C Self "cmp_pubkeys" cmp_pubkeys.
+    Proof.
     Admitted.
     Global Typeclasses Opaque cmp_pubkeys.
     
@@ -37099,6 +37127,7 @@ Module processor.
     
     Global Instance AssociatedFunction_validate_owner :
       M.IsAssociatedFunction.C Self "validate_owner" validate_owner.
+    Proof.
     Admitted.
     Global Typeclasses Opaque validate_owner.
   End Impl_spl_token_processor_Processor.
@@ -37349,6 +37378,7 @@ Module processor.
   
   Global Instance Instance_IsFunction_delete_account :
     M.IsFunction.C "spl_token::processor::delete_account" delete_account.
+  Proof.
   Admitted.
   Global Typeclasses Opaque delete_account.
 End processor.

@@ -1037,5 +1037,6 @@ Definition fmt_list (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M
   end.
 
 Global Instance Instance_IsFunction_fmt_list : M.IsFunction.C "move_core_types::fmt_list" fmt_list.
+Proof.
 Admitted.
 Global Typeclasses Opaque fmt_list.

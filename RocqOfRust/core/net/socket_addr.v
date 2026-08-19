@@ -177,13 +177,14 @@ Module net.
                                 "core::net::socket_addr::SocketAddr::V4",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "core::net::socket_addr::SocketAddrV4" ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
@@ -192,13 +193,14 @@ Module net.
                                 "core::net::socket_addr::SocketAddr::V4",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "core::net::socket_addr::SocketAddrV4" ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             M.call_closure (|
                               Ty.path "bool",
@@ -235,13 +237,14 @@ Module net.
                                 "core::net::socket_addr::SocketAddr::V6",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "core::net::socket_addr::SocketAddrV6" ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
@@ -250,13 +253,14 @@ Module net.
                                 "core::net::socket_addr::SocketAddr::V6",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
                               M.alloc (|
                                 Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.path "core::net::socket_addr::SocketAddrV6" ],
-                                γ2_0
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                               |) in
                             M.call_closure (|
                               Ty.path "bool",
@@ -411,13 +415,14 @@ Module net.
                             "core::net::socket_addr::SocketAddr::V4",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let __self_0 :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "core::net::socket_addr::SocketAddrV4" ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.call_closure (|
                           Ty.tuple [],
@@ -444,13 +449,14 @@ Module net.
                             "core::net::socket_addr::SocketAddr::V6",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let __self_0 :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "core::net::socket_addr::SocketAddrV6" ],
-                            γ1_0
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                           |) in
                         M.call_closure (|
                           Ty.tuple [],
@@ -547,13 +553,14 @@ Module net.
                             "core::net::socket_addr::SocketAddr::V4",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __self_0 :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "core::net::socket_addr::SocketAddrV4" ],
-                            γ2_0
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                           |) in
                         let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                         let γ2_0 :=
@@ -562,13 +569,14 @@ Module net.
                             "core::net::socket_addr::SocketAddr::V4",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __arg1_0 :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "core::net::socket_addr::SocketAddrV4" ],
-                            γ2_0
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                           |) in
                         M.call_closure (|
                           Ty.apply
@@ -600,13 +608,14 @@ Module net.
                             "core::net::socket_addr::SocketAddr::V6",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __self_0 :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "core::net::socket_addr::SocketAddrV6" ],
-                            γ2_0
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                           |) in
                         let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                         let γ2_0 :=
@@ -615,13 +624,14 @@ Module net.
                             "core::net::socket_addr::SocketAddr::V6",
                             0
                           |) in
+                        let _ := M.read (| γ2_0 |) in
                         let __arg1_0 :=
                           M.alloc (|
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.path "core::net::socket_addr::SocketAddrV6" ],
-                            γ2_0
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                           |) in
                         M.call_closure (|
                           Ty.apply
@@ -785,13 +795,14 @@ Module net.
                                     "core::net::socket_addr::SocketAddr::V4",
                                     0
                                   |) in
+                                let _ := M.read (| γ2_0 |) in
                                 let __self_0 :=
                                   M.alloc (|
                                     Ty.apply
                                       (Ty.path "&")
                                       []
                                       [ Ty.path "core::net::socket_addr::SocketAddrV4" ],
-                                    γ2_0
+                                    M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                   |) in
                                 let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                                 let γ2_0 :=
@@ -800,13 +811,14 @@ Module net.
                                     "core::net::socket_addr::SocketAddr::V4",
                                     0
                                   |) in
+                                let _ := M.read (| γ2_0 |) in
                                 let __arg1_0 :=
                                   M.alloc (|
                                     Ty.apply
                                       (Ty.path "&")
                                       []
                                       [ Ty.path "core::net::socket_addr::SocketAddrV4" ],
-                                    γ2_0
+                                    M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                   |) in
                                 M.call_closure (|
                                   Ty.path "core::cmp::Ordering",
@@ -841,13 +853,14 @@ Module net.
                                     "core::net::socket_addr::SocketAddr::V6",
                                     0
                                   |) in
+                                let _ := M.read (| γ2_0 |) in
                                 let __self_0 :=
                                   M.alloc (|
                                     Ty.apply
                                       (Ty.path "&")
                                       []
                                       [ Ty.path "core::net::socket_addr::SocketAddrV6" ],
-                                    γ2_0
+                                    M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                   |) in
                                 let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                                 let γ2_0 :=
@@ -856,13 +869,14 @@ Module net.
                                     "core::net::socket_addr::SocketAddr::V6",
                                     0
                                   |) in
+                                let _ := M.read (| γ2_0 |) in
                                 let __arg1_0 :=
                                   M.alloc (|
                                     Ty.apply
                                       (Ty.path "&")
                                       []
                                       [ Ty.path "core::net::socket_addr::SocketAddrV6" ],
-                                    γ2_0
+                                    M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                   |) in
                                 M.call_closure (|
                                   Ty.path "core::cmp::Ordering",
@@ -2518,6 +2532,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -2550,13 +2565,14 @@ Module net.
                         "core::net::socket_addr::SocketAddr::V4",
                         0
                       |) in
+                    let _ := M.read (| γ0_0 |) in
                     let a :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "core::net::socket_addr::SocketAddrV4" ],
-                        γ0_0
+                        M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                       |) in
                     Value.StructTuple
                       "core::net::ip_addr::IpAddr::V4"
@@ -2586,13 +2602,14 @@ Module net.
                         "core::net::socket_addr::SocketAddr::V6",
                         0
                       |) in
+                    let _ := M.read (| γ0_0 |) in
                     let a :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "core::net::socket_addr::SocketAddrV6" ],
-                        γ0_0
+                        M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                       |) in
                     Value.StructTuple
                       "core::net::ip_addr::IpAddr::V6"
@@ -2620,6 +2637,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_ip : M.IsAssociatedFunction.C Self "ip" ip.
+      Proof.
       Admitted.
       Global Typeclasses Opaque ip.
       
@@ -2665,13 +2683,14 @@ Module net.
                         "core::net::socket_addr::SocketAddr::V4",
                         0
                       |) in
+                    let _ := M.read (| γ2_0 |) in
                     let a :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&mut")
                           []
                           [ Ty.path "core::net::socket_addr::SocketAddrV4" ],
-                        γ2_0
+                        M.borrow (| Pointer.Kind.MutRef, γ2_0 |)
                       |) in
                     let γ1_0 :=
                       M.SubPointer.get_struct_tuple_field (|
@@ -2704,13 +2723,14 @@ Module net.
                         "core::net::socket_addr::SocketAddr::V6",
                         0
                       |) in
+                    let _ := M.read (| γ2_0 |) in
                     let a :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&mut")
                           []
                           [ Ty.path "core::net::socket_addr::SocketAddrV6" ],
-                        γ2_0
+                        M.borrow (| Pointer.Kind.MutRef, γ2_0 |)
                       |) in
                     let γ1_0 :=
                       M.SubPointer.get_struct_tuple_field (|
@@ -2776,6 +2796,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_set_ip : M.IsAssociatedFunction.C Self "set_ip" set_ip.
+      Proof.
       Admitted.
       Global Typeclasses Opaque set_ip.
       
@@ -2808,13 +2829,14 @@ Module net.
                         "core::net::socket_addr::SocketAddr::V4",
                         0
                       |) in
+                    let _ := M.read (| γ0_0 |) in
                     let a :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "core::net::socket_addr::SocketAddrV4" ],
-                        γ0_0
+                        M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                       |) in
                     M.call_closure (|
                       Ty.path "u16",
@@ -2834,13 +2856,14 @@ Module net.
                         "core::net::socket_addr::SocketAddr::V6",
                         0
                       |) in
+                    let _ := M.read (| γ0_0 |) in
                     let a :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "core::net::socket_addr::SocketAddrV6" ],
-                        γ0_0
+                        M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                       |) in
                     M.call_closure (|
                       Ty.path "u16",
@@ -2858,6 +2881,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_port : M.IsAssociatedFunction.C Self "port" port.
+      Proof.
       Admitted.
       Global Typeclasses Opaque port.
       
@@ -2891,13 +2915,14 @@ Module net.
                         "core::net::socket_addr::SocketAddr::V4",
                         0
                       |) in
+                    let _ := M.read (| γ0_0 |) in
                     let a :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&mut")
                           []
                           [ Ty.path "core::net::socket_addr::SocketAddrV4" ],
-                        γ0_0
+                        M.borrow (| Pointer.Kind.MutRef, γ0_0 |)
                       |) in
                     M.call_closure (|
                       Ty.tuple [],
@@ -2920,13 +2945,14 @@ Module net.
                         "core::net::socket_addr::SocketAddr::V6",
                         0
                       |) in
+                    let _ := M.read (| γ0_0 |) in
                     let a :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&mut")
                           []
                           [ Ty.path "core::net::socket_addr::SocketAddrV6" ],
-                        γ0_0
+                        M.borrow (| Pointer.Kind.MutRef, γ0_0 |)
                       |) in
                     M.call_closure (|
                       Ty.tuple [],
@@ -2948,6 +2974,7 @@ Module net.
       
       Global Instance AssociatedFunction_set_port :
         M.IsAssociatedFunction.C Self "set_port" set_port.
+      Proof.
       Admitted.
       Global Typeclasses Opaque set_port.
       
@@ -2985,6 +3012,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_is_ipv4 : M.IsAssociatedFunction.C Self "is_ipv4" is_ipv4.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_ipv4.
       
@@ -3022,6 +3050,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_is_ipv6 : M.IsAssociatedFunction.C Self "is_ipv6" is_ipv6.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_ipv6.
     End Impl_core_net_socket_addr_SocketAddr.
@@ -3049,6 +3078,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -3083,6 +3113,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_ip : M.IsAssociatedFunction.C Self "ip" ip.
+      Proof.
       Admitted.
       Global Typeclasses Opaque ip.
       
@@ -3117,6 +3148,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_set_ip : M.IsAssociatedFunction.C Self "set_ip" set_ip.
+      Proof.
       Admitted.
       Global Typeclasses Opaque set_ip.
       
@@ -3145,6 +3177,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_port : M.IsAssociatedFunction.C Self "port" port.
+      Proof.
       Admitted.
       Global Typeclasses Opaque port.
       
@@ -3180,6 +3213,7 @@ Module net.
       
       Global Instance AssociatedFunction_set_port :
         M.IsAssociatedFunction.C Self "set_port" set_port.
+      Proof.
       Admitted.
       Global Typeclasses Opaque set_port.
     End Impl_core_net_socket_addr_SocketAddrV4.
@@ -3214,6 +3248,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -3248,6 +3283,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_ip : M.IsAssociatedFunction.C Self "ip" ip.
+      Proof.
       Admitted.
       Global Typeclasses Opaque ip.
       
@@ -3282,6 +3318,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_set_ip : M.IsAssociatedFunction.C Self "set_ip" set_ip.
+      Proof.
       Admitted.
       Global Typeclasses Opaque set_ip.
       
@@ -3310,6 +3347,7 @@ Module net.
         end.
       
       Global Instance AssociatedFunction_port : M.IsAssociatedFunction.C Self "port" port.
+      Proof.
       Admitted.
       Global Typeclasses Opaque port.
       
@@ -3345,6 +3383,7 @@ Module net.
       
       Global Instance AssociatedFunction_set_port :
         M.IsAssociatedFunction.C Self "set_port" set_port.
+      Proof.
       Admitted.
       Global Typeclasses Opaque set_port.
       
@@ -3374,6 +3413,7 @@ Module net.
       
       Global Instance AssociatedFunction_flowinfo :
         M.IsAssociatedFunction.C Self "flowinfo" flowinfo.
+      Proof.
       Admitted.
       Global Typeclasses Opaque flowinfo.
       
@@ -3409,6 +3449,7 @@ Module net.
       
       Global Instance AssociatedFunction_set_flowinfo :
         M.IsAssociatedFunction.C Self "set_flowinfo" set_flowinfo.
+      Proof.
       Admitted.
       Global Typeclasses Opaque set_flowinfo.
       
@@ -3438,6 +3479,7 @@ Module net.
       
       Global Instance AssociatedFunction_scope_id :
         M.IsAssociatedFunction.C Self "scope_id" scope_id.
+      Proof.
       Admitted.
       Global Typeclasses Opaque scope_id.
       
@@ -3473,6 +3515,7 @@ Module net.
       
       Global Instance AssociatedFunction_set_scope_id :
         M.IsAssociatedFunction.C Self "set_scope_id" set_scope_id.
+      Proof.
       Admitted.
       Global Typeclasses Opaque set_scope_id.
     End Impl_core_net_socket_addr_SocketAddrV6.
@@ -3626,13 +3669,14 @@ Module net.
                         "core::net::socket_addr::SocketAddr::V4",
                         0
                       |) in
+                    let _ := M.read (| γ0_0 |) in
                     let a :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "core::net::socket_addr::SocketAddrV4" ],
-                        γ0_0
+                        M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -3661,13 +3705,14 @@ Module net.
                         "core::net::socket_addr::SocketAddr::V6",
                         0
                       |) in
+                    let _ := M.read (| γ0_0 |) in
                     let a :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "core::net::socket_addr::SocketAddrV6" ],
-                        γ0_0
+                        M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply

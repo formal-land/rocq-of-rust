@@ -201,6 +201,7 @@ Module async_iter.
     
     Global Instance Instance_IsFunction_from_iter :
       M.IsFunction.C "core::async_iter::from_iter::from_iter" from_iter.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_iter.
     

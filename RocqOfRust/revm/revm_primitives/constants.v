@@ -7,6 +7,7 @@ Module constants.
   
   Global Instance Instance_IsConstant_value_BLOCK_HASH_HISTORY :
     M.IsFunction.C "revm_primitives::constants::BLOCK_HASH_HISTORY" value_BLOCK_HASH_HISTORY.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_BLOCK_HASH_HISTORY.
   
@@ -52,6 +53,7 @@ Module constants.
   
   Global Instance Instance_IsConstant_value_PRECOMPILE3 :
     M.IsFunction.C "revm_primitives::constants::PRECOMPILE3" value_PRECOMPILE3.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PRECOMPILE3.
   
@@ -60,6 +62,7 @@ Module constants.
   
   Global Instance Instance_IsConstant_value_STACK_LIMIT :
     M.IsFunction.C "revm_primitives::constants::STACK_LIMIT" value_STACK_LIMIT.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_STACK_LIMIT.
   
@@ -68,6 +71,7 @@ Module constants.
   
   Global Instance Instance_IsConstant_value_CALL_STACK_LIMIT :
     M.IsFunction.C "revm_primitives::constants::CALL_STACK_LIMIT" value_CALL_STACK_LIMIT.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_CALL_STACK_LIMIT.
   
@@ -105,6 +109,7 @@ Module constants.
   
   Global Instance Instance_IsConstant_value_KECCAK_EMPTY :
     M.IsFunction.C "revm_primitives::constants::KECCAK_EMPTY" value_KECCAK_EMPTY.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_KECCAK_EMPTY.
 End constants.

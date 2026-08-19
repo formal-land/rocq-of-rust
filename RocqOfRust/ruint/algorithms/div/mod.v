@@ -1362,6 +1362,7 @@ Module algorithms.
       end.
     
     Global Instance Instance_IsFunction_div : M.IsFunction.C "ruint::algorithms::div::div" div.
+    Proof.
     Admitted.
     Global Typeclasses Opaque div.
   End div.

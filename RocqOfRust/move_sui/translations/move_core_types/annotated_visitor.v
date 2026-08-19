@@ -1743,7 +1743,12 @@ Module annotated_visitor.
                       "move_core_types::annotated_visitor::Error::UnexpectedByte",
                       0
                     |) in
-                  let _0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let _0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -1875,7 +1880,12 @@ Module annotated_visitor.
                       "move_core_types::annotated_visitor::Error::TrailingBytes",
                       0
                     |) in
-                  let _0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let _0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -2088,7 +2098,12 @@ Module annotated_visitor.
                       "move_core_types::annotated_visitor::Error::UnexpectedByte",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -2130,8 +2145,12 @@ Module annotated_visitor.
                       "move_core_types::annotated_visitor::Error::TrailingBytes",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -2252,6 +2271,7 @@ Module annotated_visitor.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -2281,6 +2301,7 @@ Module annotated_visitor.
     
     Global Instance AssociatedFunction_element_layout :
       M.IsAssociatedFunction.C Self "element_layout" element_layout.
+    Proof.
     Admitted.
     Global Typeclasses Opaque element_layout.
     
@@ -2309,6 +2330,7 @@ Module annotated_visitor.
       end.
     
     Global Instance AssociatedFunction_len : M.IsAssociatedFunction.C Self "len" len.
+    Proof.
     Admitted.
     Global Typeclasses Opaque len.
     
@@ -2351,6 +2373,7 @@ Module annotated_visitor.
     
     Global Instance AssociatedFunction_has_element :
       M.IsAssociatedFunction.C Self "has_element" has_element.
+    Proof.
     Admitted.
     Global Typeclasses Opaque has_element.
     
@@ -2795,6 +2818,7 @@ Module annotated_visitor.
     
     Global Instance AssociatedFunction_next_element :
       M.IsAssociatedFunction.C Self "next_element" next_element.
+    Proof.
     Admitted.
     Global Typeclasses Opaque next_element.
     
@@ -2913,6 +2937,7 @@ Module annotated_visitor.
     
     Global Instance AssociatedFunction_skip_element :
       M.IsAssociatedFunction.C Self "skip_element" skip_element.
+    Proof.
     Admitted.
     Global Typeclasses Opaque skip_element.
   End Impl_move_core_types_annotated_visitor_VecDriver.
@@ -2962,6 +2987,7 @@ Module annotated_visitor.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -2994,6 +3020,7 @@ Module annotated_visitor.
     
     Global Instance AssociatedFunction_struct_layout :
       M.IsAssociatedFunction.C Self "struct_layout" struct_layout.
+    Proof.
     Admitted.
     Global Typeclasses Opaque struct_layout.
     
@@ -3097,6 +3124,7 @@ Module annotated_visitor.
     
     Global Instance AssociatedFunction_peek_field :
       M.IsAssociatedFunction.C Self "peek_field" peek_field.
+    Proof.
     Admitted.
     Global Typeclasses Opaque peek_field.
     
@@ -3701,6 +3729,7 @@ Module annotated_visitor.
     
     Global Instance AssociatedFunction_next_field :
       M.IsAssociatedFunction.C Self "next_field" next_field.
+    Proof.
     Admitted.
     Global Typeclasses Opaque next_field.
     
@@ -4029,6 +4058,7 @@ Module annotated_visitor.
     
     Global Instance AssociatedFunction_skip_field :
       M.IsAssociatedFunction.C Self "skip_field" skip_field.
+    Proof.
     Admitted.
     Global Typeclasses Opaque skip_field.
   End Impl_move_core_types_annotated_visitor_StructDriver.
@@ -6341,6 +6371,7 @@ Module annotated_visitor.
                         "move_core_types::annotated_value::MoveTypeLayout::Vector",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let l :=
                       M.alloc (|
                         Ty.apply
@@ -6355,7 +6386,7 @@ Module annotated_visitor.
                                 Ty.path "alloc::alloc::Global"
                               ]
                           ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.read (|
                       let~ len : Ty.path "u64" :=
@@ -7095,13 +7126,14 @@ Module annotated_visitor.
                         "move_core_types::annotated_value::MoveTypeLayout::Struct",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let l :=
                       M.alloc (|
                         Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.path "move_core_types::annotated_value::MoveStructLayout" ],
-                        γ1_0
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -7140,6 +7172,7 @@ Module annotated_visitor.
   
   Global Instance Instance_IsFunction_visit_value :
     M.IsFunction.C "move_core_types::annotated_visitor::visit_value" visit_value.
+  Proof.
   Admitted.
   Global Typeclasses Opaque visit_value.
   
@@ -7790,6 +7823,7 @@ Module annotated_visitor.
   
   Global Instance Instance_IsFunction_visit_struct :
     M.IsFunction.C "move_core_types::annotated_visitor::visit_struct" visit_struct.
+  Proof.
   Admitted.
   Global Typeclasses Opaque visit_struct.
   
@@ -8057,6 +8091,7 @@ Module annotated_visitor.
   
   Global Instance Instance_IsFunction_read_exact :
     M.IsFunction.C "move_core_types::annotated_visitor::read_exact" read_exact.
+  Proof.
   Admitted.
   Global Typeclasses Opaque read_exact.
 End annotated_visitor.

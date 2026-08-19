@@ -115,6 +115,7 @@ Module Impl_SliceIndex_for_Usize.
   Instance run
     (T : Set) `{Link T} :
     SliceIndex.Run usize (list T) T.
+  Proof.
   Admitted.
 End Impl_SliceIndex_for_Usize.
 Export (hints) Impl_SliceIndex_for_Usize.
@@ -131,6 +132,7 @@ Module Impl_SliceIndex_for_RangeTo.
   Instance run
     (T : Set) `{Link T} :
     SliceIndex.Run (Self T) (list T) (Output T).
+  Proof.
   Admitted.
 End Impl_SliceIndex_for_RangeTo.
 Export (hints) Impl_SliceIndex_for_RangeTo.
@@ -150,6 +152,7 @@ Module Impl_SliceIndex_for_Range.
   Instance run
     (T : Set) `{Link T} :
     SliceIndex.Run (Self T) (list T) (Output T).
+  Proof.
   Admitted.
 End Impl_SliceIndex_for_Range.
 Export (hints) Impl_SliceIndex_for_Range.
@@ -168,6 +171,7 @@ Module Impl_Index_for_Slice.
     {Index_Output : Set} `{Link Index_Output}
     (run_SliceIndex_for_I : SliceIndex.Run I (list T) Index_Output) :
     Index.Run (Self T I) I Index_Output.
+  Proof.
   Admitted.
 End Impl_Index_for_Slice.
 Export (hints) Impl_Index_for_Slice.
@@ -186,6 +190,7 @@ Module Impl_IndexMut_for_Slice.
     {Index_Output : Set} `{Link Index_Output}
     (run_SliceIndex_for_I : SliceIndex.Run I (list T) Index_Output) :
     IndexMut.Run (Self T I) I Index_Output.
+  Proof.
   Admitted.
 End Impl_IndexMut_for_Slice.
 Export (hints) Impl_IndexMut_for_Slice.

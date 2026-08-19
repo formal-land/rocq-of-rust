@@ -45,6 +45,7 @@ Module collections.
         Global Instance AssociatedFunction_new :
           forall (T : Ty.t),
           M.IsAssociatedFunction.C (Self T) "new" (new T).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new.
         
@@ -123,6 +124,7 @@ Module collections.
         Global Instance AssociatedFunction_into_slices :
           forall (T : Ty.t),
           M.IsAssociatedFunction.C (Self T) "into_slices" (into_slices T).
+        Proof.
         Admitted.
         Global Typeclasses Opaque into_slices.
         
@@ -202,6 +204,7 @@ Module collections.
         Global Instance AssociatedFunction_as_slices :
           forall (T : Ty.t),
           M.IsAssociatedFunction.C (Self T) "as_slices" (as_slices T).
+        Proof.
         Admitted.
         Global Typeclasses Opaque as_slices.
         
@@ -286,6 +289,7 @@ Module collections.
         Global Instance AssociatedFunction_as_mut_slices :
           forall (T : Ty.t),
           M.IsAssociatedFunction.C (Self T) "as_mut_slices" (as_mut_slices T).
+        Proof.
         Admitted.
         Global Typeclasses Opaque as_mut_slices.
       End Impl_alloc_collections_vec_deque_iter_mut_IterMut_T.

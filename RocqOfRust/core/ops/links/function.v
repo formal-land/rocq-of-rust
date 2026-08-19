@@ -120,6 +120,7 @@ Export (hints) FnMut.
 Module Impl_FnMut_for_Function1.
   Instance run (A Output : Set) `{Link A} `{Link Output} :
       FnMut.Run (Function1.t A Output) A Output.
+  Proof.
   Admitted.
 End Impl_FnMut_for_Function1.
 Export (hints) Impl_FnMut_for_Function1.

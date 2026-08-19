@@ -20,6 +20,7 @@ Definition value_SHORT_ADDRESS_CAP (ε : list Value.t) (τ : list Ty.t) (α : li
 
 Global Instance Instance_IsConstant_value_SHORT_ADDRESS_CAP :
   M.IsFunction.C "revm_primitives::SHORT_ADDRESS_CAP" value_SHORT_ADDRESS_CAP.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_SHORT_ADDRESS_CAP.
 
@@ -288,6 +289,7 @@ Definition short_address (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
 
 Global Instance Instance_IsFunction_short_address :
   M.IsFunction.C "revm_primitives::short_address" short_address.
+Proof.
 Admitted.
 Global Typeclasses Opaque short_address.
 
@@ -297,6 +299,7 @@ Definition value_ONE_ETHER (ε : list Value.t) (τ : list Ty.t) (α : list Value
 
 Global Instance Instance_IsConstant_value_ONE_ETHER :
   M.IsFunction.C "revm_primitives::ONE_ETHER" value_ONE_ETHER.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_ONE_ETHER.
 
@@ -305,5 +308,6 @@ Definition value_ONE_GWEI (ε : list Value.t) (τ : list Ty.t) (α : list Value.
 
 Global Instance Instance_IsConstant_value_ONE_GWEI :
   M.IsFunction.C "revm_primitives::ONE_GWEI" value_ONE_GWEI.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_ONE_GWEI.

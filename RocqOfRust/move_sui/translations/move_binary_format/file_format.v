@@ -431,6 +431,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_move_binary_format_file_format_ModuleHandleIndex.
@@ -1141,6 +1142,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_move_binary_format_file_format_StructHandleIndex.
@@ -1851,6 +1853,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_move_binary_format_file_format_FunctionHandleIndex.
@@ -2563,6 +2566,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_move_binary_format_file_format_FieldHandleIndex.
@@ -3283,6 +3287,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_move_binary_format_file_format_StructDefInstantiationIndex.
@@ -4009,6 +4014,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_move_binary_format_file_format_FunctionInstantiationIndex.
@@ -4731,6 +4737,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_move_binary_format_file_format_FieldInstantiationIndex.
@@ -5448,6 +5455,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_move_binary_format_file_format_IdentifierIndex.
@@ -6156,6 +6164,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_move_binary_format_file_format_AddressIdentifierIndex.
@@ -6871,6 +6880,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_move_binary_format_file_format_ConstantPoolIndex.
@@ -7579,6 +7589,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_move_binary_format_file_format_SignatureIndex.
@@ -8286,6 +8297,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_move_binary_format_file_format_StructDefinitionIndex.
@@ -9000,6 +9012,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_move_binary_format_file_format_FunctionDefinitionIndex.
@@ -9367,6 +9380,7 @@ Module file_format.
   
   Global Instance Instance_IsFunction_self_module_name :
     M.IsFunction.C "move_binary_format::file_format::self_module_name" self_module_name.
+  Proof.
   Admitted.
   Global Typeclasses Opaque self_module_name.
   
@@ -9383,6 +9397,7 @@ Module file_format.
   
   Global Instance Instance_IsConstant_value_NO_TYPE_ARGUMENTS :
     M.IsFunction.C "move_binary_format::file_format::NO_TYPE_ARGUMENTS" value_NO_TYPE_ARGUMENTS.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_NO_TYPE_ARGUMENTS.
   
@@ -11549,6 +11564,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_type_param_constraints :
       M.IsAssociatedFunction.C Self "type_param_constraints" type_param_constraints.
+    Proof.
     Admitted.
     Global Typeclasses Opaque type_param_constraints.
   End Impl_move_binary_format_file_format_StructHandle.
@@ -14102,6 +14118,7 @@ Module file_format.
                       "move_binary_format::file_format::StructFieldInformation::Declared",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
@@ -14116,7 +14133,7 @@ Module file_format.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::StructFieldInformation::Declared"
@@ -14221,6 +14238,7 @@ Module file_format.
                       "move_binary_format::file_format::StructFieldInformation::Declared",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
@@ -14235,7 +14253,7 @@ Module file_format.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -14431,6 +14449,7 @@ Module file_format.
                               "move_binary_format::file_format::StructFieldInformation::Declared",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
@@ -14445,7 +14464,7 @@ Module file_format.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -14454,6 +14473,7 @@ Module file_format.
                               "move_binary_format::file_format::StructFieldInformation::Declared",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
@@ -14468,7 +14488,7 @@ Module file_format.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -16403,6 +16423,7 @@ Module file_format.
                       "move_binary_format::file_format::StructFieldInformation::Declared",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let fields :=
                     M.alloc (|
                       Ty.apply
@@ -16417,7 +16438,7 @@ Module file_format.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "core::result::Result::Ok"
@@ -16450,6 +16471,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_declared_field_count :
       M.IsAssociatedFunction.C Self "declared_field_count" declared_field_count.
+    Proof.
     Admitted.
     Global Typeclasses Opaque declared_field_count.
     
@@ -16526,6 +16548,7 @@ Module file_format.
                       "move_binary_format::file_format::StructFieldInformation::Declared",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let fields :=
                     M.alloc (|
                       Ty.apply
@@ -16540,7 +16563,7 @@ Module file_format.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -16603,6 +16626,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_field : M.IsAssociatedFunction.C Self "field" field.
+    Proof.
     Admitted.
     Global Typeclasses Opaque field.
     
@@ -16688,6 +16712,7 @@ Module file_format.
                       "move_binary_format::file_format::StructFieldInformation::Declared",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let fields :=
                     M.alloc (|
                       Ty.apply
@@ -16702,7 +16727,7 @@ Module file_format.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "core::option::Option::Some"
@@ -16758,6 +16783,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_fields : M.IsAssociatedFunction.C Self "fields" fields.
+    Proof.
     Admitted.
     Global Typeclasses Opaque fields.
   End Impl_move_binary_format_file_format_StructDefinition.
@@ -17773,6 +17799,7 @@ Module file_format.
     
     Global Instance AssociatedConstant_value_DEPRECATED_SCRIPT :
       M.IsAssociatedFunction.C Self "DEPRECATED_SCRIPT" value_DEPRECATED_SCRIPT.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_DEPRECATED_SCRIPT.
   End Impl_move_binary_format_file_format_Visibility.
@@ -18830,6 +18857,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_is_native :
       M.IsAssociatedFunction.C Self "is_native" is_native.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_native.
     
@@ -18844,6 +18872,7 @@ Module file_format.
     
     Global Instance AssociatedConstant_value_DEPRECATED_PUBLIC_BIT :
       M.IsAssociatedFunction.C Self "DEPRECATED_PUBLIC_BIT" value_DEPRECATED_PUBLIC_BIT.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_DEPRECATED_PUBLIC_BIT.
     
@@ -18854,6 +18883,7 @@ Module file_format.
     
     Global Instance AssociatedConstant_value_NATIVE :
       M.IsAssociatedFunction.C Self "NATIVE" value_NATIVE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_NATIVE.
     
@@ -18864,6 +18894,7 @@ Module file_format.
     
     Global Instance AssociatedConstant_value_ENTRY :
       M.IsAssociatedFunction.C Self "ENTRY" value_ENTRY.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ENTRY.
   End Impl_move_binary_format_file_format_FunctionDefinition.
@@ -20555,6 +20586,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_len : M.IsAssociatedFunction.C Self "len" len.
+    Proof.
     Admitted.
     Global Typeclasses Opaque len.
     
@@ -20601,6 +20633,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_is_empty : M.IsAssociatedFunction.C Self "is_empty" is_empty.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_empty.
   End Impl_move_binary_format_file_format_Signature.
@@ -21173,6 +21206,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_from_u8 : M.IsAssociatedFunction.C Self "from_u8" from_u8.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_u8.
     
@@ -21221,6 +21255,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_requires : M.IsAssociatedFunction.C Self "requires" requires.
+    Proof.
     Admitted.
     Global Typeclasses Opaque requires.
     
@@ -21358,6 +21393,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_required_by :
       M.IsAssociatedFunction.C Self "required_by" required_by.
+    Proof.
     Admitted.
     Global Typeclasses Opaque required_by.
   End Impl_move_binary_format_file_format_Ability.
@@ -21843,6 +21879,7 @@ Module file_format.
     
     Global Instance AssociatedConstant_value_EMPTY :
       M.IsAssociatedFunction.C Self "EMPTY" value_EMPTY.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_EMPTY.
     
@@ -21922,6 +21959,7 @@ Module file_format.
     
     Global Instance AssociatedConstant_value_PRIMITIVES :
       M.IsAssociatedFunction.C Self "PRIMITIVES" value_PRIMITIVES.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PRIMITIVES.
     
@@ -21977,6 +22015,7 @@ Module file_format.
     
     Global Instance AssociatedConstant_value_REFERENCES :
       M.IsAssociatedFunction.C Self "REFERENCES" value_REFERENCES.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_REFERENCES.
     
@@ -22011,6 +22050,7 @@ Module file_format.
     
     Global Instance AssociatedConstant_value_SIGNER :
       M.IsAssociatedFunction.C Self "SIGNER" value_SIGNER.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SIGNER.
     
@@ -22090,6 +22130,7 @@ Module file_format.
     
     Global Instance AssociatedConstant_value_VECTOR :
       M.IsAssociatedFunction.C Self "VECTOR" value_VECTOR.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_VECTOR.
     
@@ -22194,6 +22235,7 @@ Module file_format.
         |))).
     
     Global Instance AssociatedConstant_value_ALL : M.IsAssociatedFunction.C Self "ALL" value_ALL.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ALL.
     
@@ -22218,6 +22260,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_singleton :
       M.IsAssociatedFunction.C Self "singleton" singleton.
+    Proof.
     Admitted.
     Global Typeclasses Opaque singleton.
     
@@ -22266,6 +22309,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_has_ability :
       M.IsAssociatedFunction.C Self "has_ability" has_ability.
+    Proof.
     Admitted.
     Global Typeclasses Opaque has_ability.
     
@@ -22296,6 +22340,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_has_copy : M.IsAssociatedFunction.C Self "has_copy" has_copy.
+    Proof.
     Admitted.
     Global Typeclasses Opaque has_copy.
     
@@ -22326,6 +22371,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_has_drop : M.IsAssociatedFunction.C Self "has_drop" has_drop.
+    Proof.
     Admitted.
     Global Typeclasses Opaque has_drop.
     
@@ -22357,6 +22403,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_has_store :
       M.IsAssociatedFunction.C Self "has_store" has_store.
+    Proof.
     Admitted.
     Global Typeclasses Opaque has_store.
     
@@ -22387,6 +22434,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_has_key : M.IsAssociatedFunction.C Self "has_key" has_key.
+    Proof.
     Admitted.
     Global Typeclasses Opaque has_key.
     
@@ -22430,6 +22478,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_remove : M.IsAssociatedFunction.C Self "remove" remove.
+    Proof.
     Admitted.
     Global Typeclasses Opaque remove.
     
@@ -22475,6 +22524,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_intersect :
       M.IsAssociatedFunction.C Self "intersect" intersect.
+    Proof.
     Admitted.
     Global Typeclasses Opaque intersect.
     
@@ -22519,6 +22569,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_union : M.IsAssociatedFunction.C Self "union" union.
+    Proof.
     Admitted.
     Global Typeclasses Opaque union.
     
@@ -22550,6 +22601,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_is_subset_bits :
       M.IsAssociatedFunction.C Self "is_subset_bits" is_subset_bits.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_subset_bits.
     
@@ -22594,6 +22646,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_is_subset :
       M.IsAssociatedFunction.C Self "is_subset" is_subset.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_subset.
     
@@ -23165,10 +23218,11 @@ Module file_format.
                                                   M.SubPointer.get_tuple_field (| γ, 0 |) in
                                                 let γ1_1 :=
                                                   M.SubPointer.get_tuple_field (| γ, 1 |) in
+                                                let _ := M.read (| γ1_1 |) in
                                                 let is_phantom :=
                                                   M.alloc (|
                                                     Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
-                                                    γ1_1
+                                                    M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                                                   |) in
                                                 M.call_closure (|
                                                   Ty.path "bool",
@@ -23451,6 +23505,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_polymorphic_abilities :
       M.IsAssociatedFunction.C Self "polymorphic_abilities" polymorphic_abilities.
+    Proof.
     Admitted.
     Global Typeclasses Opaque polymorphic_abilities.
     
@@ -23533,6 +23588,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_from_u8 : M.IsAssociatedFunction.C Self "from_u8" from_u8.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_u8.
     
@@ -23557,6 +23613,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_into_u8 : M.IsAssociatedFunction.C Self "into_u8" into_u8.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_u8.
   End Impl_move_binary_format_file_format_AbilitySet.
@@ -24758,6 +24815,7 @@ Module file_format.
                       "move_binary_format::file_format::SignatureToken::Vector",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
@@ -24772,7 +24830,7 @@ Module file_format.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::SignatureToken::Vector"
@@ -24814,13 +24872,14 @@ Module file_format.
                       "move_binary_format::file_format::SignatureToken::Struct",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::StructHandleIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::SignatureToken::Struct"
@@ -24850,6 +24909,7 @@ Module file_format.
                       "move_binary_format::file_format::SignatureToken::StructInstantiation",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
@@ -24874,7 +24934,7 @@ Module file_format.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::SignatureToken::StructInstantiation"
@@ -24936,6 +24996,7 @@ Module file_format.
                       "move_binary_format::file_format::SignatureToken::Reference",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
@@ -24950,7 +25011,7 @@ Module file_format.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::SignatureToken::Reference"
@@ -24992,6 +25053,7 @@ Module file_format.
                       "move_binary_format::file_format::SignatureToken::MutableReference",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
@@ -25006,7 +25068,7 @@ Module file_format.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::SignatureToken::MutableReference"
@@ -25048,7 +25110,12 @@ Module file_format.
                       "move_binary_format::file_format::SignatureToken::TypeParameter",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "move_binary_format::file_format::SignatureToken::TypeParameter"
                     []
@@ -25262,6 +25329,7 @@ Module file_format.
                           "move_binary_format::file_format::SignatureToken::Vector",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
@@ -25276,7 +25344,7 @@ Module file_format.
                                   Ty.path "alloc::alloc::Global"
                                 ]
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -25309,13 +25377,14 @@ Module file_format.
                           "move_binary_format::file_format::SignatureToken::Struct",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_binary_format::file_format::StructHandleIndex" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -25342,6 +25411,7 @@ Module file_format.
                           "move_binary_format::file_format::SignatureToken::StructInstantiation",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
@@ -25366,7 +25436,7 @@ Module file_format.
                                   Ty.path "alloc::alloc::Global"
                                 ]
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -25409,6 +25479,7 @@ Module file_format.
                           "move_binary_format::file_format::SignatureToken::Reference",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
@@ -25423,7 +25494,7 @@ Module file_format.
                                   Ty.path "alloc::alloc::Global"
                                 ]
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -25456,6 +25527,7 @@ Module file_format.
                           "move_binary_format::file_format::SignatureToken::MutableReference",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
@@ -25470,7 +25542,7 @@ Module file_format.
                                   Ty.path "alloc::alloc::Global"
                                 ]
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -25503,8 +25575,12 @@ Module file_format.
                           "move_binary_format::file_format::SignatureToken::TypeParameter",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_0 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
                       M.call_closure (|
                         Ty.tuple [],
                         M.get_trait_method (|
@@ -25644,6 +25720,7 @@ Module file_format.
                                   "move_binary_format::file_format::SignatureToken::Vector",
                                   0
                                 |) in
+                              let _ := M.read (| γ2_0 |) in
                               let __self_0 :=
                                 M.alloc (|
                                   Ty.apply
@@ -25658,7 +25735,7 @@ Module file_format.
                                           Ty.path "alloc::alloc::Global"
                                         ]
                                     ],
-                                  γ2_0
+                                  M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                 |) in
                               let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                               let γ2_0 :=
@@ -25667,6 +25744,7 @@ Module file_format.
                                   "move_binary_format::file_format::SignatureToken::Vector",
                                   0
                                 |) in
+                              let _ := M.read (| γ2_0 |) in
                               let __arg1_0 :=
                                 M.alloc (|
                                   Ty.apply
@@ -25681,7 +25759,7 @@ Module file_format.
                                           Ty.path "alloc::alloc::Global"
                                         ]
                                     ],
-                                  γ2_0
+                                  M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                 |) in
                               M.call_closure (|
                                 Ty.path "core::cmp::Ordering",
@@ -25722,6 +25800,7 @@ Module file_format.
                                   "move_binary_format::file_format::SignatureToken::Struct",
                                   0
                                 |) in
+                              let _ := M.read (| γ2_0 |) in
                               let __self_0 :=
                                 M.alloc (|
                                   Ty.apply
@@ -25729,7 +25808,7 @@ Module file_format.
                                     []
                                     [ Ty.path "move_binary_format::file_format::StructHandleIndex"
                                     ],
-                                  γ2_0
+                                  M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                 |) in
                               let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                               let γ2_0 :=
@@ -25738,6 +25817,7 @@ Module file_format.
                                   "move_binary_format::file_format::SignatureToken::Struct",
                                   0
                                 |) in
+                              let _ := M.read (| γ2_0 |) in
                               let __arg1_0 :=
                                 M.alloc (|
                                   Ty.apply
@@ -25745,7 +25825,7 @@ Module file_format.
                                     []
                                     [ Ty.path "move_binary_format::file_format::StructHandleIndex"
                                     ],
-                                  γ2_0
+                                  M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                 |) in
                               M.call_closure (|
                                 Ty.path "core::cmp::Ordering",
@@ -25780,6 +25860,7 @@ Module file_format.
                                   "move_binary_format::file_format::SignatureToken::StructInstantiation",
                                   0
                                 |) in
+                              let _ := M.read (| γ2_0 |) in
                               let __self_0 :=
                                 M.alloc (|
                                   Ty.apply
@@ -25806,7 +25887,7 @@ Module file_format.
                                           Ty.path "alloc::alloc::Global"
                                         ]
                                     ],
-                                  γ2_0
+                                  M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                 |) in
                               let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                               let γ2_0 :=
@@ -25815,6 +25896,7 @@ Module file_format.
                                   "move_binary_format::file_format::SignatureToken::StructInstantiation",
                                   0
                                 |) in
+                              let _ := M.read (| γ2_0 |) in
                               let __arg1_0 :=
                                 M.alloc (|
                                   Ty.apply
@@ -25841,7 +25923,7 @@ Module file_format.
                                           Ty.path "alloc::alloc::Global"
                                         ]
                                     ],
-                                  γ2_0
+                                  M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                 |) in
                               M.call_closure (|
                                 Ty.path "core::cmp::Ordering",
@@ -25894,6 +25976,7 @@ Module file_format.
                                   "move_binary_format::file_format::SignatureToken::Reference",
                                   0
                                 |) in
+                              let _ := M.read (| γ2_0 |) in
                               let __self_0 :=
                                 M.alloc (|
                                   Ty.apply
@@ -25908,7 +25991,7 @@ Module file_format.
                                           Ty.path "alloc::alloc::Global"
                                         ]
                                     ],
-                                  γ2_0
+                                  M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                 |) in
                               let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                               let γ2_0 :=
@@ -25917,6 +26000,7 @@ Module file_format.
                                   "move_binary_format::file_format::SignatureToken::Reference",
                                   0
                                 |) in
+                              let _ := M.read (| γ2_0 |) in
                               let __arg1_0 :=
                                 M.alloc (|
                                   Ty.apply
@@ -25931,7 +26015,7 @@ Module file_format.
                                           Ty.path "alloc::alloc::Global"
                                         ]
                                     ],
-                                  γ2_0
+                                  M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                 |) in
                               M.call_closure (|
                                 Ty.path "core::cmp::Ordering",
@@ -25972,6 +26056,7 @@ Module file_format.
                                   "move_binary_format::file_format::SignatureToken::MutableReference",
                                   0
                                 |) in
+                              let _ := M.read (| γ2_0 |) in
                               let __self_0 :=
                                 M.alloc (|
                                   Ty.apply
@@ -25986,7 +26071,7 @@ Module file_format.
                                           Ty.path "alloc::alloc::Global"
                                         ]
                                     ],
-                                  γ2_0
+                                  M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                 |) in
                               let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                               let γ2_0 :=
@@ -25995,6 +26080,7 @@ Module file_format.
                                   "move_binary_format::file_format::SignatureToken::MutableReference",
                                   0
                                 |) in
+                              let _ := M.read (| γ2_0 |) in
                               let __arg1_0 :=
                                 M.alloc (|
                                   Ty.apply
@@ -26009,7 +26095,7 @@ Module file_format.
                                           Ty.path "alloc::alloc::Global"
                                         ]
                                     ],
-                                  γ2_0
+                                  M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                 |) in
                               M.call_closure (|
                                 Ty.path "core::cmp::Ordering",
@@ -26050,8 +26136,12 @@ Module file_format.
                                   "move_binary_format::file_format::SignatureToken::TypeParameter",
                                   0
                                 |) in
+                              let _ := M.read (| γ2_0 |) in
                               let __self_0 :=
-                                M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ2_0 |) in
+                                M.alloc (|
+                                  Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                                  M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                                |) in
                               let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                               let γ2_0 :=
                                 M.SubPointer.get_struct_tuple_field (|
@@ -26059,8 +26149,12 @@ Module file_format.
                                   "move_binary_format::file_format::SignatureToken::TypeParameter",
                                   0
                                 |) in
+                              let _ := M.read (| γ2_0 |) in
                               let __arg1_0 :=
-                                M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ2_0 |) in
+                                M.alloc (|
+                                  Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                                  M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                                |) in
                               M.call_closure (|
                                 Ty.path "core::cmp::Ordering",
                                 M.get_trait_method (|
@@ -26202,6 +26296,7 @@ Module file_format.
                               "move_binary_format::file_format::SignatureToken::Vector",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
@@ -26216,7 +26311,7 @@ Module file_format.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -26225,6 +26320,7 @@ Module file_format.
                               "move_binary_format::file_format::SignatureToken::Vector",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
@@ -26239,7 +26335,7 @@ Module file_format.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -26292,13 +26388,14 @@ Module file_format.
                               "move_binary_format::file_format::SignatureToken::Struct",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_binary_format::file_format::StructHandleIndex" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -26307,13 +26404,14 @@ Module file_format.
                               "move_binary_format::file_format::SignatureToken::Struct",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_binary_format::file_format::StructHandleIndex" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -26350,6 +26448,7 @@ Module file_format.
                               "move_binary_format::file_format::SignatureToken::StructInstantiation",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
@@ -26376,7 +26475,7 @@ Module file_format.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -26385,6 +26484,7 @@ Module file_format.
                               "move_binary_format::file_format::SignatureToken::StructInstantiation",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
@@ -26411,7 +26511,7 @@ Module file_format.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -26488,6 +26588,7 @@ Module file_format.
                               "move_binary_format::file_format::SignatureToken::Reference",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
@@ -26502,7 +26603,7 @@ Module file_format.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -26511,6 +26612,7 @@ Module file_format.
                               "move_binary_format::file_format::SignatureToken::Reference",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
@@ -26525,7 +26627,7 @@ Module file_format.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -26578,6 +26680,7 @@ Module file_format.
                               "move_binary_format::file_format::SignatureToken::MutableReference",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
@@ -26592,7 +26695,7 @@ Module file_format.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -26601,6 +26704,7 @@ Module file_format.
                               "move_binary_format::file_format::SignatureToken::MutableReference",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
@@ -26615,7 +26719,7 @@ Module file_format.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -26668,8 +26772,12 @@ Module file_format.
                               "move_binary_format::file_format::SignatureToken::TypeParameter",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -26677,8 +26785,12 @@ Module file_format.
                               "move_binary_format::file_format::SignatureToken::TypeParameter",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -26788,6 +26900,7 @@ Module file_format.
                           "move_binary_format::file_format::SignatureToken::Vector",
                           0
                         |) in
+                      let _ := M.read (| γ2_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
@@ -26802,7 +26915,7 @@ Module file_format.
                                   Ty.path "alloc::alloc::Global"
                                 ]
                             ],
-                          γ2_0
+                          M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                         |) in
                       let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                       let γ2_0 :=
@@ -26811,6 +26924,7 @@ Module file_format.
                           "move_binary_format::file_format::SignatureToken::Vector",
                           0
                         |) in
+                      let _ := M.read (| γ2_0 |) in
                       let __arg1_0 :=
                         M.alloc (|
                           Ty.apply
@@ -26825,7 +26939,7 @@ Module file_format.
                                   Ty.path "alloc::alloc::Global"
                                 ]
                             ],
-                          γ2_0
+                          M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -26871,13 +26985,14 @@ Module file_format.
                           "move_binary_format::file_format::SignatureToken::Struct",
                           0
                         |) in
+                      let _ := M.read (| γ2_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_binary_format::file_format::StructHandleIndex" ],
-                          γ2_0
+                          M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                         |) in
                       let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                       let γ2_0 :=
@@ -26886,13 +27001,14 @@ Module file_format.
                           "move_binary_format::file_format::SignatureToken::Struct",
                           0
                         |) in
+                      let _ := M.read (| γ2_0 |) in
                       let __arg1_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_binary_format::file_format::StructHandleIndex" ],
-                          γ2_0
+                          M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -26924,6 +27040,7 @@ Module file_format.
                           "move_binary_format::file_format::SignatureToken::StructInstantiation",
                           0
                         |) in
+                      let _ := M.read (| γ2_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
@@ -26948,7 +27065,7 @@ Module file_format.
                                   Ty.path "alloc::alloc::Global"
                                 ]
                             ],
-                          γ2_0
+                          M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                         |) in
                       let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                       let γ2_0 :=
@@ -26957,6 +27074,7 @@ Module file_format.
                           "move_binary_format::file_format::SignatureToken::StructInstantiation",
                           0
                         |) in
+                      let _ := M.read (| γ2_0 |) in
                       let __arg1_0 :=
                         M.alloc (|
                           Ty.apply
@@ -26981,7 +27099,7 @@ Module file_format.
                                   Ty.path "alloc::alloc::Global"
                                 ]
                             ],
-                          γ2_0
+                          M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -27047,6 +27165,7 @@ Module file_format.
                           "move_binary_format::file_format::SignatureToken::Reference",
                           0
                         |) in
+                      let _ := M.read (| γ2_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
@@ -27061,7 +27180,7 @@ Module file_format.
                                   Ty.path "alloc::alloc::Global"
                                 ]
                             ],
-                          γ2_0
+                          M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                         |) in
                       let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                       let γ2_0 :=
@@ -27070,6 +27189,7 @@ Module file_format.
                           "move_binary_format::file_format::SignatureToken::Reference",
                           0
                         |) in
+                      let _ := M.read (| γ2_0 |) in
                       let __arg1_0 :=
                         M.alloc (|
                           Ty.apply
@@ -27084,7 +27204,7 @@ Module file_format.
                                   Ty.path "alloc::alloc::Global"
                                 ]
                             ],
-                          γ2_0
+                          M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -27130,6 +27250,7 @@ Module file_format.
                           "move_binary_format::file_format::SignatureToken::MutableReference",
                           0
                         |) in
+                      let _ := M.read (| γ2_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
@@ -27144,7 +27265,7 @@ Module file_format.
                                   Ty.path "alloc::alloc::Global"
                                 ]
                             ],
-                          γ2_0
+                          M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                         |) in
                       let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                       let γ2_0 :=
@@ -27153,6 +27274,7 @@ Module file_format.
                           "move_binary_format::file_format::SignatureToken::MutableReference",
                           0
                         |) in
+                      let _ := M.read (| γ2_0 |) in
                       let __arg1_0 :=
                         M.alloc (|
                           Ty.apply
@@ -27167,7 +27289,7 @@ Module file_format.
                                   Ty.path "alloc::alloc::Global"
                                 ]
                             ],
-                          γ2_0
+                          M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -27213,8 +27335,12 @@ Module file_format.
                           "move_binary_format::file_format::SignatureToken::TypeParameter",
                           0
                         |) in
+                      let _ := M.read (| γ2_0 |) in
                       let __self_0 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ2_0 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                          M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                        |) in
                       let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                       let γ2_0 :=
                         M.SubPointer.get_struct_tuple_field (|
@@ -27222,8 +27348,12 @@ Module file_format.
                           "move_binary_format::file_format::SignatureToken::TypeParameter",
                           0
                         |) in
+                      let _ := M.read (| γ2_0 |) in
                       let __arg1_0 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ2_0 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                          M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                        |) in
                       M.call_closure (|
                         Ty.apply
                           (Ty.path "core::option::Option")
@@ -27458,6 +27588,7 @@ Module file_format.
                                           "move_binary_format::file_format::SignatureToken::Reference",
                                           0
                                         |) in
+                                      let _ := M.read (| γ1_0 |) in
                                       let inner_tok :=
                                         M.alloc (|
                                           Ty.apply
@@ -27473,7 +27604,7 @@ Module file_format.
                                                   Ty.path "alloc::alloc::Global"
                                                 ]
                                             ],
-                                          γ1_0
+                                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                         |) in
                                       Value.Tuple [ inner_tok ]));
                                   fun γ =>
@@ -27485,6 +27616,7 @@ Module file_format.
                                           "move_binary_format::file_format::SignatureToken::MutableReference",
                                           0
                                         |) in
+                                      let _ := M.read (| γ1_0 |) in
                                       let inner_tok :=
                                         M.alloc (|
                                           Ty.apply
@@ -27500,7 +27632,7 @@ Module file_format.
                                                   Ty.path "alloc::alloc::Global"
                                                 ]
                                             ],
-                                          γ1_0
+                                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                         |) in
                                       Value.Tuple [ inner_tok ]));
                                   fun γ =>
@@ -27512,6 +27644,7 @@ Module file_format.
                                           "move_binary_format::file_format::SignatureToken::Vector",
                                           0
                                         |) in
+                                      let _ := M.read (| γ1_0 |) in
                                       let inner_tok :=
                                         M.alloc (|
                                           Ty.apply
@@ -27527,7 +27660,7 @@ Module file_format.
                                                   Ty.path "alloc::alloc::Global"
                                                 ]
                                             ],
-                                          γ1_0
+                                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                         |) in
                                       Value.Tuple [ inner_tok ]))
                                 ],
@@ -27585,6 +27718,7 @@ Module file_format.
                                   "move_binary_format::file_format::SignatureToken::StructInstantiation",
                                   0
                                 |) in
+                              let _ := M.read (| γ1_0 |) in
                               let struct_inst :=
                                 M.alloc (|
                                   Ty.apply
@@ -27611,7 +27745,7 @@ Module file_format.
                                           Ty.path "alloc::alloc::Global"
                                         ]
                                     ],
-                                  γ1_0
+                                  M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                 |) in
                               M.match_operator (|
                                 Ty.tuple [],
@@ -27647,6 +27781,7 @@ Module file_format.
                                       (let γ := M.deref (| M.read (| γ |) |) in
                                       let γ1_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                                       let γ1_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                                      let _ := M.read (| γ1_1 |) in
                                       let inner_toks :=
                                         M.alloc (|
                                           Ty.apply
@@ -27662,7 +27797,7 @@ Module file_format.
                                                   Ty.path "alloc::alloc::Global"
                                                 ]
                                             ],
-                                          γ1_1
+                                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                                         |) in
                                       M.call_closure (|
                                         Ty.tuple [],
@@ -28184,6 +28319,7 @@ Module file_format.
                                           "move_binary_format::file_format::SignatureToken::Reference",
                                           0
                                         |) in
+                                      let _ := M.read (| γ1_0 |) in
                                       let inner_tok :=
                                         M.alloc (|
                                           Ty.apply
@@ -28199,7 +28335,7 @@ Module file_format.
                                                   Ty.path "alloc::alloc::Global"
                                                 ]
                                             ],
-                                          γ1_0
+                                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                         |) in
                                       Value.Tuple [ inner_tok ]));
                                   fun γ =>
@@ -28211,6 +28347,7 @@ Module file_format.
                                           "move_binary_format::file_format::SignatureToken::MutableReference",
                                           0
                                         |) in
+                                      let _ := M.read (| γ1_0 |) in
                                       let inner_tok :=
                                         M.alloc (|
                                           Ty.apply
@@ -28226,7 +28363,7 @@ Module file_format.
                                                   Ty.path "alloc::alloc::Global"
                                                 ]
                                             ],
-                                          γ1_0
+                                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                         |) in
                                       Value.Tuple [ inner_tok ]));
                                   fun γ =>
@@ -28238,6 +28375,7 @@ Module file_format.
                                           "move_binary_format::file_format::SignatureToken::Vector",
                                           0
                                         |) in
+                                      let _ := M.read (| γ1_0 |) in
                                       let inner_tok :=
                                         M.alloc (|
                                           Ty.apply
@@ -28253,7 +28391,7 @@ Module file_format.
                                                   Ty.path "alloc::alloc::Global"
                                                 ]
                                             ],
-                                          γ1_0
+                                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                         |) in
                                       Value.Tuple [ inner_tok ]))
                                 ],
@@ -28328,6 +28466,7 @@ Module file_format.
                                   "move_binary_format::file_format::SignatureToken::StructInstantiation",
                                   0
                                 |) in
+                              let _ := M.read (| γ1_0 |) in
                               let struct_inst :=
                                 M.alloc (|
                                   Ty.apply
@@ -28354,7 +28493,7 @@ Module file_format.
                                           Ty.path "alloc::alloc::Global"
                                         ]
                                     ],
-                                  γ1_0
+                                  M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                 |) in
                               M.match_operator (|
                                 Ty.tuple [],
@@ -28390,6 +28529,7 @@ Module file_format.
                                       (let γ := M.deref (| M.read (| γ |) |) in
                                       let γ1_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                                       let γ1_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                                      let _ := M.read (| γ1_1 |) in
                                       let inner_toks :=
                                         M.alloc (|
                                           Ty.apply
@@ -28405,7 +28545,7 @@ Module file_format.
                                                   Ty.path "alloc::alloc::Global"
                                                 ]
                                             ],
-                                          γ1_1
+                                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                                         |) in
                                       M.call_closure (|
                                         Ty.tuple [],
@@ -29330,6 +29470,7 @@ Module file_format.
                       "move_binary_format::file_format::SignatureToken::Vector",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let boxed :=
                     M.alloc (|
                       Ty.apply
@@ -29344,7 +29485,7 @@ Module file_format.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -29463,13 +29604,14 @@ Module file_format.
                       "move_binary_format::file_format::SignatureToken::Struct",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let idx :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::StructHandleIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -29572,6 +29714,7 @@ Module file_format.
                       "move_binary_format::file_format::SignatureToken::StructInstantiation",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let struct_inst :=
                     M.alloc (|
                       Ty.apply
@@ -29596,7 +29739,7 @@ Module file_format.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.match_operator (|
                     Ty.apply
@@ -29631,14 +29774,16 @@ Module file_format.
                           (let γ := M.deref (| M.read (| γ |) |) in
                           let γ1_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                           let γ1_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                          let _ := M.read (| γ1_0 |) in
                           let idx :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_binary_format::file_format::StructHandleIndex" ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                             |) in
+                          let _ := M.read (| γ1_1 |) in
                           let types :=
                             M.alloc (|
                               Ty.apply
@@ -29653,7 +29798,7 @@ Module file_format.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ1_1
+                              M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                             |) in
                           M.call_closure (|
                             Ty.apply
@@ -29849,6 +29994,7 @@ Module file_format.
                       "move_binary_format::file_format::SignatureToken::Reference",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let boxed :=
                     M.alloc (|
                       Ty.apply
@@ -29863,7 +30009,7 @@ Module file_format.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -29998,6 +30144,7 @@ Module file_format.
                       "move_binary_format::file_format::SignatureToken::MutableReference",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let boxed :=
                     M.alloc (|
                       Ty.apply
@@ -30012,7 +30159,7 @@ Module file_format.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -30154,7 +30301,12 @@ Module file_format.
                       "move_binary_format::file_format::SignatureToken::TypeParameter",
                       0
                     |) in
-                  let idx := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let idx :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -30486,6 +30638,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_signature_token_kind :
       M.IsAssociatedFunction.C Self "signature_token_kind" signature_token_kind.
+    Proof.
     Admitted.
     Global Typeclasses Opaque signature_token_kind.
     
@@ -30696,6 +30849,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_is_integer :
       M.IsAssociatedFunction.C Self "is_integer" is_integer.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_integer.
     
@@ -30763,6 +30917,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_is_reference :
       M.IsAssociatedFunction.C Self "is_reference" is_reference.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_reference.
     
@@ -30807,6 +30962,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_is_mutable_reference :
       M.IsAssociatedFunction.C Self "is_mutable_reference" is_mutable_reference.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_mutable_reference.
     
@@ -30850,6 +31006,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_is_signer :
       M.IsAssociatedFunction.C Self "is_signer" is_signer.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_signer.
     
@@ -30979,6 +31136,7 @@ Module file_format.
                       "move_binary_format::file_format::SignatureToken::Vector",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let inner :=
                     M.alloc (|
                       Ty.apply
@@ -30993,7 +31151,7 @@ Module file_format.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.path "bool",
@@ -31089,6 +31247,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_is_valid_for_constant :
       M.IsAssociatedFunction.C Self "is_valid_for_constant" is_valid_for_constant.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_valid_for_constant.
     
@@ -31135,13 +31294,14 @@ Module file_format.
                       "move_binary_format::file_format::SignatureToken::Struct",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let wrapped :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&mut")
                         []
                         [ Ty.path "move_binary_format::file_format::StructHandleIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                     |) in
                   M.write (| M.deref (| M.read (| wrapped |) |), M.read (| sh_idx |) |)));
               fun γ =>
@@ -31153,6 +31313,7 @@ Module file_format.
                       "move_binary_format::file_format::SignatureToken::StructInstantiation",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let struct_inst :=
                     M.alloc (|
                       Ty.apply
@@ -31177,7 +31338,7 @@ Module file_format.
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                     |) in
                   M.write (|
                     M.SubPointer.get_tuple_field (|
@@ -31277,6 +31438,7 @@ Module file_format.
                               "move_binary_format::file_format::SignatureToken::Reference",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let token :=
                             M.alloc (|
                               Ty.apply
@@ -31291,7 +31453,7 @@ Module file_format.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                             |) in
                           Value.Tuple [ token ]));
                       fun γ =>
@@ -31303,6 +31465,7 @@ Module file_format.
                               "move_binary_format::file_format::SignatureToken::MutableReference",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let token :=
                             M.alloc (|
                               Ty.apply
@@ -31317,7 +31480,7 @@ Module file_format.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                             |) in
                           Value.Tuple [ token ]))
                     ],
@@ -31530,6 +31693,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_debug_set_sh_idx :
       M.IsAssociatedFunction.C Self "debug_set_sh_idx" debug_set_sh_idx.
+    Proof.
     Admitted.
     Global Typeclasses Opaque debug_set_sh_idx.
     
@@ -31697,6 +31861,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_preorder_traversal :
       M.IsAssociatedFunction.C Self "preorder_traversal" preorder_traversal.
+    Proof.
     Admitted.
     Global Typeclasses Opaque preorder_traversal.
     
@@ -31920,6 +32085,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_preorder_traversal_with_depth :
       M.IsAssociatedFunction.C Self "preorder_traversal_with_depth" preorder_traversal_with_depth.
+    Proof.
     Admitted.
     Global Typeclasses Opaque preorder_traversal_with_depth.
   End Impl_move_binary_format_file_format_SignatureToken.
@@ -33412,7 +33578,12 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::BrTrue",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::BrTrue"
                     []
@@ -33441,7 +33612,12 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::BrFalse",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::BrFalse"
                     []
@@ -33470,7 +33646,12 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::Branch",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::Branch"
                     []
@@ -33499,7 +33680,12 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::LdU8",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::LdU8"
                     []
@@ -33528,7 +33714,12 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::LdU64",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::LdU64"
                     []
@@ -33557,6 +33748,7 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::LdU128",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
@@ -33568,7 +33760,7 @@ Module file_format.
                             []
                             [ Ty.path "u128"; Ty.path "alloc::alloc::Global" ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::LdU128"
@@ -33635,13 +33827,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::LdConst",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::ConstantPoolIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::LdConst"
@@ -33689,7 +33882,12 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::CopyLoc",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::CopyLoc"
                     []
@@ -33718,7 +33916,12 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::MoveLoc",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::MoveLoc"
                     []
@@ -33747,7 +33950,12 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::StLoc",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::StLoc"
                     []
@@ -33776,13 +33984,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::Call",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::FunctionHandleIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::Call"
@@ -33812,13 +34021,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::CallGeneric",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::FunctionInstantiationIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::CallGeneric"
@@ -33848,13 +34058,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::Pack",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::StructDefinitionIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::Pack"
@@ -33884,13 +34095,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::PackGeneric",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::StructDefInstantiationIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::PackGeneric"
@@ -33920,13 +34132,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::Unpack",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::StructDefinitionIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::Unpack"
@@ -33956,13 +34169,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::UnpackGeneric",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::StructDefInstantiationIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::UnpackGeneric"
@@ -34027,7 +34241,12 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::MutBorrowLoc",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::MutBorrowLoc"
                     []
@@ -34056,7 +34275,12 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::ImmBorrowLoc",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::ImmBorrowLoc"
                     []
@@ -34085,13 +34309,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::MutBorrowField",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::FieldHandleIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::MutBorrowField"
@@ -34121,13 +34346,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::MutBorrowFieldGeneric",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::FieldInstantiationIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::MutBorrowFieldGeneric"
@@ -34157,13 +34383,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::ImmBorrowField",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::FieldHandleIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::ImmBorrowField"
@@ -34193,13 +34420,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::ImmBorrowFieldGeneric",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::FieldInstantiationIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::ImmBorrowFieldGeneric"
@@ -34364,15 +34592,21 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::VecPack",
                       1
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::VecPack"
                     []
@@ -34414,13 +34648,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::VecLen",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::VecLen"
@@ -34450,13 +34685,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::VecImmBorrow",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::VecImmBorrow"
@@ -34486,13 +34722,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::VecMutBorrow",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::VecMutBorrow"
@@ -34522,13 +34759,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::VecPushBack",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::VecPushBack"
@@ -34558,13 +34796,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::VecPopBack",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::VecPopBack"
@@ -34600,15 +34839,21 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::VecUnpack",
                       1
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::VecUnpack"
                     []
@@ -34650,13 +34895,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::VecSwap",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::VecSwap"
@@ -34686,7 +34932,12 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::LdU16",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::LdU16"
                     []
@@ -34715,7 +34966,12 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::LdU32",
                       0
                     |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::LdU32"
                     []
@@ -34744,6 +35000,7 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::LdU256",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
@@ -34756,7 +35013,7 @@ Module file_format.
                             [ Ty.path "move_core_types::u256::U256"; Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::LdU256"
@@ -34824,13 +35081,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::ExistsDeprecated",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::StructDefinitionIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::ExistsDeprecated"
@@ -34860,13 +35118,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::ExistsGenericDeprecated",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::StructDefInstantiationIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::ExistsGenericDeprecated"
@@ -34896,13 +35155,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::MoveFromDeprecated",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::StructDefinitionIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::MoveFromDeprecated"
@@ -34932,13 +35192,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::MoveFromGenericDeprecated",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::StructDefInstantiationIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::MoveFromGenericDeprecated"
@@ -34968,13 +35229,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::MoveToDeprecated",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::StructDefinitionIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::MoveToDeprecated"
@@ -35004,13 +35266,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::MoveToGenericDeprecated",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::StructDefInstantiationIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::MoveToGenericDeprecated"
@@ -35040,13 +35303,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::MutBorrowGlobalDeprecated",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::StructDefinitionIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::MutBorrowGlobalDeprecated"
@@ -35076,13 +35340,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::MutBorrowGlobalGenericDeprecated",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::StructDefInstantiationIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::MutBorrowGlobalGenericDeprecated"
@@ -35112,13 +35377,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::ImmBorrowGlobalDeprecated",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::StructDefinitionIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::ImmBorrowGlobalDeprecated"
@@ -35148,13 +35414,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::ImmBorrowGlobalGenericDeprecated",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::StructDefInstantiationIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "move_binary_format::file_format::Bytecode::ImmBorrowGlobalGenericDeprecated"
@@ -35249,8 +35516,12 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::BrTrue",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_0 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
                       M.call_closure (|
                         Ty.tuple [],
                         M.get_trait_method (|
@@ -35276,8 +35547,12 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::BrFalse",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_0 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
                       M.call_closure (|
                         Ty.tuple [],
                         M.get_trait_method (|
@@ -35303,8 +35578,12 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::Branch",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_0 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
                       M.call_closure (|
                         Ty.tuple [],
                         M.get_trait_method (|
@@ -35330,8 +35609,12 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::LdU8",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
                       M.call_closure (|
                         Ty.tuple [],
                         M.get_trait_method (|
@@ -35357,8 +35640,12 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::LdU64",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
                       M.call_closure (|
                         Ty.tuple [],
                         M.get_trait_method (|
@@ -35384,6 +35671,7 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::LdU128",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
@@ -35395,7 +35683,7 @@ Module file_format.
                                 []
                                 [ Ty.path "u128"; Ty.path "alloc::alloc::Global" ]
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -35425,13 +35713,14 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::LdConst",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_binary_format::file_format::ConstantPoolIndex" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -35458,8 +35747,12 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::CopyLoc",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
                       M.call_closure (|
                         Ty.tuple [],
                         M.get_trait_method (|
@@ -35485,8 +35778,12 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::MoveLoc",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
                       M.call_closure (|
                         Ty.tuple [],
                         M.get_trait_method (|
@@ -35512,8 +35809,12 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::StLoc",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
                       M.call_closure (|
                         Ty.tuple [],
                         M.get_trait_method (|
@@ -35539,13 +35840,14 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::Call",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_binary_format::file_format::FunctionHandleIndex" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -35572,6 +35874,7 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::CallGeneric",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
@@ -35579,7 +35882,7 @@ Module file_format.
                             []
                             [ Ty.path "move_binary_format::file_format::FunctionInstantiationIndex"
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -35606,13 +35909,14 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::Pack",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_binary_format::file_format::StructDefinitionIndex" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -35639,6 +35943,7 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::PackGeneric",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
@@ -35646,7 +35951,7 @@ Module file_format.
                             []
                             [ Ty.path "move_binary_format::file_format::StructDefInstantiationIndex"
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -35673,13 +35978,14 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::Unpack",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_binary_format::file_format::StructDefinitionIndex" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -35706,6 +36012,7 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::UnpackGeneric",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
@@ -35713,7 +36020,7 @@ Module file_format.
                             []
                             [ Ty.path "move_binary_format::file_format::StructDefInstantiationIndex"
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -35740,8 +36047,12 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::MutBorrowLoc",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
                       M.call_closure (|
                         Ty.tuple [],
                         M.get_trait_method (|
@@ -35767,8 +36078,12 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::ImmBorrowLoc",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
                       M.call_closure (|
                         Ty.tuple [],
                         M.get_trait_method (|
@@ -35794,13 +36109,14 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::MutBorrowField",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_binary_format::file_format::FieldHandleIndex" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -35827,13 +36143,14 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::MutBorrowFieldGeneric",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_binary_format::file_format::FieldInstantiationIndex" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -35860,13 +36177,14 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::ImmBorrowField",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_binary_format::file_format::FieldHandleIndex" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -35893,13 +36211,14 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::ImmBorrowFieldGeneric",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_binary_format::file_format::FieldInstantiationIndex" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -35932,16 +36251,21 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::VecPack",
                           1
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
+                      let _ := M.read (| γ1_1 |) in
                       let __self_1 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                        |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
                           M.call_closure (|
@@ -35989,13 +36313,14 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::VecLen",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -36022,13 +36347,14 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::VecImmBorrow",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -36055,13 +36381,14 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::VecMutBorrow",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -36088,13 +36415,14 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::VecPushBack",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -36121,13 +36449,14 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::VecPopBack",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -36160,16 +36489,21 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::VecUnpack",
                           1
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
+                      let _ := M.read (| γ1_1 |) in
                       let __self_1 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                        |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
                           M.call_closure (|
@@ -36217,13 +36551,14 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::VecSwap",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -36250,8 +36585,12 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::LdU16",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_0 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
                       M.call_closure (|
                         Ty.tuple [],
                         M.get_trait_method (|
@@ -36277,8 +36616,12 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::LdU32",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], γ1_0 |) in
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
                       M.call_closure (|
                         Ty.tuple [],
                         M.get_trait_method (|
@@ -36304,6 +36647,7 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::LdU256",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
@@ -36318,7 +36662,7 @@ Module file_format.
                                   Ty.path "alloc::alloc::Global"
                                 ]
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -36349,13 +36693,14 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::ExistsDeprecated",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_binary_format::file_format::StructDefinitionIndex" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -36382,6 +36727,7 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::ExistsGenericDeprecated",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
@@ -36389,7 +36735,7 @@ Module file_format.
                             []
                             [ Ty.path "move_binary_format::file_format::StructDefInstantiationIndex"
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -36416,13 +36762,14 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::MoveFromDeprecated",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_binary_format::file_format::StructDefinitionIndex" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -36449,6 +36796,7 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::MoveFromGenericDeprecated",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
@@ -36456,7 +36804,7 @@ Module file_format.
                             []
                             [ Ty.path "move_binary_format::file_format::StructDefInstantiationIndex"
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -36483,13 +36831,14 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::MoveToDeprecated",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_binary_format::file_format::StructDefinitionIndex" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -36516,6 +36865,7 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::MoveToGenericDeprecated",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
@@ -36523,7 +36873,7 @@ Module file_format.
                             []
                             [ Ty.path "move_binary_format::file_format::StructDefInstantiationIndex"
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -36550,13 +36900,14 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::MutBorrowGlobalDeprecated",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_binary_format::file_format::StructDefinitionIndex" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -36583,6 +36934,7 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::MutBorrowGlobalGenericDeprecated",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
@@ -36590,7 +36942,7 @@ Module file_format.
                             []
                             [ Ty.path "move_binary_format::file_format::StructDefInstantiationIndex"
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -36617,13 +36969,14 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::ImmBorrowGlobalDeprecated",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_binary_format::file_format::StructDefinitionIndex" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -36650,6 +37003,7 @@ Module file_format.
                           "move_binary_format::file_format::Bytecode::ImmBorrowGlobalGenericDeprecated",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
@@ -36657,7 +37011,7 @@ Module file_format.
                             []
                             [ Ty.path "move_binary_format::file_format::StructDefInstantiationIndex"
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -36874,6 +37228,7 @@ Module file_format.
     
     Global Instance AssociatedConstant_value_VARIANT_COUNT :
       M.IsAssociatedFunction.C Self "VARIANT_COUNT" value_VARIANT_COUNT.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_VARIANT_COUNT.
     (*
@@ -36943,6 +37298,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_is_unconditional_branch :
       M.IsAssociatedFunction.C Self "is_unconditional_branch" is_unconditional_branch.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_unconditional_branch.
     
@@ -37005,6 +37361,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_is_conditional_branch :
       M.IsAssociatedFunction.C Self "is_conditional_branch" is_conditional_branch.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_conditional_branch.
     
@@ -37050,6 +37407,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_is_branch :
       M.IsAssociatedFunction.C Self "is_branch" is_branch.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_branch.
     
@@ -37093,8 +37451,12 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::BrFalse",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let offset :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                            |) in
                           Value.Tuple [ offset ]));
                       fun γ =>
                         ltac:(M.monadic
@@ -37105,8 +37467,12 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::BrTrue",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let offset :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                            |) in
                           Value.Tuple [ offset ]));
                       fun γ =>
                         ltac:(M.monadic
@@ -37117,8 +37483,12 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::Branch",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let offset :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                            |) in
                           Value.Tuple [ offset ]))
                     ],
                     fun γ =>
@@ -37148,6 +37518,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_offset : M.IsAssociatedFunction.C Self "offset" offset.
+    Proof.
     Admitted.
     Global Typeclasses Opaque offset.
     
@@ -37695,6 +38066,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_get_successors :
       M.IsAssociatedFunction.C Self "get_successors" get_successors.
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_successors.
   End Impl_move_binary_format_file_format_Bytecode.
@@ -37787,8 +38159,12 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::BrTrue",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -37796,8 +38172,12 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::BrTrue",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -37825,8 +38205,12 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::BrFalse",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -37834,8 +38218,12 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::BrFalse",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -37863,8 +38251,12 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::Branch",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -37872,8 +38264,12 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::Branch",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -37901,8 +38297,12 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::LdU8",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -37910,8 +38310,12 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::LdU8",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -37939,8 +38343,12 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::LdU64",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -37948,8 +38356,12 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::LdU64",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -37977,6 +38389,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::LdU128",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
@@ -37988,7 +38401,7 @@ Module file_format.
                                     []
                                     [ Ty.path "u128"; Ty.path "alloc::alloc::Global" ]
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -37997,6 +38410,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::LdU128",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
@@ -38008,7 +38422,7 @@ Module file_format.
                                     []
                                     [ Ty.path "u128"; Ty.path "alloc::alloc::Global" ]
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -38055,13 +38469,14 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::LdConst",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_binary_format::file_format::ConstantPoolIndex" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -38070,13 +38485,14 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::LdConst",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_binary_format::file_format::ConstantPoolIndex" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -38113,8 +38529,12 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::CopyLoc",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -38122,8 +38542,12 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::CopyLoc",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -38151,8 +38575,12 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::MoveLoc",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -38160,8 +38588,12 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::MoveLoc",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -38189,8 +38621,12 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::StLoc",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -38198,8 +38634,12 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::StLoc",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -38227,13 +38667,14 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::Call",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_binary_format::file_format::FunctionHandleIndex" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -38242,13 +38683,14 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::Call",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_binary_format::file_format::FunctionHandleIndex" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -38285,6 +38727,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::CallGeneric",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
@@ -38294,7 +38737,7 @@ Module file_format.
                                   Ty.path
                                     "move_binary_format::file_format::FunctionInstantiationIndex"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -38303,6 +38746,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::CallGeneric",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
@@ -38312,7 +38756,7 @@ Module file_format.
                                   Ty.path
                                     "move_binary_format::file_format::FunctionInstantiationIndex"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -38355,6 +38799,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::Pack",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
@@ -38362,7 +38807,7 @@ Module file_format.
                                 []
                                 [ Ty.path "move_binary_format::file_format::StructDefinitionIndex"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -38371,6 +38816,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::Pack",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
@@ -38378,7 +38824,7 @@ Module file_format.
                                 []
                                 [ Ty.path "move_binary_format::file_format::StructDefinitionIndex"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -38417,6 +38863,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::PackGeneric",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
@@ -38426,7 +38873,7 @@ Module file_format.
                                   Ty.path
                                     "move_binary_format::file_format::StructDefInstantiationIndex"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -38435,6 +38882,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::PackGeneric",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
@@ -38444,7 +38892,7 @@ Module file_format.
                                   Ty.path
                                     "move_binary_format::file_format::StructDefInstantiationIndex"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -38487,6 +38935,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::Unpack",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
@@ -38494,7 +38943,7 @@ Module file_format.
                                 []
                                 [ Ty.path "move_binary_format::file_format::StructDefinitionIndex"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -38503,6 +38952,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::Unpack",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
@@ -38510,7 +38960,7 @@ Module file_format.
                                 []
                                 [ Ty.path "move_binary_format::file_format::StructDefinitionIndex"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -38549,6 +38999,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::UnpackGeneric",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
@@ -38558,7 +39009,7 @@ Module file_format.
                                   Ty.path
                                     "move_binary_format::file_format::StructDefInstantiationIndex"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -38567,6 +39018,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::UnpackGeneric",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
@@ -38576,7 +39028,7 @@ Module file_format.
                                   Ty.path
                                     "move_binary_format::file_format::StructDefInstantiationIndex"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -38619,8 +39071,12 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::MutBorrowLoc",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -38628,8 +39084,12 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::MutBorrowLoc",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -38657,8 +39117,12 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::ImmBorrowLoc",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -38666,8 +39130,12 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::ImmBorrowLoc",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -38695,13 +39163,14 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::MutBorrowField",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_binary_format::file_format::FieldHandleIndex" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -38710,13 +39179,14 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::MutBorrowField",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_binary_format::file_format::FieldHandleIndex" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -38753,6 +39223,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::MutBorrowFieldGeneric",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
@@ -38760,7 +39231,7 @@ Module file_format.
                                 []
                                 [ Ty.path "move_binary_format::file_format::FieldInstantiationIndex"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -38769,6 +39240,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::MutBorrowFieldGeneric",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
@@ -38776,7 +39248,7 @@ Module file_format.
                                 []
                                 [ Ty.path "move_binary_format::file_format::FieldInstantiationIndex"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -38817,13 +39289,14 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::ImmBorrowField",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_binary_format::file_format::FieldHandleIndex" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -38832,13 +39305,14 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::ImmBorrowField",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_binary_format::file_format::FieldHandleIndex" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -38875,6 +39349,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::ImmBorrowFieldGeneric",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
@@ -38882,7 +39357,7 @@ Module file_format.
                                 []
                                 [ Ty.path "move_binary_format::file_format::FieldInstantiationIndex"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -38891,6 +39366,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::ImmBorrowFieldGeneric",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
@@ -38898,7 +39374,7 @@ Module file_format.
                                 []
                                 [ Ty.path "move_binary_format::file_format::FieldInstantiationIndex"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -38945,16 +39421,21 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::VecPack",
                               1
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __self_1 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -38968,16 +39449,21 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::VecPack",
                               1
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __arg1_1 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           LogicalOp.and (|
                             M.call_closure (|
                               Ty.path "bool",
@@ -39032,13 +39518,14 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::VecLen",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -39047,13 +39534,14 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::VecLen",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -39090,13 +39578,14 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::VecImmBorrow",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -39105,13 +39594,14 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::VecImmBorrow",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -39148,13 +39638,14 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::VecMutBorrow",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -39163,13 +39654,14 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::VecMutBorrow",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -39206,13 +39698,14 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::VecPushBack",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -39221,13 +39714,14 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::VecPushBack",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -39264,13 +39758,14 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::VecPopBack",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -39279,13 +39774,14 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::VecPopBack",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -39328,16 +39824,21 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::VecUnpack",
                               1
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __self_1 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -39351,16 +39852,21 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::VecUnpack",
                               1
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __arg1_1 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           LogicalOp.and (|
                             M.call_closure (|
                               Ty.path "bool",
@@ -39415,13 +39921,14 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::VecSwap",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -39430,13 +39937,14 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::VecSwap",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -39473,8 +39981,12 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::LdU16",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -39482,8 +39994,12 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::LdU16",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -39511,8 +40027,12 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::LdU32",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_tuple_field (|
@@ -39520,8 +40040,12 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::LdU32",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], γ2_0 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                            |) in
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_trait_method (|
@@ -39549,6 +40073,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::LdU256",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
@@ -39563,7 +40088,7 @@ Module file_format.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -39572,6 +40097,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::LdU256",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
@@ -39586,7 +40112,7 @@ Module file_format.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -39639,6 +40165,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::ExistsDeprecated",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
@@ -39646,7 +40173,7 @@ Module file_format.
                                 []
                                 [ Ty.path "move_binary_format::file_format::StructDefinitionIndex"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -39655,6 +40182,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::ExistsDeprecated",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
@@ -39662,7 +40190,7 @@ Module file_format.
                                 []
                                 [ Ty.path "move_binary_format::file_format::StructDefinitionIndex"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -39701,6 +40229,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::ExistsGenericDeprecated",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
@@ -39710,7 +40239,7 @@ Module file_format.
                                   Ty.path
                                     "move_binary_format::file_format::StructDefInstantiationIndex"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -39719,6 +40248,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::ExistsGenericDeprecated",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
@@ -39728,7 +40258,7 @@ Module file_format.
                                   Ty.path
                                     "move_binary_format::file_format::StructDefInstantiationIndex"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -39771,6 +40301,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::MoveFromDeprecated",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
@@ -39778,7 +40309,7 @@ Module file_format.
                                 []
                                 [ Ty.path "move_binary_format::file_format::StructDefinitionIndex"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -39787,6 +40318,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::MoveFromDeprecated",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
@@ -39794,7 +40326,7 @@ Module file_format.
                                 []
                                 [ Ty.path "move_binary_format::file_format::StructDefinitionIndex"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -39833,6 +40365,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::MoveFromGenericDeprecated",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
@@ -39842,7 +40375,7 @@ Module file_format.
                                   Ty.path
                                     "move_binary_format::file_format::StructDefInstantiationIndex"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -39851,6 +40384,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::MoveFromGenericDeprecated",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
@@ -39860,7 +40394,7 @@ Module file_format.
                                   Ty.path
                                     "move_binary_format::file_format::StructDefInstantiationIndex"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -39903,6 +40437,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::MoveToDeprecated",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
@@ -39910,7 +40445,7 @@ Module file_format.
                                 []
                                 [ Ty.path "move_binary_format::file_format::StructDefinitionIndex"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -39919,6 +40454,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::MoveToDeprecated",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
@@ -39926,7 +40462,7 @@ Module file_format.
                                 []
                                 [ Ty.path "move_binary_format::file_format::StructDefinitionIndex"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -39965,6 +40501,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::MoveToGenericDeprecated",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
@@ -39974,7 +40511,7 @@ Module file_format.
                                   Ty.path
                                     "move_binary_format::file_format::StructDefInstantiationIndex"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -39983,6 +40520,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::MoveToGenericDeprecated",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
@@ -39992,7 +40530,7 @@ Module file_format.
                                   Ty.path
                                     "move_binary_format::file_format::StructDefInstantiationIndex"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -40035,6 +40573,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::MutBorrowGlobalDeprecated",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
@@ -40042,7 +40581,7 @@ Module file_format.
                                 []
                                 [ Ty.path "move_binary_format::file_format::StructDefinitionIndex"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -40051,6 +40590,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::MutBorrowGlobalDeprecated",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
@@ -40058,7 +40598,7 @@ Module file_format.
                                 []
                                 [ Ty.path "move_binary_format::file_format::StructDefinitionIndex"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -40097,6 +40637,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::MutBorrowGlobalGenericDeprecated",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
@@ -40106,7 +40647,7 @@ Module file_format.
                                   Ty.path
                                     "move_binary_format::file_format::StructDefInstantiationIndex"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -40115,6 +40656,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::MutBorrowGlobalGenericDeprecated",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
@@ -40124,7 +40666,7 @@ Module file_format.
                                   Ty.path
                                     "move_binary_format::file_format::StructDefInstantiationIndex"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -40167,6 +40709,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::ImmBorrowGlobalDeprecated",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
@@ -40174,7 +40717,7 @@ Module file_format.
                                 []
                                 [ Ty.path "move_binary_format::file_format::StructDefinitionIndex"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -40183,6 +40726,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::ImmBorrowGlobalDeprecated",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
@@ -40190,7 +40734,7 @@ Module file_format.
                                 []
                                 [ Ty.path "move_binary_format::file_format::StructDefinitionIndex"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -40229,6 +40773,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::ImmBorrowGlobalGenericDeprecated",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
@@ -40238,7 +40783,7 @@ Module file_format.
                                   Ty.path
                                     "move_binary_format::file_format::StructDefInstantiationIndex"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -40247,6 +40792,7 @@ Module file_format.
                               "move_binary_format::file_format::Bytecode::ImmBorrowGlobalGenericDeprecated",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
@@ -40256,7 +40802,7 @@ Module file_format.
                                   Ty.path
                                     "move_binary_format::file_format::StructDefInstantiationIndex"
                                 ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -40483,7 +41029,12 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::BrTrue",
                       0
                     |) in
-                  let a := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let a :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -40573,7 +41124,12 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::BrFalse",
                       0
                     |) in
-                  let a := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let a :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -40663,7 +41219,12 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::Branch",
                       0
                     |) in
-                  let a := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let a :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -40753,7 +41314,12 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::LdU8",
                       0
                     |) in
-                  let a := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let a :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -40841,7 +41407,12 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::LdU16",
                       0
                     |) in
-                  let a := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let a :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -40929,7 +41500,12 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::LdU32",
                       0
                     |) in
-                  let a := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let a :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -41017,7 +41593,12 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::LdU64",
                       0
                     |) in
-                  let a := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let a :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -41105,6 +41686,7 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::LdU128",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let a :=
                     M.alloc (|
                       Ty.apply
@@ -41116,7 +41698,7 @@ Module file_format.
                             []
                             [ Ty.path "u128"; Ty.path "alloc::alloc::Global" ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -41227,6 +41809,7 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::LdU256",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let a :=
                     M.alloc (|
                       Ty.apply
@@ -41239,7 +41822,7 @@ Module file_format.
                             [ Ty.path "move_core_types::u256::U256"; Ty.path "alloc::alloc::Global"
                             ]
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -41554,13 +42137,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::LdConst",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let a :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::ConstantPoolIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -41729,7 +42313,12 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::CopyLoc",
                       0
                     |) in
-                  let a := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let a :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -41819,7 +42408,12 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::MoveLoc",
                       0
                     |) in
-                  let a := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let a :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -41909,7 +42503,12 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::StLoc",
                       0
                     |) in
-                  let a := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let a :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -41999,13 +42598,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::Call",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let a :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::FunctionHandleIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -42110,13 +42710,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::CallGeneric",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let a :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::FunctionInstantiationIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -42241,13 +42842,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::Pack",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let a :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::StructDefinitionIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -42352,13 +42954,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::PackGeneric",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let a :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::StructDefInstantiationIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -42483,13 +43086,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::Unpack",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let a :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::StructDefinitionIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -42596,13 +43200,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::UnpackGeneric",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let a :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::StructDefInstantiationIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -42828,7 +43433,12 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::MutBorrowLoc",
                       0
                     |) in
-                  let a := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let a :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -42937,7 +43547,12 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::ImmBorrowLoc",
                       0
                     |) in
-                  let a := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let a :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -43046,13 +43661,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::MutBorrowField",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let a :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::FieldHandleIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -43176,13 +43792,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::MutBorrowFieldGeneric",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let a :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::FieldInstantiationIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -43317,13 +43934,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::ImmBorrowField",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let a :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::FieldHandleIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -43447,13 +44065,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::ImmBorrowFieldGeneric",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let a :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::FieldInstantiationIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -43588,13 +44207,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::MutBorrowGlobalDeprecated",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let a :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::StructDefinitionIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -43723,13 +44343,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::MutBorrowGlobalGenericDeprecated",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let a :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::StructDefInstantiationIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -43865,13 +44486,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::ImmBorrowGlobalDeprecated",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let a :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::StructDefinitionIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -44000,13 +44622,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::ImmBorrowGlobalGenericDeprecated",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let a :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::StructDefInstantiationIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -44775,13 +45398,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::ExistsDeprecated",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let a :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::StructDefinitionIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -44888,13 +45512,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::ExistsGenericDeprecated",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let a :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::StructDefInstantiationIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -45021,13 +45646,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::MoveFromDeprecated",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let a :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::StructDefinitionIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -45134,13 +45760,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::MoveFromGenericDeprecated",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let a :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::StructDefInstantiationIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -45269,13 +45896,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::MoveToDeprecated",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let a :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::StructDefinitionIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -45382,13 +46010,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::MoveToGenericDeprecated",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let a :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::StructDefInstantiationIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -45521,15 +46150,21 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::VecPack",
                       1
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let a :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
-                  let n := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let n :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -45670,13 +46305,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::VecLen",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let a :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -45777,13 +46413,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::VecImmBorrow",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let a :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -45903,13 +46540,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::VecMutBorrow",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let a :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -46029,13 +46667,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::VecPushBack",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let a :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -46154,13 +46793,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::VecPopBack",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let a :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -46284,15 +46924,21 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::VecUnpack",
                       1
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let a :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
-                  let n := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let n :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -46435,13 +47081,14 @@ Module file_format.
                       "move_binary_format::file_format::Bytecode::VecSwap",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let a :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::SignatureIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -50540,6 +51187,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_kind_count :
       M.IsAssociatedFunction.C Self "kind_count" kind_count.
+    Proof.
     Admitted.
     Global Typeclasses Opaque kind_count.
     
@@ -50572,6 +51220,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_self_handle_idx :
       M.IsAssociatedFunction.C Self "self_handle_idx" self_handle_idx.
+    Proof.
     Admitted.
     Global Typeclasses Opaque self_handle_idx.
     
@@ -50846,6 +51495,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_self_handle :
       M.IsAssociatedFunction.C Self "self_handle" self_handle.
+    Proof.
     Admitted.
     Global Typeclasses Opaque self_handle.
     
@@ -50908,6 +51558,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_name : M.IsAssociatedFunction.C Self "name" name.
+    Proof.
     Admitted.
     Global Typeclasses Opaque name.
     
@@ -50973,6 +51624,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_address : M.IsAssociatedFunction.C Self "address" address.
+    Proof.
     Admitted.
     Global Typeclasses Opaque address.
     
@@ -51077,6 +51729,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_struct_name :
       M.IsAssociatedFunction.C Self "struct_name" struct_name.
+    Proof.
     Admitted.
     Global Typeclasses Opaque struct_name.
     
@@ -51377,6 +52030,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_module_handle_at :
       M.IsAssociatedFunction.C Self "module_handle_at" module_handle_at.
+    Proof.
     Admitted.
     Global Typeclasses Opaque module_handle_at.
     
@@ -51571,6 +52225,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_struct_handle_at :
       M.IsAssociatedFunction.C Self "struct_handle_at" struct_handle_at.
+    Proof.
     Admitted.
     Global Typeclasses Opaque struct_handle_at.
     
@@ -51874,6 +52529,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_function_handle_at :
       M.IsAssociatedFunction.C Self "function_handle_at" function_handle_at.
+    Proof.
     Admitted.
     Global Typeclasses Opaque function_handle_at.
     
@@ -52068,6 +52724,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_field_handle_at :
       M.IsAssociatedFunction.C Self "field_handle_at" field_handle_at.
+    Proof.
     Admitted.
     Global Typeclasses Opaque field_handle_at.
     
@@ -52155,6 +52812,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_struct_instantiation_at :
       M.IsAssociatedFunction.C Self "struct_instantiation_at" struct_instantiation_at.
+    Proof.
     Admitted.
     Global Typeclasses Opaque struct_instantiation_at.
     
@@ -52246,6 +52904,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_function_instantiation_at :
       M.IsAssociatedFunction.C Self "function_instantiation_at" function_instantiation_at.
+    Proof.
     Admitted.
     Global Typeclasses Opaque function_instantiation_at.
     
@@ -52327,6 +52986,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_field_instantiation_at :
       M.IsAssociatedFunction.C Self "field_instantiation_at" field_instantiation_at.
+    Proof.
     Admitted.
     Global Typeclasses Opaque field_instantiation_at.
     
@@ -52407,6 +53067,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_signature_at :
       M.IsAssociatedFunction.C Self "signature_at" signature_at.
+    Proof.
     Admitted.
     Global Typeclasses Opaque signature_at.
     
@@ -52507,6 +53168,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_identifier_at :
       M.IsAssociatedFunction.C Self "identifier_at" identifier_at.
+    Proof.
     Admitted.
     Global Typeclasses Opaque identifier_at.
     
@@ -52588,6 +53250,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_address_identifier_at :
       M.IsAssociatedFunction.C Self "address_identifier_at" address_identifier_at.
+    Proof.
     Admitted.
     Global Typeclasses Opaque address_identifier_at.
     
@@ -52669,6 +53332,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_constant_at :
       M.IsAssociatedFunction.C Self "constant_at" constant_at.
+    Proof.
     Admitted.
     Global Typeclasses Opaque constant_at.
     
@@ -52750,6 +53414,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_struct_def_at :
       M.IsAssociatedFunction.C Self "struct_def_at" struct_def_at.
+    Proof.
     Admitted.
     Global Typeclasses Opaque struct_def_at.
     
@@ -53019,6 +53684,7 @@ Module file_format.
                                                       "core::option::Option::Some",
                                                       0
                                                     |) in
+                                                  let _ := M.read (| γ1_0 |) in
                                                   let code :=
                                                     M.alloc (|
                                                       Ty.apply
@@ -53028,7 +53694,7 @@ Module file_format.
                                                           Ty.path
                                                             "move_binary_format::file_format::CodeUnit"
                                                         ],
-                                                      γ1_0
+                                                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                                     |) in
                                                   M.call_closure (|
                                                     Ty.path "bool",
@@ -53161,6 +53827,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_function_def_at :
       M.IsAssociatedFunction.C Self "function_def_at" function_def_at.
+    Proof.
     Admitted.
     Global Typeclasses Opaque function_def_at.
     
@@ -53232,6 +53899,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_module_handles :
       M.IsAssociatedFunction.C Self "module_handles" module_handles.
+    Proof.
     Admitted.
     Global Typeclasses Opaque module_handles.
     
@@ -53303,6 +53971,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_struct_handles :
       M.IsAssociatedFunction.C Self "struct_handles" struct_handles.
+    Proof.
     Admitted.
     Global Typeclasses Opaque struct_handles.
     
@@ -53374,6 +54043,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_function_handles :
       M.IsAssociatedFunction.C Self "function_handles" function_handles.
+    Proof.
     Admitted.
     Global Typeclasses Opaque function_handles.
     
@@ -53445,6 +54115,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_field_handles :
       M.IsAssociatedFunction.C Self "field_handles" field_handles.
+    Proof.
     Admitted.
     Global Typeclasses Opaque field_handles.
     
@@ -53516,6 +54187,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_struct_instantiations :
       M.IsAssociatedFunction.C Self "struct_instantiations" struct_instantiations.
+    Proof.
     Admitted.
     Global Typeclasses Opaque struct_instantiations.
     
@@ -53587,6 +54259,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_function_instantiations :
       M.IsAssociatedFunction.C Self "function_instantiations" function_instantiations.
+    Proof.
     Admitted.
     Global Typeclasses Opaque function_instantiations.
     
@@ -53658,6 +54331,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_field_instantiations :
       M.IsAssociatedFunction.C Self "field_instantiations" field_instantiations.
+    Proof.
     Admitted.
     Global Typeclasses Opaque field_instantiations.
     
@@ -53729,6 +54403,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_signatures :
       M.IsAssociatedFunction.C Self "signatures" signatures.
+    Proof.
     Admitted.
     Global Typeclasses Opaque signatures.
     
@@ -53800,6 +54475,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_constant_pool :
       M.IsAssociatedFunction.C Self "constant_pool" constant_pool.
+    Proof.
     Admitted.
     Global Typeclasses Opaque constant_pool.
     
@@ -53871,6 +54547,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_identifiers :
       M.IsAssociatedFunction.C Self "identifiers" identifiers.
+    Proof.
     Admitted.
     Global Typeclasses Opaque identifiers.
     
@@ -53942,6 +54619,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_address_identifiers :
       M.IsAssociatedFunction.C Self "address_identifiers" address_identifiers.
+    Proof.
     Admitted.
     Global Typeclasses Opaque address_identifiers.
     
@@ -54013,6 +54691,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_struct_defs :
       M.IsAssociatedFunction.C Self "struct_defs" struct_defs.
+    Proof.
     Admitted.
     Global Typeclasses Opaque struct_defs.
     
@@ -54084,6 +54763,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_function_defs :
       M.IsAssociatedFunction.C Self "function_defs" function_defs.
+    Proof.
     Admitted.
     Global Typeclasses Opaque function_defs.
     
@@ -54155,6 +54835,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_friend_decls :
       M.IsAssociatedFunction.C Self "friend_decls" friend_decls.
+    Proof.
     Admitted.
     Global Typeclasses Opaque friend_decls.
     
@@ -54186,6 +54867,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_version : M.IsAssociatedFunction.C Self "version" version.
+    Proof.
     Admitted.
     Global Typeclasses Opaque version.
     
@@ -54609,6 +55291,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_immediate_dependencies :
       M.IsAssociatedFunction.C Self "immediate_dependencies" immediate_dependencies.
+    Proof.
     Admitted.
     Global Typeclasses Opaque immediate_dependencies.
     
@@ -54814,6 +55497,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_immediate_friends :
       M.IsAssociatedFunction.C Self "immediate_friends" immediate_friends.
+    Proof.
     Admitted.
     Global Typeclasses Opaque immediate_friends.
     
@@ -54996,6 +55680,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_find_struct_def :
       M.IsAssociatedFunction.C Self "find_struct_def" find_struct_def.
+    Proof.
     Admitted.
     Global Typeclasses Opaque find_struct_def.
     
@@ -55256,6 +55941,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_find_struct_def_by_name :
       M.IsAssociatedFunction.C Self "find_struct_def_by_name" find_struct_def_by_name.
+    Proof.
     Admitted.
     Global Typeclasses Opaque find_struct_def_by_name.
     
@@ -55536,7 +56222,12 @@ Module file_format.
                           "move_binary_format::file_format::SignatureToken::TypeParameter",
                           0
                         |) in
-                      let idx := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_0 |) in
+                      let _ := M.read (| γ1_0 |) in
+                      let idx :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
                       Value.StructTuple
                         "core::result::Result::Ok"
                         []
@@ -55561,6 +56252,7 @@ Module file_format.
                           "move_binary_format::file_format::SignatureToken::Vector",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let ty :=
                         M.alloc (|
                           Ty.apply
@@ -55575,7 +56267,7 @@ Module file_format.
                                   Ty.path "alloc::alloc::Global"
                                 ]
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.apply
@@ -55981,13 +56673,14 @@ Module file_format.
                           "move_binary_format::file_format::SignatureToken::Struct",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let idx :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "move_binary_format::file_format::StructHandleIndex" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.read (|
                         let~ sh :
@@ -56046,6 +56739,7 @@ Module file_format.
                           "move_binary_format::file_format::SignatureToken::StructInstantiation",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let struct_inst :=
                         M.alloc (|
                           Ty.apply
@@ -56070,7 +56764,7 @@ Module file_format.
                                   Ty.path "alloc::alloc::Global"
                                 ]
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.match_operator (|
                         Ty.apply
@@ -56108,6 +56802,7 @@ Module file_format.
                               (let γ := M.deref (| M.read (| γ |) |) in
                               let γ1_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                               let γ1_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                              let _ := M.read (| γ1_0 |) in
                               let idx :=
                                 M.alloc (|
                                   Ty.apply
@@ -56115,8 +56810,9 @@ Module file_format.
                                     []
                                     [ Ty.path "move_binary_format::file_format::StructHandleIndex"
                                     ],
-                                  γ1_0
+                                  M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                 |) in
+                              let _ := M.read (| γ1_1 |) in
                               let type_args :=
                                 M.alloc (|
                                   Ty.apply
@@ -56131,7 +56827,7 @@ Module file_format.
                                           Ty.path "alloc::alloc::Global"
                                         ]
                                     ],
-                                  γ1_1
+                                  M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                                 |) in
                               M.read (|
                                 let~ sh :
@@ -56874,6 +57570,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_abilities :
       M.IsAssociatedFunction.C Self "abilities" abilities.
+    Proof.
     Admitted.
     Global Typeclasses Opaque abilities.
     
@@ -56985,6 +57682,7 @@ Module file_format.
     
     Global Instance AssociatedFunction_module_id_for_handle :
       M.IsAssociatedFunction.C Self "module_id_for_handle" module_id_for_handle.
+    Proof.
     Admitted.
     Global Typeclasses Opaque module_id_for_handle.
     
@@ -57039,6 +57737,7 @@ Module file_format.
       end.
     
     Global Instance AssociatedFunction_self_id : M.IsAssociatedFunction.C Self "self_id" self_id.
+    Proof.
     Admitted.
     Global Typeclasses Opaque self_id.
   End Impl_move_binary_format_file_format_CompiledModule.
@@ -57819,6 +58518,7 @@ Module file_format.
   
   Global Instance Instance_IsFunction_empty_module :
     M.IsFunction.C "move_binary_format::file_format::empty_module" empty_module.
+  Proof.
   Admitted.
   Global Typeclasses Opaque empty_module.
   
@@ -58710,6 +59410,7 @@ Module file_format.
   
   Global Instance Instance_IsFunction_basic_test_module :
     M.IsFunction.C "move_binary_format::file_format::basic_test_module" basic_test_module.
+  Proof.
   Admitted.
   Global Typeclasses Opaque basic_test_module.
 End file_format.

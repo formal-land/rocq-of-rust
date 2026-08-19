@@ -227,6 +227,7 @@ Module cmp.
     Global Instance AssociatedFunction_is_zero :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "is_zero" (is_zero BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_zero.
   End Impl_ruint_Uint_BITS_LIMBS.

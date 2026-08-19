@@ -27,6 +27,7 @@ Module num.
       end.
     
     Global Instance Instance_IsFunction_add : M.IsFunction.C "core::num::overflow_panic::add" add.
+    Proof.
     Admitted.
     Global Typeclasses Opaque add.
     
@@ -54,6 +55,7 @@ Module num.
       end.
     
     Global Instance Instance_IsFunction_sub : M.IsFunction.C "core::num::overflow_panic::sub" sub.
+    Proof.
     Admitted.
     Global Typeclasses Opaque sub.
     
@@ -81,6 +83,7 @@ Module num.
       end.
     
     Global Instance Instance_IsFunction_mul : M.IsFunction.C "core::num::overflow_panic::mul" mul.
+    Proof.
     Admitted.
     Global Typeclasses Opaque mul.
     
@@ -108,6 +111,7 @@ Module num.
       end.
     
     Global Instance Instance_IsFunction_div : M.IsFunction.C "core::num::overflow_panic::div" div.
+    Proof.
     Admitted.
     Global Typeclasses Opaque div.
     
@@ -135,6 +139,7 @@ Module num.
       end.
     
     Global Instance Instance_IsFunction_rem : M.IsFunction.C "core::num::overflow_panic::rem" rem.
+    Proof.
     Admitted.
     Global Typeclasses Opaque rem.
     
@@ -162,6 +167,7 @@ Module num.
       end.
     
     Global Instance Instance_IsFunction_neg : M.IsFunction.C "core::num::overflow_panic::neg" neg.
+    Proof.
     Admitted.
     Global Typeclasses Opaque neg.
     
@@ -189,6 +195,7 @@ Module num.
       end.
     
     Global Instance Instance_IsFunction_shr : M.IsFunction.C "core::num::overflow_panic::shr" shr.
+    Proof.
     Admitted.
     Global Typeclasses Opaque shr.
     
@@ -216,6 +223,7 @@ Module num.
       end.
     
     Global Instance Instance_IsFunction_shl : M.IsFunction.C "core::num::overflow_panic::shl" shl.
+    Proof.
     Admitted.
     Global Typeclasses Opaque shl.
   End overflow_panic.

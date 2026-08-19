@@ -29,6 +29,7 @@ Module iter.
         M.IsFunction.C
           "core::iter::traits::iterator::_assert_is_dyn_compatible"
           _assert_is_dyn_compatible.
+      Proof.
       Admitted.
       Global Typeclasses Opaque _assert_is_dyn_compatible.
       
@@ -1808,11 +1809,12 @@ Module iter.
                 [
                   fun γ =>
                     ltac:(M.monadic
-                      (let predicate :=
+                      (let _ := M.read (| γ |) in
+                      let predicate :=
                         M.alloc (|
                           Ty.path
                             "Type for variables in patterns in function parameters is not handled",
-                          γ
+                          M.borrow (| Pointer.Kind.MutRef, γ |)
                         |) in
                       M.read (|
                         let~ true_count : Ty.path "usize" := Value.Integer IntegerKind.Usize 0 in
@@ -6863,6 +6865,7 @@ Module iter.
       
       Global Instance Instance_IsFunction_iter_compare :
         M.IsFunction.C "core::iter::traits::iterator::iter_compare" iter_compare.
+      Proof.
       Admitted.
       Global Typeclasses Opaque iter_compare.
       
@@ -7086,6 +7089,7 @@ Module iter.
         
         Global Instance Instance_IsFunction_compare :
           M.IsFunction.C "core::iter::traits::iterator::iter_compare::compare" compare.
+        Proof.
         Admitted.
         Global Typeclasses Opaque compare.
       End iter_compare.
@@ -7188,6 +7192,7 @@ Module iter.
       
       Global Instance Instance_IsFunction_iter_eq :
         M.IsFunction.C "core::iter::traits::iterator::iter_eq" iter_eq.
+      Proof.
       Admitted.
       Global Typeclasses Opaque iter_eq.
       

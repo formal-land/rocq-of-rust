@@ -259,6 +259,7 @@ Definition borrow_book (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) 
 
 Global Instance Instance_IsFunction_borrow_book :
   M.IsFunction.C "scoping_rules_borrowing_mutablity::borrow_book" borrow_book.
+Proof.
 Admitted.
 Global Typeclasses Opaque borrow_book.
 
@@ -441,6 +442,7 @@ Definition new_edition (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) 
 
 Global Instance Instance_IsFunction_new_edition :
   M.IsFunction.C "scoping_rules_borrowing_mutablity::new_edition" new_edition.
+Proof.
 Admitted.
 Global Typeclasses Opaque new_edition.
 
@@ -533,5 +535,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "scoping_rules_borrowing_mutablity::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

@@ -61,6 +61,7 @@ Module verifier.
     M.IsFunction.C
       "move_bytecode_verifier::verifier::verify_module_unmetered"
       verify_module_unmetered.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_module_unmetered.
   
@@ -298,13 +299,14 @@ Module verifier.
                                             "core::result::Result::Err",
                                             0
                                           |) in
+                                        let _ := M.read (| γ1_0 |) in
                                         let e :=
                                           M.alloc (|
                                             Ty.apply
                                               (Ty.path "&")
                                               []
                                               [ Ty.path "move_binary_format::errors::VMError" ],
-                                            γ1_0
+                                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                           |) in
                                         M.call_closure (|
                                           Ty.path "alloc::string::String",
@@ -871,6 +873,7 @@ Module verifier.
     M.IsFunction.C
       "move_bytecode_verifier::verifier::verify_module_with_config_for_test"
       verify_module_with_config_for_test.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_module_with_config_for_test.
   
@@ -882,6 +885,7 @@ Module verifier.
       M.IsFunction.C
         "move_bytecode_verifier::verifier::verify_module_with_config_for_test::MAX_MODULE_SIZE"
         value_MAX_MODULE_SIZE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MAX_MODULE_SIZE.
   End verify_module_with_config_for_test.
@@ -2477,6 +2481,7 @@ Module verifier.
     M.IsFunction.C
       "move_bytecode_verifier::verifier::verify_module_with_config_metered"
       verify_module_with_config_metered.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_module_with_config_metered.
   
@@ -2540,6 +2545,7 @@ Module verifier.
     M.IsFunction.C
       "move_bytecode_verifier::verifier::verify_module_with_config_unmetered"
       verify_module_with_config_unmetered.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_module_with_config_unmetered.
 End verifier.

@@ -123,7 +123,12 @@ Module option.
                   (let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "core::option::Option::Some", 0 |) in
-                  let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __self_0 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")
@@ -232,7 +237,12 @@ Module option.
                           "core::option::Option::Some",
                           0
                         |) in
-                      let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                      let _ := M.read (| γ1_0 |) in
+                      let __self_0 :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ T ],
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                        |) in
                       M.call_closure (|
                         Ty.tuple [],
                         M.get_trait_method (| "core::hash::Hash", T, [], [], "hash", [], [ __H ] |),
@@ -295,6 +305,7 @@ Module option.
     Global Instance AssociatedFunction_is_some :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "is_some" (is_some T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_some.
     
@@ -347,6 +358,7 @@ Module option.
     Global Instance AssociatedFunction_is_some_and :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "is_some_and" (is_some_and T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_some_and.
     
@@ -387,6 +399,7 @@ Module option.
     Global Instance AssociatedFunction_is_none :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "is_none" (is_none T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_none.
     
@@ -439,6 +452,7 @@ Module option.
     Global Instance AssociatedFunction_is_none_or :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "is_none_or" (is_none_or T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_none_or.
     
@@ -468,7 +482,12 @@ Module option.
                 ltac:(M.monadic
                   (let γ0_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "core::option::Option::Some", 0 |) in
-                  let x := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_0 |) in
+                  let _ := M.read (| γ0_0 |) in
+                  let x :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                    |) in
                   Value.StructTuple
                     "core::option::Option::Some"
                     []
@@ -490,6 +509,7 @@ Module option.
     Global Instance AssociatedFunction_as_ref :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "as_ref" (as_ref T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_ref.
     
@@ -519,7 +539,12 @@ Module option.
                 ltac:(M.monadic
                   (let γ0_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "core::option::Option::Some", 0 |) in
-                  let x := M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ0_0 |) in
+                  let _ := M.read (| γ0_0 |) in
+                  let x :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&mut") [] [ T ],
+                      M.borrow (| Pointer.Kind.MutRef, γ0_0 |)
+                    |) in
                   Value.StructTuple
                     "core::option::Option::Some"
                     []
@@ -541,6 +566,7 @@ Module option.
     Global Instance AssociatedFunction_as_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "as_mut" (as_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_mut.
     
@@ -655,6 +681,7 @@ Module option.
     Global Instance AssociatedFunction_as_pin_ref :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "as_pin_ref" (as_pin_ref T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_pin_ref.
     
@@ -780,6 +807,7 @@ Module option.
     Global Instance AssociatedFunction_as_pin_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "as_pin_mut" (as_pin_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_pin_mut.
     
@@ -819,6 +847,7 @@ Module option.
     Global Instance AssociatedFunction_len :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "len" (len T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque len.
     
@@ -929,6 +958,7 @@ Module option.
     Global Instance AssociatedFunction_as_slice :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "as_slice" (as_slice T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_slice.
     
@@ -1051,6 +1081,7 @@ Module option.
     Global Instance AssociatedFunction_as_mut_slice :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "as_mut_slice" (as_mut_slice T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_mut_slice.
     
@@ -1097,6 +1128,7 @@ Module option.
     Global Instance AssociatedFunction_expect :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "expect" (expect T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque expect.
     
@@ -1142,6 +1174,7 @@ Module option.
     Global Instance AssociatedFunction_unwrap :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "unwrap" (unwrap T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque unwrap.
     
@@ -1185,6 +1218,7 @@ Module option.
     Global Instance AssociatedFunction_unwrap_or :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "unwrap_or" (unwrap_or T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque unwrap_or.
     
@@ -1245,6 +1279,7 @@ Module option.
     Global Instance AssociatedFunction_unwrap_or_else :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "unwrap_or_else" (unwrap_or_else T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque unwrap_or_else.
     
@@ -1296,6 +1331,7 @@ Module option.
     Global Instance AssociatedFunction_unwrap_or_default :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "unwrap_or_default" (unwrap_or_default T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque unwrap_or_default.
     
@@ -1347,6 +1383,7 @@ Module option.
     Global Instance AssociatedFunction_unwrap_unchecked :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "unwrap_unchecked" (unwrap_unchecked T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque unwrap_unchecked.
     
@@ -1408,6 +1445,7 @@ Module option.
     Global Instance AssociatedFunction_map :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "map" (map T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque map.
     
@@ -1445,7 +1483,12 @@ Module option.
                           "core::option::Option::Some",
                           0
                         |) in
-                      let x := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_0 |) in
+                      let _ := M.read (| γ0_0 |) in
+                      let x :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ T ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                        |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
                           M.call_closure (|
@@ -1478,6 +1521,7 @@ Module option.
     Global Instance AssociatedFunction_inspect :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "inspect" (inspect T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque inspect.
     
@@ -1535,6 +1579,7 @@ Module option.
     Global Instance AssociatedFunction_map_or :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "map_or" (map_or T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque map_or.
     
@@ -1604,6 +1649,7 @@ Module option.
     Global Instance AssociatedFunction_map_or_else :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "map_or_else" (map_or_else T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque map_or_else.
     
@@ -1669,6 +1715,7 @@ Module option.
     Global Instance AssociatedFunction_map_or_default :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "map_or_default" (map_or_default T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque map_or_default.
     
@@ -1709,6 +1756,7 @@ Module option.
     Global Instance AssociatedFunction_ok_or :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "ok_or" (ok_or T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque ok_or.
     
@@ -1770,6 +1818,7 @@ Module option.
     Global Instance AssociatedFunction_ok_or_else :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "ok_or_else" (ok_or_else T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque ok_or_else.
     
@@ -1838,6 +1887,7 @@ Module option.
     Global Instance AssociatedFunction_as_deref :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "as_deref" (as_deref T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_deref.
     
@@ -1906,6 +1956,7 @@ Module option.
     Global Instance AssociatedFunction_as_deref_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "as_deref_mut" (as_deref_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_deref_mut.
     
@@ -1957,6 +2008,7 @@ Module option.
     Global Instance AssociatedFunction_iter :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "iter" (iter T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque iter.
     
@@ -2008,6 +2060,7 @@ Module option.
     Global Instance AssociatedFunction_iter_mut :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "iter_mut" (iter_mut T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque iter_mut.
     
@@ -2051,6 +2104,7 @@ Module option.
     Global Instance AssociatedFunction_and :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "and" (and T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque and.
     
@@ -2106,6 +2160,7 @@ Module option.
     Global Instance AssociatedFunction_and_then :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "and_then" (and_then T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque and_then.
     
@@ -2214,6 +2269,7 @@ Module option.
     Global Instance AssociatedFunction_filter :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "filter" (filter T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque filter.
     
@@ -2257,6 +2313,7 @@ Module option.
     Global Instance AssociatedFunction_or :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "or" (or T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque or.
     
@@ -2315,6 +2372,7 @@ Module option.
     Global Instance AssociatedFunction_or_else :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "or_else" (or_else T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque or_else.
     
@@ -2383,6 +2441,7 @@ Module option.
     Global Instance AssociatedFunction_xor :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "xor" (xor T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque xor.
     
@@ -2471,6 +2530,7 @@ Module option.
     Global Instance AssociatedFunction_insert :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "insert" (insert T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque insert.
     
@@ -2531,6 +2591,7 @@ Module option.
     Global Instance AssociatedFunction_get_or_insert :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "get_or_insert" (get_or_insert T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_or_insert.
     
@@ -2594,6 +2655,7 @@ Module option.
     Global Instance AssociatedFunction_get_or_insert_default :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "get_or_insert_default" (get_or_insert_default T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_or_insert_default.
     
@@ -2725,6 +2787,7 @@ Module option.
     Global Instance AssociatedFunction_get_or_insert_with :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "get_or_insert_with" (get_or_insert_with T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_or_insert_with.
     
@@ -2762,6 +2825,7 @@ Module option.
     Global Instance AssociatedFunction_take :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "take" (take T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque take.
     
@@ -2843,6 +2907,7 @@ Module option.
     Global Instance AssociatedFunction_take_if :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "take_if" (take_if T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque take_if.
     
@@ -2880,6 +2945,7 @@ Module option.
     Global Instance AssociatedFunction_replace :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "replace" (replace T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque replace.
     
@@ -2947,6 +3013,7 @@ Module option.
     Global Instance AssociatedFunction_zip :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "zip" (zip T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque zip.
     
@@ -3028,6 +3095,7 @@ Module option.
     Global Instance AssociatedFunction_zip_with :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "zip_with" (zip_with T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque zip_with.
     
@@ -3171,6 +3239,7 @@ Module option.
     Global Instance AssociatedFunction_reduce :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "reduce" (reduce T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque reduce.
     (*
@@ -3236,6 +3305,7 @@ Module option.
     Global Instance AssociatedFunction_into_flat_iter :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "into_flat_iter" (into_flat_iter T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_flat_iter.
   End Impl_core_option_Option_T.
@@ -3300,6 +3370,7 @@ Module option.
     Global Instance AssociatedFunction_unzip :
       forall (T U : Ty.t),
       M.IsAssociatedFunction.C (Self T U) "unzip" (unzip T U).
+    Proof.
     Admitted.
     Global Typeclasses Opaque unzip.
   End Impl_core_option_Option_Tuple_T_U_.
@@ -3354,6 +3425,7 @@ Module option.
     Global Instance AssociatedFunction_copied :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "copied" (copied T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque copied.
     
@@ -3410,6 +3482,7 @@ Module option.
     Global Instance AssociatedFunction_cloned :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "cloned" (cloned T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque cloned.
   End Impl_core_option_Option_ref__T.
@@ -3462,6 +3535,7 @@ Module option.
     Global Instance AssociatedFunction_copied :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "copied" (copied T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque copied.
     
@@ -3518,6 +3592,7 @@ Module option.
     Global Instance AssociatedFunction_cloned :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "cloned" (cloned T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque cloned.
   End Impl_core_option_Option_ref_mut_T.
@@ -3603,6 +3678,7 @@ Module option.
     Global Instance AssociatedFunction_transpose :
       forall (T E : Ty.t),
       M.IsAssociatedFunction.C (Self T E) "transpose" (transpose T E).
+    Proof.
     Admitted.
     Global Typeclasses Opaque transpose.
   End Impl_core_option_Option_core_result_Result_T_E.
@@ -3626,6 +3702,7 @@ Module option.
   
   Global Instance Instance_IsFunction_unwrap_failed :
     M.IsFunction.C "core::option::unwrap_failed" unwrap_failed.
+  Proof.
   Admitted.
   Global Typeclasses Opaque unwrap_failed.
   
@@ -3653,6 +3730,7 @@ Module option.
   
   Global Instance Instance_IsFunction_expect_failed :
     M.IsFunction.C "core::option::expect_failed" expect_failed.
+  Proof.
   Admitted.
   Global Typeclasses Opaque expect_failed.
   
@@ -3686,7 +3764,12 @@ Module option.
                   (let γ := M.deref (| M.read (| γ |) |) in
                   let γ1_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "core::option::Option::Some", 0 |) in
-                  let x := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let x :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
                   Value.StructTuple
                     "core::option::Option::Some"
                     []
@@ -3756,7 +3839,12 @@ Module option.
                       "core::option::Option::Some",
                       0
                     |) in
-                  let to := M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ2_0 |) in
+                  let _ := M.read (| γ2_0 |) in
+                  let to :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&mut") [] [ T ],
+                      M.borrow (| Pointer.Kind.MutRef, γ2_0 |)
+                    |) in
                   let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                   let γ2_0 :=
                     M.SubPointer.get_struct_tuple_field (|
@@ -3764,7 +3852,12 @@ Module option.
                       "core::option::Option::Some",
                       0
                     |) in
-                  let from := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                  let _ := M.read (| γ2_0 |) in
+                  let from :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.tuple [],
                     M.get_trait_method (| "core::clone::Clone", T, [], [], "clone_from", [], [] |),
@@ -4210,7 +4303,12 @@ Module option.
                       "core::option::Option::Some",
                       0
                     |) in
-                  let l := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                  let _ := M.read (| γ2_0 |) in
+                  let l :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                    |) in
                   let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                   let γ2_0 :=
                     M.SubPointer.get_struct_tuple_field (|
@@ -4218,7 +4316,12 @@ Module option.
                       "core::option::Option::Some",
                       0
                     |) in
-                  let r := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                  let _ := M.read (| γ2_0 |) in
+                  let r :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.path "bool",
                     M.get_trait_method (| "core::cmp::PartialEq", T, [], [ T ], "eq", [], [] |),
@@ -4329,7 +4432,12 @@ Module option.
                       "core::option::Option::Some",
                       0
                     |) in
-                  let l := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                  let _ := M.read (| γ2_0 |) in
+                  let l :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                    |) in
                   let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                   let γ2_0 :=
                     M.SubPointer.get_struct_tuple_field (|
@@ -4337,7 +4445,12 @@ Module option.
                       "core::option::Option::Some",
                       0
                     |) in
-                  let r := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                  let _ := M.read (| γ2_0 |) in
+                  let r :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
                     M.get_trait_method (|
@@ -4468,7 +4581,12 @@ Module option.
                       "core::option::Option::Some",
                       0
                     |) in
-                  let l := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                  let _ := M.read (| γ2_0 |) in
+                  let l :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                    |) in
                   let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                   let γ2_0 :=
                     M.SubPointer.get_struct_tuple_field (|
@@ -4476,7 +4594,12 @@ Module option.
                       "core::option::Option::Some",
                       0
                     |) in
-                  let r := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                  let _ := M.read (| γ2_0 |) in
+                  let r :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                    |) in
                   M.call_closure (|
                     Ty.path "core::cmp::Ordering",
                     M.get_trait_method (| "core::cmp::Ord", T, [], [], "cmp", [], [] |),
@@ -7140,6 +7263,7 @@ Module option.
     Global Instance AssociatedFunction_flatten :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "flatten" (flatten T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque flatten.
   End Impl_core_option_Option_core_option_Option_T.
@@ -7203,6 +7327,7 @@ Module option.
     Global Instance AssociatedFunction_transpose :
       forall (N : Value.t) (T : Ty.t),
       M.IsAssociatedFunction.C (Self N T) "transpose" (transpose N T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque transpose.
   End Impl_array_N_core_option_Option_T.

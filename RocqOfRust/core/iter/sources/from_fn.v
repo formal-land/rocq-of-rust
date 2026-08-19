@@ -23,6 +23,7 @@ Module iter.
       
       Global Instance Instance_IsFunction_from_fn :
         M.IsFunction.C "core::iter::sources::from_fn::from_fn" from_fn.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_fn.
       

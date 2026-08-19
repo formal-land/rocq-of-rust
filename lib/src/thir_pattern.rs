@@ -62,7 +62,12 @@ pub(crate) fn compile_pattern<'a>(
             let name = to_valid_rocq_name(IsValue::Yes, name.as_str());
             let ty = crate::thir_ty::compile_type(env, &pat.span, generics, ty);
             let rustc_ast::ast::BindingMode(by_ref, mutability) = mode;
-            let is_with_ref = matches!(by_ref, rustc_ast::ast::ByRef::Yes(..));
+            let by_ref = match by_ref {
+                rustc_ast::ast::ByRef::No => ByRef::No,
+                rustc_ast::ast::ByRef::Yes(_, mutability) => ByRef::Yes {
+                    is_mut: matches!(mutability, rustc_ast::ast::Mutability::Mut),
+                },
+            };
             let is_with_mutability = matches!(mutability, rustc_ast::ast::Mutability::Mut);
             let pattern = subpattern
                 .as_ref()
@@ -70,7 +75,7 @@ pub(crate) fn compile_pattern<'a>(
             Rc::new(Pattern::Binding {
                 name,
                 ty,
-                is_with_ref,
+                by_ref,
                 is_with_mutability,
                 pattern,
             })

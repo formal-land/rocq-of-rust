@@ -83,6 +83,7 @@ Module fmt.
     end.
   
   Global Instance Instance_IsFunction_format : M.IsFunction.C "alloc::fmt::format" format.
+  Proof.
   Admitted.
   Global Typeclasses Opaque format.
   
@@ -171,6 +172,7 @@ Module fmt.
     
     Global Instance Instance_IsFunction_format_inner :
       M.IsFunction.C "alloc::fmt::format::format_inner" format_inner.
+    Proof.
     Admitted.
     Global Typeclasses Opaque format_inner.
   End format.

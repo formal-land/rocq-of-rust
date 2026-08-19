@@ -2073,6 +2073,7 @@ Module interpreter.
         end.
       
       Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -2126,6 +2127,7 @@ Module interpreter.
         end.
       
       Global Instance AssociatedFunction_invalid : M.IsAssociatedFunction.C Self "invalid" invalid.
+      Proof.
       Admitted.
       Global Typeclasses Opaque invalid.
       
@@ -2199,6 +2201,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_new_with_buffer :
         M.IsAssociatedFunction.C Self "new_with_buffer" new_with_buffer.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_with_buffer.
       
@@ -2337,6 +2340,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_with_capacity :
         M.IsAssociatedFunction.C Self "with_capacity" with_capacity.
+      Proof.
       Admitted.
       Global Typeclasses Opaque with_capacity.
       
@@ -2373,6 +2377,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_set_memory_limit :
         M.IsAssociatedFunction.C Self "set_memory_limit" set_memory_limit.
+      Proof.
       Admitted.
       Global Typeclasses Opaque set_memory_limit.
       
@@ -2642,6 +2647,7 @@ Module interpreter.
         end.
       
       Global Instance AssociatedFunction_buffer : M.IsAssociatedFunction.C Self "buffer" buffer.
+      Proof.
       Admitted.
       Global Typeclasses Opaque buffer.
       
@@ -2783,6 +2789,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_buffer_ref :
         M.IsAssociatedFunction.C Self "buffer_ref" buffer_ref.
+      Proof.
       Admitted.
       Global Typeclasses Opaque buffer_ref.
       
@@ -2924,6 +2931,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_buffer_ref_mut :
         M.IsAssociatedFunction.C Self "buffer_ref_mut" buffer_ref_mut.
+      Proof.
       Admitted.
       Global Typeclasses Opaque buffer_ref_mut.
       
@@ -3160,6 +3168,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_new_child_context :
         M.IsAssociatedFunction.C Self "new_child_context" new_child_context.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_child_context.
       
@@ -3322,6 +3331,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_free_child_context :
         M.IsAssociatedFunction.C Self "free_child_context" free_child_context.
+      Proof.
       Admitted.
       Global Typeclasses Opaque free_child_context.
       
@@ -3369,6 +3379,7 @@ Module interpreter.
         end.
       
       Global Instance AssociatedFunction_len : M.IsAssociatedFunction.C Self "len" len.
+      Proof.
       Admitted.
       Global Typeclasses Opaque len.
       
@@ -3476,6 +3487,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_full_len :
         M.IsAssociatedFunction.C Self "full_len" full_len.
+      Proof.
       Admitted.
       Global Typeclasses Opaque full_len.
       
@@ -3518,6 +3530,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_is_empty :
         M.IsAssociatedFunction.C Self "is_empty" is_empty.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_empty.
       
@@ -3752,6 +3765,7 @@ Module interpreter.
         end.
       
       Global Instance AssociatedFunction_resize : M.IsAssociatedFunction.C Self "resize" resize.
+      Proof.
       Admitted.
       Global Typeclasses Opaque resize.
       
@@ -3807,6 +3821,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_slice_len :
         M.IsAssociatedFunction.C Self "slice_len" slice_len.
+      Proof.
       Admitted.
       Global Typeclasses Opaque slice_len.
       
@@ -4395,6 +4410,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_slice_range :
         M.IsAssociatedFunction.C Self "slice_range" slice_range.
+      Proof.
       Admitted.
       Global Typeclasses Opaque slice_range.
       
@@ -4920,6 +4936,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_global_slice_range :
         M.IsAssociatedFunction.C Self "global_slice_range" global_slice_range.
+      Proof.
       Admitted.
       Global Typeclasses Opaque global_slice_range.
       
@@ -5518,6 +5535,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_slice_mut :
         M.IsAssociatedFunction.C Self "slice_mut" slice_mut.
+      Proof.
       Admitted.
       Global Typeclasses Opaque slice_mut.
       
@@ -5594,6 +5612,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_get_byte :
         M.IsAssociatedFunction.C Self "get_byte" get_byte.
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_byte.
       
@@ -5726,6 +5745,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_get_word :
         M.IsAssociatedFunction.C Self "get_word" get_word.
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_word.
       
@@ -5793,6 +5813,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_get_u256 :
         M.IsAssociatedFunction.C Self "get_u256" get_u256.
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_u256.
       
@@ -5872,6 +5893,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_set_byte :
         M.IsAssociatedFunction.C Self "set_byte" set_byte.
+      Proof.
       Admitted.
       Global Typeclasses Opaque set_byte.
       
@@ -5960,6 +5982,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_set_word :
         M.IsAssociatedFunction.C Self "set_word" set_word.
+      Proof.
       Admitted.
       Global Typeclasses Opaque set_word.
       
@@ -6064,6 +6087,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_set_u256 :
         M.IsAssociatedFunction.C Self "set_u256" set_u256.
+      Proof.
       Admitted.
       Global Typeclasses Opaque set_u256.
       
@@ -6211,6 +6235,7 @@ Module interpreter.
         end.
       
       Global Instance AssociatedFunction_set : M.IsAssociatedFunction.C Self "set" set.
+      Proof.
       Admitted.
       Global Typeclasses Opaque set.
       
@@ -6327,6 +6352,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_set_data :
         M.IsAssociatedFunction.C Self "set_data" set_data.
+      Proof.
       Admitted.
       Global Typeclasses Opaque set_data.
       
@@ -6683,6 +6709,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_global_to_local_set_data :
         M.IsAssociatedFunction.C Self "global_to_local_set_data" global_to_local_set_data.
+      Proof.
       Admitted.
       Global Typeclasses Opaque global_to_local_set_data.
       
@@ -6792,6 +6819,7 @@ Module interpreter.
         end.
       
       Global Instance AssociatedFunction_copy : M.IsAssociatedFunction.C Self "copy" copy.
+      Proof.
       Admitted.
       Global Typeclasses Opaque copy.
       
@@ -7152,6 +7180,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_context_memory :
         M.IsAssociatedFunction.C Self "context_memory" context_memory.
+      Proof.
       Admitted.
       Global Typeclasses Opaque context_memory.
       
@@ -7512,6 +7541,7 @@ Module interpreter.
       
       Global Instance AssociatedFunction_context_memory_mut :
         M.IsAssociatedFunction.C Self "context_memory_mut" context_memory_mut.
+      Proof.
       Admitted.
       Global Typeclasses Opaque context_memory_mut.
     End Impl_revm_interpreter_interpreter_shared_memory_SharedMemory.
@@ -7970,6 +8000,7 @@ Module interpreter.
     
     Global Instance Instance_IsFunction_set_data :
       M.IsFunction.C "revm_interpreter::interpreter::shared_memory::set_data" set_data.
+    Proof.
     Admitted.
     Global Typeclasses Opaque set_data.
     
@@ -8000,6 +8031,7 @@ Module interpreter.
     
     Global Instance Instance_IsFunction_num_words :
       M.IsFunction.C "revm_interpreter::interpreter::shared_memory::num_words" num_words.
+    Proof.
     Admitted.
     Global Typeclasses Opaque num_words.
     
@@ -8116,6 +8148,7 @@ Module interpreter.
     
     Global Instance Instance_IsFunction_resize_memory :
       M.IsFunction.C "revm_interpreter::interpreter::shared_memory::resize_memory" resize_memory.
+    Proof.
     Admitted.
     Global Typeclasses Opaque resize_memory.
     
@@ -8264,6 +8297,7 @@ Module interpreter.
       M.IsFunction.C
         "revm_interpreter::interpreter::shared_memory::resize_memory_cold"
         resize_memory_cold.
+    Proof.
     Admitted.
     Global Typeclasses Opaque resize_memory_cold.
   End shared_memory.

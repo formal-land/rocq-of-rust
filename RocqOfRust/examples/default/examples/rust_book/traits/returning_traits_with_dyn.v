@@ -304,6 +304,7 @@ Definition random_animal (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
 
 Global Instance Instance_IsFunction_random_animal :
   M.IsFunction.C "returning_traits_with_dyn::random_animal" random_animal.
+Proof.
 Admitted.
 Global Typeclasses Opaque random_animal.
 
@@ -495,5 +496,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "returning_traits_with_dyn::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

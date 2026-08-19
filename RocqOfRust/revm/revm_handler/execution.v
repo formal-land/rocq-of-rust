@@ -466,6 +466,7 @@ Module execution.
   
   Global Instance Instance_IsFunction_create_init_frame :
     M.IsFunction.C "revm_handler::execution::create_init_frame" create_init_frame.
+  Proof.
   Admitted.
   Global Typeclasses Opaque create_init_frame.
 End execution.

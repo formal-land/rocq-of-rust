@@ -65,7 +65,12 @@ Module task.
                         "core::task::poll::Poll::Ready",
                         0
                       |) in
-                    let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                    let _ := M.read (| γ1_0 |) in
+                    let __self_0 :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     Value.StructTuple
                       "core::task::poll::Poll::Ready"
                       []
@@ -129,7 +134,12 @@ Module task.
                         "core::task::poll::Poll::Ready",
                         0
                       |) in
-                    let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                    let _ := M.read (| γ1_0 |) in
+                    let __self_0 :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     M.call_closure (|
                       Ty.apply
                         (Ty.path "core::result::Result")
@@ -325,7 +335,12 @@ Module task.
                                 "core::task::poll::Poll::Ready",
                                 0
                               |) in
-                            let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                            let _ := M.read (| γ2_0 |) in
+                            let __self_0 :=
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ T ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
                               M.SubPointer.get_struct_tuple_field (|
@@ -333,7 +348,12 @@ Module task.
                                 "core::task::poll::Poll::Ready",
                                 0
                               |) in
-                            let __arg1_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                            let _ := M.read (| γ2_0 |) in
+                            let __arg1_0 :=
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ T ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             M.call_closure (|
                               Ty.path "bool",
                               M.get_trait_method (|
@@ -470,8 +490,12 @@ Module task.
                                     "core::task::poll::Poll::Ready",
                                     0
                                   |) in
+                                let _ := M.read (| γ2_0 |) in
                                 let __self_0 :=
-                                  M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "&") [] [ T ],
+                                    M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                                  |) in
                                 let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                                 let γ2_0 :=
                                   M.SubPointer.get_struct_tuple_field (|
@@ -479,8 +503,12 @@ Module task.
                                     "core::task::poll::Poll::Ready",
                                     0
                                   |) in
+                                let _ := M.read (| γ2_0 |) in
                                 let __arg1_0 :=
-                                  M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "&") [] [ T ],
+                                    M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                                  |) in
                                 M.call_closure (|
                                   Ty.path "core::cmp::Ordering",
                                   M.get_trait_method (|
@@ -599,7 +627,12 @@ Module task.
                             "core::task::poll::Poll::Ready",
                             0
                           |) in
-                        let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                        let _ := M.read (| γ2_0 |) in
+                        let __self_0 :=
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ T ],
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                          |) in
                         let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                         let γ2_0 :=
                           M.SubPointer.get_struct_tuple_field (|
@@ -607,7 +640,12 @@ Module task.
                             "core::task::poll::Poll::Ready",
                             0
                           |) in
-                        let __arg1_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                        let _ := M.read (| γ2_0 |) in
+                        let __arg1_0 :=
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ T ],
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                          |) in
                         M.call_closure (|
                           Ty.apply
                             (Ty.path "core::option::Option")
@@ -732,7 +770,12 @@ Module task.
                             "core::task::poll::Poll::Ready",
                             0
                           |) in
-                        let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                        let _ := M.read (| γ1_0 |) in
+                        let __self_0 :=
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ T ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                          |) in
                         M.call_closure (|
                           Ty.tuple [],
                           M.get_trait_method (|
@@ -832,6 +875,7 @@ Module task.
       Global Instance AssociatedFunction_map :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "map" (map T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque map.
       
@@ -872,6 +916,7 @@ Module task.
       Global Instance AssociatedFunction_is_ready :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "is_ready" (is_ready T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_ready.
       
@@ -912,6 +957,7 @@ Module task.
       Global Instance AssociatedFunction_is_pending :
         forall (T : Ty.t),
         M.IsAssociatedFunction.C (Self T) "is_pending" (is_pending T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_pending.
     End Impl_core_task_poll_Poll_T.
@@ -1033,6 +1079,7 @@ Module task.
       Global Instance AssociatedFunction_map_ok :
         forall (T E : Ty.t),
         M.IsAssociatedFunction.C (Self T E) "map_ok" (map_ok T E).
+      Proof.
       Admitted.
       Global Typeclasses Opaque map_ok.
       
@@ -1146,6 +1193,7 @@ Module task.
       Global Instance AssociatedFunction_map_err :
         forall (T E : Ty.t),
         M.IsAssociatedFunction.C (Self T E) "map_err" (map_err T E).
+      Proof.
       Admitted.
       Global Typeclasses Opaque map_err.
     End Impl_core_task_poll_Poll_core_result_Result_T_E.
@@ -1352,6 +1400,7 @@ Module task.
       Global Instance AssociatedFunction_map_ok :
         forall (T E : Ty.t),
         M.IsAssociatedFunction.C (Self T E) "map_ok" (map_ok T E).
+      Proof.
       Admitted.
       Global Typeclasses Opaque map_ok.
       
@@ -1545,6 +1594,7 @@ Module task.
       Global Instance AssociatedFunction_map_err :
         forall (T E : Ty.t),
         M.IsAssociatedFunction.C (Self T E) "map_err" (map_err T E).
+      Proof.
       Admitted.
       Global Typeclasses Opaque map_err.
     End Impl_core_task_poll_Poll_core_option_Option_core_result_Result_T_E.

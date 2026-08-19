@@ -22,6 +22,7 @@ Module Impl_Uint.
         stack
       )
     }}.
+  Proof.
   Admitted.
 
   Parameter BITS :
@@ -40,6 +41,7 @@ Module Impl_Uint.
         stack
       )
     }}.
+  Proof.
   Admitted.
 
   Definition ZERO {BITS LIMBS : usize} : Self BITS LIMBS :=
@@ -57,6 +59,7 @@ Module Impl_Uint.
         stack
       )
     }}.
+  Proof.
   Admitted.
 
   Definition MIN {BITS LIMBS : usize} : Self BITS LIMBS :=
@@ -74,6 +77,7 @@ Module Impl_Uint.
         stack
       )
     }}.
+  Proof.
   Admitted.
 
   Definition MAX {BITS LIMBS : usize} : Self BITS LIMBS :=
@@ -91,6 +95,7 @@ Module Impl_Uint.
         stack
       )
     }}.
+  Proof.
   Admitted.
 
   Definition as_limbs (self : Self 256 4) : array.t u64 4 :=
@@ -117,5 +122,6 @@ Module Impl_Uint.
         stack
       )
     }}.
+  Proof.
   Admitted.
 End Impl_Uint.

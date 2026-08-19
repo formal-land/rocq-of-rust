@@ -15,6 +15,7 @@ Module num.
         M.IsFunction.C
           "core::num::dec2flt::table::SMALLEST_POWER_OF_FIVE"
           value_SMALLEST_POWER_OF_FIVE.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_SMALLEST_POWER_OF_FIVE.
       
@@ -29,6 +30,7 @@ Module num.
         M.IsFunction.C
           "core::num::dec2flt::table::LARGEST_POWER_OF_FIVE"
           value_LARGEST_POWER_OF_FIVE.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_LARGEST_POWER_OF_FIVE.
       
@@ -67,6 +69,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_N_POWERS_OF_FIVE :
         M.IsFunction.C "core::num::dec2flt::table::N_POWERS_OF_FIVE" value_N_POWERS_OF_FIVE.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_N_POWERS_OF_FIVE.
       
@@ -3352,6 +3355,7 @@ Module num.
       
       Global Instance Instance_IsConstant_value_POWER_OF_FIVE_128 :
         M.IsFunction.C "core::num::dec2flt::table::POWER_OF_FIVE_128" value_POWER_OF_FIVE_128.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_POWER_OF_FIVE_128.
     End table.

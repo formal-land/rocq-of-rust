@@ -53,6 +53,7 @@ Module Impl_IntoU256_for_B256.
         stack 🌲
       (Output.Success (into_u256 self), stack)
     }}.
+  Proof.
   Admitted.
 
   Instance I : IntoU256.C Self := {|
@@ -84,6 +85,7 @@ Module Impl_IntoU256_for_Address.
         stack 🌲
       (Output.Success (into_u256 self), stack)
     }}.
+  Proof.
   Admitted.
 
   Instance I : IntoU256.C Self := {|

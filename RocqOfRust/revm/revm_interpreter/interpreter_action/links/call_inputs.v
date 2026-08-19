@@ -91,6 +91,7 @@ Module Impl_CallInput.
     Run.Trait
       interpreter_action.call_inputs.Impl_revm_interpreter_interpreter_action_call_inputs_CallInput.len
       [] [] [φ self] usize.
+  Proof.
   Admitted.
   Global Opaque run_len.
 End Impl_CallInput.

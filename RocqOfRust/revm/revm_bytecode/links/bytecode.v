@@ -29,6 +29,7 @@ Module Impl_Bytecode.
       bytecode.Impl_revm_bytecode_bytecode_Bytecode.original_bytes
       [] [] [ φ self ]
       alloy_primitives.bytes.links.mod.Bytes.t.
+  Proof.
   Admitted.
   Global Opaque run_original_bytes.
 
@@ -37,6 +38,7 @@ Module Impl_Bytecode.
       bytecode.Impl_revm_bytecode_bytecode_Bytecode.len
       [] [] [ φ self ]
       usize.
+  Proof.
   Admitted.
   Global Opaque run_len.
 End Impl_Bytecode.

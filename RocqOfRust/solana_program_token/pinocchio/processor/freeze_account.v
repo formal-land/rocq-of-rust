@@ -41,6 +41,7 @@ Module processor.
       M.IsFunction.C
         "pinocchio_token_program::processor::freeze_account::process_freeze_account"
         process_freeze_account.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_freeze_account.
   End freeze_account.

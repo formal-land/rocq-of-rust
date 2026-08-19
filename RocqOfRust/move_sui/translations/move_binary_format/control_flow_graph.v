@@ -519,6 +519,7 @@ Module control_flow_graph.
       end.
     
     Global Instance AssociatedFunction_display : M.IsAssociatedFunction.C Self "display" display.
+    Proof.
     Admitted.
     Global Typeclasses Opaque display.
   End Impl_move_binary_format_control_flow_graph_BasicBlock.
@@ -528,6 +529,7 @@ Module control_flow_graph.
   
   Global Instance Instance_IsConstant_value_ENTRY_BLOCK_ID :
     M.IsFunction.C "move_binary_format::control_flow_graph::ENTRY_BLOCK_ID" value_ENTRY_BLOCK_ID.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_ENTRY_BLOCK_ID.
   
@@ -2702,6 +2704,7 @@ Module control_flow_graph.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -3051,6 +3054,7 @@ Module control_flow_graph.
       end.
     
     Global Instance AssociatedFunction_display : M.IsAssociatedFunction.C Self "display" display.
+    Proof.
     Admitted.
     Global Typeclasses Opaque display.
     
@@ -3155,6 +3159,7 @@ Module control_flow_graph.
     
     Global Instance AssociatedFunction_is_end_of_block :
       M.IsAssociatedFunction.C Self "is_end_of_block" is_end_of_block.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_end_of_block.
     
@@ -3365,6 +3370,7 @@ Module control_flow_graph.
     
     Global Instance AssociatedFunction_record_block_ids :
       M.IsAssociatedFunction.C Self "record_block_ids" record_block_ids.
+    Proof.
     Admitted.
     Global Typeclasses Opaque record_block_ids.
     
@@ -3935,6 +3941,7 @@ Module control_flow_graph.
     
     Global Instance AssociatedFunction_traverse_by :
       M.IsAssociatedFunction.C Self "traverse_by" traverse_by.
+    Proof.
     Admitted.
     Global Typeclasses Opaque traverse_by.
     
@@ -3977,6 +3984,7 @@ Module control_flow_graph.
     
     Global Instance AssociatedFunction_reachable_from :
       M.IsAssociatedFunction.C Self "reachable_from" reachable_from.
+    Proof.
     Admitted.
     Global Typeclasses Opaque reachable_from.
   End Impl_move_binary_format_control_flow_graph_VMControlFlowGraph.

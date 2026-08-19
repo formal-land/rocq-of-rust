@@ -64,14 +64,16 @@ Module processor.
                       (let γ := M.deref (| M.read (| γ |) |) in
                       let γ1_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
                       let γ1_rest := M.SubPointer.get_slice_rest (| γ, 1, 0 |) in
+                      let _ := M.read (| γ1_0 |) in
                       let source_account_info :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "pinocchio::account_info::AccountInfo" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
+                      let _ := M.read (| γ1_rest |) in
                       let remaining :=
                         M.alloc (|
                           Ty.apply
@@ -83,7 +85,7 @@ Module processor.
                                 []
                                 [ Ty.path "pinocchio::account_info::AccountInfo" ]
                             ],
-                          γ1_rest
+                          M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                         |) in
                       M.read (|
                         let~ source_account :
@@ -314,14 +316,16 @@ Module processor.
                                   (let γ := M.deref (| M.read (| γ |) |) in
                                   let γ1_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
                                   let γ1_rest := M.SubPointer.get_slice_rest (| γ, 1, 0 |) in
+                                  let _ := M.read (| γ1_0 |) in
                                   let owner_info :=
                                     M.alloc (|
                                       Ty.apply
                                         (Ty.path "&")
                                         []
                                         [ Ty.path "pinocchio::account_info::AccountInfo" ],
-                                      γ1_0
+                                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                     |) in
+                                  let _ := M.read (| γ1_rest |) in
                                   let remaining :=
                                     M.alloc (|
                                       Ty.apply
@@ -333,7 +337,7 @@ Module processor.
                                             []
                                             [ Ty.path "pinocchio::account_info::AccountInfo" ]
                                         ],
-                                      γ1_rest
+                                      M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                     |) in
                                   M.read (|
                                     let~ _ : Ty.tuple [] :=
@@ -818,6 +822,7 @@ Module processor.
     
     Global Instance Instance_IsFunction_process_revoke :
       M.IsFunction.C "pinocchio_token_program::processor::revoke::process_revoke" process_revoke.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_revoke.
   End revoke.

@@ -2196,6 +2196,7 @@ Module signed.
       Global Instance AssociatedFunction_low_u8 :
         forall (BITS LIMBS : Value.t),
         M.IsAssociatedFunction.C (Self BITS LIMBS) "low_u8" (low_u8 BITS LIMBS).
+      Proof.
       Admitted.
       Global Typeclasses Opaque low_u8.
       
@@ -2263,6 +2264,7 @@ Module signed.
       Global Instance AssociatedFunction_as_u8 :
         forall (BITS LIMBS : Value.t),
         M.IsAssociatedFunction.C (Self BITS LIMBS) "as_u8" (as_u8 BITS LIMBS).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_u8.
       
@@ -2362,6 +2364,7 @@ Module signed.
       Global Instance AssociatedFunction_low_i8 :
         forall (BITS LIMBS : Value.t),
         M.IsAssociatedFunction.C (Self BITS LIMBS) "low_i8" (low_i8 BITS LIMBS).
+      Proof.
       Admitted.
       Global Typeclasses Opaque low_i8.
       
@@ -2429,6 +2432,7 @@ Module signed.
       Global Instance AssociatedFunction_as_i8 :
         forall (BITS LIMBS : Value.t),
         M.IsAssociatedFunction.C (Self BITS LIMBS) "as_i8" (as_i8 BITS LIMBS).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_i8.
       
@@ -2528,6 +2532,7 @@ Module signed.
       Global Instance AssociatedFunction_low_u16 :
         forall (BITS LIMBS : Value.t),
         M.IsAssociatedFunction.C (Self BITS LIMBS) "low_u16" (low_u16 BITS LIMBS).
+      Proof.
       Admitted.
       Global Typeclasses Opaque low_u16.
       
@@ -2595,6 +2600,7 @@ Module signed.
       Global Instance AssociatedFunction_as_u16 :
         forall (BITS LIMBS : Value.t),
         M.IsAssociatedFunction.C (Self BITS LIMBS) "as_u16" (as_u16 BITS LIMBS).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_u16.
       
@@ -2694,6 +2700,7 @@ Module signed.
       Global Instance AssociatedFunction_low_i16 :
         forall (BITS LIMBS : Value.t),
         M.IsAssociatedFunction.C (Self BITS LIMBS) "low_i16" (low_i16 BITS LIMBS).
+      Proof.
       Admitted.
       Global Typeclasses Opaque low_i16.
       
@@ -2761,6 +2768,7 @@ Module signed.
       Global Instance AssociatedFunction_as_i16 :
         forall (BITS LIMBS : Value.t),
         M.IsAssociatedFunction.C (Self BITS LIMBS) "as_i16" (as_i16 BITS LIMBS).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_i16.
       
@@ -2860,6 +2868,7 @@ Module signed.
       Global Instance AssociatedFunction_low_u32 :
         forall (BITS LIMBS : Value.t),
         M.IsAssociatedFunction.C (Self BITS LIMBS) "low_u32" (low_u32 BITS LIMBS).
+      Proof.
       Admitted.
       Global Typeclasses Opaque low_u32.
       
@@ -2927,6 +2936,7 @@ Module signed.
       Global Instance AssociatedFunction_as_u32 :
         forall (BITS LIMBS : Value.t),
         M.IsAssociatedFunction.C (Self BITS LIMBS) "as_u32" (as_u32 BITS LIMBS).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_u32.
       
@@ -3026,6 +3036,7 @@ Module signed.
       Global Instance AssociatedFunction_low_i32 :
         forall (BITS LIMBS : Value.t),
         M.IsAssociatedFunction.C (Self BITS LIMBS) "low_i32" (low_i32 BITS LIMBS).
+      Proof.
       Admitted.
       Global Typeclasses Opaque low_i32.
       
@@ -3093,6 +3104,7 @@ Module signed.
       Global Instance AssociatedFunction_as_i32 :
         forall (BITS LIMBS : Value.t),
         M.IsAssociatedFunction.C (Self BITS LIMBS) "as_i32" (as_i32 BITS LIMBS).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_i32.
       
@@ -3186,6 +3198,7 @@ Module signed.
       Global Instance AssociatedFunction_low_u64 :
         forall (BITS LIMBS : Value.t),
         M.IsAssociatedFunction.C (Self BITS LIMBS) "low_u64" (low_u64 BITS LIMBS).
+      Proof.
       Admitted.
       Global Typeclasses Opaque low_u64.
       
@@ -3253,6 +3266,7 @@ Module signed.
       Global Instance AssociatedFunction_as_u64 :
         forall (BITS LIMBS : Value.t),
         M.IsAssociatedFunction.C (Self BITS LIMBS) "as_u64" (as_u64 BITS LIMBS).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_u64.
       
@@ -3352,6 +3366,7 @@ Module signed.
       Global Instance AssociatedFunction_low_i64 :
         forall (BITS LIMBS : Value.t),
         M.IsAssociatedFunction.C (Self BITS LIMBS) "low_i64" (low_i64 BITS LIMBS).
+      Proof.
       Admitted.
       Global Typeclasses Opaque low_i64.
       
@@ -3419,6 +3434,7 @@ Module signed.
       Global Instance AssociatedFunction_as_i64 :
         forall (BITS LIMBS : Value.t),
         M.IsAssociatedFunction.C (Self BITS LIMBS) "as_i64" (as_i64 BITS LIMBS).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_i64.
       
@@ -3518,6 +3534,7 @@ Module signed.
       Global Instance AssociatedFunction_low_usize :
         forall (BITS LIMBS : Value.t),
         M.IsAssociatedFunction.C (Self BITS LIMBS) "low_usize" (low_usize BITS LIMBS).
+      Proof.
       Admitted.
       Global Typeclasses Opaque low_usize.
       
@@ -3587,6 +3604,7 @@ Module signed.
       Global Instance AssociatedFunction_as_usize :
         forall (BITS LIMBS : Value.t),
         M.IsAssociatedFunction.C (Self BITS LIMBS) "as_usize" (as_usize BITS LIMBS).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_usize.
       
@@ -3686,6 +3704,7 @@ Module signed.
       Global Instance AssociatedFunction_low_isize :
         forall (BITS LIMBS : Value.t),
         M.IsAssociatedFunction.C (Self BITS LIMBS) "low_isize" (low_isize BITS LIMBS).
+      Proof.
       Admitted.
       Global Typeclasses Opaque low_isize.
       
@@ -3755,6 +3774,7 @@ Module signed.
       Global Instance AssociatedFunction_as_isize :
         forall (BITS LIMBS : Value.t),
         M.IsAssociatedFunction.C (Self BITS LIMBS) "as_isize" (as_isize BITS LIMBS).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_isize.
     End Impl_alloy_primitives_signed_int_Signed_BITS_LIMBS.

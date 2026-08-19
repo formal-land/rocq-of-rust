@@ -49,6 +49,7 @@ Module processor.
       M.IsFunction.C
         "pinocchio_token_program::processor::initialize_mint::process_initialize_mint"
         process_initialize_mint.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_initialize_mint.
   End initialize_mint.

@@ -8,6 +8,7 @@ Require Import core.num.simulate.mod.
 Require Import core.ops.links.range.
 Require Import core.ops.simulate.deref.
 Require Import core.ops.simulate.range.
+Require Import core.simulate.option.
 Require Import revm.revm_bytecode.links.bytecode.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_context_interface.links.journaled_state.
@@ -197,14 +198,82 @@ Lemma get_memory_input_and_out_ranges_eq
     )
   }}.
 Proof.
-  (* apply Run.remove_extra_stack1.
+  apply Run.remove_extra_stack1.
   with_strategy transparent [run_get_memory_input_and_out_ranges]
     unfold run_get_memory_input_and_out_ranges, get_memory_input_and_out_ranges;
     cbn.
   popn_macro_eq InterpreterTypesEq.
+  match goal with
+  | array : array.t aliases.U256.t _ |- _ =>
+    destruct array as [[in_offset [in_len [out_offset [out_len []]]]]]
+  end.
   lu.
-  cw @resize_memory_eq. *)
-Admitted.
+  cw @resize_memory_eq.
+  destruct resize_memory as [[?in_range|] ?interpreter]; cbn. 2: {
+    s. {
+      apply Impl_Try_for_Option.branch_eq.
+    }
+    unfold Impl_Try_for_Option.branch; cbn.
+    s. {
+      apply Impl_FromResidual_Infallible_for_Option.from_residual_eq.
+    }
+    unfold Impl_FromResidual_Infallible_for_Option.from_residual; cbn.
+    s.
+  }
+  s. {
+    apply Impl_Try_for_Option.branch_eq.
+  }
+  unfold Impl_Try_for_Option.branch; cbn.
+  s. {
+    apply Impl_Range.is_empty_eq; repeat unshelve econstructor.
+  }
+  s.
+  destruct (Impl_Range.is_empty in_range) eqn:H_in_range_empty; cbn.
+  - lu.
+    cw @resize_memory_eq.
+    destruct resize_memory as [[?ret_range|] ?interpreter]; cbn.
+    + s. {
+        apply Impl_Try_for_Option.branch_eq.
+      }
+      unfold Impl_Try_for_Option.branch; cbn.
+      s.
+    + s. {
+        apply Impl_Try_for_Option.branch_eq.
+      }
+      unfold Impl_Try_for_Option.branch; cbn.
+      s. {
+        apply Impl_FromResidual_Infallible_for_Option.from_residual_eq.
+      }
+      unfold Impl_FromResidual_Infallible_for_Option.from_residual; cbn.
+      s.
+  - s. {
+      apply InterpreterTypesEq.
+    }
+    s. {
+      apply Impl_usize.saturating_add_eq.
+    }
+    s. {
+      apply Impl_usize.saturating_add_eq.
+    }
+    s. {
+      s_apply @resize_memory_eq.
+    }
+    destruct resize_memory as [[?ret_range|] ?interpreter]; cbn.
+    + s. {
+        apply Impl_Try_for_Option.branch_eq.
+      }
+      unfold Impl_Try_for_Option.branch; cbn.
+      s.
+    + s. {
+        apply Impl_Try_for_Option.branch_eq.
+      }
+      unfold Impl_Try_for_Option.branch; cbn.
+      s. {
+        apply Impl_FromResidual_Infallible_for_Option.from_residual_eq.
+      }
+      unfold Impl_FromResidual_Infallible_for_Option.from_residual; cbn.
+      s.
+Qed.
 
 Definition load_acc_and_calc_gas
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -293,13 +362,15 @@ Lemma load_acc_and_calc_gas_eq
     (transfers_value create_empty_account : bool)
     (stack_gas_limit : u64)
     (stack : Stack.t) :
-  let ref_context := make_ref (A := InstructionContext.t H WIRE WIRE_types) 0 in
-  let ref_interpreter := make_ref (A := Interpreter.t WIRE WIRE_types) 1 in
-  let ref_host := make_ref (A := H) 2 in
+  let ref_interpreter := make_ref (A := Interpreter.t WIRE WIRE_types) 0 in
+  let ref_host := make_ref (A := H) 1 in
   let context := {|
     InstructionContext.interpreter := ref_interpreter;
     InstructionContext.host := ref_host;
   |} in
+  let ref_context : '&mut (InstructionContext.t H WIRE WIRE_types) :=
+    Ref.cast_to Pointer.Kind.MutRef
+      (Ref.immediate Pointer.Kind.Raw context) in
   {{
     SimulateM.eval_f (
       run_load_acc_and_calc_gas
@@ -309,7 +380,7 @@ Lemma load_acc_and_calc_gas_eq
         create_empty_account
         stack_gas_limit
     )
-    (context :: interpreter :: host :: stack)%stack 🌲
+    (interpreter :: host :: stack)%stack 🌲
     let '(result, interpreter, host) :=
       @load_acc_and_calc_gas
         WIRE
@@ -330,7 +401,7 @@ Lemma load_acc_and_calc_gas_eq
         stack_gas_limit in
     (
       Output.Success result,
-      (context :: interpreter :: host :: stack)%stack
+      (interpreter :: host :: stack)%stack
     )
   }}.
 Proof.

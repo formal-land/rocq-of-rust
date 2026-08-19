@@ -8,6 +8,7 @@ Module gas.
     
     Global Instance Instance_IsConstant_value_ZERO :
       M.IsFunction.C "revm_interpreter::gas::constants::ZERO" value_ZERO.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ZERO.
     
@@ -16,6 +17,7 @@ Module gas.
     
     Global Instance Instance_IsConstant_value_BASE :
       M.IsFunction.C "revm_interpreter::gas::constants::BASE" value_BASE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_BASE.
     
@@ -24,6 +26,7 @@ Module gas.
     
     Global Instance Instance_IsConstant_value_VERYLOW :
       M.IsFunction.C "revm_interpreter::gas::constants::VERYLOW" value_VERYLOW.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_VERYLOW.
     
@@ -32,6 +35,7 @@ Module gas.
     
     Global Instance Instance_IsConstant_value_DATA_LOADN_GAS :
       M.IsFunction.C "revm_interpreter::gas::constants::DATA_LOADN_GAS" value_DATA_LOADN_GAS.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_DATA_LOADN_GAS.
     
@@ -42,6 +46,7 @@ Module gas.
       M.IsFunction.C
         "revm_interpreter::gas::constants::CONDITION_JUMP_GAS"
         value_CONDITION_JUMP_GAS.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_CONDITION_JUMP_GAS.
     
@@ -50,6 +55,7 @@ Module gas.
     
     Global Instance Instance_IsConstant_value_RETF_GAS :
       M.IsFunction.C "revm_interpreter::gas::constants::RETF_GAS" value_RETF_GAS.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_RETF_GAS.
     
@@ -58,6 +64,7 @@ Module gas.
     
     Global Instance Instance_IsConstant_value_DATA_LOAD_GAS :
       M.IsFunction.C "revm_interpreter::gas::constants::DATA_LOAD_GAS" value_DATA_LOAD_GAS.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_DATA_LOAD_GAS.
     
@@ -66,6 +73,7 @@ Module gas.
     
     Global Instance Instance_IsConstant_value_LOW :
       M.IsFunction.C "revm_interpreter::gas::constants::LOW" value_LOW.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_LOW.
     
@@ -74,6 +82,7 @@ Module gas.
     
     Global Instance Instance_IsConstant_value_MID :
       M.IsFunction.C "revm_interpreter::gas::constants::MID" value_MID.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MID.
     
@@ -82,6 +91,7 @@ Module gas.
     
     Global Instance Instance_IsConstant_value_HIGH :
       M.IsFunction.C "revm_interpreter::gas::constants::HIGH" value_HIGH.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_HIGH.
     
@@ -90,6 +100,7 @@ Module gas.
     
     Global Instance Instance_IsConstant_value_JUMPDEST :
       M.IsFunction.C "revm_interpreter::gas::constants::JUMPDEST" value_JUMPDEST.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_JUMPDEST.
     
@@ -104,6 +115,7 @@ Module gas.
       M.IsFunction.C
         "revm_interpreter::gas::constants::SELFDESTRUCT_REFUND"
         value_SELFDESTRUCT_REFUND.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SELFDESTRUCT_REFUND.
     
@@ -112,6 +124,7 @@ Module gas.
     
     Global Instance Instance_IsConstant_value_CREATE :
       M.IsFunction.C "revm_interpreter::gas::constants::CREATE" value_CREATE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_CREATE.
     
@@ -120,6 +133,7 @@ Module gas.
     
     Global Instance Instance_IsConstant_value_CALLVALUE :
       M.IsFunction.C "revm_interpreter::gas::constants::CALLVALUE" value_CALLVALUE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_CALLVALUE.
     
@@ -128,6 +142,7 @@ Module gas.
     
     Global Instance Instance_IsConstant_value_NEWACCOUNT :
       M.IsFunction.C "revm_interpreter::gas::constants::NEWACCOUNT" value_NEWACCOUNT.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_NEWACCOUNT.
     
@@ -136,6 +151,7 @@ Module gas.
     
     Global Instance Instance_IsConstant_value_EXP :
       M.IsFunction.C "revm_interpreter::gas::constants::EXP" value_EXP.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_EXP.
     
@@ -144,6 +160,7 @@ Module gas.
     
     Global Instance Instance_IsConstant_value_MEMORY :
       M.IsFunction.C "revm_interpreter::gas::constants::MEMORY" value_MEMORY.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MEMORY.
     
@@ -152,6 +169,7 @@ Module gas.
     
     Global Instance Instance_IsConstant_value_LOG :
       M.IsFunction.C "revm_interpreter::gas::constants::LOG" value_LOG.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_LOG.
     
@@ -160,6 +178,7 @@ Module gas.
     
     Global Instance Instance_IsConstant_value_LOGDATA :
       M.IsFunction.C "revm_interpreter::gas::constants::LOGDATA" value_LOGDATA.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_LOGDATA.
     
@@ -168,6 +187,7 @@ Module gas.
     
     Global Instance Instance_IsConstant_value_LOGTOPIC :
       M.IsFunction.C "revm_interpreter::gas::constants::LOGTOPIC" value_LOGTOPIC.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_LOGTOPIC.
     
@@ -176,6 +196,7 @@ Module gas.
     
     Global Instance Instance_IsConstant_value_KECCAK256 :
       M.IsFunction.C "revm_interpreter::gas::constants::KECCAK256" value_KECCAK256.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_KECCAK256.
     
@@ -184,6 +205,7 @@ Module gas.
     
     Global Instance Instance_IsConstant_value_KECCAK256WORD :
       M.IsFunction.C "revm_interpreter::gas::constants::KECCAK256WORD" value_KECCAK256WORD.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_KECCAK256WORD.
     
@@ -192,6 +214,7 @@ Module gas.
     
     Global Instance Instance_IsConstant_value_COPY :
       M.IsFunction.C "revm_interpreter::gas::constants::COPY" value_COPY.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_COPY.
     
@@ -200,6 +223,7 @@ Module gas.
     
     Global Instance Instance_IsConstant_value_BLOCKHASH :
       M.IsFunction.C "revm_interpreter::gas::constants::BLOCKHASH" value_BLOCKHASH.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_BLOCKHASH.
     
@@ -208,6 +232,7 @@ Module gas.
     
     Global Instance Instance_IsConstant_value_CODEDEPOSIT :
       M.IsFunction.C "revm_interpreter::gas::constants::CODEDEPOSIT" value_CODEDEPOSIT.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_CODEDEPOSIT.
     
@@ -218,6 +243,7 @@ Module gas.
       M.IsFunction.C
         "revm_interpreter::gas::constants::ISTANBUL_SLOAD_GAS"
         value_ISTANBUL_SLOAD_GAS.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ISTANBUL_SLOAD_GAS.
     
@@ -226,6 +252,7 @@ Module gas.
     
     Global Instance Instance_IsConstant_value_SSTORE_SET :
       M.IsFunction.C "revm_interpreter::gas::constants::SSTORE_SET" value_SSTORE_SET.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SSTORE_SET.
     
@@ -234,6 +261,7 @@ Module gas.
     
     Global Instance Instance_IsConstant_value_SSTORE_RESET :
       M.IsFunction.C "revm_interpreter::gas::constants::SSTORE_RESET" value_SSTORE_RESET.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SSTORE_RESET.
     
@@ -248,6 +276,7 @@ Module gas.
       M.IsFunction.C
         "revm_interpreter::gas::constants::REFUND_SSTORE_CLEARS"
         value_REFUND_SSTORE_CLEARS.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_REFUND_SSTORE_CLEARS.
     
@@ -262,6 +291,7 @@ Module gas.
       M.IsFunction.C
         "revm_interpreter::gas::constants::STANDARD_TOKEN_COST"
         value_STANDARD_TOKEN_COST.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_STANDARD_TOKEN_COST.
     
@@ -276,6 +306,7 @@ Module gas.
       M.IsFunction.C
         "revm_interpreter::gas::constants::NON_ZERO_BYTE_DATA_COST"
         value_NON_ZERO_BYTE_DATA_COST.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_NON_ZERO_BYTE_DATA_COST.
     
@@ -311,6 +342,7 @@ Module gas.
       M.IsFunction.C
         "revm_interpreter::gas::constants::NON_ZERO_BYTE_MULTIPLIER"
         value_NON_ZERO_BYTE_MULTIPLIER.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_NON_ZERO_BYTE_MULTIPLIER.
     
@@ -325,6 +357,7 @@ Module gas.
       M.IsFunction.C
         "revm_interpreter::gas::constants::NON_ZERO_BYTE_DATA_COST_ISTANBUL"
         value_NON_ZERO_BYTE_DATA_COST_ISTANBUL.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_NON_ZERO_BYTE_DATA_COST_ISTANBUL.
     
@@ -360,6 +393,7 @@ Module gas.
       M.IsFunction.C
         "revm_interpreter::gas::constants::NON_ZERO_BYTE_MULTIPLIER_ISTANBUL"
         value_NON_ZERO_BYTE_MULTIPLIER_ISTANBUL.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_NON_ZERO_BYTE_MULTIPLIER_ISTANBUL.
     
@@ -374,6 +408,7 @@ Module gas.
       M.IsFunction.C
         "revm_interpreter::gas::constants::TOTAL_COST_FLOOR_PER_TOKEN"
         value_TOTAL_COST_FLOOR_PER_TOKEN.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_TOTAL_COST_FLOOR_PER_TOKEN.
     
@@ -382,6 +417,7 @@ Module gas.
     
     Global Instance Instance_IsConstant_value_EOF_CREATE_GAS :
       M.IsFunction.C "revm_interpreter::gas::constants::EOF_CREATE_GAS" value_EOF_CREATE_GAS.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_EOF_CREATE_GAS.
     
@@ -396,6 +432,7 @@ Module gas.
       M.IsFunction.C
         "revm_interpreter::gas::constants::ACCESS_LIST_ADDRESS"
         value_ACCESS_LIST_ADDRESS.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ACCESS_LIST_ADDRESS.
     
@@ -410,6 +447,7 @@ Module gas.
       M.IsFunction.C
         "revm_interpreter::gas::constants::ACCESS_LIST_STORAGE_KEY"
         value_ACCESS_LIST_STORAGE_KEY.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ACCESS_LIST_STORAGE_KEY.
     
@@ -418,6 +456,7 @@ Module gas.
     
     Global Instance Instance_IsConstant_value_COLD_SLOAD_COST :
       M.IsFunction.C "revm_interpreter::gas::constants::COLD_SLOAD_COST" value_COLD_SLOAD_COST.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_COLD_SLOAD_COST.
     
@@ -432,6 +471,7 @@ Module gas.
       M.IsFunction.C
         "revm_interpreter::gas::constants::COLD_ACCOUNT_ACCESS_COST"
         value_COLD_ACCOUNT_ACCESS_COST.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_COLD_ACCOUNT_ACCESS_COST.
     
@@ -467,6 +507,7 @@ Module gas.
       M.IsFunction.C
         "revm_interpreter::gas::constants::COLD_ACCOUNT_ACCESS_COST_ADDITIONAL"
         value_COLD_ACCOUNT_ACCESS_COST_ADDITIONAL.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_COLD_ACCOUNT_ACCESS_COST_ADDITIONAL.
     
@@ -502,6 +543,7 @@ Module gas.
       M.IsFunction.C
         "revm_interpreter::gas::constants::COLD_SLOAD_COST_ADDITIONAL"
         value_COLD_SLOAD_COST_ADDITIONAL.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_COLD_SLOAD_COST_ADDITIONAL.
     
@@ -516,6 +558,7 @@ Module gas.
       M.IsFunction.C
         "revm_interpreter::gas::constants::WARM_STORAGE_READ_COST"
         value_WARM_STORAGE_READ_COST.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_WARM_STORAGE_READ_COST.
     
@@ -542,6 +585,7 @@ Module gas.
     
     Global Instance Instance_IsConstant_value_WARM_SSTORE_RESET :
       M.IsFunction.C "revm_interpreter::gas::constants::WARM_SSTORE_RESET" value_WARM_SSTORE_RESET.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_WARM_SSTORE_RESET.
     
@@ -552,6 +596,7 @@ Module gas.
       M.IsFunction.C
         "revm_interpreter::gas::constants::INITCODE_WORD_COST"
         value_INITCODE_WORD_COST.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_INITCODE_WORD_COST.
     
@@ -560,6 +605,7 @@ Module gas.
     
     Global Instance Instance_IsConstant_value_CALL_STIPEND :
       M.IsFunction.C "revm_interpreter::gas::constants::CALL_STIPEND" value_CALL_STIPEND.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_CALL_STIPEND.
     
@@ -569,6 +615,7 @@ Module gas.
     
     Global Instance Instance_IsConstant_value_MIN_CALLEE_GAS :
       M.IsFunction.C "revm_interpreter::gas::constants::MIN_CALLEE_GAS" value_MIN_CALLEE_GAS.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MIN_CALLEE_GAS.
   End constants.

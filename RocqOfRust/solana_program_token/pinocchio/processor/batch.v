@@ -10,6 +10,7 @@ Module processor.
       M.IsFunction.C
         "pinocchio_token_program::processor::batch::IX_HEADER_SIZE"
         value_IX_HEADER_SIZE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_IX_HEADER_SIZE.
     
@@ -689,6 +690,8 @@ Module processor.
                                                                             2,
                                                                             0
                                                                           |) in
+                                                                        let _ :=
+                                                                          M.read (| γ1_0 |) in
                                                                         let a0 :=
                                                                           M.alloc (|
                                                                             Ty.apply
@@ -698,8 +701,13 @@ Module processor.
                                                                                 Ty.path
                                                                                   "pinocchio::account_info::AccountInfo"
                                                                               ],
-                                                                            γ1_0
+                                                                            M.borrow (|
+                                                                              Pointer.Kind.Ref,
+                                                                              γ1_0
+                                                                            |)
                                                                           |) in
+                                                                        let _ :=
+                                                                          M.read (| γ1_1 |) in
                                                                         let a1 :=
                                                                           M.alloc (|
                                                                             Ty.apply
@@ -709,7 +717,10 @@ Module processor.
                                                                                 Ty.path
                                                                                   "pinocchio::account_info::AccountInfo"
                                                                               ],
-                                                                            γ1_1
+                                                                            M.borrow (|
+                                                                              Pointer.Kind.Ref,
+                                                                              γ1_1
+                                                                            |)
                                                                           |) in
                                                                         M.read (|
                                                                           let~ _ : Ty.tuple [] :=
@@ -1141,6 +1152,7 @@ Module processor.
                                                                   3,
                                                                   0
                                                                 |) in
+                                                              let _ := M.read (| γ1_0 |) in
                                                               let a0 :=
                                                                 M.alloc (|
                                                                   Ty.apply
@@ -1150,8 +1162,12 @@ Module processor.
                                                                       Ty.path
                                                                         "pinocchio::account_info::AccountInfo"
                                                                     ],
-                                                                  γ1_0
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    γ1_0
+                                                                  |)
                                                                 |) in
+                                                              let _ := M.read (| γ1_2 |) in
                                                               let a2 :=
                                                                 M.alloc (|
                                                                   Ty.apply
@@ -1161,7 +1177,10 @@ Module processor.
                                                                       Ty.path
                                                                         "pinocchio::account_info::AccountInfo"
                                                                     ],
-                                                                  γ1_2
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    γ1_2
+                                                                  |)
                                                                 |) in
                                                               M.read (|
                                                                 let~ _ : Ty.tuple [] :=
@@ -1623,6 +1642,8 @@ Module processor.
                                                                             1,
                                                                             0
                                                                           |) in
+                                                                        let _ :=
+                                                                          M.read (| γ1_0 |) in
                                                                         let a0 :=
                                                                           M.alloc (|
                                                                             Ty.apply
@@ -1632,7 +1653,10 @@ Module processor.
                                                                                 Ty.path
                                                                                   "pinocchio::account_info::AccountInfo"
                                                                               ],
-                                                                            γ1_0
+                                                                            M.borrow (|
+                                                                              Pointer.Kind.Ref,
+                                                                              γ1_0
+                                                                            |)
                                                                           |) in
                                                                         M.read (|
                                                                           let~ _ : Ty.tuple [] :=
@@ -2180,6 +2204,7 @@ Module processor.
     
     Global Instance Instance_IsFunction_process_batch :
       M.IsFunction.C "pinocchio_token_program::processor::batch::process_batch" process_batch.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_batch.
   End batch.

@@ -42,6 +42,7 @@ Definition create_box (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) :
 
 Global Instance Instance_IsFunction_create_box :
   M.IsFunction.C "scoping_rules_raii::create_box" create_box.
+Proof.
 Admitted.
 Global Typeclasses Opaque create_box.
 
@@ -225,5 +226,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "scoping_rules_raii::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

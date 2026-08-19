@@ -30,6 +30,7 @@ Module slice.
       
       Global Instance AssociatedFunction_is_ascii :
         M.IsAssociatedFunction.C Self "is_ascii" is_ascii.
+      Proof.
       Admitted.
       Global Typeclasses Opaque is_ascii.
       
@@ -145,6 +146,7 @@ Module slice.
       
       Global Instance AssociatedFunction_as_ascii :
         M.IsAssociatedFunction.C Self "as_ascii" as_ascii.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_ascii.
       
@@ -204,6 +206,7 @@ Module slice.
       
       Global Instance AssociatedFunction_as_ascii_unchecked :
         M.IsAssociatedFunction.C Self "as_ascii_unchecked" as_ascii_unchecked.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_ascii_unchecked.
       
@@ -346,34 +349,38 @@ Module slice.
                                     let γ0_0 := M.deref (| M.read (| γ0_0 |) |) in
                                     let γ2_0 := M.SubPointer.get_slice_index (| γ0_0, 0 |) in
                                     let γ2_rest := M.SubPointer.get_slice_rest (| γ0_0, 1, 0 |) in
+                                    let _ := M.read (| γ2_0 |) in
                                     let first_a :=
                                       M.alloc (|
                                         Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
-                                        γ2_0
+                                        M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                       |) in
+                                    let _ := M.read (| γ2_rest |) in
                                     let rest_a :=
                                       M.alloc (|
                                         Ty.apply
                                           (Ty.path "&")
                                           []
                                           [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                        γ2_rest
+                                        M.borrow (| Pointer.Kind.Ref, γ2_rest |)
                                       |) in
                                     let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                                     let γ2_0 := M.SubPointer.get_slice_index (| γ0_1, 0 |) in
                                     let γ2_rest := M.SubPointer.get_slice_rest (| γ0_1, 1, 0 |) in
+                                    let _ := M.read (| γ2_0 |) in
                                     let first_b :=
                                       M.alloc (|
                                         Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
-                                        γ2_0
+                                        M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                                       |) in
+                                    let _ := M.read (| γ2_rest |) in
                                     let rest_b :=
                                       M.alloc (|
                                         Ty.apply
                                           (Ty.path "&")
                                           []
                                           [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                        γ2_rest
+                                        M.borrow (| Pointer.Kind.Ref, γ2_rest |)
                                       |) in
                                     M.match_operator (|
                                       Ty.tuple [],
@@ -463,6 +470,7 @@ Module slice.
       
       Global Instance AssociatedFunction_eq_ignore_ascii_case :
         M.IsAssociatedFunction.C Self "eq_ignore_ascii_case" eq_ignore_ascii_case.
+      Proof.
       Admitted.
       Global Typeclasses Opaque eq_ignore_ascii_case.
       
@@ -583,6 +591,7 @@ Module slice.
       
       Global Instance AssociatedFunction_make_ascii_uppercase :
         M.IsAssociatedFunction.C Self "make_ascii_uppercase" make_ascii_uppercase.
+      Proof.
       Admitted.
       Global Typeclasses Opaque make_ascii_uppercase.
       
@@ -703,6 +712,7 @@ Module slice.
       
       Global Instance AssociatedFunction_make_ascii_lowercase :
         M.IsAssociatedFunction.C Self "make_ascii_lowercase" make_ascii_lowercase.
+      Proof.
       Admitted.
       Global Typeclasses Opaque make_ascii_lowercase.
       
@@ -767,6 +777,7 @@ Module slice.
       
       Global Instance AssociatedFunction_escape_ascii :
         M.IsAssociatedFunction.C Self "escape_ascii" escape_ascii.
+      Proof.
       Admitted.
       Global Typeclasses Opaque escape_ascii.
       
@@ -815,15 +826,20 @@ Module slice.
                                 let γ := M.deref (| M.read (| γ |) |) in
                                 let γ1_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
                                 let γ1_rest := M.SubPointer.get_slice_rest (| γ, 1, 0 |) in
+                                let _ := M.read (| γ1_0 |) in
                                 let first :=
-                                  M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                                    M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                                  |) in
+                                let _ := M.read (| γ1_rest |) in
                                 let rest :=
                                   M.alloc (|
                                     Ty.apply
                                       (Ty.path "&")
                                       []
                                       [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                    γ1_rest
+                                    M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                   |) in
                                 M.match_operator (|
                                   Ty.tuple [],
@@ -895,6 +911,7 @@ Module slice.
       
       Global Instance AssociatedFunction_trim_ascii_start :
         M.IsAssociatedFunction.C Self "trim_ascii_start" trim_ascii_start.
+      Proof.
       Admitted.
       Global Typeclasses Opaque trim_ascii_start.
       
@@ -943,18 +960,20 @@ Module slice.
                                 let γ := M.deref (| M.read (| γ |) |) in
                                 let γ1_rest := M.SubPointer.get_slice_rest (| γ, 0, 1 |) in
                                 let γ1_rev0 := M.SubPointer.get_slice_rev_index (| γ, 0 |) in
+                                let _ := M.read (| γ1_rest |) in
                                 let rest :=
                                   M.alloc (|
                                     Ty.apply
                                       (Ty.path "&")
                                       []
                                       [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                    γ1_rest
+                                    M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                   |) in
+                                let _ := M.read (| γ1_rev0 |) in
                                 let last :=
                                   M.alloc (|
                                     Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
-                                    γ1_rev0
+                                    M.borrow (| Pointer.Kind.Ref, γ1_rev0 |)
                                   |) in
                                 M.match_operator (|
                                   Ty.tuple [],
@@ -1026,6 +1045,7 @@ Module slice.
       
       Global Instance AssociatedFunction_trim_ascii_end :
         M.IsAssociatedFunction.C Self "trim_ascii_end" trim_ascii_end.
+      Proof.
       Admitted.
       Global Typeclasses Opaque trim_ascii_end.
       
@@ -1082,6 +1102,7 @@ Module slice.
       
       Global Instance AssociatedFunction_trim_ascii :
         M.IsAssociatedFunction.C Self "trim_ascii" trim_ascii.
+      Proof.
       Admitted.
       Global Typeclasses Opaque trim_ascii.
     End Impl_slice_u8.
@@ -3388,16 +3409,21 @@ Module slice.
                               let γ := M.deref (| M.read (| γ |) |) in
                               let γ1_rest := M.SubPointer.get_slice_rest (| γ, 0, 1 |) in
                               let γ1_rev0 := M.SubPointer.get_slice_rev_index (| γ, 0 |) in
+                              let _ := M.read (| γ1_rest |) in
                               let rest :=
                                 M.alloc (|
                                   Ty.apply
                                     (Ty.path "&")
                                     []
                                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                  γ1_rest
+                                  M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                 |) in
+                              let _ := M.read (| γ1_rev0 |) in
                               let last :=
-                                M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_rev0 |) in
+                                M.alloc (|
+                                  Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                                  M.borrow (| Pointer.Kind.Ref, γ1_rev0 |)
+                                |) in
                               M.read (|
                                 let~ _ : Ty.tuple [] :=
                                   M.match_operator (|
@@ -3480,6 +3506,7 @@ Module slice.
     
     Global Instance Instance_IsFunction_is_ascii_simple :
       M.IsFunction.C "core::slice::ascii::is_ascii_simple" is_ascii_simple.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_ascii_simple.
     
@@ -3865,6 +3892,7 @@ Module slice.
     
     Global Instance Instance_IsFunction_is_ascii :
       M.IsFunction.C "core::slice::ascii::is_ascii" is_ascii.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_ascii.
     
@@ -3874,6 +3902,7 @@ Module slice.
       
       Global Instance Instance_IsConstant_value_CHUNK_SIZE :
         M.IsFunction.C "core::slice::ascii::is_ascii::CHUNK_SIZE" value_CHUNK_SIZE.
+      Proof.
       Admitted.
       Global Typeclasses Opaque value_CHUNK_SIZE.
     End is_ascii.

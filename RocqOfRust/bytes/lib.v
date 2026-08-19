@@ -34,6 +34,7 @@ Definition abort (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_abort : M.IsFunction.C "bytes::abort" abort.
+Proof.
 Admitted.
 Global Typeclasses Opaque abort.
 
@@ -99,6 +100,7 @@ Definition saturating_sub_usize_u64 (ε : list Value.t) (τ : list Ty.t) (α : l
 
 Global Instance Instance_IsFunction_saturating_sub_usize_u64 :
   M.IsFunction.C "bytes::saturating_sub_usize_u64" saturating_sub_usize_u64.
+Proof.
 Admitted.
 Global Typeclasses Opaque saturating_sub_usize_u64.
 
@@ -164,6 +166,7 @@ Definition min_u64_usize (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
 
 Global Instance Instance_IsFunction_min_u64_usize :
   M.IsFunction.C "bytes::min_u64_usize" min_u64_usize.
+Proof.
 Admitted.
 Global Typeclasses Opaque min_u64_usize.
 
@@ -324,6 +327,7 @@ Definition panic_advance (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
 
 Global Instance Instance_IsFunction_panic_advance :
   M.IsFunction.C "bytes::panic_advance" panic_advance.
+Proof.
 Admitted.
 Global Typeclasses Opaque panic_advance.
 
@@ -496,6 +500,7 @@ Definition panic_does_not_fit (ε : list Value.t) (τ : list Ty.t) (α : list Va
 
 Global Instance Instance_IsFunction_panic_does_not_fit :
   M.IsFunction.C "bytes::panic_does_not_fit" panic_does_not_fit.
+Proof.
 Admitted.
 Global Typeclasses Opaque panic_does_not_fit.
 
@@ -522,5 +527,6 @@ Definition offset_from (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) 
   end.
 
 Global Instance Instance_IsFunction_offset_from : M.IsFunction.C "bytes::offset_from" offset_from.
+Proof.
 Admitted.
 Global Typeclasses Opaque offset_from.

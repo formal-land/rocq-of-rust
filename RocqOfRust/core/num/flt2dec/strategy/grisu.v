@@ -10,6 +10,7 @@ Module num.
         
         Global Instance Instance_IsConstant_value_ALPHA :
           M.IsFunction.C "core::num::flt2dec::strategy::grisu::ALPHA" value_ALPHA.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_ALPHA.
         
@@ -18,6 +19,7 @@ Module num.
         
         Global Instance Instance_IsConstant_value_GAMMA :
           M.IsFunction.C "core::num::flt2dec::strategy::grisu::GAMMA" value_GAMMA.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_GAMMA.
         
@@ -527,6 +529,7 @@ Module num.
         
         Global Instance Instance_IsConstant_value_CACHED_POW10 :
           M.IsFunction.C "core::num::flt2dec::strategy::grisu::CACHED_POW10" value_CACHED_POW10.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_CACHED_POW10.
         
@@ -541,6 +544,7 @@ Module num.
           M.IsFunction.C
             "core::num::flt2dec::strategy::grisu::CACHED_POW10_FIRST_E"
             value_CACHED_POW10_FIRST_E.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_CACHED_POW10_FIRST_E.
         
@@ -555,6 +559,7 @@ Module num.
           M.IsFunction.C
             "core::num::flt2dec::strategy::grisu::CACHED_POW10_LAST_E"
             value_CACHED_POW10_LAST_E.
+        Proof.
         Admitted.
         Global Typeclasses Opaque value_CACHED_POW10_LAST_E.
         
@@ -833,6 +838,7 @@ Module num.
         
         Global Instance Instance_IsFunction_cached_power :
           M.IsFunction.C "core::num::flt2dec::strategy::grisu::cached_power" cached_power.
+        Proof.
         Admitted.
         Global Typeclasses Opaque cached_power.
         
@@ -1321,6 +1327,7 @@ Module num.
           M.IsFunction.C
             "core::num::flt2dec::strategy::grisu::max_pow10_no_more_than"
             max_pow10_no_more_than.
+        Proof.
         Admitted.
         Global Typeclasses Opaque max_pow10_no_more_than.
         
@@ -1333,6 +1340,7 @@ Module num.
             M.IsFunction.C
               "core::num::flt2dec::strategy::grisu::max_pow10_no_more_than::X9"
               value_X9.
+          Proof.
           Admitted.
           Global Typeclasses Opaque value_X9.
           
@@ -1343,6 +1351,7 @@ Module num.
             M.IsFunction.C
               "core::num::flt2dec::strategy::grisu::max_pow10_no_more_than::X8"
               value_X8.
+          Proof.
           Admitted.
           Global Typeclasses Opaque value_X8.
           
@@ -1353,6 +1362,7 @@ Module num.
             M.IsFunction.C
               "core::num::flt2dec::strategy::grisu::max_pow10_no_more_than::X7"
               value_X7.
+          Proof.
           Admitted.
           Global Typeclasses Opaque value_X7.
           
@@ -1363,6 +1373,7 @@ Module num.
             M.IsFunction.C
               "core::num::flt2dec::strategy::grisu::max_pow10_no_more_than::X6"
               value_X6.
+          Proof.
           Admitted.
           Global Typeclasses Opaque value_X6.
           
@@ -1373,6 +1384,7 @@ Module num.
             M.IsFunction.C
               "core::num::flt2dec::strategy::grisu::max_pow10_no_more_than::X5"
               value_X5.
+          Proof.
           Admitted.
           Global Typeclasses Opaque value_X5.
           
@@ -1383,6 +1395,7 @@ Module num.
             M.IsFunction.C
               "core::num::flt2dec::strategy::grisu::max_pow10_no_more_than::X4"
               value_X4.
+          Proof.
           Admitted.
           Global Typeclasses Opaque value_X4.
           
@@ -1393,6 +1406,7 @@ Module num.
             M.IsFunction.C
               "core::num::flt2dec::strategy::grisu::max_pow10_no_more_than::X3"
               value_X3.
+          Proof.
           Admitted.
           Global Typeclasses Opaque value_X3.
           
@@ -1403,6 +1417,7 @@ Module num.
             M.IsFunction.C
               "core::num::flt2dec::strategy::grisu::max_pow10_no_more_than::X2"
               value_X2.
+          Proof.
           Admitted.
           Global Typeclasses Opaque value_X2.
           
@@ -1413,6 +1428,7 @@ Module num.
             M.IsFunction.C
               "core::num::flt2dec::strategy::grisu::max_pow10_no_more_than::X1"
               value_X1.
+          Proof.
           Admitted.
           Global Typeclasses Opaque value_X1.
         End max_pow10_no_more_than.
@@ -4148,6 +4164,7 @@ Module num.
           M.IsFunction.C
             "core::num::flt2dec::strategy::grisu::format_shortest_opt"
             format_shortest_opt.
+        Proof.
         Admitted.
         Global Typeclasses Opaque format_shortest_opt.
         
@@ -4834,6 +4851,7 @@ Module num.
             M.IsFunction.C
               "core::num::flt2dec::strategy::grisu::format_shortest_opt::round_and_weed"
               round_and_weed.
+          Proof.
           Admitted.
           Global Typeclasses Opaque round_and_weed.
         End format_shortest_opt.
@@ -5013,6 +5031,7 @@ Module num.
         
         Global Instance Instance_IsFunction_format_shortest :
           M.IsFunction.C "core::num::flt2dec::strategy::grisu::format_shortest" format_shortest.
+        Proof.
         Admitted.
         Global Typeclasses Opaque format_shortest.
         
@@ -7419,6 +7438,7 @@ Module num.
         
         Global Instance Instance_IsFunction_format_exact_opt :
           M.IsFunction.C "core::num::flt2dec::strategy::grisu::format_exact_opt" format_exact_opt.
+        Proof.
         Admitted.
         Global Typeclasses Opaque format_exact_opt.
         
@@ -7450,6 +7470,7 @@ Module num.
             M.IsFunction.C
               "core::num::flt2dec::strategy::grisu::format_exact_opt::POW10_UP_TO_9"
               value_POW10_UP_TO_9.
+          Proof.
           Admitted.
           Global Typeclasses Opaque value_POW10_UP_TO_9.
           
@@ -8430,6 +8451,7 @@ Module num.
             M.IsFunction.C
               "core::num::flt2dec::strategy::grisu::format_exact_opt::possibly_round"
               possibly_round.
+          Proof.
           Admitted.
           Global Typeclasses Opaque possibly_round.
         End format_exact_opt.
@@ -8613,6 +8635,7 @@ Module num.
         
         Global Instance Instance_IsFunction_format_exact :
           M.IsFunction.C "core::num::flt2dec::strategy::grisu::format_exact" format_exact.
+        Proof.
         Admitted.
         Global Typeclasses Opaque format_exact.
       End grisu.

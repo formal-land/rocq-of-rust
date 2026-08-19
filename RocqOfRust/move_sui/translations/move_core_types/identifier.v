@@ -45,6 +45,7 @@ Module identifier.
   
   Global Instance Instance_IsFunction_is_valid_identifier_char :
     M.IsFunction.C "move_core_types::identifier::is_valid_identifier_char" is_valid_identifier_char.
+  Proof.
   Admitted.
   Global Typeclasses Opaque is_valid_identifier_char.
   
@@ -200,6 +201,7 @@ Module identifier.
   
   Global Instance Instance_IsFunction_all_bytes_valid :
     M.IsFunction.C "move_core_types::identifier::all_bytes_valid" all_bytes_valid.
+  Proof.
   Admitted.
   Global Typeclasses Opaque all_bytes_valid.
   
@@ -399,6 +401,7 @@ Module identifier.
   
   Global Instance Instance_IsFunction_is_valid :
     M.IsFunction.C "move_core_types::identifier::is_valid" is_valid.
+  Proof.
   Admitted.
   Global Typeclasses Opaque is_valid.
   
@@ -1300,6 +1303,7 @@ Module identifier.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -1341,6 +1345,7 @@ Module identifier.
       end.
     
     Global Instance AssociatedFunction_is_valid : M.IsAssociatedFunction.C Self "is_valid" is_valid.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_valid.
     
@@ -1398,6 +1403,7 @@ Module identifier.
       end.
     
     Global Instance AssociatedFunction_is_self : M.IsAssociatedFunction.C Self "is_self" is_self.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_self.
     
@@ -1590,6 +1596,7 @@ Module identifier.
     
     Global Instance AssociatedFunction_from_utf8 :
       M.IsAssociatedFunction.C Self "from_utf8" from_utf8.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_utf8.
     
@@ -1630,6 +1637,7 @@ Module identifier.
     
     Global Instance AssociatedFunction_as_ident_str :
       M.IsAssociatedFunction.C Self "as_ident_str" as_ident_str.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_ident_str.
     
@@ -1672,6 +1680,7 @@ Module identifier.
     
     Global Instance AssociatedFunction_into_string :
       M.IsAssociatedFunction.C Self "into_string" into_string.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_string.
     
@@ -1709,6 +1718,7 @@ Module identifier.
     
     Global Instance AssociatedFunction_into_bytes :
       M.IsAssociatedFunction.C Self "into_bytes" into_bytes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_bytes.
   End Impl_move_core_types_identifier_Identifier.
@@ -2871,6 +2881,7 @@ Module identifier.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -2912,6 +2923,7 @@ Module identifier.
       end.
     
     Global Instance AssociatedFunction_is_valid : M.IsAssociatedFunction.C Self "is_valid" is_valid.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_valid.
     
@@ -2947,6 +2959,7 @@ Module identifier.
       end.
     
     Global Instance AssociatedFunction_len : M.IsAssociatedFunction.C Self "len" len.
+    Proof.
     Admitted.
     Global Typeclasses Opaque len.
     
@@ -2982,6 +2995,7 @@ Module identifier.
       end.
     
     Global Instance AssociatedFunction_is_empty : M.IsAssociatedFunction.C Self "is_empty" is_empty.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_empty.
     
@@ -3016,6 +3030,7 @@ Module identifier.
       end.
     
     Global Instance AssociatedFunction_as_str : M.IsAssociatedFunction.C Self "as_str" as_str.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_str.
     
@@ -3056,6 +3071,7 @@ Module identifier.
       end.
     
     Global Instance AssociatedFunction_as_bytes : M.IsAssociatedFunction.C Self "as_bytes" as_bytes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_bytes.
     
@@ -3111,6 +3127,7 @@ Module identifier.
     
     Global Instance AssociatedFunction_abstract_size_for_gas_metering :
       M.IsAssociatedFunction.C Self "abstract_size_for_gas_metering" abstract_size_for_gas_metering.
+    Proof.
     Admitted.
     Global Typeclasses Opaque abstract_size_for_gas_metering.
   End Impl_move_core_types_identifier_IdentStr.

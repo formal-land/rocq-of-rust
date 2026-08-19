@@ -31,6 +31,7 @@ Module iter.
       
       Global Instance Instance_IsFunction_successors :
         M.IsFunction.C "core::iter::sources::successors::successors" successors.
+      Proof.
       Admitted.
       Global Typeclasses Opaque successors.
       

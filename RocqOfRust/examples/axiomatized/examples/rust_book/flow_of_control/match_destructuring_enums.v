@@ -56,4 +56,5 @@ Axiom IsDiscriminant_Color_CMYK : M.IsDiscriminant "match_destructuring_enums::C
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "match_destructuring_enums::main" main.
+Proof.
 Admitted.

@@ -134,6 +134,7 @@ Module Impl_e2e_call_runtime_Env.
     end.
   
   Global Instance AssociatedFunction_balance : M.IsAssociatedFunction.C Self "balance" balance.
+  Proof.
   Admitted.
   Global Typeclasses Opaque balance.
 End Impl_e2e_call_runtime_Env.
@@ -188,6 +189,7 @@ Module Impl_e2e_call_runtime_Contract.
     end.
   
   Global Instance AssociatedFunction_init_env : M.IsAssociatedFunction.C Self "init_env" init_env.
+  Proof.
   Admitted.
   Global Typeclasses Opaque init_env.
   
@@ -211,6 +213,7 @@ Module Impl_e2e_call_runtime_Contract.
     end.
   
   Global Instance AssociatedFunction_env : M.IsAssociatedFunction.C Self "env" env.
+  Proof.
   Admitted.
   Global Typeclasses Opaque env.
   
@@ -226,6 +229,7 @@ Module Impl_e2e_call_runtime_Contract.
     end.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new.
   
@@ -267,6 +271,7 @@ Module Impl_e2e_call_runtime_Contract.
   
   Global Instance AssociatedFunction_get_contract_balance :
     M.IsAssociatedFunction.C Self "get_contract_balance" get_contract_balance.
+  Proof.
   Admitted.
   Global Typeclasses Opaque get_contract_balance.
 End Impl_e2e_call_runtime_Contract.

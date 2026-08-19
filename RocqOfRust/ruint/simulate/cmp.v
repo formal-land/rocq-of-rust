@@ -25,6 +25,7 @@ Module Impl_Uint.
     | Output.Exception exception =>
       SimulateM.Pure (Output.Exception exception, stack)
     end.
+  Proof.
   Admitted.
 
   Lemma is_zero_eq {BITS LIMBS : usize}
@@ -41,6 +42,7 @@ Module Impl_Uint.
         stack
       )
     }}.
+  Proof.
   Admitted.
 End Impl_Uint.
 
@@ -66,6 +68,7 @@ Module Impl_PartialEq_for_Uint.
 
   Module Eq.
     Instance I {BITS LIMBS : usize} : PartialEq.Eq.C (Self BITS LIMBS) (Self BITS LIMBS) I.
+    Proof.
     Admitted.
   End Eq.
   Export (hints) Eq.
@@ -112,6 +115,7 @@ Module Impl_PartialOrd_for_Uint.
 
   Module Eq.
     Instance I {BITS LIMBS : usize} : PartialOrd.Eq.C (Self BITS LIMBS) (Self BITS LIMBS) I.
+    Proof.
     Admitted.
   End Eq.
   Export (hints) Eq.
@@ -146,6 +150,7 @@ Module Impl_Ord_for_Uint.
 
   Module Eq.
     Instance I {BITS LIMBS : usize} : Ord.Eq.C (Self BITS LIMBS) I.
+    Proof.
     Admitted.
   End Eq.
   Export (hints) Eq.

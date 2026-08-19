@@ -644,6 +644,7 @@ Module instructions.
     Global Instance AssociatedFunction_new_mainnet :
       forall (WIRE HOST : Ty.t),
       M.IsAssociatedFunction.C (Self WIRE HOST) "new_mainnet" (new_mainnet WIRE HOST).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_mainnet.
     
@@ -719,6 +720,7 @@ Module instructions.
     Global Instance AssociatedFunction_new :
       forall (WIRE HOST : Ty.t),
       M.IsAssociatedFunction.C (Self WIRE HOST) "new" (new WIRE HOST).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -777,6 +779,7 @@ Module instructions.
     Global Instance AssociatedFunction_insert_instruction :
       forall (WIRE HOST : Ty.t),
       M.IsAssociatedFunction.C (Self WIRE HOST) "insert_instruction" (insert_instruction WIRE HOST).
+    Proof.
     Admitted.
     Global Typeclasses Opaque insert_instruction.
   End Impl_revm_handler_instructions_EthInstructions_WIRE_HOST.

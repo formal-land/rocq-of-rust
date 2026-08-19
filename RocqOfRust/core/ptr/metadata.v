@@ -32,6 +32,7 @@ Module ptr.
     
     Global Instance Instance_IsFunction_metadata :
       M.IsFunction.C "core::ptr::metadata::metadata" metadata.
+    Proof.
     Admitted.
     Global Typeclasses Opaque metadata.
     
@@ -72,6 +73,7 @@ Module ptr.
     
     Global Instance Instance_IsFunction_from_raw_parts :
       M.IsFunction.C "core::ptr::metadata::from_raw_parts" from_raw_parts.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_raw_parts.
     
@@ -112,6 +114,7 @@ Module ptr.
     
     Global Instance Instance_IsFunction_from_raw_parts_mut :
       M.IsFunction.C "core::ptr::metadata::from_raw_parts_mut" from_raw_parts_mut.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_raw_parts_mut.
     
@@ -177,6 +180,7 @@ Module ptr.
       Global Instance AssociatedFunction_vtable_ptr :
         forall (Dyn : Ty.t),
         M.IsAssociatedFunction.C (Self Dyn) "vtable_ptr" (vtable_ptr Dyn).
+      Proof.
       Admitted.
       Global Typeclasses Opaque vtable_ptr.
       
@@ -223,6 +227,7 @@ Module ptr.
       Global Instance AssociatedFunction_size_of :
         forall (Dyn : Ty.t),
         M.IsAssociatedFunction.C (Self Dyn) "size_of" (size_of Dyn).
+      Proof.
       Admitted.
       Global Typeclasses Opaque size_of.
       
@@ -266,6 +271,7 @@ Module ptr.
       Global Instance AssociatedFunction_align_of :
         forall (Dyn : Ty.t),
         M.IsAssociatedFunction.C (Self Dyn) "align_of" (align_of Dyn).
+      Proof.
       Admitted.
       Global Typeclasses Opaque align_of.
       
@@ -323,6 +329,7 @@ Module ptr.
       Global Instance AssociatedFunction_layout :
         forall (Dyn : Ty.t),
         M.IsAssociatedFunction.C (Self Dyn) "layout" (layout Dyn).
+      Proof.
       Admitted.
       Global Typeclasses Opaque layout.
     End Impl_core_ptr_metadata_DynMetadata_Dyn.

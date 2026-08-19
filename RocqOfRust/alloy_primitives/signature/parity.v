@@ -126,8 +126,12 @@ Module signature.
                         "alloy_primitives::signature::parity::Parity::Eip155",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     M.call_closure (|
                       Ty.apply
                         (Ty.path "core::result::Result")
@@ -172,8 +176,12 @@ Module signature.
                         "alloy_primitives::signature::parity::Parity::NonEip155",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], γ1_0 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     M.call_closure (|
                       Ty.apply
                         (Ty.path "core::result::Result")
@@ -218,8 +226,12 @@ Module signature.
                         "alloy_primitives::signature::parity::Parity::Parity",
                         0
                       |) in
+                    let _ := M.read (| γ1_0 |) in
                     let __self_0 :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], γ1_0 |) in
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     M.call_closure (|
                       Ty.apply
                         (Ty.path "core::result::Result")
@@ -329,8 +341,12 @@ Module signature.
                             "alloy_primitives::signature::parity::Parity::Eip155",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let __self_0 :=
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                          |) in
                         M.call_closure (|
                           Ty.tuple [],
                           M.get_trait_method (|
@@ -356,8 +372,12 @@ Module signature.
                             "alloy_primitives::signature::parity::Parity::NonEip155",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let __self_0 :=
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], γ1_0 |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                          |) in
                         M.call_closure (|
                           Ty.tuple [],
                           M.get_trait_method (|
@@ -383,8 +403,12 @@ Module signature.
                             "alloy_primitives::signature::parity::Parity::Parity",
                             0
                           |) in
+                        let _ := M.read (| γ1_0 |) in
                         let __self_0 :=
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], γ1_0 |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                          |) in
                         M.call_closure (|
                           Ty.tuple [],
                           M.get_trait_method (|
@@ -505,8 +529,12 @@ Module signature.
                                 "alloy_primitives::signature::parity::Parity::Eip155",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
                               M.SubPointer.get_struct_tuple_field (|
@@ -514,8 +542,12 @@ Module signature.
                                 "alloy_primitives::signature::parity::Parity::Eip155",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ2_0 |) in
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             M.call_closure (|
                               Ty.path "bool",
                               M.get_trait_method (|
@@ -543,8 +575,12 @@ Module signature.
                                 "alloy_primitives::signature::parity::Parity::NonEip155",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], γ2_0 |) in
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
                               M.SubPointer.get_struct_tuple_field (|
@@ -552,8 +588,12 @@ Module signature.
                                 "alloy_primitives::signature::parity::Parity::NonEip155",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], γ2_0 |) in
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             M.call_closure (|
                               Ty.path "bool",
                               M.get_trait_method (|
@@ -581,8 +621,12 @@ Module signature.
                                 "alloy_primitives::signature::parity::Parity::Parity",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __self_0 :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], γ2_0 |) in
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
                               M.SubPointer.get_struct_tuple_field (|
@@ -590,8 +634,12 @@ Module signature.
                                 "alloy_primitives::signature::parity::Parity::Parity",
                                 0
                               |) in
+                            let _ := M.read (| γ2_0 |) in
                             let __arg1_0 :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], γ2_0 |) in
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             M.call_closure (|
                               Ty.path "bool",
                               M.get_trait_method (|
@@ -1228,6 +1276,7 @@ Module signature.
       
       Global Instance AssociatedFunction_chain_id :
         M.IsAssociatedFunction.C Self "chain_id" chain_id.
+      Proof.
       Admitted.
       Global Typeclasses Opaque chain_id.
       
@@ -1277,6 +1326,7 @@ Module signature.
       
       Global Instance AssociatedFunction_has_eip155_value :
         M.IsAssociatedFunction.C Self "has_eip155_value" has_eip155_value.
+      Proof.
       Admitted.
       Global Typeclasses Opaque has_eip155_value.
       
@@ -1311,7 +1361,12 @@ Module signature.
                         "alloy_primitives::signature::parity::Parity::Eip155",
                         0
                       |) in
-                    let v := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                    let _ := M.read (| γ1_0 |) in
+                    let v :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     let _ :=
                       is_constant_or_break_match (|
                         M.call_closure (|
@@ -1354,7 +1409,12 @@ Module signature.
                         "alloy_primitives::signature::parity::Parity::Eip155",
                         0
                       |) in
-                    let v := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                    let _ := M.read (| γ1_0 |) in
+                    let v :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     M.call_closure (|
                       Ty.path "bool",
                       BinOp.eq,
@@ -1392,8 +1452,12 @@ Module signature.
                                 "alloy_primitives::signature::parity::Parity::NonEip155",
                                 0
                               |) in
+                            let _ := M.read (| γ1_0 |) in
                             let b :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], γ1_0 |) in
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
+                                M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                              |) in
                             Value.Tuple [ b ]));
                         fun γ =>
                           ltac:(M.monadic
@@ -1404,8 +1468,12 @@ Module signature.
                                 "alloy_primitives::signature::parity::Parity::Parity",
                                 0
                               |) in
+                            let _ := M.read (| γ1_0 |) in
                             let b :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], γ1_0 |) in
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
+                                M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                              |) in
                             Value.Tuple [ b ]))
                       ],
                       fun γ =>
@@ -1422,6 +1490,7 @@ Module signature.
       
       Global Instance AssociatedFunction_y_parity :
         M.IsAssociatedFunction.C Self "y_parity" y_parity.
+      Proof.
       Admitted.
       Global Typeclasses Opaque y_parity.
       
@@ -1456,6 +1525,7 @@ Module signature.
       
       Global Instance AssociatedFunction_y_parity_byte :
         M.IsAssociatedFunction.C Self "y_parity_byte" y_parity_byte.
+      Proof.
       Admitted.
       Global Typeclasses Opaque y_parity_byte.
       
@@ -1499,8 +1569,12 @@ Module signature.
                                 "alloy_primitives::signature::parity::Parity::NonEip155",
                                 0
                               |) in
+                            let _ := M.read (| γ1_0 |) in
                             let v :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], γ1_0 |) in
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
+                                M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                              |) in
                             Value.Tuple [ v ]));
                         fun γ =>
                           ltac:(M.monadic
@@ -1511,8 +1585,12 @@ Module signature.
                                 "alloy_primitives::signature::parity::Parity::Parity",
                                 0
                               |) in
+                            let _ := M.read (| γ1_0 |) in
                             let v :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], γ1_0 |) in
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
+                                M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                              |) in
                             Value.Tuple [ v ]))
                       ],
                       fun γ =>
@@ -1549,6 +1627,7 @@ Module signature.
       
       Global Instance AssociatedFunction_y_parity_byte_non_eip155 :
         M.IsAssociatedFunction.C Self "y_parity_byte_non_eip155" y_parity_byte_non_eip155.
+      Proof.
       Admitted.
       Global Typeclasses Opaque y_parity_byte_non_eip155.
       
@@ -1583,7 +1662,12 @@ Module signature.
                         "alloy_primitives::signature::parity::Parity::Eip155",
                         0
                       |) in
-                    let v := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
+                    let _ := M.read (| γ1_0 |) in
+                    let v :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     M.read (| M.deref (| M.read (| v |) |) |)));
                 fun γ =>
                   ltac:(M.monadic
@@ -1594,7 +1678,12 @@ Module signature.
                         "alloy_primitives::signature::parity::Parity::NonEip155",
                         0
                       |) in
-                    let b := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], γ1_0 |) in
+                    let _ := M.read (| γ1_0 |) in
+                    let b :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     M.call_closure (|
                       Ty.path "u64",
                       BinOp.Wrap.add,
@@ -1612,7 +1701,12 @@ Module signature.
                         "alloy_primitives::signature::parity::Parity::Parity",
                         0
                       |) in
-                    let b := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], γ1_0 |) in
+                    let _ := M.read (| γ1_0 |) in
+                    let b :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     M.cast (Ty.path "u64") (M.read (| M.deref (| M.read (| b |) |) |))))
               ]
             |)))
@@ -1620,6 +1714,7 @@ Module signature.
         end.
       
       Global Instance AssociatedFunction_to_u64 : M.IsAssociatedFunction.C Self "to_u64" to_u64.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_u64.
       
@@ -1803,6 +1898,7 @@ Module signature.
       
       Global Instance AssociatedFunction_inverted :
         M.IsAssociatedFunction.C Self "inverted" inverted.
+      Proof.
       Admitted.
       Global Typeclasses Opaque inverted.
       
@@ -1866,6 +1962,7 @@ Module signature.
       
       Global Instance AssociatedFunction_strip_chain_id :
         M.IsAssociatedFunction.C Self "strip_chain_id" strip_chain_id.
+      Proof.
       Admitted.
       Global Typeclasses Opaque strip_chain_id.
       
@@ -1976,6 +2073,7 @@ Module signature.
       
       Global Instance AssociatedFunction_with_chain_id :
         M.IsAssociatedFunction.C Self "with_chain_id" with_chain_id.
+      Proof.
       Admitted.
       Global Typeclasses Opaque with_chain_id.
       
@@ -2011,6 +2109,7 @@ Module signature.
       
       Global Instance AssociatedFunction_to_parity_bool :
         M.IsAssociatedFunction.C Self "to_parity_bool" to_parity_bool.
+      Proof.
       Admitted.
       Global Typeclasses Opaque to_parity_bool.
     End Impl_alloy_primitives_signature_parity_Parity.

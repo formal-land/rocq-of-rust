@@ -130,13 +130,14 @@ Module common.
                       "alloy_primitives::common::TxKind::Call",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "alloy_primitives::bits::address::Address" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -294,13 +295,14 @@ Module common.
                               "alloy_primitives::common::TxKind::Call",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "alloy_primitives::bits::address::Address" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
@@ -309,13 +311,14 @@ Module common.
                               "alloy_primitives::common::TxKind::Call",
                               0
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "alloy_primitives::bits::address::Address" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
                           M.call_closure (|
                             Ty.path "bool",
@@ -454,13 +457,14 @@ Module common.
                           "alloy_primitives::common::TxKind::Call",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let __self_0 :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.path "alloy_primitives::bits::address::Address" ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.call_closure (|
                         Ty.tuple [],
@@ -694,13 +698,14 @@ Module common.
                       "alloy_primitives::common::TxKind::Call",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let to :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "alloy_primitives::bits::address::Address" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "core::option::Option::Some"
@@ -718,6 +723,7 @@ Module common.
       end.
     
     Global Instance AssociatedFunction_to : M.IsAssociatedFunction.C Self "to" to.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to.
     
@@ -752,6 +758,7 @@ Module common.
     
     Global Instance AssociatedFunction_is_create :
       M.IsAssociatedFunction.C Self "is_create" is_create.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_create.
     
@@ -790,6 +797,7 @@ Module common.
       end.
     
     Global Instance AssociatedFunction_is_call : M.IsAssociatedFunction.C Self "is_call" is_call.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_call.
     
@@ -820,6 +828,7 @@ Module common.
       end.
     
     Global Instance AssociatedFunction_size : M.IsAssociatedFunction.C Self "size" size.
+    Proof.
     Admitted.
     Global Typeclasses Opaque size.
   End Impl_alloy_primitives_common_TxKind.

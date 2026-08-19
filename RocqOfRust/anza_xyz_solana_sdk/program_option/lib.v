@@ -132,7 +132,12 @@ Module Impl_core_cmp_PartialEq_where_core_cmp_PartialEq_T_solana_program_option_
                             "solana_program_option::COption::Some",
                             0
                           |) in
-                        let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                        let _ := M.read (| γ2_0 |) in
+                        let __self_0 :=
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ T ],
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                          |) in
                         let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                         let γ2_0 :=
                           M.SubPointer.get_struct_tuple_field (|
@@ -140,7 +145,12 @@ Module Impl_core_cmp_PartialEq_where_core_cmp_PartialEq_T_solana_program_option_
                             "solana_program_option::COption::Some",
                             0
                           |) in
-                        let __arg1_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                        let _ := M.read (| γ2_0 |) in
+                        let __arg1_0 :=
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ T ],
+                            M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                          |) in
                         M.call_closure (|
                           Ty.path "bool",
                           M.get_trait_method (|
@@ -252,7 +262,12 @@ Module Impl_core_cmp_PartialOrd_where_core_cmp_PartialOrd_T_solana_program_optio
                         "solana_program_option::COption::Some",
                         0
                       |) in
-                    let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                    let _ := M.read (| γ2_0 |) in
+                    let __self_0 :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                      |) in
                     let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                     let γ2_0 :=
                       M.SubPointer.get_struct_tuple_field (|
@@ -260,7 +275,12 @@ Module Impl_core_cmp_PartialOrd_where_core_cmp_PartialOrd_T_solana_program_optio
                         "solana_program_option::COption::Some",
                         0
                       |) in
-                    let __arg1_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                    let _ := M.read (| γ2_0 |) in
+                    let __arg1_0 :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                      |) in
                     M.call_closure (|
                       Ty.apply
                         (Ty.path "core::option::Option")
@@ -464,7 +484,12 @@ Module Impl_core_cmp_Ord_where_core_cmp_Ord_T_for_solana_program_option_COption_
                                 "solana_program_option::COption::Some",
                                 0
                               |) in
-                            let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                            let _ := M.read (| γ2_0 |) in
+                            let __self_0 :=
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ T ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                             let γ2_0 :=
                               M.SubPointer.get_struct_tuple_field (|
@@ -472,7 +497,12 @@ Module Impl_core_cmp_Ord_where_core_cmp_Ord_T_for_solana_program_option_COption_
                                 "solana_program_option::COption::Some",
                                 0
                               |) in
-                            let __arg1_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                            let _ := M.read (| γ2_0 |) in
+                            let __arg1_0 :=
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ T ],
+                                M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                              |) in
                             M.call_closure (|
                               Ty.path "core::cmp::Ordering",
                               M.get_trait_method (| "core::cmp::Ord", T, [], [], "cmp", [], [] |),
@@ -560,7 +590,12 @@ Module Impl_core_fmt_Debug_where_core_fmt_Debug_T_for_solana_program_option_COpt
                     "solana_program_option::COption::Some",
                     0
                   |) in
-                let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                let _ := M.read (| γ1_0 |) in
+                let __self_0 :=
+                  M.alloc (|
+                    Ty.apply (Ty.path "&") [] [ T ],
+                    M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                  |) in
                 M.call_closure (|
                   Ty.apply
                     (Ty.path "core::result::Result")
@@ -669,7 +704,12 @@ Module Impl_core_hash_Hash_where_core_hash_Hash_T_for_solana_program_option_COpt
                         "solana_program_option::COption::Some",
                         0
                       |) in
-                    let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                    let _ := M.read (| γ1_0 |) in
+                    let __self_0 :=
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                      |) in
                     M.call_closure (|
                       Ty.tuple [],
                       M.get_trait_method (| "core::hash::Hash", T, [], [], "hash", [], [ __H ] |),
@@ -745,6 +785,7 @@ Module Impl_solana_program_option_COption_T.
   Global Instance AssociatedFunction_is_some :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "is_some" (is_some T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque is_some.
   
@@ -788,6 +829,7 @@ Module Impl_solana_program_option_COption_T.
   Global Instance AssociatedFunction_is_none :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "is_none" (is_none T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque is_none.
   
@@ -829,7 +871,12 @@ Module Impl_solana_program_option_COption_T.
                     "solana_program_option::COption::Some",
                     0
                   |) in
-                let y := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                let _ := M.read (| γ1_0 |) in
+                let y :=
+                  M.alloc (|
+                    Ty.apply (Ty.path "&") [] [ T ],
+                    M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                  |) in
                 M.call_closure (|
                   Ty.path "bool",
                   M.get_trait_method (|
@@ -856,6 +903,7 @@ Module Impl_solana_program_option_COption_T.
   Global Instance AssociatedFunction_contains :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "contains" (contains T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque contains.
   
@@ -895,7 +943,12 @@ Module Impl_solana_program_option_COption_T.
                     "solana_program_option::COption::Some",
                     0
                   |) in
-                let x := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_0 |) in
+                let _ := M.read (| γ0_0 |) in
+                let x :=
+                  M.alloc (|
+                    Ty.apply (Ty.path "&") [] [ T ],
+                    M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                  |) in
                 Value.StructTuple
                   "solana_program_option::COption::Some"
                   []
@@ -917,6 +970,7 @@ Module Impl_solana_program_option_COption_T.
   Global Instance AssociatedFunction_as_ref :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "as_ref" (as_ref T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque as_ref.
   
@@ -956,7 +1010,12 @@ Module Impl_solana_program_option_COption_T.
                     "solana_program_option::COption::Some",
                     0
                   |) in
-                let x := M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ0_0 |) in
+                let _ := M.read (| γ0_0 |) in
+                let x :=
+                  M.alloc (|
+                    Ty.apply (Ty.path "&mut") [] [ T ],
+                    M.borrow (| Pointer.Kind.MutRef, γ0_0 |)
+                  |) in
                 Value.StructTuple
                   "solana_program_option::COption::Some"
                   []
@@ -978,6 +1037,7 @@ Module Impl_solana_program_option_COption_T.
   Global Instance AssociatedFunction_as_mut :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "as_mut" (as_mut T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque as_mut.
   
@@ -1029,6 +1089,7 @@ Module Impl_solana_program_option_COption_T.
   Global Instance AssociatedFunction_expect :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "expect" (expect T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque expect.
   
@@ -1090,6 +1151,7 @@ Module Impl_solana_program_option_COption_T.
   Global Instance AssociatedFunction_unwrap :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "unwrap" (unwrap T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque unwrap.
   
@@ -1135,6 +1197,7 @@ Module Impl_solana_program_option_COption_T.
   Global Instance AssociatedFunction_unwrap_or :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "unwrap_or" (unwrap_or T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque unwrap_or.
   
@@ -1192,6 +1255,7 @@ Module Impl_solana_program_option_COption_T.
   Global Instance AssociatedFunction_unwrap_or_else :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "unwrap_or_else" (unwrap_or_else T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque unwrap_or_else.
   
@@ -1255,6 +1319,7 @@ Module Impl_solana_program_option_COption_T.
   Global Instance AssociatedFunction_map :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "map" (map T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque map.
   
@@ -1313,6 +1378,7 @@ Module Impl_solana_program_option_COption_T.
   Global Instance AssociatedFunction_map_or :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "map_or" (map_or T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque map_or.
   
@@ -1383,6 +1449,7 @@ Module Impl_solana_program_option_COption_T.
   Global Instance AssociatedFunction_map_or_else :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "map_or_else" (map_or_else T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque map_or_else.
   
@@ -1428,6 +1495,7 @@ Module Impl_solana_program_option_COption_T.
   Global Instance AssociatedFunction_ok_or :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "ok_or" (ok_or T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque ok_or.
   
@@ -1491,6 +1559,7 @@ Module Impl_solana_program_option_COption_T.
   Global Instance AssociatedFunction_ok_or_else :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "ok_or_else" (ok_or_else T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque ok_or_else.
   
@@ -1536,6 +1605,7 @@ Module Impl_solana_program_option_COption_T.
   Global Instance AssociatedFunction_and :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "and" (and T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque and.
   
@@ -1593,6 +1663,7 @@ Module Impl_solana_program_option_COption_T.
   Global Instance AssociatedFunction_and_then :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "and_then" (and_then T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque and_then.
   
@@ -1698,6 +1769,7 @@ Module Impl_solana_program_option_COption_T.
   Global Instance AssociatedFunction_filter :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "filter" (filter T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque filter.
   
@@ -1743,6 +1815,7 @@ Module Impl_solana_program_option_COption_T.
   Global Instance AssociatedFunction_or :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "or" (or T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque or.
   
@@ -1799,6 +1872,7 @@ Module Impl_solana_program_option_COption_T.
   Global Instance AssociatedFunction_or_else :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "or_else" (or_else T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque or_else.
   
@@ -1876,6 +1950,7 @@ Module Impl_solana_program_option_COption_T.
   Global Instance AssociatedFunction_xor :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "xor" (xor T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque xor.
   
@@ -1939,6 +2014,7 @@ Module Impl_solana_program_option_COption_T.
   Global Instance AssociatedFunction_get_or_insert :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "get_or_insert" (get_or_insert T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque get_or_insert.
   
@@ -2029,7 +2105,12 @@ Module Impl_solana_program_option_COption_T.
                                 "solana_program_option::COption::Some",
                                 0
                               |) in
-                            let v := M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ0_0 |) in
+                            let _ := M.read (| γ0_0 |) in
+                            let v :=
+                              M.alloc (|
+                                Ty.apply (Ty.path "&mut") [] [ T ],
+                                M.borrow (| Pointer.Kind.MutRef, γ0_0 |)
+                              |) in
                             M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| v |) |) |)));
                         fun γ =>
                           ltac:(M.monadic
@@ -2056,6 +2137,7 @@ Module Impl_solana_program_option_COption_T.
   Global Instance AssociatedFunction_get_or_insert_with :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "get_or_insert_with" (get_or_insert_with T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque get_or_insert_with.
   
@@ -2096,6 +2178,7 @@ Module Impl_solana_program_option_COption_T.
   Global Instance AssociatedFunction_replace :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "replace" (replace T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque replace.
   (*
@@ -2148,6 +2231,7 @@ Module Impl_solana_program_option_COption_T.
   Global Instance AssociatedFunction_unwrap_or_default :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "unwrap_or_default" (unwrap_or_default T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque unwrap_or_default.
   (*
@@ -2263,6 +2347,7 @@ Module Impl_solana_program_option_COption_T.
   Global Instance AssociatedFunction_as_deref :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "as_deref" (as_deref T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque as_deref.
   (*
@@ -2378,6 +2463,7 @@ Module Impl_solana_program_option_COption_T.
   Global Instance AssociatedFunction_as_deref_mut :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "as_deref_mut" (as_deref_mut T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque as_deref_mut.
 End Impl_solana_program_option_COption_T.
@@ -2444,6 +2530,7 @@ Module Impl_solana_program_option_COption_ref__T.
   Global Instance AssociatedFunction_copied :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "copied" (copied T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque copied.
   (*
@@ -2515,6 +2602,7 @@ Module Impl_solana_program_option_COption_ref__T.
   Global Instance AssociatedFunction_cloned :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "cloned" (cloned T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque cloned.
 End Impl_solana_program_option_COption_ref__T.
@@ -2581,6 +2669,7 @@ Module Impl_solana_program_option_COption_ref_mut_T.
   Global Instance AssociatedFunction_copied :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "copied" (copied T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque copied.
   (*
@@ -2652,6 +2741,7 @@ Module Impl_solana_program_option_COption_ref_mut_T.
   Global Instance AssociatedFunction_cloned :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "cloned" (cloned T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque cloned.
 End Impl_solana_program_option_COption_ref_mut_T.
@@ -2751,6 +2841,7 @@ Module Impl_solana_program_option_COption_core_result_Result_T_E.
   Global Instance AssociatedFunction_transpose :
     forall (T E : Ty.t),
     M.IsAssociatedFunction.C (Self T E) "transpose" (transpose T E).
+  Proof.
   Admitted.
   Global Typeclasses Opaque transpose.
 End Impl_solana_program_option_COption_core_result_Result_T_E.
@@ -2779,6 +2870,7 @@ Definition expect_failed (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
 
 Global Instance Instance_IsFunction_expect_failed :
   M.IsFunction.C "solana_program_option::expect_failed" expect_failed.
+Proof.
 Admitted.
 Global Typeclasses Opaque expect_failed.
 
@@ -2819,7 +2911,12 @@ Module Impl_core_clone_Clone_where_core_clone_Clone_T_for_solana_program_option_
                     "solana_program_option::COption::Some",
                     0
                   |) in
-                let x := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                let _ := M.read (| γ1_0 |) in
+                let x :=
+                  M.alloc (|
+                    Ty.apply (Ty.path "&") [] [ T ],
+                    M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                  |) in
                 Value.StructTuple
                   "solana_program_option::COption::Some"
                   []
@@ -2898,7 +2995,12 @@ Module Impl_core_clone_Clone_where_core_clone_Clone_T_for_solana_program_option_
                     "solana_program_option::COption::Some",
                     0
                   |) in
-                let to := M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ2_0 |) in
+                let _ := M.read (| γ2_0 |) in
+                let to :=
+                  M.alloc (|
+                    Ty.apply (Ty.path "&mut") [] [ T ],
+                    M.borrow (| Pointer.Kind.MutRef, γ2_0 |)
+                  |) in
                 let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                 let γ2_0 :=
                   M.SubPointer.get_struct_tuple_field (|
@@ -2906,7 +3008,12 @@ Module Impl_core_clone_Clone_where_core_clone_Clone_T_for_solana_program_option_
                     "solana_program_option::COption::Some",
                     0
                   |) in
-                let from := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ2_0 |) in
+                let _ := M.read (| γ2_0 |) in
+                let from :=
+                  M.alloc (|
+                    Ty.apply (Ty.path "&") [] [ T ],
+                    M.borrow (| Pointer.Kind.Ref, γ2_0 |)
+                  |) in
                 M.call_closure (|
                   Ty.tuple [],
                   M.get_trait_method (| "core::clone::Clone", T, [], [], "clone_from", [], [] |),
@@ -3183,6 +3290,7 @@ Module Impl_solana_program_option_COption_solana_program_option_COption_T.
   Global Instance AssociatedFunction_flatten :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "flatten" (flatten T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque flatten.
 End Impl_solana_program_option_COption_solana_program_option_COption_T.

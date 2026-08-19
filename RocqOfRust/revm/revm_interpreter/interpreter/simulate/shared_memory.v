@@ -109,6 +109,7 @@ Lemma resize_memory_cold_eq
       )%stack
     )
   }}.
+Proof.
 Admitted.
 
 Lemma resize_memory_eq
@@ -157,4 +158,5 @@ Lemma resize_memory_eq
       )%stack
     )
   }}.
+Proof.
 Admitted.

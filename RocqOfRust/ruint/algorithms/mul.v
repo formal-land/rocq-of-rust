@@ -915,6 +915,7 @@ Module algorithms.
     
     Global Instance Instance_IsFunction_addmul_ref :
       M.IsFunction.C "ruint::algorithms::mul::addmul_ref" addmul_ref.
+    Proof.
     Admitted.
     Global Typeclasses Opaque addmul_ref.
     
@@ -1015,13 +1016,14 @@ Module algorithms.
                                       M.read (| γ1_0 |),
                                       Value.Integer IntegerKind.U64 0
                                     |) in
+                                  let _ := M.read (| γ1_rest |) in
                                   let rest :=
                                     M.alloc (|
                                       Ty.apply
                                         (Ty.path "&")
                                         []
                                         [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ],
-                                      γ1_rest
+                                      M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                     |) in
                                   M.read (|
                                     let~ _ : Ty.tuple [] :=
@@ -1045,6 +1047,7 @@ Module algorithms.
                                               let γ1_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
                                               let γ1_rest :=
                                                 M.SubPointer.get_slice_rest (| γ, 1, 0 |) in
+                                              let _ := M.read (| γ1_rest |) in
                                               let rest :=
                                                 M.alloc (|
                                                   Ty.apply
@@ -1056,7 +1059,7 @@ Module algorithms.
                                                         []
                                                         [ Ty.path "u64" ]
                                                     ],
-                                                  γ1_rest
+                                                  M.borrow (| Pointer.Kind.MutRef, γ1_rest |)
                                                 |) in
                                               M.read (|
                                                 let~ _ : Ty.tuple [] :=
@@ -1105,13 +1108,14 @@ Module algorithms.
                                   let γ := M.deref (| M.read (| γ |) |) in
                                   let γ1_rest := M.SubPointer.get_slice_rest (| γ, 0, 1 |) in
                                   let γ1_rev0 := M.SubPointer.get_slice_rev_index (| γ, 0 |) in
+                                  let _ := M.read (| γ1_rest |) in
                                   let rest :=
                                     M.alloc (|
                                       Ty.apply
                                         (Ty.path "&")
                                         []
                                         [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ],
-                                      γ1_rest
+                                      M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                     |) in
                                   let _ :=
                                     is_constant_or_break_match (|
@@ -1165,13 +1169,14 @@ Module algorithms.
                                       M.read (| γ1_0 |),
                                       Value.Integer IntegerKind.U64 0
                                     |) in
+                                  let _ := M.read (| γ1_rest |) in
                                   let rest :=
                                     M.alloc (|
                                       Ty.apply
                                         (Ty.path "&")
                                         []
                                         [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ],
-                                      γ1_rest
+                                      M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                     |) in
                                   M.read (|
                                     let~ _ : Ty.tuple [] :=
@@ -1195,6 +1200,7 @@ Module algorithms.
                                               let γ1_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
                                               let γ1_rest :=
                                                 M.SubPointer.get_slice_rest (| γ, 1, 0 |) in
+                                              let _ := M.read (| γ1_rest |) in
                                               let rest :=
                                                 M.alloc (|
                                                   Ty.apply
@@ -1206,7 +1212,7 @@ Module algorithms.
                                                         []
                                                         [ Ty.path "u64" ]
                                                     ],
-                                                  γ1_rest
+                                                  M.borrow (| Pointer.Kind.MutRef, γ1_rest |)
                                                 |) in
                                               M.read (|
                                                 let~ _ : Ty.tuple [] :=
@@ -1255,13 +1261,14 @@ Module algorithms.
                                   let γ := M.deref (| M.read (| γ |) |) in
                                   let γ1_rest := M.SubPointer.get_slice_rest (| γ, 0, 1 |) in
                                   let γ1_rev0 := M.SubPointer.get_slice_rev_index (| γ, 0 |) in
+                                  let _ := M.read (| γ1_rest |) in
                                   let rest :=
                                     M.alloc (|
                                       Ty.apply
                                         (Ty.path "&")
                                         []
                                         [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ],
-                                      γ1_rest
+                                      M.borrow (| Pointer.Kind.Ref, γ1_rest |)
                                     |) in
                                   let _ :=
                                     is_constant_or_break_match (|
@@ -2187,6 +2194,7 @@ Module algorithms.
     
     Global Instance Instance_IsFunction_addmul :
       M.IsFunction.C "ruint::algorithms::mul::addmul" addmul.
+    Proof.
     Admitted.
     Global Typeclasses Opaque addmul.
     
@@ -2445,6 +2453,7 @@ Module algorithms.
     
     Global Instance Instance_IsFunction_add_nx1 :
       M.IsFunction.C "ruint::algorithms::mul::add_nx1" add_nx1.
+    Proof.
     Admitted.
     Global Typeclasses Opaque add_nx1.
     
@@ -2857,6 +2866,7 @@ Module algorithms.
     
     Global Instance Instance_IsFunction_addmul_n :
       M.IsFunction.C "ruint::algorithms::mul::addmul_n" addmul_n.
+    Proof.
     Admitted.
     Global Typeclasses Opaque addmul_n.
     
@@ -3276,6 +3286,7 @@ Module algorithms.
     
     Global Instance Instance_IsFunction_addmul_1 :
       M.IsFunction.C "ruint::algorithms::mul::addmul_1" addmul_1.
+    Proof.
     Admitted.
     Global Typeclasses Opaque addmul_1.
     
@@ -3762,6 +3773,7 @@ Module algorithms.
     
     Global Instance Instance_IsFunction_addmul_2 :
       M.IsFunction.C "ruint::algorithms::mul::addmul_2" addmul_2.
+    Proof.
     Admitted.
     Global Typeclasses Opaque addmul_2.
     
@@ -4348,6 +4360,7 @@ Module algorithms.
     
     Global Instance Instance_IsFunction_addmul_3 :
       M.IsFunction.C "ruint::algorithms::mul::addmul_3" addmul_3.
+    Proof.
     Admitted.
     Global Typeclasses Opaque addmul_3.
     
@@ -5067,6 +5080,7 @@ Module algorithms.
     
     Global Instance Instance_IsFunction_addmul_4 :
       M.IsFunction.C "ruint::algorithms::mul::addmul_4" addmul_4.
+    Proof.
     Admitted.
     Global Typeclasses Opaque addmul_4.
     
@@ -5143,6 +5157,7 @@ Module algorithms.
       end.
     
     Global Instance Instance_IsFunction_mac : M.IsFunction.C "ruint::algorithms::mul::mac" mac.
+    Proof.
     Admitted.
     Global Typeclasses Opaque mac.
     
@@ -5334,6 +5349,7 @@ Module algorithms.
     
     Global Instance Instance_IsFunction_mul_nx1 :
       M.IsFunction.C "ruint::algorithms::mul::mul_nx1" mul_nx1.
+    Proof.
     Admitted.
     Global Typeclasses Opaque mul_nx1.
     
@@ -5886,6 +5902,7 @@ Module algorithms.
     
     Global Instance Instance_IsFunction_addmul_nx1 :
       M.IsFunction.C "ruint::algorithms::mul::addmul_nx1" addmul_nx1.
+    Proof.
     Admitted.
     Global Typeclasses Opaque addmul_nx1.
     
@@ -6498,6 +6515,7 @@ Module algorithms.
     
     Global Instance Instance_IsFunction_submul_nx1 :
       M.IsFunction.C "ruint::algorithms::mul::submul_nx1" submul_nx1.
+    Proof.
     Admitted.
     Global Typeclasses Opaque submul_nx1.
   End mul.

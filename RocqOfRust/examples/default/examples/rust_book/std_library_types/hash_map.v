@@ -61,6 +61,7 @@ Definition call (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_call : M.IsFunction.C "hash_map::call" call.
+Proof.
 Admitted.
 Global Typeclasses Opaque call.
 
@@ -1067,5 +1068,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "hash_map::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

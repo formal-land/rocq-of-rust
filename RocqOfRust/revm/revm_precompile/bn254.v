@@ -16,6 +16,7 @@ Module bn254.
     
     Global Instance Instance_IsConstant_value_ADDRESS :
       M.IsFunction.C "revm_precompile::bn254::add::ADDRESS" value_ADDRESS.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ADDRESS.
     
@@ -30,6 +31,7 @@ Module bn254.
       M.IsFunction.C
         "revm_precompile::bn254::add::ISTANBUL_ADD_GAS_COST"
         value_ISTANBUL_ADD_GAS_COST.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ISTANBUL_ADD_GAS_COST.
     
@@ -176,6 +178,7 @@ Module bn254.
     
     Global Instance Instance_IsConstant_value_ISTANBUL :
       M.IsFunction.C "revm_precompile::bn254::add::ISTANBUL" value_ISTANBUL.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ISTANBUL.
     
@@ -190,6 +193,7 @@ Module bn254.
       M.IsFunction.C
         "revm_precompile::bn254::add::BYZANTIUM_ADD_GAS_COST"
         value_BYZANTIUM_ADD_GAS_COST.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_BYZANTIUM_ADD_GAS_COST.
     
@@ -336,6 +340,7 @@ Module bn254.
     
     Global Instance Instance_IsConstant_value_BYZANTIUM :
       M.IsFunction.C "revm_precompile::bn254::add::BYZANTIUM" value_BYZANTIUM.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_BYZANTIUM.
   End add.
@@ -354,6 +359,7 @@ Module bn254.
     
     Global Instance Instance_IsConstant_value_ADDRESS :
       M.IsFunction.C "revm_precompile::bn254::mul::ADDRESS" value_ADDRESS.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ADDRESS.
     
@@ -368,6 +374,7 @@ Module bn254.
       M.IsFunction.C
         "revm_precompile::bn254::mul::ISTANBUL_MUL_GAS_COST"
         value_ISTANBUL_MUL_GAS_COST.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ISTANBUL_MUL_GAS_COST.
     
@@ -514,6 +521,7 @@ Module bn254.
     
     Global Instance Instance_IsConstant_value_ISTANBUL :
       M.IsFunction.C "revm_precompile::bn254::mul::ISTANBUL" value_ISTANBUL.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ISTANBUL.
     
@@ -528,6 +536,7 @@ Module bn254.
       M.IsFunction.C
         "revm_precompile::bn254::mul::BYZANTIUM_MUL_GAS_COST"
         value_BYZANTIUM_MUL_GAS_COST.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_BYZANTIUM_MUL_GAS_COST.
     
@@ -674,6 +683,7 @@ Module bn254.
     
     Global Instance Instance_IsConstant_value_BYZANTIUM :
       M.IsFunction.C "revm_precompile::bn254::mul::BYZANTIUM" value_BYZANTIUM.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_BYZANTIUM.
   End mul.
@@ -692,6 +702,7 @@ Module bn254.
     
     Global Instance Instance_IsConstant_value_ADDRESS :
       M.IsFunction.C "revm_precompile::bn254::pair::ADDRESS" value_ADDRESS.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ADDRESS.
     
@@ -706,6 +717,7 @@ Module bn254.
       M.IsFunction.C
         "revm_precompile::bn254::pair::ISTANBUL_PAIR_PER_POINT"
         value_ISTANBUL_PAIR_PER_POINT.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ISTANBUL_PAIR_PER_POINT.
     
@@ -714,6 +726,7 @@ Module bn254.
     
     Global Instance Instance_IsConstant_value_ISTANBUL_PAIR_BASE :
       M.IsFunction.C "revm_precompile::bn254::pair::ISTANBUL_PAIR_BASE" value_ISTANBUL_PAIR_BASE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ISTANBUL_PAIR_BASE.
     
@@ -866,6 +879,7 @@ Module bn254.
     
     Global Instance Instance_IsConstant_value_ISTANBUL :
       M.IsFunction.C "revm_precompile::bn254::pair::ISTANBUL" value_ISTANBUL.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ISTANBUL.
     
@@ -880,6 +894,7 @@ Module bn254.
       M.IsFunction.C
         "revm_precompile::bn254::pair::BYZANTIUM_PAIR_PER_POINT"
         value_BYZANTIUM_PAIR_PER_POINT.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_BYZANTIUM_PAIR_PER_POINT.
     
@@ -892,6 +907,7 @@ Module bn254.
     
     Global Instance Instance_IsConstant_value_BYZANTIUM_PAIR_BASE :
       M.IsFunction.C "revm_precompile::bn254::pair::BYZANTIUM_PAIR_BASE" value_BYZANTIUM_PAIR_BASE.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_BYZANTIUM_PAIR_BASE.
     
@@ -1044,6 +1060,7 @@ Module bn254.
     
     Global Instance Instance_IsConstant_value_BYZANTIUM :
       M.IsFunction.C "revm_precompile::bn254::pair::BYZANTIUM" value_BYZANTIUM.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_BYZANTIUM.
   End pair_.
@@ -1053,6 +1070,7 @@ Module bn254.
   
   Global Instance Instance_IsConstant_value_FQ_LEN :
     M.IsFunction.C "revm_precompile::bn254::FQ_LEN" value_FQ_LEN.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_FQ_LEN.
   
@@ -1061,6 +1079,7 @@ Module bn254.
   
   Global Instance Instance_IsConstant_value_SCALAR_LEN :
     M.IsFunction.C "revm_precompile::bn254::SCALAR_LEN" value_SCALAR_LEN.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_SCALAR_LEN.
   
@@ -1080,6 +1099,7 @@ Module bn254.
   
   Global Instance Instance_IsConstant_value_FQ2_LEN :
     M.IsFunction.C "revm_precompile::bn254::FQ2_LEN" value_FQ2_LEN.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_FQ2_LEN.
   
@@ -1099,6 +1119,7 @@ Module bn254.
   
   Global Instance Instance_IsConstant_value_G1_LEN :
     M.IsFunction.C "revm_precompile::bn254::G1_LEN" value_G1_LEN.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_G1_LEN.
   
@@ -1118,6 +1139,7 @@ Module bn254.
   
   Global Instance Instance_IsConstant_value_G2_LEN :
     M.IsFunction.C "revm_precompile::bn254::G2_LEN" value_G2_LEN.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_G2_LEN.
   
@@ -1137,6 +1159,7 @@ Module bn254.
   
   Global Instance Instance_IsConstant_value_ADD_INPUT_LEN :
     M.IsFunction.C "revm_precompile::bn254::ADD_INPUT_LEN" value_ADD_INPUT_LEN.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_ADD_INPUT_LEN.
   
@@ -1156,6 +1179,7 @@ Module bn254.
   
   Global Instance Instance_IsConstant_value_MUL_INPUT_LEN :
     M.IsFunction.C "revm_precompile::bn254::MUL_INPUT_LEN" value_MUL_INPUT_LEN.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MUL_INPUT_LEN.
   
@@ -1175,6 +1199,7 @@ Module bn254.
   
   Global Instance Instance_IsConstant_value_PAIR_ELEMENT_LEN :
     M.IsFunction.C "revm_precompile::bn254::PAIR_ELEMENT_LEN" value_PAIR_ELEMENT_LEN.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_PAIR_ELEMENT_LEN.
   
@@ -1653,6 +1678,7 @@ Module bn254.
   
   Global Instance Instance_IsFunction_run_add :
     M.IsFunction.C "revm_precompile::bn254::run_add" run_add.
+  Proof.
   Admitted.
   Global Typeclasses Opaque run_add.
   
@@ -2150,6 +2176,7 @@ Module bn254.
   
   Global Instance Instance_IsFunction_run_mul :
     M.IsFunction.C "revm_precompile::bn254::run_mul" run_mul.
+  Proof.
   Admitted.
   Global Typeclasses Opaque run_mul.
   
@@ -3015,6 +3042,7 @@ Module bn254.
   
   Global Instance Instance_IsFunction_run_pair :
     M.IsFunction.C "revm_precompile::bn254::run_pair" run_pair.
+  Proof.
   Admitted.
   Global Typeclasses Opaque run_pair.
 End bn254.

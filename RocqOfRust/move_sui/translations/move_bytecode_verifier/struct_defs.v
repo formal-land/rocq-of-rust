@@ -130,6 +130,7 @@ Module struct_defs.
     
     Global Instance AssociatedFunction_verify_module :
       M.IsAssociatedFunction.C Self "verify_module" verify_module.
+    Proof.
     Admitted.
     Global Typeclasses Opaque verify_module.
     
@@ -590,6 +591,7 @@ Module struct_defs.
     
     Global Instance AssociatedFunction_verify_module_impl :
       M.IsAssociatedFunction.C Self "verify_module_impl" verify_module_impl.
+    Proof.
     Admitted.
     Global Typeclasses Opaque verify_module_impl.
   End Impl_move_bytecode_verifier_struct_defs_RecursiveStructDefChecker.
@@ -1003,6 +1005,7 @@ Module struct_defs.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -2092,6 +2095,7 @@ Module struct_defs.
       end.
     
     Global Instance AssociatedFunction_build : M.IsAssociatedFunction.C Self "build" build.
+    Proof.
     Admitted.
     Global Typeclasses Opaque build.
     
@@ -2735,6 +2739,7 @@ Module struct_defs.
     
     Global Instance AssociatedFunction_add_struct_defs :
       M.IsAssociatedFunction.C Self "add_struct_defs" add_struct_defs.
+    Proof.
     Admitted.
     Global Typeclasses Opaque add_struct_defs.
     
@@ -3063,6 +3068,7 @@ Module struct_defs.
                               "move_binary_format::file_format::SignatureToken::Vector",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let inner :=
                             M.alloc (|
                               Ty.apply
@@ -3077,7 +3083,7 @@ Module struct_defs.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                             |) in
                           M.match_operator (|
                             Ty.tuple [],
@@ -3240,13 +3246,14 @@ Module struct_defs.
                               "move_binary_format::file_format::SignatureToken::Struct",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let sh_idx :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&")
                                 []
                                 [ Ty.path "move_binary_format::file_format::StructHandleIndex" ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                             |) in
                           M.match_operator (|
                             Ty.tuple [],
@@ -3463,6 +3470,7 @@ Module struct_defs.
                               "move_binary_format::file_format::SignatureToken::StructInstantiation",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let struct_inst :=
                             M.alloc (|
                               Ty.apply
@@ -3489,7 +3497,7 @@ Module struct_defs.
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                             |) in
                           M.match_operator (|
                             Ty.tuple [],
@@ -3521,6 +3529,7 @@ Module struct_defs.
                                   (let γ := M.deref (| M.read (| γ |) |) in
                                   let γ1_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                                   let γ1_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                                  let _ := M.read (| γ1_0 |) in
                                   let sh_idx :=
                                     M.alloc (|
                                       Ty.apply
@@ -3530,8 +3539,9 @@ Module struct_defs.
                                           Ty.path
                                             "move_binary_format::file_format::StructHandleIndex"
                                         ],
-                                      γ1_0
+                                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                                     |) in
+                                  let _ := M.read (| γ1_1 |) in
                                   let inners :=
                                     M.alloc (|
                                       Ty.apply
@@ -3547,7 +3557,7 @@ Module struct_defs.
                                               Ty.path "alloc::alloc::Global"
                                             ]
                                         ],
-                                      γ1_1
+                                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
                                     |) in
                                   M.read (|
                                     let~ _ : Ty.tuple [] :=
@@ -4134,6 +4144,7 @@ Module struct_defs.
     
     Global Instance AssociatedFunction_add_signature_token :
       M.IsAssociatedFunction.C Self "add_signature_token" add_signature_token.
+    Proof.
     Admitted.
     Global Typeclasses Opaque add_signature_token.
   End Impl_move_bytecode_verifier_struct_defs_StructDefGraphBuilder.

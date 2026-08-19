@@ -103,6 +103,7 @@ Module buf.
       end.
     
     Global Instance Instance_IsFunction_new : M.IsFunction.C "bytes::buf::writer::new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -146,6 +147,7 @@ Module buf.
       Global Instance AssociatedFunction_get_ref :
         forall (B : Ty.t),
         M.IsAssociatedFunction.C (Self B) "get_ref" (get_ref B).
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_ref.
       
@@ -191,6 +193,7 @@ Module buf.
       Global Instance AssociatedFunction_get_mut :
         forall (B : Ty.t),
         M.IsAssociatedFunction.C (Self B) "get_mut" (get_mut B).
+      Proof.
       Admitted.
       Global Typeclasses Opaque get_mut.
       
@@ -215,6 +218,7 @@ Module buf.
       Global Instance AssociatedFunction_into_inner :
         forall (B : Ty.t),
         M.IsAssociatedFunction.C (Self B) "into_inner" (into_inner B).
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_inner.
     End Impl_bytes_buf_writer_Writer_B.

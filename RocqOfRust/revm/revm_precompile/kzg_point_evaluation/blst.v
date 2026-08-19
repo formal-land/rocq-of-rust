@@ -519,6 +519,7 @@ Module kzg_point_evaluation.
       M.IsFunction.C
         "revm_precompile::kzg_point_evaluation::blst::verify_kzg_proof"
         verify_kzg_proof.
+    Proof.
     Admitted.
     Global Typeclasses Opaque verify_kzg_proof.
     
@@ -681,6 +682,7 @@ Module kzg_point_evaluation.
       M.IsFunction.C
         "revm_precompile::kzg_point_evaluation::blst::get_trusted_setup_g2"
         get_trusted_setup_g2.
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_trusted_setup_g2.
     
@@ -710,6 +712,7 @@ Module kzg_point_evaluation.
       M.IsFunction.C
         "revm_precompile::kzg_point_evaluation::blst::get_g1_generator"
         get_g1_generator.
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_g1_generator.
     
@@ -739,6 +742,7 @@ Module kzg_point_evaluation.
       M.IsFunction.C
         "revm_precompile::kzg_point_evaluation::blst::get_g2_generator"
         get_g2_generator.
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_g2_generator.
     
@@ -1047,6 +1051,7 @@ Module kzg_point_evaluation.
       M.IsFunction.C
         "revm_precompile::kzg_point_evaluation::blst::parse_g1_compressed"
         parse_g1_compressed.
+    Proof.
     Admitted.
     Global Typeclasses Opaque parse_g1_compressed.
     
@@ -1228,6 +1233,7 @@ Module kzg_point_evaluation.
       M.IsFunction.C
         "revm_precompile::kzg_point_evaluation::blst::read_scalar_canonical"
         read_scalar_canonical.
+    Proof.
     Admitted.
     Global Typeclasses Opaque read_scalar_canonical.
     
@@ -1298,6 +1304,7 @@ Module kzg_point_evaluation.
     
     Global Instance Instance_IsFunction_p1_sub_affine :
       M.IsFunction.C "revm_precompile::kzg_point_evaluation::blst::p1_sub_affine" p1_sub_affine.
+    Proof.
     Admitted.
     Global Typeclasses Opaque p1_sub_affine.
     
@@ -1368,6 +1375,7 @@ Module kzg_point_evaluation.
     
     Global Instance Instance_IsFunction_p2_sub_affine :
       M.IsFunction.C "revm_precompile::kzg_point_evaluation::blst::p2_sub_affine" p2_sub_affine.
+    Proof.
     Admitted.
     Global Typeclasses Opaque p2_sub_affine.
     
@@ -1428,6 +1436,7 @@ Module kzg_point_evaluation.
     
     Global Instance Instance_IsFunction_p1_neg :
       M.IsFunction.C "revm_precompile::kzg_point_evaluation::blst::p1_neg" p1_neg.
+    Proof.
     Admitted.
     Global Typeclasses Opaque p1_neg.
     
@@ -1488,6 +1497,7 @@ Module kzg_point_evaluation.
     
     Global Instance Instance_IsFunction_p2_neg :
       M.IsFunction.C "revm_precompile::kzg_point_evaluation::blst::p2_neg" p2_neg.
+    Proof.
     Admitted.
     Global Typeclasses Opaque p2_neg.
   End blst.

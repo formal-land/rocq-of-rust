@@ -32,6 +32,7 @@ Module future.
     
     Global Instance Instance_IsFunction_pending :
       M.IsFunction.C "core::future::pending::pending" pending.
+    Proof.
     Admitted.
     Global Typeclasses Opaque pending.
     

@@ -1482,6 +1482,7 @@ Module fmt.
     
     Global Instance Instance_IsConstant_value_SIGN_PLUS_FLAG :
       M.IsFunction.C "core::fmt::flags::SIGN_PLUS_FLAG" value_SIGN_PLUS_FLAG.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SIGN_PLUS_FLAG.
     
@@ -1498,6 +1499,7 @@ Module fmt.
     
     Global Instance Instance_IsConstant_value_SIGN_MINUS_FLAG :
       M.IsFunction.C "core::fmt::flags::SIGN_MINUS_FLAG" value_SIGN_MINUS_FLAG.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SIGN_MINUS_FLAG.
     
@@ -1514,6 +1516,7 @@ Module fmt.
     
     Global Instance Instance_IsConstant_value_ALTERNATE_FLAG :
       M.IsFunction.C "core::fmt::flags::ALTERNATE_FLAG" value_ALTERNATE_FLAG.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ALTERNATE_FLAG.
     
@@ -1534,6 +1537,7 @@ Module fmt.
     
     Global Instance Instance_IsConstant_value_SIGN_AWARE_ZERO_PAD_FLAG :
       M.IsFunction.C "core::fmt::flags::SIGN_AWARE_ZERO_PAD_FLAG" value_SIGN_AWARE_ZERO_PAD_FLAG.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_SIGN_AWARE_ZERO_PAD_FLAG.
     
@@ -1554,6 +1558,7 @@ Module fmt.
     
     Global Instance Instance_IsConstant_value_DEBUG_LOWER_HEX_FLAG :
       M.IsFunction.C "core::fmt::flags::DEBUG_LOWER_HEX_FLAG" value_DEBUG_LOWER_HEX_FLAG.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_DEBUG_LOWER_HEX_FLAG.
     
@@ -1574,6 +1579,7 @@ Module fmt.
     
     Global Instance Instance_IsConstant_value_DEBUG_UPPER_HEX_FLAG :
       M.IsFunction.C "core::fmt::flags::DEBUG_UPPER_HEX_FLAG" value_DEBUG_UPPER_HEX_FLAG.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_DEBUG_UPPER_HEX_FLAG.
     
@@ -1590,6 +1596,7 @@ Module fmt.
     
     Global Instance Instance_IsConstant_value_WIDTH_FLAG :
       M.IsFunction.C "core::fmt::flags::WIDTH_FLAG" value_WIDTH_FLAG.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_WIDTH_FLAG.
     
@@ -1606,6 +1613,7 @@ Module fmt.
     
     Global Instance Instance_IsConstant_value_PRECISION_FLAG :
       M.IsFunction.C "core::fmt::flags::PRECISION_FLAG" value_PRECISION_FLAG.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_PRECISION_FLAG.
     
@@ -1622,6 +1630,7 @@ Module fmt.
     
     Global Instance Instance_IsConstant_value_ALIGN_BITS :
       M.IsFunction.C "core::fmt::flags::ALIGN_BITS" value_ALIGN_BITS.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ALIGN_BITS.
     
@@ -1638,6 +1647,7 @@ Module fmt.
     
     Global Instance Instance_IsConstant_value_ALIGN_LEFT :
       M.IsFunction.C "core::fmt::flags::ALIGN_LEFT" value_ALIGN_LEFT.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ALIGN_LEFT.
     
@@ -1654,6 +1664,7 @@ Module fmt.
     
     Global Instance Instance_IsConstant_value_ALIGN_RIGHT :
       M.IsFunction.C "core::fmt::flags::ALIGN_RIGHT" value_ALIGN_RIGHT.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ALIGN_RIGHT.
     
@@ -1670,6 +1681,7 @@ Module fmt.
     
     Global Instance Instance_IsConstant_value_ALIGN_CENTER :
       M.IsFunction.C "core::fmt::flags::ALIGN_CENTER" value_ALIGN_CENTER.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ALIGN_CENTER.
     
@@ -1686,6 +1698,7 @@ Module fmt.
     
     Global Instance Instance_IsConstant_value_ALIGN_UNKNOWN :
       M.IsFunction.C "core::fmt::flags::ALIGN_UNKNOWN" value_ALIGN_UNKNOWN.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_ALIGN_UNKNOWN.
   End flags.
@@ -1723,6 +1736,7 @@ Module fmt.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -1853,6 +1867,7 @@ Module fmt.
       end.
     
     Global Instance AssociatedFunction_sign : M.IsAssociatedFunction.C Self "sign" sign.
+    Proof.
     Admitted.
     Global Typeclasses Opaque sign.
     
@@ -1964,6 +1979,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_sign_aware_zero_pad :
       M.IsAssociatedFunction.C Self "sign_aware_zero_pad" sign_aware_zero_pad.
+    Proof.
     Admitted.
     Global Typeclasses Opaque sign_aware_zero_pad.
     
@@ -2075,6 +2091,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_alternate :
       M.IsAssociatedFunction.C Self "alternate" alternate.
+    Proof.
     Admitted.
     Global Typeclasses Opaque alternate.
     
@@ -2147,6 +2164,7 @@ Module fmt.
       end.
     
     Global Instance AssociatedFunction_fill : M.IsAssociatedFunction.C Self "fill" fill.
+    Proof.
     Admitted.
     Global Typeclasses Opaque fill.
     
@@ -2277,6 +2295,7 @@ Module fmt.
       end.
     
     Global Instance AssociatedFunction_align : M.IsAssociatedFunction.C Self "align" align.
+    Proof.
     Admitted.
     Global Typeclasses Opaque align.
     
@@ -2413,6 +2432,7 @@ Module fmt.
       end.
     
     Global Instance AssociatedFunction_width : M.IsAssociatedFunction.C Self "width" width.
+    Proof.
     Admitted.
     Global Typeclasses Opaque width.
     
@@ -2553,6 +2573,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_precision :
       M.IsAssociatedFunction.C Self "precision" precision.
+    Proof.
     Admitted.
     Global Typeclasses Opaque precision.
     
@@ -2691,6 +2712,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_debug_as_hex :
       M.IsAssociatedFunction.C Self "debug_as_hex" debug_as_hex.
+    Proof.
     Admitted.
     Global Typeclasses Opaque debug_as_hex.
     
@@ -2813,6 +2835,7 @@ Module fmt.
       end.
     
     Global Instance AssociatedFunction_get_sign : M.IsAssociatedFunction.C Self "get_sign" get_sign.
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_sign.
     
@@ -2858,6 +2881,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_get_sign_aware_zero_pad :
       M.IsAssociatedFunction.C Self "get_sign_aware_zero_pad" get_sign_aware_zero_pad.
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_sign_aware_zero_pad.
     
@@ -2901,6 +2925,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_get_alternate :
       M.IsAssociatedFunction.C Self "get_alternate" get_alternate.
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_alternate.
     
@@ -2943,6 +2968,7 @@ Module fmt.
       end.
     
     Global Instance AssociatedFunction_get_fill : M.IsAssociatedFunction.C Self "get_fill" get_fill.
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_fill.
     
@@ -3035,6 +3061,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_get_align :
       M.IsAssociatedFunction.C Self "get_align" get_align.
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_align.
     
@@ -3109,6 +3136,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_get_width :
       M.IsAssociatedFunction.C Self "get_width" get_width.
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_width.
     
@@ -3183,6 +3211,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_get_precision :
       M.IsAssociatedFunction.C Self "get_precision" get_precision.
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_precision.
     
@@ -3312,6 +3341,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_get_debug_as_hex :
       M.IsAssociatedFunction.C Self "get_debug_as_hex" get_debug_as_hex.
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_debug_as_hex.
     
@@ -3351,6 +3381,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_create_formatter :
       M.IsAssociatedFunction.C Self "create_formatter" create_formatter.
+    Proof.
     Admitted.
     Global Typeclasses Opaque create_formatter.
   End Impl_core_fmt_FormattingOptions.
@@ -3435,6 +3466,7 @@ Module fmt.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -3484,6 +3516,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_with_options :
       M.IsAssociatedFunction.C Self "with_options" with_options.
+    Proof.
     Admitted.
     Global Typeclasses Opaque with_options.
     (*
@@ -3600,6 +3633,7 @@ Module fmt.
       end.
     
     Global Instance AssociatedFunction_wrap_buf : M.IsAssociatedFunction.C Self "wrap_buf" wrap_buf.
+    Proof.
     Admitted.
     Global Typeclasses Opaque wrap_buf.
     
@@ -5258,6 +5292,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_pad_integral :
       M.IsAssociatedFunction.C Self "pad_integral" pad_integral.
+    Proof.
     Admitted.
     Global Typeclasses Opaque pad_integral.
     
@@ -6104,6 +6139,7 @@ Module fmt.
       end.
     
     Global Instance AssociatedFunction_pad : M.IsAssociatedFunction.C Self "pad" pad.
+    Proof.
     Admitted.
     Global Typeclasses Opaque pad.
     
@@ -6539,6 +6575,7 @@ Module fmt.
       end.
     
     Global Instance AssociatedFunction_padding : M.IsAssociatedFunction.C Self "padding" padding.
+    Proof.
     Admitted.
     Global Typeclasses Opaque padding.
     
@@ -7405,6 +7442,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_pad_formatted_parts :
       M.IsAssociatedFunction.C Self "pad_formatted_parts" pad_formatted_parts.
+    Proof.
     Admitted.
     Global Typeclasses Opaque pad_formatted_parts.
     
@@ -9445,6 +9483,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_write_formatted_parts :
       M.IsAssociatedFunction.C Self "write_formatted_parts" write_formatted_parts.
+    Proof.
     Admitted.
     Global Typeclasses Opaque write_formatted_parts.
     
@@ -9495,6 +9534,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_write_str :
       M.IsAssociatedFunction.C Self "write_str" write_str.
+    Proof.
     Admitted.
     Global Typeclasses Opaque write_str.
     
@@ -9622,6 +9662,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_write_fmt :
       M.IsAssociatedFunction.C Self "write_fmt" write_fmt.
+    Proof.
     Admitted.
     Global Typeclasses Opaque write_fmt.
     
@@ -9667,6 +9708,7 @@ Module fmt.
       end.
     
     Global Instance AssociatedFunction_flags : M.IsAssociatedFunction.C Self "flags" flags.
+    Proof.
     Admitted.
     Global Typeclasses Opaque flags.
     
@@ -9704,6 +9746,7 @@ Module fmt.
       end.
     
     Global Instance AssociatedFunction_fill : M.IsAssociatedFunction.C Self "fill" fill.
+    Proof.
     Admitted.
     Global Typeclasses Opaque fill.
     
@@ -9741,6 +9784,7 @@ Module fmt.
       end.
     
     Global Instance AssociatedFunction_align : M.IsAssociatedFunction.C Self "align" align.
+    Proof.
     Admitted.
     Global Typeclasses Opaque align.
     
@@ -9825,6 +9869,7 @@ Module fmt.
       end.
     
     Global Instance AssociatedFunction_width : M.IsAssociatedFunction.C Self "width" width.
+    Proof.
     Admitted.
     Global Typeclasses Opaque width.
     
@@ -9910,6 +9955,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_precision :
       M.IsAssociatedFunction.C Self "precision" precision.
+    Proof.
     Admitted.
     Global Typeclasses Opaque precision.
     
@@ -9954,6 +10000,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_sign_plus :
       M.IsAssociatedFunction.C Self "sign_plus" sign_plus.
+    Proof.
     Admitted.
     Global Typeclasses Opaque sign_plus.
     
@@ -9998,6 +10045,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_sign_minus :
       M.IsAssociatedFunction.C Self "sign_minus" sign_minus.
+    Proof.
     Admitted.
     Global Typeclasses Opaque sign_minus.
     
@@ -10042,6 +10090,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_alternate :
       M.IsAssociatedFunction.C Self "alternate" alternate.
+    Proof.
     Admitted.
     Global Typeclasses Opaque alternate.
     
@@ -10088,6 +10137,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_sign_aware_zero_pad :
       M.IsAssociatedFunction.C Self "sign_aware_zero_pad" sign_aware_zero_pad.
+    Proof.
     Admitted.
     Global Typeclasses Opaque sign_aware_zero_pad.
     
@@ -10134,6 +10184,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_debug_lower_hex :
       M.IsAssociatedFunction.C Self "debug_lower_hex" debug_lower_hex.
+    Proof.
     Admitted.
     Global Typeclasses Opaque debug_lower_hex.
     
@@ -10180,6 +10231,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_debug_upper_hex :
       M.IsAssociatedFunction.C Self "debug_upper_hex" debug_upper_hex.
+    Proof.
     Admitted.
     Global Typeclasses Opaque debug_upper_hex.
     
@@ -10208,6 +10260,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_debug_struct :
       M.IsAssociatedFunction.C Self "debug_struct" debug_struct.
+    Proof.
     Admitted.
     Global Typeclasses Opaque debug_struct.
     
@@ -10297,6 +10350,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_debug_struct_field1_finish :
       M.IsAssociatedFunction.C Self "debug_struct_field1_finish" debug_struct_field1_finish.
+    Proof.
     Admitted.
     Global Typeclasses Opaque debug_struct_field1_finish.
     
@@ -10417,6 +10471,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_debug_struct_field2_finish :
       M.IsAssociatedFunction.C Self "debug_struct_field2_finish" debug_struct_field2_finish.
+    Proof.
     Admitted.
     Global Typeclasses Opaque debug_struct_field2_finish.
     
@@ -10568,6 +10623,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_debug_struct_field3_finish :
       M.IsAssociatedFunction.C Self "debug_struct_field3_finish" debug_struct_field3_finish.
+    Proof.
     Admitted.
     Global Typeclasses Opaque debug_struct_field3_finish.
     
@@ -10750,6 +10806,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_debug_struct_field4_finish :
       M.IsAssociatedFunction.C Self "debug_struct_field4_finish" debug_struct_field4_finish.
+    Proof.
     Admitted.
     Global Typeclasses Opaque debug_struct_field4_finish.
     
@@ -10966,6 +11023,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_debug_struct_field5_finish :
       M.IsAssociatedFunction.C Self "debug_struct_field5_finish" debug_struct_field5_finish.
+    Proof.
     Admitted.
     Global Typeclasses Opaque debug_struct_field5_finish.
     
@@ -11540,6 +11598,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_debug_struct_fields_finish :
       M.IsAssociatedFunction.C Self "debug_struct_fields_finish" debug_struct_fields_finish.
+    Proof.
     Admitted.
     Global Typeclasses Opaque debug_struct_fields_finish.
     
@@ -11568,6 +11627,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_debug_tuple :
       M.IsAssociatedFunction.C Self "debug_tuple" debug_tuple.
+    Proof.
     Admitted.
     Global Typeclasses Opaque debug_tuple.
     
@@ -11650,6 +11710,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_debug_tuple_field1_finish :
       M.IsAssociatedFunction.C Self "debug_tuple_field1_finish" debug_tuple_field1_finish.
+    Proof.
     Admitted.
     Global Typeclasses Opaque debug_tuple_field1_finish.
     
@@ -11764,6 +11825,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_debug_tuple_field2_finish :
       M.IsAssociatedFunction.C Self "debug_tuple_field2_finish" debug_tuple_field2_finish.
+    Proof.
     Admitted.
     Global Typeclasses Opaque debug_tuple_field2_finish.
     
@@ -11906,6 +11968,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_debug_tuple_field3_finish :
       M.IsAssociatedFunction.C Self "debug_tuple_field3_finish" debug_tuple_field3_finish.
+    Proof.
     Admitted.
     Global Typeclasses Opaque debug_tuple_field3_finish.
     
@@ -12076,6 +12139,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_debug_tuple_field4_finish :
       M.IsAssociatedFunction.C Self "debug_tuple_field4_finish" debug_tuple_field4_finish.
+    Proof.
     Admitted.
     Global Typeclasses Opaque debug_tuple_field4_finish.
     
@@ -12274,6 +12338,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_debug_tuple_field5_finish :
       M.IsAssociatedFunction.C Self "debug_tuple_field5_finish" debug_tuple_field5_finish.
+    Proof.
     Admitted.
     Global Typeclasses Opaque debug_tuple_field5_finish.
     
@@ -12570,6 +12635,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_debug_tuple_fields_finish :
       M.IsAssociatedFunction.C Self "debug_tuple_fields_finish" debug_tuple_fields_finish.
+    Proof.
     Admitted.
     Global Typeclasses Opaque debug_tuple_fields_finish.
     
@@ -12594,6 +12660,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_debug_list :
       M.IsAssociatedFunction.C Self "debug_list" debug_list.
+    Proof.
     Admitted.
     Global Typeclasses Opaque debug_list.
     
@@ -12618,6 +12685,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_debug_set :
       M.IsAssociatedFunction.C Self "debug_set" debug_set.
+    Proof.
     Admitted.
     Global Typeclasses Opaque debug_set.
     
@@ -12642,6 +12710,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_debug_map :
       M.IsAssociatedFunction.C Self "debug_map" debug_map.
+    Proof.
     Admitted.
     Global Typeclasses Opaque debug_map.
     
@@ -12679,6 +12748,7 @@ Module fmt.
       end.
     
     Global Instance AssociatedFunction_sign : M.IsAssociatedFunction.C Self "sign" sign.
+    Proof.
     Admitted.
     Global Typeclasses Opaque sign.
     
@@ -12704,6 +12774,7 @@ Module fmt.
       end.
     
     Global Instance AssociatedFunction_options : M.IsAssociatedFunction.C Self "options" options.
+    Proof.
     Admitted.
     Global Typeclasses Opaque options.
   End Impl_core_fmt_Formatter.
@@ -12860,6 +12931,7 @@ Module fmt.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -12883,6 +12955,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_from_str_nonconst :
       M.IsAssociatedFunction.C Self "from_str_nonconst" from_str_nonconst.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_str_nonconst.
     (*
@@ -13552,6 +13625,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_estimated_capacity :
       M.IsAssociatedFunction.C Self "estimated_capacity" estimated_capacity.
+    Proof.
     Admitted.
     Global Typeclasses Opaque estimated_capacity.
     (*
@@ -13638,6 +13712,7 @@ Module fmt.
       end.
     
     Global Instance AssociatedFunction_from_str : M.IsAssociatedFunction.C Self "from_str" from_str.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_str.
     
@@ -13813,6 +13888,7 @@ Module fmt.
       end.
     
     Global Instance AssociatedFunction_as_str : M.IsAssociatedFunction.C Self "as_str" as_str.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_str.
     
@@ -13901,6 +13977,7 @@ Module fmt.
     
     Global Instance AssociatedFunction_as_statically_known_str :
       M.IsAssociatedFunction.C Self "as_statically_known_str" as_statically_known_str.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_statically_known_str.
   End Impl_core_fmt_Arguments.
@@ -16861,6 +16938,7 @@ Module fmt.
     end.
   
   Global Instance Instance_IsFunction_write : M.IsFunction.C "core::fmt::write" write.
+  Proof.
   Admitted.
   Global Typeclasses Opaque write.
   
@@ -16895,6 +16973,7 @@ Module fmt.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -17227,6 +17306,7 @@ Module fmt.
       end.
     
     Global Instance AssociatedFunction_write : M.IsAssociatedFunction.C Self "write" write.
+    Proof.
     Admitted.
     Global Typeclasses Opaque write.
   End Impl_core_fmt_PostPadding.
@@ -20866,6 +20946,7 @@ Module fmt.
   
   Global Instance Instance_IsFunction_pointer_fmt_inner :
     M.IsFunction.C "core::fmt::pointer_fmt_inner" pointer_fmt_inner.
+  Proof.
   Admitted.
   Global Typeclasses Opaque pointer_fmt_inner.
   
@@ -21245,18 +21326,78 @@ Module fmt.
                       let γ0_9 := M.SubPointer.get_tuple_field (| γ, 9 |) in
                       let γ0_10 := M.SubPointer.get_tuple_field (| γ, 10 |) in
                       let γ0_11 := M.SubPointer.get_tuple_field (| γ, 11 |) in
-                      let value_E := M.alloc (| Ty.apply (Ty.path "&") [] [ E ], γ0_0 |) in
-                      let value_D := M.alloc (| Ty.apply (Ty.path "&") [] [ D ], γ0_1 |) in
-                      let value_C := M.alloc (| Ty.apply (Ty.path "&") [] [ C ], γ0_2 |) in
-                      let value_B := M.alloc (| Ty.apply (Ty.path "&") [] [ B ], γ0_3 |) in
-                      let value_A := M.alloc (| Ty.apply (Ty.path "&") [] [ A ], γ0_4 |) in
-                      let value_Z := M.alloc (| Ty.apply (Ty.path "&") [] [ Z ], γ0_5 |) in
-                      let value_Y := M.alloc (| Ty.apply (Ty.path "&") [] [ Y ], γ0_6 |) in
-                      let value_X := M.alloc (| Ty.apply (Ty.path "&") [] [ X ], γ0_7 |) in
-                      let value_W := M.alloc (| Ty.apply (Ty.path "&") [] [ W ], γ0_8 |) in
-                      let value_V := M.alloc (| Ty.apply (Ty.path "&") [] [ V ], γ0_9 |) in
-                      let value_U := M.alloc (| Ty.apply (Ty.path "&") [] [ U ], γ0_10 |) in
-                      let value_T := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_11 |) in
+                      let _ := M.read (| γ0_0 |) in
+                      let value_E :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ E ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                        |) in
+                      let _ := M.read (| γ0_1 |) in
+                      let value_D :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ D ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_1 |)
+                        |) in
+                      let _ := M.read (| γ0_2 |) in
+                      let value_C :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ C ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_2 |)
+                        |) in
+                      let _ := M.read (| γ0_3 |) in
+                      let value_B :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ B ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_3 |)
+                        |) in
+                      let _ := M.read (| γ0_4 |) in
+                      let value_A :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ A ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_4 |)
+                        |) in
+                      let _ := M.read (| γ0_5 |) in
+                      let value_Z :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Z ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_5 |)
+                        |) in
+                      let _ := M.read (| γ0_6 |) in
+                      let value_Y :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Y ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_6 |)
+                        |) in
+                      let _ := M.read (| γ0_7 |) in
+                      let value_X :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ X ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_7 |)
+                        |) in
+                      let _ := M.read (| γ0_8 |) in
+                      let value_W :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ W ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_8 |)
+                        |) in
+                      let _ := M.read (| γ0_9 |) in
+                      let value_V :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ V ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_9 |)
+                        |) in
+                      let _ := M.read (| γ0_10 |) in
+                      let value_U :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ U ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_10 |)
+                        |) in
+                      let _ := M.read (| γ0_11 |) in
+                      let value_T :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ T ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_11 |)
+                        |) in
                       M.read (|
                         let~ _ :
                             Ty.apply
@@ -21835,17 +21976,72 @@ Module fmt.
                       let γ0_8 := M.SubPointer.get_tuple_field (| γ, 8 |) in
                       let γ0_9 := M.SubPointer.get_tuple_field (| γ, 9 |) in
                       let γ0_10 := M.SubPointer.get_tuple_field (| γ, 10 |) in
-                      let value_D := M.alloc (| Ty.apply (Ty.path "&") [] [ D ], γ0_0 |) in
-                      let value_C := M.alloc (| Ty.apply (Ty.path "&") [] [ C ], γ0_1 |) in
-                      let value_B := M.alloc (| Ty.apply (Ty.path "&") [] [ B ], γ0_2 |) in
-                      let value_A := M.alloc (| Ty.apply (Ty.path "&") [] [ A ], γ0_3 |) in
-                      let value_Z := M.alloc (| Ty.apply (Ty.path "&") [] [ Z ], γ0_4 |) in
-                      let value_Y := M.alloc (| Ty.apply (Ty.path "&") [] [ Y ], γ0_5 |) in
-                      let value_X := M.alloc (| Ty.apply (Ty.path "&") [] [ X ], γ0_6 |) in
-                      let value_W := M.alloc (| Ty.apply (Ty.path "&") [] [ W ], γ0_7 |) in
-                      let value_V := M.alloc (| Ty.apply (Ty.path "&") [] [ V ], γ0_8 |) in
-                      let value_U := M.alloc (| Ty.apply (Ty.path "&") [] [ U ], γ0_9 |) in
-                      let value_T := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_10 |) in
+                      let _ := M.read (| γ0_0 |) in
+                      let value_D :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ D ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                        |) in
+                      let _ := M.read (| γ0_1 |) in
+                      let value_C :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ C ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_1 |)
+                        |) in
+                      let _ := M.read (| γ0_2 |) in
+                      let value_B :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ B ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_2 |)
+                        |) in
+                      let _ := M.read (| γ0_3 |) in
+                      let value_A :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ A ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_3 |)
+                        |) in
+                      let _ := M.read (| γ0_4 |) in
+                      let value_Z :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Z ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_4 |)
+                        |) in
+                      let _ := M.read (| γ0_5 |) in
+                      let value_Y :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Y ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_5 |)
+                        |) in
+                      let _ := M.read (| γ0_6 |) in
+                      let value_X :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ X ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_6 |)
+                        |) in
+                      let _ := M.read (| γ0_7 |) in
+                      let value_W :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ W ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_7 |)
+                        |) in
+                      let _ := M.read (| γ0_8 |) in
+                      let value_V :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ V ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_8 |)
+                        |) in
+                      let _ := M.read (| γ0_9 |) in
+                      let value_U :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ U ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_9 |)
+                        |) in
+                      let _ := M.read (| γ0_10 |) in
+                      let value_T :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ T ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_10 |)
+                        |) in
                       M.read (|
                         let~ _ :
                             Ty.apply
@@ -22384,16 +22580,66 @@ Module fmt.
                       let γ0_7 := M.SubPointer.get_tuple_field (| γ, 7 |) in
                       let γ0_8 := M.SubPointer.get_tuple_field (| γ, 8 |) in
                       let γ0_9 := M.SubPointer.get_tuple_field (| γ, 9 |) in
-                      let value_C := M.alloc (| Ty.apply (Ty.path "&") [] [ C ], γ0_0 |) in
-                      let value_B := M.alloc (| Ty.apply (Ty.path "&") [] [ B ], γ0_1 |) in
-                      let value_A := M.alloc (| Ty.apply (Ty.path "&") [] [ A ], γ0_2 |) in
-                      let value_Z := M.alloc (| Ty.apply (Ty.path "&") [] [ Z ], γ0_3 |) in
-                      let value_Y := M.alloc (| Ty.apply (Ty.path "&") [] [ Y ], γ0_4 |) in
-                      let value_X := M.alloc (| Ty.apply (Ty.path "&") [] [ X ], γ0_5 |) in
-                      let value_W := M.alloc (| Ty.apply (Ty.path "&") [] [ W ], γ0_6 |) in
-                      let value_V := M.alloc (| Ty.apply (Ty.path "&") [] [ V ], γ0_7 |) in
-                      let value_U := M.alloc (| Ty.apply (Ty.path "&") [] [ U ], γ0_8 |) in
-                      let value_T := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_9 |) in
+                      let _ := M.read (| γ0_0 |) in
+                      let value_C :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ C ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                        |) in
+                      let _ := M.read (| γ0_1 |) in
+                      let value_B :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ B ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_1 |)
+                        |) in
+                      let _ := M.read (| γ0_2 |) in
+                      let value_A :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ A ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_2 |)
+                        |) in
+                      let _ := M.read (| γ0_3 |) in
+                      let value_Z :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Z ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_3 |)
+                        |) in
+                      let _ := M.read (| γ0_4 |) in
+                      let value_Y :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Y ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_4 |)
+                        |) in
+                      let _ := M.read (| γ0_5 |) in
+                      let value_X :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ X ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_5 |)
+                        |) in
+                      let _ := M.read (| γ0_6 |) in
+                      let value_W :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ W ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_6 |)
+                        |) in
+                      let _ := M.read (| γ0_7 |) in
+                      let value_V :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ V ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_7 |)
+                        |) in
+                      let _ := M.read (| γ0_8 |) in
+                      let value_U :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ U ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_8 |)
+                        |) in
+                      let _ := M.read (| γ0_9 |) in
+                      let value_T :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ T ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_9 |)
+                        |) in
                       M.read (|
                         let~ _ :
                             Ty.apply
@@ -22891,15 +23137,60 @@ Module fmt.
                       let γ0_6 := M.SubPointer.get_tuple_field (| γ, 6 |) in
                       let γ0_7 := M.SubPointer.get_tuple_field (| γ, 7 |) in
                       let γ0_8 := M.SubPointer.get_tuple_field (| γ, 8 |) in
-                      let value_B := M.alloc (| Ty.apply (Ty.path "&") [] [ B ], γ0_0 |) in
-                      let value_A := M.alloc (| Ty.apply (Ty.path "&") [] [ A ], γ0_1 |) in
-                      let value_Z := M.alloc (| Ty.apply (Ty.path "&") [] [ Z ], γ0_2 |) in
-                      let value_Y := M.alloc (| Ty.apply (Ty.path "&") [] [ Y ], γ0_3 |) in
-                      let value_X := M.alloc (| Ty.apply (Ty.path "&") [] [ X ], γ0_4 |) in
-                      let value_W := M.alloc (| Ty.apply (Ty.path "&") [] [ W ], γ0_5 |) in
-                      let value_V := M.alloc (| Ty.apply (Ty.path "&") [] [ V ], γ0_6 |) in
-                      let value_U := M.alloc (| Ty.apply (Ty.path "&") [] [ U ], γ0_7 |) in
-                      let value_T := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_8 |) in
+                      let _ := M.read (| γ0_0 |) in
+                      let value_B :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ B ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                        |) in
+                      let _ := M.read (| γ0_1 |) in
+                      let value_A :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ A ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_1 |)
+                        |) in
+                      let _ := M.read (| γ0_2 |) in
+                      let value_Z :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Z ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_2 |)
+                        |) in
+                      let _ := M.read (| γ0_3 |) in
+                      let value_Y :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Y ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_3 |)
+                        |) in
+                      let _ := M.read (| γ0_4 |) in
+                      let value_X :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ X ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_4 |)
+                        |) in
+                      let _ := M.read (| γ0_5 |) in
+                      let value_W :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ W ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_5 |)
+                        |) in
+                      let _ := M.read (| γ0_6 |) in
+                      let value_V :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ V ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_6 |)
+                        |) in
+                      let _ := M.read (| γ0_7 |) in
+                      let value_U :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ U ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_7 |)
+                        |) in
+                      let _ := M.read (| γ0_8 |) in
+                      let value_T :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ T ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_8 |)
+                        |) in
                       M.read (|
                         let~ _ :
                             Ty.apply
@@ -23354,14 +23645,54 @@ Module fmt.
                       let γ0_5 := M.SubPointer.get_tuple_field (| γ, 5 |) in
                       let γ0_6 := M.SubPointer.get_tuple_field (| γ, 6 |) in
                       let γ0_7 := M.SubPointer.get_tuple_field (| γ, 7 |) in
-                      let value_A := M.alloc (| Ty.apply (Ty.path "&") [] [ A ], γ0_0 |) in
-                      let value_Z := M.alloc (| Ty.apply (Ty.path "&") [] [ Z ], γ0_1 |) in
-                      let value_Y := M.alloc (| Ty.apply (Ty.path "&") [] [ Y ], γ0_2 |) in
-                      let value_X := M.alloc (| Ty.apply (Ty.path "&") [] [ X ], γ0_3 |) in
-                      let value_W := M.alloc (| Ty.apply (Ty.path "&") [] [ W ], γ0_4 |) in
-                      let value_V := M.alloc (| Ty.apply (Ty.path "&") [] [ V ], γ0_5 |) in
-                      let value_U := M.alloc (| Ty.apply (Ty.path "&") [] [ U ], γ0_6 |) in
-                      let value_T := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_7 |) in
+                      let _ := M.read (| γ0_0 |) in
+                      let value_A :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ A ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                        |) in
+                      let _ := M.read (| γ0_1 |) in
+                      let value_Z :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Z ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_1 |)
+                        |) in
+                      let _ := M.read (| γ0_2 |) in
+                      let value_Y :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Y ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_2 |)
+                        |) in
+                      let _ := M.read (| γ0_3 |) in
+                      let value_X :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ X ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_3 |)
+                        |) in
+                      let _ := M.read (| γ0_4 |) in
+                      let value_W :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ W ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_4 |)
+                        |) in
+                      let _ := M.read (| γ0_5 |) in
+                      let value_V :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ V ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_5 |)
+                        |) in
+                      let _ := M.read (| γ0_6 |) in
+                      let value_U :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ U ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_6 |)
+                        |) in
+                      let _ := M.read (| γ0_7 |) in
+                      let value_T :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ T ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_7 |)
+                        |) in
                       M.read (|
                         let~ _ :
                             Ty.apply
@@ -23776,13 +24107,48 @@ Module fmt.
                       let γ0_4 := M.SubPointer.get_tuple_field (| γ, 4 |) in
                       let γ0_5 := M.SubPointer.get_tuple_field (| γ, 5 |) in
                       let γ0_6 := M.SubPointer.get_tuple_field (| γ, 6 |) in
-                      let value_Z := M.alloc (| Ty.apply (Ty.path "&") [] [ Z ], γ0_0 |) in
-                      let value_Y := M.alloc (| Ty.apply (Ty.path "&") [] [ Y ], γ0_1 |) in
-                      let value_X := M.alloc (| Ty.apply (Ty.path "&") [] [ X ], γ0_2 |) in
-                      let value_W := M.alloc (| Ty.apply (Ty.path "&") [] [ W ], γ0_3 |) in
-                      let value_V := M.alloc (| Ty.apply (Ty.path "&") [] [ V ], γ0_4 |) in
-                      let value_U := M.alloc (| Ty.apply (Ty.path "&") [] [ U ], γ0_5 |) in
-                      let value_T := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_6 |) in
+                      let _ := M.read (| γ0_0 |) in
+                      let value_Z :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Z ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                        |) in
+                      let _ := M.read (| γ0_1 |) in
+                      let value_Y :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Y ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_1 |)
+                        |) in
+                      let _ := M.read (| γ0_2 |) in
+                      let value_X :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ X ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_2 |)
+                        |) in
+                      let _ := M.read (| γ0_3 |) in
+                      let value_W :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ W ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_3 |)
+                        |) in
+                      let _ := M.read (| γ0_4 |) in
+                      let value_V :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ V ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_4 |)
+                        |) in
+                      let _ := M.read (| γ0_5 |) in
+                      let value_U :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ U ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_5 |)
+                        |) in
+                      let _ := M.read (| γ0_6 |) in
+                      let value_T :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ T ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_6 |)
+                        |) in
                       M.read (|
                         let~ _ :
                             Ty.apply
@@ -24152,12 +24518,42 @@ Module fmt.
                       let γ0_3 := M.SubPointer.get_tuple_field (| γ, 3 |) in
                       let γ0_4 := M.SubPointer.get_tuple_field (| γ, 4 |) in
                       let γ0_5 := M.SubPointer.get_tuple_field (| γ, 5 |) in
-                      let value_Y := M.alloc (| Ty.apply (Ty.path "&") [] [ Y ], γ0_0 |) in
-                      let value_X := M.alloc (| Ty.apply (Ty.path "&") [] [ X ], γ0_1 |) in
-                      let value_W := M.alloc (| Ty.apply (Ty.path "&") [] [ W ], γ0_2 |) in
-                      let value_V := M.alloc (| Ty.apply (Ty.path "&") [] [ V ], γ0_3 |) in
-                      let value_U := M.alloc (| Ty.apply (Ty.path "&") [] [ U ], γ0_4 |) in
-                      let value_T := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_5 |) in
+                      let _ := M.read (| γ0_0 |) in
+                      let value_Y :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Y ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                        |) in
+                      let _ := M.read (| γ0_1 |) in
+                      let value_X :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ X ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_1 |)
+                        |) in
+                      let _ := M.read (| γ0_2 |) in
+                      let value_W :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ W ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_2 |)
+                        |) in
+                      let _ := M.read (| γ0_3 |) in
+                      let value_V :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ V ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_3 |)
+                        |) in
+                      let _ := M.read (| γ0_4 |) in
+                      let value_U :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ U ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_4 |)
+                        |) in
+                      let _ := M.read (| γ0_5 |) in
+                      let value_T :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ T ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_5 |)
+                        |) in
                       M.read (|
                         let~ _ :
                             Ty.apply
@@ -24487,11 +24883,36 @@ Module fmt.
                       let γ0_2 := M.SubPointer.get_tuple_field (| γ, 2 |) in
                       let γ0_3 := M.SubPointer.get_tuple_field (| γ, 3 |) in
                       let γ0_4 := M.SubPointer.get_tuple_field (| γ, 4 |) in
-                      let value_X := M.alloc (| Ty.apply (Ty.path "&") [] [ X ], γ0_0 |) in
-                      let value_W := M.alloc (| Ty.apply (Ty.path "&") [] [ W ], γ0_1 |) in
-                      let value_V := M.alloc (| Ty.apply (Ty.path "&") [] [ V ], γ0_2 |) in
-                      let value_U := M.alloc (| Ty.apply (Ty.path "&") [] [ U ], γ0_3 |) in
-                      let value_T := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_4 |) in
+                      let _ := M.read (| γ0_0 |) in
+                      let value_X :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ X ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                        |) in
+                      let _ := M.read (| γ0_1 |) in
+                      let value_W :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ W ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_1 |)
+                        |) in
+                      let _ := M.read (| γ0_2 |) in
+                      let value_V :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ V ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_2 |)
+                        |) in
+                      let _ := M.read (| γ0_3 |) in
+                      let value_U :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ U ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_3 |)
+                        |) in
+                      let _ := M.read (| γ0_4 |) in
+                      let value_T :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ T ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_4 |)
+                        |) in
                       M.read (|
                         let~ _ :
                             Ty.apply
@@ -24780,10 +25201,30 @@ Module fmt.
                       let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                       let γ0_2 := M.SubPointer.get_tuple_field (| γ, 2 |) in
                       let γ0_3 := M.SubPointer.get_tuple_field (| γ, 3 |) in
-                      let value_W := M.alloc (| Ty.apply (Ty.path "&") [] [ W ], γ0_0 |) in
-                      let value_V := M.alloc (| Ty.apply (Ty.path "&") [] [ V ], γ0_1 |) in
-                      let value_U := M.alloc (| Ty.apply (Ty.path "&") [] [ U ], γ0_2 |) in
-                      let value_T := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_3 |) in
+                      let _ := M.read (| γ0_0 |) in
+                      let value_W :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ W ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                        |) in
+                      let _ := M.read (| γ0_1 |) in
+                      let value_V :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ V ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_1 |)
+                        |) in
+                      let _ := M.read (| γ0_2 |) in
+                      let value_U :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ U ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_2 |)
+                        |) in
+                      let _ := M.read (| γ0_3 |) in
+                      let value_T :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ T ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_3 |)
+                        |) in
                       M.read (|
                         let~ _ :
                             Ty.apply
@@ -25032,9 +25473,24 @@ Module fmt.
                       (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                       let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                       let γ0_2 := M.SubPointer.get_tuple_field (| γ, 2 |) in
-                      let value_V := M.alloc (| Ty.apply (Ty.path "&") [] [ V ], γ0_0 |) in
-                      let value_U := M.alloc (| Ty.apply (Ty.path "&") [] [ U ], γ0_1 |) in
-                      let value_T := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_2 |) in
+                      let _ := M.read (| γ0_0 |) in
+                      let value_V :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ V ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                        |) in
+                      let _ := M.read (| γ0_1 |) in
+                      let value_U :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ U ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_1 |)
+                        |) in
+                      let _ := M.read (| γ0_2 |) in
+                      let value_T :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ T ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_2 |)
+                        |) in
                       M.read (|
                         let~ _ :
                             Ty.apply
@@ -25243,8 +25699,18 @@ Module fmt.
                     ltac:(M.monadic
                       (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                       let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                      let value_U := M.alloc (| Ty.apply (Ty.path "&") [] [ U ], γ0_0 |) in
-                      let value_T := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_1 |) in
+                      let _ := M.read (| γ0_0 |) in
+                      let value_U :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ U ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                        |) in
+                      let _ := M.read (| γ0_1 |) in
+                      let value_T :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ T ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_1 |)
+                        |) in
                       M.read (|
                         let~ _ :
                             Ty.apply
@@ -25413,7 +25879,12 @@ Module fmt.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                      let value_T := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_0 |) in
+                      let _ := M.read (| γ0_0 |) in
+                      let value_T :=
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ T ],
+                          M.borrow (| Pointer.Kind.Ref, γ0_0 |)
+                        |) in
                       M.read (|
                         let~ _ :
                             Ty.apply

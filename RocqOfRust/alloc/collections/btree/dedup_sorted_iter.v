@@ -57,6 +57,7 @@ Module collections.
         Global Instance AssociatedFunction_new :
           forall (K V I : Ty.t),
           M.IsAssociatedFunction.C (Self K V I) "new" (new K V I).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new.
       End Impl_alloc_collections_btree_dedup_sorted_iter_DedupSortedIter_K_V_I.

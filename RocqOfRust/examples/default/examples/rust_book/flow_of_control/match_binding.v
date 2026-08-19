@@ -13,6 +13,7 @@ Definition age (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_age : M.IsFunction.C "match_binding::age" age.
+Proof.
 Admitted.
 Global Typeclasses Opaque age.
 
@@ -437,5 +438,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "match_binding::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

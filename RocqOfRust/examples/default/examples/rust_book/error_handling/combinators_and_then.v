@@ -196,6 +196,7 @@ Definition have_ingredients (ε : list Value.t) (τ : list Ty.t) (α : list Valu
 
 Global Instance Instance_IsFunction_have_ingredients :
   M.IsFunction.C "combinators_and_then::have_ingredients" have_ingredients.
+Proof.
 Admitted.
 Global Typeclasses Opaque have_ingredients.
 
@@ -238,6 +239,7 @@ Definition have_recipe (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) 
 
 Global Instance Instance_IsFunction_have_recipe :
   M.IsFunction.C "combinators_and_then::have_recipe" have_recipe.
+Proof.
 Admitted.
 Global Typeclasses Opaque have_recipe.
 
@@ -332,6 +334,7 @@ Definition cookable_v1 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) 
 
 Global Instance Instance_IsFunction_cookable_v1 :
   M.IsFunction.C "combinators_and_then::cookable_v1" cookable_v1.
+Proof.
 Admitted.
 Global Typeclasses Opaque cookable_v1.
 
@@ -375,6 +378,7 @@ Definition cookable_v2 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) 
 
 Global Instance Instance_IsFunction_cookable_v2 :
   M.IsFunction.C "combinators_and_then::cookable_v2" cookable_v2.
+Proof.
 Admitted.
 Global Typeclasses Opaque cookable_v2.
 
@@ -651,6 +655,7 @@ Definition eat (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_eat : M.IsFunction.C "combinators_and_then::eat" eat.
+Proof.
 Admitted.
 Global Typeclasses Opaque eat.
 
@@ -728,5 +733,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "combinators_and_then::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

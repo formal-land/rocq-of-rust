@@ -143,6 +143,7 @@ Module modular.
     Global Instance AssociatedFunction_reduce_mod :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "reduce_mod" (reduce_mod BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque reduce_mod.
     
@@ -296,6 +297,7 @@ Module modular.
     Global Instance AssociatedFunction_add_mod :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "add_mod" (add_mod BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque add_mod.
     
@@ -786,6 +788,7 @@ Module modular.
     Global Instance AssociatedFunction_mul_mod :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "mul_mod" (mul_mod BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque mul_mod.
     
@@ -1101,6 +1104,7 @@ Module modular.
     Global Instance AssociatedFunction_pow_mod :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "pow_mod" (pow_mod BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque pow_mod.
     
@@ -1136,6 +1140,7 @@ Module modular.
     Global Instance AssociatedFunction_inv_mod :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "inv_mod" (inv_mod BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque inv_mod.
     
@@ -1580,6 +1585,7 @@ Module modular.
     Global Instance AssociatedFunction_mul_redc :
       forall (BITS LIMBS : Value.t),
       M.IsAssociatedFunction.C (Self BITS LIMBS) "mul_redc" (mul_redc BITS LIMBS).
+    Proof.
     Admitted.
     Global Typeclasses Opaque mul_redc.
   End Impl_ruint_Uint_BITS_LIMBS.

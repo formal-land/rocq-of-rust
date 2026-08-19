@@ -154,6 +154,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_pop :
       M.IsFunction.C "revm_interpreter::instructions::stack::pop" pop.
+    Proof.
     Admitted.
     Global Typeclasses Opaque pop.
     
@@ -400,6 +401,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_push0 :
       M.IsFunction.C "revm_interpreter::instructions::stack::push0" push0.
+    Proof.
     Admitted.
     Global Typeclasses Opaque push0.
     
@@ -615,6 +617,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_push :
       M.IsFunction.C "revm_interpreter::instructions::stack::push" push.
+    Proof.
     Admitted.
     Global Typeclasses Opaque push.
     
@@ -736,6 +739,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_dup :
       M.IsFunction.C "revm_interpreter::instructions::stack::dup" dup.
+    Proof.
     Admitted.
     Global Typeclasses Opaque dup.
     
@@ -897,6 +901,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_swap :
       M.IsFunction.C "revm_interpreter::instructions::stack::swap" swap.
+    Proof.
     Admitted.
     Global Typeclasses Opaque swap.
   End stack.

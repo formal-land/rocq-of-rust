@@ -63,6 +63,7 @@ Module identity.
   
   Global Instance Instance_IsConstant_value_FUN :
     M.IsFunction.C "revm_precompile::identity::FUN" value_FUN.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_FUN.
   
@@ -71,6 +72,7 @@ Module identity.
   
   Global Instance Instance_IsConstant_value_IDENTITY_BASE :
     M.IsFunction.C "revm_precompile::identity::IDENTITY_BASE" value_IDENTITY_BASE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_IDENTITY_BASE.
   
@@ -79,6 +81,7 @@ Module identity.
   
   Global Instance Instance_IsConstant_value_IDENTITY_PER_WORD :
     M.IsFunction.C "revm_precompile::identity::IDENTITY_PER_WORD" value_IDENTITY_PER_WORD.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_IDENTITY_PER_WORD.
   
@@ -227,6 +230,7 @@ Module identity.
   
   Global Instance Instance_IsFunction_identity_run :
     M.IsFunction.C "revm_precompile::identity::identity_run" identity_run.
+  Proof.
   Admitted.
   Global Typeclasses Opaque identity_run.
 End identity.

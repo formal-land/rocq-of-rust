@@ -19,6 +19,7 @@ Module Impl_Uint.
         stack
       )
     }}.
+  Proof.
   Admitted.
 
   Definition mul_mod {BITS LIMBS : usize} (x1 x2 x3 : lib.Uint.t BITS LIMBS) :
@@ -38,5 +39,6 @@ Module Impl_Uint.
         stack
       )
     }}.
+  Proof.
   Admitted.
 End Impl_Uint.

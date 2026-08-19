@@ -59,30 +59,35 @@ Module checked.
   
   Global Instance Instance_IsFunction_div :
     M.IsFunction.C "result_chaining_with_question_mark::checked::div" div.
+  Proof.
   Admitted.
   
   Parameter sqrt : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance Instance_IsFunction_sqrt :
     M.IsFunction.C "result_chaining_with_question_mark::checked::sqrt" sqrt.
+  Proof.
   Admitted.
   
   Parameter ln : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance Instance_IsFunction_ln :
     M.IsFunction.C "result_chaining_with_question_mark::checked::ln" ln.
+  Proof.
   Admitted.
   
   Parameter op_ : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance Instance_IsFunction_op_ :
     M.IsFunction.C "result_chaining_with_question_mark::checked::op_" op_.
+  Proof.
   Admitted.
   
   Parameter op : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance Instance_IsFunction_op :
     M.IsFunction.C "result_chaining_with_question_mark::checked::op" op.
+  Proof.
   Admitted.
 End checked.
 
@@ -90,4 +95,5 @@ Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "result_chaining_with_question_mark::main" main.
+Proof.
 Admitted.

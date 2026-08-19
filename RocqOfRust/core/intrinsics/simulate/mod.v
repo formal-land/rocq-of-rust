@@ -25,4 +25,5 @@ Lemma three_way_compare_eq
       stack
     )
   }}.
+Proof.
 Admitted.

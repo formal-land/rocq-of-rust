@@ -217,6 +217,7 @@ Module processor.
       M.IsFunction.C
         "pinocchio_token_program::processor::burn_checked::process_burn_checked"
         process_burn_checked.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_burn_checked.
   End burn_checked.

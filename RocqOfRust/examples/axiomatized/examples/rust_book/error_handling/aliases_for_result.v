@@ -10,14 +10,17 @@ Parameter multiply : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_multiply :
   M.IsFunction.C "aliases_for_result::multiply" multiply.
+Proof.
 Admitted.
 
 Parameter print : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_print : M.IsFunction.C "aliases_for_result::print" print.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "aliases_for_result::main" main.
+Proof.
 Admitted.

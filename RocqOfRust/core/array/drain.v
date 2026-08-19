@@ -162,6 +162,7 @@ Module array.
       Global Instance AssociatedFunction_new :
         forall (N : Value.t) (T U F : Ty.t),
         M.IsAssociatedFunction.C (Self N T U F) "new" (new N T U F).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
     End Impl_core_array_drain_Drain_N_T_F.

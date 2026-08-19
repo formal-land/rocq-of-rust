@@ -95,10 +95,12 @@ Parameter try_logon : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_try_logon :
   M.IsFunction.C "hash_map_alternate_or_custom_key_types::try_logon" try_logon.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "hash_map_alternate_or_custom_key_types::main" main.
+Proof.
 Admitted.

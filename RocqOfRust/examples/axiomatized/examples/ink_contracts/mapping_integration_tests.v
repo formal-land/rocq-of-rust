@@ -38,6 +38,7 @@ Module Impl_mapping_integration_tests_Mapping_K_V.
   Global Instance AssociatedFunction_contains :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "contains" (contains K V).
+  Proof.
   Admitted.
   
   Parameter get : forall (K V : Ty.t), (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -45,6 +46,7 @@ Module Impl_mapping_integration_tests_Mapping_K_V.
   Global Instance AssociatedFunction_get :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "get" (get K V).
+  Proof.
   Admitted.
   
   Parameter insert : forall (K V : Ty.t), (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -52,6 +54,7 @@ Module Impl_mapping_integration_tests_Mapping_K_V.
   Global Instance AssociatedFunction_insert :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "insert" (insert K V).
+  Proof.
   Admitted.
   
   Parameter new : forall (K V : Ty.t), (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -59,6 +62,7 @@ Module Impl_mapping_integration_tests_Mapping_K_V.
   Global Instance AssociatedFunction_new :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "new" (new K V).
+  Proof.
   Admitted.
   
   Parameter remove : forall (K V : Ty.t), (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -66,6 +70,7 @@ Module Impl_mapping_integration_tests_Mapping_K_V.
   Global Instance AssociatedFunction_remove :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "remove" (remove K V).
+  Proof.
   Admitted.
   
   Parameter size : forall (K V : Ty.t), (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -73,6 +78,7 @@ Module Impl_mapping_integration_tests_Mapping_K_V.
   Global Instance AssociatedFunction_size :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "size" (size K V).
+  Proof.
   Admitted.
   
   Parameter take : forall (K V : Ty.t), (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
@@ -80,6 +86,7 @@ Module Impl_mapping_integration_tests_Mapping_K_V.
   Global Instance AssociatedFunction_take :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "take" (take K V).
+  Proof.
   Admitted.
 End Impl_mapping_integration_tests_Mapping_K_V.
 
@@ -159,6 +166,7 @@ Module Impl_mapping_integration_tests_Env.
   Parameter caller : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_caller : M.IsAssociatedFunction.C Self "caller" caller.
+  Proof.
   Admitted.
 End Impl_mapping_integration_tests_Env.
 
@@ -197,51 +205,60 @@ Module Impl_mapping_integration_tests_Mappings.
   Parameter init_env : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_init_env : M.IsAssociatedFunction.C Self "init_env" init_env.
+  Proof.
   Admitted.
   
   Parameter env : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_env : M.IsAssociatedFunction.C Self "env" env.
+  Proof.
   Admitted.
   
   Parameter new : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   
   Parameter get_balance : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_get_balance :
     M.IsAssociatedFunction.C Self "get_balance" get_balance.
+  Proof.
   Admitted.
   
   Parameter insert_balance : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_insert_balance :
     M.IsAssociatedFunction.C Self "insert_balance" insert_balance.
+  Proof.
   Admitted.
   
   Parameter size_balance : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_size_balance :
     M.IsAssociatedFunction.C Self "size_balance" size_balance.
+  Proof.
   Admitted.
   
   Parameter contains_balance : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_contains_balance :
     M.IsAssociatedFunction.C Self "contains_balance" contains_balance.
+  Proof.
   Admitted.
   
   Parameter remove_balance : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_remove_balance :
     M.IsAssociatedFunction.C Self "remove_balance" remove_balance.
+  Proof.
   Admitted.
   
   Parameter take_balance : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance AssociatedFunction_take_balance :
     M.IsAssociatedFunction.C Self "take_balance" take_balance.
+  Proof.
   Admitted.
 End Impl_mapping_integration_tests_Mappings.

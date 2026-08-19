@@ -233,13 +233,14 @@ Module borrow.
                 ltac:(M.monadic
                   (let γ0_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "alloc::borrow::Cow::Owned", 0 |) in
+                  let _ := M.read (| γ0_0 |) in
                   let o :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.associated_in_trait "alloc::borrow::ToOwned" [] [] B "Owned" ],
-                      γ0_0
+                      M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                     |) in
                   M.read (|
                     let~ b : Ty.apply (Ty.path "&") [] [ B ] :=
@@ -334,13 +335,14 @@ Module borrow.
                       "alloc::borrow::Cow::Owned",
                       0
                     |) in
+                  let _ := M.read (| γ2_0 |) in
                   let dest :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&mut")
                         []
                         [ Ty.associated_in_trait "alloc::borrow::ToOwned" [] [] B "Owned" ],
-                      γ2_0
+                      M.borrow (| Pointer.Kind.MutRef, γ2_0 |)
                     |) in
                   let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                   let γ2_0 :=
@@ -349,13 +351,14 @@ Module borrow.
                       "alloc::borrow::Cow::Owned",
                       0
                     |) in
+                  let _ := M.read (| γ2_0 |) in
                   let o :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.associated_in_trait "alloc::borrow::ToOwned" [] [] B "Owned" ],
-                      γ2_0
+                      M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                     |) in
                   M.call_closure (|
                     Ty.tuple [],
@@ -492,6 +495,7 @@ Module borrow.
     Global Instance AssociatedFunction_is_borrowed :
       forall (B : Ty.t),
       M.IsAssociatedFunction.C (Self B) "is_borrowed" (is_borrowed B).
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_borrowed.
     
@@ -532,6 +536,7 @@ Module borrow.
     Global Instance AssociatedFunction_is_owned :
       forall (B : Ty.t),
       M.IsAssociatedFunction.C (Self B) "is_owned" (is_owned B).
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_owned.
     
@@ -677,6 +682,7 @@ Module borrow.
                                                   "alloc::borrow::Cow::Owned",
                                                   0
                                                 |) in
+                                              let _ := M.read (| γ0_0 |) in
                                               let owned :=
                                                 M.alloc (|
                                                   Ty.apply
@@ -690,7 +696,7 @@ Module borrow.
                                                         B
                                                         "Owned"
                                                     ],
-                                                  γ0_0
+                                                  M.borrow (| Pointer.Kind.MutRef, γ0_0 |)
                                                 |) in
                                               M.borrow (|
                                                 Pointer.Kind.MutRef,
@@ -712,13 +718,14 @@ Module borrow.
                               "alloc::borrow::Cow::Owned",
                               0
                             |) in
+                          let _ := M.read (| γ0_0 |) in
                           let owned :=
                             M.alloc (|
                               Ty.apply
                                 (Ty.path "&mut")
                                 []
                                 [ Ty.associated_in_trait "alloc::borrow::ToOwned" [] [] B "Owned" ],
-                              γ0_0
+                              M.borrow (| Pointer.Kind.MutRef, γ0_0 |)
                             |) in
                           M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| owned |) |) |)))
                     ]
@@ -733,6 +740,7 @@ Module borrow.
     Global Instance AssociatedFunction_to_mut :
       forall (B : Ty.t),
       M.IsAssociatedFunction.C (Self B) "to_mut" (to_mut B).
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_mut.
     
@@ -794,6 +802,7 @@ Module borrow.
     Global Instance AssociatedFunction_into_owned :
       forall (B : Ty.t),
       M.IsAssociatedFunction.C (Self B) "into_owned" (into_owned B).
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_owned.
   End Impl_alloc_borrow_Cow_B.
@@ -847,13 +856,14 @@ Module borrow.
                           "alloc::borrow::Cow::Owned",
                           0
                         |) in
+                      let _ := M.read (| γ0_0 |) in
                       let owned :=
                         M.alloc (|
                           Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.associated_in_trait "alloc::borrow::ToOwned" [] [] B "Owned" ],
-                          γ0_0
+                          M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -1245,10 +1255,11 @@ Module borrow.
                       "alloc::borrow::Cow::Borrowed",
                       0
                     |) in
+                  let _ := M.read (| γ0_0 |) in
                   let b :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ B ] ],
-                      γ0_0
+                      M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -1273,13 +1284,14 @@ Module borrow.
                 ltac:(M.monadic
                   (let γ0_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "alloc::borrow::Cow::Owned", 0 |) in
+                  let _ := M.read (| γ0_0 |) in
                   let o :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.associated_in_trait "alloc::borrow::ToOwned" [] [] B "Owned" ],
-                      γ0_0
+                      M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -1353,10 +1365,11 @@ Module borrow.
                       "alloc::borrow::Cow::Borrowed",
                       0
                     |) in
+                  let _ := M.read (| γ0_0 |) in
                   let b :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ B ] ],
-                      γ0_0
+                      M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -1381,13 +1394,14 @@ Module borrow.
                 ltac:(M.monadic
                   (let γ0_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "alloc::borrow::Cow::Owned", 0 |) in
+                  let _ := M.read (| γ0_0 |) in
                   let o :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.associated_in_trait "alloc::borrow::ToOwned" [] [] B "Owned" ],
-                      γ0_0
+                      M.borrow (| Pointer.Kind.Ref, γ0_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply

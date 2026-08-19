@@ -4,9 +4,11 @@ Require Import RocqOfRust.RocqOfRust.
 Parameter call : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_call : M.IsFunction.C "hash_map::call" call.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "hash_map::main" main.
+Proof.
 Admitted.

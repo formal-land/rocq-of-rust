@@ -101,6 +101,7 @@ Module Impl_dns_Mapping_K_V.
   Global Instance AssociatedFunction_contains :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "contains" (contains K V).
+  Proof.
   Admitted.
   Global Typeclasses Opaque contains.
   
@@ -133,6 +134,7 @@ Module Impl_dns_Mapping_K_V.
   Global Instance AssociatedFunction_get :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "get" (get K V).
+  Proof.
   Admitted.
   Global Typeclasses Opaque get.
   
@@ -166,6 +168,7 @@ Module Impl_dns_Mapping_K_V.
   Global Instance AssociatedFunction_insert :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "insert" (insert K V).
+  Proof.
   Admitted.
   Global Typeclasses Opaque insert.
   
@@ -192,6 +195,7 @@ Module Impl_dns_Mapping_K_V.
   Global Instance AssociatedFunction_new :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "new" (new K V).
+  Proof.
   Admitted.
   Global Typeclasses Opaque new.
   
@@ -224,6 +228,7 @@ Module Impl_dns_Mapping_K_V.
   Global Instance AssociatedFunction_remove :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "remove" (remove K V).
+  Proof.
   Admitted.
   Global Typeclasses Opaque remove.
   
@@ -256,6 +261,7 @@ Module Impl_dns_Mapping_K_V.
   Global Instance AssociatedFunction_size :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "size" (size K V).
+  Proof.
   Admitted.
   Global Typeclasses Opaque size.
   
@@ -288,6 +294,7 @@ Module Impl_dns_Mapping_K_V.
   Global Instance AssociatedFunction_take :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "take" (take K V).
+  Proof.
   Admitted.
   Global Typeclasses Opaque take.
 End Impl_dns_Mapping_K_V.
@@ -588,6 +595,7 @@ Module Impl_dns_Env.
     end.
   
   Global Instance AssociatedFunction_caller : M.IsAssociatedFunction.C Self "caller" caller.
+  Proof.
   Admitted.
   Global Typeclasses Opaque caller.
   
@@ -614,6 +622,7 @@ Module Impl_dns_Env.
   
   Global Instance AssociatedFunction_emit_event :
     M.IsAssociatedFunction.C Self "emit_event" emit_event.
+  Proof.
   Admitted.
   Global Typeclasses Opaque emit_event.
 End Impl_dns_Env.
@@ -671,6 +680,7 @@ Definition zero_address (ε : list Value.t) (τ : list Ty.t) (α : list Value.t)
   end.
 
 Global Instance Instance_IsFunction_zero_address : M.IsFunction.C "dns::zero_address" zero_address.
+Proof.
 Admitted.
 Global Typeclasses Opaque zero_address.
 
@@ -1037,6 +1047,7 @@ Module Impl_dns_DomainNameService.
     end.
   
   Global Instance AssociatedFunction_init_env : M.IsAssociatedFunction.C Self "init_env" init_env.
+  Proof.
   Admitted.
   Global Typeclasses Opaque init_env.
   
@@ -1060,6 +1071,7 @@ Module Impl_dns_DomainNameService.
     end.
   
   Global Instance AssociatedFunction_env : M.IsAssociatedFunction.C Self "env" env.
+  Proof.
   Admitted.
   Global Typeclasses Opaque env.
   
@@ -1089,6 +1101,7 @@ Module Impl_dns_DomainNameService.
     end.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new.
   
@@ -1281,6 +1294,7 @@ Module Impl_dns_DomainNameService.
     end.
   
   Global Instance AssociatedFunction_register : M.IsAssociatedFunction.C Self "register" register.
+  Proof.
   Admitted.
   Global Typeclasses Opaque register.
   
@@ -1354,6 +1368,7 @@ Module Impl_dns_DomainNameService.
   
   Global Instance AssociatedFunction_get_owner_or_default :
     M.IsAssociatedFunction.C Self "get_owner_or_default" get_owner_or_default.
+  Proof.
   Admitted.
   Global Typeclasses Opaque get_owner_or_default.
   
@@ -1591,6 +1606,7 @@ Module Impl_dns_DomainNameService.
   
   Global Instance AssociatedFunction_set_address :
     M.IsAssociatedFunction.C Self "set_address" set_address.
+  Proof.
   Admitted.
   Global Typeclasses Opaque set_address.
   
@@ -1828,6 +1844,7 @@ Module Impl_dns_DomainNameService.
     end.
   
   Global Instance AssociatedFunction_transfer : M.IsAssociatedFunction.C Self "transfer" transfer.
+  Proof.
   Admitted.
   Global Typeclasses Opaque transfer.
   
@@ -1901,6 +1918,7 @@ Module Impl_dns_DomainNameService.
   
   Global Instance AssociatedFunction_get_address_or_default :
     M.IsAssociatedFunction.C Self "get_address_or_default" get_address_or_default.
+  Proof.
   Admitted.
   Global Typeclasses Opaque get_address_or_default.
   
@@ -1935,6 +1953,7 @@ Module Impl_dns_DomainNameService.
   
   Global Instance AssociatedFunction_get_address :
     M.IsAssociatedFunction.C Self "get_address" get_address.
+  Proof.
   Admitted.
   Global Typeclasses Opaque get_address.
   
@@ -1969,6 +1988,7 @@ Module Impl_dns_DomainNameService.
   
   Global Instance AssociatedFunction_get_owner :
     M.IsAssociatedFunction.C Self "get_owner" get_owner.
+  Proof.
   Admitted.
   Global Typeclasses Opaque get_owner.
 End Impl_dns_DomainNameService.

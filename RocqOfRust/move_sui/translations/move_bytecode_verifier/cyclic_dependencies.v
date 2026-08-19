@@ -116,6 +116,7 @@ Module cyclic_dependencies.
   
   Global Instance Instance_IsFunction_verify_module :
     M.IsFunction.C "move_bytecode_verifier::cyclic_dependencies::verify_module" verify_module.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_module.
   
@@ -635,6 +636,7 @@ Module cyclic_dependencies.
     M.IsFunction.C
       "move_bytecode_verifier::cyclic_dependencies::verify_module_impl"
       verify_module_impl.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify_module_impl.
   
@@ -1425,6 +1427,7 @@ Module cyclic_dependencies.
       M.IsFunction.C
         "move_bytecode_verifier::cyclic_dependencies::verify_module_impl::detect_cycles"
         detect_cycles.
+    Proof.
     Admitted.
     Global Typeclasses Opaque detect_cycles.
   End verify_module_impl.

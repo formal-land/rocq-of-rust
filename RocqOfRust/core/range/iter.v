@@ -215,6 +215,7 @@ Module range.
       Global Instance AssociatedFunction_remainder :
         forall (A : Ty.t),
         M.IsAssociatedFunction.C (Self A) "remainder" (remainder A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque remainder.
     End Impl_core_range_iter_RangeIter_A.
@@ -1545,6 +1546,7 @@ Module range.
       Global Instance AssociatedFunction_remainder :
         forall (A : Ty.t),
         M.IsAssociatedFunction.C (Self A) "remainder" (remainder A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque remainder.
     End Impl_core_range_iter_RangeInclusiveIter_A.
@@ -2629,6 +2631,7 @@ Module range.
       Global Instance AssociatedFunction_remainder :
         forall (A : Ty.t),
         M.IsAssociatedFunction.C (Self A) "remainder" (remainder A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque remainder.
     End Impl_core_range_iter_RangeFromIter_A.

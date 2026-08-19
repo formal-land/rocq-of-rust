@@ -5,14 +5,17 @@ Parameter give_adult : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_give_adult :
   M.IsFunction.C "option_and_unwrap::give_adult" give_adult.
+Proof.
 Admitted.
 
 Parameter drink : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_drink : M.IsFunction.C "option_and_unwrap::drink" drink.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "option_and_unwrap::main" main.
+Proof.
 Admitted.

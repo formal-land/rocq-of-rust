@@ -31,4 +31,5 @@ Lemma keccak256_eq
       stack
     )
   }}.
+Proof.
 Admitted.

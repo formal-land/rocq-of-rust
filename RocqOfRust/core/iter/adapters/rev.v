@@ -173,6 +173,7 @@ Module iter.
         Global Instance AssociatedFunction_new :
           forall (T : Ty.t),
           M.IsAssociatedFunction.C (Self T) "new" (new T).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new.
         
@@ -206,6 +207,7 @@ Module iter.
         Global Instance AssociatedFunction_into_inner :
           forall (T : Ty.t),
           M.IsAssociatedFunction.C (Self T) "into_inner" (into_inner T).
+        Proof.
         Admitted.
         Global Typeclasses Opaque into_inner.
       End Impl_core_iter_adapters_rev_Rev_T.

@@ -363,6 +363,7 @@ Module fmt.
       
       Global Instance AssociatedFunction_new_display :
         M.IsAssociatedFunction.C Self "new_display" new_display.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_display.
       
@@ -539,6 +540,7 @@ Module fmt.
       
       Global Instance AssociatedFunction_new_debug :
         M.IsAssociatedFunction.C Self "new_debug" new_debug.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_debug.
       
@@ -750,6 +752,7 @@ Module fmt.
       
       Global Instance AssociatedFunction_new_debug_noop :
         M.IsAssociatedFunction.C Self "new_debug_noop" new_debug_noop.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_debug_noop.
       
@@ -926,6 +929,7 @@ Module fmt.
       
       Global Instance AssociatedFunction_new_octal :
         M.IsAssociatedFunction.C Self "new_octal" new_octal.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_octal.
       
@@ -1102,6 +1106,7 @@ Module fmt.
       
       Global Instance AssociatedFunction_new_lower_hex :
         M.IsAssociatedFunction.C Self "new_lower_hex" new_lower_hex.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_lower_hex.
       
@@ -1278,6 +1283,7 @@ Module fmt.
       
       Global Instance AssociatedFunction_new_upper_hex :
         M.IsAssociatedFunction.C Self "new_upper_hex" new_upper_hex.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_upper_hex.
       
@@ -1454,6 +1460,7 @@ Module fmt.
       
       Global Instance AssociatedFunction_new_pointer :
         M.IsAssociatedFunction.C Self "new_pointer" new_pointer.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_pointer.
       
@@ -1630,6 +1637,7 @@ Module fmt.
       
       Global Instance AssociatedFunction_new_binary :
         M.IsAssociatedFunction.C Self "new_binary" new_binary.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_binary.
       
@@ -1806,6 +1814,7 @@ Module fmt.
       
       Global Instance AssociatedFunction_new_lower_exp :
         M.IsAssociatedFunction.C Self "new_lower_exp" new_lower_exp.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_lower_exp.
       
@@ -1982,6 +1991,7 @@ Module fmt.
       
       Global Instance AssociatedFunction_new_upper_exp :
         M.IsAssociatedFunction.C Self "new_upper_exp" new_upper_exp.
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_upper_exp.
       
@@ -2069,6 +2079,7 @@ Module fmt.
       
       Global Instance AssociatedFunction_from_usize :
         M.IsAssociatedFunction.C Self "from_usize" from_usize.
+      Proof.
       Admitted.
       Global Typeclasses Opaque from_usize.
       
@@ -2171,6 +2182,7 @@ Module fmt.
         end.
       
       Global Instance AssociatedFunction_fmt : M.IsAssociatedFunction.C Self "fmt" fmt.
+      Proof.
       Admitted.
       Global Typeclasses Opaque fmt.
       
@@ -2221,6 +2233,7 @@ Module fmt.
         end.
       
       Global Instance AssociatedFunction_as_u16 : M.IsAssociatedFunction.C Self "as_u16" as_u16.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_u16.
     End Impl_core_fmt_rt_Argument.

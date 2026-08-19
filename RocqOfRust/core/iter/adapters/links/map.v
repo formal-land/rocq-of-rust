@@ -14,6 +14,7 @@ Module Impl_Iterator_for_Map.
 
   Instance run (B I F : Set) `{Link B} `{Link I} `{Link F} :
     Iterator.Run (Self I F) B.
+  Proof.
   Admitted.
 End Impl_Iterator_for_Map.
 Export (hints) Impl_Iterator_for_Map.

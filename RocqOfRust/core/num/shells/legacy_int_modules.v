@@ -8,6 +8,7 @@ Module legacy_int_modules.
     
     Global Instance Instance_IsConstant_value_MIN :
       M.IsFunction.C "core::legacy_int_modules::i128::MIN" value_MIN.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MIN.
     
@@ -16,6 +17,7 @@ Module legacy_int_modules.
     
     Global Instance Instance_IsConstant_value_MAX :
       M.IsFunction.C "core::legacy_int_modules::i128::MAX" value_MAX.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MAX.
   End i128.
@@ -26,6 +28,7 @@ Module legacy_int_modules.
     
     Global Instance Instance_IsConstant_value_MIN :
       M.IsFunction.C "core::legacy_int_modules::i16::MIN" value_MIN.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MIN.
     
@@ -34,6 +37,7 @@ Module legacy_int_modules.
     
     Global Instance Instance_IsConstant_value_MAX :
       M.IsFunction.C "core::legacy_int_modules::i16::MAX" value_MAX.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MAX.
   End i16.
@@ -44,6 +48,7 @@ Module legacy_int_modules.
     
     Global Instance Instance_IsConstant_value_MIN :
       M.IsFunction.C "core::legacy_int_modules::i32::MIN" value_MIN.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MIN.
     
@@ -52,6 +57,7 @@ Module legacy_int_modules.
     
     Global Instance Instance_IsConstant_value_MAX :
       M.IsFunction.C "core::legacy_int_modules::i32::MAX" value_MAX.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MAX.
   End i32.
@@ -62,6 +68,7 @@ Module legacy_int_modules.
     
     Global Instance Instance_IsConstant_value_MIN :
       M.IsFunction.C "core::legacy_int_modules::i64::MIN" value_MIN.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MIN.
     
@@ -70,6 +77,7 @@ Module legacy_int_modules.
     
     Global Instance Instance_IsConstant_value_MAX :
       M.IsFunction.C "core::legacy_int_modules::i64::MAX" value_MAX.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MAX.
   End i64.
@@ -80,6 +88,7 @@ Module legacy_int_modules.
     
     Global Instance Instance_IsConstant_value_MIN :
       M.IsFunction.C "core::legacy_int_modules::i8::MIN" value_MIN.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MIN.
     
@@ -88,6 +97,7 @@ Module legacy_int_modules.
     
     Global Instance Instance_IsConstant_value_MAX :
       M.IsFunction.C "core::legacy_int_modules::i8::MAX" value_MAX.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MAX.
   End i8.
@@ -98,6 +108,7 @@ Module legacy_int_modules.
     
     Global Instance Instance_IsConstant_value_MIN :
       M.IsFunction.C "core::legacy_int_modules::isize::MIN" value_MIN.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MIN.
     
@@ -106,6 +117,7 @@ Module legacy_int_modules.
     
     Global Instance Instance_IsConstant_value_MAX :
       M.IsFunction.C "core::legacy_int_modules::isize::MAX" value_MAX.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MAX.
   End isize.
@@ -116,6 +128,7 @@ Module legacy_int_modules.
     
     Global Instance Instance_IsConstant_value_MIN :
       M.IsFunction.C "core::legacy_int_modules::u128::MIN" value_MIN.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MIN.
     
@@ -124,6 +137,7 @@ Module legacy_int_modules.
     
     Global Instance Instance_IsConstant_value_MAX :
       M.IsFunction.C "core::legacy_int_modules::u128::MAX" value_MAX.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MAX.
   End u128.
@@ -134,6 +148,7 @@ Module legacy_int_modules.
     
     Global Instance Instance_IsConstant_value_MIN :
       M.IsFunction.C "core::legacy_int_modules::u16::MIN" value_MIN.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MIN.
     
@@ -142,6 +157,7 @@ Module legacy_int_modules.
     
     Global Instance Instance_IsConstant_value_MAX :
       M.IsFunction.C "core::legacy_int_modules::u16::MAX" value_MAX.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MAX.
   End u16.
@@ -152,6 +168,7 @@ Module legacy_int_modules.
     
     Global Instance Instance_IsConstant_value_MIN :
       M.IsFunction.C "core::legacy_int_modules::u32::MIN" value_MIN.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MIN.
     
@@ -160,6 +177,7 @@ Module legacy_int_modules.
     
     Global Instance Instance_IsConstant_value_MAX :
       M.IsFunction.C "core::legacy_int_modules::u32::MAX" value_MAX.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MAX.
   End u32.
@@ -170,6 +188,7 @@ Module legacy_int_modules.
     
     Global Instance Instance_IsConstant_value_MIN :
       M.IsFunction.C "core::legacy_int_modules::u64::MIN" value_MIN.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MIN.
     
@@ -178,6 +197,7 @@ Module legacy_int_modules.
     
     Global Instance Instance_IsConstant_value_MAX :
       M.IsFunction.C "core::legacy_int_modules::u64::MAX" value_MAX.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MAX.
   End u64.
@@ -188,6 +208,7 @@ Module legacy_int_modules.
     
     Global Instance Instance_IsConstant_value_MIN :
       M.IsFunction.C "core::legacy_int_modules::u8::MIN" value_MIN.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MIN.
     
@@ -196,6 +217,7 @@ Module legacy_int_modules.
     
     Global Instance Instance_IsConstant_value_MAX :
       M.IsFunction.C "core::legacy_int_modules::u8::MAX" value_MAX.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MAX.
   End u8.
@@ -206,6 +228,7 @@ Module legacy_int_modules.
     
     Global Instance Instance_IsConstant_value_MIN :
       M.IsFunction.C "core::legacy_int_modules::usize::MIN" value_MIN.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MIN.
     
@@ -214,6 +237,7 @@ Module legacy_int_modules.
     
     Global Instance Instance_IsConstant_value_MAX :
       M.IsFunction.C "core::legacy_int_modules::usize::MAX" value_MAX.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_MAX.
   End usize.

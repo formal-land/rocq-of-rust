@@ -201,6 +201,7 @@ Module processor.
     
     Global Instance Instance_IsFunction_process_approve :
       M.IsFunction.C "pinocchio_token_program::processor::approve::process_approve" process_approve.
+    Proof.
     Admitted.
     Global Typeclasses Opaque process_approve.
   End approve.

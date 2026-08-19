@@ -5,10 +5,12 @@ Parameter byte_string_literal : (list Value.t) -> (list Ty.t) -> (list Value.t) 
 
 Global Instance Instance_IsFunction_byte_string_literal :
   M.IsFunction.C "byte_string_literals::byte_string_literal" byte_string_literal.
+Proof.
 Admitted.
 
 Parameter byte_literal : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_byte_literal :
   M.IsFunction.C "byte_string_literals::byte_literal" byte_literal.
+Proof.
 Admitted.

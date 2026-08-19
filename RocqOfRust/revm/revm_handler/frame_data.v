@@ -361,10 +361,11 @@ Module frame_data.
                       "revm_handler::frame_data::FrameData::Call",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "revm_handler::frame_data::CallFrame" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -415,10 +416,11 @@ Module frame_data.
                       "revm_handler::frame_data::FrameData::Create",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "revm_handler::frame_data::CreateFrame" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -500,10 +502,11 @@ Module frame_data.
                       "revm_handler::frame_data::FrameData::Call",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "revm_handler::frame_data::CallFrame" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "revm_handler::frame_data::FrameData::Call"
@@ -533,10 +536,11 @@ Module frame_data.
                       "revm_handler::frame_data::FrameData::Create",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "revm_handler::frame_data::CreateFrame" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "revm_handler::frame_data::FrameData::Create"
@@ -630,6 +634,7 @@ Module frame_data.
                       "revm_handler::frame_data::FrameResult::Call",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
@@ -637,7 +642,7 @@ Module frame_data.
                         []
                         [ Ty.path "revm_interpreter::interpreter_action::call_outcome::CallOutcome"
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -691,6 +696,7 @@ Module frame_data.
                       "revm_handler::frame_data::FrameResult::Create",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
@@ -700,7 +706,7 @@ Module frame_data.
                           Ty.path
                             "revm_interpreter::interpreter_action::create_outcome::CreateOutcome"
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -785,6 +791,7 @@ Module frame_data.
                       "revm_handler::frame_data::FrameResult::Call",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
@@ -792,7 +799,7 @@ Module frame_data.
                         []
                         [ Ty.path "revm_interpreter::interpreter_action::call_outcome::CallOutcome"
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "revm_handler::frame_data::FrameResult::Call"
@@ -822,6 +829,7 @@ Module frame_data.
                       "revm_handler::frame_data::FrameResult::Create",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply
@@ -831,7 +839,7 @@ Module frame_data.
                           Ty.path
                             "revm_interpreter::interpreter_action::create_outcome::CreateOutcome"
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "revm_handler::frame_data::FrameResult::Create"
@@ -935,6 +943,7 @@ Module frame_data.
     
     Global Instance AssociatedFunction_into_interpreter_result :
       M.IsAssociatedFunction.C Self "into_interpreter_result" into_interpreter_result.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_interpreter_result.
     
@@ -970,6 +979,7 @@ Module frame_data.
                       "revm_handler::frame_data::FrameResult::Call",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let outcome :=
                     M.alloc (|
                       Ty.apply
@@ -977,7 +987,7 @@ Module frame_data.
                         []
                         [ Ty.path "revm_interpreter::interpreter_action::call_outcome::CallOutcome"
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "revm_context_interface::result::Output::Call"
@@ -1020,6 +1030,7 @@ Module frame_data.
                       "revm_handler::frame_data::FrameResult::Create",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let outcome :=
                     M.alloc (|
                       Ty.apply
@@ -1029,7 +1040,7 @@ Module frame_data.
                           Ty.path
                             "revm_interpreter::interpreter_action::create_outcome::CreateOutcome"
                         ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "revm_context_interface::result::Output::Create"
@@ -1076,6 +1087,7 @@ Module frame_data.
       end.
     
     Global Instance AssociatedFunction_output : M.IsAssociatedFunction.C Self "output" output.
+    Proof.
     Admitted.
     Global Typeclasses Opaque output.
     
@@ -1112,6 +1124,7 @@ Module frame_data.
                           "revm_handler::frame_data::FrameResult::Call",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let outcome :=
                         M.alloc (|
                           Ty.apply
@@ -1121,7 +1134,7 @@ Module frame_data.
                               Ty.path
                                 "revm_interpreter::interpreter_action::call_outcome::CallOutcome"
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -1149,6 +1162,7 @@ Module frame_data.
                           "revm_handler::frame_data::FrameResult::Create",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let outcome :=
                         M.alloc (|
                           Ty.apply
@@ -1158,7 +1172,7 @@ Module frame_data.
                               Ty.path
                                 "revm_interpreter::interpreter_action::create_outcome::CreateOutcome"
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -1185,6 +1199,7 @@ Module frame_data.
       end.
     
     Global Instance AssociatedFunction_gas : M.IsAssociatedFunction.C Self "gas" gas.
+    Proof.
     Admitted.
     Global Typeclasses Opaque gas.
     
@@ -1224,6 +1239,7 @@ Module frame_data.
                               "revm_handler::frame_data::FrameResult::Call",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let outcome :=
                             M.alloc (|
                               Ty.apply
@@ -1233,7 +1249,7 @@ Module frame_data.
                                   Ty.path
                                     "revm_interpreter::interpreter_action::call_outcome::CallOutcome"
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                             |) in
                           M.borrow (|
                             Pointer.Kind.MutRef,
@@ -1261,6 +1277,7 @@ Module frame_data.
                               "revm_handler::frame_data::FrameResult::Create",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let outcome :=
                             M.alloc (|
                               Ty.apply
@@ -1270,7 +1287,7 @@ Module frame_data.
                                   Ty.path
                                     "revm_interpreter::interpreter_action::create_outcome::CreateOutcome"
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                             |) in
                           M.borrow (|
                             Pointer.Kind.MutRef,
@@ -1299,6 +1316,7 @@ Module frame_data.
       end.
     
     Global Instance AssociatedFunction_gas_mut : M.IsAssociatedFunction.C Self "gas_mut" gas_mut.
+    Proof.
     Admitted.
     Global Typeclasses Opaque gas_mut.
     
@@ -1338,6 +1356,7 @@ Module frame_data.
                           "revm_handler::frame_data::FrameResult::Call",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let outcome :=
                         M.alloc (|
                           Ty.apply
@@ -1347,7 +1366,7 @@ Module frame_data.
                               Ty.path
                                 "revm_interpreter::interpreter_action::call_outcome::CallOutcome"
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -1371,6 +1390,7 @@ Module frame_data.
                           "revm_handler::frame_data::FrameResult::Create",
                           0
                         |) in
+                      let _ := M.read (| γ1_0 |) in
                       let outcome :=
                         M.alloc (|
                           Ty.apply
@@ -1380,7 +1400,7 @@ Module frame_data.
                               Ty.path
                                 "revm_interpreter::interpreter_action::create_outcome::CreateOutcome"
                             ],
-                          γ1_0
+                          M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                         |) in
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -1404,6 +1424,7 @@ Module frame_data.
     
     Global Instance AssociatedFunction_interpreter_result :
       M.IsAssociatedFunction.C Self "interpreter_result" interpreter_result.
+    Proof.
     Admitted.
     Global Typeclasses Opaque interpreter_result.
     
@@ -1446,6 +1467,7 @@ Module frame_data.
                               "revm_handler::frame_data::FrameResult::Call",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let outcome :=
                             M.alloc (|
                               Ty.apply
@@ -1455,7 +1477,7 @@ Module frame_data.
                                   Ty.path
                                     "revm_interpreter::interpreter_action::call_outcome::CallOutcome"
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                             |) in
                           M.borrow (|
                             Pointer.Kind.MutRef,
@@ -1479,6 +1501,7 @@ Module frame_data.
                               "revm_handler::frame_data::FrameResult::Create",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let outcome :=
                             M.alloc (|
                               Ty.apply
@@ -1488,7 +1511,7 @@ Module frame_data.
                                   Ty.path
                                     "revm_interpreter::interpreter_action::create_outcome::CreateOutcome"
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                             |) in
                           M.borrow (|
                             Pointer.Kind.MutRef,
@@ -1514,6 +1537,7 @@ Module frame_data.
     
     Global Instance AssociatedFunction_interpreter_result_mut :
       M.IsAssociatedFunction.C Self "interpreter_result_mut" interpreter_result_mut.
+    Proof.
     Admitted.
     Global Typeclasses Opaque interpreter_result_mut.
     
@@ -1557,6 +1581,7 @@ Module frame_data.
     
     Global Instance AssociatedFunction_instruction_result :
       M.IsAssociatedFunction.C Self "instruction_result" instruction_result.
+    Proof.
     Admitted.
     Global Typeclasses Opaque instruction_result.
   End Impl_revm_handler_frame_data_FrameResult.
@@ -1591,6 +1616,7 @@ Module frame_data.
     
     Global Instance AssociatedFunction_new_create :
       M.IsAssociatedFunction.C Self "new_create" new_create.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_create.
     
@@ -1625,6 +1651,7 @@ Module frame_data.
       end.
     
     Global Instance AssociatedFunction_new_call : M.IsAssociatedFunction.C Self "new_call" new_call.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new_call.
     
@@ -1658,6 +1685,7 @@ Module frame_data.
       end.
     
     Global Instance AssociatedFunction_is_call : M.IsAssociatedFunction.C Self "is_call" is_call.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_call.
     
@@ -1693,6 +1721,7 @@ Module frame_data.
     
     Global Instance AssociatedFunction_is_create :
       M.IsAssociatedFunction.C Self "is_create" is_create.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_create.
     
@@ -1729,10 +1758,11 @@ Module frame_data.
                       "revm_handler::frame_data::FrameData::Create",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let create_frame :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "revm_handler::frame_data::CreateFrame" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   Value.StructTuple
                     "core::option::Option::Some"
@@ -1761,6 +1791,7 @@ Module frame_data.
     
     Global Instance AssociatedFunction_created_address :
       M.IsAssociatedFunction.C Self "created_address" created_address.
+    Proof.
     Admitted.
     Global Typeclasses Opaque created_address.
   End Impl_revm_handler_frame_data_FrameData.

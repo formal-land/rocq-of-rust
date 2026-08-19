@@ -47,7 +47,7 @@ plugin-inline-print-check: plugin $(PLUGIN_INLINE_PRINT_TEST) $(PLUGIN_INLINE_PR
 
 # We use the '@' to avoid displaying this command as the parameters list is
 # very long.
-RocqMakefile: plugin $(VFILES) blacklist.txt
+RocqMakefile: plugin $(VFILES) blacklist.txt _RocqProject
 	@coq_makefile -f _RocqProject -o $@ $(VFILES)
 
 MAKEROCQ := +$(MAKE) -f RocqMakefile

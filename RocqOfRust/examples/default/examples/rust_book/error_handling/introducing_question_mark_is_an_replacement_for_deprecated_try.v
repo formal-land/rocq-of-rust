@@ -179,6 +179,7 @@ Global Instance Instance_IsFunction_multiply :
   M.IsFunction.C
     "introducing_question_mark_is_an_replacement_for_deprecated_try::multiply"
     multiply.
+Proof.
 Admitted.
 Global Typeclasses Opaque multiply.
 
@@ -364,6 +365,7 @@ Definition print (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 
 Global Instance Instance_IsFunction_print :
   M.IsFunction.C "introducing_question_mark_is_an_replacement_for_deprecated_try::print" print.
+Proof.
 Admitted.
 Global Typeclasses Opaque print.
 
@@ -437,5 +439,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "introducing_question_mark_is_an_replacement_for_deprecated_try::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

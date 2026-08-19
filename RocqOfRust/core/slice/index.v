@@ -299,6 +299,7 @@ Module slice.
     
     Global Instance Instance_IsFunction_slice_index_fail :
       M.IsFunction.C "core::slice::index::slice_index_fail" slice_index_fail.
+    Proof.
     Admitted.
     Global Typeclasses Opaque slice_index_fail.
     
@@ -360,6 +361,7 @@ Module slice.
     
     Global Instance Instance_IsFunction_get_offset_len_noubcheck :
       M.IsFunction.C "core::slice::index::get_offset_len_noubcheck" get_offset_len_noubcheck.
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_offset_len_noubcheck.
     
@@ -427,6 +429,7 @@ Module slice.
       M.IsFunction.C
         "core::slice::index::get_offset_len_mut_noubcheck"
         get_offset_len_mut_noubcheck.
+    Proof.
     Admitted.
     Global Typeclasses Opaque get_offset_len_mut_noubcheck.
     
@@ -7203,6 +7206,7 @@ Module slice.
       end.
     
     Global Instance Instance_IsFunction_range : M.IsFunction.C "core::slice::index::range" range.
+    Proof.
     Admitted.
     Global Typeclasses Opaque range.
     
@@ -7666,6 +7670,7 @@ Module slice.
     
     Global Instance Instance_IsFunction_try_range :
       M.IsFunction.C "core::slice::index::try_range" try_range.
+    Proof.
     Admitted.
     Global Typeclasses Opaque try_range.
     
@@ -7811,6 +7816,7 @@ Module slice.
     
     Global Instance Instance_IsFunction_into_range_unchecked :
       M.IsFunction.C "core::slice::index::into_range_unchecked" into_range_unchecked.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_range_unchecked.
     
@@ -8221,6 +8227,7 @@ Module slice.
     
     Global Instance Instance_IsFunction_into_range :
       M.IsFunction.C "core::slice::index::into_range" into_range.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_range.
     
@@ -8509,6 +8516,7 @@ Module slice.
     
     Global Instance Instance_IsFunction_into_slice_range :
       M.IsFunction.C "core::slice::index::into_slice_range" into_slice_range.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_slice_range.
     

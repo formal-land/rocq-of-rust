@@ -579,6 +579,7 @@ Module io.
       
       Global Instance AssociatedFunction_capacity :
         M.IsAssociatedFunction.C Self "capacity" capacity.
+      Proof.
       Admitted.
       Global Typeclasses Opaque capacity.
       
@@ -607,6 +608,7 @@ Module io.
         end.
       
       Global Instance AssociatedFunction_len : M.IsAssociatedFunction.C Self "len" len.
+      Proof.
       Admitted.
       Global Typeclasses Opaque len.
       
@@ -733,6 +735,7 @@ Module io.
         end.
       
       Global Instance AssociatedFunction_filled : M.IsAssociatedFunction.C Self "filled" filled.
+      Proof.
       Admitted.
       Global Typeclasses Opaque filled.
       
@@ -877,6 +880,7 @@ Module io.
       
       Global Instance AssociatedFunction_filled_mut :
         M.IsAssociatedFunction.C Self "filled_mut" filled_mut.
+      Proof.
       Admitted.
       Global Typeclasses Opaque filled_mut.
       
@@ -1000,6 +1004,7 @@ Module io.
       
       Global Instance AssociatedFunction_into_filled :
         M.IsAssociatedFunction.C Self "into_filled" into_filled.
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_filled.
       
@@ -1140,6 +1145,7 @@ Module io.
       
       Global Instance AssociatedFunction_into_filled_mut :
         M.IsAssociatedFunction.C Self "into_filled_mut" into_filled_mut.
+      Proof.
       Admitted.
       Global Typeclasses Opaque into_filled_mut.
       
@@ -1206,6 +1212,7 @@ Module io.
       
       Global Instance AssociatedFunction_unfilled :
         M.IsAssociatedFunction.C Self "unfilled" unfilled.
+      Proof.
       Admitted.
       Global Typeclasses Opaque unfilled.
       
@@ -1248,6 +1255,7 @@ Module io.
         end.
       
       Global Instance AssociatedFunction_clear : M.IsAssociatedFunction.C Self "clear" clear.
+      Proof.
       Admitted.
       Global Typeclasses Opaque clear.
     End Impl_core_io_borrowed_buf_BorrowedBuf.
@@ -1436,6 +1444,7 @@ Module io.
       
       Global Instance AssociatedFunction_reborrow :
         M.IsAssociatedFunction.C Self "reborrow" reborrow.
+      Proof.
       Admitted.
       Global Typeclasses Opaque reborrow.
       
@@ -1502,6 +1511,7 @@ Module io.
       
       Global Instance AssociatedFunction_capacity :
         M.IsAssociatedFunction.C Self "capacity" capacity.
+      Proof.
       Admitted.
       Global Typeclasses Opaque capacity.
       
@@ -1538,6 +1548,7 @@ Module io.
         end.
       
       Global Instance AssociatedFunction_written : M.IsAssociatedFunction.C Self "written" written.
+      Proof.
       Admitted.
       Global Typeclasses Opaque written.
       
@@ -1654,6 +1665,7 @@ Module io.
         end.
       
       Global Instance AssociatedFunction_as_mut : M.IsAssociatedFunction.C Self "as_mut" as_mut.
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_mut.
       
@@ -1714,6 +1726,7 @@ Module io.
         end.
       
       Global Instance AssociatedFunction_advance : M.IsAssociatedFunction.C Self "advance" advance.
+      Proof.
       Admitted.
       Global Typeclasses Opaque advance.
       
@@ -1981,6 +1994,7 @@ Module io.
         end.
       
       Global Instance AssociatedFunction_append : M.IsAssociatedFunction.C Self "append" append.
+      Proof.
       Admitted.
       Global Typeclasses Opaque append.
       
@@ -2225,6 +2239,7 @@ Module io.
       
       Global Instance AssociatedFunction_with_unfilled_buf :
         M.IsAssociatedFunction.C Self "with_unfilled_buf" with_unfilled_buf.
+      Proof.
       Admitted.
       Global Typeclasses Opaque with_unfilled_buf.
     End Impl_core_io_borrowed_buf_BorrowedCursor.

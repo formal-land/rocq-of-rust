@@ -832,6 +832,7 @@ Module wtf8.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -874,6 +875,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_with_capacity :
       M.IsAssociatedFunction.C Self "with_capacity" with_capacity.
+    Proof.
     Admitted.
     Global Typeclasses Opaque with_capacity.
     
@@ -904,6 +906,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_from_bytes_unchecked :
       M.IsAssociatedFunction.C Self "from_bytes_unchecked" from_bytes_unchecked.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_bytes_unchecked.
     
@@ -943,6 +946,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_from_string :
       M.IsAssociatedFunction.C Self "from_string" from_string.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_string.
     
@@ -995,6 +999,7 @@ Module wtf8.
       end.
     
     Global Instance AssociatedFunction_from_str : M.IsAssociatedFunction.C Self "from_str" from_str.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_str.
     
@@ -1049,6 +1054,7 @@ Module wtf8.
       end.
     
     Global Instance AssociatedFunction_clear : M.IsAssociatedFunction.C Self "clear" clear.
+    Proof.
     Admitted.
     Global Typeclasses Opaque clear.
     
@@ -1468,6 +1474,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_from_wide :
       M.IsAssociatedFunction.C Self "from_wide" from_wide.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_wide.
     
@@ -1567,6 +1574,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_push_code_point_unchecked :
       M.IsAssociatedFunction.C Self "push_code_point_unchecked" push_code_point_unchecked.
+    Proof.
     Admitted.
     Global Typeclasses Opaque push_code_point_unchecked.
     
@@ -1639,6 +1647,7 @@ Module wtf8.
       end.
     
     Global Instance AssociatedFunction_as_slice : M.IsAssociatedFunction.C Self "as_slice" as_slice.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_slice.
     
@@ -1725,6 +1734,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_as_mut_slice :
       M.IsAssociatedFunction.C Self "as_mut_slice" as_mut_slice.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_mut_slice.
     
@@ -1836,6 +1846,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_as_known_utf8 :
       M.IsAssociatedFunction.C Self "as_known_utf8" as_known_utf8.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_known_utf8.
     
@@ -1878,6 +1889,7 @@ Module wtf8.
       end.
     
     Global Instance AssociatedFunction_reserve : M.IsAssociatedFunction.C Self "reserve" reserve.
+    Proof.
     Admitted.
     Global Typeclasses Opaque reserve.
     
@@ -1924,6 +1936,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_try_reserve :
       M.IsAssociatedFunction.C Self "try_reserve" try_reserve.
+    Proof.
     Admitted.
     Global Typeclasses Opaque try_reserve.
     
@@ -1967,6 +1980,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_reserve_exact :
       M.IsAssociatedFunction.C Self "reserve_exact" reserve_exact.
+    Proof.
     Admitted.
     Global Typeclasses Opaque reserve_exact.
     
@@ -2013,6 +2027,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_try_reserve_exact :
       M.IsAssociatedFunction.C Self "try_reserve_exact" try_reserve_exact.
+    Proof.
     Admitted.
     Global Typeclasses Opaque try_reserve_exact.
     
@@ -2054,6 +2069,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_shrink_to_fit :
       M.IsAssociatedFunction.C Self "shrink_to_fit" shrink_to_fit.
+    Proof.
     Admitted.
     Global Typeclasses Opaque shrink_to_fit.
     
@@ -2097,6 +2113,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_shrink_to :
       M.IsAssociatedFunction.C Self "shrink_to" shrink_to.
+    Proof.
     Admitted.
     Global Typeclasses Opaque shrink_to.
     
@@ -2169,6 +2186,7 @@ Module wtf8.
       end.
     
     Global Instance AssociatedFunction_leak : M.IsAssociatedFunction.C Self "leak" leak.
+    Proof.
     Admitted.
     Global Typeclasses Opaque leak.
     
@@ -2209,6 +2227,7 @@ Module wtf8.
       end.
     
     Global Instance AssociatedFunction_capacity : M.IsAssociatedFunction.C Self "capacity" capacity.
+    Proof.
     Admitted.
     Global Typeclasses Opaque capacity.
     
@@ -2260,6 +2279,7 @@ Module wtf8.
       end.
     
     Global Instance AssociatedFunction_push_str : M.IsAssociatedFunction.C Self "push_str" push_str.
+    Proof.
     Admitted.
     Global Typeclasses Opaque push_str.
     
@@ -2724,6 +2744,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_push_wtf8 :
       M.IsAssociatedFunction.C Self "push_wtf8" push_wtf8.
+    Proof.
     Admitted.
     Global Typeclasses Opaque push_wtf8.
     
@@ -2767,6 +2788,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_push_char :
       M.IsAssociatedFunction.C Self "push_char" push_char.
+    Proof.
     Admitted.
     Global Typeclasses Opaque push_char.
     
@@ -3101,6 +3123,7 @@ Module wtf8.
       end.
     
     Global Instance AssociatedFunction_push : M.IsAssociatedFunction.C Self "push" push.
+    Proof.
     Admitted.
     Global Typeclasses Opaque push.
     
@@ -3212,6 +3235,7 @@ Module wtf8.
       end.
     
     Global Instance AssociatedFunction_truncate : M.IsAssociatedFunction.C Self "truncate" truncate.
+    Proof.
     Admitted.
     Global Typeclasses Opaque truncate.
     
@@ -3233,6 +3257,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_into_bytes :
       M.IsAssociatedFunction.C Self "into_bytes" into_bytes.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_bytes.
     
@@ -3371,6 +3396,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_into_string :
       M.IsAssociatedFunction.C Self "into_string" into_string.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_string.
     
@@ -3639,6 +3665,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_into_string_lossy :
       M.IsAssociatedFunction.C Self "into_string_lossy" into_string_lossy.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_string_lossy.
     
@@ -3701,6 +3728,7 @@ Module wtf8.
       end.
     
     Global Instance AssociatedFunction_into_box : M.IsAssociatedFunction.C Self "into_box" into_box.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_box.
     
@@ -3783,6 +3811,7 @@ Module wtf8.
       end.
     
     Global Instance AssociatedFunction_from_box : M.IsAssociatedFunction.C Self "from_box" from_box.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_box.
     
@@ -3848,6 +3877,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_extend_from_slice_unchecked :
       M.IsAssociatedFunction.C Self "extend_from_slice_unchecked" extend_from_slice_unchecked.
+    Proof.
     Admitted.
     Global Typeclasses Opaque extend_from_slice_unchecked.
   End Impl_alloc_wtf8_Wtf8Buf.
@@ -4219,6 +4249,7 @@ Module wtf8.
     end.
   
   Global Instance Instance_IsFunction_to_owned : M.IsFunction.C "alloc::wtf8::to_owned" to_owned.
+  Proof.
   Admitted.
   Global Typeclasses Opaque to_owned.
   
@@ -4794,6 +4825,7 @@ Module wtf8.
   
   Global Instance Instance_IsFunction_to_string_lossy :
     M.IsFunction.C "alloc::wtf8::to_string_lossy" to_string_lossy.
+  Proof.
   Admitted.
   Global Typeclasses Opaque to_string_lossy.
   
@@ -4871,6 +4903,7 @@ Module wtf8.
   
   Global Instance Instance_IsFunction_clone_into :
     M.IsFunction.C "alloc::wtf8::clone_into" clone_into.
+  Proof.
   Admitted.
   Global Typeclasses Opaque clone_into.
   
@@ -4897,6 +4930,7 @@ Module wtf8.
       end.
     
     Global Instance AssociatedFunction_to_owned : M.IsAssociatedFunction.C Self "to_owned" to_owned.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_owned.
     
@@ -4926,6 +4960,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_clone_into :
       M.IsAssociatedFunction.C Self "clone_into" clone_into.
+    Proof.
     Admitted.
     Global Typeclasses Opaque clone_into.
     
@@ -4950,6 +4985,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_to_string_lossy :
       M.IsAssociatedFunction.C Self "to_string_lossy" to_string_lossy.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_string_lossy.
     
@@ -5051,6 +5087,7 @@ Module wtf8.
       end.
     
     Global Instance AssociatedFunction_into_box : M.IsAssociatedFunction.C Self "into_box" into_box.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_box.
     
@@ -5128,6 +5165,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_empty_box :
       M.IsAssociatedFunction.C Self "empty_box" empty_box.
+    Proof.
     Admitted.
     Global Typeclasses Opaque empty_box.
     
@@ -5226,6 +5264,7 @@ Module wtf8.
       end.
     
     Global Instance AssociatedFunction_into_arc : M.IsAssociatedFunction.C Self "into_arc" into_arc.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_arc.
     
@@ -5324,6 +5363,7 @@ Module wtf8.
       end.
     
     Global Instance AssociatedFunction_into_rc : M.IsAssociatedFunction.C Self "into_rc" into_rc.
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_rc.
     
@@ -5383,6 +5423,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_to_ascii_lowercase :
       M.IsAssociatedFunction.C Self "to_ascii_lowercase" to_ascii_lowercase.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_ascii_lowercase.
     
@@ -5442,6 +5483,7 @@ Module wtf8.
     
     Global Instance AssociatedFunction_to_ascii_uppercase :
       M.IsAssociatedFunction.C Self "to_ascii_uppercase" to_ascii_uppercase.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_ascii_uppercase.
   End Impl_core_wtf8_Wtf8.
@@ -5508,6 +5550,7 @@ Module wtf8.
   
   Global Instance Instance_IsFunction_decode_surrogate_pair :
     M.IsFunction.C "alloc::wtf8::decode_surrogate_pair" decode_surrogate_pair.
+  Proof.
   Admitted.
   Global Typeclasses Opaque decode_surrogate_pair.
   

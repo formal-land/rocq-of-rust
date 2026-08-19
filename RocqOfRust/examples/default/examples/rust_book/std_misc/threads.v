@@ -6,6 +6,7 @@ Definition value_NTHREADS (ε : list Value.t) (τ : list Ty.t) (α : list Value.
 
 Global Instance Instance_IsConstant_value_NTHREADS :
   M.IsFunction.C "threads::NTHREADS" value_NTHREADS.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_NTHREADS.
 
@@ -569,5 +570,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "threads::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

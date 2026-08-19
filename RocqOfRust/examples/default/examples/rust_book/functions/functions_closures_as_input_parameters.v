@@ -39,6 +39,7 @@ Definition apply (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 
 Global Instance Instance_IsFunction_apply :
   M.IsFunction.C "functions_closures_as_input_parameters::apply" apply.
+Proof.
 Admitted.
 Global Typeclasses Opaque apply.
 
@@ -74,6 +75,7 @@ Definition apply_to_3 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) :
 
 Global Instance Instance_IsFunction_apply_to_3 :
   M.IsFunction.C "functions_closures_as_input_parameters::apply_to_3" apply_to_3.
+Proof.
 Admitted.
 Global Typeclasses Opaque apply_to_3.
 
@@ -540,5 +542,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "functions_closures_as_input_parameters::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

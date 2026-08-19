@@ -29,6 +29,7 @@ Definition let_mut (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M 
   end.
 
 Global Instance Instance_IsFunction_let_mut : M.IsFunction.C "let_mut::let_mut" let_mut.
+Proof.
 Admitted.
 Global Typeclasses Opaque let_mut.
 
@@ -84,5 +85,6 @@ Definition match_mut (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : 
   end.
 
 Global Instance Instance_IsFunction_match_mut : M.IsFunction.C "let_mut::match_mut" match_mut.
+Proof.
 Admitted.
 Global Typeclasses Opaque match_mut.

@@ -64,11 +64,11 @@ Rust source: [`../contract.rs`](../contract.rs)
 
 | Instruction | Status |
 |---|:---:|
-| [call](contract/call.v) | ✗ |
-| [call_code](contract/call_code.v) | ✗ |
+| [call](contract/call.v) | ✓ |
+| [call_code](contract/call_code.v) | ✓ |
 | [create](contract/create.v) | ✗ |
-| [delegate_call](contract/delegate_call.v) | ✗ |
-| [static_call](contract/static_call.v) | ✗ |
+| [delegate_call](contract/delegate_call.v) | ✓ |
+| [static_call](contract/static_call.v) | ✓ |
 
 ## control/
 Rust source: [`../control.rs`](../control.rs)
@@ -95,8 +95,8 @@ Rust source: [`../host.rs`](../host.rs)
 | [balance](host/balance.v) | ✗ |
 | [blockhash](host/blockhash.v) | ✓ |
 | [extcodecopy](host/extcodecopy.v) | ✗ |
-| [extcodehash](host/extcodehash.v) | ✗ |
-| [extcodesize](host/extcodesize.v) | ✗ |
+| [extcodehash](host/extcodehash.v) | ✓ |
+| [extcodesize](host/extcodesize.v) | ✓ |
 | [log](host/log.v) | ✗ |
 | [selfdestruct](host/selfdestruct.v) | ✗ |
 | [selfbalance](host/selfbalance.v) | ✓ |
@@ -133,7 +133,7 @@ Rust source: [`../system.rs`](../system.rs)
 | Instruction | Status |
 |---|:---:|
 | [address](system/address.v) | ✓ |
-| [calldatacopy](system/calldatacopy.v) | ✗ |
+| [calldatacopy](system/calldatacopy.v) | ✓ |
 | [calldataload](system/calldataload.v) | ✗ |
 | [calldatasize](system/calldatasize.v) | ✓ |
 | [caller](system/caller.v) | ✓ |
@@ -162,11 +162,11 @@ Rust source: [`../tx_info.rs`](../tx_info.rs)
 | arithmetic | 11 | 0 | 11 |
 | bitwise | 15 | 0 | 15 |
 | block_info | 8 | 0 | 8 |
-| contract | 0 | 5 | 5 |
+| contract | 4 | 1 | 5 |
 | control | 11 | 0 | 11 |
-| host | 6 | 6 | 12 |
+| host | 8 | 4 | 12 |
 | memory | 5 | 0 | 5 |
 | stack | 5 | 0 | 5 |
 | system | 11 | 2 | 13 |
 | tx_info | 3 | 0 | 3 |
-| **Total** | **75** | **13** | **88** |
+| **Total** | **81** | **7** | **88** |

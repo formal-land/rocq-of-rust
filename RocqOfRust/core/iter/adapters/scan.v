@@ -143,6 +143,7 @@ Module iter.
         Global Instance AssociatedFunction_new :
           forall (I St F : Ty.t),
           M.IsAssociatedFunction.C (Self I St F) "new" (new I St F).
+        Proof.
         Admitted.
         Global Typeclasses Opaque new.
       End Impl_core_iter_adapters_scan_Scan_I_St_F.

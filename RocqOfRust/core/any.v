@@ -315,6 +315,7 @@ Module any.
       end.
     
     Global Instance AssociatedFunction_is_ : M.IsAssociatedFunction.C Self "is" is_.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_.
     
@@ -395,6 +396,7 @@ Module any.
     
     Global Instance AssociatedFunction_downcast_ref :
       M.IsAssociatedFunction.C Self "downcast_ref" downcast_ref.
+    Proof.
     Admitted.
     Global Typeclasses Opaque downcast_ref.
     
@@ -475,6 +477,7 @@ Module any.
     
     Global Instance AssociatedFunction_downcast_mut :
       M.IsAssociatedFunction.C Self "downcast_mut" downcast_mut.
+    Proof.
     Admitted.
     Global Typeclasses Opaque downcast_mut.
     
@@ -609,6 +612,7 @@ Module any.
     
     Global Instance AssociatedFunction_downcast_unchecked_ref :
       M.IsAssociatedFunction.C Self "downcast_unchecked_ref" downcast_unchecked_ref.
+    Proof.
     Admitted.
     Global Typeclasses Opaque downcast_unchecked_ref.
     
@@ -754,6 +758,7 @@ Module any.
     
     Global Instance AssociatedFunction_downcast_unchecked_mut :
       M.IsAssociatedFunction.C Self "downcast_unchecked_mut" downcast_unchecked_mut.
+    Proof.
     Admitted.
     Global Typeclasses Opaque downcast_unchecked_mut.
   End Impl_Dyn_core_any_Any_Trait.
@@ -808,6 +813,7 @@ Module any.
       end.
     
     Global Instance AssociatedFunction_is_ : M.IsAssociatedFunction.C Self "is" is_.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_.
     
@@ -858,6 +864,7 @@ Module any.
     
     Global Instance AssociatedFunction_downcast_ref :
       M.IsAssociatedFunction.C Self "downcast_ref" downcast_ref.
+    Proof.
     Admitted.
     Global Typeclasses Opaque downcast_ref.
     
@@ -908,6 +915,7 @@ Module any.
     
     Global Instance AssociatedFunction_downcast_mut :
       M.IsAssociatedFunction.C Self "downcast_mut" downcast_mut.
+    Proof.
     Admitted.
     Global Typeclasses Opaque downcast_mut.
     
@@ -964,6 +972,7 @@ Module any.
     
     Global Instance AssociatedFunction_downcast_unchecked_ref :
       M.IsAssociatedFunction.C Self "downcast_unchecked_ref" downcast_unchecked_ref.
+    Proof.
     Admitted.
     Global Typeclasses Opaque downcast_unchecked_ref.
     
@@ -1039,6 +1048,7 @@ Module any.
     
     Global Instance AssociatedFunction_downcast_unchecked_mut :
       M.IsAssociatedFunction.C Self "downcast_unchecked_mut" downcast_unchecked_mut.
+    Proof.
     Admitted.
     Global Typeclasses Opaque downcast_unchecked_mut.
   End Impl_Dyn_core_any_Any_Trait_core_marker_Send_AutoTrait.
@@ -1109,6 +1119,7 @@ Module any.
       end.
     
     Global Instance AssociatedFunction_is_ : M.IsAssociatedFunction.C Self "is" is_.
+    Proof.
     Admitted.
     Global Typeclasses Opaque is_.
     
@@ -1170,6 +1181,7 @@ Module any.
     
     Global Instance AssociatedFunction_downcast_ref :
       M.IsAssociatedFunction.C Self "downcast_ref" downcast_ref.
+    Proof.
     Admitted.
     Global Typeclasses Opaque downcast_ref.
     
@@ -1231,6 +1243,7 @@ Module any.
     
     Global Instance AssociatedFunction_downcast_mut :
       M.IsAssociatedFunction.C Self "downcast_mut" downcast_mut.
+    Proof.
     Admitted.
     Global Typeclasses Opaque downcast_mut.
     
@@ -1298,6 +1311,7 @@ Module any.
     
     Global Instance AssociatedFunction_downcast_unchecked_ref :
       M.IsAssociatedFunction.C Self "downcast_unchecked_ref" downcast_unchecked_ref.
+    Proof.
     Admitted.
     Global Typeclasses Opaque downcast_unchecked_ref.
     
@@ -1381,6 +1395,7 @@ Module any.
     
     Global Instance AssociatedFunction_downcast_unchecked_mut :
       M.IsAssociatedFunction.C Self "downcast_unchecked_mut" downcast_unchecked_mut.
+    Proof.
     Admitted.
     Global Typeclasses Opaque downcast_unchecked_mut.
   End Impl_Dyn_core_any_Any_Trait_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait.
@@ -1755,6 +1770,7 @@ Module any.
       end.
     
     Global Instance AssociatedFunction_of_ : M.IsAssociatedFunction.C Self "of" of_.
+    Proof.
     Admitted.
     Global Typeclasses Opaque of_.
     
@@ -2351,6 +2367,7 @@ Module any.
       end.
     
     Global Instance AssociatedFunction_as_u128 : M.IsAssociatedFunction.C Self "as_u128" as_u128.
+    Proof.
     Admitted.
     Global Typeclasses Opaque as_u128.
   End Impl_core_any_TypeId.
@@ -2657,6 +2674,7 @@ Module any.
     end.
   
   Global Instance Instance_IsFunction_type_name : M.IsFunction.C "core::any::type_name" type_name.
+  Proof.
   Admitted.
   Global Typeclasses Opaque type_name.
   
@@ -2680,6 +2698,7 @@ Module any.
   
   Global Instance Instance_IsFunction_type_name_of_val :
     M.IsFunction.C "core::any::type_name_of_val" type_name_of_val.
+  Proof.
   Admitted.
   Global Typeclasses Opaque type_name_of_val.
 End any.

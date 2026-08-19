@@ -101,6 +101,7 @@ Module Impl_multisig_Mapping_K_V.
   Global Instance AssociatedFunction_contains :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "contains" (contains K V).
+  Proof.
   Admitted.
   Global Typeclasses Opaque contains.
   
@@ -133,6 +134,7 @@ Module Impl_multisig_Mapping_K_V.
   Global Instance AssociatedFunction_get :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "get" (get K V).
+  Proof.
   Admitted.
   Global Typeclasses Opaque get.
   
@@ -166,6 +168,7 @@ Module Impl_multisig_Mapping_K_V.
   Global Instance AssociatedFunction_insert :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "insert" (insert K V).
+  Proof.
   Admitted.
   Global Typeclasses Opaque insert.
   
@@ -198,6 +201,7 @@ Module Impl_multisig_Mapping_K_V.
   Global Instance AssociatedFunction_remove :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "remove" (remove K V).
+  Proof.
   Admitted.
   Global Typeclasses Opaque remove.
   
@@ -230,6 +234,7 @@ Module Impl_multisig_Mapping_K_V.
   Global Instance AssociatedFunction_size :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "size" (size K V).
+  Proof.
   Admitted.
   Global Typeclasses Opaque size.
   
@@ -262,6 +267,7 @@ Module Impl_multisig_Mapping_K_V.
   Global Instance AssociatedFunction_take :
     forall (K V : Ty.t),
     M.IsAssociatedFunction.C (Self K V) "take" (take K V).
+  Proof.
   Admitted.
   Global Typeclasses Opaque take.
 End Impl_multisig_Mapping_K_V.
@@ -651,6 +657,7 @@ Definition value_MAX_OWNERS (ε : list Value.t) (τ : list Ty.t) (α : list Valu
 
 Global Instance Instance_IsConstant_value_MAX_OWNERS :
   M.IsFunction.C "multisig::MAX_OWNERS" value_MAX_OWNERS.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_MAX_OWNERS.
 
@@ -665,6 +672,7 @@ Definition value_WRONG_TRANSACTION_ID (ε : list Value.t) (τ : list Ty.t) (α :
 
 Global Instance Instance_IsConstant_value_WRONG_TRANSACTION_ID :
   M.IsFunction.C "multisig::WRONG_TRANSACTION_ID" value_WRONG_TRANSACTION_ID.
+Proof.
 Admitted.
 Global Typeclasses Opaque value_WRONG_TRANSACTION_ID.
 
@@ -1255,6 +1263,7 @@ Module Impl_multisig_Env.
     end.
   
   Global Instance AssociatedFunction_caller : M.IsAssociatedFunction.C Self "caller" caller.
+  Proof.
   Admitted.
   Global Typeclasses Opaque caller.
   
@@ -1281,6 +1290,7 @@ Module Impl_multisig_Env.
   
   Global Instance AssociatedFunction_emit_event :
     M.IsAssociatedFunction.C Self "emit_event" emit_event.
+  Proof.
   Admitted.
   Global Typeclasses Opaque emit_event.
   
@@ -1306,6 +1316,7 @@ Module Impl_multisig_Env.
   
   Global Instance AssociatedFunction_transferred_value :
     M.IsAssociatedFunction.C Self "transferred_value" transferred_value.
+  Proof.
   Admitted.
   Global Typeclasses Opaque transferred_value.
   
@@ -1331,6 +1342,7 @@ Module Impl_multisig_Env.
   
   Global Instance AssociatedFunction_account_id :
     M.IsAssociatedFunction.C Self "account_id" account_id.
+  Proof.
   Admitted.
   Global Typeclasses Opaque account_id.
 End Impl_multisig_Env.
@@ -1591,6 +1603,7 @@ Definition ensure_requirement_is_valid (ε : list Value.t) (τ : list Ty.t) (α 
 
 Global Instance Instance_IsFunction_ensure_requirement_is_valid :
   M.IsFunction.C "multisig::ensure_requirement_is_valid" ensure_requirement_is_valid.
+Proof.
 Admitted.
 Global Typeclasses Opaque ensure_requirement_is_valid.
 
@@ -1617,6 +1630,7 @@ Module Impl_multisig_Multisig.
     end.
   
   Global Instance AssociatedFunction_init_env : M.IsAssociatedFunction.C Self "init_env" init_env.
+  Proof.
   Admitted.
   Global Typeclasses Opaque init_env.
   
@@ -1640,6 +1654,7 @@ Module Impl_multisig_Multisig.
     end.
   
   Global Instance AssociatedFunction_env : M.IsAssociatedFunction.C Self "env" env.
+  Proof.
   Admitted.
   Global Typeclasses Opaque env.
   
@@ -1964,6 +1979,7 @@ Module Impl_multisig_Multisig.
     end.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new.
   
@@ -2089,6 +2105,7 @@ Module Impl_multisig_Multisig.
   
   Global Instance AssociatedFunction_ensure_confirmed :
     M.IsAssociatedFunction.C Self "ensure_confirmed" ensure_confirmed.
+  Proof.
   Admitted.
   Global Typeclasses Opaque ensure_confirmed.
   
@@ -2163,6 +2180,7 @@ Module Impl_multisig_Multisig.
   
   Global Instance AssociatedFunction_ensure_transaction_exists :
     M.IsAssociatedFunction.C Self "ensure_transaction_exists" ensure_transaction_exists.
+  Proof.
   Admitted.
   Global Typeclasses Opaque ensure_transaction_exists.
   
@@ -2238,6 +2256,7 @@ Module Impl_multisig_Multisig.
   
   Global Instance AssociatedFunction_ensure_owner :
     M.IsAssociatedFunction.C Self "ensure_owner" ensure_owner.
+  Proof.
   Admitted.
   Global Typeclasses Opaque ensure_owner.
   
@@ -2302,6 +2321,7 @@ Module Impl_multisig_Multisig.
   
   Global Instance AssociatedFunction_ensure_caller_is_owner :
     M.IsAssociatedFunction.C Self "ensure_caller_is_owner" ensure_caller_is_owner.
+  Proof.
   Admitted.
   Global Typeclasses Opaque ensure_caller_is_owner.
   
@@ -2504,6 +2524,7 @@ Module Impl_multisig_Multisig.
   
   Global Instance AssociatedFunction_ensure_from_wallet :
     M.IsAssociatedFunction.C Self "ensure_from_wallet" ensure_from_wallet.
+  Proof.
   Admitted.
   Global Typeclasses Opaque ensure_from_wallet.
   
@@ -2588,6 +2609,7 @@ Module Impl_multisig_Multisig.
   
   Global Instance AssociatedFunction_ensure_no_owner :
     M.IsAssociatedFunction.C Self "ensure_no_owner" ensure_no_owner.
+  Proof.
   Admitted.
   Global Typeclasses Opaque ensure_no_owner.
   
@@ -2768,6 +2790,7 @@ Module Impl_multisig_Multisig.
   
   Global Instance AssociatedFunction_add_owner :
     M.IsAssociatedFunction.C Self "add_owner" add_owner.
+  Proof.
   Admitted.
   Global Typeclasses Opaque add_owner.
   
@@ -2936,6 +2959,7 @@ Module Impl_multisig_Multisig.
   
   Global Instance AssociatedFunction_owner_index :
     M.IsAssociatedFunction.C Self "owner_index" owner_index.
+  Proof.
   Admitted.
   Global Typeclasses Opaque owner_index.
   
@@ -3277,6 +3301,7 @@ Module Impl_multisig_Multisig.
   
   Global Instance AssociatedFunction_clean_owner_confirmations :
     M.IsAssociatedFunction.C Self "clean_owner_confirmations" clean_owner_confirmations.
+  Proof.
   Admitted.
   Global Typeclasses Opaque clean_owner_confirmations.
   
@@ -3504,6 +3529,7 @@ Module Impl_multisig_Multisig.
   
   Global Instance AssociatedFunction_remove_owner :
     M.IsAssociatedFunction.C Self "remove_owner" remove_owner.
+  Proof.
   Admitted.
   Global Typeclasses Opaque remove_owner.
   
@@ -3747,6 +3773,7 @@ Module Impl_multisig_Multisig.
   
   Global Instance AssociatedFunction_replace_owner :
     M.IsAssociatedFunction.C Self "replace_owner" replace_owner.
+  Proof.
   Admitted.
   Global Typeclasses Opaque replace_owner.
   
@@ -3857,6 +3884,7 @@ Module Impl_multisig_Multisig.
   
   Global Instance AssociatedFunction_change_requirement :
     M.IsAssociatedFunction.C Self "change_requirement" change_requirement.
+  Proof.
   Admitted.
   Global Typeclasses Opaque change_requirement.
   
@@ -4169,6 +4197,7 @@ Module Impl_multisig_Multisig.
   
   Global Instance AssociatedFunction_confirm_by_caller :
     M.IsAssociatedFunction.C Self "confirm_by_caller" confirm_by_caller.
+  Proof.
   Admitted.
   Global Typeclasses Opaque confirm_by_caller.
   
@@ -4391,6 +4420,7 @@ Module Impl_multisig_Multisig.
   
   Global Instance AssociatedFunction_submit_transaction :
     M.IsAssociatedFunction.C Self "submit_transaction" submit_transaction.
+  Proof.
   Admitted.
   Global Typeclasses Opaque submit_transaction.
   
@@ -4937,6 +4967,7 @@ Module Impl_multisig_Multisig.
   
   Global Instance AssociatedFunction_take_transaction :
     M.IsAssociatedFunction.C Self "take_transaction" take_transaction.
+  Proof.
   Admitted.
   Global Typeclasses Opaque take_transaction.
   
@@ -5077,6 +5108,7 @@ Module Impl_multisig_Multisig.
   
   Global Instance AssociatedFunction_cancel_transaction :
     M.IsAssociatedFunction.C Self "cancel_transaction" cancel_transaction.
+  Proof.
   Admitted.
   Global Typeclasses Opaque cancel_transaction.
   
@@ -5164,6 +5196,7 @@ Module Impl_multisig_Multisig.
   
   Global Instance AssociatedFunction_confirm_transaction :
     M.IsAssociatedFunction.C Self "confirm_transaction" confirm_transaction.
+  Proof.
   Admitted.
   Global Typeclasses Opaque confirm_transaction.
   
@@ -5438,6 +5471,7 @@ Module Impl_multisig_Multisig.
   
   Global Instance AssociatedFunction_revoke_confirmation :
     M.IsAssociatedFunction.C Self "revoke_confirmation" revoke_confirmation.
+  Proof.
   Admitted.
   Global Typeclasses Opaque revoke_confirmation.
   
@@ -5787,6 +5821,7 @@ Module Impl_multisig_Multisig.
   
   Global Instance AssociatedFunction_invoke_transaction :
     M.IsAssociatedFunction.C Self "invoke_transaction" invoke_transaction.
+  Proof.
   Admitted.
   Global Typeclasses Opaque invoke_transaction.
   
@@ -6105,6 +6140,7 @@ Module Impl_multisig_Multisig.
   
   Global Instance AssociatedFunction_eval_transaction :
     M.IsAssociatedFunction.C Self "eval_transaction" eval_transaction.
+  Proof.
   Admitted.
   Global Typeclasses Opaque eval_transaction.
 End Impl_multisig_Multisig.

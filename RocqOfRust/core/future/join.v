@@ -154,6 +154,7 @@ Module future.
       Global Instance AssociatedFunction_take_output :
         forall (F : Ty.t),
         M.IsAssociatedFunction.C (Self F) "take_output" (take_output F).
+      Proof.
       Admitted.
       Global Typeclasses Opaque take_output.
     End Impl_core_future_join_MaybeDone_F.
@@ -283,7 +284,12 @@ Module future.
                                 "core::future::join::MaybeDone::Future",
                                 0
                               |) in
-                            let f := M.alloc (| Ty.apply (Ty.path "&mut") [] [ F ], γ0_0 |) in
+                            let _ := M.read (| γ0_0 |) in
+                            let f :=
+                              M.alloc (|
+                                Ty.apply (Ty.path "&mut") [] [ F ],
+                                M.borrow (| Pointer.Kind.MutRef, γ0_0 |)
+                              |) in
                             M.read (|
                               let~ val :
                                   Ty.associated_in_trait

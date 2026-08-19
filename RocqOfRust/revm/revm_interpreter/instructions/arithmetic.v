@@ -368,6 +368,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_add :
       M.IsFunction.C "revm_interpreter::instructions::arithmetic::add" add.
+    Proof.
     Admitted.
     Global Typeclasses Opaque add.
     
@@ -736,6 +737,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_mul :
       M.IsFunction.C "revm_interpreter::instructions::arithmetic::mul" mul.
+    Proof.
     Admitted.
     Global Typeclasses Opaque mul.
     
@@ -1104,6 +1106,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_sub :
       M.IsFunction.C "revm_interpreter::instructions::arithmetic::sub" sub.
+    Proof.
     Admitted.
     Global Typeclasses Opaque sub.
     
@@ -1522,6 +1525,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_div :
       M.IsFunction.C "revm_interpreter::instructions::arithmetic::div" div.
+    Proof.
     Admitted.
     Global Typeclasses Opaque div.
     
@@ -1883,6 +1887,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_sdiv :
       M.IsFunction.C "revm_interpreter::instructions::arithmetic::sdiv" sdiv.
+    Proof.
     Admitted.
     Global Typeclasses Opaque sdiv.
     
@@ -2301,6 +2306,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_rem :
       M.IsFunction.C "revm_interpreter::instructions::arithmetic::rem" rem.
+    Proof.
     Admitted.
     Global Typeclasses Opaque rem.
     
@@ -2658,6 +2664,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_smod :
       M.IsFunction.C "revm_interpreter::instructions::arithmetic::smod" smod.
+    Proof.
     Admitted.
     Global Typeclasses Opaque smod.
     
@@ -3045,6 +3052,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_addmod :
       M.IsFunction.C "revm_interpreter::instructions::arithmetic::addmod" addmod.
+    Proof.
     Admitted.
     Global Typeclasses Opaque addmod.
     
@@ -3432,6 +3440,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_mulmod :
       M.IsFunction.C "revm_interpreter::instructions::arithmetic::mulmod" mulmod.
+    Proof.
     Admitted.
     Global Typeclasses Opaque mulmod.
     
@@ -3989,6 +3998,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_exp :
       M.IsFunction.C "revm_interpreter::instructions::arithmetic::exp" exp.
+    Proof.
     Admitted.
     Global Typeclasses Opaque exp.
     
@@ -4724,6 +4734,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_signextend :
       M.IsFunction.C "revm_interpreter::instructions::arithmetic::signextend" signextend.
+    Proof.
     Admitted.
     Global Typeclasses Opaque signextend.
   End arithmetic.

@@ -51,6 +51,7 @@ Module Impl_generics_implementation_Val.
     end.
   
   Global Instance AssociatedFunction_value : M.IsAssociatedFunction.C Self "value" value.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value.
 End Impl_generics_implementation_Val.
@@ -96,6 +97,7 @@ Module Impl_generics_implementation_GenVal_T.
   Global Instance AssociatedFunction_value :
     forall (T : Ty.t),
     M.IsAssociatedFunction.C (Self T) "value" (value T).
+  Proof.
   Admitted.
   Global Typeclasses Opaque value.
 End Impl_generics_implementation_GenVal_T.
@@ -258,5 +260,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "generics_implementation::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

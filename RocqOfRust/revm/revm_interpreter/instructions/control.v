@@ -180,6 +180,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_jump :
       M.IsFunction.C "revm_interpreter::instructions::control::jump" jump.
+    Proof.
     Admitted.
     Global Typeclasses Opaque jump.
     
@@ -410,6 +411,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_jumpi :
       M.IsFunction.C "revm_interpreter::instructions::control::jumpi" jumpi.
+    Proof.
     Admitted.
     Global Typeclasses Opaque jumpi.
     
@@ -757,6 +759,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_jump_inner :
       M.IsFunction.C "revm_interpreter::instructions::control::jump_inner" jump_inner.
+    Proof.
     Admitted.
     Global Typeclasses Opaque jump_inner.
     
@@ -783,6 +786,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_jumpdest :
       M.IsFunction.C "revm_interpreter::instructions::control::jumpdest" jumpdest.
+    Proof.
     Admitted.
     Global Typeclasses Opaque jumpdest.
     
@@ -973,6 +977,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_pc :
       M.IsFunction.C "revm_interpreter::instructions::control::pc" pc.
+    Proof.
     Admitted.
     Global Typeclasses Opaque pc.
     
@@ -1890,6 +1895,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_return_inner :
       M.IsFunction.C "revm_interpreter::instructions::control::return_inner" return_inner.
+    Proof.
     Admitted.
     Global Typeclasses Opaque return_inner.
     
@@ -1946,6 +1952,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_ret :
       M.IsFunction.C "revm_interpreter::instructions::control::ret" ret.
+    Proof.
     Admitted.
     Global Typeclasses Opaque ret.
     
@@ -2111,6 +2118,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_revert :
       M.IsFunction.C "revm_interpreter::instructions::control::revert" revert.
+    Proof.
     Admitted.
     Global Typeclasses Opaque revert.
     
@@ -2168,6 +2176,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_stop :
       M.IsFunction.C "revm_interpreter::instructions::control::stop" stop.
+    Proof.
     Admitted.
     Global Typeclasses Opaque stop.
     
@@ -2225,6 +2234,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_invalid :
       M.IsFunction.C "revm_interpreter::instructions::control::invalid" invalid.
+    Proof.
     Admitted.
     Global Typeclasses Opaque invalid.
     
@@ -2282,6 +2292,7 @@ Module instructions.
     
     Global Instance Instance_IsFunction_unknown :
       M.IsFunction.C "revm_interpreter::instructions::control::unknown" unknown.
+    Proof.
     Admitted.
     Global Typeclasses Opaque unknown.
   End control.

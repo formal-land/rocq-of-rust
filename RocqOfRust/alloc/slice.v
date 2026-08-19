@@ -50,6 +50,7 @@ Module slice.
     Global Instance AssociatedFunction_sort :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "sort" (sort T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque sort.
     
@@ -188,6 +189,7 @@ Module slice.
     Global Instance AssociatedFunction_sort_by :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "sort_by" (sort_by T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque sort_by.
     
@@ -345,6 +347,7 @@ Module slice.
     Global Instance AssociatedFunction_sort_by_key :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "sort_by_key" (sort_by_key T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque sort_by_key.
     
@@ -1704,6 +1707,7 @@ Module slice.
     Global Instance AssociatedFunction_sort_by_cached_key :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "sort_by_cached_key" (sort_by_cached_key T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque sort_by_cached_key.
     
@@ -1741,6 +1745,7 @@ Module slice.
     Global Instance AssociatedFunction_to_vec :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "to_vec" (to_vec T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_vec.
     
@@ -1848,6 +1853,7 @@ Module slice.
     Global Instance AssociatedFunction_to_vec_in :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "to_vec_in" (to_vec_in T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_vec_in.
     
@@ -1935,6 +1941,7 @@ Module slice.
     Global Instance AssociatedFunction_into_vec :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "into_vec" (into_vec T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque into_vec.
     
@@ -2413,6 +2420,7 @@ Module slice.
     Global Instance AssociatedFunction_repeat :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "repeat" (repeat T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque repeat.
     
@@ -2455,6 +2463,7 @@ Module slice.
     Global Instance AssociatedFunction_concat :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "concat" (concat T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque concat.
     
@@ -2498,6 +2507,7 @@ Module slice.
     Global Instance AssociatedFunction_join :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "join" (join T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque join.
     
@@ -2541,6 +2551,7 @@ Module slice.
     Global Instance AssociatedFunction_connect :
       forall (T : Ty.t),
       M.IsAssociatedFunction.C (Self T) "connect" (connect T).
+    Proof.
     Admitted.
     Global Typeclasses Opaque connect.
   End Impl_slice_T.
@@ -2626,6 +2637,7 @@ Module slice.
     
     Global Instance AssociatedFunction_to_ascii_uppercase :
       M.IsAssociatedFunction.C Self "to_ascii_uppercase" to_ascii_uppercase.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_ascii_uppercase.
     
@@ -2707,6 +2719,7 @@ Module slice.
     
     Global Instance AssociatedFunction_to_ascii_lowercase :
       M.IsAssociatedFunction.C Self "to_ascii_lowercase" to_ascii_lowercase.
+    Proof.
     Admitted.
     Global Typeclasses Opaque to_ascii_lowercase.
   End Impl_slice_u8.
@@ -4523,6 +4536,7 @@ Module slice.
   
   Global Instance Instance_IsFunction_stable_sort :
     M.IsFunction.C "alloc::slice::stable_sort" stable_sort.
+  Proof.
   Admitted.
   Global Typeclasses Opaque stable_sort.
   

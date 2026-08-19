@@ -303,8 +303,12 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
             [
               fun γ =>
                 ltac:(M.monadic
-                  (let _is_a_reference :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i32" ], γ |) in
+                  (let _ := M.read (| γ |) in
+                  let _is_a_reference :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "i32" ],
+                      M.borrow (| Pointer.Kind.Ref, γ |)
+                    |) in
                   M.read (|
                     let~ value : Ty.path "i32" := Value.Integer IntegerKind.I32 5 in
                     let~ mut_value : Ty.path "i32" := Value.Integer IntegerKind.I32 6 in
@@ -315,8 +319,12 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let r :=
-                                M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i32" ], γ |) in
+                              (let _ := M.read (| γ |) in
+                              let r :=
+                                M.alloc (|
+                                  Ty.apply (Ty.path "&") [] [ Ty.path "i32" ],
+                                  M.borrow (| Pointer.Kind.Ref, γ |)
+                                |) in
                               M.read (|
                                 let~ _ : Ty.tuple [] :=
                                   M.call_closure (|
@@ -438,8 +446,12 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let m :=
-                                M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "i32" ], γ |) in
+                              (let _ := M.read (| γ |) in
+                              let m :=
+                                M.alloc (|
+                                  Ty.apply (Ty.path "&mut") [] [ Ty.path "i32" ],
+                                  M.borrow (| Pointer.Kind.MutRef, γ |)
+                                |) in
                               M.read (|
                                 let~ _ : Ty.tuple [] :=
                                   let β := M.deref (| M.read (| m |) |) in
@@ -591,5 +603,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "match_destructuring_pointers_ref::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

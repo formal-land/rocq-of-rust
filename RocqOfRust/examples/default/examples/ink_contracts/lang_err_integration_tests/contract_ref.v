@@ -183,6 +183,7 @@ Module Impl_contract_ref_FlipperRef.
     end.
   
   Global Instance AssociatedFunction_init_env : M.IsAssociatedFunction.C Self "init_env" init_env.
+  Proof.
   Admitted.
   Global Typeclasses Opaque init_env.
   
@@ -206,6 +207,7 @@ Module Impl_contract_ref_FlipperRef.
     end.
   
   Global Instance AssociatedFunction_env : M.IsAssociatedFunction.C Self "env" env.
+  Proof.
   Admitted.
   Global Typeclasses Opaque env.
   
@@ -228,6 +230,7 @@ Module Impl_contract_ref_FlipperRef.
     end.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new.
   
@@ -264,6 +267,7 @@ Module Impl_contract_ref_FlipperRef.
   
   Global Instance AssociatedFunction_new_default :
     M.IsAssociatedFunction.C Self "new_default" new_default.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new_default.
   
@@ -321,6 +325,7 @@ Module Impl_contract_ref_FlipperRef.
     end.
   
   Global Instance AssociatedFunction_try_new : M.IsAssociatedFunction.C Self "try_new" try_new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque try_new.
   
@@ -363,6 +368,7 @@ Module Impl_contract_ref_FlipperRef.
     end.
   
   Global Instance AssociatedFunction_flip : M.IsAssociatedFunction.C Self "flip" flip.
+  Proof.
   Admitted.
   Global Typeclasses Opaque flip.
   
@@ -388,6 +394,7 @@ Module Impl_contract_ref_FlipperRef.
     end.
   
   Global Instance AssociatedFunction_get : M.IsAssociatedFunction.C Self "get" get.
+  Proof.
   Admitted.
   Global Typeclasses Opaque get.
 End Impl_contract_ref_FlipperRef.
@@ -457,6 +464,7 @@ Module Impl_contract_ref_ContractRef.
     end.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new.
   
@@ -538,6 +546,7 @@ Module Impl_contract_ref_ContractRef.
     end.
   
   Global Instance AssociatedFunction_try_new : M.IsAssociatedFunction.C Self "try_new" try_new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque try_new.
   
@@ -577,6 +586,7 @@ Module Impl_contract_ref_ContractRef.
     end.
   
   Global Instance AssociatedFunction_flip : M.IsAssociatedFunction.C Self "flip" flip.
+  Proof.
   Admitted.
   Global Typeclasses Opaque flip.
   
@@ -612,6 +622,7 @@ Module Impl_contract_ref_ContractRef.
     end.
   
   Global Instance AssociatedFunction_get : M.IsAssociatedFunction.C Self "get" get.
+  Proof.
   Admitted.
   Global Typeclasses Opaque get.
 End Impl_contract_ref_ContractRef.

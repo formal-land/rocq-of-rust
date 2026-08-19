@@ -66,6 +66,7 @@ Module hint.
   
   Global Instance Instance_IsFunction_unreachable_unchecked :
     M.IsFunction.C "core::hint::unreachable_unchecked" unreachable_unchecked.
+  Proof.
   Admitted.
   Global Typeclasses Opaque unreachable_unchecked.
   
@@ -134,6 +135,7 @@ Module hint.
   
   Global Instance Instance_IsFunction_assert_unchecked :
     M.IsFunction.C "core::hint::assert_unchecked" assert_unchecked.
+  Proof.
   Admitted.
   Global Typeclasses Opaque assert_unchecked.
   
@@ -178,6 +180,7 @@ Module hint.
     end.
   
   Global Instance Instance_IsFunction_spin_loop : M.IsFunction.C "core::hint::spin_loop" spin_loop.
+  Proof.
   Admitted.
   Global Typeclasses Opaque spin_loop.
   
@@ -200,6 +203,7 @@ Module hint.
     end.
   
   Global Instance Instance_IsFunction_black_box : M.IsFunction.C "core::hint::black_box" black_box.
+  Proof.
   Admitted.
   Global Typeclasses Opaque black_box.
   
@@ -218,6 +222,7 @@ Module hint.
     end.
   
   Global Instance Instance_IsFunction_must_use : M.IsFunction.C "core::hint::must_use" must_use.
+  Proof.
   Admitted.
   Global Typeclasses Opaque must_use.
   
@@ -240,6 +245,7 @@ Module hint.
     end.
   
   Global Instance Instance_IsFunction_likely : M.IsFunction.C "core::hint::likely" likely.
+  Proof.
   Admitted.
   Global Typeclasses Opaque likely.
   
@@ -262,6 +268,7 @@ Module hint.
     end.
   
   Global Instance Instance_IsFunction_unlikely : M.IsFunction.C "core::hint::unlikely" unlikely.
+  Proof.
   Admitted.
   Global Typeclasses Opaque unlikely.
   
@@ -283,6 +290,7 @@ Module hint.
     end.
   
   Global Instance Instance_IsFunction_cold_path : M.IsFunction.C "core::hint::cold_path" cold_path.
+  Proof.
   Admitted.
   Global Typeclasses Opaque cold_path.
   
@@ -467,6 +475,7 @@ Module hint.
   
   Global Instance Instance_IsFunction_select_unpredictable :
     M.IsFunction.C "core::hint::select_unpredictable" select_unpredictable.
+  Proof.
   Admitted.
   Global Typeclasses Opaque select_unpredictable.
   

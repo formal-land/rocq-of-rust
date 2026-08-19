@@ -9,6 +9,7 @@ Module Impl_Div_for_Uint_Uint.
 
   Instance run (BITS LIMBS : usize) :
     Div.Run (Self BITS LIMBS) (Uint.t BITS LIMBS) (Uint.t BITS LIMBS).
+  Proof.
   Admitted.
 End Impl_Div_for_Uint_Uint.
 Export (hints) Impl_Div_for_Uint_Uint.
@@ -19,6 +20,7 @@ Module Impl_Rem_for_Uint_Uint.
 
   Instance run (BITS LIMBS : usize) :
     Rem.Run (Self BITS LIMBS) (Uint.t BITS LIMBS) (Uint.t BITS LIMBS).
+  Proof.
   Admitted.
 End Impl_Rem_for_Uint_Uint.
 Export (hints) Impl_Rem_for_Uint_Uint.

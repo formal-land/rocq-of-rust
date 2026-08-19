@@ -63,6 +63,7 @@ Module modexp.
   
   Global Instance Instance_IsConstant_value_BYZANTIUM :
     M.IsFunction.C "revm_precompile::modexp::BYZANTIUM" value_BYZANTIUM.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_BYZANTIUM.
   
@@ -127,6 +128,7 @@ Module modexp.
   
   Global Instance Instance_IsConstant_value_BERLIN :
     M.IsFunction.C "revm_precompile::modexp::BERLIN" value_BERLIN.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_BERLIN.
   
@@ -191,6 +193,7 @@ Module modexp.
   
   Global Instance Instance_IsConstant_value_OSAKA :
     M.IsFunction.C "revm_precompile::modexp::OSAKA" value_OSAKA.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_OSAKA.
   
@@ -232,6 +235,7 @@ Module modexp.
   
   Global Instance Instance_IsFunction_modexp :
     M.IsFunction.C "revm_precompile::modexp::modexp" modexp.
+  Proof.
   Admitted.
   Global Typeclasses Opaque modexp.
   
@@ -385,6 +389,7 @@ Module modexp.
   
   Global Instance Instance_IsFunction_byzantium_run :
     M.IsFunction.C "revm_precompile::modexp::byzantium_run" byzantium_run.
+  Proof.
   Admitted.
   Global Typeclasses Opaque byzantium_run.
   
@@ -538,6 +543,7 @@ Module modexp.
   
   Global Instance Instance_IsFunction_berlin_run :
     M.IsFunction.C "revm_precompile::modexp::berlin_run" berlin_run.
+  Proof.
   Admitted.
   Global Typeclasses Opaque berlin_run.
   
@@ -691,6 +697,7 @@ Module modexp.
   
   Global Instance Instance_IsFunction_osaka_run :
     M.IsFunction.C "revm_precompile::modexp::osaka_run" osaka_run.
+  Proof.
   Admitted.
   Global Typeclasses Opaque osaka_run.
   
@@ -954,6 +961,7 @@ Module modexp.
   
   Global Instance Instance_IsFunction_calculate_iteration_count :
     M.IsFunction.C "revm_precompile::modexp::calculate_iteration_count" calculate_iteration_count.
+  Proof.
   Admitted.
   Global Typeclasses Opaque calculate_iteration_count.
   
@@ -2979,6 +2987,7 @@ Module modexp.
   
   Global Instance Instance_IsFunction_run_inner :
     M.IsFunction.C "revm_precompile::modexp::run_inner" run_inner.
+  Proof.
   Admitted.
   Global Typeclasses Opaque run_inner.
   
@@ -2988,6 +2997,7 @@ Module modexp.
     
     Global Instance Instance_IsConstant_value_HEADER_LENGTH :
       M.IsFunction.C "revm_precompile::modexp::run_inner::HEADER_LENGTH" value_HEADER_LENGTH.
+    Proof.
     Admitted.
     Global Typeclasses Opaque value_HEADER_LENGTH.
   End run_inner.
@@ -3545,6 +3555,7 @@ Module modexp.
   
   Global Instance Instance_IsFunction_byzantium_gas_calc :
     M.IsFunction.C "revm_precompile::modexp::byzantium_gas_calc" byzantium_gas_calc.
+  Proof.
   Admitted.
   Global Typeclasses Opaque byzantium_gas_calc.
   
@@ -3711,6 +3722,7 @@ Module modexp.
   
   Global Instance Instance_IsFunction_berlin_gas_calc :
     M.IsFunction.C "revm_precompile::modexp::berlin_gas_calc" berlin_gas_calc.
+  Proof.
   Admitted.
   Global Typeclasses Opaque berlin_gas_calc.
   
@@ -3992,6 +4004,7 @@ Module modexp.
   
   Global Instance Instance_IsFunction_osaka_gas_calc :
     M.IsFunction.C "revm_precompile::modexp::osaka_gas_calc" osaka_gas_calc.
+  Proof.
   Admitted.
   Global Typeclasses Opaque osaka_gas_calc.
   
@@ -4198,6 +4211,7 @@ Module modexp.
   
   Global Instance Instance_IsFunction_gas_calc :
     M.IsFunction.C "revm_precompile::modexp::gas_calc" gas_calc.
+  Proof.
   Admitted.
   Global Typeclasses Opaque gas_calc.
 End modexp.

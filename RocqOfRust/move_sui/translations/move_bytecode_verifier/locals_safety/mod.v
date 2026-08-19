@@ -233,6 +233,7 @@ Module locals_safety.
   
   Global Instance Instance_IsFunction_verify :
     M.IsFunction.C "move_bytecode_verifier::locals_safety::verify" verify.
+  Proof.
   Admitted.
   Global Typeclasses Opaque verify.
   
@@ -559,7 +560,12 @@ Module locals_safety.
                             "move_binary_format::file_format::Bytecode::StLoc",
                             0
                           |) in
-                        let idx := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                        let _ := M.read (| γ1_0 |) in
+                        let idx :=
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                          |) in
                         M.match_operator (|
                           Ty.tuple [],
                           M.alloc (|
@@ -728,7 +734,12 @@ Module locals_safety.
                             "move_binary_format::file_format::Bytecode::MoveLoc",
                             0
                           |) in
-                        let idx := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                        let _ := M.read (| γ1_0 |) in
+                        let idx :=
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                          |) in
                         M.match_operator (|
                           Ty.tuple [],
                           M.alloc (|
@@ -855,7 +866,12 @@ Module locals_safety.
                             "move_binary_format::file_format::Bytecode::CopyLoc",
                             0
                           |) in
-                        let idx := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                        let _ := M.read (| γ1_0 |) in
+                        let idx :=
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                            M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                          |) in
                         M.match_operator (|
                           Ty.tuple [],
                           M.alloc (|
@@ -972,8 +988,12 @@ Module locals_safety.
                                     "move_binary_format::file_format::Bytecode::MutBorrowLoc",
                                     0
                                   |) in
+                                let _ := M.read (| γ1_0 |) in
                                 let idx :=
-                                  M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                                    M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                                  |) in
                                 Value.Tuple [ idx ]));
                             fun γ =>
                               ltac:(M.monadic
@@ -984,8 +1004,12 @@ Module locals_safety.
                                     "move_binary_format::file_format::Bytecode::ImmBorrowLoc",
                                     0
                                   |) in
+                                let _ := M.read (| γ1_0 |) in
                                 let idx :=
-                                  M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                                    M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                                  |) in
                                 Value.Tuple [ idx ]))
                           ],
                           fun γ =>
@@ -2640,6 +2664,7 @@ Module locals_safety.
   
   Global Instance Instance_IsFunction_execute_inner :
     M.IsFunction.C "move_bytecode_verifier::locals_safety::execute_inner" execute_inner.
+  Proof.
   Admitted.
   Global Typeclasses Opaque execute_inner.
   

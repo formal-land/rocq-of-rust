@@ -112,13 +112,43 @@ Module context.
                       "revm_context::context::Context",
                       "error"
                     |) in
-                  let __field_block := M.alloc (| Ty.apply (Ty.path "&") [] [ BLOCK ], γ1_0 |) in
-                  let __field_tx := M.alloc (| Ty.apply (Ty.path "&") [] [ TX ], γ1_1 |) in
-                  let __field_cfg := M.alloc (| Ty.apply (Ty.path "&") [] [ CFG ], γ1_2 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __field_block :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ BLOCK ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __field_tx :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ TX ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
+                  let _ := M.read (| γ1_2 |) in
+                  let __field_cfg :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ CFG ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_2 |)
+                    |) in
+                  let _ := M.read (| γ1_3 |) in
                   let __field_journaled_state :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ JOURNAL ], γ1_3 |) in
-                  let __field_chain := M.alloc (| Ty.apply (Ty.path "&") [] [ CHAIN ], γ1_4 |) in
-                  let __field_local := M.alloc (| Ty.apply (Ty.path "&") [] [ LOCAL ], γ1_5 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ JOURNAL ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_3 |)
+                    |) in
+                  let _ := M.read (| γ1_4 |) in
+                  let __field_chain :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ CHAIN ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_4 |)
+                    |) in
+                  let _ := M.read (| γ1_5 |) in
+                  let __field_local :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ LOCAL ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_5 |)
+                    |) in
+                  let _ := M.read (| γ1_6 |) in
                   let __field_error :=
                     M.alloc (|
                       Ty.apply
@@ -143,7 +173,7 @@ Module context.
                                 ]
                             ]
                         ],
-                      γ1_6
+                      M.borrow (| Pointer.Kind.Ref, γ1_6 |)
                     |) in
                   Value.mkStructRecord
                     "revm_context::context::Context"
@@ -408,13 +438,43 @@ Module context.
                       "revm_context::context::Context",
                       "error"
                     |) in
-                  let __field_block := M.alloc (| Ty.apply (Ty.path "&") [] [ BLOCK ], γ1_0 |) in
-                  let __field_tx := M.alloc (| Ty.apply (Ty.path "&") [] [ TX ], γ1_1 |) in
-                  let __field_cfg := M.alloc (| Ty.apply (Ty.path "&") [] [ CFG ], γ1_2 |) in
+                  let _ := M.read (| γ1_0 |) in
+                  let __field_block :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ BLOCK ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
+                    |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __field_tx :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ TX ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
+                  let _ := M.read (| γ1_2 |) in
+                  let __field_cfg :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ CFG ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_2 |)
+                    |) in
+                  let _ := M.read (| γ1_3 |) in
                   let __field_journaled_state :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ JOURNAL ], γ1_3 |) in
-                  let __field_chain := M.alloc (| Ty.apply (Ty.path "&") [] [ CHAIN ], γ1_4 |) in
-                  let __field_local := M.alloc (| Ty.apply (Ty.path "&") [] [ LOCAL ], γ1_5 |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ JOURNAL ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_3 |)
+                    |) in
+                  let _ := M.read (| γ1_4 |) in
+                  let __field_chain :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ CHAIN ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_4 |)
+                    |) in
+                  let _ := M.read (| γ1_5 |) in
+                  let __field_local :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ LOCAL ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_5 |)
+                    |) in
+                  let _ := M.read (| γ1_6 |) in
                   let __field_error :=
                     M.alloc (|
                       Ty.apply
@@ -439,7 +499,7 @@ Module context.
                                 ]
                             ]
                         ],
-                      γ1_6
+                      M.borrow (| Pointer.Kind.Ref, γ1_6 |)
                     |) in
                   M.read (|
                     let~ __builder : Ty.path "core::fmt::builders::DebugStruct" :=
@@ -1520,6 +1580,7 @@ Module context.
         (Self BLOCK TX DB JOURNAL CHAIN LOCAL SPEC)
         "new"
         (new BLOCK TX DB JOURNAL CHAIN LOCAL SPEC).
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
   End Impl_revm_context_context_Context_BLOCK_TX_revm_context_cfg_CfgEnv_SPEC_DB_JOURNAL_CHAIN_LOCAL.
@@ -1702,6 +1763,7 @@ Module context.
         (Self BLOCK TX CFG DB JOURNAL CHAIN LOCAL)
         "with_new_journal"
         (with_new_journal BLOCK TX CFG DB JOURNAL CHAIN LOCAL).
+    Proof.
     Admitted.
     Global Typeclasses Opaque with_new_journal.
     
@@ -1926,6 +1988,7 @@ Module context.
         (Self BLOCK TX CFG DB JOURNAL CHAIN LOCAL)
         "with_db"
         (with_db BLOCK TX CFG DB JOURNAL CHAIN LOCAL).
+    Proof.
     Admitted.
     Global Typeclasses Opaque with_db.
     
@@ -2175,6 +2238,7 @@ Module context.
         (Self BLOCK TX CFG DB JOURNAL CHAIN LOCAL)
         "with_ref_db"
         (with_ref_db BLOCK TX CFG DB JOURNAL CHAIN LOCAL).
+    Proof.
     Admitted.
     Global Typeclasses Opaque with_ref_db.
     
@@ -2282,6 +2346,7 @@ Module context.
         (Self BLOCK TX CFG DB JOURNAL CHAIN LOCAL)
         "with_block"
         (with_block BLOCK TX CFG DB JOURNAL CHAIN LOCAL).
+    Proof.
     Admitted.
     Global Typeclasses Opaque with_block.
     
@@ -2389,6 +2454,7 @@ Module context.
         (Self BLOCK TX CFG DB JOURNAL CHAIN LOCAL)
         "with_tx"
         (with_tx BLOCK TX CFG DB JOURNAL CHAIN LOCAL).
+    Proof.
     Admitted.
     Global Typeclasses Opaque with_tx.
     
@@ -2493,6 +2559,7 @@ Module context.
         (Self BLOCK TX CFG DB JOURNAL CHAIN LOCAL)
         "with_chain"
         (with_chain BLOCK TX CFG DB JOURNAL CHAIN LOCAL).
+    Proof.
     Admitted.
     Global Typeclasses Opaque with_chain.
     
@@ -2665,6 +2732,7 @@ Module context.
         (Self BLOCK TX CFG DB JOURNAL CHAIN LOCAL)
         "with_cfg"
         (with_cfg BLOCK TX CFG DB JOURNAL CHAIN LOCAL).
+    Proof.
     Admitted.
     Global Typeclasses Opaque with_cfg.
     
@@ -2772,6 +2840,7 @@ Module context.
         (Self BLOCK TX CFG DB JOURNAL CHAIN LOCAL)
         "with_local"
         (with_local BLOCK TX CFG DB JOURNAL CHAIN LOCAL).
+    Proof.
     Admitted.
     Global Typeclasses Opaque with_local.
     
@@ -2907,6 +2976,7 @@ Module context.
         (Self BLOCK TX CFG DB JOURNAL CHAIN LOCAL)
         "modify_cfg_chained"
         (modify_cfg_chained BLOCK TX CFG DB JOURNAL CHAIN LOCAL).
+    Proof.
     Admitted.
     Global Typeclasses Opaque modify_cfg_chained.
     
@@ -2964,6 +3034,7 @@ Module context.
         (Self BLOCK TX CFG DB JOURNAL CHAIN LOCAL)
         "modify_block_chained"
         (modify_block_chained BLOCK TX CFG DB JOURNAL CHAIN LOCAL).
+    Proof.
     Admitted.
     Global Typeclasses Opaque modify_block_chained.
     
@@ -3021,6 +3092,7 @@ Module context.
         (Self BLOCK TX CFG DB JOURNAL CHAIN LOCAL)
         "modify_tx_chained"
         (modify_tx_chained BLOCK TX CFG DB JOURNAL CHAIN LOCAL).
+    Proof.
     Admitted.
     Global Typeclasses Opaque modify_tx_chained.
     
@@ -3078,6 +3150,7 @@ Module context.
         (Self BLOCK TX CFG DB JOURNAL CHAIN LOCAL)
         "modify_chain_chained"
         (modify_chain_chained BLOCK TX CFG DB JOURNAL CHAIN LOCAL).
+    Proof.
     Admitted.
     Global Typeclasses Opaque modify_chain_chained.
     
@@ -3135,6 +3208,7 @@ Module context.
         (Self BLOCK TX CFG DB JOURNAL CHAIN LOCAL)
         "modify_db_chained"
         (modify_db_chained BLOCK TX CFG DB JOURNAL CHAIN LOCAL).
+    Proof.
     Admitted.
     Global Typeclasses Opaque modify_db_chained.
     
@@ -3192,6 +3266,7 @@ Module context.
         (Self BLOCK TX CFG DB JOURNAL CHAIN LOCAL)
         "modify_journal_chained"
         (modify_journal_chained BLOCK TX CFG DB JOURNAL CHAIN LOCAL).
+    Proof.
     Admitted.
     Global Typeclasses Opaque modify_journal_chained.
     
@@ -3271,6 +3346,7 @@ Module context.
         (Self BLOCK TX CFG DB JOURNAL CHAIN LOCAL)
         "modify_block"
         (modify_block BLOCK TX CFG DB JOURNAL CHAIN LOCAL).
+    Proof.
     Admitted.
     Global Typeclasses Opaque modify_block.
     
@@ -3350,6 +3426,7 @@ Module context.
         (Self BLOCK TX CFG DB JOURNAL CHAIN LOCAL)
         "modify_tx"
         (modify_tx BLOCK TX CFG DB JOURNAL CHAIN LOCAL).
+    Proof.
     Admitted.
     Global Typeclasses Opaque modify_tx.
     
@@ -3489,6 +3566,7 @@ Module context.
         (Self BLOCK TX CFG DB JOURNAL CHAIN LOCAL)
         "modify_cfg"
         (modify_cfg BLOCK TX CFG DB JOURNAL CHAIN LOCAL).
+    Proof.
     Admitted.
     Global Typeclasses Opaque modify_cfg.
     
@@ -3568,6 +3646,7 @@ Module context.
         (Self BLOCK TX CFG DB JOURNAL CHAIN LOCAL)
         "modify_chain"
         (modify_chain BLOCK TX CFG DB JOURNAL CHAIN LOCAL).
+    Proof.
     Admitted.
     Global Typeclasses Opaque modify_chain.
     
@@ -3661,6 +3740,7 @@ Module context.
         (Self BLOCK TX CFG DB JOURNAL CHAIN LOCAL)
         "modify_db"
         (modify_db BLOCK TX CFG DB JOURNAL CHAIN LOCAL).
+    Proof.
     Admitted.
     Global Typeclasses Opaque modify_db.
     
@@ -3740,6 +3820,7 @@ Module context.
         (Self BLOCK TX CFG DB JOURNAL CHAIN LOCAL)
         "modify_journal"
         (modify_journal BLOCK TX CFG DB JOURNAL CHAIN LOCAL).
+    Proof.
     Admitted.
     Global Typeclasses Opaque modify_journal.
     
@@ -3819,6 +3900,7 @@ Module context.
         (Self BLOCK TX CFG DB JOURNAL CHAIN LOCAL)
         "modify_local"
         (modify_local BLOCK TX CFG DB JOURNAL CHAIN LOCAL).
+    Proof.
     Admitted.
     Global Typeclasses Opaque modify_local.
   End Impl_revm_context_context_Context_BLOCK_TX_CFG_DB_JOURNAL_CHAIN_LOCAL.

@@ -2110,6 +2110,7 @@ Module acquires_list_verifier.
       end.
     
     Global Instance AssociatedFunction_verify : M.IsAssociatedFunction.C Self "verify" verify.
+    Proof.
     Admitted.
     Global Typeclasses Opaque verify.
     
@@ -2241,13 +2242,14 @@ Module acquires_list_verifier.
                       "move_binary_format::file_format::Bytecode::Call",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let idx :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::FunctionHandleIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.call_closure (|
                     Ty.apply
@@ -2275,13 +2277,14 @@ Module acquires_list_verifier.
                       "move_binary_format::file_format::Bytecode::CallGeneric",
                       0
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let idx :=
                     M.alloc (|
                       Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.path "move_binary_format::file_format::FunctionInstantiationIndex" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
                   M.read (|
                     let~ fi :
@@ -2368,6 +2371,7 @@ Module acquires_list_verifier.
                               "move_binary_format::file_format::Bytecode::MoveFromDeprecated",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let idx :=
                             M.alloc (|
                               Ty.apply
@@ -2375,7 +2379,7 @@ Module acquires_list_verifier.
                                 []
                                 [ Ty.path "move_binary_format::file_format::StructDefinitionIndex"
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                             |) in
                           Value.Tuple [ idx ]));
                       fun γ =>
@@ -2387,6 +2391,7 @@ Module acquires_list_verifier.
                               "move_binary_format::file_format::Bytecode::MutBorrowGlobalDeprecated",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let idx :=
                             M.alloc (|
                               Ty.apply
@@ -2394,7 +2399,7 @@ Module acquires_list_verifier.
                                 []
                                 [ Ty.path "move_binary_format::file_format::StructDefinitionIndex"
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                             |) in
                           Value.Tuple [ idx ]));
                       fun γ =>
@@ -2406,6 +2411,7 @@ Module acquires_list_verifier.
                               "move_binary_format::file_format::Bytecode::ImmBorrowGlobalDeprecated",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let idx :=
                             M.alloc (|
                               Ty.apply
@@ -2413,7 +2419,7 @@ Module acquires_list_verifier.
                                 []
                                 [ Ty.path "move_binary_format::file_format::StructDefinitionIndex"
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                             |) in
                           Value.Tuple [ idx ]))
                     ],
@@ -2465,6 +2471,7 @@ Module acquires_list_verifier.
                               "move_binary_format::file_format::Bytecode::MoveFromGenericDeprecated",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let idx :=
                             M.alloc (|
                               Ty.apply
@@ -2474,7 +2481,7 @@ Module acquires_list_verifier.
                                   Ty.path
                                     "move_binary_format::file_format::StructDefInstantiationIndex"
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                             |) in
                           Value.Tuple [ idx ]));
                       fun γ =>
@@ -2486,6 +2493,7 @@ Module acquires_list_verifier.
                               "move_binary_format::file_format::Bytecode::MutBorrowGlobalGenericDeprecated",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let idx :=
                             M.alloc (|
                               Ty.apply
@@ -2495,7 +2503,7 @@ Module acquires_list_verifier.
                                   Ty.path
                                     "move_binary_format::file_format::StructDefInstantiationIndex"
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                             |) in
                           Value.Tuple [ idx ]));
                       fun γ =>
@@ -2507,6 +2515,7 @@ Module acquires_list_verifier.
                               "move_binary_format::file_format::Bytecode::ImmBorrowGlobalGenericDeprecated",
                               0
                             |) in
+                          let _ := M.read (| γ1_0 |) in
                           let idx :=
                             M.alloc (|
                               Ty.apply
@@ -2516,7 +2525,7 @@ Module acquires_list_verifier.
                                   Ty.path
                                     "move_binary_format::file_format::StructDefInstantiationIndex"
                                 ],
-                              γ1_0
+                              M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                             |) in
                           Value.Tuple [ idx ]))
                     ],
@@ -3287,6 +3296,7 @@ Module acquires_list_verifier.
     
     Global Instance AssociatedFunction_verify_instruction :
       M.IsAssociatedFunction.C Self "verify_instruction" verify_instruction.
+    Proof.
     Admitted.
     Global Typeclasses Opaque verify_instruction.
     
@@ -3696,6 +3706,7 @@ Module acquires_list_verifier.
     
     Global Instance AssociatedFunction_call_acquire :
       M.IsAssociatedFunction.C Self "call_acquire" call_acquire.
+    Proof.
     Admitted.
     Global Typeclasses Opaque call_acquire.
     
@@ -3848,6 +3859,7 @@ Module acquires_list_verifier.
     
     Global Instance AssociatedFunction_struct_acquire :
       M.IsAssociatedFunction.C Self "struct_acquire" struct_acquire.
+    Proof.
     Admitted.
     Global Typeclasses Opaque struct_acquire.
     
@@ -4278,6 +4290,7 @@ Module acquires_list_verifier.
     
     Global Instance AssociatedFunction_function_acquired_resources :
       M.IsAssociatedFunction.C Self "function_acquired_resources" function_acquired_resources.
+    Proof.
     Admitted.
     Global Typeclasses Opaque function_acquired_resources.
     
@@ -4333,6 +4346,7 @@ Module acquires_list_verifier.
       end.
     
     Global Instance AssociatedFunction_error : M.IsAssociatedFunction.C Self "error" error.
+    Proof.
     Admitted.
     Global Typeclasses Opaque error.
   End Impl_move_bytecode_verifier_acquires_list_verifier_AcquiresVerifier.

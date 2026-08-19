@@ -53,6 +53,7 @@ Module utils.
     end.
   
   Global Instance Instance_IsFunction_rem_up : M.IsFunction.C "ruint::utils::rem_up" rem_up.
+  Proof.
   Admitted.
   Global Typeclasses Opaque rem_up.
   
@@ -169,6 +170,7 @@ Module utils.
     end.
   
   Global Instance Instance_IsFunction_last_idx : M.IsFunction.C "ruint::utils::last_idx" last_idx.
+  Proof.
   Admitted.
   Global Typeclasses Opaque last_idx.
   
@@ -229,6 +231,7 @@ Module utils.
   
   Global Instance Instance_IsFunction_trim_end_slice :
     M.IsFunction.C "ruint::utils::trim_end_slice" trim_end_slice.
+  Proof.
   Admitted.
   Global Typeclasses Opaque trim_end_slice.
   
@@ -299,6 +302,7 @@ Module utils.
   
   Global Instance Instance_IsFunction_trim_end_vec :
     M.IsFunction.C "ruint::utils::trim_end_vec" trim_end_vec.
+  Proof.
   Admitted.
   Global Typeclasses Opaque trim_end_vec.
 End utils.

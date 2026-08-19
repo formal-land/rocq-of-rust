@@ -302,6 +302,7 @@ Module collections.
       end.
     
     Global Instance AssociatedFunction_kind : M.IsAssociatedFunction.C Self "kind" kind.
+    Proof.
     Admitted.
     Global Typeclasses Opaque kind.
   End Impl_alloc_collections_TryReserveError.
@@ -378,12 +379,18 @@ Module collections.
                       "alloc::collections::TryReserveErrorKind::AllocError",
                       "non_exhaustive"
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "core::alloc::layout::Layout" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.tuple [] ], γ1_1 |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.tuple [] ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   Value.mkStructRecord
                     "alloc::collections::TryReserveErrorKind::AllocError"
                     []
@@ -526,13 +533,18 @@ Module collections.
                               "alloc::collections::TryReserveErrorKind::AllocError",
                               "non_exhaustive"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __self_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "core::alloc::layout::Layout" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __self_1 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.tuple [] ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.tuple [] ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
                           let γ2_0 :=
                             M.SubPointer.get_struct_record_field (|
@@ -546,13 +558,18 @@ Module collections.
                               "alloc::collections::TryReserveErrorKind::AllocError",
                               "non_exhaustive"
                             |) in
+                          let _ := M.read (| γ2_0 |) in
                           let __arg1_0 :=
                             M.alloc (|
                               Ty.apply (Ty.path "&") [] [ Ty.path "core::alloc::layout::Layout" ],
-                              γ2_0
+                              M.borrow (| Pointer.Kind.Ref, γ2_0 |)
                             |) in
+                          let _ := M.read (| γ2_1 |) in
                           let __arg1_1 :=
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.tuple [] ], γ2_1 |) in
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.tuple [] ],
+                              M.borrow (| Pointer.Kind.Ref, γ2_1 |)
+                            |) in
                           LogicalOp.and (|
                             M.call_closure (|
                               Ty.path "bool",
@@ -718,12 +735,18 @@ Module collections.
                       "alloc::collections::TryReserveErrorKind::AllocError",
                       "non_exhaustive"
                     |) in
+                  let _ := M.read (| γ1_0 |) in
                   let __self_0 :=
                     M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "core::alloc::layout::Layout" ],
-                      γ1_0
+                      M.borrow (| Pointer.Kind.Ref, γ1_0 |)
                     |) in
-                  let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.tuple [] ], γ1_1 |) in
+                  let _ := M.read (| γ1_1 |) in
+                  let __self_1 :=
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.tuple [] ],
+                      M.borrow (| Pointer.Kind.Ref, γ1_1 |)
+                    |) in
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "core::result::Result")

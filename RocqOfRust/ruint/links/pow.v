@@ -14,6 +14,7 @@ Module Impl_Uint.
   Run.Trait
     (pow.Impl_ruint_Uint_BITS_LIMBS.pow (φ BITS) (φ LIMBS)) [] [] [ φ x1; φ x2 ]
     (Self BITS LIMBS).
+  Proof.
   Admitted.
   Global Opaque run_pow.
 
@@ -24,6 +25,7 @@ Module Impl_Uint.
   Run.Trait
     (pow.Impl_ruint_Uint_BITS_LIMBS.wrapping_pow (φ BITS) (φ LIMBS)) [] [] [ φ x1; φ x2 ]
     (Self BITS LIMBS).
+  Proof.
   Admitted.
   Global Opaque run_wrapping_pow.
 End Impl_Uint.

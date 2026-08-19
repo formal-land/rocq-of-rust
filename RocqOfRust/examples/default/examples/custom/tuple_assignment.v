@@ -49,5 +49,6 @@ Definition tuple_assignment (ε : list Value.t) (τ : list Ty.t) (α : list Valu
 
 Global Instance Instance_IsFunction_tuple_assignment :
   M.IsFunction.C "tuple_assignment::tuple_assignment" tuple_assignment.
+Proof.
 Admitted.
 Global Typeclasses Opaque tuple_assignment.

@@ -207,6 +207,7 @@ Module vec.
       Global Instance AssociatedFunction_new :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "new" (new T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -263,6 +264,7 @@ Module vec.
       Global Instance AssociatedFunction_pop :
         forall (T A : Ty.t),
         M.IsAssociatedFunction.C (Self T A) "pop" (pop T A).
+      Proof.
       Admitted.
       Global Typeclasses Opaque pop.
     End Impl_alloc_vec_peek_mut_PeekMut_T_A.

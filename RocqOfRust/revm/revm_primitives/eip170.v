@@ -7,6 +7,7 @@ Module eip170.
   
   Global Instance Instance_IsConstant_value_MAX_CODE_SIZE :
     M.IsFunction.C "revm_primitives::eip170::MAX_CODE_SIZE" value_MAX_CODE_SIZE.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_MAX_CODE_SIZE.
 End eip170.

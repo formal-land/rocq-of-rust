@@ -250,6 +250,7 @@ Module Impl_constructors_return_value_ReturnFlags.
   
   Global Instance AssociatedFunction_new_with_reverted :
     M.IsAssociatedFunction.C Self "new_with_reverted" new_with_reverted.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new_with_reverted.
 End Impl_constructors_return_value_ReturnFlags.
@@ -276,6 +277,7 @@ Definition return_value (ε : list Value.t) (τ : list Ty.t) (α : list Value.t)
 
 Global Instance Instance_IsFunction_return_value :
   M.IsFunction.C "constructors_return_value::return_value" return_value.
+Proof.
 Admitted.
 Global Typeclasses Opaque return_value.
 
@@ -301,6 +303,7 @@ Module Impl_constructors_return_value_ConstructorsReturnValue.
     end.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new.
   
@@ -367,6 +370,7 @@ Module Impl_constructors_return_value_ConstructorsReturnValue.
     end.
   
   Global Instance AssociatedFunction_try_new : M.IsAssociatedFunction.C Self "try_new" try_new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque try_new.
   
@@ -467,6 +471,7 @@ Module Impl_constructors_return_value_ConstructorsReturnValue.
   
   Global Instance AssociatedFunction_revert_new :
     M.IsAssociatedFunction.C Self "revert_new" revert_new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque revert_new.
   
@@ -650,6 +655,7 @@ Module Impl_constructors_return_value_ConstructorsReturnValue.
   
   Global Instance AssociatedFunction_try_revert_new :
     M.IsAssociatedFunction.C Self "try_revert_new" try_revert_new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque try_revert_new.
   
@@ -682,6 +688,7 @@ Module Impl_constructors_return_value_ConstructorsReturnValue.
   
   Global Instance AssociatedFunction_get_value :
     M.IsAssociatedFunction.C Self "get_value" get_value.
+  Proof.
   Admitted.
   Global Typeclasses Opaque get_value.
 End Impl_constructors_return_value_ConstructorsReturnValue.

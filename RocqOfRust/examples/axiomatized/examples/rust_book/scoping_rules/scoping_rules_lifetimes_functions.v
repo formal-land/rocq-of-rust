@@ -5,28 +5,33 @@ Parameter print_one : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_print_one :
   M.IsFunction.C "scoping_rules_lifetimes_functions::print_one" print_one.
+Proof.
 Admitted.
 
 Parameter add_one : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_add_one :
   M.IsFunction.C "scoping_rules_lifetimes_functions::add_one" add_one.
+Proof.
 Admitted.
 
 Parameter print_multi : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_print_multi :
   M.IsFunction.C "scoping_rules_lifetimes_functions::print_multi" print_multi.
+Proof.
 Admitted.
 
 Parameter pass_x : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_pass_x :
   M.IsFunction.C "scoping_rules_lifetimes_functions::pass_x" pass_x.
+Proof.
 Admitted.
 
 Parameter main : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_main :
   M.IsFunction.C "scoping_rules_lifetimes_functions::main" main.
+Proof.
 Admitted.

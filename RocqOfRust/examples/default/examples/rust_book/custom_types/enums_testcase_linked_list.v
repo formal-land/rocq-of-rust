@@ -48,6 +48,7 @@ Module Impl_enums_testcase_linked_list_List.
     end.
   
   Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+  Proof.
   Admitted.
   Global Typeclasses Opaque new.
   
@@ -90,6 +91,7 @@ Module Impl_enums_testcase_linked_list_List.
     end.
   
   Global Instance AssociatedFunction_prepend : M.IsAssociatedFunction.C Self "prepend" prepend.
+  Proof.
   Admitted.
   Global Typeclasses Opaque prepend.
   
@@ -138,6 +140,7 @@ Module Impl_enums_testcase_linked_list_List.
                     "enums_testcase_linked_list::List::Cons",
                     1
                   |) in
+                let _ := M.read (| γ0_1 |) in
                 let tail :=
                   M.alloc (|
                     Ty.apply
@@ -152,7 +155,7 @@ Module Impl_enums_testcase_linked_list_List.
                             Ty.path "alloc::alloc::Global"
                           ]
                       ],
-                    γ0_1
+                    M.borrow (| Pointer.Kind.Ref, γ0_1 |)
                   |) in
                 M.call_closure (|
                   Ty.path "u32",
@@ -186,6 +189,7 @@ Module Impl_enums_testcase_linked_list_List.
     end.
   
   Global Instance AssociatedFunction_len : M.IsAssociatedFunction.C Self "len" len.
+  Proof.
   Admitted.
   Global Typeclasses Opaque len.
   
@@ -231,6 +235,7 @@ Module Impl_enums_testcase_linked_list_List.
                     1
                   |) in
                 let head := M.copy (| Ty.path "u32", γ0_0 |) in
+                let _ := M.read (| γ0_1 |) in
                 let tail :=
                   M.alloc (|
                     Ty.apply
@@ -245,7 +250,7 @@ Module Impl_enums_testcase_linked_list_List.
                             Ty.path "alloc::alloc::Global"
                           ]
                       ],
-                    γ0_1
+                    M.borrow (| Pointer.Kind.Ref, γ0_1 |)
                   |) in
                 M.call_closure (|
                   Ty.path "alloc::string::String",
@@ -399,6 +404,7 @@ Module Impl_enums_testcase_linked_list_List.
   
   Global Instance AssociatedFunction_stringify :
     M.IsAssociatedFunction.C Self "stringify" stringify.
+  Proof.
   Admitted.
   Global Typeclasses Opaque stringify.
 End Impl_enums_testcase_linked_list_List.
@@ -678,5 +684,6 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   end.
 
 Global Instance Instance_IsFunction_main : M.IsFunction.C "enums_testcase_linked_list::main" main.
+Proof.
 Admitted.
 Global Typeclasses Opaque main.

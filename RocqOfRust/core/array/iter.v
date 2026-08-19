@@ -293,6 +293,7 @@ Module array.
       Global Instance AssociatedFunction_unsize :
         forall (N : Value.t) (T : Ty.t),
         M.IsAssociatedFunction.C (Self N T) "unsize" (unsize N T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque unsize.
       
@@ -442,6 +443,7 @@ Module array.
       Global Instance AssociatedFunction_unsize_mut :
         forall (N : Value.t) (T : Ty.t),
         M.IsAssociatedFunction.C (Self N T) "unsize_mut" (unsize_mut N T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque unsize_mut.
       (*
@@ -480,6 +482,7 @@ Module array.
       Global Instance AssociatedFunction_new :
         forall (N : Value.t) (T : Ty.t),
         M.IsAssociatedFunction.C (Self N T) "new" (new N T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new.
       
@@ -645,6 +648,7 @@ Module array.
       Global Instance AssociatedFunction_new_unchecked :
         forall (N : Value.t) (T : Ty.t),
         M.IsAssociatedFunction.C (Self N T) "new_unchecked" (new_unchecked N T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque new_unchecked.
       
@@ -765,6 +769,7 @@ Module array.
       Global Instance AssociatedFunction_empty :
         forall (N : Value.t) (T : Ty.t),
         M.IsAssociatedFunction.C (Self N T) "empty" (empty N T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque empty.
       
@@ -855,6 +860,7 @@ Module array.
       Global Instance AssociatedFunction_as_slice :
         forall (N : Value.t) (T : Ty.t),
         M.IsAssociatedFunction.C (Self N T) "as_slice" (as_slice N T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_slice.
       
@@ -951,6 +957,7 @@ Module array.
       Global Instance AssociatedFunction_as_mut_slice :
         forall (N : Value.t) (T : Ty.t),
         M.IsAssociatedFunction.C (Self N T) "as_mut_slice" (as_mut_slice N T).
+      Proof.
       Admitted.
       Global Typeclasses Opaque as_mut_slice.
     End Impl_core_array_iter_IntoIter_N_T.

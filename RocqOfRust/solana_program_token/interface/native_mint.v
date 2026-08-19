@@ -7,6 +7,7 @@ Module native_mint.
   
   Global Instance Instance_IsConstant_value_DECIMALS :
     M.IsFunction.C "spl_token_interface::native_mint::DECIMALS" value_DECIMALS.
+  Proof.
   Admitted.
   Global Typeclasses Opaque value_DECIMALS.
 End native_mint.

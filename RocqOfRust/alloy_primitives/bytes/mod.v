@@ -2784,6 +2784,7 @@ Module bytes_.
       end.
     
     Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
+    Proof.
     Admitted.
     Global Typeclasses Opaque new.
     
@@ -2822,6 +2823,7 @@ Module bytes_.
     
     Global Instance AssociatedFunction_from_static :
       M.IsAssociatedFunction.C Self "from_static" from_static.
+    Proof.
     Admitted.
     Global Typeclasses Opaque from_static.
     
@@ -2860,6 +2862,7 @@ Module bytes_.
     
     Global Instance AssociatedFunction_copy_from_slice :
       M.IsAssociatedFunction.C Self "copy_from_slice" copy_from_slice.
+    Proof.
     Admitted.
     Global Typeclasses Opaque copy_from_slice.
     
@@ -2908,6 +2911,7 @@ Module bytes_.
       end.
     
     Global Instance AssociatedFunction_slice : M.IsAssociatedFunction.C Self "slice" slice.
+    Proof.
     Admitted.
     Global Typeclasses Opaque slice.
     
@@ -2956,6 +2960,7 @@ Module bytes_.
     
     Global Instance AssociatedFunction_slice_ref :
       M.IsAssociatedFunction.C Self "slice_ref" slice_ref.
+    Proof.
     Admitted.
     Global Typeclasses Opaque slice_ref.
     
@@ -3000,6 +3005,7 @@ Module bytes_.
     
     Global Instance AssociatedFunction_split_off :
       M.IsAssociatedFunction.C Self "split_off" split_off.
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_off.
     
@@ -3043,6 +3049,7 @@ Module bytes_.
       end.
     
     Global Instance AssociatedFunction_split_to : M.IsAssociatedFunction.C Self "split_to" split_to.
+    Proof.
     Admitted.
     Global Typeclasses Opaque split_to.
   End Impl_alloy_primitives_bytes__Bytes.
