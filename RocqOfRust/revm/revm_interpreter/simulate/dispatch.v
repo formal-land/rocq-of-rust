@@ -2,10 +2,11 @@ Require Import Stdlib.Lists.List.
 
 Require Import RocqOfRust.revm.revm_interpreter.interpreter.
 Require Import simulate.RocqOfRust.
+
 Require Import core.links.array.
 Require Import revm.revm_context_interface.links.host.
-Require Import revm.revm_interpreter.instructions.simulate.arithmetic.addmod.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.add.
+Require Import revm.revm_interpreter.instructions.simulate.arithmetic.addmod.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.div.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.exp.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.mul.
