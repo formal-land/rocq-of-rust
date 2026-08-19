@@ -1,10 +1,18 @@
-Require Import links.RocqOfRust.
 Require Import core.links.array.
+Require Import links.RocqOfRust.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_interpreter.instructions.links.arithmetic.
 Require Import revm.revm_interpreter.instructions.links.control.stop.
 Require Import revm.revm_interpreter.instructions.links.control.unknown.
 Require Import revm.revm_interpreter.instructions.links.system.returndatacopy.
+Require Import revm.revm_interpreter.instructions.simulate.arithmetic.addmod.
+Require Import revm.revm_interpreter.instructions.simulate.arithmetic.div.
+Require Import revm.revm_interpreter.instructions.simulate.arithmetic.exp.
+Require Import revm.revm_interpreter.instructions.simulate.arithmetic.mulmod.
+Require Import revm.revm_interpreter.instructions.simulate.arithmetic.rem.
+Require Import revm.revm_interpreter.instructions.simulate.arithmetic.sdiv.
+Require Import revm.revm_interpreter.instructions.simulate.arithmetic.signextend.
+Require Import revm.revm_interpreter.instructions.simulate.arithmetic.smod.
 Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.links.table.
@@ -41,6 +49,116 @@ Module FragmentInstructionTable.
     Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
     Function1.of_run
       (fun context => run_add run_InterpreterTypes_for_WIRE context).
+
+  Definition sub_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_InterpreterTypes_for_WIRE :
+        InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_sub run_InterpreterTypes_for_WIRE context).
+
+  Definition mul_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_InterpreterTypes_for_WIRE :
+        InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_mul run_InterpreterTypes_for_WIRE context).
+
+  Definition div_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_InterpreterTypes_for_WIRE :
+        InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_div run_InterpreterTypes_for_WIRE context).
+
+  Definition sdiv_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_InterpreterTypes_for_WIRE :
+        InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_sdiv run_InterpreterTypes_for_WIRE context).
+
+  Definition mod_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_InterpreterTypes_for_WIRE :
+        InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_rem run_InterpreterTypes_for_WIRE context).
+
+  Definition smod_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_InterpreterTypes_for_WIRE :
+        InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_smod run_InterpreterTypes_for_WIRE context).
+
+  Definition addmod_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_InterpreterTypes_for_WIRE :
+        InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_addmod run_InterpreterTypes_for_WIRE context).
+
+  Definition mulmod_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_InterpreterTypes_for_WIRE :
+        InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_mulmod run_InterpreterTypes_for_WIRE context).
+
+  Definition exp_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_InterpreterTypes_for_WIRE :
+        InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_exp run_InterpreterTypes_for_WIRE context).
+
+  Definition signextend_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_InterpreterTypes_for_WIRE :
+        InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_signextend run_InterpreterTypes_for_WIRE context).
 
   Definition unknown_function
       {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -88,6 +206,56 @@ Module FragmentInstructionTable.
         add_function (H := H) run_InterpreterTypes_for_WIRE;
       Instruction.static_gas := {| Integer.value := 3 |};
     |} in
+    let sub_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ :=
+        sub_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 3 |};
+    |} in
+    let mul_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ :=
+        mul_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 5 |};
+    |} in
+    let div_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ :=
+        div_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 5 |};
+    |} in
+    let sdiv_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ :=
+        sdiv_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 5 |};
+    |} in
+    let mod_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ :=
+        mod_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 5 |};
+    |} in
+    let smod_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ :=
+        smod_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 5 |};
+    |} in
+    let addmod_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ :=
+        addmod_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 8 |};
+    |} in
+    let mulmod_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ :=
+        mulmod_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 8 |};
+    |} in
+    let exp_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ :=
+        exp_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 0 |};
+    |} in
+    let signextend_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ :=
+        signextend_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 5 |};
+    |} in
     let returndatacopy_instruction : Instruction.t WIRE H WIRE_types := {|
       Instruction.fn_ :=
         returndatacopy_function (H := H) run_InterpreterTypes_for_WIRE;
@@ -101,9 +269,30 @@ Module FragmentInstructionTable.
           stop_instruction
           (ArrayPair.Build_t
             add_instruction
-            (prepend_repeat unknown_instruction 60 194
+            (ArrayPair.Build_t
+              mul_instruction
               (ArrayPair.Build_t
-                returndatacopy_instruction
-                (ArrayPairs.repeat unknown_instruction 193))))
+                sub_instruction
+                (ArrayPair.Build_t
+                  div_instruction
+                  (ArrayPair.Build_t
+                    sdiv_instruction
+                    (ArrayPair.Build_t
+                      mod_instruction
+                      (ArrayPair.Build_t
+                      smod_instruction
+                        (ArrayPair.Build_t
+                          addmod_instruction
+                          (ArrayPair.Build_t
+                            mulmod_instruction
+                            (ArrayPair.Build_t
+                              exp_instruction
+                              (ArrayPair.Build_t
+                                signextend_instruction
+                                (prepend_repeat unknown_instruction 50 194
+                                  (ArrayPair.Build_t
+                                    returndatacopy_instruction
+                                    (ArrayPairs.repeat
+                                      unknown_instruction 193))))))))))))))
       ).
 End FragmentInstructionTable.

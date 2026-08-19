@@ -2,9 +2,20 @@ Require Import Stdlib.Lists.List.
 
 Require Import RocqOfRust.revm.revm_interpreter.interpreter.
 Require Import simulate.RocqOfRust.
+
 Require Import core.links.array.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.add.
+Require Import revm.revm_interpreter.instructions.simulate.arithmetic.addmod.
+Require Import revm.revm_interpreter.instructions.simulate.arithmetic.div.
+Require Import revm.revm_interpreter.instructions.simulate.arithmetic.exp.
+Require Import revm.revm_interpreter.instructions.simulate.arithmetic.mul.
+Require Import revm.revm_interpreter.instructions.simulate.arithmetic.mulmod.
+Require Import revm.revm_interpreter.instructions.simulate.arithmetic.rem.
+Require Import revm.revm_interpreter.instructions.simulate.arithmetic.sdiv.
+Require Import revm.revm_interpreter.instructions.simulate.arithmetic.signextend.
+Require Import revm.revm_interpreter.instructions.simulate.arithmetic.smod.
+Require Import revm.revm_interpreter.instructions.simulate.arithmetic.sub.
 Require Import revm.revm_interpreter.instructions.simulate.control.stop.
 Require Import revm.revm_interpreter.instructions.simulate.control.unknown.
 Require Import revm.revm_interpreter.instructions.simulate.system.returndatacopy.
@@ -25,7 +36,17 @@ Module InterpreterDispatch.
       operations supported by [simple]. *)
   Definition OpcodeInSimple (opcode : u8) : Prop :=
     opcode.(Integer.value) = 0 \/
-    opcode.(Integer.value) = 1.
+    opcode.(Integer.value) = 1 \/
+    opcode.(Integer.value) = 2 \/
+    opcode.(Integer.value) = 3 \/
+    opcode.(Integer.value) = 4 \/
+    opcode.(Integer.value) = 5 \/
+    opcode.(Integer.value) = 6 \/
+    opcode.(Integer.value) = 7 \/
+    opcode.(Integer.value) = 8 \/
+    opcode.(Integer.value) = 9 \/
+    opcode.(Integer.value) = 10 \/
+    opcode.(Integer.value) = 11.
 
   Definition BytecodeInSimple (code : list u8) : Prop :=
     List.Forall OpcodeInSimple code.
@@ -54,6 +75,80 @@ Module InterpreterDispatch.
           Some instruction /\
         InterpreterStep.instruction_static_gas instruction =
           {| Integer.value := 3 |};
+    table_mul :
+      exists instruction,
+        InterpreterStep.instruction_at
+          table
+          {| Integer.value := 2 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 5 |};
+    table_sub :
+      exists instruction,
+        InterpreterStep.instruction_at
+          table
+          {| Integer.value := 3 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 3 |};
+    table_div :
+      exists instruction,
+        InterpreterStep.instruction_at
+          table
+          {| Integer.value := 4 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 5 |};
+    table_sdiv :
+      exists instruction,
+        InterpreterStep.instruction_at
+          table
+          {| Integer.value := 5 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 5 |};
+    table_mod :
+      exists instruction,
+        InterpreterStep.instruction_at
+          table
+          {| Integer.value := 6 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 5 |};
+    table_smod :
+      exists instruction,
+        InterpreterStep.instruction_at
+          table
+          {| Integer.value := 7 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 5 |};
+    table_addmod :
+      exists instruction,
+        InterpreterStep.instruction_at
+          table
+          {| Integer.value := 8 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 8 |};
+    table_mulmod :
+      exists instruction,
+        InterpreterStep.instruction_at table {| Integer.value := 9 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 8 |};
+    table_exp :
+      exists instruction,
+        InterpreterStep.instruction_at table {| Integer.value := 10 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 0 |};
+    table_signextend :
+      exists instruction,
+        InterpreterStep.instruction_at table {| Integer.value := 11 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 5 |};
     table_returndatacopy :
       exists instruction,
         InterpreterStep.instruction_at
@@ -77,6 +172,26 @@ Module InterpreterDispatch.
         stop
       else if Z.eqb opcode.(Integer.value) 1 then
         add
+      else if Z.eqb opcode.(Integer.value) 2 then
+        mul
+      else if Z.eqb opcode.(Integer.value) 3 then
+        sub
+      else if Z.eqb opcode.(Integer.value) 4 then
+        div
+      else if Z.eqb opcode.(Integer.value) 5 then
+        sdiv
+      else if Z.eqb opcode.(Integer.value) 6 then
+        rem
+      else if Z.eqb opcode.(Integer.value) 7 then
+        smod
+      else if Z.eqb opcode.(Integer.value) 8 then
+        addmod
+      else if Z.eqb opcode.(Integer.value) 9 then
+        mulmod
+      else if Z.eqb opcode.(Integer.value) 10 then
+        exp IInterpreterTypes
+      else if Z.eqb opcode.(Integer.value) 11 then
+        signextend
       else if Z.eqb opcode.(Integer.value) 62 then
         returndatacopy
       else
@@ -103,6 +218,126 @@ Module InterpreterDispatch.
       (state : InstructionContext.State.t H WIRE WIRE_types) :
     simple {| Integer.value := 1 |} state =
     InstructionContext.map_interpreter add state.
+  Proof.
+    reflexivity.
+  Qed.
+
+  Lemma simple_sub
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 3 |} state =
+    InstructionContext.map_interpreter sub state.
+  Proof.
+    reflexivity.
+  Qed.
+
+  Lemma simple_mul
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 2 |} state =
+    InstructionContext.map_interpreter mul state.
+  Proof.
+    reflexivity.
+  Qed.
+
+  Lemma simple_div
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 4 |} state =
+    InstructionContext.map_interpreter div state.
+  Proof.
+    reflexivity.
+  Qed.
+
+  Lemma simple_sdiv
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 5 |} state =
+    InstructionContext.map_interpreter sdiv state.
+  Proof.
+    reflexivity.
+  Qed.
+
+  Lemma simple_mod
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 6 |} state =
+    InstructionContext.map_interpreter rem state.
+  Proof.
+    reflexivity.
+  Qed.
+
+  Lemma simple_smod
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 7 |} state =
+    InstructionContext.map_interpreter smod state.
+  Proof.
+    reflexivity.
+  Qed.
+
+  Lemma simple_addmod
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 8 |} state =
+    InstructionContext.map_interpreter addmod state.
+  Proof.
+    reflexivity.
+  Qed.
+
+  Lemma simple_mulmod
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 9 |} state =
+    InstructionContext.map_interpreter mulmod state.
+  Proof.
+    reflexivity.
+  Qed.
+
+  Lemma simple_exp
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 10 |} state =
+    InstructionContext.map_interpreter (exp IInterpreterTypes) state.
+  Proof.
+    reflexivity.
+  Qed.
+
+  Lemma simple_signextend
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 11 |} state =
+    InstructionContext.map_interpreter signextend state.
   Proof.
     reflexivity.
   Qed.
@@ -291,6 +526,60 @@ Module InterpreterDispatch.
             end
         end
     end.
+
+  Lemma run_plain_fuel_finished
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (fuel : nat)
+      (IInterpreterTypes : InterpreterTypes.C WIRE_types)
+      (is_not_end :
+        WIRE_types.(InterpreterTypes.Types.Bytecode) -> bool)
+      (table :
+        array.t
+          (Instruction.t WIRE H WIRE_types)
+          {| Integer.value := 256 |})
+      (state : InstructionContext.State.t H WIRE WIRE_types)
+      (result :
+        InterpreterAction.t *
+          InstructionContext.State.t H WIRE WIRE_types)
+      (H_finished :
+        finish_if_halted IInterpreterTypes is_not_end state = Some result) :
+    run_plain_fuel fuel IInterpreterTypes is_not_end table state = Some result.
+  Proof.
+    destruct fuel;
+      cbn [run_plain_fuel];
+      rewrite H_finished;
+      reflexivity.
+  Qed.
+
+  Lemma run_plain_fuel_running
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (fuel : nat)
+      (IInterpreterTypes : InterpreterTypes.C WIRE_types)
+      (is_not_end :
+        WIRE_types.(InterpreterTypes.Types.Bytecode) -> bool)
+      (table :
+        array.t
+          (Instruction.t WIRE H WIRE_types)
+          {| Integer.value := 256 |})
+      (state : InstructionContext.State.t H WIRE WIRE_types)
+      (H_running :
+        finish_if_halted IInterpreterTypes is_not_end state = None) :
+    run_plain_fuel (S fuel) IInterpreterTypes is_not_end table state =
+    match step_result_simple IInterpreterTypes table state with
+    | InterpreterStep.Result.MissingInstruction => None
+    | InterpreterStep.Result.OutOfGas state
+    | InterpreterStep.Result.Success state =>
+        run_plain_fuel fuel IInterpreterTypes is_not_end table state
+    end.
+  Proof.
+    cbn [run_plain_fuel].
+    rewrite H_running.
+    reflexivity.
+  Qed.
 
   Instance run_run_plain
       (WIRE H : Set) `{Link WIRE} `{Link H}
@@ -571,6 +860,122 @@ Module InterpreterDispatch.
       try eassumption.
     intros state.
     apply simple_add.
+  Qed.
+
+  Lemma step_result_sub
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (IInterpreterTypes : InterpreterTypes.C WIRE_types)
+      (table :
+        array.t
+          (Instruction.t WIRE H WIRE_types)
+          {| Integer.value := 256 |})
+      (interpreter : Interpreter.t WIRE WIRE_types)
+      (host : H)
+      (instruction : Instruction.t WIRE H WIRE_types)
+      (gas : Gas.t)
+      (H_opcode :
+        IInterpreterTypes.(InterpreterTypes.Jumps_for_Bytecode)
+          .(Jumps.opcode) interpreter.(Interpreter.bytecode) =
+        {| Integer.value := 3 |})
+      (H_instruction :
+        InterpreterStep.instruction_at table {| Integer.value := 3 |} =
+        Some instruction)
+      (H_gas :
+        InterpreterStep.instruction_static_gas instruction =
+        {| Integer.value := 3 |})
+      (H_charge :
+        Impl_Gas.record_cost
+          interpreter.(Interpreter.gas)
+          {| Integer.value := 3 |} =
+        Some gas) :
+    step_result_simple IInterpreterTypes table
+      {|
+        InstructionContext.State.interpreter := interpreter;
+        InstructionContext.State.host := host;
+      |} =
+    InterpreterStep.Result.Success
+      (InstructionContext.map_interpreter sub
+        {|
+          InstructionContext.State.interpreter :=
+            (interpreter
+                <| Interpreter.bytecode :=
+                  IInterpreterTypes.(InterpreterTypes.Jumps_for_Bytecode)
+                    .(Jumps.relative_jump)
+                    interpreter.(Interpreter.bytecode)
+                    {| Integer.value := 1 |}
+                |>)
+              <| Interpreter.gas := gas |>;
+          InstructionContext.State.host := host;
+        |}).
+  Proof.
+    eapply step_result_success
+      with
+        (opcode := {| Integer.value := 3 |})
+        (instruction := instruction)
+        (static_gas := {| Integer.value := 3 |});
+      try eassumption.
+    intros state.
+    apply simple_sub.
+  Qed.
+
+  Lemma step_result_mul
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (IInterpreterTypes : InterpreterTypes.C WIRE_types)
+      (table :
+        array.t
+          (Instruction.t WIRE H WIRE_types)
+          {| Integer.value := 256 |})
+      (interpreter : Interpreter.t WIRE WIRE_types)
+      (host : H)
+      (instruction : Instruction.t WIRE H WIRE_types)
+      (gas : Gas.t)
+      (H_opcode :
+        IInterpreterTypes.(InterpreterTypes.Jumps_for_Bytecode)
+          .(Jumps.opcode) interpreter.(Interpreter.bytecode) =
+        {| Integer.value := 2 |})
+      (H_instruction :
+        InterpreterStep.instruction_at table {| Integer.value := 2 |} =
+        Some instruction)
+      (H_gas :
+        InterpreterStep.instruction_static_gas instruction =
+        {| Integer.value := 5 |})
+      (H_charge :
+        Impl_Gas.record_cost
+          interpreter.(Interpreter.gas)
+          {| Integer.value := 5 |} =
+        Some gas) :
+    step_result_simple IInterpreterTypes table
+      {|
+        InstructionContext.State.interpreter := interpreter;
+        InstructionContext.State.host := host;
+      |} =
+    InterpreterStep.Result.Success
+      (InstructionContext.map_interpreter mul
+        {|
+          InstructionContext.State.interpreter :=
+            (interpreter
+                <| Interpreter.bytecode :=
+                  IInterpreterTypes.(InterpreterTypes.Jumps_for_Bytecode)
+                    .(Jumps.relative_jump)
+                    interpreter.(Interpreter.bytecode)
+                    {| Integer.value := 1 |}
+                |>)
+              <| Interpreter.gas := gas |>;
+          InstructionContext.State.host := host;
+        |}).
+  Proof.
+    eapply step_result_success
+      with
+        (opcode := {| Integer.value := 2 |})
+        (instruction := instruction)
+        (static_gas := {| Integer.value := 5 |});
+      try eassumption.
+    intros state.
+    apply simple_mul.
   Qed.
 
   Lemma step_result_returndatacopy

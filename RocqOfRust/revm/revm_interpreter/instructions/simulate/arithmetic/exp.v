@@ -80,10 +80,11 @@ Proof.
   s. {
     apply exp_cost_eq.
   }
-  gas_macro_eq idtac.
-  { s. {
-      apply Impl_Uint.pow_eq.
-    }
-    s.
-  }
+  unfold exp_cost.
+  destruct (_ =? 0);
+    cbn;
+    gas_macro_eq idtac.
+  all: s.
+  all: try apply Impl_Uint.pow_eq.
+  all: s.
 Qed.
