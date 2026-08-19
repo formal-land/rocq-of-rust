@@ -12,6 +12,7 @@ Require Import revm.revm_interpreter.instructions.simulate.arithmetic.mul.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.mulmod.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.rem.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.sdiv.
+Require Import revm.revm_interpreter.instructions.simulate.arithmetic.signextend.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.smod.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.sub.
 Require Import revm.revm_interpreter.instructions.simulate.control.stop.
@@ -40,7 +41,8 @@ Module InterpreterDispatch.
     opcode.(Integer.value) = 7 \/
     opcode.(Integer.value) = 8 \/
     opcode.(Integer.value) = 9 \/
-    opcode.(Integer.value) = 10.
+    opcode.(Integer.value) = 10 \/
+    opcode.(Integer.value) = 11.
 
   Definition BytecodeInSimple (code : list u8) : Prop :=
     List.Forall OpcodeInSimple code.
@@ -137,6 +139,12 @@ Module InterpreterDispatch.
           Some instruction /\
         InterpreterStep.instruction_static_gas instruction =
           {| Integer.value := 0 |};
+    table_signextend :
+      exists instruction,
+        InterpreterStep.instruction_at table {| Integer.value := 11 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 5 |};
   }.
 
   Definition simple
@@ -170,6 +178,8 @@ Module InterpreterDispatch.
         mulmod
       else if Z.eqb opcode.(Integer.value) 10 then
         exp IInterpreterTypes
+      else if Z.eqb opcode.(Integer.value) 11 then
+        signextend
       else
         unknown)
       state.
@@ -302,6 +312,18 @@ Module InterpreterDispatch.
       (state : InstructionContext.State.t H WIRE WIRE_types) :
     simple {| Integer.value := 10 |} state =
     InstructionContext.map_interpreter (exp IInterpreterTypes) state.
+  Proof.
+    reflexivity.
+  Qed.
+
+  Lemma simple_signextend
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 11 |} state =
+    InstructionContext.map_interpreter signextend state.
   Proof.
     reflexivity.
   Qed.

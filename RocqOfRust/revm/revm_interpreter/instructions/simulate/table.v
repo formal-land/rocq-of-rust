@@ -8,6 +8,7 @@ Require Import revm.revm_interpreter.instructions.simulate.arithmetic.div.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.exp.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.rem.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.sdiv.
+Require Import revm.revm_interpreter.instructions.simulate.arithmetic.signextend.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.smod.
 Require Import revm.revm_interpreter.instructions.links.control.stop.
 Require Import revm.revm_interpreter.instructions.links.control.unknown.
@@ -136,6 +137,17 @@ Module FragmentInstructionTable.
     Function1.of_run
       (fun context => run_exp run_InterpreterTypes_for_WIRE context).
 
+  Definition signextend_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_InterpreterTypes_for_WIRE :
+        InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_signextend run_InterpreterTypes_for_WIRE context).
+
   Definition unknown_function
       {WIRE H : Set} `{Link WIRE} `{Link H}
       {WIRE_types : InterpreterTypes.Types.t}
@@ -216,6 +228,11 @@ Module FragmentInstructionTable.
         exp_function (H := H) run_InterpreterTypes_for_WIRE;
       Instruction.static_gas := {| Integer.value := 0 |};
     |} in
+    let signextend_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ :=
+        signextend_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 5 |};
+    |} in
     @array.Build_t
       (Instruction.t WIRE H WIRE_types)
       {| Integer.value := 256 |}
@@ -242,6 +259,8 @@ Module FragmentInstructionTable.
                             mulmod_instruction
                             (ArrayPair.Build_t
                               exp_instruction
-                              (ArrayPairs.repeat unknown_instruction 245)))))))))))
+                              (ArrayPair.Build_t
+                                signextend_instruction
+                                (ArrayPairs.repeat unknown_instruction 244))))))))))))
       ).
 End FragmentInstructionTable.
