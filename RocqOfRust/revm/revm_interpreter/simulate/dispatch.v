@@ -18,6 +18,7 @@ Require Import revm.revm_interpreter.instructions.simulate.arithmetic.smod.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.sub.
 Require Import revm.revm_interpreter.instructions.simulate.control.stop.
 Require Import revm.revm_interpreter.instructions.simulate.control.unknown.
+Require Import revm.revm_interpreter.instructions.simulate.stack.push.
 Require Import revm.revm_interpreter.instructions.simulate.system.returndatacopy.
 Require Import revm.revm_interpreter.instructions.simulate.table.
 Require Import revm.revm_interpreter.links.gas.
@@ -157,6 +158,14 @@ Module InterpreterDispatch.
           Some instruction /\
         InterpreterStep.instruction_static_gas instruction =
           {| Integer.value := 0 |};
+    table_push1 :
+      exists instruction,
+        InterpreterStep.instruction_at
+          table
+          {| Integer.value := 96 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 3 |};
   }.
 
   Definition simple
@@ -194,6 +203,8 @@ Module InterpreterDispatch.
         signextend
       else if Z.eqb opcode.(Integer.value) 62 then
         returndatacopy
+      else if Z.eqb opcode.(Integer.value) 96 then
+        push {| Integer.value := 1 |}
       else
         unknown)
       state.
@@ -350,6 +361,19 @@ Module InterpreterDispatch.
       (state : InstructionContext.State.t H WIRE WIRE_types) :
     simple {| Integer.value := 62 |} state =
     InstructionContext.map_interpreter returndatacopy state.
+  Proof.
+    reflexivity.
+  Qed.
+
+  Lemma simple_push1
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 96 |} state =
+    InstructionContext.map_interpreter
+      (push {| Integer.value := 1 |}) state.
   Proof.
     reflexivity.
   Qed.
