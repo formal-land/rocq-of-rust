@@ -4,6 +4,7 @@ Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_interpreter.instructions.links.arithmetic.
 Require Import revm.revm_interpreter.instructions.links.control.stop.
 Require Import revm.revm_interpreter.instructions.links.control.unknown.
+Require Import revm.revm_interpreter.instructions.links.stack.
 Require Import revm.revm_interpreter.instructions.links.system.returndatacopy.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.addmod.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.div.
@@ -13,6 +14,7 @@ Require Import revm.revm_interpreter.instructions.simulate.arithmetic.rem.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.sdiv.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.signextend.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.smod.
+Require Import revm.revm_interpreter.instructions.simulate.stack.push.
 Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.links.table.
@@ -181,6 +183,21 @@ Module FragmentInstructionTable.
       (fun context =>
         run_returndatacopy run_InterpreterTypes_for_WIRE context).
 
+  Definition push1_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_InterpreterTypes_for_WIRE :
+        InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context =>
+        run_push
+          {| Integer.value := 1 |}
+          run_InterpreterTypes_for_WIRE
+          context).
+
   Definition table
       {WIRE H : Set} `{Link WIRE} `{Link H}
       {WIRE_types : InterpreterTypes.Types.t}
@@ -261,6 +278,11 @@ Module FragmentInstructionTable.
         returndatacopy_function (H := H) run_InterpreterTypes_for_WIRE;
       Instruction.static_gas := {| Integer.value := 0 |};
     |} in
+    let push1_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ :=
+        push1_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 3 |};
+    |} in
     @array.Build_t
       (Instruction.t WIRE H WIRE_types)
       {| Integer.value := 256 |}
@@ -292,7 +314,10 @@ Module FragmentInstructionTable.
                                 (prepend_repeat unknown_instruction 50 194
                                   (ArrayPair.Build_t
                                     returndatacopy_instruction
-                                    (ArrayPairs.repeat
-                                      unknown_instruction 193))))))))))))))
+                                    (prepend_repeat unknown_instruction 33 160
+                                      (ArrayPair.Build_t
+                                        push1_instruction
+                                        (ArrayPairs.repeat
+                                          unknown_instruction 159))))))))))))))))
       ).
 End FragmentInstructionTable.
