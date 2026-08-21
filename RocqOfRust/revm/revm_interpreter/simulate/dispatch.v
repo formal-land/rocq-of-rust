@@ -16,6 +16,21 @@ Require Import revm.revm_interpreter.instructions.simulate.arithmetic.sdiv.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.signextend.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.smod.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.sub.
+Require Import revm.revm_interpreter.instructions.simulate.bitwise.bitand.
+Require Import revm.revm_interpreter.instructions.simulate.bitwise.bitor.
+Require Import revm.revm_interpreter.instructions.simulate.bitwise.bitxor.
+Require Import revm.revm_interpreter.instructions.simulate.bitwise.byte.
+Require Import revm.revm_interpreter.instructions.simulate.bitwise.clz.
+Require Import revm.revm_interpreter.instructions.simulate.bitwise.eq.
+Require Import revm.revm_interpreter.instructions.simulate.bitwise.gt.
+Require Import revm.revm_interpreter.instructions.simulate.bitwise.iszero.
+Require Import revm.revm_interpreter.instructions.simulate.bitwise.lt.
+Require Import revm.revm_interpreter.instructions.simulate.bitwise.not.
+Require Import revm.revm_interpreter.instructions.simulate.bitwise.sar.
+Require Import revm.revm_interpreter.instructions.simulate.bitwise.sgt.
+Require Import revm.revm_interpreter.instructions.simulate.bitwise.shl.
+Require Import revm.revm_interpreter.instructions.simulate.bitwise.shr.
+Require Import revm.revm_interpreter.instructions.simulate.bitwise.slt.
 Require Import revm.revm_interpreter.instructions.simulate.control.stop.
 Require Import revm.revm_interpreter.instructions.simulate.control.unknown.
 Require Import revm.revm_interpreter.instructions.simulate.stack.push.
@@ -201,6 +216,36 @@ Module InterpreterDispatch.
         exp IInterpreterTypes
       else if Z.eqb opcode.(Integer.value) 11 then
         signextend
+      else if Z.eqb opcode.(Integer.value) 16 then
+        op_lt
+      else if Z.eqb opcode.(Integer.value) 17 then
+        op_gt
+      else if Z.eqb opcode.(Integer.value) 18 then
+        op_slt
+      else if Z.eqb opcode.(Integer.value) 19 then
+        op_sgt
+      else if Z.eqb opcode.(Integer.value) 20 then
+        op_eq
+      else if Z.eqb opcode.(Integer.value) 21 then
+        op_iszero
+      else if Z.eqb opcode.(Integer.value) 22 then
+        op_bitand
+      else if Z.eqb opcode.(Integer.value) 23 then
+        op_bitor
+      else if Z.eqb opcode.(Integer.value) 24 then
+        op_bitxor
+      else if Z.eqb opcode.(Integer.value) 25 then
+        op_not
+      else if Z.eqb opcode.(Integer.value) 26 then
+        op_byte
+      else if Z.eqb opcode.(Integer.value) 27 then
+        op_shl
+      else if Z.eqb opcode.(Integer.value) 28 then
+        op_shr
+      else if Z.eqb opcode.(Integer.value) 29 then
+        op_sar
+      else if Z.eqb opcode.(Integer.value) 30 then
+        op_clz
       else if Z.eqb opcode.(Integer.value) 62 then
         returndatacopy
       else if Z.eqb opcode.(Integer.value) 96 then
