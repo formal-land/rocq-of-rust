@@ -2,6 +2,21 @@ Require Import core.links.array.
 Require Import links.RocqOfRust.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_interpreter.instructions.links.arithmetic.
+Require Import revm.revm_interpreter.instructions.links.bitwise.bitand.
+Require Import revm.revm_interpreter.instructions.links.bitwise.bitor.
+Require Import revm.revm_interpreter.instructions.links.bitwise.bitxor.
+Require Import revm.revm_interpreter.instructions.links.bitwise.byte.
+Require Import revm.revm_interpreter.instructions.links.bitwise.clz.
+Require Import revm.revm_interpreter.instructions.links.bitwise.eq.
+Require Import revm.revm_interpreter.instructions.links.bitwise.gt.
+Require Import revm.revm_interpreter.instructions.links.bitwise.iszero.
+Require Import revm.revm_interpreter.instructions.links.bitwise.lt.
+Require Import revm.revm_interpreter.instructions.links.bitwise.not.
+Require Import revm.revm_interpreter.instructions.links.bitwise.sar.
+Require Import revm.revm_interpreter.instructions.links.bitwise.sgt.
+Require Import revm.revm_interpreter.instructions.links.bitwise.shl.
+Require Import revm.revm_interpreter.instructions.links.bitwise.shr.
+Require Import revm.revm_interpreter.instructions.links.bitwise.slt.
 Require Import revm.revm_interpreter.instructions.links.control.stop.
 Require Import revm.revm_interpreter.instructions.links.control.unknown.
 Require Import revm.revm_interpreter.instructions.links.stack.
@@ -14,6 +29,21 @@ Require Import revm.revm_interpreter.instructions.simulate.arithmetic.rem.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.sdiv.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.signextend.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.smod.
+Require Import revm.revm_interpreter.instructions.simulate.bitwise.bitand.
+Require Import revm.revm_interpreter.instructions.simulate.bitwise.bitor.
+Require Import revm.revm_interpreter.instructions.simulate.bitwise.bitxor.
+Require Import revm.revm_interpreter.instructions.simulate.bitwise.byte.
+Require Import revm.revm_interpreter.instructions.simulate.bitwise.clz.
+Require Import revm.revm_interpreter.instructions.simulate.bitwise.eq.
+Require Import revm.revm_interpreter.instructions.simulate.bitwise.gt.
+Require Import revm.revm_interpreter.instructions.simulate.bitwise.iszero.
+Require Import revm.revm_interpreter.instructions.simulate.bitwise.lt.
+Require Import revm.revm_interpreter.instructions.simulate.bitwise.not.
+Require Import revm.revm_interpreter.instructions.simulate.bitwise.sar.
+Require Import revm.revm_interpreter.instructions.simulate.bitwise.sgt.
+Require Import revm.revm_interpreter.instructions.simulate.bitwise.shl.
+Require Import revm.revm_interpreter.instructions.simulate.bitwise.shr.
+Require Import revm.revm_interpreter.instructions.simulate.bitwise.slt.
 Require Import revm.revm_interpreter.instructions.simulate.stack.push.
 Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter_types.
@@ -162,6 +192,126 @@ Module FragmentInstructionTable.
     Function1.of_run
       (fun context => run_signextend run_InterpreterTypes_for_WIRE context).
 
+  Definition lt_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run (fun context => run_lt run_types context).
+
+  Definition gt_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run (fun context => run_gt run_types context).
+
+  Definition slt_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run (fun context => run_slt run_types context).
+
+  Definition sgt_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run (fun context => run_sgt run_types context).
+
+  Definition eq_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run (fun context => run_bitwise_eq run_types context).
+
+  Definition iszero_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run (fun context => run_bitwise_is_zero run_types context).
+
+  Definition and_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run (fun context => run_bitwise_bitand run_types context).
+
+  Definition or_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run (fun context => run_bitwise_bitor run_types context).
+
+  Definition xor_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run (fun context => run_bitwise_bitxor run_types context).
+
+  Definition not_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run (fun context => run_bitwise_not run_types context).
+
+  Definition byte_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run (fun context => run_byte run_types context).
+
+  Definition shl_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run (fun context => run_bitwise_shl run_types context).
+
+  Definition shr_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run (fun context => run_bitwise_shr run_types context).
+
+  Definition sar_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run (fun context => run_bitwise_sar run_types context).
+
+  Definition clz_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run (fun context => run_bitwise_clz run_types context).
+
   Definition unknown_function
       {WIRE H : Set} `{Link WIRE} `{Link H}
       {WIRE_types : InterpreterTypes.Types.t}
@@ -273,6 +423,67 @@ Module FragmentInstructionTable.
         signextend_function (H := H) run_InterpreterTypes_for_WIRE;
       Instruction.static_gas := {| Integer.value := 5 |};
     |} in
+    let lt_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ := lt_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 3 |};
+    |} in
+    let gt_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ := gt_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 3 |};
+    |} in
+    let slt_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ := slt_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 3 |};
+    |} in
+    let sgt_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ := sgt_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 3 |};
+    |} in
+    let eq_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ := eq_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 3 |};
+    |} in
+    let iszero_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ :=
+        iszero_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 3 |};
+    |} in
+    let and_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ := and_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 3 |};
+    |} in
+    let or_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ := or_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 3 |};
+    |} in
+    let xor_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ := xor_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 3 |};
+    |} in
+    let not_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ := not_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 3 |};
+    |} in
+    let byte_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ := byte_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 3 |};
+    |} in
+    let shl_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ := shl_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 3 |};
+    |} in
+    let shr_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ := shr_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 3 |};
+    |} in
+    let sar_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ := sar_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 3 |};
+    |} in
+    let clz_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ := clz_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 5 |};
+    |} in
     let returndatacopy_instruction : Instruction.t WIRE H WIRE_types := {|
       Instruction.fn_ :=
         returndatacopy_function (H := H) run_InterpreterTypes_for_WIRE;
@@ -283,6 +494,34 @@ Module FragmentInstructionTable.
         push1_function (H := H) run_InterpreterTypes_for_WIRE;
       Instruction.static_gas := {| Integer.value := 3 |};
     |} in
+    let tail_after_bitwise :
+        ArrayPairs.t (Instruction.t WIRE H WIRE_types) 225 :=
+      prepend_repeat unknown_instruction 31 194
+        (ArrayPair.Build_t
+          returndatacopy_instruction
+          (prepend_repeat unknown_instruction 33 160
+            (ArrayPair.Build_t
+              push1_instruction
+              (ArrayPairs.repeat unknown_instruction 159)))) in
+    let bitwise_instructions :
+        ArrayPairs.t (Instruction.t WIRE H WIRE_types) 240 :=
+      ArrayPair.Build_t lt_instruction
+        (ArrayPair.Build_t gt_instruction
+          (ArrayPair.Build_t slt_instruction
+            (ArrayPair.Build_t sgt_instruction
+              (ArrayPair.Build_t eq_instruction
+                (ArrayPair.Build_t iszero_instruction
+                  (ArrayPair.Build_t and_instruction
+                    (ArrayPair.Build_t or_instruction
+                      (ArrayPair.Build_t xor_instruction
+                        (ArrayPair.Build_t not_instruction
+                          (ArrayPair.Build_t byte_instruction
+                            (ArrayPair.Build_t shl_instruction
+                              (ArrayPair.Build_t shr_instruction
+                                (ArrayPair.Build_t sar_instruction
+                                  (ArrayPair.Build_t
+                                    clz_instruction
+                                    tail_after_bitwise)))))))))))))) in
     @array.Build_t
       (Instruction.t WIRE H WIRE_types)
       {| Integer.value := 256 |}
@@ -311,13 +550,10 @@ Module FragmentInstructionTable.
                               exp_instruction
                               (ArrayPair.Build_t
                                 signextend_instruction
-                                (prepend_repeat unknown_instruction 50 194
-                                  (ArrayPair.Build_t
-                                    returndatacopy_instruction
-                                    (prepend_repeat unknown_instruction 33 160
-                                      (ArrayPair.Build_t
-                                        push1_instruction
-                                        (ArrayPairs.repeat
-                                          unknown_instruction 159))))))))))))))))
+                                (prepend_repeat
+                                  unknown_instruction
+                                  4
+                                  240
+                                  bitwise_instructions))))))))))))
       ).
 End FragmentInstructionTable.
