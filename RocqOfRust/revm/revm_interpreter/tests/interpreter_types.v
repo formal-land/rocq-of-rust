@@ -7,6 +7,7 @@ Require Import core.links.option.
 Require Import core.links.array.
 Require Import core.ops.links.range.
 Require Import core.ops.simulate.deref.
+Require Import revm.revm_interpreter.interpreter_action.links.call_inputs.
 Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter_action.
@@ -167,6 +168,21 @@ Module Control.
 End Control.
 Export (hints) Control.
 
+Module Input.
+  Record t : Set := {
+    target_address : Address.t;
+    caller_address : Address.t;
+    input : CallInput.t;
+    call_value : aliases.U256.t;
+  }.
+
+  Instance IsLink : Link t := {
+    Φ := Ty.path "revm_interpreter::tests::Input";
+    φ _ := Value.Tuple [];
+  }.
+End Input.
+Export (hints) Input.
+
 Definition WIRE_types : InterpreterTypes.Types.t := {|
   InterpreterTypes.Types.Stack := Stack.t;
   InterpreterTypes.Types.Memory := Memory.t;
@@ -174,7 +190,7 @@ Definition WIRE_types : InterpreterTypes.Types.t := {|
   InterpreterTypes.Types.Memory_Synthetic1 := MemorySlice.t;
   InterpreterTypes.Types.Bytecode := Bytecode.t;
   InterpreterTypes.Types.ReturnData := unit;
-  InterpreterTypes.Types.Input := unit;
+  InterpreterTypes.Types.Input := Input.t;
   InterpreterTypes.Types.SubRoutineStack := unit;
   InterpreterTypes.Types.Control := Control.t;
   InterpreterTypes.Types.RuntimeFlag := SpecId.t;
@@ -265,9 +281,22 @@ End EofContainer.
 Export (hints) EofContainer.
 
 Module InputTraits.
-  Instance I : InputTraits.C WIRE_types.(InterpreterTypes.Types.Input).
-  Proof.
-  Admitted.
+  Definition input_ref : RefStub.t Input.t CallInput.t := {|
+    RefStub.path := [];
+    RefStub.projection self := self.(Input.input);
+    RefStub.injection self value :=
+      {| Input.target_address := self.(Input.target_address);
+         Input.caller_address := self.(Input.caller_address);
+         Input.input := value;
+         Input.call_value := self.(Input.call_value) |};
+  |}.
+
+  Instance I : InputTraits.C WIRE_types.(InterpreterTypes.Types.Input) := {
+    InputTraits.target_address self := self.(Input.target_address);
+    InputTraits.caller_address self := self.(Input.caller_address);
+    InputTraits.input := input_ref;
+    InputTraits.call_value self := self.(Input.call_value);
+  }.
 End InputTraits.
 Export (hints) InputTraits.
 
