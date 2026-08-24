@@ -62,7 +62,8 @@ Module InterpreterDispatch.
     opcode.(Integer.value) = 8 \/
     opcode.(Integer.value) = 9 \/
     opcode.(Integer.value) = 10 \/
-    opcode.(Integer.value) = 11.
+    opcode.(Integer.value) = 11 \/
+    opcode.(Integer.value) = 16.
 
   Definition BytecodeInSimple (code : list u8) : Prop :=
     List.Forall OpcodeInSimple code.
@@ -162,6 +163,96 @@ Module InterpreterDispatch.
     table_signextend :
       exists instruction,
         InterpreterStep.instruction_at table {| Integer.value := 11 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 5 |};
+    table_lt :
+      exists instruction,
+        InterpreterStep.instruction_at table {| Integer.value := 16 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 3 |};
+    table_gt :
+      exists instruction,
+        InterpreterStep.instruction_at table {| Integer.value := 17 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 3 |};
+    table_slt :
+      exists instruction,
+        InterpreterStep.instruction_at table {| Integer.value := 18 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 3 |};
+    table_sgt :
+      exists instruction,
+        InterpreterStep.instruction_at table {| Integer.value := 19 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 3 |};
+    table_eq :
+      exists instruction,
+        InterpreterStep.instruction_at table {| Integer.value := 20 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 3 |};
+    table_iszero :
+      exists instruction,
+        InterpreterStep.instruction_at table {| Integer.value := 21 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 3 |};
+    table_and :
+      exists instruction,
+        InterpreterStep.instruction_at table {| Integer.value := 22 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 3 |};
+    table_or :
+      exists instruction,
+        InterpreterStep.instruction_at table {| Integer.value := 23 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 3 |};
+    table_xor :
+      exists instruction,
+        InterpreterStep.instruction_at table {| Integer.value := 24 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 3 |};
+    table_not :
+      exists instruction,
+        InterpreterStep.instruction_at table {| Integer.value := 25 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 3 |};
+    table_byte :
+      exists instruction,
+        InterpreterStep.instruction_at table {| Integer.value := 26 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 3 |};
+    table_shl :
+      exists instruction,
+        InterpreterStep.instruction_at table {| Integer.value := 27 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 3 |};
+    table_shr :
+      exists instruction,
+        InterpreterStep.instruction_at table {| Integer.value := 28 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 3 |};
+    table_sar :
+      exists instruction,
+        InterpreterStep.instruction_at table {| Integer.value := 29 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 3 |};
+    table_clz :
+      exists instruction,
+        InterpreterStep.instruction_at table {| Integer.value := 30 |} =
           Some instruction /\
         InterpreterStep.instruction_static_gas instruction =
           {| Integer.value := 5 |};
@@ -397,6 +488,156 @@ Module InterpreterDispatch.
   Proof.
     reflexivity.
   Qed.
+
+  Lemma simple_lt
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 16 |} state =
+    InstructionContext.map_interpreter op_lt state.
+  Proof. reflexivity. Qed.
+
+  Lemma simple_gt
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 17 |} state =
+    InstructionContext.map_interpreter op_gt state.
+  Proof. reflexivity. Qed.
+
+  Lemma simple_slt
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 18 |} state =
+    InstructionContext.map_interpreter op_slt state.
+  Proof. reflexivity. Qed.
+
+  Lemma simple_sgt
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 19 |} state =
+    InstructionContext.map_interpreter op_sgt state.
+  Proof. reflexivity. Qed.
+
+  Lemma simple_eq
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 20 |} state =
+    InstructionContext.map_interpreter op_eq state.
+  Proof. reflexivity. Qed.
+
+  Lemma simple_iszero
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 21 |} state =
+    InstructionContext.map_interpreter op_iszero state.
+  Proof. reflexivity. Qed.
+
+  Lemma simple_and
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 22 |} state =
+    InstructionContext.map_interpreter op_bitand state.
+  Proof. reflexivity. Qed.
+
+  Lemma simple_or
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 23 |} state =
+    InstructionContext.map_interpreter op_bitor state.
+  Proof. reflexivity. Qed.
+
+  Lemma simple_xor
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 24 |} state =
+    InstructionContext.map_interpreter op_bitxor state.
+  Proof. reflexivity. Qed.
+
+  Lemma simple_not
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 25 |} state =
+    InstructionContext.map_interpreter op_not state.
+  Proof. reflexivity. Qed.
+
+  Lemma simple_byte
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 26 |} state =
+    InstructionContext.map_interpreter op_byte state.
+  Proof. reflexivity. Qed.
+
+  Lemma simple_shl
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 27 |} state =
+    InstructionContext.map_interpreter op_shl state.
+  Proof. reflexivity. Qed.
+
+  Lemma simple_shr
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 28 |} state =
+    InstructionContext.map_interpreter op_shr state.
+  Proof. reflexivity. Qed.
+
+  Lemma simple_sar
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 29 |} state =
+    InstructionContext.map_interpreter op_sar state.
+  Proof. reflexivity. Qed.
+
+  Lemma simple_clz
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 30 |} state =
+    InstructionContext.map_interpreter op_clz state.
+  Proof. reflexivity. Qed.
 
   Lemma simple_returndatacopy
       {H WIRE : Set} `{Link H} `{Link WIRE}
