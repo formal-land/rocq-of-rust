@@ -1,0 +1,169 @@
+Require Import Stdlib.Lists.List.
+Require Import Stdlib.ZArith.ZArith.
+
+Require Import alloy_primitives.links.aliases.
+Require Import revm.revm_interpreter.instructions.simulate.table.
+Require Import revm.revm_interpreter.links.interpreter.
+Require Import revm.revm_interpreter.simulate.dispatch.
+Require Import revm.revm_interpreter.simulate.instruction_context.
+Require Import revm.revm_interpreter.tests.interpreter.
+Require Import revm.revm_interpreter.tests.interpreter_types.
+Require Import revm.revm_interpreter.tests.stateful_host.
+Require Import revm.revm_primitives.links.hardfork.
+Require Import ruint.links.lib.
+Require Import simulate.RocqOfRust.
+
+Import ListNotations.
+
+Open Scope Z_scope.
+
+Parameter run_InterpreterTypes_for_WIRE :
+  RocqOfRust.revm.revm_interpreter.links.interpreter_types.InterpreterTypes.Run
+    WIRE WIRE_types.
+
+Definition bytecode_is_not_end (bytecode : Bytecode.t) : bool :=
+  Z.ltb
+    bytecode.(Bytecode.pc).(Integer.value)
+    (Z.of_nat (List.length bytecode.(Bytecode.code))).
+
+Definition interpreter_with_spec_id
+    (interpreter : Interpreter.t WIRE WIRE_types)
+    (spec_id : SpecId.t) :
+    Interpreter.t WIRE WIRE_types := {|
+  Interpreter.bytecode := interpreter.(Interpreter.bytecode);
+  Interpreter.gas := interpreter.(Interpreter.gas);
+  Interpreter.stack := interpreter.(Interpreter.stack);
+  Interpreter.return_data := interpreter.(Interpreter.return_data);
+  Interpreter.memory := interpreter.(Interpreter.memory);
+  Interpreter.input := interpreter.(Interpreter.input);
+  Interpreter.sub_routine := interpreter.(Interpreter.sub_routine);
+  Interpreter.control := interpreter.(Interpreter.control);
+  Interpreter.runtime_flag := spec_id;
+  Interpreter.extend := interpreter.(Interpreter.extend);
+|}.
+
+Definition add11_account : StatefulHost.Account.t := {|
+  StatefulHost.Account.address := 0;
+  StatefulHost.Account.balance := 0;
+  StatefulHost.Account.nonce := 0;
+  StatefulHost.Account.code := [];
+  StatefulHost.Account.code_hash := 0;
+  StatefulHost.Account.storage := [];
+  StatefulHost.Account.transient_storage := [];
+|}.
+
+Definition add11_input : StatefulHost.Input.t := {|
+  StatefulHost.Input.block := {|
+    StatefulHost.Environment.Block.coinbase := 0;
+    StatefulHost.Environment.Block.gas_limit := 1000000;
+    StatefulHost.Environment.Block.number := 0;
+    StatefulHost.Environment.Block.timestamp := 0;
+    StatefulHost.Environment.Block.difficulty := 0;
+    StatefulHost.Environment.Block.base_fee := 0;
+    StatefulHost.Environment.Block.blob_base_fee := 0;
+    StatefulHost.Environment.Block.previous_randao := None;
+    StatefulHost.Environment.Block.hashes := [];
+  |};
+  StatefulHost.Input.transaction := {|
+    StatefulHost.Environment.Transaction.chain_id := 1;
+    StatefulHost.Environment.Transaction.gas_price := 0;
+    StatefulHost.Environment.Transaction.blob_hashes := [];
+  |};
+  StatefulHost.Input.call := {|
+    StatefulHost.Environment.Call.caller := 0;
+  |};
+  StatefulHost.Input.state := [add11_account];
+|}.
+
+Definition add11_code : list u8 :=
+  [(96 : u8); (1 : u8); (96 : u8); (1 : u8); (1 : u8);
+   (96 : u8); (0 : u8); (85 : u8); (0 : u8)].
+
+Definition run_sstore_once : option (Z * list StatefulHost.Change.t) :=
+  let interpreter : Interpreter.t WIRE WIRE_types :=
+    make_interpreter
+      {| Stack.value :=
+           [{| Uint.value := 0 |}; {| Uint.value := 2 |}] |} in
+  let interpreter :=
+    interpreter_with_spec_id interpreter SpecId.FRONTIER in
+  let state : InstructionContext.State.t StatefulHost.t WIRE WIRE_types := {|
+    InstructionContext.State.interpreter := interpreter;
+    InstructionContext.State.host := StatefulHost.make add11_input;
+  |} in
+  let state :=
+    InterpreterDispatch.stateful
+      (H_types := StatefulHost.host_types)
+      {| Integer.value := 85 |}
+      state in
+  match state with
+  | {|
+      InstructionContext.State.interpreter := _;
+      InstructionContext.State.host := host
+    |} =>
+      match StatefulHost.find_account 0 host.(StatefulHost.accounts) with
+      | Some account =>
+          Some
+            (StatefulHost.lookup_word
+              0 account.(StatefulHost.Account.storage),
+             StatefulHost.observe_state_changes host)
+      | None => None
+      end
+  end.
+
+Definition run_add11 : option (Z * list StatefulHost.Change.t) :=
+  let interpreter : Interpreter.t WIRE WIRE_types :=
+    make_interpreter_with_bytecode add11_code {| Stack.value := [] |} in
+  let interpreter :=
+    interpreter_with_spec_id interpreter SpecId.FRONTIER in
+  let initial_state :
+      InstructionContext.State.t StatefulHost.t WIRE WIRE_types := {|
+    InstructionContext.State.interpreter := interpreter;
+    InstructionContext.State.host := StatefulHost.make add11_input;
+  |} in
+  let table :=
+    FragmentInstructionTable.table
+      (H := StatefulHost.t)
+      (H_types := StatefulHost.host_types)
+      run_InterpreterTypes_for_WIRE in
+  match
+    InterpreterDispatch.run_plain_stateful_fuel
+      (List.length add11_code)
+      InterpreterTypes.I
+      bytecode_is_not_end
+      table
+      initial_state
+  with
+  | Some (_, {|
+      InstructionContext.State.interpreter := _;
+      InstructionContext.State.host := host
+    |}) =>
+      match StatefulHost.find_account 0 host.(StatefulHost.accounts) with
+      | Some account =>
+          Some
+            (StatefulHost.lookup_word
+              0 account.(StatefulHost.Account.storage),
+             StatefulHost.observe_state_changes host)
+      | None => None
+      end
+  | None => None
+  end.
+
+Module Test.
+  Goal
+    run_sstore_once =
+    Some (2, [StatefulHost.Change.Storage 0 0 2]).
+  Proof.
+    timeout 30 vm_compute.
+    reflexivity.
+  Qed.
+
+  (** GeneralStateTests/stExample/add11.json executes
+      PUSH1 1; PUSH1 1; ADD; PUSH1 0; SSTORE; STOP. *)
+  Goal
+    run_add11 =
+    Some (2, [StatefulHost.Change.Storage 0 0 2]).
+  Proof.
+    timeout 60 vm_compute.
+    reflexivity.
+  Qed.
+End Test.

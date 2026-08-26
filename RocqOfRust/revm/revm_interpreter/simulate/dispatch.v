@@ -5,6 +5,7 @@ Require Import simulate.RocqOfRust.
 
 Require Import core.links.array.
 Require Import revm.revm_context_interface.links.host.
+Require Import revm.revm_context_interface.simulate.host.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.add.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.addmod.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.div.
@@ -33,6 +34,7 @@ Require Import revm.revm_interpreter.instructions.simulate.bitwise.shr.
 Require Import revm.revm_interpreter.instructions.simulate.bitwise.slt.
 Require Import revm.revm_interpreter.instructions.simulate.control.stop.
 Require Import revm.revm_interpreter.instructions.simulate.control.unknown.
+Require Import revm.revm_interpreter.instructions.simulate.host.sstore.
 Require Import revm.revm_interpreter.instructions.simulate.stack.push.
 Require Import revm.revm_interpreter.instructions.simulate.system.returndatacopy.
 Require Import revm.revm_interpreter.instructions.simulate.table.
@@ -685,6 +687,54 @@ Module InterpreterDispatch.
       table
       state.
 
+  Definition stateful
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : Host.C H H_types}
+      (opcode : u8)
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+      InstructionContext.State.t H WIRE WIRE_types :=
+    if Z.eqb opcode.(Integer.value) 85 then
+      match state with
+      | {|
+          InstructionContext.State.interpreter := interpreter;
+          InstructionContext.State.host := host
+        |} =>
+          let '(interpreter, host) := sstore interpreter host in
+          {|
+            InstructionContext.State.interpreter := interpreter;
+            InstructionContext.State.host := host;
+          |}
+      end
+    else
+      simple opcode state.
+
+  Definition step_result_stateful
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : Host.C H H_types}
+      (IInterpreterTypes : InterpreterTypes.C WIRE_types)
+      (table :
+        array.t
+          (Instruction.t WIRE H WIRE_types)
+          {| Integer.value := 256 |})
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+      InterpreterStep.Result.t H WIRE WIRE_types :=
+    InterpreterStep.step_result
+      IInterpreterTypes
+      (fun opcode state =>
+        stateful
+          (IInterpreterTypes := IInterpreterTypes)
+          opcode
+          state)
+      table
+      state.
+
   Definition result_state
       {H WIRE : Set} `{Link H} `{Link WIRE}
       {WIRE_types : InterpreterTypes.Types.t}
@@ -832,6 +882,40 @@ Module InterpreterDispatch.
             | InterpreterStep.Result.OutOfGas state
             | InterpreterStep.Result.Success state =>
                 run_plain_fuel
+                  fuel IInterpreterTypes is_not_end table state
+            end
+        end
+    end.
+
+  Fixpoint run_plain_stateful_fuel
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : Host.C H H_types}
+      (fuel : nat)
+      (IInterpreterTypes : InterpreterTypes.C WIRE_types)
+      (is_not_end :
+        WIRE_types.(InterpreterTypes.Types.Bytecode) -> bool)
+      (table :
+        array.t
+          (Instruction.t WIRE H WIRE_types)
+          {| Integer.value := 256 |})
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+      option
+        (InterpreterAction.t *
+          InstructionContext.State.t H WIRE WIRE_types) :=
+    match finish_if_halted IInterpreterTypes is_not_end state with
+    | Some result => Some result
+    | None =>
+        match fuel with
+        | O => None
+        | S fuel =>
+            match step_result_stateful IInterpreterTypes table state with
+            | InterpreterStep.Result.MissingInstruction => None
+            | InterpreterStep.Result.OutOfGas state
+            | InterpreterStep.Result.Success state =>
+                run_plain_stateful_fuel
                   fuel IInterpreterTypes is_not_end table state
             end
         end
