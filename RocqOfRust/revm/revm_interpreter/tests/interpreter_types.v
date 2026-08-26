@@ -7,13 +7,13 @@ Require Import core.links.option.
 Require Import core.links.array.
 Require Import core.ops.links.range.
 Require Import core.ops.simulate.deref.
+Require Import revm.revm_interpreter.instructions.simulate.utility.
 Require Import revm.revm_interpreter.interpreter_action.links.call_inputs.
 Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter_action.
 Require Import revm.revm_interpreter.links.interpreter_InterpreterResult.
 Require Import revm.revm_interpreter.links.interpreter_types.
-Require Import revm.revm_interpreter.instructions.simulate.utility.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import revm.revm_primitives.links.hardfork.
 Require Import ruint.links.lib.
@@ -558,9 +558,9 @@ Export (hints) LoopControl.
 Module RuntimeFlag.
   Definition Self : Set := SpecId.t.
 
-  Parameter is_static : Self -> bool.
-  Parameter is_eof : Self -> bool.
-  Parameter is_eof_init : Self -> bool.
+  Definition is_static (_self : Self) : bool := false.
+  Definition is_eof (_self : Self) : bool := false.
+  Definition is_eof_init (_self : Self) : bool := false.
   Definition spec_id (self : Self) : SpecId.t := self.
 
   Instance I : RuntimeFlag.C WIRE_types.(InterpreterTypes.Types.RuntimeFlag) := {
