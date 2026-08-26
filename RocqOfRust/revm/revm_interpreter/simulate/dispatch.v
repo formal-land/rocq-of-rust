@@ -64,8 +64,7 @@ Module InterpreterDispatch.
     opcode.(Integer.value) = 8 \/
     opcode.(Integer.value) = 9 \/
     opcode.(Integer.value) = 10 \/
-    opcode.(Integer.value) = 11 \/
-    opcode.(Integer.value) = 16.
+    opcode.(Integer.value) = 11.
 
   Definition BytecodeInSimple (code : list u8) : Prop :=
     List.Forall OpcodeInSimple code.
