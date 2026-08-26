@@ -54,7 +54,7 @@ Definition make_interpreter_with_memory (stack : Stack.t) (memory : Memory.t)
   Interpreter.stack := stack;
   Interpreter.return_data := tt;
   Interpreter.memory := memory;
-  Interpreter.input := tt;
+  Interpreter.input := empty_input;
   Interpreter.sub_routine := tt;
   Interpreter.control := {|
     Control.gas := gas_val;
