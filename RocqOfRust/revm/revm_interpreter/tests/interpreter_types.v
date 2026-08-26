@@ -168,6 +168,21 @@ Module Control.
 End Control.
 Export (hints) Control.
 
+Module Input.
+  Record t : Set := {
+    target_address : Address.t;
+    caller_address : Address.t;
+    input : CallInput.t;
+    call_value : aliases.U256.t;
+  }.
+
+  Instance IsLink : Link t := {
+    Φ := Ty.path "revm_interpreter::tests::Input";
+    φ _ := Value.Tuple [];
+  }.
+End Input.
+Export (hints) Input.
+
 Definition WIRE_types : InterpreterTypes.Types.t := {|
   InterpreterTypes.Types.Stack := Stack.t;
   InterpreterTypes.Types.Memory := Memory.t;
@@ -175,7 +190,7 @@ Definition WIRE_types : InterpreterTypes.Types.t := {|
   InterpreterTypes.Types.Memory_Synthetic1 := MemorySlice.t;
   InterpreterTypes.Types.Bytecode := Bytecode.t;
   InterpreterTypes.Types.ReturnData := unit;
-  InterpreterTypes.Types.Input := unit;
+  InterpreterTypes.Types.Input := Input.t;
   InterpreterTypes.Types.SubRoutineStack := unit;
   InterpreterTypes.Types.Control := Control.t;
   InterpreterTypes.Types.RuntimeFlag := SpecId.t;
@@ -266,31 +281,22 @@ End EofContainer.
 Export (hints) EofContainer.
 
 Module InputTraits.
-  Definition call_input : CallInput.t :=
-    CallInput.Bytes {|
-      Bytes.value := {|
-        bytes.Bytes.value := [];
-      |};
-    |}.
-
-  Definition input : RefStub.t unit CallInput.t := {|
+  Definition input_ref : RefStub.t Input.t CallInput.t := {|
     RefStub.path := [];
-    RefStub.projection _ := call_input;
-    RefStub.injection self _ := self;
+    RefStub.projection self := self.(Input.input);
+    RefStub.injection self value :=
+      {| Input.target_address := self.(Input.target_address);
+         Input.caller_address := self.(Input.caller_address);
+         Input.input := value;
+         Input.call_value := self.(Input.call_value) |};
   |}.
 
-  Instance I : InputTraits.C WIRE_types.(InterpreterTypes.Types.Input).
-  Proof.
-    exact {|
-      simulate.interpreter_types.InputTraits.target_address _ :=
-        {| Address.value := 0 |};
-      simulate.interpreter_types.InputTraits.caller_address _ :=
-        {| Address.value := 0 |};
-      simulate.interpreter_types.InputTraits.input := input;
-      simulate.interpreter_types.InputTraits.call_value _ :=
-        {| Uint.value := 0 |};
-    |}.
-  Defined.
+  Instance I : InputTraits.C WIRE_types.(InterpreterTypes.Types.Input) := {
+    InputTraits.target_address self := self.(Input.target_address);
+    InputTraits.caller_address self := self.(Input.caller_address);
+    InputTraits.input := input_ref;
+    InputTraits.call_value self := self.(Input.call_value);
+  }.
 End InputTraits.
 Export (hints) InputTraits.
 
