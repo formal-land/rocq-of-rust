@@ -7,12 +7,13 @@ Require Import core.links.option.
 Require Import core.links.array.
 Require Import core.ops.links.range.
 Require Import core.ops.simulate.deref.
+Require Import revm.revm_interpreter.instructions.simulate.utility.
+Require Import revm.revm_interpreter.interpreter_action.links.call_inputs.
 Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter_action.
 Require Import revm.revm_interpreter.links.interpreter_InterpreterResult.
 Require Import revm.revm_interpreter.links.interpreter_types.
-Require Import revm.revm_interpreter.instructions.simulate.utility.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import revm.revm_primitives.links.hardfork.
 Require Import ruint.links.lib.
@@ -265,9 +266,31 @@ End EofContainer.
 Export (hints) EofContainer.
 
 Module InputTraits.
+  Definition call_input : CallInput.t :=
+    CallInput.Bytes {|
+      Bytes.value := {|
+        bytes.Bytes.value := [];
+      |};
+    |}.
+
+  Definition input : RefStub.t unit CallInput.t := {|
+    RefStub.path := [];
+    RefStub.projection _ := call_input;
+    RefStub.injection self _ := self;
+  |}.
+
   Instance I : InputTraits.C WIRE_types.(InterpreterTypes.Types.Input).
   Proof.
-  Admitted.
+    exact {|
+      simulate.interpreter_types.InputTraits.target_address _ :=
+        {| Address.value := 0 |};
+      simulate.interpreter_types.InputTraits.caller_address _ :=
+        {| Address.value := 0 |};
+      simulate.interpreter_types.InputTraits.input := input;
+      simulate.interpreter_types.InputTraits.call_value _ :=
+        {| Uint.value := 0 |};
+    |}.
+  Defined.
 End InputTraits.
 Export (hints) InputTraits.
 
@@ -529,9 +552,9 @@ Export (hints) LoopControl.
 Module RuntimeFlag.
   Definition Self : Set := SpecId.t.
 
-  Parameter is_static : Self -> bool.
-  Parameter is_eof : Self -> bool.
-  Parameter is_eof_init : Self -> bool.
+  Definition is_static (_self : Self) : bool := false.
+  Definition is_eof (_self : Self) : bool := false.
+  Definition is_eof_init (_self : Self) : bool := false.
   Definition spec_id (self : Self) : SpecId.t := self.
 
   Instance I : RuntimeFlag.C WIRE_types.(InterpreterTypes.Types.RuntimeFlag) := {
