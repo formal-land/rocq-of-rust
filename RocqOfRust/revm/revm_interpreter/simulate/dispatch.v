@@ -35,7 +35,11 @@ Require Import revm.revm_interpreter.instructions.simulate.bitwise.slt.
 Require Import revm.revm_interpreter.instructions.simulate.control.stop.
 Require Import revm.revm_interpreter.instructions.simulate.control.unknown.
 Require Import revm.revm_interpreter.instructions.simulate.host.sstore.
+Require Import revm.revm_interpreter.instructions.simulate.stack.dup.
+Require Import revm.revm_interpreter.instructions.simulate.stack.pop.
 Require Import revm.revm_interpreter.instructions.simulate.stack.push.
+Require Import revm.revm_interpreter.instructions.simulate.stack.push0.
+Require Import revm.revm_interpreter.instructions.simulate.stack.swap.
 Require Import revm.revm_interpreter.instructions.simulate.system.returndatacopy.
 Require Import revm.revm_interpreter.instructions.simulate.table.
 Require Import revm.revm_interpreter.links.gas.
@@ -340,8 +344,25 @@ Module InterpreterDispatch.
         op_clz
       else if Z.eqb opcode.(Integer.value) 62 then
         returndatacopy
-      else if Z.eqb opcode.(Integer.value) 96 then
-        push {| Integer.value := 1 |}
+      else if Z.eqb opcode.(Integer.value) 80 then
+        pop
+      else if Z.eqb opcode.(Integer.value) 95 then
+        push0
+      else if
+        (96 <=? opcode.(Integer.value)) &&
+        (opcode.(Integer.value) <=? 127)
+      then
+        push {| Integer.value := opcode.(Integer.value) - 95 |}
+      else if
+        (128 <=? opcode.(Integer.value)) &&
+        (opcode.(Integer.value) <=? 143)
+      then
+        dup {| Integer.value := opcode.(Integer.value) - 127 |}
+      else if
+        (144 <=? opcode.(Integer.value)) &&
+        (opcode.(Integer.value) <=? 159)
+      then
+        swap {| Integer.value := opcode.(Integer.value) - 143 |}
       else
         unknown)
       state.
@@ -664,6 +685,81 @@ Module InterpreterDispatch.
   Proof.
     reflexivity.
   Qed.
+
+  Lemma simple_pop
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 80 |} state =
+    InstructionContext.map_interpreter pop state.
+  Proof. reflexivity. Qed.
+
+  Lemma simple_push0
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 95 |} state =
+    InstructionContext.map_interpreter push0 state.
+  Proof. reflexivity. Qed.
+
+  Lemma simple_push32
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 127 |} state =
+    InstructionContext.map_interpreter
+      (push {| Integer.value := 32 |}) state.
+  Proof. reflexivity. Qed.
+
+  Lemma simple_dup1
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 128 |} state =
+    InstructionContext.map_interpreter
+      (dup {| Integer.value := 1 |}) state.
+  Proof. reflexivity. Qed.
+
+  Lemma simple_dup16
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 143 |} state =
+    InstructionContext.map_interpreter
+      (dup {| Integer.value := 16 |}) state.
+  Proof. reflexivity. Qed.
+
+  Lemma simple_swap1
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 144 |} state =
+    InstructionContext.map_interpreter
+      (swap {| Integer.value := 1 |}) state.
+  Proof. reflexivity. Qed.
+
+  Lemma simple_swap16
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 159 |} state =
+    InstructionContext.map_interpreter
+      (swap {| Integer.value := 16 |}) state.
+  Proof. reflexivity. Qed.
 
   Definition step_result_simple
       {H WIRE : Set} `{Link H} `{Link WIRE}

@@ -6,6 +6,7 @@ Require Import revm.revm_interpreter.instructions.simulate.table.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.simulate.dispatch.
 Require Import revm.revm_interpreter.simulate.instruction_context.
+Require Import revm.revm_interpreter.simulate.step.
 Require Import revm.revm_interpreter.tests.host.
 Require Import revm.revm_interpreter.tests.interpreter.
 Require Import revm.revm_interpreter.tests.interpreter_types.
@@ -84,6 +85,32 @@ Definition run_binary
   run_plain_stack
     [byte 96; byte first; byte 96; byte second; byte opcode; byte 0].
 
+Fixpoint push1_code (values : list Z) : list u8 :=
+  match values with
+  | [] => []
+  | value :: values => byte 96 :: byte value :: push1_code values
+  end.
+
+Definition words (values : list Z) : list aliases.U256.t :=
+  List.map (fun value => {| Uint.value := value |}) values.
+
+Definition table_static_gas (opcode : Z) : option Z :=
+  let table :=
+    FragmentInstructionTable.table
+      (H := TestHost.t)
+      run_InterpreterTypes_for_WIRE in
+  match
+    InterpreterStep.instruction_at
+      table
+      {| Integer.value := opcode |}
+  with
+  | Some instruction =>
+      Some
+        (InterpreterStep.instruction_static_gas instruction)
+          .(Integer.value)
+  | None => None
+  end.
+
 (** The executable prefix of GeneralStateTests/stExample/add11.json. *)
 Goal
   run_plain_stack
@@ -93,6 +120,59 @@ Proof.
   timeout 5 vm_compute.
   reflexivity.
 Qed.
+
+(** Stack opcode boundaries through the multi-step dispatcher. *)
+Goal table_static_gas 80 = Some 2.
+Proof. timeout 5 vm_compute. reflexivity. Qed.
+
+Goal
+  List.map
+    (fun opcode => table_static_gas (Z.of_nat opcode))
+    (List.seq 95 65) =
+  Some 2 :: List.repeat (Some 3) 64.
+Proof. timeout 5 vm_compute. reflexivity. Qed.
+
+Goal
+  run_plain_stack [byte 95; byte 0] =
+  Some (words [0]).
+Proof. timeout 5 vm_compute. reflexivity. Qed.
+
+Goal
+  run_plain_stack
+    ([byte 127] ++ List.repeat (byte 0) 31 ++ [byte 42; byte 0]) =
+  Some (words [42]).
+Proof. timeout 5 vm_compute. reflexivity. Qed.
+
+Goal
+  run_plain_stack [byte 96; byte 42; byte 80; byte 0] =
+  Some (words []).
+Proof. timeout 5 vm_compute. reflexivity. Qed.
+
+Goal
+  run_plain_stack [byte 96; byte 42; byte 128; byte 0] =
+  Some (words [42; 42]).
+Proof. timeout 5 vm_compute. reflexivity. Qed.
+
+Goal
+  run_plain_stack
+    (push1_code [1; 2; 3; 4; 5; 6; 7; 8; 9; 10; 11; 12; 13; 14; 15; 16]
+      ++ [byte 143; byte 0]) =
+  Some (words [1; 16; 15; 14; 13; 12; 11; 10; 9; 8; 7; 6; 5; 4; 3; 2; 1]).
+Proof. timeout 5 vm_compute. reflexivity. Qed.
+
+Goal
+  run_plain_stack
+    (push1_code [1; 2] ++ [byte 144; byte 0]) =
+  Some (words [1; 2]).
+Proof. timeout 5 vm_compute. reflexivity. Qed.
+
+Goal
+  run_plain_stack
+    (push1_code
+      [1; 2; 3; 4; 5; 6; 7; 8; 9; 10; 11; 12; 13; 14; 15; 16; 17]
+      ++ [byte 159; byte 0]) =
+  Some (words [1; 16; 15; 14; 13; 12; 11; 10; 9; 8; 7; 6; 5; 4; 3; 2; 17]).
+Proof. timeout 5 vm_compute. reflexivity. Qed.
 
 (** The complete bitwise opcode family through the multi-step dispatcher. *)
 Goal run_binary 16 20 10 = Some [{| Uint.value := 1 |}].
