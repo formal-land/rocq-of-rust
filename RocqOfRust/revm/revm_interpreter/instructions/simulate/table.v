@@ -44,7 +44,11 @@ Require Import revm.revm_interpreter.instructions.simulate.bitwise.sgt.
 Require Import revm.revm_interpreter.instructions.simulate.bitwise.shl.
 Require Import revm.revm_interpreter.instructions.simulate.bitwise.shr.
 Require Import revm.revm_interpreter.instructions.simulate.bitwise.slt.
+Require Import revm.revm_interpreter.instructions.simulate.stack.dup.
+Require Import revm.revm_interpreter.instructions.simulate.stack.pop.
 Require Import revm.revm_interpreter.instructions.simulate.stack.push.
+Require Import revm.revm_interpreter.instructions.simulate.stack.push0.
+Require Import revm.revm_interpreter.instructions.simulate.stack.swap.
 Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.links.table.
@@ -59,6 +63,19 @@ Module FragmentInstructionTable.
     | O => tail
     | S count =>
         ArrayPair.Build_t value (prepend_repeat value count length tail)
+    end.
+
+  Fixpoint prepend_map {A : Set}
+      (make : nat -> A)
+      (start count length : nat)
+      (tail : ArrayPairs.t A length) :
+      ArrayPairs.t A (count + length) :=
+    match count with
+    | O => tail
+    | S count =>
+        ArrayPair.Build_t
+          (make start)
+          (prepend_map make (S start) count length tail)
     end.
 
   Definition stop_function
@@ -333,7 +350,28 @@ Module FragmentInstructionTable.
       (fun context =>
         run_returndatacopy run_InterpreterTypes_for_WIRE context).
 
-  Definition push1_function
+  Definition pop_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (run_InterpreterTypes_for_WIRE :
+        InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_pop run_InterpreterTypes_for_WIRE context).
+
+  Definition push0_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (run_InterpreterTypes_for_WIRE :
+        InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_push0 run_InterpreterTypes_for_WIRE context).
+
+  Definition push_function
+      (N : usize)
       {WIRE H : Set} `{Link WIRE} `{Link H}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
@@ -344,9 +382,33 @@ Module FragmentInstructionTable.
     Function1.of_run
       (fun context =>
         run_push
-          {| Integer.value := 1 |}
+          N
           run_InterpreterTypes_for_WIRE
           context).
+
+  Definition dup_function
+      (N : usize)
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_InterpreterTypes_for_WIRE :
+        InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_dup N run_InterpreterTypes_for_WIRE context).
+
+  Definition swap_function
+      (N : usize)
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_InterpreterTypes_for_WIRE :
+        InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_swap N run_InterpreterTypes_for_WIRE context).
 
   Definition table
       {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -489,9 +551,38 @@ Module FragmentInstructionTable.
         returndatacopy_function (H := H) run_InterpreterTypes_for_WIRE;
       Instruction.static_gas := {| Integer.value := 0 |};
     |} in
-    let push1_instruction : Instruction.t WIRE H WIRE_types := {|
+    let pop_instruction : Instruction.t WIRE H WIRE_types := {|
       Instruction.fn_ :=
-        push1_function (H := H) run_InterpreterTypes_for_WIRE;
+        pop_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 2 |};
+    |} in
+    let push0_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ :=
+        push0_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 2 |};
+    |} in
+    let push_instruction := fun N : nat => {|
+      Instruction.fn_ :=
+        push_function
+          {| Integer.value := Z.of_nat N |}
+          (H := H)
+          run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 3 |};
+    |} in
+    let dup_instruction := fun N : nat => {|
+      Instruction.fn_ :=
+        dup_function
+          {| Integer.value := Z.of_nat N |}
+          (H := H)
+          run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 3 |};
+    |} in
+    let swap_instruction := fun N : nat => {|
+      Instruction.fn_ :=
+        swap_function
+          {| Integer.value := Z.of_nat N |}
+          (H := H)
+          run_InterpreterTypes_for_WIRE;
       Instruction.static_gas := {| Integer.value := 3 |};
     |} in
     let tail_after_bitwise :
@@ -499,10 +590,16 @@ Module FragmentInstructionTable.
       prepend_repeat unknown_instruction 31 194
         (ArrayPair.Build_t
           returndatacopy_instruction
-          (prepend_repeat unknown_instruction 33 160
+          (prepend_repeat unknown_instruction 17 176
             (ArrayPair.Build_t
-              push1_instruction
-              (ArrayPairs.repeat unknown_instruction 159)))) in
+              pop_instruction
+              (prepend_repeat unknown_instruction 14 161
+                (ArrayPair.Build_t
+                  push0_instruction
+                  (prepend_map push_instruction 1 32 128
+                    (prepend_map dup_instruction 1 16 112
+                      (prepend_map swap_instruction 1 16 96
+                        (ArrayPairs.repeat unknown_instruction 96))))))))) in
     let bitwise_instructions :
         ArrayPairs.t (Instruction.t WIRE H WIRE_types) 240 :=
       ArrayPair.Build_t lt_instruction
