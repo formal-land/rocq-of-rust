@@ -174,6 +174,41 @@ Goal
   Some (words [1; 16; 15; 14; 13; 12; 11; 10; 9; 8; 7; 6; 5; 4; 3; 2; 17]).
 Proof. timeout 5 vm_compute. reflexivity. Qed.
 
+(** Memory and control-flow opcodes used by the remaining shift fixtures. *)
+Goal
+  List.map table_static_gas [81; 82; 86; 87; 91] =
+  List.map (@Some Z) [3; 3; 8; 10; 1].
+Proof. timeout 5 vm_compute. reflexivity. Qed.
+
+Goal
+  run_plain_stack
+    [byte 96; byte 42; byte 96; byte 0; byte 82;
+     byte 96; byte 0; byte 81; byte 0] =
+  Some (words [42]).
+Proof. timeout 5 vm_compute. reflexivity. Qed.
+
+Goal
+  run_plain_stack
+    [byte 96; byte 5; byte 86; byte 96; byte 99;
+     byte 91; byte 96; byte 42; byte 0] =
+  Some (words [42]).
+Proof. timeout 5 vm_compute. reflexivity. Qed.
+
+Goal
+  run_plain_stack
+    [byte 96; byte 1; byte 96; byte 7; byte 87;
+     byte 96; byte 99; byte 91; byte 96; byte 42; byte 0] =
+  Some (words [42]).
+Proof. timeout 5 vm_compute. reflexivity. Qed.
+
+(** An untaken JUMPI does not validate its target. *)
+Goal
+  run_plain_stack
+    [byte 96; byte 0; byte 96; byte 255; byte 87;
+     byte 96; byte 42; byte 0] =
+  Some (words [42]).
+Proof. timeout 5 vm_compute. reflexivity. Qed.
+
 (** The complete bitwise opcode family through the multi-step dispatcher. *)
 Goal run_binary 16 20 10 = Some [{| Uint.value := 1 |}].
 Proof. timeout 5 vm_compute. reflexivity. Qed.

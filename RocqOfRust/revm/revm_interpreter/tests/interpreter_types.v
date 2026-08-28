@@ -240,11 +240,42 @@ Export (hints) LegacyBytecode.
 Module Jumps.
   Definition Self : Set := Bytecode.t.
 
+  Fixpoint is_valid_jumpdest_aux
+      (fuel position target : nat)
+      (code : list u8) : bool :=
+    match fuel with
+    | O => false
+    | S fuel' =>
+      match code with
+      | [] => false
+      | opcode :: code' =>
+        if Nat.eqb position target then
+          Z.eqb i[opcode] 91
+        else
+          let push_data_length :=
+            if andb (Z.leb 96 i[opcode]) (Z.leb i[opcode] 127) then
+              Z.to_nat (i[opcode] - 95)
+            else
+              O in
+          is_valid_jumpdest_aux
+            fuel'
+            (Nat.add position (S push_data_length))
+            target
+            (List.skipn push_data_length code')
+      end
+    end.
+
   Definition relative_jump (self : Self) (offset : isize) : Self :=
     self <| Bytecode.pc := {| Integer.value := i[self.(Bytecode.pc)] + i[offset] |} |>.
   Definition absolute_jump (self : Self) (offset : usize) : Self :=
     self <| Bytecode.pc := offset |>.
-  Definition is_valid_legacy_jump (self : Self) (_offset : usize) : bool * Self := (true, self).
+  Definition is_valid_legacy_jump (self : Self) (offset : usize) : bool * Self :=
+    (is_valid_jumpdest_aux
+      (List.length self.(Bytecode.code))
+      O
+      (Z.to_nat i[offset])
+      self.(Bytecode.code),
+     self).
   Definition pc (self : Self) : usize := self.(Bytecode.pc).
   Definition opcode (self : Self) : u8 :=
     match

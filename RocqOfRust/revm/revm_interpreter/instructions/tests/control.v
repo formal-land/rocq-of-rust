@@ -135,10 +135,46 @@ Qed.
 
 (** ** JUMP tests *)
 
+Definition valid_legacy_jump (code : list u8) (offset : Z) : bool :=
+  let interpreter :=
+    make_interpreter_with_bytecode code {| Stack.value := [] |} in
+  fst
+    (Jumps.is_valid_legacy_jump
+      interpreter.(Interpreter.bytecode)
+      {| Integer.value := offset |}).
+
+Goal valid_legacy_jump [(91 : u8)] 0 = true.
+Proof. timeout 1 vm_compute. reflexivity. Qed.
+
+Goal valid_legacy_jump [(0 : u8)] 0 = false.
+Proof. timeout 1 vm_compute. reflexivity. Qed.
+
+Goal valid_legacy_jump [(91 : u8)] 1 = false.
+Proof. timeout 1 vm_compute. reflexivity. Qed.
+
+(** A JUMPDEST byte inside PUSH data is not an instruction boundary. *)
+Goal valid_legacy_jump [(97 : u8); (0 : u8); (91 : u8); (91 : u8)] 2 = false.
+Proof. timeout 1 vm_compute. reflexivity. Qed.
+
+Goal valid_legacy_jump [(97 : u8); (0 : u8); (91 : u8); (91 : u8)] 3 = true.
+Proof. timeout 1 vm_compute. reflexivity. Qed.
+
+Goal
+  valid_legacy_jump
+    ([(127 : u8)] ++ List.repeat (91 : u8) 32 ++ [(91 : u8)])
+    32 = false.
+Proof. timeout 1 vm_compute. reflexivity. Qed.
+
+Goal
+  valid_legacy_jump
+    ([(127 : u8)] ++ List.repeat (91 : u8) 32 ++ [(91 : u8)])
+    33 = true.
+Proof. timeout 1 vm_compute. reflexivity. Qed.
+
 (** Test that JUMP with valid target succeeds *)
 Goal
-  let stack := {| Stack.value := [{| Uint.value := 5 |}] |} in
-  let interpreter := make_interpreter stack in
+  let stack := {| Stack.value := [{| Uint.value := 0 |}] |} in
+  let interpreter := make_interpreter_with_bytecode [(91 : u8)] stack in
   let result := jump interpreter in
   bytecode_result result = None.
 Proof.
@@ -148,10 +184,21 @@ Qed.
 
 (** Test that JUMP pops the target from stack *)
 Goal
-  let stack := {| Stack.value := [{| Uint.value := 5 |}] |} in
-  let interpreter := make_interpreter stack in
+  let stack := {| Stack.value := [{| Uint.value := 0 |}] |} in
+  let interpreter := make_interpreter_with_bytecode [(91 : u8)] stack in
   let result := jump interpreter in
   result.(Interpreter.stack).(Stack.value) = [].
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+(** Test that JUMP rejects a non-JUMPDEST target *)
+Goal
+  let stack := {| Stack.value := [{| Uint.value := 0 |}] |} in
+  let interpreter := make_interpreter_with_bytecode [(0 : u8)] stack in
+  let result := jump interpreter in
+  bytecode_result result = Some InstructionResult.InvalidJump.
 Proof.
   timeout 1 vm_compute.
   reflexivity.
@@ -201,12 +248,29 @@ Qed.
 (** Test that JUMPI with cond=1 takes the jump *)
 Goal
   let stack := {| Stack.value := [
-    {| Uint.value := 5 |};
+    {| Uint.value := 0 |};
     {| Uint.value := 1 |}
   ] |} in
-  let interpreter := make_interpreter stack in
+  let interpreter := make_interpreter_with_bytecode [(91 : u8)] stack in
   let result := jumpi interpreter in
   bytecode_result result = None.
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+(** A taken JUMPI rejects a JUMPDEST byte inside PUSH data. *)
+Goal
+  let stack := {| Stack.value := [
+    {| Uint.value := 2 |};
+    {| Uint.value := 1 |}
+  ] |} in
+  let interpreter :=
+    make_interpreter_with_bytecode
+      [(97 : u8); (0 : u8); (91 : u8); (91 : u8)]
+      stack in
+  let result := jumpi interpreter in
+  bytecode_result result = Some InstructionResult.InvalidJump.
 Proof.
   timeout 1 vm_compute.
   reflexivity.
@@ -228,8 +292,8 @@ Qed.
 (** Test that JUMP_INNER with valid target succeeds *)
 Goal
   let stack := {| Stack.value := [] |} in
-  let interpreter := make_interpreter stack in
-  let target : aliases.U256.t := {| Uint.value := 5 |} in
+  let interpreter := make_interpreter_with_bytecode [(91 : u8)] stack in
+  let target : aliases.U256.t := {| Uint.value := 0 |} in
   let result := jump_inner interpreter target in
   bytecode_result result = None.
 Proof.

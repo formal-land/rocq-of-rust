@@ -32,9 +32,14 @@ Require Import revm.revm_interpreter.instructions.simulate.bitwise.sgt.
 Require Import revm.revm_interpreter.instructions.simulate.bitwise.shl.
 Require Import revm.revm_interpreter.instructions.simulate.bitwise.shr.
 Require Import revm.revm_interpreter.instructions.simulate.bitwise.slt.
+Require Import revm.revm_interpreter.instructions.simulate.control.jump.
+Require Import revm.revm_interpreter.instructions.simulate.control.jumpdest.
+Require Import revm.revm_interpreter.instructions.simulate.control.jumpi.
 Require Import revm.revm_interpreter.instructions.simulate.control.stop.
 Require Import revm.revm_interpreter.instructions.simulate.control.unknown.
 Require Import revm.revm_interpreter.instructions.simulate.host.sstore.
+Require Import revm.revm_interpreter.instructions.simulate.memory.mload.
+Require Import revm.revm_interpreter.instructions.simulate.memory.mstore.
 Require Import revm.revm_interpreter.instructions.simulate.stack.dup.
 Require Import revm.revm_interpreter.instructions.simulate.stack.pop.
 Require Import revm.revm_interpreter.instructions.simulate.stack.push.
@@ -346,6 +351,16 @@ Module InterpreterDispatch.
         returndatacopy
       else if Z.eqb opcode.(Integer.value) 80 then
         pop
+      else if Z.eqb opcode.(Integer.value) 81 then
+        mload
+      else if Z.eqb opcode.(Integer.value) 82 then
+        mstore
+      else if Z.eqb opcode.(Integer.value) 86 then
+        jump
+      else if Z.eqb opcode.(Integer.value) 87 then
+        jumpi
+      else if Z.eqb opcode.(Integer.value) 91 then
+        jumpdest
       else if Z.eqb opcode.(Integer.value) 95 then
         push0
       else if
@@ -694,6 +709,56 @@ Module InterpreterDispatch.
       (state : InstructionContext.State.t H WIRE WIRE_types) :
     simple {| Integer.value := 80 |} state =
     InstructionContext.map_interpreter pop state.
+  Proof. reflexivity. Qed.
+
+  Lemma simple_mload
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 81 |} state =
+    InstructionContext.map_interpreter mload state.
+  Proof. reflexivity. Qed.
+
+  Lemma simple_mstore
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 82 |} state =
+    InstructionContext.map_interpreter mstore state.
+  Proof. reflexivity. Qed.
+
+  Lemma simple_jump
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 86 |} state =
+    InstructionContext.map_interpreter jump state.
+  Proof. reflexivity. Qed.
+
+  Lemma simple_jumpi
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 87 |} state =
+    InstructionContext.map_interpreter jumpi state.
+  Proof. reflexivity. Qed.
+
+  Lemma simple_jumpdest
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 91 |} state =
+    InstructionContext.map_interpreter jumpdest state.
   Proof. reflexivity. Qed.
 
   Lemma simple_push0
