@@ -286,18 +286,66 @@ Proof.
       apply Run.Pure.
 Qed.
 
+Definition istanbul_sstore_cost_value
+    (sload_gas sstore_reset_gas : u64)
+    (vals : SStoreResult.t) : u64 :=
+  let original := vals.(SStoreResult.original_value).(Uint.value) in
+  let present := vals.(SStoreResult.present_value).(Uint.value) in
+  let new := vals.(SStoreResult.new_value).(Uint.value) in
+  if new =? present then
+    sload_gas
+  else if (original =? present) && (original =? 0) then
+    SSTORE_SET
+  else if original =? present then
+    sstore_reset_gas
+  else
+    sload_gas.
+
+Definition frontier_sstore_cost_value (vals : SStoreResult.t) : u64 :=
+  let present := vals.(SStoreResult.present_value).(Uint.value) in
+  let new := vals.(SStoreResult.new_value).(Uint.value) in
+  if (present =? 0) && negb (new =? 0) then
+    SSTORE_SET
+  else
+    SSTORE_RESET.
+
+Definition sstore_cost_value
+    (spec_id : SpecId.t)
+    (vals : SStoreResult.t)
+    (is_cold : bool) : u64 :=
+  if Impl_SpecId.is_enabled_in spec_id SpecId.BERLIN then
+    let gas_cost :=
+      istanbul_sstore_cost_value
+        WARM_STORAGE_READ_COST
+        WARM_SSTORE_RESET
+        vals in
+    if is_cold then
+      BinOp.Wrap.add gas_cost COLD_SLOAD_COST
+    else
+      gas_cost
+  else if Impl_SpecId.is_enabled_in spec_id SpecId.ISTANBUL then
+    istanbul_sstore_cost_value
+      ISTANBUL_SLOAD_GAS
+      SSTORE_RESET
+      vals
+  else
+    frontier_sstore_cost_value vals.
+
 Definition sstore_cost
     (spec_id : SpecId.t)
-    (vals : '& SStoreResult.t)
-    (is_cold : bool) :
-    u64 :=
-  {| Integer.value := 0 |}.
+    (vals : SStoreResult.t)
+    (is_cold : bool) : u64 :=
+  sstore_cost_value spec_id vals is_cold.
 
 Lemma sstore_cost_eq (stack : Stack.t)
-    (spec_id : SpecId.t) (vals : '& SStoreResult.t) (is_cold : bool) :
+    (spec_id : SpecId.t)
+    (vals_ref : '& SStoreResult.t)
+    (vals : SStoreResult.t)
+    (is_cold : bool) :
+  CanRead.t stack vals vals_ref ->
   {{
     SimulateM.eval_f
-      (run_sstore_cost spec_id vals is_cold)
+      (run_sstore_cost spec_id vals_ref is_cold)
       stack 🌲
     (Output.Success (sstore_cost spec_id vals is_cold), stack)
   }}.
@@ -306,7 +354,7 @@ Admitted.
 
 Definition dyn_sstore_cost
     (spec_id : SpecId.t)
-    (vals : '& SStoreResult.t)
+    (vals : SStoreResult.t)
     (is_cold : bool) :
     u64 :=
   BinOp.Wrap.sub
@@ -314,18 +362,24 @@ Definition dyn_sstore_cost
     (static_sstore_cost spec_id).
 
 Lemma dyn_sstore_cost_eq (stack : Stack.t)
-    (spec_id : SpecId.t) (vals : '& SStoreResult.t) (is_cold : bool) :
+    (spec_id : SpecId.t)
+    (vals_ref : '& SStoreResult.t)
+    (vals : SStoreResult.t)
+    (is_cold : bool) :
+  CanRead.t stack vals vals_ref ->
   {{
     SimulateM.eval_f
-      (run_dyn_sstore_cost spec_id vals is_cold)
+      (run_dyn_sstore_cost spec_id vals_ref is_cold)
       stack 🌲
     (Output.Success (dyn_sstore_cost spec_id vals is_cold), stack)
   }}.
 Proof.
+  intros H_read.
   with_strategy transparent [run_dyn_sstore_cost] unfold run_dyn_sstore_cost.
   cbn.
   eapply Run.Call. {
     apply sstore_cost_eq.
+    exact H_read.
   }
   cbn.
   eapply Run.Call. {
@@ -341,33 +395,103 @@ Proof.
   apply Run.Pure.
 Qed.
 
-Definition istanbul_sstore_cost (vals : '& SStoreResult.t) : u64 :=
-  {| Integer.value := 0 |}.
+Definition istanbul_sstore_cost (vals : SStoreResult.t) : u64 :=
+  istanbul_sstore_cost_value
+    ISTANBUL_SLOAD_GAS
+    SSTORE_RESET
+    vals.
 
 Lemma istanbul_sstore_cost_eq (stack : Stack.t)
-    (vals : '& SStoreResult.t) :
+    (vals_ref : '& SStoreResult.t)
+    (vals : SStoreResult.t) :
+  CanRead.t stack vals vals_ref ->
   {{
     SimulateM.eval_f
-      (run_istanbul_sstore_cost vals)
+      (run_istanbul_sstore_cost vals_ref)
       stack 🌲
     (Output.Success (istanbul_sstore_cost vals), stack)
   }}.
 Proof.
 Admitted.
 
-Definition frontier_sstore_cost (vals : '& SStoreResult.t) : u64 :=
-  {| Integer.value := 0 |}.
+Definition frontier_sstore_cost (vals : SStoreResult.t) : u64 :=
+  frontier_sstore_cost_value vals.
 
 Lemma frontier_sstore_cost_eq (stack : Stack.t)
-    (vals : '& SStoreResult.t) :
+    (vals_ref : '& SStoreResult.t)
+    (vals : SStoreResult.t) :
+  CanRead.t stack vals vals_ref ->
   {{
     SimulateM.eval_f
-      (run_frontier_sstore_cost vals)
+      (run_frontier_sstore_cost vals_ref)
       stack 🌲
     (Output.Success (frontier_sstore_cost vals), stack)
   }}.
 Proof.
 Admitted.
+
+Module SstoreTest.
+  Definition values (original present new : Z) : SStoreResult.t := {|
+    SStoreResult.original_value := {| Uint.value := original |};
+    SStoreResult.present_value := {| Uint.value := present |};
+    SStoreResult.new_value := {| Uint.value := new |};
+  |}.
+
+  Goal
+    sstore_cost_value SpecId.FRONTIER (values 0 0 1) false =
+    {| Integer.value := 20000 |}.
+  Proof. reflexivity. Qed.
+
+  Goal
+    sstore_cost_value SpecId.FRONTIER (values 1 1 0) false =
+    {| Integer.value := 5000 |}.
+  Proof. reflexivity. Qed.
+
+  Goal
+    sstore_cost_value SpecId.ISTANBUL (values 5 5 5) false =
+    {| Integer.value := 800 |}.
+  Proof. reflexivity. Qed.
+
+  Goal
+    sstore_cost_value SpecId.ISTANBUL (values 0 0 1) false =
+    {| Integer.value := 20000 |}.
+  Proof. reflexivity. Qed.
+
+  Goal
+    sstore_cost_value SpecId.ISTANBUL (values 5 5 1) false =
+    {| Integer.value := 5000 |}.
+  Proof. reflexivity. Qed.
+
+  Goal
+    sstore_cost_value SpecId.ISTANBUL (values 5 1 2) false =
+    {| Integer.value := 800 |}.
+  Proof. reflexivity. Qed.
+
+  Goal
+    sstore_cost_value SpecId.BERLIN (values 0 0 1) false =
+    {| Integer.value := 20000 |}.
+  Proof. reflexivity. Qed.
+
+  Goal
+    sstore_cost_value SpecId.BERLIN (values 0 0 1) true =
+    {| Integer.value := 22100 |}.
+  Proof. reflexivity. Qed.
+
+  Goal
+    sstore_cost_value SpecId.BERLIN (values 5 5 1) false =
+    {| Integer.value := 2900 |}.
+  Proof. reflexivity. Qed.
+
+  Goal
+    sstore_cost_value SpecId.BERLIN (values 5 1 2) false =
+    {| Integer.value := 100 |}.
+  Proof. reflexivity. Qed.
+
+  Goal
+    dyn_sstore_cost SpecId.CANCUN (values 0 0 1) false =
+    {| Integer.value := 19900 |}.
+  Proof. reflexivity. Qed.
+End SstoreTest.
 
 Definition static_selfdestruct_cost (spec_id : SpecId.t) : u64 :=
   {| Integer.value := 0 |}.

@@ -57,12 +57,13 @@ Definition sstore
       IHost.(Host.sstore_skip_cold_load) host target index value skip_cold in
     match result with
     | Result.Ok state_load =>
-        let vals_ref : '& SStoreResult.t :=
-          Ref.immediate Pointer.Kind.Ref state_load.(StateLoad.data) in
         gas_macro interpreter
-          (calc.dyn_sstore_cost spec_id vals_ref state_load.(StateLoad.is_cold))
+          (calc.dyn_sstore_cost
+            spec_id state_load.(StateLoad.data) state_load.(StateLoad.is_cold))
           (fun interpreter => (interpreter, host)) (fun interpreter =>
 
+        let vals_ref : '& SStoreResult.t :=
+          Ref.immediate Pointer.Kind.Ref state_load.(StateLoad.data) in
         let refund := calc.sstore_refund spec_id vals_ref in
         let gas := Impl_Gas.record_refund interpreter.(Interpreter.gas) refund in
         (interpreter <| Interpreter.gas := gas |>, host))
@@ -75,18 +76,40 @@ Definition sstore
     let '(result, host) := IHost.(Host.sstore) host target index value in
     match result with
     | Some state_load =>
-        let vals_ref : '& SStoreResult.t :=
-          Ref.immediate Pointer.Kind.Ref state_load.(StateLoad.data) in
         gas_macro interpreter
-          (calc.dyn_sstore_cost spec_id vals_ref state_load.(StateLoad.is_cold))
+          (calc.dyn_sstore_cost
+            spec_id state_load.(StateLoad.data) state_load.(StateLoad.is_cold))
           (fun interpreter => (interpreter, host)) (fun interpreter =>
 
+        let vals_ref : '& SStoreResult.t :=
+          Ref.immediate Pointer.Kind.Ref state_load.(StateLoad.data) in
         let refund := calc.sstore_refund spec_id vals_ref in
         let gas := Impl_Gas.record_refund interpreter.(Interpreter.gas) refund in
         (interpreter <| Interpreter.gas := gas |>, host))
     | None =>
         (halt_fatal interpreter, host)
     end))).
+
+Ltac normalize_dynamic_sstore_cost H_dynamic_gas :=
+  unfold
+    calc.dyn_sstore_cost,
+    calc.sstore_cost,
+    calc.sstore_cost_value,
+    calc.istanbul_sstore_cost_value,
+    calc.frontier_sstore_cost_value
+    in H_dynamic_gas |- *;
+  cbn in H_dynamic_gas |- *.
+
+Ltac destruct_dynamic_sstore_cost :=
+  match goal with
+  | |- context[
+      Impl_Gas.record_cost ?gas
+        (calc.dyn_sstore_cost ?spec_id ?values ?is_cold)] =>
+      destruct
+        (Impl_Gas.record_cost gas
+          (calc.dyn_sstore_cost spec_id values is_cold))
+        as [gas_after_dynamic|] eqn:H_dynamic_gas
+  end.
 
 Lemma sstore_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -360,17 +383,15 @@ Proof.
 	              get_can_access.
 	              cbn.
 	              eapply Run.Call. {
-	                apply calc.dyn_sstore_cost_eq.
+	                eapply calc.dyn_sstore_cost_eq
+	                  with (vals := state_load.(StateLoad.data)).
+	                repeat unshelve econstructor.
 	              }
 	              cbn.
 	              s. {
 	                apply Impl_Gas.record_cost_interpreter_eq.
 	              }
-	              match goal with
-	              | |- context[Impl_Gas.record_cost ?gas ?cost] =>
-	                  destruct (Impl_Gas.record_cost gas cost)
-	                    as [gas_after_dynamic|] eqn:H_dynamic_gas
-	              end;
+	              destruct_dynamic_sstore_cost;
 	              cbn.
 	              ** eapply Run.Call. {
 	                   apply Run.Pure.
@@ -410,12 +431,7 @@ Proof.
 	                 cbn.
 	                 unfold gas_macro.
 	                 cbn.
-	                 unfold calc.dyn_sstore_cost in H_dynamic_gas.
-	                 unfold calc.sstore_cost in H_dynamic_gas.
-	                 cbn in H_dynamic_gas.
-	                 unfold calc.dyn_sstore_cost.
-	                 unfold calc.sstore_cost.
-	                 cbn.
+	                 normalize_dynamic_sstore_cost H_dynamic_gas.
 	                 setoid_rewrite H_dynamic_gas.
 	                 cbn.
 	                 unfold calc.sstore_refund.
@@ -440,6 +456,7 @@ Proof.
 	                 cbn.
 	                 unfold gas_macro.
 	                 cbn.
+	                 normalize_dynamic_sstore_cost H_dynamic_gas.
 	                 setoid_rewrite H_dynamic_gas.
 	                 cbn.
 	                 symmetry in H_berlin.
@@ -542,17 +559,15 @@ Proof.
 	              get_can_access.
 	              cbn.
 	              eapply Run.Call. {
-	                apply calc.dyn_sstore_cost_eq.
+	                eapply calc.dyn_sstore_cost_eq
+	                  with (vals := state_load.(StateLoad.data)).
+	                repeat unshelve econstructor.
 	              }
 	              cbn.
 	              s. {
 	                apply Impl_Gas.record_cost_interpreter_eq.
 	              }
-	              match goal with
-	              | |- context[Impl_Gas.record_cost ?gas ?cost] =>
-	                  destruct (Impl_Gas.record_cost gas cost)
-	                    as [gas_after_dynamic|] eqn:H_dynamic_gas
-	              end;
+	              destruct_dynamic_sstore_cost;
 	              cbn.
 	              ** eapply Run.Call. {
 	                   apply Run.Pure.
@@ -592,12 +607,7 @@ Proof.
 	                 cbn.
 	                 unfold gas_macro.
 	                 cbn.
-	                 unfold calc.dyn_sstore_cost in H_dynamic_gas.
-	                 unfold calc.sstore_cost in H_dynamic_gas.
-	                 cbn in H_dynamic_gas.
-	                 unfold calc.dyn_sstore_cost.
-	                 unfold calc.sstore_cost.
-	                 cbn.
+	                 normalize_dynamic_sstore_cost H_dynamic_gas.
 	                 setoid_rewrite H_dynamic_gas.
 	                 cbn.
 	                 unfold calc.sstore_refund.
@@ -625,12 +635,7 @@ Proof.
 	                 cbn.
 	                 unfold gas_macro.
 	                 cbn.
-	                 unfold calc.dyn_sstore_cost in H_dynamic_gas.
-	                 unfold calc.sstore_cost in H_dynamic_gas.
-	                 cbn in H_dynamic_gas.
-	                 unfold calc.dyn_sstore_cost.
-	                 unfold calc.sstore_cost.
-	                 cbn.
+	                 normalize_dynamic_sstore_cost H_dynamic_gas.
 	                 setoid_rewrite H_dynamic_gas.
 	                 cbn.
 	                 reflexivity.
@@ -822,17 +827,15 @@ Proof.
 	           get_can_access.
 	           cbn.
 	           eapply Run.Call. {
-	             apply calc.dyn_sstore_cost_eq.
+	             eapply calc.dyn_sstore_cost_eq
+	               with (vals := state_load.(StateLoad.data)).
+	             repeat unshelve econstructor.
 	           }
 	           cbn.
 	           s. {
 	             apply Impl_Gas.record_cost_interpreter_eq.
 	           }
-	           match goal with
-	           | |- context[Impl_Gas.record_cost ?gas ?cost] =>
-	               destruct (Impl_Gas.record_cost gas cost)
-	                 as [gas_after_dynamic|] eqn:H_dynamic_gas
-	           end;
+	           destruct_dynamic_sstore_cost;
 	           cbn.
 	           ++ eapply Run.Call. {
 	                apply Run.Pure.
@@ -870,12 +873,7 @@ Proof.
 	              cbn.
 	              unfold gas_macro.
 	              cbn.
-	              unfold calc.dyn_sstore_cost in H_dynamic_gas.
-	              unfold calc.sstore_cost in H_dynamic_gas.
-	              cbn in H_dynamic_gas.
-	              unfold calc.dyn_sstore_cost.
-	              unfold calc.sstore_cost.
-	              cbn.
+	              normalize_dynamic_sstore_cost H_dynamic_gas.
 	              setoid_rewrite H_dynamic_gas.
 	              cbn.
 	              unfold calc.sstore_refund.
@@ -901,12 +899,7 @@ Proof.
 	              cbn.
 	              unfold gas_macro.
 	              cbn.
-	              unfold calc.dyn_sstore_cost in H_dynamic_gas.
-	              unfold calc.sstore_cost in H_dynamic_gas.
-	              cbn in H_dynamic_gas.
-	              unfold calc.dyn_sstore_cost.
-	              unfold calc.sstore_cost.
-	              cbn.
+	              normalize_dynamic_sstore_cost H_dynamic_gas.
 	              setoid_rewrite H_dynamic_gas.
 	              cbn.
 	              reflexivity.
@@ -1002,17 +995,15 @@ Proof.
 	           get_can_access.
 	           cbn.
 	           eapply Run.Call. {
-	             apply calc.dyn_sstore_cost_eq.
+	             eapply calc.dyn_sstore_cost_eq
+	               with (vals := state_load.(StateLoad.data)).
+	             repeat unshelve econstructor.
 	           }
 	           cbn.
 	           s. {
 	             apply Impl_Gas.record_cost_interpreter_eq.
 	           }
-	           match goal with
-	           | |- context[Impl_Gas.record_cost ?gas ?cost] =>
-	               destruct (Impl_Gas.record_cost gas cost)
-	                 as [gas_after_dynamic|] eqn:H_dynamic_gas
-	           end;
+	           destruct_dynamic_sstore_cost;
 	           cbn.
 	           ++ eapply Run.Call. {
 	                apply Run.Pure.
@@ -1050,12 +1041,7 @@ Proof.
 	              cbn.
 	              unfold gas_macro.
 	              cbn.
-	              unfold calc.dyn_sstore_cost in H_dynamic_gas.
-	              unfold calc.sstore_cost in H_dynamic_gas.
-	              cbn in H_dynamic_gas.
-	              unfold calc.dyn_sstore_cost.
-	              unfold calc.sstore_cost.
-	              cbn.
+	              normalize_dynamic_sstore_cost H_dynamic_gas.
 	              setoid_rewrite H_dynamic_gas.
 	              cbn.
 	              unfold calc.sstore_refund.
@@ -1081,12 +1067,7 @@ Proof.
 	              cbn.
 	              unfold gas_macro.
 	              cbn.
-	              unfold calc.dyn_sstore_cost in H_dynamic_gas.
-	              unfold calc.sstore_cost in H_dynamic_gas.
-	              cbn in H_dynamic_gas.
-	              unfold calc.dyn_sstore_cost.
-	              unfold calc.sstore_cost.
-	              cbn.
+	              normalize_dynamic_sstore_cost H_dynamic_gas.
 	              setoid_rewrite H_dynamic_gas.
 	              cbn.
 	              reflexivity.
