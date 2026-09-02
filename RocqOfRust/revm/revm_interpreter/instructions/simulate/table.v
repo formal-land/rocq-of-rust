@@ -25,6 +25,7 @@ Require Import revm.revm_interpreter.instructions.links.control.unknown.
 Require Import revm.revm_interpreter.instructions.links.memory.mload.
 Require Import revm.revm_interpreter.instructions.links.memory.mstore.
 Require Import revm.revm_interpreter.instructions.links.stack.
+Require Import revm.revm_interpreter.instructions.links.system.gas.
 Require Import revm.revm_interpreter.instructions.links.system.returndatacopy.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.addmod.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.div.
@@ -59,6 +60,7 @@ Require Import revm.revm_interpreter.instructions.simulate.stack.pop.
 Require Import revm.revm_interpreter.instructions.simulate.stack.push.
 Require Import revm.revm_interpreter.instructions.simulate.stack.push0.
 Require Import revm.revm_interpreter.instructions.simulate.stack.swap.
+Require Import revm.revm_interpreter.instructions.simulate.system.gas.
 Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.links.table.
@@ -360,6 +362,17 @@ Module FragmentInstructionTable.
       (fun context =>
         run_returndatacopy run_InterpreterTypes_for_WIRE context).
 
+  Definition gas_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_InterpreterTypes_for_WIRE :
+        InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_gas run_InterpreterTypes_for_WIRE context).
+
   Definition pop_function
       {WIRE H : Set} `{Link WIRE} `{Link H}
       {WIRE_types : InterpreterTypes.Types.t}
@@ -490,6 +503,11 @@ Module FragmentInstructionTable.
         unknown_function (H := H) run_InterpreterTypes_for_WIRE;
       Instruction.static_gas := {| Integer.value := 0 |};
     |} in
+    let chainid_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ :=
+        unknown_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 2 |};
+    |} in
     let stop_instruction : Instruction.t WIRE H WIRE_types := {|
       Instruction.fn_ :=
         stop_function (H := H) run_InterpreterTypes_for_WIRE;
@@ -616,6 +634,11 @@ Module FragmentInstructionTable.
         returndatacopy_function (H := H) run_InterpreterTypes_for_WIRE;
       Instruction.static_gas := {| Integer.value := 0 |};
     |} in
+    let gas_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ :=
+        gas_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 2 |};
+    |} in
     let pop_instruction : Instruction.t WIRE H WIRE_types := {|
       Instruction.fn_ :=
         pop_function (H := H) run_InterpreterTypes_for_WIRE;
@@ -688,8 +711,9 @@ Module FragmentInstructionTable.
       prepend_repeat unknown_instruction 3 161 tail_after_push0 in
     let tail_after_jumpi :
         ArrayPairs.t (Instruction.t WIRE H WIRE_types) 168 :=
-      prepend_repeat unknown_instruction 3 165
-        (ArrayPair.Build_t jumpdest_instruction tail_after_jumpdest) in
+      prepend_repeat unknown_instruction 2 166
+        (ArrayPair.Build_t gas_instruction
+          (ArrayPair.Build_t jumpdest_instruction tail_after_jumpdest)) in
     let tail_after_mstore :
         ArrayPairs.t (Instruction.t WIRE H WIRE_types) 173 :=
       prepend_repeat unknown_instruction 3 170
@@ -699,10 +723,14 @@ Module FragmentInstructionTable.
         ArrayPairs.t (Instruction.t WIRE H WIRE_types) 175 :=
       ArrayPair.Build_t mload_instruction
         (ArrayPair.Build_t mstore_instruction tail_after_mstore) in
+    let tail_after_chainid :
+        ArrayPairs.t (Instruction.t WIRE H WIRE_types) 186 :=
+      ArrayPair.Build_t chainid_instruction
+        (prepend_repeat unknown_instruction 9 176
+          (ArrayPair.Build_t pop_instruction tail_after_pop)) in
     let tail_after_returndatacopy :
         ArrayPairs.t (Instruction.t WIRE H WIRE_types) 193 :=
-      prepend_repeat unknown_instruction 17 176
-        (ArrayPair.Build_t pop_instruction tail_after_pop) in
+      prepend_repeat unknown_instruction 7 186 tail_after_chainid in
     let tail_after_bitwise :
         ArrayPairs.t (Instruction.t WIRE H WIRE_types) 225 :=
       prepend_repeat unknown_instruction 31 194

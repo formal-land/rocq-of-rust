@@ -32,6 +32,7 @@ Require Import revm.revm_interpreter.instructions.simulate.bitwise.sgt.
 Require Import revm.revm_interpreter.instructions.simulate.bitwise.shl.
 Require Import revm.revm_interpreter.instructions.simulate.bitwise.shr.
 Require Import revm.revm_interpreter.instructions.simulate.bitwise.slt.
+Require Import revm.revm_interpreter.instructions.simulate.block_info.chainid.
 Require Import revm.revm_interpreter.instructions.simulate.control.jump.
 Require Import revm.revm_interpreter.instructions.simulate.control.jumpdest.
 Require Import revm.revm_interpreter.instructions.simulate.control.jumpi.
@@ -45,6 +46,7 @@ Require Import revm.revm_interpreter.instructions.simulate.stack.pop.
 Require Import revm.revm_interpreter.instructions.simulate.stack.push.
 Require Import revm.revm_interpreter.instructions.simulate.stack.push0.
 Require Import revm.revm_interpreter.instructions.simulate.stack.swap.
+Require Import revm.revm_interpreter.instructions.simulate.system.gas.
 Require Import revm.revm_interpreter.instructions.simulate.system.returndatacopy.
 Require Import revm.revm_interpreter.instructions.simulate.table.
 Require Import revm.revm_interpreter.links.gas.
@@ -359,6 +361,8 @@ Module InterpreterDispatch.
         jump
       else if Z.eqb opcode.(Integer.value) 87 then
         jumpi
+      else if Z.eqb opcode.(Integer.value) 90 then
+        gas
       else if Z.eqb opcode.(Integer.value) 91 then
         jumpdest
       else if Z.eqb opcode.(Integer.value) 95 then
@@ -761,6 +765,16 @@ Module InterpreterDispatch.
     InstructionContext.map_interpreter jumpdest state.
   Proof. reflexivity. Qed.
 
+  Lemma simple_gas
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 90 |} state =
+    InstructionContext.map_interpreter gas state.
+  Proof. reflexivity. Qed.
+
   Lemma simple_push0
       {H WIRE : Set} `{Link H} `{Link WIRE}
       {WIRE_types : InterpreterTypes.Types.t}
@@ -857,7 +871,19 @@ Module InterpreterDispatch.
       (opcode : u8)
       (state : InstructionContext.State.t H WIRE WIRE_types) :
       InstructionContext.State.t H WIRE WIRE_types :=
-    if Z.eqb opcode.(Integer.value) 85 then
+    if Z.eqb opcode.(Integer.value) 70 then
+      match state with
+      | {|
+          InstructionContext.State.interpreter := interpreter;
+          InstructionContext.State.host := host
+        |} =>
+          let '(interpreter, host) := chainid interpreter host in
+          {|
+            InstructionContext.State.interpreter := interpreter;
+            InstructionContext.State.host := host;
+          |}
+      end
+    else if Z.eqb opcode.(Integer.value) 85 then
       match state with
       | {|
           InstructionContext.State.interpreter := interpreter;
