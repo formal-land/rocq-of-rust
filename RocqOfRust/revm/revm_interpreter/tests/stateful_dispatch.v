@@ -2,6 +2,10 @@ Require Import Stdlib.Lists.List.
 Require Import Stdlib.ZArith.ZArith.
 
 Require Import alloy_primitives.links.aliases.
+Require Import core.links.result.
+Require Import revm.revm_context_interface.links.host.
+Require Import revm.revm_context_interface.links.journaled_state.
+Require Import revm.revm_context_interface.simulate.host.
 Require Import revm.revm_interpreter.instructions.simulate.table.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.simulate.dispatch.
@@ -149,6 +153,150 @@ Definition run_add11 : option (Z * list StatefulHost.Change.t) :=
   end.
 
 Module Test.
+  Definition sload_test_address := StatefulHost.rust_address 0.
+
+  Definition sload_test_key := StatefulHost.rust_word 7.
+
+  Definition sload_existing_host : StatefulHost.t :=
+    StatefulHost.with_accounts
+      (StatefulHost.make add11_input)
+      [StatefulHost.account_with_storage add11_account 7 42].
+
+  Goal
+    let '(result, host) :=
+      StatefulHost.sload_skip_cold_load
+        (StatefulHost.make add11_input)
+        sload_test_address
+        sload_test_key
+        false in
+    match result with
+    | Result.Ok value =>
+        (value.(StateLoad.is_cold), host.(StatefulHost.accessed_storage))
+    | _ => (false, [])
+    end = (true, [(0, 7)]).
+  Proof.
+    vm_compute.
+    reflexivity.
+  Qed.
+
+  Goal
+    let '(_, host) :=
+      StatefulHost.sload_skip_cold_load
+        (StatefulHost.make add11_input)
+        sload_test_address
+        sload_test_key
+        false in
+    let '(result, host) :=
+      StatefulHost.sload_skip_cold_load
+        host sload_test_address sload_test_key false in
+    match result with
+    | Result.Ok value =>
+        (value.(StateLoad.is_cold), host.(StatefulHost.accessed_storage))
+    | _ => (true, [])
+    end = (false, [(0, 7)]).
+  Proof.
+    vm_compute.
+    reflexivity.
+  Qed.
+
+  Goal
+    let '(result, _) :=
+      StatefulHost.sload_skip_cold_load
+        sload_existing_host sload_test_address sload_test_key false in
+    match result with
+    | Result.Ok value => value.(StateLoad.data).(Uint.value)
+    | _ => -1
+    end = 42.
+  Proof.
+    vm_compute.
+    reflexivity.
+  Qed.
+
+  Goal
+    let '(_, host) :=
+      StatefulHost.sload_skip_cold_load
+        (StatefulHost.make add11_input)
+        sload_test_address
+        sload_test_key
+        false in
+    let '(result, _) :=
+      StatefulHost.sstore_skip_cold_load
+        host
+        sload_test_address
+        sload_test_key
+        (StatefulHost.rust_word 1)
+        false in
+    match result with
+    | Result.Ok value => value.(StateLoad.is_cold)
+    | _ => true
+    end = false.
+  Proof.
+    vm_compute.
+    reflexivity.
+  Qed.
+
+  Goal
+    let '(result, host) :=
+      StatefulHost.sstore_skip_cold_load
+        (StatefulHost.make add11_input)
+        sload_test_address
+        sload_test_key
+        (StatefulHost.rust_word 1)
+        false in
+    match result with
+    | Result.Ok value =>
+        (value.(StateLoad.is_cold), host.(StatefulHost.accessed_storage))
+    | _ => (false, [])
+    end = (true, [(0, 7)]).
+  Proof.
+    vm_compute.
+    reflexivity.
+  Qed.
+
+  Goal
+    let '(_, host) :=
+      StatefulHost.sstore_skip_cold_load
+        (StatefulHost.make add11_input)
+        sload_test_address
+        sload_test_key
+        (StatefulHost.rust_word 1)
+        false in
+    let '(result, _) :=
+      StatefulHost.sload_skip_cold_load
+        host sload_test_address sload_test_key false in
+    match result with
+    | Result.Ok value => value.(StateLoad.is_cold)
+    | _ => true
+    end = false.
+  Proof.
+    vm_compute.
+    reflexivity.
+  Qed.
+
+  Goal
+    let host := StatefulHost.make add11_input in
+    StatefulHost.sload_skip_cold_load
+      host sload_test_address sload_test_key true =
+    (Result.Err LoadError.ColdLoadSkipped, host).
+  Proof.
+    vm_compute.
+    reflexivity.
+  Qed.
+
+  Goal
+    let host := StatefulHost.make add11_input in
+    StatefulHost.sstore_skip_cold_load
+      host
+      sload_test_address
+      sload_test_key
+      (StatefulHost.rust_word 1)
+      true =
+    (Result.Err LoadError.ColdLoadSkipped, host).
+  Proof.
+    vm_compute.
+    reflexivity.
+  Qed.
+
   Goal
     run_sstore_once =
     Some (2, [StatefulHost.Change.Storage 0 0 2]).

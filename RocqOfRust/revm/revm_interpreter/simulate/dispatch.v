@@ -38,6 +38,7 @@ Require Import revm.revm_interpreter.instructions.simulate.control.jumpdest.
 Require Import revm.revm_interpreter.instructions.simulate.control.jumpi.
 Require Import revm.revm_interpreter.instructions.simulate.control.stop.
 Require Import revm.revm_interpreter.instructions.simulate.control.unknown.
+Require Import revm.revm_interpreter.instructions.simulate.host.sload.
 Require Import revm.revm_interpreter.instructions.simulate.host.sstore.
 Require Import revm.revm_interpreter.instructions.simulate.memory.mload.
 Require Import revm.revm_interpreter.instructions.simulate.memory.mstore.
@@ -878,6 +879,18 @@ Module InterpreterDispatch.
           InstructionContext.State.host := host
         |} =>
           let '(interpreter, host) := chainid interpreter host in
+          {|
+            InstructionContext.State.interpreter := interpreter;
+            InstructionContext.State.host := host;
+          |}
+      end
+    else if Z.eqb opcode.(Integer.value) 84 then
+      match state with
+      | {|
+          InstructionContext.State.interpreter := interpreter;
+          InstructionContext.State.host := host
+        |} =>
+          let '(interpreter, host) := sload interpreter host in
           {|
             InstructionContext.State.interpreter := interpreter;
             InstructionContext.State.host := host;
