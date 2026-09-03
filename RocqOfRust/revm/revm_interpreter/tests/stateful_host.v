@@ -116,6 +116,7 @@ Module RustTransactionTypes :=
   Record t : Set := {
     input : Input.t;
     accounts : list Account.t;
+    accessed_storage : list (Z * Z);
     logs : list EvmLog.t;
     state_changes : list Change.t;
   }.
@@ -123,6 +124,7 @@ Module RustTransactionTypes :=
   Definition make (input : Input.t) : t :=
     {| input := input;
        accounts := input.(Input.state);
+       accessed_storage := [];
        logs := [];
        state_changes := [] |}.
 
@@ -262,6 +264,7 @@ Module RustTransactionTypes :=
   Definition append_change (host : t) (change : Change.t) : t :=
     {| input := host.(input);
        accounts := host.(accounts);
+       accessed_storage := host.(accessed_storage);
        logs := host.(logs);
        state_changes := host.(state_changes) ++ [change] |}.
 
@@ -269,6 +272,7 @@ Module RustTransactionTypes :=
     let data := entry.(Log.data) in
     {| input := host.(input);
        accounts := host.(accounts);
+       accessed_storage := host.(accessed_storage);
        logs := host.(logs) ++
          [{| EvmLog.address := entry.(Log.address).(Address.value);
              EvmLog.topics :=
@@ -379,8 +383,31 @@ Module RustTransactionTypes :=
   Definition with_accounts (host : t) (accounts : list Account.t) : t :=
     {| input := host.(input);
        accounts := accounts;
+       accessed_storage := host.(accessed_storage);
        logs := host.(logs);
        state_changes := host.(state_changes) |}.
+
+  Fixpoint storage_is_warm
+      (address key : Z) (accessed_storage : list (Z * Z)) : bool :=
+    match accessed_storage with
+    | [] => false
+    | (accessed_address, accessed_key) :: accessed_storage =>
+        ((accessed_address =? address) && (accessed_key =? key)) ||
+        storage_is_warm address key accessed_storage
+    end.
+
+  Definition storage_is_cold (host : t) (address key : Z) : bool :=
+    negb (storage_is_warm address key host.(accessed_storage)).
+
+  Definition mark_storage_warm (host : t) (address key : Z) : t :=
+    if storage_is_warm address key host.(accessed_storage) then
+      host
+    else
+      {| input := host.(input);
+         accounts := host.(accounts);
+         accessed_storage := (address, key) :: host.(accessed_storage);
+         logs := host.(logs);
+         state_changes := host.(state_changes) |}.
 
   Definition balance (host : t) (address : Address.t) :
       option (StateLoad.t aliases.U256.t) * t :=
@@ -468,13 +495,17 @@ Module RustTransactionTypes :=
   Definition sload
       (host : t) (address : Address.t) (key : aliases.U256.t) :
       option (StateLoad.t aliases.U256.t) * t :=
+    let address_value := address.(Address.value) in
+    let key_value := key.(Uint.value) in
+    let is_cold := storage_is_cold host address_value key_value in
     let value :=
-      match find_account address.(Address.value) host.(accounts) with
-      | Some account => lookup_word key.(Uint.value) account.(Account.storage)
+      match find_account address_value host.(accounts) with
+      | Some account => lookup_word key_value account.(Account.storage)
       | None => 0
       end in
+    let host := mark_storage_warm host address_value key_value in
     (Some {| StateLoad.data := rust_word value;
-             StateLoad.is_cold := false |}, host).
+             StateLoad.is_cold := is_cold |}, host).
 
   Definition code_hash (host : t) (address : Address.t) :
       option (Eip7702CodeLoad.t aliases.B256.t) * t :=
@@ -497,6 +528,7 @@ Module RustTransactionTypes :=
     let address_value := address.(Address.value) in
     let key_value := key.(Uint.value) in
     let new_value := value.(Uint.value) in
+    let is_cold := storage_is_cold host address_value key_value in
     let present_value :=
       match find_account address_value host.(accounts) with
       | Some account => lookup_word key_value account.(Account.storage)
@@ -512,6 +544,7 @@ Module RustTransactionTypes :=
         (fun account => account_with_storage account key_value new_value)
         host.(accounts) in
     let host := with_accounts host accounts in
+    let host := mark_storage_warm host address_value key_value in
     let host := append_change host
       (Change.Storage address_value key_value new_value) in
     (Some
@@ -519,7 +552,7 @@ Module RustTransactionTypes :=
            {| SStoreResult.original_value := rust_word original_value;
               SStoreResult.present_value := rust_word present_value;
               SStoreResult.new_value := value |};
-         StateLoad.is_cold := false |}, host).
+         StateLoad.is_cold := is_cold |}, host).
 
   Definition tload
       (host : t) (address : Address.t) (key : aliases.U256.t) :
@@ -547,23 +580,32 @@ Module RustTransactionTypes :=
       (Change.TransientStorage address_value key_value new_value).
 
   Definition sload_skip_cold_load
-      (host : t) (address : Address.t) (key : aliases.U256.t) :
+      (host : t) (address : Address.t) (key : aliases.U256.t)
+      (skip_cold : bool) :
       Result.t (StateLoad.t aliases.U256.t) LoadError.t * t :=
-    let '(result, host) := sload host address key in
-    (match result with
-     | Some value => Result.Ok value
-     | None => Result.Err LoadError.DBError
-     end, host).
+    if skip_cold &&
+       storage_is_cold host address.(Address.value) key.(Uint.value) then
+      (Result.Err LoadError.ColdLoadSkipped, host)
+    else
+      let '(result, host) := sload host address key in
+      (match result with
+       | Some value => Result.Ok value
+       | None => Result.Err LoadError.DBError
+       end, host).
 
   Definition sstore_skip_cold_load
       (host : t) (address : Address.t)
-      (key value : aliases.U256.t) :
+      (key value : aliases.U256.t) (skip_cold : bool) :
       Result.t (StateLoad.t SStoreResult.t) LoadError.t * t :=
-    let '(result, host) := sstore host address key value in
-    (match result with
-     | Some value => Result.Ok value
-     | None => Result.Err LoadError.DBError
-     end, host).
+    if skip_cold &&
+       storage_is_cold host address.(Address.value) key.(Uint.value) then
+      (Result.Err LoadError.ColdLoadSkipped, host)
+    else
+      let '(result, host) := sstore host address key value in
+      (match result with
+       | Some value => Result.Ok value
+       | None => Result.Err LoadError.DBError
+       end, host).
 
   Fixpoint was_selfdestructed
       (address : Z) (changes : list Change.t) : bool :=
@@ -683,11 +725,11 @@ Module RustTransactionTypes :=
        Host.code := code;
        Host.code_hash := code_hash;
        Host.sload := sload;
-       Host.sload_skip_cold_load self address key _ :=
-         sload_skip_cold_load self address key;
+       Host.sload_skip_cold_load self address key skip_cold :=
+         sload_skip_cold_load self address key skip_cold;
        Host.sstore := sstore;
-       Host.sstore_skip_cold_load self address key value _ :=
-         sstore_skip_cold_load self address key value;
+       Host.sstore_skip_cold_load self address key value skip_cold :=
+         sstore_skip_cold_load self address key value skip_cold;
        Host.tload := tload;
        Host.tstore := tstore;
        Host.log self entry := append_log self entry;
