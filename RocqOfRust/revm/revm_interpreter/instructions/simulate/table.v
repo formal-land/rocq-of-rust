@@ -508,6 +508,11 @@ Module FragmentInstructionTable.
         unknown_function (H := H) run_InterpreterTypes_for_WIRE;
       Instruction.static_gas := {| Integer.value := 2 |};
     |} in
+    let selfbalance_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ :=
+        unknown_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 5 |};
+    |} in
     let stop_instruction : Instruction.t WIRE H WIRE_types := {|
       Instruction.fn_ :=
         stop_function (H := H) run_InterpreterTypes_for_WIRE;
@@ -726,8 +731,9 @@ Module FragmentInstructionTable.
     let tail_after_chainid :
         ArrayPairs.t (Instruction.t WIRE H WIRE_types) 186 :=
       ArrayPair.Build_t chainid_instruction
-        (prepend_repeat unknown_instruction 9 176
-          (ArrayPair.Build_t pop_instruction tail_after_pop)) in
+        (ArrayPair.Build_t selfbalance_instruction
+          (prepend_repeat unknown_instruction 8 176
+            (ArrayPair.Build_t pop_instruction tail_after_pop))) in
     let tail_after_returndatacopy :
         ArrayPairs.t (Instruction.t WIRE H WIRE_types) 193 :=
       prepend_repeat unknown_instruction 7 186 tail_after_chainid in
