@@ -42,7 +42,9 @@ Require Import revm.revm_interpreter.instructions.simulate.host.selfbalance.
 Require Import revm.revm_interpreter.instructions.simulate.host.sload.
 Require Import revm.revm_interpreter.instructions.simulate.host.sstore.
 Require Import revm.revm_interpreter.instructions.simulate.memory.mload.
+Require Import revm.revm_interpreter.instructions.simulate.memory.msize.
 Require Import revm.revm_interpreter.instructions.simulate.memory.mstore.
+Require Import revm.revm_interpreter.instructions.simulate.memory.mstore8.
 Require Import revm.revm_interpreter.instructions.simulate.stack.dup.
 Require Import revm.revm_interpreter.instructions.simulate.stack.pop.
 Require Import revm.revm_interpreter.instructions.simulate.stack.push.
@@ -359,10 +361,14 @@ Module InterpreterDispatch.
         mload
       else if Z.eqb opcode.(Integer.value) 82 then
         mstore
+      else if Z.eqb opcode.(Integer.value) 83 then
+        mstore8
       else if Z.eqb opcode.(Integer.value) 86 then
         jump
       else if Z.eqb opcode.(Integer.value) 87 then
         jumpi
+      else if Z.eqb opcode.(Integer.value) 89 then
+        msize
       else if Z.eqb opcode.(Integer.value) 90 then
         gas
       else if Z.eqb opcode.(Integer.value) 91 then

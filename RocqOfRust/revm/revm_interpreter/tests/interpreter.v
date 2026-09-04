@@ -30,8 +30,8 @@ Definition make_interpreter_with_bytecode
   Interpreter.gas := {|
     Gas.limit := 1000000;
     Gas.memory := {|
-      MemoryGas.expansion_cost := 10;
-      MemoryGas.words_num := 12;
+      MemoryGas.expansion_cost := 0;
+      MemoryGas.words_num := 0;
     |};
     Gas.refunded := 0;
     Gas.remaining := 1000000;
@@ -48,8 +48,8 @@ Definition make_interpreter_with_bytecode
     Control.gas := {|
       Gas.limit := 1000000;
       Gas.memory := {|
-        MemoryGas.expansion_cost := 10;
-        MemoryGas.words_num := 12;
+        MemoryGas.expansion_cost := 0;
+        MemoryGas.words_num := 0;
       |};
       Gas.refunded := 0;
       Gas.remaining := 1000000;
