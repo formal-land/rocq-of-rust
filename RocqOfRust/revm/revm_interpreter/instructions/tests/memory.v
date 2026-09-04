@@ -1,9 +1,9 @@
 Require Import simulate.RocqOfRust.
 Require Import revm.revm_interpreter.instructions.simulate.memory.mcopy.
+Require Import revm.revm_interpreter.instructions.simulate.memory.mload.
 Require Import revm.revm_interpreter.instructions.simulate.memory.msize.
 Require Import revm.revm_interpreter.instructions.simulate.memory.mstore.
 Require Import revm.revm_interpreter.instructions.simulate.memory.mstore8.
-Require Import revm.revm_interpreter.instructions.simulate.memory.mload.
 Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.tests.interpreter.
@@ -88,7 +88,7 @@ Qed.
 
 (** ** MSTORE8 tests *)
 
-(** Test that MSTORE8 stores a single byte (value mod 256) at the given offset *)
+(** Test that MSTORE8 stores one byte and expands memory to one word *)
 Goal
   let stack := {| Stack.value := [
     {| Uint.value := 0 |};
@@ -96,10 +96,12 @@ Goal
   ] |} in
   let interpreter := make_interpreter stack in
   let result := mstore8 interpreter in
-  List.hd (0 : u8) result.(Interpreter.memory).(Memory.value) = (65 : u8).
+  List.hd (0 : u8) result.(Interpreter.memory).(Memory.value) = (65 : u8) /\
+  List.length result.(Interpreter.memory).(Memory.value) = 32%nat /\
+  result.(Interpreter.gas).(Gas.memory).(MemoryGas.words_num) = 1.
 Proof.
   timeout 1 vm_compute.
-  reflexivity.
+  repeat split; reflexivity.
 Qed.
 
 (** ** MCOPY tests *)

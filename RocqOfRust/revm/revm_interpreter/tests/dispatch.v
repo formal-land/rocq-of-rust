@@ -174,10 +174,10 @@ Goal
   Some (words [1; 16; 15; 14; 13; 12; 11; 10; 9; 8; 7; 6; 5; 4; 3; 2; 17]).
 Proof. timeout 5 vm_compute. reflexivity. Qed.
 
-(** Memory and control-flow opcodes used by the remaining shift fixtures. *)
+(** Memory and control-flow opcode gas entries. *)
 Goal
-  List.map table_static_gas [81; 82; 86; 87; 91] =
-  List.map (@Some Z) [3; 3; 8; 10; 1].
+  List.map table_static_gas [81; 82; 83; 86; 87; 89; 91] =
+  List.map (@Some Z) [3; 3; 3; 8; 10; 2; 1].
 Proof. timeout 5 vm_compute. reflexivity. Qed.
 
 Goal

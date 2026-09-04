@@ -23,7 +23,9 @@ Require Import revm.revm_interpreter.instructions.links.control.jumpi.
 Require Import revm.revm_interpreter.instructions.links.control.stop.
 Require Import revm.revm_interpreter.instructions.links.control.unknown.
 Require Import revm.revm_interpreter.instructions.links.memory.mload.
+Require Import revm.revm_interpreter.instructions.links.memory.msize.
 Require Import revm.revm_interpreter.instructions.links.memory.mstore.
+Require Import revm.revm_interpreter.instructions.links.memory.mstore8.
 Require Import revm.revm_interpreter.instructions.links.stack.
 Require Import revm.revm_interpreter.instructions.links.system.gas.
 Require Import revm.revm_interpreter.instructions.links.system.returndatacopy.
@@ -54,7 +56,9 @@ Require Import revm.revm_interpreter.instructions.simulate.control.jump.
 Require Import revm.revm_interpreter.instructions.simulate.control.jumpdest.
 Require Import revm.revm_interpreter.instructions.simulate.control.jumpi.
 Require Import revm.revm_interpreter.instructions.simulate.memory.mload.
+Require Import revm.revm_interpreter.instructions.simulate.memory.msize.
 Require Import revm.revm_interpreter.instructions.simulate.memory.mstore.
+Require Import revm.revm_interpreter.instructions.simulate.memory.mstore8.
 Require Import revm.revm_interpreter.instructions.simulate.stack.dup.
 Require Import revm.revm_interpreter.instructions.simulate.stack.pop.
 Require Import revm.revm_interpreter.instructions.simulate.stack.push.
@@ -405,6 +409,28 @@ Module FragmentInstructionTable.
     Function1.of_run
       (fun context => run_mstore run_InterpreterTypes_for_WIRE context).
 
+  Definition mstore8_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_InterpreterTypes_for_WIRE :
+        InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_mstore8 run_InterpreterTypes_for_WIRE context).
+
+  Definition msize_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_InterpreterTypes_for_WIRE :
+        InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_msize run_InterpreterTypes_for_WIRE context).
+
   Definition jump_function
       {WIRE H : Set} `{Link WIRE} `{Link H}
       {WIRE_types : InterpreterTypes.Types.t}
@@ -659,6 +685,16 @@ Module FragmentInstructionTable.
         mstore_function (H := H) run_InterpreterTypes_for_WIRE;
       Instruction.static_gas := {| Integer.value := 3 |};
     |} in
+    let mstore8_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ :=
+        mstore8_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 3 |};
+    |} in
+    let msize_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ :=
+        msize_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 2 |};
+    |} in
     let jump_instruction : Instruction.t WIRE H WIRE_types := {|
       Instruction.fn_ :=
         jump_function (H := H) run_InterpreterTypes_for_WIRE;
@@ -716,14 +752,16 @@ Module FragmentInstructionTable.
       prepend_repeat unknown_instruction 3 161 tail_after_push0 in
     let tail_after_jumpi :
         ArrayPairs.t (Instruction.t WIRE H WIRE_types) 168 :=
-      prepend_repeat unknown_instruction 2 166
-        (ArrayPair.Build_t gas_instruction
-          (ArrayPair.Build_t jumpdest_instruction tail_after_jumpdest)) in
+      ArrayPair.Build_t unknown_instruction
+        (ArrayPair.Build_t msize_instruction
+          (ArrayPair.Build_t gas_instruction
+            (ArrayPair.Build_t jumpdest_instruction tail_after_jumpdest))) in
     let tail_after_mstore :
         ArrayPairs.t (Instruction.t WIRE H WIRE_types) 173 :=
-      prepend_repeat unknown_instruction 3 170
-        (ArrayPair.Build_t jump_instruction
-          (ArrayPair.Build_t jumpi_instruction tail_after_jumpi)) in
+      ArrayPair.Build_t mstore8_instruction
+        (prepend_repeat unknown_instruction 2 170
+          (ArrayPair.Build_t jump_instruction
+            (ArrayPair.Build_t jumpi_instruction tail_after_jumpi))) in
     let tail_after_pop :
         ArrayPairs.t (Instruction.t WIRE H WIRE_types) 175 :=
       ArrayPair.Build_t mload_instruction
