@@ -54,16 +54,7 @@ Definition extcodecopy
     end in
   gas_macro interpreter copy_cost
     (fun interpreter => (interpreter, host)) (fun interpreter =>
-  let memory_offset_usize := {| Integer.value := 0 |} in
-  let '(memory_offset_usize, interpreter) :=
-    if i[len] =? 0 then
-      (memory_offset_usize, interpreter)
-    else
-      as_usize_or_fail_ret_macro interpreter memory_offset None
-      (fun interpreter => (memory_offset_usize, interpreter)) (fun memory_offset interpreter =>
-      resize_memory_macro interpreter memory_offset len
-        (fun interpreter => (memory_offset, interpreter)) (fun interpreter =>
-      (memory_offset, interpreter))) in
+  let copy_from_account memory_offset_usize interpreter :=
   let get_code interpreter host :=
     if Impl_SpecId.is_enabled_in spec_id SpecId.BERLIN then
       gas_macro interpreter WARM_STORAGE_READ_COST
@@ -109,7 +100,15 @@ Definition extcodecopy
       len
       code.(Bytes.value).(bytes.Bytes.value) in
   (interpreter <| Interpreter.memory := memory |>, host)
-  end))).
+  end in
+  if i[len] =? 0 then
+    copy_from_account {| Integer.value := 0 |} interpreter
+  else
+    as_usize_or_fail_ret_macro interpreter memory_offset None
+      (fun interpreter => (interpreter, host)) (fun memory_offset interpreter =>
+    resize_memory_macro interpreter memory_offset len
+      (fun interpreter => (interpreter, host)) (fun interpreter =>
+    copy_from_account memory_offset interpreter))))).
 
 Lemma extcodecopy_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}

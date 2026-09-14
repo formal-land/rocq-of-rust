@@ -24,7 +24,7 @@ Open Scope Z_scope.
 Module Test.
   Definition load_status (host : StatefulHost.t) (skip_cold_load : bool) :=
     let '(result, host) := StatefulHost.load_account_info_skip_cold_load
-      host (StatefulHost.rust_address 42) skip_cold_load in
+      host (StatefulHost.rust_address 42) false skip_cold_load in
     match result with
     | Result.Ok account =>
         Some (account.(AccountInfoLoad.is_cold), host.(StatefulHost.accessed_accounts))
@@ -37,13 +37,13 @@ Module Test.
 
   Lemma repeated_account_read_is_warm (input : StatefulHost.Input.t) :
     let '(_, host) := StatefulHost.load_account_info_skip_cold_load
-      (StatefulHost.make input) (StatefulHost.rust_address 42) false in
+      (StatefulHost.make input) (StatefulHost.rust_address 42) false false in
     load_status host false = Some (false, [42]).
   Proof. reflexivity. Qed.
 
   Lemma skipped_cold_read_preserves_host (input : StatefulHost.Input.t) :
     StatefulHost.load_account_info_skip_cold_load
-      (StatefulHost.make input) (StatefulHost.rust_address 42) true =
+      (StatefulHost.make input) (StatefulHost.rust_address 42) false true =
     (Result.Err LoadError.ColdLoadSkipped, StatefulHost.make input).
   Proof. reflexivity. Qed.
 

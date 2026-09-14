@@ -367,7 +367,6 @@ Module StackTrait.
   Proof.
   Admitted.
 
-  (* TODO: check spec: do we let the stack as empty if the stack is too short? *)
   Fixpoint popn_nat (N : nat) (self : Self) : option (ArrayPairs.t aliases.U256.t N) * Self :=
     match N with
     | O => (Some ArrayEmpty.Make, self)
@@ -378,7 +377,7 @@ Module StackTrait.
         let '(result, self') := popn_nat N (self <| Stack.value := rest |>) in
         match result with
         | Some values => (Some {| ArrayPair.x := value; ArrayPair.xs := values |}, self')
-        | None => (None, self')
+        | None => (None, self)
         end
       end
     end.
