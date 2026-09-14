@@ -14,6 +14,7 @@ Require Import alloy_primitives.log.links.mod.
 Require Import bytes.links.bytes.
 Require Import core.links.result.
 Require Import links.M.
+Require Import revm.revm_bytecode.links.bytecode.
 Require Import revm.revm_context_interface.links.cfg.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_context_interface.links.journaled_state.
@@ -456,7 +457,7 @@ Module RustTransactionTypes :=
       entries host.
 
   Definition account_info_load
-      (host : t) (address : Address.t) : AccountInfoLoad.t :=
+      (host : t) (address : Address.t) (load_code : bool) : AccountInfoLoad.t :=
     let account :=
       match find_account address.(Address.value) host.(accounts) with
       | Some account => account
@@ -470,17 +471,20 @@ Module RustTransactionTypes :=
               AccountInfo.code_hash :=
                 Impl_From_U256_for_FixedBytes_32.from
                   (rust_word account.(Account.code_hash));
-              AccountInfo.code := None |};
+              AccountInfo.code := if load_code then
+                Some {| Bytecode.original_bytes :=
+                  Impl_Bytes.copy_from_slice (List.map rust_byte account.(Account.code)) |}
+                else None |};
        AccountInfoLoad.is_cold := negb (account_is_warm host address.(Address.value));
        AccountInfoLoad.is_empty := account_is_empty account |}.
 
   Definition load_account_info_skip_cold_load
-      (host : t) (address : Address.t) (skip_cold_load : bool) :
+      (host : t) (address : Address.t) (load_code skip_cold_load : bool) :
       Result.t AccountInfoLoad.t LoadError.t * t :=
     if skip_cold_load && negb (account_is_warm host address.(Address.value)) then
       (Result.Err LoadError.ColdLoadSkipped, host)
     else
-      (Result.Ok (account_info_load host address),
+      (Result.Ok (account_info_load host address load_code),
        warm_account host address.(Address.value)).
 
   Definition load_account_delegated
@@ -716,8 +720,8 @@ Module RustTransactionTypes :=
     {| Host.TransactionGetter_for_Self := TransactionGetterForHost;
        Host.BlockGetter_for_Self := BlockGetterForHost;
        Host.CfgGetter_for_Self := CfgGetterForHost;
-       Host.load_account_info_skip_cold_load self address _ skip_cold_load :=
-         load_account_info_skip_cold_load self address skip_cold_load;
+       Host.load_account_info_skip_cold_load self address load_code skip_cold_load :=
+         load_account_info_skip_cold_load self address load_code skip_cold_load;
        Host.load_account_delegated := load_account_delegated;
        Host.load_account_code := load_account_code;
        Host.block_hash := block_hash;
