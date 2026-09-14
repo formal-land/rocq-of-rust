@@ -1145,15 +1145,25 @@ Module InterpreterDispatch.
             InstructionContext.State.host := host;
           |}
       end
-    else if Z.eqb opcode.(Integer.value) 59 || Z.eqb opcode.(Integer.value) 60 then
+    else if Z.eqb opcode.(Integer.value) 59 then
       match state with
       | {|
           InstructionContext.State.interpreter := interpreter;
           InstructionContext.State.host := host
         |} =>
-          let '(interpreter, host) :=
-            if Z.eqb opcode.(Integer.value) 59 then extcodesize interpreter host
-            else extcodecopy interpreter host in
+          let '(interpreter, host) := extcodesize interpreter host in
+          {|
+            InstructionContext.State.interpreter := interpreter;
+            InstructionContext.State.host := host;
+          |}
+      end
+    else if Z.eqb opcode.(Integer.value) 60 then
+      match state with
+      | {|
+          InstructionContext.State.interpreter := interpreter;
+          InstructionContext.State.host := host
+        |} =>
+          let '(interpreter, host) := extcodecopy interpreter host in
           {|
             InstructionContext.State.interpreter := interpreter;
             InstructionContext.State.host := host;
