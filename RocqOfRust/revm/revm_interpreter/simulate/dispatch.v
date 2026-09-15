@@ -49,6 +49,7 @@ Require Import revm.revm_interpreter.instructions.simulate.control.stop.
 Require Import revm.revm_interpreter.instructions.simulate.control.unknown.
 Require Import revm.revm_interpreter.instructions.simulate.host.balance.
 Require Import revm.revm_interpreter.instructions.simulate.host.extcodecopy.
+Require Import revm.revm_interpreter.instructions.simulate.host.extcodehash.
 Require Import revm.revm_interpreter.instructions.simulate.host.extcodesize.
 Require Import revm.revm_interpreter.instructions.simulate.host.selfbalance.
 Require Import revm.revm_interpreter.instructions.simulate.host.sload.
@@ -1164,6 +1165,18 @@ Module InterpreterDispatch.
           InstructionContext.State.host := host
         |} =>
           let '(interpreter, host) := extcodecopy interpreter host in
+          {|
+            InstructionContext.State.interpreter := interpreter;
+            InstructionContext.State.host := host;
+          |}
+      end
+    else if Z.eqb opcode.(Integer.value) 63 then
+      match state with
+      | {|
+          InstructionContext.State.interpreter := interpreter;
+          InstructionContext.State.host := host
+        |} =>
+          let '(interpreter, host) := extcodehash interpreter host in
           {|
             InstructionContext.State.interpreter := interpreter;
             InstructionContext.State.host := host;
