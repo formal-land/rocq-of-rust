@@ -27,6 +27,7 @@ Require Import revm.revm_interpreter.instructions.links.control.stop.
 Require Import revm.revm_interpreter.instructions.links.control.unknown.
 Require Import revm.revm_interpreter.instructions.links.host.balance.
 Require Import revm.revm_interpreter.instructions.links.host.extcodecopy.
+Require Import revm.revm_interpreter.instructions.links.host.extcodehash.
 Require Import revm.revm_interpreter.instructions.links.host.extcodesize.
 Require Import revm.revm_interpreter.instructions.links.memory.mload.
 Require Import revm.revm_interpreter.instructions.links.memory.msize.
@@ -511,6 +512,16 @@ Module FragmentInstructionTable.
       (run_host : Host.Run H H_types) :
     Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
     Function1.of_run (fun context => run_extcodecopy run_types run_host context).
+
+  Definition extcodehash_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types)
+      (run_host : Host.Run H H_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run (fun context => run_extcodehash run_types run_host context).
 
   Definition callvalue_function
       {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -1044,7 +1055,10 @@ Module FragmentInstructionTable.
           tail_after_chainid) in
     let tail_after_returndatacopy :
         ArrayPairs.t (Instruction.t WIRE H WIRE_types) 193 :=
-      prepend_repeat unknown_instruction 2 191
+      ArrayPair.Build_t
+        {| Instruction.fn_ := extcodehash_function run_InterpreterTypes_for_WIRE run_host;
+           Instruction.static_gas := {| Integer.value := 0 |} |}
+      (ArrayPair.Build_t unknown_instruction
         (ArrayPair.Build_t
           {| Instruction.fn_ := coinbase_function
                run_InterpreterTypes_for_WIRE run_host;
@@ -1057,7 +1071,7 @@ Module FragmentInstructionTable.
           {| Instruction.fn_ := block_number_function
                run_InterpreterTypes_for_WIRE run_host;
              Instruction.static_gas := {| Integer.value := 2 |} |}
-          tail_after_number))) in
+          tail_after_number)))) in
     let tail_after_callvalue :
         ArrayPairs.t (Instruction.t WIRE H WIRE_types) 204 :=
       ArrayPair.Build_t callvalue_instruction

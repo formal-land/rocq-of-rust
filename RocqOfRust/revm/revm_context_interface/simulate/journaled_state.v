@@ -1,10 +1,12 @@
 Require Import simulate.RocqOfRust.
 Require Import core.ops.links.deref.
 Require Import core.ops.simulate.deref.
+Require Import alloy_primitives.bits.simulate.fixed.
 Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.links.aliases.
 Require Import revm.revm_bytecode.links.bytecode.
 Require Import revm.revm_context_interface.links.journaled_state.
+Require Import ruint.links.lib.
 
 Module Impl_Deref_for_StateLoad.
   Definition Self (T : Set) `{Link T} : Set :=
@@ -84,11 +86,27 @@ Definition account_info_load_original_bytes (load : AccountInfoLoad.t) : Bytes.t
   | Cow.Borrowed _ => abstract_account_info_load_original_bytes load
   end.
 
-Parameter account_info_load_is_empty :
-  AccountInfoLoad.t -> bool.
+Parameter borrowed_account_is_empty : '& AccountInfo.t -> bool.
 
-Parameter account_info_load_code_hash :
-  AccountInfoLoad.t -> aliases.B256.t.
+Definition account_info_load_is_empty (load : AccountInfoLoad.t) : bool :=
+  match load.(AccountInfoLoad.account) with
+  | Cow.Owned account =>
+      let code_hash := FixedBytes.to_Z account.(AccountInfo.code_hash) in
+      ((code_hash =? 0) ||
+        (code_hash =? 89477152217924674838424037953991966239322087453347756267410168184682657981552)) &&
+      (account.(AccountInfo.balance).(Uint.value) =? 0) &&
+      (account.(AccountInfo.nonce).(Integer.value) =? 0)
+  | Cow.Borrowed account => borrowed_account_is_empty account
+  end.
+
+Parameter borrowed_account_code_hash :
+  '& AccountInfo.t -> aliases.B256.t.
+
+Definition account_info_load_code_hash (load : AccountInfoLoad.t) : aliases.B256.t :=
+  match load.(AccountInfoLoad.account) with
+  | Cow.Owned account => account.(AccountInfo.code_hash)
+  | Cow.Borrowed account => borrowed_account_code_hash account
+  end.
 
 Parameter borrowed_account_balance :
   '& AccountInfo.t -> aliases.U256.t.
