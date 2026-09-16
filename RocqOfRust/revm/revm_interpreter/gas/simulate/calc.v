@@ -557,7 +557,14 @@ Definition calc_call_static_gas
     (spec_id : SpecId.t)
     (has_transfer : bool) :
     u64 :=
-  {| Integer.value := 0 |}.
+  let gas :=
+    if Impl_SpecId.is_enabled_in spec_id SpecId.BERLIN then
+      WARM_STORAGE_READ_COST
+    else if Impl_SpecId.is_enabled_in spec_id SpecId.TANGERINE then
+      700
+    else
+      40 in
+  if has_transfer then gas +i CALLVALUE else gas.
 
 Lemma calc_call_static_gas_eq (stack : Stack.t)
     (spec_id : SpecId.t) (has_transfer : bool) :
