@@ -41,6 +41,8 @@ Require Import revm.revm_interpreter.instructions.simulate.block_info.difficulty
 Require Import revm.revm_interpreter.instructions.simulate.block_info.gaslimit.
 Require Import revm.revm_interpreter.instructions.simulate.block_info.timestamp.
 Require Import revm.revm_interpreter.instructions.simulate.contract.call.
+Require Import revm.revm_interpreter.instructions.simulate.contract.call_code.
+Require Import revm.revm_interpreter.instructions.simulate.contract.delegate_call.
 Require Import revm.revm_interpreter.instructions.simulate.control.jump.
 Require Import revm.revm_interpreter.instructions.simulate.control.jumpdest.
 Require Import revm.revm_interpreter.instructions.simulate.control.jumpi.
@@ -68,6 +70,7 @@ Require Import revm.revm_interpreter.instructions.simulate.system.address.
 Require Import revm.revm_interpreter.instructions.simulate.system.calldatacopy.
 Require Import revm.revm_interpreter.instructions.simulate.system.calldataload.
 Require Import revm.revm_interpreter.instructions.simulate.system.calldatasize.
+Require Import revm.revm_interpreter.instructions.simulate.system.caller.
 Require Import revm.revm_interpreter.instructions.simulate.system.callvalue.
 Require Import revm.revm_interpreter.instructions.simulate.system.codecopy.
 Require Import revm.revm_interpreter.instructions.simulate.system.gas.
@@ -399,6 +402,8 @@ Module InterpreterDispatch.
         InstructionContext.map_interpreter (op_clz)
       else if Z.eqb opcode.(Integer.value) 48 then
         InstructionContext.map_interpreter (address)
+      else if Z.eqb opcode.(Integer.value) 51 then
+        InstructionContext.map_interpreter (caller)
       else if Z.eqb opcode.(Integer.value) 52 then
         InstructionContext.map_interpreter (callvalue)
       else if Z.eqb opcode.(Integer.value) 53 then
@@ -1137,6 +1142,18 @@ Module InterpreterDispatch.
       InstructionContext.State.t H WIRE WIRE_types :=
     if Z.eqb opcode.(Integer.value) 241 then
       let '(interpreter, host) := call
+        (InstructionContext.State.interpreter _ _ _ state)
+        (InstructionContext.State.host _ _ _ state) in
+      {| InstructionContext.State.interpreter := interpreter;
+         InstructionContext.State.host := host |}
+    else if Z.eqb opcode.(Integer.value) 242 then
+      let '(interpreter, host) := call_code
+        (InstructionContext.State.interpreter _ _ _ state)
+        (InstructionContext.State.host _ _ _ state) in
+      {| InstructionContext.State.interpreter := interpreter;
+         InstructionContext.State.host := host |}
+    else if Z.eqb opcode.(Integer.value) 244 then
+      let '(interpreter, host) := delegate_call
         (InstructionContext.State.interpreter _ _ _ state)
         (InstructionContext.State.host _ _ _ state) in
       {| InstructionContext.State.interpreter := interpreter;

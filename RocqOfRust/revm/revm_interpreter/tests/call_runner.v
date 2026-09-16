@@ -32,9 +32,9 @@ Module CallRunner.
     ((16 <=? opcode) && (opcode <=? 30)) ||
     ((95 <=? opcode) && (opcode <=? 159)) ||
     List.existsb (Z.eqb opcode)
-      [48; 49; 52; 53; 54; 55; 57; 59; 60; 61; 62; 63;
+      [48; 49; 51; 52; 53; 54; 55; 57; 59; 60; 61; 62; 63;
        65; 66; 67; 68; 69; 70; 71; 72; 74;
-       80; 81; 82; 83; 84; 85; 86; 87; 89; 90; 91; 241; 243; 253].
+       80; 81; 82; 83; 84; 85; 86; 87; 89; 90; 91; 241; 242; 243; 244; 253].
 
   Definition table := FragmentInstructionTable.table
     (H := StatefulHost.t) (H_types := StatefulHost.host_types)
@@ -92,16 +92,27 @@ Module CallRunner.
             interpreter.(Interpreter.runtime_flag) SpecId.PRAGUE then 17 else 10 in
           if inputs.(CallInputs.is_static) ||
              ((1 <=? address) && (address <=? max_precompile)) then None else
-          match inputs.(CallInputs.scheme), inputs.(CallInputs.value), inputs.(CallInputs.known_bytecode) with
-          | CallScheme.Call, CallValue.Transfer value, Some (_, code) =>
+          let supported := match inputs.(CallInputs.scheme), inputs.(CallInputs.value) with
+            | CallScheme.Call, CallValue.Transfer _
+            | CallScheme.CallCode, CallValue.Transfer _
+            | CallScheme.DelegateCall, CallValue.Apparent _ => true
+            | _, _ => false
+            end in
+          if negb supported then None else
+          match inputs.(CallInputs.known_bytecode) with
+          | Some (_, code) =>
               let child := CallFrame.child interpreter inputs
                 code.(revm.revm_bytecode.links.bytecode.Bytecode.original_bytes)
                   .(alloy_primitives.bytes.links.mod.Bytes.value).(bytes.Bytes.value) in
               let '(error, next_host) :=
                 if Nat.ltb 1024 (S (List.length parents)) then
                   (Some InstructionResult.CallTooDeep, host)
-                else CallFrame.transfer host inputs.(CallInputs.caller).(Address.value)
-                  inputs.(CallInputs.target_address).(Address.value) value.(Uint.value) in
+                else match inputs.(CallInputs.value) with
+                  | CallValue.Transfer value =>
+                      CallFrame.transfer host inputs.(CallInputs.caller).(Address.value)
+                        inputs.(CallInputs.target_address).(Address.value) value.(Uint.value)
+                  | CallValue.Apparent _ => (None, host)
+                  end in
               match error with
               | Some error =>
                   execute fuel checkpoint parents
@@ -116,7 +127,7 @@ Module CallRunner.
                     {| InstructionContext.State.interpreter := child;
                        InstructionContext.State.host := next_host |}
               end
-          | _, _, _ => None
+          | None => None
           end
       | Some _ => None
       end
