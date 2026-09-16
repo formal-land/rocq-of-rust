@@ -40,6 +40,7 @@ Require Import revm.revm_interpreter.instructions.simulate.block_info.coinbase.
 Require Import revm.revm_interpreter.instructions.simulate.block_info.difficulty.
 Require Import revm.revm_interpreter.instructions.simulate.block_info.gaslimit.
 Require Import revm.revm_interpreter.instructions.simulate.block_info.timestamp.
+Require Import revm.revm_interpreter.instructions.simulate.contract.call.
 Require Import revm.revm_interpreter.instructions.simulate.control.jump.
 Require Import revm.revm_interpreter.instructions.simulate.control.jumpdest.
 Require Import revm.revm_interpreter.instructions.simulate.control.jumpi.
@@ -1134,7 +1135,13 @@ Module InterpreterDispatch.
       (opcode : u8)
       (state : InstructionContext.State.t H WIRE WIRE_types) :
       InstructionContext.State.t H WIRE WIRE_types :=
-    if Z.eqb opcode.(Integer.value) 49 then
+    if Z.eqb opcode.(Integer.value) 241 then
+      let '(interpreter, host) := call
+        (InstructionContext.State.interpreter _ _ _ state)
+        (InstructionContext.State.host _ _ _ state) in
+      {| InstructionContext.State.interpreter := interpreter;
+         InstructionContext.State.host := host |}
+    else if Z.eqb opcode.(Integer.value) 49 then
       match state with
       | {|
           InstructionContext.State.interpreter := interpreter;

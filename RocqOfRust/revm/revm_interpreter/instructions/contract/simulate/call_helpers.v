@@ -4,6 +4,7 @@ Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.bytes.simulate.mod.
 Require Import alloy_primitives.links.aliases.
 Require Import core.links.array.
+Require Import core.links.result.
 Require Import core.num.simulate.mod.
 Require Import core.ops.links.range.
 Require Import core.ops.simulate.deref.
@@ -16,6 +17,7 @@ Require Import revm.revm_context_interface.simulate.host.
 Require Import revm.revm_interpreter.gas.simulate.calc.
 Require Import revm.revm_interpreter.gas.simulate.constants.
 Require Import revm.revm_interpreter.instructions.contract.links.call_helpers.
+Require Import revm.revm_interpreter.instructions.contract.simulate.account_load.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_interpreter.interpreter.simulate.shared_memory.
 Require Import revm.revm_interpreter.links.gas.
@@ -23,13 +25,11 @@ Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.simulate.gas.
+Require Import revm.revm_interpreter.simulate.interpreter.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import revm.revm_primitives.links.hardfork.
 Require Import revm.revm_primitives.simulate.hardfork.
 Require Import ruint.simulate.lib.
-
-Parameter bytecode_of_account_load : StateLoad.t AccountLoad.t -> Bytecode.t.
-Parameter bytecode_hash_of_account_load : StateLoad.t AccountLoad.t -> aliases.B256.t.
 
 Definition resize_memory
     {WIRE : Set} `{Link WIRE}
@@ -297,31 +297,20 @@ Definition load_acc_and_calc_gas
     (fun interpreter => (None, interpreter, host))
     (fun interpreter =>
 
-  match IHost.(Host.load_account_delegated) host to with
-  | (None, host) =>
-    let control :=
-      IInterpreterTypes
-          .(InterpreterTypes.LoopControl_for_Control)
-          .(LoopControl.set_instruction_result)
-        interpreter.(Interpreter.control)
-        instruction_result.InstructionResult.FatalExternalError in
-    let interpreter := interpreter <| Interpreter.control := control |> in
-    (None, interpreter, host)
-  | (Some account_load, host) =>
-
-  let dynamic_gas := warm_cold_cost_with_delegation account_load in
+  let '(loaded, host) := account_load.load_account_delegated
+    host spec_id interpreter.(Interpreter.gas).(Gas.remaining)
+    to transfers_value create_empty_account in
+  match loaded with
+  | Result.Err LoadError.ColdLoadSkipped => (None, halt_oog interpreter, host)
+  | Result.Err LoadError.DBError => (None, halt_fatal interpreter, host)
+  | Result.Ok (dynamic_gas, bytecode, bytecode_hash) =>
   gas_macro interpreter dynamic_gas
     (fun interpreter => (None, interpreter, host))
     (fun interpreter =>
 
   let gas_limit :=
     if Impl_SpecId.is_enabled_in spec_id SpecId.TANGERINE then
-      let gas :=
-        IInterpreterTypes
-          .(InterpreterTypes.LoopControl_for_Control)
-          .(LoopControl.gas)
-          .(RefStub.projection)
-          interpreter.(Interpreter.control) in
+      let gas := interpreter.(Interpreter.gas) in
       let remaining := Impl_Gas.remaining_63_of_64_parts gas in
       Z.min i[remaining] i[stack_gas_limit] : u64
     else
@@ -338,8 +327,8 @@ Definition load_acc_and_calc_gas
   (
     Some {|
       LoadAccAndCalcGasResult.gas_limit := gas_limit;
-      LoadAccAndCalcGasResult.bytecode := bytecode_of_account_load account_load;
-      LoadAccAndCalcGasResult.bytecode_hash := bytecode_hash_of_account_load account_load;
+      LoadAccAndCalcGasResult.bytecode := bytecode;
+      LoadAccAndCalcGasResult.bytecode_hash := bytecode_hash;
     |},
     interpreter,
     host

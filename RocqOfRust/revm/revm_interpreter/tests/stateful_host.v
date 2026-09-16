@@ -333,12 +333,15 @@ Module RustTransactionTypes :=
         else (entry_key, entry_value) :: update_word key value entries
     end.
 
+  Definition empty_code_hash : Z :=
+    89477152217924674838424037953991966239322087453347756267410168184682657981552.
+
   Definition empty_account (address : Z) : Account.t :=
     {| Account.address := address;
        Account.balance := 0;
        Account.nonce := 0;
        Account.code := [];
-       Account.code_hash := 0;
+       Account.code_hash := empty_code_hash;
        Account.storage := [];
        Account.transient_storage := [] |}.
 
