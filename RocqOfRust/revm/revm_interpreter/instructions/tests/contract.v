@@ -109,7 +109,7 @@ Goal
   let '(result_interpreter, _) := call interpreter host in
   bytecode_result result_interpreter =
     Some InstructionResult.CallNotAllowedInsideStatic \/
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+  bytecode_result result_interpreter =
     Some InstructionResult.FatalExternalError.
 Proof.
   timeout 1 vm_compute.
@@ -195,7 +195,7 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := call_code interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+  bytecode_result result_interpreter =
     Some InstructionResult.FatalExternalError.
 Proof.
   timeout 1 vm_compute.
@@ -248,7 +248,7 @@ Goal
   let interpreter := make_interpreter stack in
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := delegate_call interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+  bytecode_result result_interpreter =
     Some InstructionResult.FatalExternalError.
 Proof.
   timeout 1 vm_compute.
@@ -314,17 +314,17 @@ Qed.
 (** Test that static_call with 6 elements but no account returns FatalExternalError *)
 Goal
   let stack := {| Stack.value := [
-    {| Uint.value := 0 |};     (* out_len *)
-    {| Uint.value := 0 |};     (* out_offset *)
-    {| Uint.value := 0 |};     (* in_len *)
-    {| Uint.value := 0 |};     (* in_offset *)
     {| Uint.value := 1000 |};  (* local_gas_limit *)
-    {| Uint.value := 42 |}     (* to address *)
+    {| Uint.value := 42 |};    (* to address *)
+    {| Uint.value := 0 |};     (* in_offset *)
+    {| Uint.value := 0 |};     (* in_len *)
+    {| Uint.value := 0 |};     (* out_offset *)
+    {| Uint.value := 0 |}      (* out_len *)
   ] |} in
   let interpreter := make_interpreter stack in
   let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := static_call interpreter host in
-  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+  bytecode_result result_interpreter =
     Some InstructionResult.FatalExternalError.
 Proof.
   timeout 1 vm_compute.
@@ -334,12 +334,12 @@ Qed.
 (** Test that static_call with valid account creates a call frame *)
 Goal
   let stack := {| Stack.value := [
-    {| Uint.value := 0 |};     (* out_len *)
-    {| Uint.value := 0 |};     (* out_offset *)
-    {| Uint.value := 0 |};     (* in_len *)
-    {| Uint.value := 0 |};     (* in_offset *)
     {| Uint.value := 1000 |};  (* local_gas_limit *)
-    {| Uint.value := 42 |}     (* to address *)
+    {| Uint.value := 42 |};    (* to address *)
+    {| Uint.value := 0 |};     (* in_offset *)
+    {| Uint.value := 0 |};     (* in_len *)
+    {| Uint.value := 0 |};     (* out_offset *)
+    {| Uint.value := 0 |}      (* out_len *)
   ] |} in
   let interpreter := make_interpreter stack in
   let host : TestHostWithAccount.t := TestHostWithAccount.Make in
