@@ -202,7 +202,7 @@ Module Test.
   Proof. vm_compute. reflexivity. Qed.
 
   Lemma unimplemented_child_opcode_is_not_call_failure :
-    run (call 0 0 0 50000 ++ [0]) [250] = None.
+    run (call 0 0 0 50000 ++ [0]) [240] = None.
   Proof. vm_compute. reflexivity. Qed.
 
   Lemma precompile_call_is_explicitly_unsupported :

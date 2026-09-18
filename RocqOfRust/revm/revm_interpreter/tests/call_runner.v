@@ -16,6 +16,7 @@ Require Import revm.revm_interpreter.simulate.step.
 Require Import revm.revm_interpreter.tests.call_frame.
 Require Import revm.revm_interpreter.tests.frame.
 Require Import revm.revm_interpreter.tests.interpreter_types.
+Require Import revm.revm_interpreter.interpreter.links.runtime_flags.
 Require Import revm.revm_interpreter.tests.stateful_dispatch.
 Require Import revm.revm_interpreter.tests.stateful_host.
 Require Import revm.revm_primitives.links.hardfork.
@@ -34,7 +35,7 @@ Module CallRunner.
     List.existsb (Z.eqb opcode)
       [48; 49; 51; 52; 53; 54; 55; 57; 59; 60; 61; 62; 63;
        65; 66; 67; 68; 69; 70; 71; 72; 74;
-       80; 81; 82; 83; 84; 85; 86; 87; 89; 90; 91; 241; 242; 243; 244; 253].
+       80; 81; 82; 83; 84; 85; 86; 87; 89; 90; 91; 241; 242; 243; 244; 250; 253].
 
   Definition table := FragmentInstructionTable.table
     (H := StatefulHost.t) (H_types := StatefulHost.host_types)
@@ -89,13 +90,14 @@ Module CallRunner.
           let inputs := boxed.(Box.value) in
           let address := inputs.(CallInputs.bytecode_address).(Address.value) in
           let max_precompile := if Impl_SpecId.is_enabled_in
-            interpreter.(Interpreter.runtime_flag) SpecId.PRAGUE then 17 else 10 in
-          if inputs.(CallInputs.is_static) ||
-             ((1 <=? address) && (address <=? max_precompile)) then None else
+            interpreter.(Interpreter.runtime_flag).(RuntimeFlags.spec_id) SpecId.PRAGUE then 17 else 10 in
+          if (1 <=? address) && (address <=? max_precompile) then None else
           let supported := match inputs.(CallInputs.scheme), inputs.(CallInputs.value) with
             | CallScheme.Call, CallValue.Transfer _
             | CallScheme.CallCode, CallValue.Transfer _
             | CallScheme.DelegateCall, CallValue.Apparent _ => true
+            | CallScheme.StaticCall, CallValue.Transfer value =>
+                inputs.(CallInputs.is_static) && Z.eqb value.(Uint.value) 0
             | _, _ => false
             end in
           if negb supported then None else
@@ -134,7 +136,8 @@ Module CallRunner.
     end.
 
   Definition run (fuel : nat) (state : CallFrame.state) :=
-    match (InstructionContext.State.interpreter _ _ _ state).(Interpreter.runtime_flag) with
+    match (InstructionContext.State.interpreter _ _ _ state)
+      .(Interpreter.runtime_flag).(RuntimeFlags.spec_id) with
     | SpecId.CANCUN | SpecId.PRAGUE =>
         execute fuel (InstructionContext.State.host _ _ _ state) [] state
     | _ => None

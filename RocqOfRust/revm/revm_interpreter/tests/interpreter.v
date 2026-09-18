@@ -3,6 +3,7 @@ Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.tests.interpreter_types.
+Require Import revm.revm_interpreter.interpreter.links.runtime_flags.
 Require Import revm.revm_primitives.links.hardfork.
 
 Definition empty_input : Input.t := {|
@@ -58,7 +59,7 @@ Definition make_interpreter_with_bytecode
     Control.instruction_result := None;
     Control.next_action := None;
   |};
-  Interpreter.runtime_flag := SpecId.PRAGUE;
+  Interpreter.runtime_flag := RuntimeFlags.non_static SpecId.PRAGUE;
   Interpreter.extend := tt;
 |}.
 

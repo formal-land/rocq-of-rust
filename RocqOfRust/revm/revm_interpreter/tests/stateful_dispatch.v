@@ -18,6 +18,7 @@ Require Import revm.revm_interpreter.simulate.dispatch.
 Require Import revm.revm_interpreter.simulate.instruction_context.
 Require Import revm.revm_interpreter.tests.interpreter.
 Require Import revm.revm_interpreter.tests.interpreter_types.
+Require Import revm.revm_interpreter.interpreter.links.runtime_flags.
 Require Import revm.revm_interpreter.tests.stateful_host.
 Require Import revm.revm_primitives.links.hardfork.
 Require Import ruint.links.lib.
@@ -51,7 +52,8 @@ Definition interpreter_with_spec_id
   Interpreter.input := interpreter.(Interpreter.input);
   Interpreter.sub_routine := interpreter.(Interpreter.sub_routine);
   Interpreter.control := interpreter.(Interpreter.control);
-  Interpreter.runtime_flag := spec_id;
+  Interpreter.runtime_flag := interpreter.(Interpreter.runtime_flag)
+    <| RuntimeFlags.spec_id := spec_id |>;
   Interpreter.extend := interpreter.(Interpreter.extend);
 |}.
 

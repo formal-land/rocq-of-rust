@@ -8,6 +8,7 @@ Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.tests.interpreter.
 Require Import revm.revm_interpreter.tests.interpreter_types.
+Require Import revm.revm_interpreter.interpreter.links.runtime_flags.
 Require Import revm.revm_primitives.links.hardfork.
 Require Import ruint.links.lib.
 
@@ -62,7 +63,7 @@ Definition make_interpreter_with_memory (stack : Stack.t) (memory : Memory.t)
     Control.instruction_result := None;
     Control.next_action := None;
   |};
-  Interpreter.runtime_flag := SpecId.PRAGUE;
+  Interpreter.runtime_flag := RuntimeFlags.non_static SpecId.PRAGUE;
   Interpreter.extend := tt;
 |}.
 

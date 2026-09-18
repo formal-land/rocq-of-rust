@@ -43,6 +43,7 @@ Require Import revm.revm_interpreter.instructions.simulate.block_info.timestamp.
 Require Import revm.revm_interpreter.instructions.simulate.contract.call.
 Require Import revm.revm_interpreter.instructions.simulate.contract.call_code.
 Require Import revm.revm_interpreter.instructions.simulate.contract.delegate_call.
+Require Import revm.revm_interpreter.instructions.simulate.contract.static_call.
 Require Import revm.revm_interpreter.instructions.simulate.control.jump.
 Require Import revm.revm_interpreter.instructions.simulate.control.jumpdest.
 Require Import revm.revm_interpreter.instructions.simulate.control.jumpi.
@@ -1154,6 +1155,12 @@ Module InterpreterDispatch.
          InstructionContext.State.host := host |}
     else if Z.eqb opcode.(Integer.value) 244 then
       let '(interpreter, host) := delegate_call
+        (InstructionContext.State.interpreter _ _ _ state)
+        (InstructionContext.State.host _ _ _ state) in
+      {| InstructionContext.State.interpreter := interpreter;
+         InstructionContext.State.host := host |}
+    else if Z.eqb opcode.(Integer.value) 250 then
+      let '(interpreter, host) := static_call
         (InstructionContext.State.interpreter _ _ _ state)
         (InstructionContext.State.host _ _ _ state) in
       {| InstructionContext.State.interpreter := interpreter;
