@@ -33,6 +33,8 @@ Require Import revm.revm_interpreter.instructions.links.host.balance.
 Require Import revm.revm_interpreter.instructions.links.host.extcodecopy.
 Require Import revm.revm_interpreter.instructions.links.host.extcodehash.
 Require Import revm.revm_interpreter.instructions.links.host.extcodesize.
+Require Import revm.revm_interpreter.instructions.links.host.tload.
+Require Import revm.revm_interpreter.instructions.links.host.tstore.
 Require Import revm.revm_interpreter.instructions.links.memory.mload.
 Require Import revm.revm_interpreter.instructions.links.memory.msize.
 Require Import revm.revm_interpreter.instructions.links.memory.mstore.
@@ -1078,7 +1080,15 @@ Module FragmentInstructionTable.
               tail_after_stack))) in
     let tail_after_jumpdest :
         ArrayPairs.t (Instruction.t WIRE H WIRE_types) 164 :=
-      prepend_repeat unknown_instruction 3 161 tail_after_push0 in
+      ArrayPair.Build_t
+        {| Instruction.fn_ := Function1.of_run
+             (fun context => run_tload run_InterpreterTypes_for_WIRE run_host context);
+           Instruction.static_gas := {| Integer.value := 100 |} |}
+        (ArrayPair.Build_t
+          {| Instruction.fn_ := Function1.of_run
+               (fun context => run_tstore run_InterpreterTypes_for_WIRE run_host context);
+             Instruction.static_gas := {| Integer.value := 100 |} |}
+          (ArrayPair.Build_t unknown_instruction tail_after_push0)) in
     let tail_after_jumpi :
         ArrayPairs.t (Instruction.t WIRE H WIRE_types) 168 :=
       ArrayPair.Build_t unknown_instruction

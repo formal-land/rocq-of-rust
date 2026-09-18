@@ -35,7 +35,8 @@ Module CallRunner.
     List.existsb (Z.eqb opcode)
       [48; 49; 51; 52; 53; 54; 55; 57; 59; 60; 61; 62; 63;
        65; 66; 67; 68; 69; 70; 71; 72; 74;
-       80; 81; 82; 83; 84; 85; 86; 87; 89; 90; 91; 241; 242; 243; 244; 250; 253].
+       80; 81; 82; 83; 84; 85; 86; 87; 89; 90; 91; 92; 93;
+       241; 242; 243; 244; 250; 253].
 
   Definition table := FragmentInstructionTable.table
     (H := StatefulHost.t) (H_types := StatefulHost.host_types)
