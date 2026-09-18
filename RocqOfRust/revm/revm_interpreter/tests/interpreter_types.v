@@ -8,6 +8,7 @@ Require Import core.links.array.
 Require Import core.ops.links.range.
 Require Import core.ops.simulate.deref.
 Require Import revm.revm_interpreter.instructions.simulate.utility.
+Require Import revm.revm_interpreter.interpreter.links.runtime_flags.
 Require Import revm.revm_interpreter.interpreter_action.links.call_inputs.
 Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.instruction_result.
@@ -196,7 +197,7 @@ Definition WIRE_types : InterpreterTypes.Types.t := {|
   InterpreterTypes.Types.Input := Input.t;
   InterpreterTypes.Types.SubRoutineStack := unit;
   InterpreterTypes.Types.Control := Control.t;
-  InterpreterTypes.Types.RuntimeFlag := SpecId.t;
+  InterpreterTypes.Types.RuntimeFlag := RuntimeFlags.t;
   InterpreterTypes.Types.Extend := unit;
 |}.
 
@@ -597,12 +598,13 @@ End LoopControl.
 Export (hints) LoopControl.
 
 Module RuntimeFlag.
-  Definition Self : Set := SpecId.t.
+  Definition Self : Set := RuntimeFlags.t.
 
-  Definition is_static (_self : Self) : bool := false.
+  Definition is_static (self : Self) : bool := self.(RuntimeFlags.is_static).
   Definition is_eof (_self : Self) : bool := false.
   Definition is_eof_init (_self : Self) : bool := false.
-  Definition spec_id (self : Self) : SpecId.t := self.
+  Definition spec_id (self : Self) : SpecId.t := self.(RuntimeFlags.spec_id).
+  Arguments spec_id _ /.
 
   Instance I : RuntimeFlag.C WIRE_types.(InterpreterTypes.Types.RuntimeFlag) := {
     RuntimeFlag.is_static := is_static;

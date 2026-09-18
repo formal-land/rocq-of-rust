@@ -7,6 +7,7 @@ Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_action.
 Require Import revm.revm_interpreter.tests.interpreter.
 Require Import revm.revm_interpreter.tests.interpreter_types.
+Require Import revm.revm_interpreter.interpreter.links.runtime_flags.
 Require Import revm.revm_interpreter.tests.stateful_host.
 Require Import revm.revm_primitives.links.hardfork.
 Require Import ruint.links.lib.
@@ -36,7 +37,7 @@ Module Test.
         (accounts : list StatefulHost.Account.t) (args warm : list Z) :=
       let interpreter : Interpreter.t WIRE WIRE_types :=
         (make_interpreter {| Stack.value := List.map (fun x => {| Uint.value := x |}) args |})
-          <| @Interpreter.runtime_flag WIRE _ WIRE_types _ := spec |> in
+          <| @Interpreter.runtime_flag WIRE _ WIRE_types _ := RuntimeFlags.non_static spec |> in
       let interpreter : Interpreter.t WIRE WIRE_types :=
         interpreter <| @Interpreter.gas WIRE _ WIRE_types _ :=
           interpreter.(Interpreter.gas)

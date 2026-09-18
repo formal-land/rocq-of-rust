@@ -16,6 +16,7 @@ Require Import revm.revm_interpreter.simulate.instruction_context.
 Require Import revm.revm_interpreter.tests.frame.
 Require Import revm.revm_interpreter.tests.interpreter.
 Require Import revm.revm_interpreter.tests.interpreter_types.
+Require Import revm.revm_interpreter.interpreter.links.runtime_flags.
 Require Import revm.revm_interpreter.tests.stateful_host.
 Require Import ruint.links.lib.
 Require Import simulate.RocqOfRust.
@@ -85,7 +86,9 @@ Module CallFrame.
       | CallValue.Transfer value | CallValue.Apparent value => value end in
     let interpreter := make_interpreter_with_bytecode code {| Stack.value := [] |} in
     interpreter
-      <| @Interpreter.runtime_flag WIRE _ WIRE_types _ := parent.(Interpreter.runtime_flag) |>
+      <| @Interpreter.runtime_flag WIRE _ WIRE_types _ :=
+        parent.(Interpreter.runtime_flag)
+          <| RuntimeFlags.is_static := inputs.(CallInputs.is_static) |> |>
       <| @Interpreter.gas WIRE _ WIRE_types _ :=
         interpreter.(Interpreter.gas)
           <| Gas.limit := inputs.(CallInputs.gas_limit) |>

@@ -113,7 +113,7 @@ Goal
     Some InstructionResult.FatalExternalError.
 Proof.
   timeout 1 vm_compute.
-  destruct (RuntimeFlag.is_static SpecId.PRAGUE); auto.
+  auto.
 Qed.
 
 Goal
@@ -134,7 +134,7 @@ Goal
   is_call_frame result_interpreter.
 Proof.
   timeout 1 vm_compute.
-  destruct (RuntimeFlag.is_static SpecId.PRAGUE); auto.
+  auto.
 Qed.
 
 (** ** CREATE tests *)
@@ -149,7 +149,7 @@ Goal
   bytecode_result result_interpreter = Some InstructionResult.StackUnderflow.
 Proof.
   timeout 1 vm_compute.
-  destruct (RuntimeFlag.is_static SpecId.PRAGUE); auto.
+  auto.
 Qed.
 
 Goal
@@ -166,7 +166,7 @@ Goal
   is_create_frame result_interpreter.
 Proof.
   timeout 1 vm_compute.
-  destruct (RuntimeFlag.is_static SpecId.PRAGUE); auto.
+  auto.
 Qed.
 
 (** ** CALLCODE tests *)
