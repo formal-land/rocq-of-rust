@@ -58,6 +58,8 @@ Require Import revm.revm_interpreter.instructions.simulate.host.extcodesize.
 Require Import revm.revm_interpreter.instructions.simulate.host.selfbalance.
 Require Import revm.revm_interpreter.instructions.simulate.host.sload.
 Require Import revm.revm_interpreter.instructions.simulate.host.sstore.
+Require Import revm.revm_interpreter.instructions.simulate.host.tload.
+Require Import revm.revm_interpreter.instructions.simulate.host.tstore.
 Require Import revm.revm_interpreter.instructions.simulate.memory.mload.
 Require Import revm.revm_interpreter.instructions.simulate.memory.msize.
 Require Import revm.revm_interpreter.instructions.simulate.memory.mstore.
@@ -1260,6 +1262,22 @@ Module InterpreterDispatch.
             InstructionContext.State.interpreter := interpreter;
             InstructionContext.State.host := host;
           |}
+      end
+    else if Z.eqb opcode.(Integer.value) 92 then
+      match state with
+      | {| InstructionContext.State.interpreter := interpreter;
+           InstructionContext.State.host := host |} =>
+          let '(interpreter, host) := tload interpreter host in
+          {| InstructionContext.State.interpreter := interpreter;
+             InstructionContext.State.host := host |}
+      end
+    else if Z.eqb opcode.(Integer.value) 93 then
+      match state with
+      | {| InstructionContext.State.interpreter := interpreter;
+           InstructionContext.State.host := host |} =>
+          let '(interpreter, host) := tstore interpreter host in
+          {| InstructionContext.State.interpreter := interpreter;
+             InstructionContext.State.host := host |}
       end
     else
       simple opcode state.
