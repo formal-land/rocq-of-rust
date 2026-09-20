@@ -12,6 +12,7 @@ Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
+Require Import revm.revm_interpreter.simulate.interpreter.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import revm.revm_primitives.simulate.lib.
 Require Import ruint.links.lib.
@@ -89,6 +90,11 @@ Proof.
   s. {
     apply calc.keccak256_cost_eq.
   }
+  unfold gas_or_fail_macro.
+  match goal with
+  | |- context[keccak256_cost ?len] => destruct (keccak256_cost len) eqn:H_cost
+  end; cbn.
+  2: { s. { eapply halt_oog_eq; try eassumption. } s. }
   gas_macro_eq idtac.
   s.
   destruct (_ =? 0).
