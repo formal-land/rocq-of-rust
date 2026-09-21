@@ -48,6 +48,7 @@ Require Import revm.revm_interpreter.instructions.links.system.caller.
 Require Import revm.revm_interpreter.instructions.links.system.callvalue.
 Require Import revm.revm_interpreter.instructions.links.system.codecopy.
 Require Import revm.revm_interpreter.instructions.links.system.gas.
+Require Import revm.revm_interpreter.instructions.links.system.keccak256.
 Require Import revm.revm_interpreter.instructions.links.system.returndatacopy.
 Require Import revm.revm_interpreter.instructions.links.system.returndatasize.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.addmod.
@@ -1174,7 +1175,12 @@ Module FragmentInstructionTable.
                 tail_after_returndatacopy)))))))))) in
     let tail_after_bitwise :
         ArrayPairs.t (Instruction.t WIRE H WIRE_types) 225 :=
-      prepend_repeat unknown_instruction 17 208
+      ArrayPair.Build_t unknown_instruction
+        (ArrayPair.Build_t
+          {| Instruction.fn_ := Function1.of_run
+               (fun context => run_keccak256 run_InterpreterTypes_for_WIRE context);
+             Instruction.static_gas := {| Integer.value := 0 |} |}
+        (prepend_repeat unknown_instruction 15 208
         (ArrayPair.Build_t
           {| Instruction.fn_ := address_function (H := H) run_InterpreterTypes_for_WIRE;
              Instruction.static_gas := {| Integer.value := 2 |} |}
@@ -1185,7 +1191,7 @@ Module FragmentInstructionTable.
               (ArrayPair.Build_t
                 {| Instruction.fn_ := caller_function (H := H) run_InterpreterTypes_for_WIRE;
                    Instruction.static_gas := {| Integer.value := 2 |} |}
-                tail_after_callvalue)))) in
+                tail_after_callvalue)))))) in
     let bitwise_instructions :
         ArrayPairs.t (Instruction.t WIRE H WIRE_types) 240 :=
       ArrayPair.Build_t lt_instruction

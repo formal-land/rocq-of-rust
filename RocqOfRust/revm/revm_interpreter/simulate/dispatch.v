@@ -77,6 +77,7 @@ Require Import revm.revm_interpreter.instructions.simulate.system.caller.
 Require Import revm.revm_interpreter.instructions.simulate.system.callvalue.
 Require Import revm.revm_interpreter.instructions.simulate.system.codecopy.
 Require Import revm.revm_interpreter.instructions.simulate.system.gas.
+Require Import revm.revm_interpreter.instructions.simulate.system.keccak256.
 Require Import revm.revm_interpreter.instructions.simulate.system.returndatacopy.
 Require Import revm.revm_interpreter.instructions.simulate.system.returndatasize.
 Require Import revm.revm_interpreter.instructions.simulate.table.
@@ -403,6 +404,8 @@ Module InterpreterDispatch.
         InstructionContext.map_interpreter (op_sar)
       else if Z.eqb opcode.(Integer.value) 30 then
         InstructionContext.map_interpreter (op_clz)
+      else if Z.eqb opcode.(Integer.value) 32 then
+        InstructionContext.map_interpreter (keccak256)
       else if Z.eqb opcode.(Integer.value) 48 then
         InstructionContext.map_interpreter (address)
       else if Z.eqb opcode.(Integer.value) 51 then

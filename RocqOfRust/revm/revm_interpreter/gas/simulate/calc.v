@@ -170,7 +170,10 @@ Proof.
 Admitted.
 
 Definition keccak256_cost (len : usize) : option u64 :=
-  Some {| Integer.value := 0 |}.
+  match cost_per_word_impl len KECCAK256WORD with
+  | Some word_cost => BinOp.Checked.add KECCAK256 word_cost
+  | None => None
+  end.
 
 Lemma keccak256_cost_eq (stack : Stack.t) (len : usize) :
   {{
