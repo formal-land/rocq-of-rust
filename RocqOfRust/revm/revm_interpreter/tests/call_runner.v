@@ -14,6 +14,7 @@ Require Import revm.revm_interpreter.simulate.dispatch.
 Require Import revm.revm_interpreter.simulate.instruction_context.
 Require Import revm.revm_interpreter.simulate.step.
 Require Import revm.revm_interpreter.tests.call_frame.
+Require Import revm.revm_interpreter.tests.create_frame.
 Require Import revm.revm_interpreter.tests.frame.
 Require Import revm.revm_interpreter.tests.interpreter_types.
 Require Import revm.revm_interpreter.interpreter.links.runtime_flags.
@@ -36,16 +37,22 @@ Module CallRunner.
       [32; 48; 49; 51; 52; 53; 54; 55; 57; 59; 60; 61; 62; 63;
        65; 66; 67; 68; 69; 70; 71; 72; 74;
        80; 81; 82; 83; 84; 85; 86; 87; 89; 90; 91; 92; 93;
-       241; 242; 243; 244; 250; 253].
+       240; 241; 242; 243; 244; 245; 250; 253].
 
   Definition table := FragmentInstructionTable.table
     (H := StatefulHost.t) (H_types := StatefulHost.host_types)
     (run_host := run_Host_for_StatefulHost) run_InterpreterTypes_for_WIRE.
 
+  Module Pending.
+    Inductive t : Set :=
+    | Call (frame : CallFrame.Pending.t)
+    | Create (parent : CallFrame.machine) (address : Z) (checkpoint : StatefulHost.t).
+  End Pending.
+
   (** Fuel bounds all instructions and frame transitions together. Unsupported
       precompiles, call schemes and missing instructions remain incomplete. *)
   Fixpoint execute (fuel : nat) (checkpoint : StatefulHost.t)
-      (parents : list CallFrame.Pending.t) (state : CallFrame.state) :
+      (parents : list Pending.t) (state : CallFrame.state) :
       option (InterpreterAction.t * CallFrame.state) :=
     match fuel with
     | O => None
@@ -79,11 +86,17 @@ Module CallRunner.
             | [] => Some (InterpreterAction.Return output,
                 {| InstructionContext.State.interpreter := interpreter;
                    InstructionContext.State.host := host |})
-            | parent :: parents =>
+            | Pending.Call parent :: parents =>
                 execute fuel parent.(CallFrame.Pending.checkpoint) parents
                   {| InstructionContext.State.interpreter :=
                        CallFrame.resume parent.(CallFrame.Pending.parent)
                          parent.(CallFrame.Pending.output_range) output;
+                     InstructionContext.State.host := host |}
+            | Pending.Create parent address parent_checkpoint :: parents =>
+                let '(output, host) := CreateFrame.finish address checkpoint host output in
+                execute fuel parent_checkpoint parents
+                  {| InstructionContext.State.interpreter :=
+                       CreateFrame.resume parent (Some address) output;
                      InstructionContext.State.host := host |}
             end
           end
@@ -124,13 +137,24 @@ Module CallRunner.
                        InstructionContext.State.host := host |}
               | None =>
                   execute fuel host
-                    ({| CallFrame.Pending.parent := interpreter;
+                    (Pending.Call {| CallFrame.Pending.parent := interpreter;
                         CallFrame.Pending.output_range := inputs.(CallInputs.return_memory_offset);
                         CallFrame.Pending.checkpoint := checkpoint |} :: parents)
                     {| InstructionContext.State.interpreter := child;
                        InstructionContext.State.host := next_host |}
               end
           | None => None
+          end
+      | Some (InterpreterAction.NewFrame (FrameInput.Create boxed)) =>
+          match CreateFrame.prepare interpreter host (S (List.length parents)) boxed.(Box.value) with
+          | None => None
+          | Some (CreateFrame.Immediate output host) =>
+              execute fuel checkpoint parents
+                {| InstructionContext.State.interpreter := CreateFrame.resume interpreter None output;
+                   InstructionContext.State.host := host |}
+          | Some (CreateFrame.Child address child_checkpoint child) =>
+              execute fuel child_checkpoint
+                (Pending.Create interpreter address checkpoint :: parents) child
           end
       | Some _ => None
       end
