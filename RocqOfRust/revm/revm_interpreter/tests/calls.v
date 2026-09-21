@@ -202,7 +202,11 @@ Module Test.
   Proof. vm_compute. reflexivity. Qed.
 
   Lemma unimplemented_child_opcode_is_not_call_failure :
-    run (call 0 0 0 50000 ++ [0]) [240] = None.
+    run (call 0 0 0 50000 ++ [0]) [160] = None.
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma child_create_underflow_is_call_failure :
+    stack (run (call 0 0 0 50000 ++ [0]) [240]) = Some [0].
   Proof. vm_compute. reflexivity. Qed.
 
   Lemma precompile_call_is_explicitly_unsupported :

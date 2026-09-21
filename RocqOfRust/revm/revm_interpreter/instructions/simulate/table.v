@@ -20,6 +20,7 @@ Require Import revm.revm_interpreter.instructions.links.bitwise.slt.
 Require Import revm.revm_interpreter.instructions.links.block_info.
 Require Import revm.revm_interpreter.instructions.links.contract.call.
 Require Import revm.revm_interpreter.instructions.links.contract.call_code.
+Require Import revm.revm_interpreter.instructions.links.contract.create.
 Require Import revm.revm_interpreter.instructions.links.contract.delegate_call.
 Require Import revm.revm_interpreter.instructions.links.contract.static_call.
 Require Import revm.revm_interpreter.instructions.links.control.jump.
@@ -135,6 +136,17 @@ Module FragmentInstructionTable.
     Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
     Function1.of_run
       (fun context => run_stop run_InterpreterTypes_for_WIRE context).
+
+  Definition create_function
+      (is_create2 : bool)
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types)
+      (run_host : Host.Run H H_types) :
+      Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run (fun context => run_create is_create2 run_types run_host context).
 
   Definition call_function
       {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -1049,7 +1061,10 @@ Module FragmentInstructionTable.
     |} in
     let tail_after_stack :
         ArrayPairs.t (Instruction.t WIRE H WIRE_types) 96 :=
-      prepend_repeat unknown_instruction 81 15
+      prepend_repeat unknown_instruction 80 16
+        (ArrayPair.Build_t
+          {| Instruction.fn_ := create_function false run_InterpreterTypes_for_WIRE run_host;
+             Instruction.static_gas := {| Integer.value := 0 |} |}
         (ArrayPair.Build_t
           {| Instruction.fn_ := call_function run_InterpreterTypes_for_WIRE run_host;
              Instruction.static_gas := {| Integer.value := 0 |} |}
@@ -1062,7 +1077,10 @@ Module FragmentInstructionTable.
         (ArrayPair.Build_t
           {| Instruction.fn_ := delegate_call_function run_InterpreterTypes_for_WIRE run_host;
              Instruction.static_gas := {| Integer.value := 0 |} |}
-          (prepend_repeat unknown_instruction 5 6
+        (ArrayPair.Build_t
+          {| Instruction.fn_ := create_function true run_InterpreterTypes_for_WIRE run_host;
+             Instruction.static_gas := {| Integer.value := 0 |} |}
+          (prepend_repeat unknown_instruction 4 6
             (ArrayPair.Build_t
               {| Instruction.fn_ := static_call_function run_InterpreterTypes_for_WIRE run_host;
                  Instruction.static_gas := {| Integer.value := 0 |} |}
@@ -1070,7 +1088,7 @@ Module FragmentInstructionTable.
             (ArrayPair.Build_t
               {| Instruction.fn_ := revert_function (H := H) run_InterpreterTypes_for_WIRE;
                  Instruction.static_gas := {| Integer.value := 0 |} |}
-              (ArrayPairs.repeat unknown_instruction 2))))))))) in
+              (ArrayPairs.repeat unknown_instruction 2))))))))))) in
     let tail_after_push0 :
         ArrayPairs.t (Instruction.t WIRE H WIRE_types) 161 :=
       ArrayPair.Build_t

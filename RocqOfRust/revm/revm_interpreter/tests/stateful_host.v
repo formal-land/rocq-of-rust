@@ -574,6 +574,10 @@ Module RustTransactionTypes :=
       | None => 0
       end in
     let original_value :=
+      if List.existsb (fun change => match change with
+        | Change.Created created_address => created_address =? address_value
+        | _ => false
+        end) host.(state_changes) then 0 else
       match find_account address_value host.(input).(Input.state) with
       | Some account => lookup_word key_value account.(Account.storage)
       | None => 0

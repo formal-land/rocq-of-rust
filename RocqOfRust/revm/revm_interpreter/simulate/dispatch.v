@@ -42,6 +42,7 @@ Require Import revm.revm_interpreter.instructions.simulate.block_info.gaslimit.
 Require Import revm.revm_interpreter.instructions.simulate.block_info.timestamp.
 Require Import revm.revm_interpreter.instructions.simulate.contract.call.
 Require Import revm.revm_interpreter.instructions.simulate.contract.call_code.
+Require Import revm.revm_interpreter.instructions.simulate.contract.create.
 Require Import revm.revm_interpreter.instructions.simulate.contract.delegate_call.
 Require Import revm.revm_interpreter.instructions.simulate.contract.static_call.
 Require Import revm.revm_interpreter.instructions.simulate.control.jump.
@@ -1146,7 +1147,13 @@ Module InterpreterDispatch.
       (opcode : u8)
       (state : InstructionContext.State.t H WIRE WIRE_types) :
       InstructionContext.State.t H WIRE WIRE_types :=
-    if Z.eqb opcode.(Integer.value) 241 then
+    if Z.eqb opcode.(Integer.value) 240 then
+      let '(interpreter, host) := create false
+        (InstructionContext.State.interpreter _ _ _ state)
+        (InstructionContext.State.host _ _ _ state) in
+      {| InstructionContext.State.interpreter := interpreter;
+         InstructionContext.State.host := host |}
+    else if Z.eqb opcode.(Integer.value) 241 then
       let '(interpreter, host) := call
         (InstructionContext.State.interpreter _ _ _ state)
         (InstructionContext.State.host _ _ _ state) in
@@ -1160,6 +1167,12 @@ Module InterpreterDispatch.
          InstructionContext.State.host := host |}
     else if Z.eqb opcode.(Integer.value) 244 then
       let '(interpreter, host) := delegate_call
+        (InstructionContext.State.interpreter _ _ _ state)
+        (InstructionContext.State.host _ _ _ state) in
+      {| InstructionContext.State.interpreter := interpreter;
+         InstructionContext.State.host := host |}
+    else if Z.eqb opcode.(Integer.value) 245 then
+      let '(interpreter, host) := create true
         (InstructionContext.State.interpreter _ _ _ state)
         (InstructionContext.State.host _ _ _ state) in
       {| InstructionContext.State.interpreter := interpreter;

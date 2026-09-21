@@ -23,8 +23,19 @@ Lemma sstore_refund_eq (stack : Stack.t)
 Proof.
 Admitted.
 
+Definition cost_per_word_impl (len : usize) (multiple : u64) : option u64 :=
+  let num_words :=
+    (Impl_usize.saturating_add len
+      (@lib.Integer_of_Z IntegerKind.Usize 31)) /i
+      (@lib.Integer_of_Z IntegerKind.Usize 32) in
+  BinOp.Checked.mul multiple
+    {| Integer.value := num_words.(Integer.value) |}.
+
 Definition create2_cost (len : usize) : option u64 :=
-  Some {| Integer.value := 0 |}.
+  match cost_per_word_impl len KECCAK256WORD with
+  | Some word_cost => BinOp.Checked.add CREATE word_cost
+  | None => None
+  end.
 
 Lemma create2_cost_eq (stack : Stack.t) (len : usize) :
   {{
@@ -96,15 +107,6 @@ Lemma exp_cost_eq (stack : Stack.t)
   }}.
 Proof.
 Admitted.
-
-Definition cost_per_word_impl (len : usize) (multiple : u64) : option u64 :=
-  let num_words :=
-    lib.BinOp.Wrap.div
-      (Impl_usize.saturating_add len
-        (@lib.Integer_of_Z IntegerKind.Usize 31))
-      (@lib.Integer_of_Z IntegerKind.Usize 32) in
-  BinOp.Checked.mul multiple
-    {| Integer.value := num_words.(Integer.value) |}.
 
 Definition copy_cost_impl (base_cost : u64) (len : usize) : option u64 :=
   match cost_per_word_impl len COPY with
@@ -199,7 +201,11 @@ Proof.
 Admitted.
 
 Definition initcode_cost (len : usize) : u64 :=
-  {| Integer.value := 0 |}.
+  let num_words :=
+    (Impl_usize.saturating_add len
+      (@lib.Integer_of_Z IntegerKind.Usize 31)) /i
+      (@lib.Integer_of_Z IntegerKind.Usize 32) in
+  INITCODE_WORD_COST *i {| Integer.value := num_words.(Integer.value) |}.
 
 Lemma initcode_cost_eq (stack : Stack.t) (len : usize) :
   {{
