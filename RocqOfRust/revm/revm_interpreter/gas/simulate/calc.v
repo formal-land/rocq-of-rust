@@ -25,9 +25,8 @@ Admitted.
 
 Definition cost_per_word_impl (len : usize) (multiple : u64) : option u64 :=
   let num_words :=
-    lib.BinOp.Wrap.div
-      (Impl_usize.saturating_add len
-        (@lib.Integer_of_Z IntegerKind.Usize 31))
+    (Impl_usize.saturating_add len
+      (@lib.Integer_of_Z IntegerKind.Usize 31)) /i
       (@lib.Integer_of_Z IntegerKind.Usize 32) in
   BinOp.Checked.mul multiple
     {| Integer.value := num_words.(Integer.value) |}.
@@ -203,11 +202,10 @@ Admitted.
 
 Definition initcode_cost (len : usize) : u64 :=
   let num_words :=
-    lib.BinOp.Wrap.div
-      (Impl_usize.saturating_add len
-        (@lib.Integer_of_Z IntegerKind.Usize 31))
+    (Impl_usize.saturating_add len
+      (@lib.Integer_of_Z IntegerKind.Usize 31)) /i
       (@lib.Integer_of_Z IntegerKind.Usize 32) in
-  {| Integer.value := INITCODE_WORD_COST.(Integer.value) * num_words.(Integer.value) |}.
+  INITCODE_WORD_COST *i {| Integer.value := num_words.(Integer.value) |}.
 
 Lemma initcode_cost_eq (stack : Stack.t) (len : usize) :
   {{
