@@ -26,6 +26,7 @@ Require Import revm.revm_interpreter.instructions.links.contract.static_call.
 Require Import revm.revm_interpreter.instructions.links.control.jump.
 Require Import revm.revm_interpreter.instructions.links.control.jumpdest.
 Require Import revm.revm_interpreter.instructions.links.control.jumpi.
+Require Import revm.revm_interpreter.instructions.links.control.pc.
 Require Import revm.revm_interpreter.instructions.links.control.ret.
 Require Import revm.revm_interpreter.instructions.links.control.revert.
 Require Import revm.revm_interpreter.instructions.links.control.stop.
@@ -48,6 +49,7 @@ Require Import revm.revm_interpreter.instructions.links.system.calldatasize.
 Require Import revm.revm_interpreter.instructions.links.system.caller.
 Require Import revm.revm_interpreter.instructions.links.system.callvalue.
 Require Import revm.revm_interpreter.instructions.links.system.codecopy.
+Require Import revm.revm_interpreter.instructions.links.system.codesize.
 Require Import revm.revm_interpreter.instructions.links.system.gas.
 Require Import revm.revm_interpreter.instructions.links.system.keccak256.
 Require Import revm.revm_interpreter.instructions.links.system.returndatacopy.
@@ -1110,7 +1112,10 @@ Module FragmentInstructionTable.
           (ArrayPair.Build_t unknown_instruction tail_after_push0)) in
     let tail_after_jumpi :
         ArrayPairs.t (Instruction.t WIRE H WIRE_types) 168 :=
-      ArrayPair.Build_t unknown_instruction
+      ArrayPair.Build_t
+        {| Instruction.fn_ := Function1.of_run
+             (fun context => run_pc run_InterpreterTypes_for_WIRE context);
+           Instruction.static_gas := {| Integer.value := 2 |} |}
         (ArrayPair.Build_t msize_instruction
           (ArrayPair.Build_t gas_instruction
             (ArrayPair.Build_t jumpdest_instruction tail_after_jumpdest))) in
@@ -1177,7 +1182,10 @@ Module FragmentInstructionTable.
             {| Instruction.fn_ := calldatasize_function (H := H) run_InterpreterTypes_for_WIRE;
                Instruction.static_gas := {| Integer.value := 2 |} |}
           (ArrayPair.Build_t calldatacopy_instruction
-          (ArrayPair.Build_t unknown_instruction
+          (ArrayPair.Build_t
+            {| Instruction.fn_ := Function1.of_run
+                 (fun context => run_codesize run_InterpreterTypes_for_WIRE context);
+               Instruction.static_gas := {| Integer.value := 2 |} |}
           (ArrayPair.Build_t codecopy_instruction
           (ArrayPair.Build_t unknown_instruction
           (ArrayPair.Build_t

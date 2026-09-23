@@ -205,4 +205,59 @@ Module Test.
     calls.Test.balance 43 (static_attempt false) = Some 0 /\
     calls.Test.balance 43 (static_attempt true) = Some 0.
   Proof. vm_compute. repeat split; reflexivity. Qed.
+
+  Lemma pc_and_codesize_observe_original_code :
+    calls.Test.stack (calls.Test.run [88; 56; 0] []) = Some [3; 0] /\
+    calls.Test.remaining_gas (calls.Test.run [88; 56; 0] []) = Some 99996.
+  Proof. vm_compute. split; reflexivity. Qed.
+
+  Lemma pc_after_jump_is_instruction_position :
+    calls.Test.stack (calls.Test.run [96; 4; 86; 0; 91; 88; 0] []) = Some [5].
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma context_instructions_each_cost_two_gas :
+    calls.Test.remaining_gas (calls.Test.run [88; 0] []) = Some 99998 /\
+    calls.Test.remaining_gas (calls.Test.run [56; 0] []) = Some 99998.
+  Proof. vm_compute. split; reflexivity. Qed.
+
+  Lemma codesize_does_not_count_push_padding :
+    calls.Test.stack (calls.Test.run [56; 96] []) = Some [0; 2].
+  Proof. vm_compute. reflexivity. Qed.
+
+  Definition context_constructor :=
+    [88; 96; 0; 85; 56; 96; 1; 85; 96; 1; 96; 0; 243].
+
+  Lemma constructor_context_is_not_parent_or_deployed_code :
+    calls.Test.storage (address false context_constructor)
+      (run false context_constructor 0 [0]) = Some [(0, 0); (1, 13)] /\
+    code (address false context_constructor)
+      (run false context_constructor 0 [0]) = Some [0].
+  Proof. vm_compute. split; reflexivity. Qed.
+
+  Lemma create2_constructor_uses_same_code_context :
+    calls.Test.storage (address true context_constructor)
+      (run true context_constructor 0 [0]) = Some [(0, 0); (1, 13)] /\
+    code (address true context_constructor)
+      (run true context_constructor 0 [0]) = Some [0].
+  Proof. vm_compute. split; reflexivity. Qed.
+
+  Definition context_out_of_gas (opcode : Z) :=
+    let state := calls.Test.initial [opcode; 0] [] in
+    let interpreter := InstructionContext.State.interpreter _ _ _ state in
+    let state : CallFrame.state :=
+      {| InstructionContext.State.interpreter := interpreter
+           <| @Interpreter.gas WIRE _ WIRE_types _ := Impl_Gas.new 1 |>;
+         InstructionContext.State.host := InstructionContext.State.host _ _ _ state |} in
+    match CallRunner.run 10 state with
+    | Some (InterpreterAction.Return output, final_state) =>
+      Some (output.(InterpreterResult.result),
+        List.map Uint.value (InstructionContext.State.interpreter _ _ _ final_state)
+          .(Interpreter.stack).(Stack.value))
+    | _ => None
+    end.
+
+  Lemma context_out_of_gas_does_not_push :
+    context_out_of_gas 88 = Some (InstructionResult.OutOfGas, []) /\
+    context_out_of_gas 56 = Some (InstructionResult.OutOfGas, []).
+  Proof. vm_compute. split; reflexivity. Qed.
 End Test.
