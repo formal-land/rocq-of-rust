@@ -48,6 +48,7 @@ Require Import revm.revm_interpreter.instructions.simulate.contract.static_call.
 Require Import revm.revm_interpreter.instructions.simulate.control.jump.
 Require Import revm.revm_interpreter.instructions.simulate.control.jumpdest.
 Require Import revm.revm_interpreter.instructions.simulate.control.jumpi.
+Require Import revm.revm_interpreter.instructions.simulate.control.pc.
 Require Import revm.revm_interpreter.instructions.simulate.control.ret.
 Require Import revm.revm_interpreter.instructions.simulate.control.revert.
 Require Import revm.revm_interpreter.instructions.simulate.control.stop.
@@ -77,6 +78,7 @@ Require Import revm.revm_interpreter.instructions.simulate.system.calldatasize.
 Require Import revm.revm_interpreter.instructions.simulate.system.caller.
 Require Import revm.revm_interpreter.instructions.simulate.system.callvalue.
 Require Import revm.revm_interpreter.instructions.simulate.system.codecopy.
+Require Import revm.revm_interpreter.instructions.simulate.system.codesize.
 Require Import revm.revm_interpreter.instructions.simulate.system.gas.
 Require Import revm.revm_interpreter.instructions.simulate.system.keccak256.
 Require Import revm.revm_interpreter.instructions.simulate.system.returndatacopy.
@@ -419,6 +421,8 @@ Module InterpreterDispatch.
         InstructionContext.map_interpreter (calldatasize)
       else if Z.eqb opcode.(Integer.value) 55 then
         InstructionContext.map_interpreter (calldatacopy)
+      else if Z.eqb opcode.(Integer.value) 56 then
+        InstructionContext.map_interpreter (codesize)
       else if Z.eqb opcode.(Integer.value) 57 then
         InstructionContext.map_interpreter (codecopy)
       else if Z.eqb opcode.(Integer.value) 61 then
@@ -509,6 +513,8 @@ Module InterpreterDispatch.
         InstructionContext.map_interpreter (jump)
       else if Z.eqb opcode.(Integer.value) 87 then
         InstructionContext.map_interpreter (jumpi)
+      else if Z.eqb opcode.(Integer.value) 88 then
+        InstructionContext.map_interpreter (pc)
       else if Z.eqb opcode.(Integer.value) 89 then
         InstructionContext.map_interpreter (msize)
       else if Z.eqb opcode.(Integer.value) 90 then
