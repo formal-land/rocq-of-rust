@@ -159,7 +159,16 @@ Proof.
 Admitted.
 
 Definition log_cost (n : u8) (len : u64) : option u64 :=
-  Some {| Integer.value := 0 |}.
+  match BinOp.Checked.mul LOGDATA len with
+  | None => None
+  | Some data_cost =>
+    match BinOp.Checked.add LOG data_cost with
+    | None => None
+    | Some base_cost =>
+      BinOp.Checked.add base_cost
+        (LOGTOPIC *i (M.cast_integer IntegerKind.U64 n))
+    end
+  end.
 
 Lemma log_cost_eq (stack : Stack.t) (n : u8) (len : u64) :
   {{

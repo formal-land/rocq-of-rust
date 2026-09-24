@@ -57,6 +57,7 @@ Require Import revm.revm_interpreter.instructions.simulate.host.balance.
 Require Import revm.revm_interpreter.instructions.simulate.host.extcodecopy.
 Require Import revm.revm_interpreter.instructions.simulate.host.extcodehash.
 Require Import revm.revm_interpreter.instructions.simulate.host.extcodesize.
+Require Import revm.revm_interpreter.instructions.simulate.host.log.
 Require Import revm.revm_interpreter.instructions.simulate.host.selfbalance.
 Require Import revm.revm_interpreter.instructions.simulate.host.sload.
 Require Import revm.revm_interpreter.instructions.simulate.host.sstore.
@@ -523,6 +524,46 @@ Module InterpreterDispatch.
         InstructionContext.map_interpreter (jumpdest)
       else if Z.eqb opcode.(Integer.value) 95 then
         InstructionContext.map_interpreter (push0)
+      else if Z.eqb opcode.(Integer.value) 160 then
+        fun state =>
+          let '(interpreter, host) := log 0
+            (IInterpreterTypes := IInterpreterTypes) (IHost := IHost)
+            (InstructionContext.State.interpreter _ _ _ state)
+            (InstructionContext.State.host _ _ _ state) in
+          {| InstructionContext.State.interpreter := interpreter;
+             InstructionContext.State.host := host |}
+      else if Z.eqb opcode.(Integer.value) 161 then
+        fun state =>
+          let '(interpreter, host) := log 1
+            (IInterpreterTypes := IInterpreterTypes) (IHost := IHost)
+            (InstructionContext.State.interpreter _ _ _ state)
+            (InstructionContext.State.host _ _ _ state) in
+          {| InstructionContext.State.interpreter := interpreter;
+             InstructionContext.State.host := host |}
+      else if Z.eqb opcode.(Integer.value) 162 then
+        fun state =>
+          let '(interpreter, host) := log 2
+            (IInterpreterTypes := IInterpreterTypes) (IHost := IHost)
+            (InstructionContext.State.interpreter _ _ _ state)
+            (InstructionContext.State.host _ _ _ state) in
+          {| InstructionContext.State.interpreter := interpreter;
+             InstructionContext.State.host := host |}
+      else if Z.eqb opcode.(Integer.value) 163 then
+        fun state =>
+          let '(interpreter, host) := log 3
+            (IInterpreterTypes := IInterpreterTypes) (IHost := IHost)
+            (InstructionContext.State.interpreter _ _ _ state)
+            (InstructionContext.State.host _ _ _ state) in
+          {| InstructionContext.State.interpreter := interpreter;
+             InstructionContext.State.host := host |}
+      else if Z.eqb opcode.(Integer.value) 164 then
+        fun state =>
+          let '(interpreter, host) := log 4
+            (IInterpreterTypes := IInterpreterTypes) (IHost := IHost)
+            (InstructionContext.State.interpreter _ _ _ state)
+            (InstructionContext.State.host _ _ _ state) in
+          {| InstructionContext.State.interpreter := interpreter;
+             InstructionContext.State.host := host |}
       else if Z.eqb opcode.(Integer.value) 243 then
         InstructionContext.map_interpreter (ret)
       else if Z.eqb opcode.(Integer.value) 253 then

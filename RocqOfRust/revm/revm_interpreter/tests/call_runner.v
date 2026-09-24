@@ -37,7 +37,7 @@ Module CallRunner.
       [32; 48; 49; 51; 52; 53; 54; 55; 56; 57; 59; 60; 61; 62; 63;
        65; 66; 67; 68; 69; 70; 71; 72; 74;
        80; 81; 82; 83; 84; 85; 86; 87; 88; 89; 90; 91; 92; 93;
-       240; 241; 242; 243; 244; 245; 250; 253].
+       160; 161; 162; 163; 164; 240; 241; 242; 243; 244; 245; 250; 253].
 
   Definition table := FragmentInstructionTable.table
     (H := StatefulHost.t) (H_types := StatefulHost.host_types)
