@@ -35,6 +35,7 @@ Require Import revm.revm_interpreter.instructions.links.host.balance.
 Require Import revm.revm_interpreter.instructions.links.host.extcodecopy.
 Require Import revm.revm_interpreter.instructions.links.host.extcodehash.
 Require Import revm.revm_interpreter.instructions.links.host.extcodesize.
+Require Import revm.revm_interpreter.instructions.links.host.log.
 Require Import revm.revm_interpreter.instructions.links.host.tload.
 Require Import revm.revm_interpreter.instructions.links.host.tstore.
 Require Import revm.revm_interpreter.instructions.links.memory.mload.
@@ -1063,7 +1064,17 @@ Module FragmentInstructionTable.
     |} in
     let tail_after_stack :
         ArrayPairs.t (Instruction.t WIRE H WIRE_types) 96 :=
-      prepend_repeat unknown_instruction 80 16
+      let log_instruction := fun N : Z =>
+        {| Instruction.fn_ := Function1.of_run
+             (fun context => run_log (N := {| Integer.value := N |})
+               run_InterpreterTypes_for_WIRE run_host context);
+           Instruction.static_gas := {| Integer.value := 0 |} |} in
+      ArrayPair.Build_t (log_instruction 0)
+      (ArrayPair.Build_t (log_instruction 1)
+      (ArrayPair.Build_t (log_instruction 2)
+      (ArrayPair.Build_t (log_instruction 3)
+      (ArrayPair.Build_t (log_instruction 4)
+      (prepend_repeat unknown_instruction 75 16
         (ArrayPair.Build_t
           {| Instruction.fn_ := create_function false run_InterpreterTypes_for_WIRE run_host;
              Instruction.static_gas := {| Integer.value := 0 |} |}
@@ -1090,7 +1101,7 @@ Module FragmentInstructionTable.
             (ArrayPair.Build_t
               {| Instruction.fn_ := revert_function (H := H) run_InterpreterTypes_for_WIRE;
                  Instruction.static_gas := {| Integer.value := 0 |} |}
-              (ArrayPairs.repeat unknown_instruction 2))))))))))) in
+              (ArrayPairs.repeat unknown_instruction 2)))))))))))))))) in
     let tail_after_push0 :
         ArrayPairs.t (Instruction.t WIRE H WIRE_types) 161 :=
       ArrayPair.Build_t
