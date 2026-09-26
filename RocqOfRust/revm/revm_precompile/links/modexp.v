@@ -1,9 +1,6 @@
 Require Import links.RocqOfRust.
-
 Require Import alloy_primitives.links.aliases.
-
 Require Import revm.revm_precompile.modexp.
-
 Require Import ruint.links.lib.
 
 (* pub fn calculate_iteration_count<const MULTIPLIER: u64>(
