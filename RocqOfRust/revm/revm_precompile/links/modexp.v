@@ -1,7 +1,11 @@
 Require Import links.RocqOfRust.
 Require Import alloy_primitives.links.aliases.
+Require Import core.links.cmp.
+Require Import core.num.links.mod.
 Require Import revm.revm_precompile.modexp.
 Require Import ruint.links.lib.
+Require Import ruint.links.cmp.
+Require Import ruint.links.bits.
 
 (* pub fn calculate_iteration_count<const MULTIPLIER: u64>(
      exp_length: u64,
@@ -21,6 +25,6 @@ Instance run_calculate_iteration_count
 Proof.
   constructor.
   run_symbolic.
-Admitted.
+Defined.
 
 Global Opaque run_calculate_iteration_count.
