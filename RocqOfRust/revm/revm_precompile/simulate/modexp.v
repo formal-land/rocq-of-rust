@@ -1,7 +1,7 @@
 Require Import simulate.RocqOfRust.
 Require Import alloy_primitives.links.aliases.
 Require Import revm.revm_precompile.links.modexp.
-Require Import ruint.links.lib.opam exec --switch=rocq90 -- make revm/revm_precompile/simulate/modexp.vo
+Require Import ruint.links.lib.
 
 (* Maximum value representable by u64. *)
 Definition max_u64 : Z :=
