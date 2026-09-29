@@ -36,6 +36,7 @@ Require Import revm.revm_interpreter.instructions.links.host.extcodecopy.
 Require Import revm.revm_interpreter.instructions.links.host.extcodehash.
 Require Import revm.revm_interpreter.instructions.links.host.extcodesize.
 Require Import revm.revm_interpreter.instructions.links.host.log.
+Require Import revm.revm_interpreter.instructions.links.host.selfdestruct.
 Require Import revm.revm_interpreter.instructions.links.host.tload.
 Require Import revm.revm_interpreter.instructions.links.host.tstore.
 Require Import revm.revm_interpreter.instructions.links.memory.mload.
@@ -1101,7 +1102,13 @@ Module FragmentInstructionTable.
             (ArrayPair.Build_t
               {| Instruction.fn_ := revert_function (H := H) run_InterpreterTypes_for_WIRE;
                  Instruction.static_gas := {| Integer.value := 0 |} |}
-              (ArrayPairs.repeat unknown_instruction 2)))))))))))))))) in
+              (ArrayPair.Build_t unknown_instruction
+                (ArrayPair.Build_t
+                  {| Instruction.fn_ := Function1.of_run
+                       (fun context => run_selfdestruct
+                         run_InterpreterTypes_for_WIRE run_host context);
+                     Instruction.static_gas := {| Integer.value := 0 |} |}
+                  (ArrayPairs.repeat unknown_instruction 0)))))))))))))))))) in
     let tail_after_push0 :
         ArrayPairs.t (Instruction.t WIRE H WIRE_types) 161 :=
       ArrayPair.Build_t

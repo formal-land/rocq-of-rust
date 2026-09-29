@@ -50,10 +50,8 @@ Definition selfdestruct
     let '(result, host) := IHost.(Host.selfdestruct) host address target skip_cold_load in
     match result with
     | Result.Ok state_load =>
-      let state_load_ref : '& (StateLoad.t SelfDestructResult.t) :=
-        Ref.immediate Pointer.Kind.Ref state_load in
       gas_macro interpreter
-        (calc.dyn_selfdestruct_cost spec_id state_load_ref)
+        (calc.dyn_selfdestruct_cost spec_id state_load)
         (fun interpreter => (interpreter, host)) (fun interpreter =>
       let is_london := Impl_SpecId.is_enabled_in spec_id SpecId.LONDON in
       let should_refund :=
