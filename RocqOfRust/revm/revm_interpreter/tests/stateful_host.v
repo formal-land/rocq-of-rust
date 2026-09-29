@@ -23,6 +23,8 @@ Require Import revm.revm_context_interface.simulate.block.
 Require Import revm.revm_context_interface.simulate.cfg.
 Require Import revm.revm_context_interface.simulate.host.
 Require Import revm.revm_context_interface.simulate.transaction.
+Require Import revm.revm_primitives.links.hardfork.
+Require Import revm.revm_primitives.simulate.hardfork.
 Require Import ruint.links.lib.
 Require Import ruint.simulate.lib.
 Require Import simulate.M.
@@ -116,6 +118,7 @@ Module RustTransactionTypes :=
 
   Record t : Set := {
     input : Input.t;
+    spec_id : SpecId.t;
     accounts : list Account.t;
     accessed_accounts : list Z;
     accessed_storage : list (Z * Z);
@@ -125,6 +128,7 @@ Module RustTransactionTypes :=
 
   Definition make (input : Input.t) : t :=
     {| input := input;
+       spec_id := SpecId.CANCUN;
        accounts := input.(Input.state);
        accessed_accounts := [];
        accessed_storage := [];
@@ -266,6 +270,7 @@ Module RustTransactionTypes :=
 
   Definition append_change (host : t) (change : Change.t) : t :=
     {| input := host.(input);
+       spec_id := host.(spec_id);
        accounts := host.(accounts);
        accessed_accounts := host.(accessed_accounts);
        accessed_storage := host.(accessed_storage);
@@ -275,6 +280,7 @@ Module RustTransactionTypes :=
   Definition append_log (host : t) (entry : Log.t LogData.t) : t :=
     let data := entry.(Log.data) in
     {| input := host.(input);
+       spec_id := host.(spec_id);
        accounts := host.(accounts);
        accessed_accounts := host.(accessed_accounts);
        accessed_storage := host.(accessed_storage);
@@ -390,6 +396,7 @@ Module RustTransactionTypes :=
 
   Definition with_accounts (host : t) (accounts : list Account.t) : t :=
     {| input := host.(input);
+       spec_id := host.(spec_id);
        accounts := accounts;
        accessed_accounts := host.(accessed_accounts);
        accessed_storage := host.(accessed_storage);
@@ -413,6 +420,7 @@ Module RustTransactionTypes :=
       host
     else
       {| input := host.(input);
+         spec_id := host.(spec_id);
          accounts := host.(accounts);
          accessed_accounts := host.(accessed_accounts);
          accessed_storage := (address, key) :: host.(accessed_storage);
@@ -444,6 +452,7 @@ Module RustTransactionTypes :=
     if account_is_warm host address then host
     else
       {| input := host.(input);
+         spec_id := host.(spec_id);
          accounts := host.(accounts);
          accessed_accounts := address :: host.(accessed_accounts);
          accessed_storage := host.(accessed_storage);
@@ -660,10 +669,13 @@ Module RustTransactionTypes :=
     end.
 
   Definition selfdestruct
-      (host : t) (address target : Address.t) :
+      (host : t) (address target : Address.t) (skip_cold : bool) :
       Result.t (StateLoad.t SelfDestructResult.t) LoadError.t * t :=
     let address_value := address.(Address.value) in
     let target_value := target.(Address.value) in
+    let is_cold := negb (account_is_warm host target_value) in
+    if skip_cold && is_cold then (Result.Err LoadError.ColdLoadSkipped, host) else
+    let host := warm_account host target_value in
     let source :=
       match find_account address_value host.(accounts) with
       | Some account => account
@@ -671,7 +683,9 @@ Module RustTransactionTypes :=
       end in
     let target_exists :=
       match find_account target_value host.(accounts) with
-      | Some _ => true
+      | Some account =>
+          if Impl_SpecId.is_enabled_in host.(spec_id) SpecId.SPURIOUS_DRAGON
+          then negb (account_is_empty account) else true
       | None => false
       end in
     let target_balance :=
@@ -681,12 +695,19 @@ Module RustTransactionTypes :=
       end in
     let previously_destroyed :=
       was_selfdestructed address_value host.(state_changes) in
+    let created := List.existsb (fun change => match change with
+      | Change.Created created_address => created_address =? address_value
+      | _ => false
+      end) host.(state_changes) in
+    let destroys := created ||
+      negb (Impl_SpecId.is_enabled_in host.(spec_id) SpecId.CANCUN) in
+    let clears_balance := destroys || negb (address_value =? target_value) in
     let transferred_balance :=
       (target_balance + source.(Account.balance)) mod 2 ^ 256 in
     let accounts :=
-      update_account address_value
+      if clears_balance then update_account address_value
         (fun account => account_with_balance account 0)
-        host.(accounts) in
+        host.(accounts) else host.(accounts) in
     let accounts :=
       if address_value =? target_value
       then accounts
@@ -696,15 +717,16 @@ Module RustTransactionTypes :=
             account_with_balance account transferred_balance)
           accounts in
     let host := with_accounts host accounts in
-    let host := append_change host
-      (Change.Balance address_value 0) in
+    let host := if clears_balance then append_change host
+      (Change.Balance address_value 0) else host in
     let host :=
       if address_value =? target_value
       then host
       else append_change host
         (Change.Balance target_value
           transferred_balance) in
-    let host := append_change host (Change.SelfDestruct address_value) in
+    let host := if destroys then
+      append_change host (Change.SelfDestruct address_value) else host in
     (Result.Ok
       {| StateLoad.data :=
            {| SelfDestructResult.had_value :=
@@ -712,7 +734,12 @@ Module RustTransactionTypes :=
               SelfDestructResult.target_exists := target_exists;
               SelfDestructResult.previously_destroyed :=
                 previously_destroyed |};
-         StateLoad.is_cold := false |}, host).
+         StateLoad.is_cold := is_cold |}, host).
+
+  Definition finalize_selfdestructs (host : t) : t :=
+    with_accounts host (List.filter
+      (fun account => negb (was_selfdestructed account.(Account.address) host.(state_changes)))
+      host.(accounts)).
 
   Definition block_hash (host : t) (number : u64) :
       option aliases.B256.t * t :=
@@ -776,7 +803,7 @@ Module RustTransactionTypes :=
        Host.tload := tload;
        Host.tstore := tstore;
        Host.log self entry := append_log self entry;
-       Host.selfdestruct self address target _ :=
-         selfdestruct self address target |}.
+       Host.selfdestruct self address target skip_cold :=
+         selfdestruct self address target skip_cold |}.
 End StatefulHost.
 Export (hints) StatefulHost.

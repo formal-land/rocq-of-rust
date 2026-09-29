@@ -37,7 +37,7 @@ Module CallRunner.
       [32; 48; 49; 51; 52; 53; 54; 55; 56; 57; 59; 60; 61; 62; 63;
        65; 66; 67; 68; 69; 70; 71; 72; 74;
        80; 81; 82; 83; 84; 85; 86; 87; 88; 89; 90; 91; 92; 93;
-       160; 161; 162; 163; 164; 240; 241; 242; 243; 244; 245; 250; 253].
+       160; 161; 162; 163; 164; 240; 241; 242; 243; 244; 245; 250; 253; 255].
 
   Definition table := FragmentInstructionTable.table
     (H := StatefulHost.t) (H_types := StatefulHost.host_types)
@@ -85,7 +85,9 @@ Module CallRunner.
             match parents with
             | [] => Some (InterpreterAction.Return output,
                 {| InstructionContext.State.interpreter := interpreter;
-                   InstructionContext.State.host := host |})
+                   InstructionContext.State.host :=
+                     if StatefulFrame.successful output.(InterpreterResult.result)
+                     then StatefulHost.finalize_selfdestructs host else host |})
             | Pending.Call parent :: parents =>
                 execute fuel parent.(CallFrame.Pending.checkpoint) parents
                   {| InstructionContext.State.interpreter :=
@@ -164,7 +166,12 @@ Module CallRunner.
     match (InstructionContext.State.interpreter _ _ _ state)
       .(Interpreter.runtime_flag).(RuntimeFlags.spec_id) with
     | SpecId.CANCUN | SpecId.PRAGUE =>
-        execute fuel (InstructionContext.State.host _ _ _ state) [] state
+        let interpreter := InstructionContext.State.interpreter _ _ _ state in
+        let host := (InstructionContext.State.host _ _ _ state)
+          <| StatefulHost.spec_id := interpreter.(Interpreter.runtime_flag).(RuntimeFlags.spec_id) |> in
+        execute fuel host []
+          {| InstructionContext.State.interpreter := interpreter;
+             InstructionContext.State.host := host |}
     | _ => None
     end.
 End CallRunner.

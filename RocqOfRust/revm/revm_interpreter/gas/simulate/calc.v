@@ -512,7 +512,10 @@ Module SstoreTest.
 End SstoreTest.
 
 Definition static_selfdestruct_cost (spec_id : SpecId.t) : u64 :=
-  {| Integer.value := 0 |}.
+  if Impl_SpecId.is_enabled_in spec_id SpecId.TANGERINE then
+    5000
+  else
+    0.
 
 Lemma static_selfdestruct_cost_eq (stack : Stack.t) (spec_id : SpecId.t) :
   {{
@@ -524,25 +527,45 @@ Lemma static_selfdestruct_cost_eq (stack : Stack.t) (spec_id : SpecId.t) :
 Proof.
 Admitted.
 
+Definition selfdestruct_cold_beneficiary_cost (spec_id : SpecId.t) : u64 :=
+  if Impl_SpecId.is_enabled_in spec_id SpecId.BERLIN then
+    COLD_ACCOUNT_ACCESS_COST
+  else
+    0.
+
 Definition dyn_selfdestruct_cost
     (spec_id : SpecId.t)
-    (res : '& (StateLoad.t SelfDestructResult.t)) :
+    (res : StateLoad.t SelfDestructResult.t) :
     u64 :=
-  {| Integer.value := 0 |}.
+  let should_charge_topup :=
+    if Impl_SpecId.is_enabled_in spec_id SpecId.SPURIOUS_DRAGON then
+      res.(StateLoad.data).(SelfDestructResult.had_value) &&
+        negb res.(StateLoad.data).(SelfDestructResult.target_exists)
+    else
+      negb res.(StateLoad.data).(SelfDestructResult.target_exists) in
+  let gas :=
+    if Impl_SpecId.is_enabled_in spec_id SpecId.TANGERINE && should_charge_topup then
+      NEWACCOUNT
+    else
+      0 in
+  if res.(StateLoad.is_cold) then
+    gas +i selfdestruct_cold_beneficiary_cost spec_id
+  else
+    gas.
 
 Lemma dyn_selfdestruct_cost_eq (stack : Stack.t)
-    (spec_id : SpecId.t) (res : '& (StateLoad.t SelfDestructResult.t)) :
+    (spec_id : SpecId.t)
+    (res_ref : '& (StateLoad.t SelfDestructResult.t))
+    (res : StateLoad.t SelfDestructResult.t) :
+  CanRead.t stack res res_ref ->
   {{
     SimulateM.eval_f
-      (run_dyn_selfdestruct_cost spec_id res)
+      (run_dyn_selfdestruct_cost spec_id res_ref)
       stack 🌲
     (Output.Success (dyn_selfdestruct_cost spec_id res), stack)
   }}.
 Proof.
 Admitted.
-
-Definition selfdestruct_cold_beneficiary_cost (spec_id : SpecId.t) : u64 :=
-  {| Integer.value := 0 |}.
 
 Lemma selfdestruct_cold_beneficiary_cost_eq (stack : Stack.t) (spec_id : SpecId.t) :
   {{
@@ -558,7 +581,7 @@ Definition selfdestruct_cost
     (spec_id : SpecId.t)
     (res : StateLoad.t SelfDestructResult.t) :
     u64 :=
-  {| Integer.value := 0 |}.
+  static_selfdestruct_cost spec_id +i dyn_selfdestruct_cost spec_id res.
 
 Lemma selfdestruct_cost_eq (stack : Stack.t)
     (spec_id : SpecId.t) (res : StateLoad.t SelfDestructResult.t) :
@@ -647,3 +670,42 @@ Lemma memory_gas_eq (stack : Stack.t) (num_words : usize) :
   }}.
 Proof.
 Admitted.
+
+Module SelfDestructGas.
+Module Test.
+  Definition result (had_value target_exists is_cold : bool) :
+      StateLoad.t SelfDestructResult.t :=
+    {| StateLoad.data :=
+         {| SelfDestructResult.had_value := had_value;
+            SelfDestructResult.target_exists := target_exists;
+            SelfDestructResult.previously_destroyed := false |};
+       StateLoad.is_cold := is_cold |}.
+
+  Lemma selfdestruct_new_account_activation :
+    selfdestruct_cost SpecId.HOMESTEAD (result true false true) = 0 /\
+    selfdestruct_cost SpecId.TANGERINE (result false false true) = 30000 /\
+    selfdestruct_cost SpecId.SPURIOUS_DRAGON (result false false true) = 5000 /\
+    selfdestruct_cost SpecId.SPURIOUS_DRAGON (result true false true) = 30000.
+  Proof. vm_compute. repeat split; reflexivity. Qed.
+
+  Lemma selfdestruct_cancun_costs :
+    selfdestruct_cost SpecId.CANCUN (result true true false) = 5000 /\
+    selfdestruct_cost SpecId.CANCUN (result true true true) = 7600 /\
+    selfdestruct_cost SpecId.CANCUN (result false false true) = 7600 /\
+    selfdestruct_cost SpecId.CANCUN (result true false false) = 30000 /\
+    selfdestruct_cost SpecId.CANCUN (result true false true) = 32600.
+  Proof. vm_compute. repeat split; reflexivity. Qed.
+
+  Lemma selfdestruct_base_cost_activation :
+    static_selfdestruct_cost SpecId.HOMESTEAD = 0 /\
+    static_selfdestruct_cost SpecId.TANGERINE = 5000 /\
+    static_selfdestruct_cost SpecId.CANCUN = 5000.
+  Proof. vm_compute. repeat split; reflexivity. Qed.
+
+  Lemma selfdestruct_cold_cost_activation :
+    selfdestruct_cold_beneficiary_cost SpecId.ISTANBUL = 0 /\
+    selfdestruct_cold_beneficiary_cost SpecId.BERLIN = 2600 /\
+    selfdestruct_cold_beneficiary_cost SpecId.PRAGUE = 2600.
+  Proof. vm_compute. repeat split; reflexivity. Qed.
+End Test.
+End SelfDestructGas.

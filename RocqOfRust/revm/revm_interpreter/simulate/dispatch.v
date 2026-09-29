@@ -59,6 +59,7 @@ Require Import revm.revm_interpreter.instructions.simulate.host.extcodehash.
 Require Import revm.revm_interpreter.instructions.simulate.host.extcodesize.
 Require Import revm.revm_interpreter.instructions.simulate.host.log.
 Require Import revm.revm_interpreter.instructions.simulate.host.selfbalance.
+Require Import revm.revm_interpreter.instructions.simulate.host.selfdestruct.
 Require Import revm.revm_interpreter.instructions.simulate.host.sload.
 Require Import revm.revm_interpreter.instructions.simulate.host.sstore.
 Require Import revm.revm_interpreter.instructions.simulate.host.tload.
@@ -568,6 +569,14 @@ Module InterpreterDispatch.
         InstructionContext.map_interpreter (ret)
       else if Z.eqb opcode.(Integer.value) 253 then
         InstructionContext.map_interpreter (revert)
+      else if Z.eqb opcode.(Integer.value) 255 then
+        fun state =>
+          let '(interpreter, host) := selfdestruct
+            (IInterpreterTypes := IInterpreterTypes) (IHost := IHost)
+            (InstructionContext.State.interpreter _ _ _ state)
+            (InstructionContext.State.host _ _ _ state) in
+          {| InstructionContext.State.interpreter := interpreter;
+             InstructionContext.State.host := host |}
       else if
         (96 <=? opcode.(Integer.value)) &&
         (opcode.(Integer.value) <=? 127)
