@@ -17,6 +17,7 @@ Require Import revm.revm_interpreter.tests.call_frame.
 Require Import revm.revm_interpreter.tests.create_frame.
 Require Import revm.revm_interpreter.tests.frame.
 Require Import revm.revm_interpreter.tests.interpreter_types.
+Require Import revm.revm_interpreter.tests.precompile_frame.
 Require Import revm.revm_interpreter.interpreter.links.runtime_flags.
 Require Import revm.revm_interpreter.tests.stateful_dispatch.
 Require Import revm.revm_interpreter.tests.stateful_host.
@@ -107,7 +108,8 @@ Module CallRunner.
           let address := inputs.(CallInputs.bytecode_address).(Address.value) in
           let max_precompile := if Impl_SpecId.is_enabled_in
             interpreter.(Interpreter.runtime_flag).(RuntimeFlags.spec_id) SpecId.PRAGUE then 17 else 10 in
-          if (1 <=? address) && (address <=? max_precompile) then None else
+          if (1 <=? address) && (address <=? max_precompile) && negb (address =? 4)
+          then None else
           let supported := match inputs.(CallInputs.scheme), inputs.(CallInputs.value) with
             | CallScheme.Call, CallValue.Transfer _
             | CallScheme.CallCode, CallValue.Transfer _
@@ -117,11 +119,16 @@ Module CallRunner.
             | _, _ => false
             end in
           if negb supported then None else
-          match inputs.(CallInputs.known_bytecode) with
-          | Some (_, code) =>
-              let child := CallFrame.child interpreter inputs
+          let code := if address =? 4 then Some [] else
+            match inputs.(CallInputs.known_bytecode) with
+            | Some (_, code) => Some
                 code.(revm.revm_bytecode.links.bytecode.Bytecode.original_bytes)
-                  .(alloy_primitives.bytes.links.mod.Bytes.value).(bytes.Bytes.value) in
+                  .(alloy_primitives.bytes.links.mod.Bytes.value).(bytes.Bytes.value)
+            | None => None
+            end in
+          match code with
+          | Some code =>
+              let child := CallFrame.child interpreter inputs code in
               let '(error, next_host) :=
                 if Nat.ltb 1024 (S (List.length parents)) then
                   (Some InstructionResult.CallTooDeep, host)
@@ -138,6 +145,11 @@ Module CallRunner.
                          inputs.(CallInputs.return_memory_offset) (CallFrame.result error child);
                        InstructionContext.State.host := host |}
               | None =>
+                  let child := if address =? 4 then child
+                    <| @Interpreter.bytecode WIRE _ WIRE_types _ :=
+                      child.(Interpreter.bytecode) <| Bytecode.action :=
+                        Some (InterpreterAction.Return (PrecompileFrame.identity child)) |> |>
+                    else child in
                   execute fuel host
                     (Pending.Call {| CallFrame.Pending.parent := interpreter;
                         CallFrame.Pending.output_range := inputs.(CallInputs.return_memory_offset);
