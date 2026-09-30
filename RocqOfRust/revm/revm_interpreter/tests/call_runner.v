@@ -108,7 +108,7 @@ Module CallRunner.
           let address := inputs.(CallInputs.bytecode_address).(Address.value) in
           let max_precompile := if Impl_SpecId.is_enabled_in
             interpreter.(Interpreter.runtime_flag).(RuntimeFlags.spec_id) SpecId.PRAGUE then 17 else 10 in
-          if (1 <=? address) && (address <=? max_precompile) && negb (address =? 4)
+          if (1 <=? address) && (address <=? max_precompile) && negb (PrecompileFrame.supported address)
           then None else
           let supported := match inputs.(CallInputs.scheme), inputs.(CallInputs.value) with
             | CallScheme.Call, CallValue.Transfer _
@@ -119,7 +119,7 @@ Module CallRunner.
             | _, _ => false
             end in
           if negb supported then None else
-          let code := if address =? 4 then Some [] else
+          let code := if PrecompileFrame.supported address then Some [] else
             match inputs.(CallInputs.known_bytecode) with
             | Some (_, code) => Some
                 code.(revm.revm_bytecode.links.bytecode.Bytecode.original_bytes)
@@ -145,11 +145,13 @@ Module CallRunner.
                          inputs.(CallInputs.return_memory_offset) (CallFrame.result error child);
                        InstructionContext.State.host := host |}
               | None =>
-                  let child := if address =? 4 then child
-                    <| @Interpreter.bytecode WIRE _ WIRE_types _ :=
-                      child.(Interpreter.bytecode) <| Bytecode.action :=
-                        Some (InterpreterAction.Return (PrecompileFrame.identity child)) |> |>
-                    else child in
+                  let child := match PrecompileFrame.run address child with
+                    | Some output => child
+                        <| @Interpreter.bytecode WIRE _ WIRE_types _ :=
+                          child.(Interpreter.bytecode) <| Bytecode.action :=
+                            Some (InterpreterAction.Return output) |> |>
+                    | None => child
+                    end in
                   execute fuel host
                     (Pending.Call {| CallFrame.Pending.parent := interpreter;
                         CallFrame.Pending.output_range := inputs.(CallInputs.return_memory_offset);
