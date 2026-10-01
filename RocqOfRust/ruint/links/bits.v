@@ -42,6 +42,19 @@ Module Impl_Uint.
   Admitted.
   Global Opaque run_leading_zeros.
 
+  (* pub fn bit_len(&self) -> usize *)
+  Instance run_bit_len
+      (BITS LIMBS : usize)
+      (self : '& (Self BITS LIMBS)) :
+    Run.Trait
+      (bits.Impl_ruint_Uint_BITS_LIMBS.bit_len (φ BITS) (φ LIMBS))
+      [] []
+      [ φ self ]
+      usize.
+  Proof.
+  Admitted.
+  Global Opaque run_bit_len.
+  
   (* pub fn arithmetic_shr(self, rhs: usize) -> Self *)
   Instance run_arithmetic_shr
     (BITS LIMBS : usize)
