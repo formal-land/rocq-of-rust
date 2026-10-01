@@ -10,6 +10,7 @@ Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_action.
 Require Import revm.revm_interpreter.tests.call_frame.
 Require Import revm.revm_interpreter.tests.interpreter_types.
+Require Import revm.revm_precompile.simulate.ripemd160.
 Require Import revm.revm_precompile.simulate.sha256.
 Require Import simulate.RocqOfRust.
 
@@ -19,10 +20,11 @@ Module PrecompileFrame.
   (** Gas and output follow revm_precompile/{identity,hash}.rs; status and
       failure gas follow precompile_provider.rs. Children already own input. *)
   Definition linear_cost (base word : Z) (input : list u8) : Z :=
-    base + word * ((Z.of_nat (List.length input) + 31) / 32).
+    (base + word * ((Z.of_nat (List.length input) + 31) / 32)) mod (2 ^ 64).
 
   Definition identity_cost := linear_cost 15 3.
   Definition sha256_cost := linear_cost 60 12.
+  Definition ripemd160_cost := linear_cost 600 120.
 
   Definition complete (cost_of : list u8 -> Z)
       (output_of : alloy_primitives.bytes.links.mod.Bytes.t ->
@@ -51,9 +53,17 @@ Module PrecompileFrame.
         (Sha256.hash (List.map Integer.value
           input.(alloy_primitives.bytes.links.mod.Bytes.value).(bytes.Bytes.value))))).
 
-  Definition supported (address : Z) : bool := (address =? 2) || (address =? 4).
+  Definition ripemd160 := complete ripemd160_cost (fun input =>
+    Impl_Bytes.copy_from_slice
+      (List.map (fun byte => {| Integer.value := byte |})
+        (List.repeat 0 12 ++ Ripemd160.hash (List.map Integer.value
+          input.(alloy_primitives.bytes.links.mod.Bytes.value).(bytes.Bytes.value))))).
+
+  Definition supported (address : Z) : bool :=
+    (address =? 2) || (address =? 3) || (address =? 4).
 
   Definition run (address : Z) (child : CallFrame.machine) : option InterpreterResult.t :=
     if address =? 2 then Some (sha256 child) else
+    if address =? 3 then Some (ripemd160 child) else
     if address =? 4 then Some (identity child) else None.
 End PrecompileFrame.
