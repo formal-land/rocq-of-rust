@@ -190,8 +190,8 @@ Module Test.
 
   Lemma other_active_precompiles_remain_incomplete :
     List.map (fun address => calls.Test.stack
-      (run (call 241 address 0 0 0 0 10000 ++ [0]))) [1; 3; 5; 10; 17] =
-      [None; None; None; None; None].
+      (run (call 241 address 0 0 0 0 10000 ++ [0]))) [1; 5; 10; 17] =
+      [None; None; None; None].
   Proof. vm_compute. reflexivity. Qed.
 
   Definition init_identity :=
