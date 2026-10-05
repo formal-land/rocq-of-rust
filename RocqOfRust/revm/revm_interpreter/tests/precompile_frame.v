@@ -10,6 +10,7 @@ Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_action.
 Require Import revm.revm_interpreter.tests.call_frame.
 Require Import revm.revm_interpreter.tests.interpreter_types.
+Require Import revm.revm_precompile.simulate.modexp.
 Require Import revm.revm_precompile.simulate.ripemd160.
 Require Import revm.revm_precompile.simulate.sha256.
 Require Import simulate.RocqOfRust.
@@ -59,11 +60,32 @@ Module PrecompileFrame.
         (List.repeat 0 12 ++ Ripemd160.hash (List.map Integer.value
           input.(alloy_primitives.bytes.links.mod.Bytes.value).(bytes.Bytes.value))))).
 
+  Definition modexp (child : CallFrame.machine) : InterpreterResult.t :=
+    let input := match child.(Interpreter.input).(Input.input) with
+      | CallInput.Bytes input => input
+      | CallInput.SharedBuffer _ => Impl_Bytes.new
+      end in
+    let gas := child.(Interpreter.gas) in
+    match Modexp.run_berlin
+      (List.map Integer.value
+        input.(alloy_primitives.bytes.links.mod.Bytes.value).(bytes.Bytes.value))
+      gas.(Gas.remaining).(Integer.value) with
+    | Modexp.Result.Success cost output =>
+      {| InterpreterResult.result := InstructionResult.Return;
+         InterpreterResult.output := Impl_Bytes.copy_from_slice
+           (List.map (fun byte => {| Integer.value := byte |}) output);
+         InterpreterResult.gas := gas
+           <| Gas.remaining := {| Integer.value := gas.(Gas.remaining).(Integer.value) - cost |} |> |}
+    | Modexp.Result.OutOfGas => CallFrame.result InstructionResult.PrecompileOOG child
+    | Modexp.Result.InvalidLength => CallFrame.result InstructionResult.PrecompileError child
+    end.
+
   Definition supported (address : Z) : bool :=
-    (address =? 2) || (address =? 3) || (address =? 4).
+    (address =? 2) || (address =? 3) || (address =? 4) || (address =? 5).
 
   Definition run (address : Z) (child : CallFrame.machine) : option InterpreterResult.t :=
     if address =? 2 then Some (sha256 child) else
     if address =? 3 then Some (ripemd160 child) else
-    if address =? 4 then Some (identity child) else None.
+    if address =? 4 then Some (identity child) else
+    if address =? 5 then Some (modexp child) else None.
 End PrecompileFrame.
