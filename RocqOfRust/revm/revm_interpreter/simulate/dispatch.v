@@ -64,6 +64,7 @@ Require Import revm.revm_interpreter.instructions.simulate.host.sload.
 Require Import revm.revm_interpreter.instructions.simulate.host.sstore.
 Require Import revm.revm_interpreter.instructions.simulate.host.tload.
 Require Import revm.revm_interpreter.instructions.simulate.host.tstore.
+Require Import revm.revm_interpreter.instructions.simulate.memory.mcopy.
 Require Import revm.revm_interpreter.instructions.simulate.memory.mload.
 Require Import revm.revm_interpreter.instructions.simulate.memory.msize.
 Require Import revm.revm_interpreter.instructions.simulate.memory.mstore.
@@ -523,6 +524,8 @@ Module InterpreterDispatch.
         InstructionContext.map_interpreter (gas)
       else if Z.eqb opcode.(Integer.value) 91 then
         InstructionContext.map_interpreter (jumpdest)
+      else if Z.eqb opcode.(Integer.value) 94 then
+        InstructionContext.map_interpreter (mcopy)
       else if Z.eqb opcode.(Integer.value) 95 then
         InstructionContext.map_interpreter (push0)
       else if Z.eqb opcode.(Integer.value) 160 then
