@@ -10,6 +10,7 @@ Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.bytes.simulate.mod.
 Require Import alloy_primitives.links.aliases.
 Require Import alloy_primitives.links.common.
+Require Import alloy_primitives.utils.simulate.keccak256.
 Require Import alloy_primitives.log.links.mod.
 Require Import bytes.links.bytes.
 Require Import core.links.result.
@@ -49,6 +50,7 @@ Module StatefulHost.
         blob_base_fee : Z;
         previous_randao : option Z;
         hashes : list (Z * Z);
+        use_state_test_hashes : bool;
       }.
     End Block.
 
@@ -98,6 +100,104 @@ Module StatefulHost.
     | SelfDestruct (address : Z).
   End Change.
 
+  (** Keep changes newest-first for constant-time append. The two address
+      indexes answer existential queries without rescanning a long journal.
+      [to_list] restores chronological order at the observation boundary. *)
+  Module Journal.
+    (** Binary trie keyed by the bits of an injective Z-to-positive encoding.
+        Membership and insertion depend on address bit width, not log length. *)
+    Module AddressSet.
+      Inductive t : Set :=
+      | Empty
+      | Node (present : bool) (even odd : t).
+
+      Definition empty : t := Empty.
+
+      Definition key (address : Z) : positive :=
+        match address with
+        | Z0 => xH
+        | Zpos bits => xO bits
+        | Zneg bits => xI bits
+        end.
+
+      Fixpoint mem_positive (bits : positive) (set : t) {struct bits} : bool :=
+        match set with
+        | Empty => false
+        | Node present even odd =>
+            match bits with
+            | xH => present
+            | xO rest => mem_positive rest even
+            | xI rest => mem_positive rest odd
+            end
+        end.
+
+      Fixpoint add_positive (bits : positive) (set : t) {struct bits} : t :=
+        match set with
+        | Empty =>
+            match bits with
+            | xH => Node true Empty Empty
+            | xO rest => Node false (add_positive rest Empty) Empty
+            | xI rest => Node false Empty (add_positive rest Empty)
+            end
+        | Node present even odd =>
+            match bits with
+            | xH => Node true even odd
+            | xO rest => Node present (add_positive rest even) odd
+            | xI rest => Node present even (add_positive rest odd)
+            end
+        end.
+
+      Definition mem (address : Z) (set : t) : bool :=
+        mem_positive (key address) set.
+
+      Definition add (address : Z) (set : t) : t :=
+        if mem address set then set else add_positive (key address) set.
+    End AddressSet.
+
+    Record t : Set := {
+      newest_first : list Change.t;
+      created_addresses : AddressSet.t;
+      selfdestructed_addresses : AddressSet.t;
+    }.
+
+    Definition empty : t := {|
+      newest_first := [];
+      created_addresses := AddressSet.empty;
+      selfdestructed_addresses := AddressSet.empty;
+    |}.
+
+    Definition append (journal : t) (change : Change.t) : t := {|
+      newest_first := change :: journal.(newest_first);
+      created_addresses :=
+        match change with
+        | Change.Created address => AddressSet.add address journal.(created_addresses)
+        | _ => journal.(created_addresses)
+        end;
+      selfdestructed_addresses :=
+        match change with
+        | Change.SelfDestruct address =>
+            AddressSet.add address journal.(selfdestructed_addresses)
+        | _ => journal.(selfdestructed_addresses)
+        end;
+    |}.
+
+    Definition of_list (changes : list Change.t) : t :=
+      List.fold_left append changes empty.
+
+    Definition to_list (journal : t) : list Change.t :=
+      List.rev journal.(newest_first).
+
+    Definition was_created (address : Z) (journal : t) : bool :=
+      AddressSet.mem address journal.(created_addresses).
+
+    Definition was_selfdestructed (address : Z) (journal : t) : bool :=
+      AddressSet.mem address journal.(selfdestructed_addresses).
+
+    Lemma to_list_append (journal : t) (change : Change.t) :
+      to_list (append journal change) = to_list journal ++ [change].
+    Proof. destruct journal. reflexivity. Qed.
+  End Journal.
+
   Module Input.
     Record t : Set := {
       block : Environment.Block.t;
@@ -123,7 +223,8 @@ Module RustTransactionTypes :=
     accessed_accounts : list Z;
     accessed_storage : list (Z * Z);
     logs : list EvmLog.t;
-    state_changes : list Change.t;
+    state_changes : Journal.t;
+    touched_accounts : list Z;
   }.
 
   Definition make (input : Input.t) : t :=
@@ -133,13 +234,28 @@ Module RustTransactionTypes :=
        accessed_accounts := [];
        accessed_storage := [];
        logs := [];
-       state_changes := [] |}.
+       state_changes := Journal.empty;
+       touched_accounts := [] |}.
+
+  (** Touches are separate from the observable mutation trace. A zero-value
+      transfer and a zero fee credit can touch an account without changing it. *)
+  Definition touch_account (host : t) (address : Z) : t :=
+    if List.existsb (Z.eqb address) host.(touched_accounts) then host
+    else host <| touched_accounts := address :: host.(touched_accounts) |>.
+
+  (** The historical RIPEMD-160 touch exception survives every frame rollback
+      after Spurious Dragon. All account data, logs and ordinary touches still
+      come from the checkpoint, including address 3's original balance. *)
+  Definition rollback (checkpoint current : t) : t :=
+    if Impl_SpecId.is_enabled_in current.(spec_id) SpecId.SPURIOUS_DRAGON &&
+       List.existsb (Z.eqb 3) current.(touched_accounts)
+    then touch_account checkpoint 3 else checkpoint.
 
   Definition observe_logs (host : t) : list EvmLog.t :=
     host.(logs).
 
   Definition observe_state_changes (host : t) : list Change.t :=
-    host.(state_changes).
+    Journal.to_list host.(state_changes).
 
   Global Instance IsLink : Link t :=
     {| Φ := Ty.path "revm::revm_interpreter::tests::StatefulHost";
@@ -275,7 +391,8 @@ Module RustTransactionTypes :=
        accessed_accounts := host.(accessed_accounts);
        accessed_storage := host.(accessed_storage);
        logs := host.(logs);
-       state_changes := host.(state_changes) ++ [change] |}.
+       state_changes := Journal.append host.(state_changes) change;
+       touched_accounts := host.(touched_accounts) |}.
 
   Definition append_log (host : t) (entry : Log.t LogData.t) : t :=
     let data := entry.(Log.data) in
@@ -293,7 +410,8 @@ Module RustTransactionTypes :=
                  data.(LogData.data)
                    .(alloy_primitives.bytes.links.mod.Bytes.value)
                    .(bytes.Bytes.value) |}];
-       state_changes := host.(state_changes) |}.
+       state_changes := host.(state_changes);
+       touched_accounts := host.(touched_accounts) |}.
 
   Definition rust_address (value : Z) : Address.t :=
     {| Address.value := value |}.
@@ -401,7 +519,8 @@ Module RustTransactionTypes :=
        accessed_accounts := host.(accessed_accounts);
        accessed_storage := host.(accessed_storage);
        logs := host.(logs);
-       state_changes := host.(state_changes) |}.
+       state_changes := host.(state_changes);
+       touched_accounts := host.(touched_accounts) |}.
 
   Fixpoint storage_is_warm
       (address key : Z) (accessed_storage : list (Z * Z)) : bool :=
@@ -425,7 +544,8 @@ Module RustTransactionTypes :=
          accessed_accounts := host.(accessed_accounts);
          accessed_storage := (address, key) :: host.(accessed_storage);
          logs := host.(logs);
-         state_changes := host.(state_changes) |}.
+         state_changes := host.(state_changes);
+         touched_accounts := host.(touched_accounts) |}.
 
   Definition balance (host : t) (address : Address.t) :
       option (StateLoad.t aliases.U256.t) * t :=
@@ -457,7 +577,8 @@ Module RustTransactionTypes :=
          accessed_accounts := address :: host.(accessed_accounts);
          accessed_storage := host.(accessed_storage);
          logs := host.(logs);
-         state_changes := host.(state_changes) |}.
+         state_changes := host.(state_changes);
+         touched_accounts := host.(touched_accounts) |}.
 
   Definition warm_access_list (host : t) (entries : list (Z * list Z)) : t :=
     List.fold_left
@@ -467,6 +588,16 @@ Module RustTransactionTypes :=
           (fun host key => mark_storage_warm host address key)
           keys (warm_account host address))
       entries host.
+
+  (** Before EIP-161, an existing empty account is not a new account. *)
+  Definition state_clear_aware_is_empty (host : t) (address : Z) : bool :=
+    match find_account address host.(accounts) with
+    | Some account =>
+      Impl_SpecId.is_enabled_in host.(spec_id) SpecId.SPURIOUS_DRAGON && account_is_empty account
+    | None =>
+      Impl_SpecId.is_enabled_in host.(spec_id) SpecId.SPURIOUS_DRAGON ||
+        negb (List.existsb (Z.eqb address) host.(touched_accounts))
+    end.
 
   Definition account_info_load
       (host : t) (address : Address.t) (load_code : bool) : AccountInfoLoad.t :=
@@ -488,7 +619,7 @@ Module RustTransactionTypes :=
                   Impl_Bytes.copy_from_slice (List.map rust_byte account.(Account.code)) |}
                 else None |};
        AccountInfoLoad.is_cold := negb (account_is_warm host address.(Address.value));
-       AccountInfoLoad.is_empty := account_is_empty account |}.
+       AccountInfoLoad.is_empty := state_clear_aware_is_empty host address.(Address.value) |}.
 
   Definition load_account_info_skip_cold_load
       (host : t) (address : Address.t) (load_code skip_cold_load : bool) :
@@ -510,7 +641,7 @@ Module RustTransactionTypes :=
     (Some
       {| StateLoad.data :=
            {| AccountLoad.is_delegate_account_cold := None;
-              AccountLoad.is_empty := account_is_empty account |};
+              AccountLoad.is_empty := state_clear_aware_is_empty host address.(Address.value) |};
          StateLoad.is_cold := false |}, host).
 
   Definition code (host : t) (address : Address.t) :
@@ -583,10 +714,7 @@ Module RustTransactionTypes :=
       | None => 0
       end in
     let original_value :=
-      if List.existsb (fun change => match change with
-        | Change.Created created_address => created_address =? address_value
-        | _ => false
-        end) host.(state_changes) then 0 else
+      if Journal.was_created address_value host.(state_changes) then 0 else
       match find_account address_value host.(input).(Input.state) with
       | Some account => lookup_word key_value account.(Account.storage)
       | None => 0
@@ -659,14 +787,9 @@ Module RustTransactionTypes :=
        | None => Result.Err LoadError.DBError
        end, host).
 
-  Fixpoint was_selfdestructed
-      (address : Z) (changes : list Change.t) : bool :=
-    match changes with
-    | [] => false
-    | Change.SelfDestruct changed_address :: changes =>
-        (changed_address =? address) || was_selfdestructed address changes
-    | _ :: changes => was_selfdestructed address changes
-    end.
+  Definition was_selfdestructed
+      (address : Z) (changes : Journal.t) : bool :=
+    Journal.was_selfdestructed address changes.
 
   Definition selfdestruct
       (host : t) (address target : Address.t) (skip_cold : bool) :
@@ -695,13 +818,12 @@ Module RustTransactionTypes :=
       end in
     let previously_destroyed :=
       was_selfdestructed address_value host.(state_changes) in
-    let created := List.existsb (fun change => match change with
-      | Change.Created created_address => created_address =? address_value
-      | _ => false
-      end) host.(state_changes) in
+    let created := Journal.was_created address_value host.(state_changes) in
     let destroys := created ||
       negb (Impl_SpecId.is_enabled_in host.(spec_id) SpecId.CANCUN) in
     let clears_balance := destroys || negb (address_value =? target_value) in
+    let host := if address_value =? target_value then host
+      else touch_account host target_value in
     let transferred_balance :=
       (target_balance + source.(Account.balance)) mod 2 ^ 256 in
     let accounts :=
@@ -741,13 +863,37 @@ Module RustTransactionTypes :=
       (fun account => negb (was_selfdestructed account.(Account.address) host.(state_changes)))
       host.(accounts)).
 
+  (** Geth's StateTestState supplies Keccak-256 of the decimal block number
+      for a missing BLOCKHASH entry. Its [vmTestBlockHash] casts u64 to i64
+      before decimal formatting. This is a fixture-host option, not a change
+      to the REVM host's external-error behavior. *)
+  Fixpoint decimal_digits (fuel : nat) (value : Z) : list Z :=
+    match fuel with
+    | O => []
+    | S rest =>
+        if value <? 10 then [48 + value]
+        else decimal_digits rest (value / 10) ++ [48 + value mod 10]
+    end.
+
+  Definition state_test_block_hash (number : Z) : Z :=
+    let signed := if number <? 2 ^ 63 then number else number - 2 ^ 64 in
+    let decimal := if signed <? 0 then 45 :: decimal_digits 20 (-signed)
+      else decimal_digits 20 signed in
+    List.fold_left (fun value byte => 256 * value + byte)
+      (Keccak256.hash decimal) 0.
+
   Definition block_hash (host : t) (number : u64) :
       option aliases.B256.t * t :=
+    let block := host.(input).(Input.block) in
+    let hash := match lookup_z number.(M.Integer.value)
+      block.(Environment.Block.hashes) with
+      | Some value => Some value
+      | None => if block.(Environment.Block.use_state_test_hashes)
+        then Some (state_test_block_hash number.(M.Integer.value)) else None
+      end in
     (option_map
       (fun value =>
-        Impl_From_U256_for_FixedBytes_32.from (rust_word value))
-      (lookup_z number.(M.Integer.value)
-        host.(input).(Input.block).(Environment.Block.hashes)), host).
+        Impl_From_U256_for_FixedBytes_32.from (rust_word value)) hash, host).
 
   Global Instance HostForRevmHost :
       @Host.C t IsLink host_types HostTypesAreLinks :=
@@ -782,10 +928,12 @@ Module RustTransactionTypes :=
        Host.caller self :=
          (rust_address self.(input).(Input.call).(Environment.Call.caller), self);
        Host.blob_hash self number :=
-         (option_map rust_word
-            (nth_error
-              self.(input).(Input.transaction).(Environment.Transaction.blob_hashes)
-              (Z.to_nat number.(M.Integer.value))), self);
+         let hashes :=
+           self.(input).(Input.transaction).(Environment.Transaction.blob_hashes) in
+         let index := number.(M.Integer.value) in
+         (if (0 <=? index) && (index <? Z.of_nat (List.length hashes)) then
+            option_map rust_word (nth_error hashes (Z.to_nat index))
+          else None, self);
        Host.difficulty self :=
          (rust_word self.(input).(Input.block).(Environment.Block.difficulty), self);
        Host.prevrandao self :=

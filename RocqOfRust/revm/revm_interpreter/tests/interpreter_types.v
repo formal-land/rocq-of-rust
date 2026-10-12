@@ -282,11 +282,14 @@ Module Jumps.
   Definition absolute_jump (self : Self) (offset : usize) : Self :=
     self <| Bytecode.pc := offset |>.
   Definition is_valid_legacy_jump (self : Self) (offset : usize) : bool * Self :=
-    (is_valid_jumpdest_aux
-      (List.length self.(Bytecode.code))
-      O
-      (Z.to_nat i[offset])
-      self.(Bytecode.code),
+    (if (0 <=? i[offset]) &&
+        (i[offset] <? Z.of_nat (List.length self.(Bytecode.code))) then
+       is_valid_jumpdest_aux
+         (List.length self.(Bytecode.code))
+         O
+         (Z.to_nat i[offset])
+         self.(Bytecode.code)
+     else false,
      self).
   Definition pc (self : Self) : usize := self.(Bytecode.pc).
   Definition opcode (self : Self) : u8 :=

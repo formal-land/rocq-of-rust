@@ -23,6 +23,7 @@ Require Import revm.revm_interpreter.instructions.links.contract.call_code.
 Require Import revm.revm_interpreter.instructions.links.contract.create.
 Require Import revm.revm_interpreter.instructions.links.contract.delegate_call.
 Require Import revm.revm_interpreter.instructions.links.contract.static_call.
+Require Import revm.revm_interpreter.instructions.links.control.invalid.
 Require Import revm.revm_interpreter.instructions.links.control.jump.
 Require Import revm.revm_interpreter.instructions.links.control.jumpdest.
 Require Import revm.revm_interpreter.instructions.links.control.jumpi.
@@ -32,6 +33,7 @@ Require Import revm.revm_interpreter.instructions.links.control.revert.
 Require Import revm.revm_interpreter.instructions.links.control.stop.
 Require Import revm.revm_interpreter.instructions.links.control.unknown.
 Require Import revm.revm_interpreter.instructions.links.host.balance.
+Require Import revm.revm_interpreter.instructions.links.host.blockhash.
 Require Import revm.revm_interpreter.instructions.links.host.extcodecopy.
 Require Import revm.revm_interpreter.instructions.links.host.extcodehash.
 Require Import revm.revm_interpreter.instructions.links.host.extcodesize.
@@ -57,6 +59,7 @@ Require Import revm.revm_interpreter.instructions.links.system.gas.
 Require Import revm.revm_interpreter.instructions.links.system.keccak256.
 Require Import revm.revm_interpreter.instructions.links.system.returndatacopy.
 Require Import revm.revm_interpreter.instructions.links.system.returndatasize.
+Require Import revm.revm_interpreter.instructions.links.tx_info.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.addmod.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.div.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.exp.
@@ -103,6 +106,9 @@ Require Import revm.revm_interpreter.instructions.simulate.stack.swap.
 Require Import revm.revm_interpreter.instructions.simulate.system.calldataload.
 Require Import revm.revm_interpreter.instructions.simulate.system.callvalue.
 Require Import revm.revm_interpreter.instructions.simulate.system.gas.
+Require Import revm.revm_interpreter.instructions.simulate.tx_info.blob_hash.
+Require Import revm.revm_interpreter.instructions.simulate.tx_info.gasprice.
+Require Import revm.revm_interpreter.instructions.simulate.tx_info.origin.
 Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.links.table.
@@ -1103,7 +1109,10 @@ Module FragmentInstructionTable.
             (ArrayPair.Build_t
               {| Instruction.fn_ := revert_function (H := H) run_InterpreterTypes_for_WIRE;
                  Instruction.static_gas := {| Integer.value := 0 |} |}
-              (ArrayPair.Build_t unknown_instruction
+              (ArrayPair.Build_t
+                {| Instruction.fn_ := Function1.of_run
+                     (fun context => run_invalid run_InterpreterTypes_for_WIRE context);
+                   Instruction.static_gas := {| Integer.value := 0 |} |}
                 (ArrayPair.Build_t
                   {| Instruction.fn_ := Function1.of_run
                        (fun context => run_selfdestruct
@@ -1160,7 +1169,10 @@ Module FragmentInstructionTable.
             {| Instruction.fn_ := basefee_function
                  run_InterpreterTypes_for_WIRE run_host;
                Instruction.static_gas := {| Integer.value := 2 |} |}
-            (ArrayPair.Build_t unknown_instruction
+            (ArrayPair.Build_t
+              {| Instruction.fn_ := Function1.of_run
+                   (fun context => run_blob_hash run_InterpreterTypes_for_WIRE run_host context);
+                 Instruction.static_gas := {| Integer.value := 3 |} |}
               (ArrayPair.Build_t
                 {| Instruction.fn_ := blob_basefee_function
                      run_InterpreterTypes_for_WIRE run_host;
@@ -1183,7 +1195,10 @@ Module FragmentInstructionTable.
       ArrayPair.Build_t
         {| Instruction.fn_ := extcodehash_function run_InterpreterTypes_for_WIRE run_host;
            Instruction.static_gas := {| Integer.value := 0 |} |}
-      (ArrayPair.Build_t unknown_instruction
+      (ArrayPair.Build_t
+        {| Instruction.fn_ := Function1.of_run
+             (fun context => run_blockhash run_InterpreterTypes_for_WIRE run_host context);
+           Instruction.static_gas := {| Integer.value := 20 |} |}
         (ArrayPair.Build_t
           {| Instruction.fn_ := coinbase_function
                run_InterpreterTypes_for_WIRE run_host;
@@ -1210,7 +1225,10 @@ Module FragmentInstructionTable.
                  (fun context => run_codesize run_InterpreterTypes_for_WIRE context);
                Instruction.static_gas := {| Integer.value := 2 |} |}
           (ArrayPair.Build_t codecopy_instruction
-          (ArrayPair.Build_t unknown_instruction
+          (ArrayPair.Build_t
+            {| Instruction.fn_ := Function1.of_run
+                 (fun context => run_gasprice run_InterpreterTypes_for_WIRE run_host context);
+               Instruction.static_gas := {| Integer.value := 2 |} |}
           (ArrayPair.Build_t
             {| Instruction.fn_ := extcodesize_function run_InterpreterTypes_for_WIRE run_host;
                Instruction.static_gas := {| Integer.value := 0 |} |}
@@ -1236,7 +1254,10 @@ Module FragmentInstructionTable.
           (ArrayPair.Build_t
             {| Instruction.fn_ := balance_function run_InterpreterTypes_for_WIRE run_host;
                Instruction.static_gas := {| Integer.value := 0 |} |}
-            (ArrayPair.Build_t unknown_instruction
+            (ArrayPair.Build_t
+              {| Instruction.fn_ := Function1.of_run
+                   (fun context => run_origin run_InterpreterTypes_for_WIRE run_host context);
+                 Instruction.static_gas := {| Integer.value := 2 |} |}
               (ArrayPair.Build_t
                 {| Instruction.fn_ := caller_function (H := H) run_InterpreterTypes_for_WIRE;
                    Instruction.static_gas := {| Integer.value := 2 |} |}

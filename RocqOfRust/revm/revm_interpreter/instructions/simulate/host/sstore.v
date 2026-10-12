@@ -62,9 +62,7 @@ Definition sstore
             spec_id state_load.(StateLoad.data) state_load.(StateLoad.is_cold))
           (fun interpreter => (interpreter, host)) (fun interpreter =>
 
-        let vals_ref : '& SStoreResult.t :=
-          Ref.immediate Pointer.Kind.Ref state_load.(StateLoad.data) in
-        let refund := calc.sstore_refund spec_id vals_ref in
+        let refund := calc.sstore_refund spec_id state_load.(StateLoad.data) in
         let gas := Impl_Gas.record_refund interpreter.(Interpreter.gas) refund in
         (interpreter <| Interpreter.gas := gas |>, host))
     | Result.Err LoadError.ColdLoadSkipped =>
@@ -81,9 +79,7 @@ Definition sstore
             spec_id state_load.(StateLoad.data) state_load.(StateLoad.is_cold))
           (fun interpreter => (interpreter, host)) (fun interpreter =>
 
-        let vals_ref : '& SStoreResult.t :=
-          Ref.immediate Pointer.Kind.Ref state_load.(StateLoad.data) in
-        let refund := calc.sstore_refund spec_id vals_ref in
+        let refund := calc.sstore_refund spec_id state_load.(StateLoad.data) in
         let gas := Impl_Gas.record_refund interpreter.(Interpreter.gas) refund in
         (interpreter <| Interpreter.gas := gas |>, host))
     | None =>
@@ -407,7 +403,10 @@ Proof.
 	                   apply InterpreterTypesEq.
 	                 }
 	                 eapply Run.Call. {
-	                   apply calc.sstore_refund_eq.
+	                   eapply calc.sstore_refund_eq
+                     with (vals := state_load.(StateLoad.data)).
+                   unshelve eapply CanRead.Mutable;
+                     [repeat constructor | reflexivity].
 	                 }
 		                 cbn.
 		                 s. {
@@ -583,7 +582,10 @@ Proof.
 	                   apply InterpreterTypesEq.
 	                 }
 	                 eapply Run.Call. {
-	                   apply calc.sstore_refund_eq.
+	                   eapply calc.sstore_refund_eq
+                     with (vals := state_load.(StateLoad.data)).
+                   unshelve eapply CanRead.Mutable;
+                     [repeat constructor | reflexivity].
 	                 }
 	                 cbn.
 	                 s. {
@@ -851,7 +853,10 @@ Proof.
 	                apply InterpreterTypesEq.
 	              }
 	              eapply Run.Call. {
-	                apply calc.sstore_refund_eq.
+	                eapply calc.sstore_refund_eq
+                     with (vals := state_load.(StateLoad.data)).
+                   unshelve eapply CanRead.Mutable;
+                     [repeat constructor | reflexivity].
 	              }
 	              cbn.
 	              s. {
@@ -1019,7 +1024,10 @@ Proof.
 	                apply InterpreterTypesEq.
 	              }
 	              eapply Run.Call. {
-	                apply calc.sstore_refund_eq.
+	                eapply calc.sstore_refund_eq
+                     with (vals := state_load.(StateLoad.data)).
+                   unshelve eapply CanRead.Mutable;
+                     [repeat constructor | reflexivity].
 	              }
 	              cbn.
 	              s. {

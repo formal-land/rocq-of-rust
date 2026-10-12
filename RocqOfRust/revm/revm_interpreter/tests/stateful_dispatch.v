@@ -78,6 +78,7 @@ Definition add11_input : StatefulHost.Input.t := {|
     StatefulHost.Environment.Block.blob_base_fee := 0;
     StatefulHost.Environment.Block.previous_randao := None;
     StatefulHost.Environment.Block.hashes := [];
+    StatefulHost.Environment.Block.use_state_test_hashes := false;
   |};
   StatefulHost.Input.transaction := {|
     StatefulHost.Environment.Transaction.chain_id := 1;

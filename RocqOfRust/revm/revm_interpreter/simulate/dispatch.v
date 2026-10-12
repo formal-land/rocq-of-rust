@@ -45,6 +45,7 @@ Require Import revm.revm_interpreter.instructions.simulate.contract.call_code.
 Require Import revm.revm_interpreter.instructions.simulate.contract.create.
 Require Import revm.revm_interpreter.instructions.simulate.contract.delegate_call.
 Require Import revm.revm_interpreter.instructions.simulate.contract.static_call.
+Require Import revm.revm_interpreter.instructions.simulate.control.invalid.
 Require Import revm.revm_interpreter.instructions.simulate.control.jump.
 Require Import revm.revm_interpreter.instructions.simulate.control.jumpdest.
 Require Import revm.revm_interpreter.instructions.simulate.control.jumpi.
@@ -54,6 +55,7 @@ Require Import revm.revm_interpreter.instructions.simulate.control.revert.
 Require Import revm.revm_interpreter.instructions.simulate.control.stop.
 Require Import revm.revm_interpreter.instructions.simulate.control.unknown.
 Require Import revm.revm_interpreter.instructions.simulate.host.balance.
+Require Import revm.revm_interpreter.instructions.simulate.host.blockhash.
 Require Import revm.revm_interpreter.instructions.simulate.host.extcodecopy.
 Require Import revm.revm_interpreter.instructions.simulate.host.extcodehash.
 Require Import revm.revm_interpreter.instructions.simulate.host.extcodesize.
@@ -87,6 +89,9 @@ Require Import revm.revm_interpreter.instructions.simulate.system.keccak256.
 Require Import revm.revm_interpreter.instructions.simulate.system.returndatacopy.
 Require Import revm.revm_interpreter.instructions.simulate.system.returndatasize.
 Require Import revm.revm_interpreter.instructions.simulate.table.
+Require Import revm.revm_interpreter.instructions.simulate.tx_info.blob_hash.
+Require Import revm.revm_interpreter.instructions.simulate.tx_info.gasprice.
+Require Import revm.revm_interpreter.instructions.simulate.tx_info.origin.
 Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_action.
@@ -414,6 +419,15 @@ Module InterpreterDispatch.
         InstructionContext.map_interpreter (keccak256)
       else if Z.eqb opcode.(Integer.value) 48 then
         InstructionContext.map_interpreter (address)
+      else if Z.eqb opcode.(Integer.value) 50 then
+        fun state =>
+          let '(interpreter, host) := origin
+            (IInterpreterTypes := IInterpreterTypes) (IHost := IHost)
+            (@InstructionContext.State.interpreter
+              H WIRE _ _ WIRE_types _ state)
+            (@InstructionContext.State.host H WIRE _ _ WIRE_types _ state) in
+          {| InstructionContext.State.interpreter := interpreter;
+             InstructionContext.State.host := host |}
       else if Z.eqb opcode.(Integer.value) 51 then
         InstructionContext.map_interpreter (caller)
       else if Z.eqb opcode.(Integer.value) 52 then
@@ -428,10 +442,28 @@ Module InterpreterDispatch.
         InstructionContext.map_interpreter (codesize)
       else if Z.eqb opcode.(Integer.value) 57 then
         InstructionContext.map_interpreter (codecopy)
+      else if Z.eqb opcode.(Integer.value) 58 then
+        fun state =>
+          let '(interpreter, host) := gasprice
+            (IInterpreterTypes := IInterpreterTypes) (IHost := IHost)
+            (@InstructionContext.State.interpreter
+              H WIRE _ _ WIRE_types _ state)
+            (@InstructionContext.State.host H WIRE _ _ WIRE_types _ state) in
+          {| InstructionContext.State.interpreter := interpreter;
+             InstructionContext.State.host := host |}
       else if Z.eqb opcode.(Integer.value) 61 then
         InstructionContext.map_interpreter (returndatasize)
       else if Z.eqb opcode.(Integer.value) 62 then
         InstructionContext.map_interpreter (returndatacopy)
+      else if Z.eqb opcode.(Integer.value) 64 then
+        fun state =>
+          let '(interpreter, host) := blockhash
+            (IInterpreterTypes := IInterpreterTypes) (IHost := IHost)
+            (@InstructionContext.State.interpreter
+              H WIRE _ _ WIRE_types _ state)
+            (@InstructionContext.State.host H WIRE _ _ WIRE_types _ state) in
+          {| InstructionContext.State.interpreter := interpreter;
+             InstructionContext.State.host := host |}
       else if Z.eqb opcode.(Integer.value) 66 then
         fun state =>
           let '(interpreter, host) := timestamp
@@ -480,6 +512,15 @@ Module InterpreterDispatch.
       else if Z.eqb opcode.(Integer.value) 72 then
         fun state =>
           let '(interpreter, host) := basefee
+            (IInterpreterTypes := IInterpreterTypes) (IHost := IHost)
+            (@InstructionContext.State.interpreter
+              H WIRE _ _ WIRE_types _ state)
+            (@InstructionContext.State.host H WIRE _ _ WIRE_types _ state) in
+          {| InstructionContext.State.interpreter := interpreter;
+             InstructionContext.State.host := host |}
+      else if Z.eqb opcode.(Integer.value) 73 then
+        fun state =>
+          let '(interpreter, host) := blob_hash
             (IInterpreterTypes := IInterpreterTypes) (IHost := IHost)
             (@InstructionContext.State.interpreter
               H WIRE _ _ WIRE_types _ state)
@@ -572,6 +613,8 @@ Module InterpreterDispatch.
         InstructionContext.map_interpreter (ret)
       else if Z.eqb opcode.(Integer.value) 253 then
         InstructionContext.map_interpreter (revert)
+      else if Z.eqb opcode.(Integer.value) 254 then
+        InstructionContext.map_interpreter (invalid)
       else if Z.eqb opcode.(Integer.value) 255 then
         fun state =>
           let '(interpreter, host) := selfdestruct

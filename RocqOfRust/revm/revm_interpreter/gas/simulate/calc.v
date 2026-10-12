@@ -9,14 +9,49 @@ Require Import revm.revm_primitives.links.hardfork.
 Require Import revm.revm_primitives.simulate.hardfork.
 Require Import ruint.links.lib.
 
-Definition sstore_refund (spec_id : SpecId.t) (vals : '& SStoreResult.t) : i64 :=
-  {| Integer.value := 0 |}.
+(** Native refund delta before the transaction-wide refund cap. *)
+Definition sstore_refund (spec_id : SpecId.t) (vals : SStoreResult.t) : i64 :=
+  let original := vals.(SStoreResult.original_value).(Uint.value) in
+  let present := vals.(SStoreResult.present_value).(Uint.value) in
+  let new := vals.(SStoreResult.new_value).(Uint.value) in
+  let refund := (
+    if Impl_SpecId.is_enabled_in spec_id SpecId.ISTANBUL then
+      let clears_schedule :=
+        if Impl_SpecId.is_enabled_in spec_id SpecId.LONDON then
+          SSTORE_RESET.(Integer.value) - COLD_SLOAD_COST.(Integer.value) +
+          ACCESS_LIST_STORAGE_KEY.(Integer.value)
+        else REFUND_SSTORE_CLEARS.(Integer.value) in
+      if new =? present then 0
+      else if (original =? present) && (new =? 0) then clears_schedule
+      else
+        let refund :=
+          if original =? 0 then 0
+          else if present =? 0 then - clears_schedule
+          else if new =? 0 then clears_schedule
+          else 0 in
+        if original =? new then
+          let '(reset_gas, load_gas) :=
+            if Impl_SpecId.is_enabled_in spec_id SpecId.BERLIN then
+              (SSTORE_RESET.(Integer.value) - COLD_SLOAD_COST.(Integer.value),
+               WARM_STORAGE_READ_COST.(Integer.value))
+            else
+              (SSTORE_RESET.(Integer.value), ISTANBUL_SLOAD_GAS.(Integer.value)) in
+          refund +
+            (if original =? 0 then SSTORE_SET.(Integer.value) - load_gas
+             else reset_gas - load_gas)
+        else refund
+    else if negb (present =? 0) && (new =? 0) then
+      REFUND_SSTORE_CLEARS.(Integer.value)
+    else 0)%Z in
+  {| Integer.value := refund |}.
 
 Lemma sstore_refund_eq (stack : Stack.t)
-    (spec_id : SpecId.t) (vals : '& SStoreResult.t) :
+    (spec_id : SpecId.t) (vals_ref : '& SStoreResult.t)
+    (vals : SStoreResult.t) :
+  CanRead.t stack vals vals_ref ->
   {{
     SimulateM.eval_f
-      (run_sstore_refund spec_id vals)
+      (run_sstore_refund spec_id vals_ref)
       stack 🌲
     (Output.Success (sstore_refund spec_id vals), stack)
   }}.

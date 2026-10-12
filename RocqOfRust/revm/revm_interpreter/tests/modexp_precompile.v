@@ -19,8 +19,10 @@ Require Import revm.revm_interpreter.tests.create.
 Require Import revm.revm_interpreter.tests.identity_precompile.
 Require Import revm.revm_interpreter.tests.interpreter_types.
 Require Import revm.revm_interpreter.tests.precompile_frame.
+Require Import revm.revm_interpreter.tests.stateful_dispatch.
 Require Import revm.revm_interpreter.tests.stateful_host.
 Require Import revm.revm_interpreter.tests.static_calls.
+Require Import revm.revm_precompile.simulate.modexp.
 Require Import revm.revm_primitives.links.hardfork.
 Require Import ruint.links.lib.
 Require Import simulate.RocqOfRust.
@@ -144,12 +146,17 @@ Module Test.
     <| CallInputs.bytecode_address := StatefulHost.rust_address 5 |>
     <| CallInputs.target_address := StatefulHost.rust_address 5 |>.
 
-  Definition frame_result (input_bytes : list Z) (gas : Z) :=
+  Definition frame_result_at (spec_id : SpecId.t) (input_bytes : list Z) (gas : Z) :=
     let parent := InstructionContext.State.interpreter _ _ _ (initial [0]) in
-    PrecompileFrame.modexp (CallFrame.child parent
+    let child := CallFrame.child parent
       (owned_inputs <| CallInputs.gas_limit := gas |>
         <| CallInputs.input := CallInput.Bytes
-          (Impl_Bytes.copy_from_slice (List.map StatefulHost.rust_byte input_bytes)) |>) []).
+          (Impl_Bytes.copy_from_slice (List.map StatefulHost.rust_byte input_bytes)) |>) [] in
+    PrecompileFrame.modexp (child
+      <| @Interpreter.runtime_flag WIRE _ WIRE_types _ := child.(Interpreter.runtime_flag)
+        <| RuntimeFlags.spec_id := spec_id |> |>).
+
+  Definition frame_result := frame_result_at SpecId.CANCUN.
 
   Lemma native_status_and_gas_on_success_and_failures :
     List.map (fun result => (result.(InterpreterResult.result),
@@ -188,4 +195,87 @@ Module Test.
     create.Test.account (create.Test.address false init_modexp) result = None /\
     create.Test.nonce 42 result = Some 7.
   Proof. vm_compute. split; reflexivity. Qed.
+
+  Lemma frame_selects_osaka_pricing :
+    List.map (fun spec_id =>
+      let result := frame_result_at spec_id input 500 in
+      (result.(InterpreterResult.result),
+       result.(InterpreterResult.gas).(Gas.remaining).(Integer.value)))
+      [SpecId.CANCUN; SpecId.PRAGUE; SpecId.OSAKA] =
+      [(InstructionResult.Return, 300); (InstructionResult.Return, 300);
+       (InstructionResult.Return, 0)].
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma osaka_frame_gas_and_length_error_precedence :
+    List.map (fun result => (result.(InterpreterResult.result),
+      result.(InterpreterResult.gas).(Gas.remaining).(Integer.value)))
+      [frame_result_at SpecId.OSAKA input 499;
+       frame_result_at SpecId.OSAKA [1] 499;
+       frame_result_at SpecId.OSAKA [1] 500;
+       frame_result_at SpecId.OSAKA (Modexp.Test.header 0 1025 0) 500] =
+      [(InstructionResult.PrecompileOOG, 499); (InstructionResult.PrecompileOOG, 499);
+       (InstructionResult.PrecompileError, 500); (InstructionResult.PrecompileError, 500)].
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma osaka_frame_preserves_modulus_sized_output :
+    let result := frame_result_at SpecId.OSAKA input 500 in
+    List.map Integer.value result.(InterpreterResult.output)
+      .(alloy_primitives.bytes.links.mod.Bytes.value).(bytes.Bytes.value) = [0; 6].
+  Proof. vm_compute. reflexivity. Qed.
+
+  Definition run_osaka (program : list Z) :=
+    let state := initial program in
+    let interpreter := InstructionContext.State.interpreter _ _ _ state in
+    CallRunner.run 300
+      {| InstructionContext.State.interpreter := interpreter
+           <| @Interpreter.runtime_flag WIRE _ WIRE_types _ := interpreter.(Interpreter.runtime_flag)
+             <| RuntimeFlags.spec_id := SpecId.OSAKA |> |>;
+         InstructionContext.State.host := InstructionContext.State.host _ _ _ state |}.
+
+  Lemma public_runner_executes_osaka :
+    static_calls.Test.result_kind (run_osaka [0]) = Some InstructionResult.Stop.
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma public_runner_uses_osaka_modexp_minimum :
+    let enough := run_osaka (memory_data ++ call 241 0 100 128 2 500 ++ [0]) in
+    let short := run_osaka (memory_data ++ call 241 0 100 128 2 499 ++ [0]) in
+    (calls.Test.stack enough, calls.Test.returned_bytes enough,
+     calls.Test.stack short, calls.Test.returned_bytes short) =
+    (Some [1], Some [0; 6], Some [0], Some []).
+  Proof. vm_compute. reflexivity. Qed.
+  Lemma modexp_is_not_a_precompile_before_byzantium :
+    PrecompileFrame.enabled SpecId.SPURIOUS_DRAGON 5 = false /\
+    PrecompileFrame.enabled SpecId.BYZANTIUM 5 = true.
+  Proof. vm_compute. auto. Qed.
+
+  Lemma inactive_modexp_is_not_executed :
+    let child := interpreter_with_spec_id
+      (InstructionContext.State.interpreter _ _ _ (initial [0])) SpecId.SPURIOUS_DRAGON in
+    PrecompileFrame.run 5 child = None.
+  Proof. reflexivity. Qed.
+
+  (** Exercise the frame engine directly while the public gate for older forks
+      remains closed. Address 5 must execute account code before Byzantium. *)
+  Definition address_five_call (spec : SpecId.t) :=
+    let state := initial (calls.Test.call_to 5 0 0 0 50000 ++ [0]) in
+    let interpreter := interpreter_with_spec_id
+      (InstructionContext.State.interpreter _ _ _ state) spec in
+    let host := (InstructionContext.State.host _ _ _ state)
+      <| StatefulHost.spec_id := spec |> in
+    let host := StatefulHost.with_accounts host
+      (StatefulHost.update_account 5
+        (fun account => account <| StatefulHost.Account.code := [96; 7; 96; 0; 85; 0] |>)
+        host.(StatefulHost.accounts)) in
+    CallRunner.execute 100 host []
+      {| InstructionContext.State.interpreter := interpreter;
+         InstructionContext.State.host := host |}.
+
+  Lemma address_five_executes_account_code_before_byzantium :
+    calls.Test.storage 5 (address_five_call SpecId.SPURIOUS_DRAGON) = Some [(0, 7)].
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma address_five_bypasses_account_code_from_byzantium :
+    calls.Test.storage 5 (address_five_call SpecId.BYZANTIUM) = Some [].
+  Proof. vm_compute. reflexivity. Qed.
+
 End Test.
