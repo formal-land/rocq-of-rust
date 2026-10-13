@@ -9,6 +9,7 @@ Open Scope Z_scope.
     chain follows the local go-ethereum/crypto/bn256/google/optate.go. *)
 Module Bn254FinalExp.
   Module Fq12 := Bn254Tower.Fq12.
+
   Definition u : Z := 4965661367192848881.
 
   Definition run (value : Fq12.t) : Fq12.t :=

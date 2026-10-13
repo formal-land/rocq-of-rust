@@ -10,14 +10,21 @@ Open Scope Z_scope.
 Module Bn254.
   Definition field_modulus : Z :=
     21888242871839275222246405745257275088696311157297823662689037894645226208583.
+
   Definition scalar_modulus : Z :=
     21888242871839275222246405745257275088548364400416034343698204186575808495617.
+
   Module Field.
     Definition add (left right : Z) : Z := (left + right) mod field_modulus.
+
     Definition sub (left right : Z) : Z := (left - right) mod field_modulus.
+
     Definition mul (left right : Z) : Z := (left * right) mod field_modulus.
+
     Definition square (value : Z) : Z := mul value value.
+
     Definition negate (value : Z) : Z := (- value) mod field_modulus.
+
     Definition inverse (value : Z) : Z :=
       Modexp.pow_mod value (field_modulus - 2) field_modulus.
   End Field.
@@ -30,7 +37,9 @@ Module Bn254.
     }.
 
     Definition infinity : t := {| x := 0; y := 1; z := 0 |}.
+
     Definition is_infinity (point : t) : bool := point.(z) =? 0.
+
     Definition of_affine (affine_x affine_y : Z) : t :=
       {| x := affine_x mod field_modulus;
          y := affine_y mod field_modulus;
@@ -104,9 +113,11 @@ Module Bn254.
   Module Error.
     Inductive t : Set := FieldPointNotAMember | AffineGFailedToCreate.
   End Error.
+
   Module Decoded.
     Inductive t : Set := Valid (point : Point.t) | Invalid (error : Error.t).
   End Decoded.
+
   Definition decode_point (input : list Z) : Decoded.t :=
     let x := Modexp.decode_be (List.firstn 32 input) in
     let y := Modexp.decode_be (List.firstn 32 (List.skipn 32 input)) in
@@ -115,16 +126,19 @@ Module Bn254.
     if (x =? 0) && (y =? 0) then Decoded.Valid Point.infinity else
     if Point.on_curve x y then Decoded.Valid (Point.of_affine x y)
     else Decoded.Invalid Error.AffineGFailedToCreate.
+
   Definition encode_point (point : Point.t) : list Z :=
     match Point.to_affine point with
     | None => List.repeat 0 64
     | Some (x, y) => Modexp.encode_be 32 x ++ Modexp.encode_be 32 y
     end.
+
   Module Result.
     Inductive t : Set :=
     | Success (cost : Z) (output : list Z)
     | OutOfGas | InvalidPoint (error : Error.t).
   End Result.
+
   Definition run_add (input : list Z) (gas_cost gas_limit : Z) : Result.t :=
     if gas_limit <? gas_cost then Result.OutOfGas else
     let input := Modexp.read_padded input 0 128 in
@@ -136,6 +150,7 @@ Module Bn254.
       | Decoded.Valid point_r => Result.Success gas_cost (encode_point (Point.add point_l point_r))
       end
     end.
+
   Definition run_mul (input : list Z) (gas_cost gas_limit : Z) : Result.t :=
     if gas_limit <? gas_cost then Result.OutOfGas else
     let input := Modexp.read_padded input 0 96 in

@@ -418,5 +418,6 @@ Module LegacyCall.
           end
         end
     end.
+
   Definition run := run_with_runner CallRunner.execute_with_finalization.
 End LegacyCall.

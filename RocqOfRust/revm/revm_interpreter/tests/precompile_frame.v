@@ -54,7 +54,9 @@ Module PrecompileFrame.
     (base + word * ((Z.of_nat (List.length input) + 31) / 32)) mod (2 ^ 64).
 
   Definition identity_cost := linear_cost 15 3.
+
   Definition sha256_cost := linear_cost 60 12.
+
   Definition ripemd160_cost := linear_cost 600 120.
 
   Definition complete (cost_of : list u8 -> Z)

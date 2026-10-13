@@ -9,6 +9,7 @@ Open Scope Z_scope.
     remains an explicit [Unsupported] result. *)
 Module KzgPointEvaluation.
   Definition gas_cost : Z := 50000.
+
   Definition scalar_modulus : Z :=
     52435875175126190479447740508185965837690552500527637822603658699938581184513.
 

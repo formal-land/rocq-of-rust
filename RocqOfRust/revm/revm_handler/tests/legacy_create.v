@@ -179,6 +179,7 @@ Module Test.
     Some (InstructionResult.Return, 53006, 2 ^ 64 - 1, 469940, 318036,
       None, [], []).
   Proof. vm_compute. reflexivity. Qed.
+
   Lemma dynamic_fee_creation_uses_effective_price_for_opcode_and_settlement :
     let source := input <| LegacyCall.Input.accounts :=
       [(StatefulHost.empty_account 100) <| StatefulHost.Account.balance := 2000000 |>] |> in

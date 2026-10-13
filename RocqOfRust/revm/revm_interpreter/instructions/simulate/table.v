@@ -472,6 +472,7 @@ Module FragmentInstructionTable.
     Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
     Function1.of_run
       (fun context => run_gaslimit run_types run_host context).
+
   Definition chainid_function
       {WIRE H : Set} `{Link WIRE} `{Link H}
       {WIRE_types : InterpreterTypes.Types.t}
@@ -482,6 +483,7 @@ Module FragmentInstructionTable.
     Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
     Function1.of_run
       (fun context => run_chainid run_types run_host context).
+
   Definition basefee_function
       {WIRE H : Set} `{Link WIRE} `{Link H}
       {WIRE_types : InterpreterTypes.Types.t}
@@ -514,6 +516,7 @@ Module FragmentInstructionTable.
     Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
     Function1.of_run
       (fun context => run_difficulty run_types run_host context).
+
   Definition coinbase_function
       {WIRE H : Set} `{Link WIRE} `{Link H}
       {WIRE_types : InterpreterTypes.Types.t}

@@ -7,13 +7,17 @@ Open Scope Z_scope.
 
 Module Test.
   Module Fq2 := Bn254Pairing.Fq2.
+
   Module Fq6 := Bn254Tower.Fq6.
+
   Module Fq12 := Bn254Tower.Fq12.
 
   Definition a : Fq6.t := Fq6.make
     (Fq2.make 1 2) (Fq2.make 3 4) (Fq2.make 5 6).
+
   Definition b : Fq6.t := Fq6.make
     (Fq2.make 7 8) (Fq2.make 9 10) (Fq2.make 11 12).
+
   Definition x : Fq12.t := Fq12.make a b.
 
   Lemma cubic_relation :

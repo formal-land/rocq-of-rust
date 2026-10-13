@@ -14,6 +14,7 @@ Open Scope Z_scope.
 
 Module Test.
   Module C := legacy_call.Test.
+
   Module Creation := legacy_create.Test.
 
   Lemma frontier_homestead_sload_price :

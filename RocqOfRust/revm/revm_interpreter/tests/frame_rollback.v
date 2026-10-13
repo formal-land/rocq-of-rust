@@ -79,6 +79,7 @@ Module Test.
     end.
 
   Definition writes : list Z := [96; 8; 96; 0; 85; 96; 9; 96; 0; 85].
+
   Definition returning (opcode : Z) : list Z :=
     [96; 42; 96; 0; 83; 96; 1; 96; 0; opcode; 254].
 

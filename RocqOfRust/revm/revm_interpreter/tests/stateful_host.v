@@ -206,13 +206,19 @@ Module StatefulHost.
       state : list Account.t;
     }.
   End Input.
+
 Module RustBlock := revm.revm_context_interface.simulate.block.Block.
+
 Module RustCfg := revm.revm_context_interface.simulate.cfg.Cfg.
+
 Module RustCfgTypes := revm.revm_context_interface.links.cfg.Cfg.Types.
+
 Module RustCfgGetterTypes :=
   revm.revm_context_interface.links.cfg.CfgGetter.Types.
+
 Module RustTransaction :=
   revm.revm_context_interface.simulate.transaction.Transaction.
+
 Module RustTransactionTypes :=
   revm.revm_context_interface.links.transaction.Transaction.Types.
 

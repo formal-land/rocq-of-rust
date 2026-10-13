@@ -11,19 +11,27 @@ Open Scope Z_scope.
     not establish curve arithmetic or native-provider correspondence. *)
 Module Secp256k1.
   Definition field_modulus : Z := 2 ^ 256 - 2 ^ 32 - 977.
+
   Definition scalar_modulus : Z :=
     115792089237316195423570985008687907852837564279074904382605163141518161494337.
+
   Definition generator_x : Z :=
     55066263022277343669578718895168534326250603453777594175500187360389116729240.
+
   Definition generator_y : Z :=
     32670510020758816978083085130507043184471273380659243275938904335757337482424.
 
   Module Field.
     Definition add (left right : Z) : Z := (left + right) mod field_modulus.
+
     Definition sub (left right : Z) : Z := (left - right) mod field_modulus.
+
     Definition mul (left right : Z) : Z := (left * right) mod field_modulus.
+
     Definition square (value : Z) : Z := mul value value.
+
     Definition negate (value : Z) : Z := (- value) mod field_modulus.
+
     Definition inverse (value : Z) : Z :=
       Modexp.pow_mod value (field_modulus - 2) field_modulus.
   End Field.
@@ -36,7 +44,9 @@ Module Secp256k1.
     }.
 
     Definition infinity : t := {| x := 0; y := 1; z := 0 |}.
+
     Definition is_infinity (point : t) : bool := point.(z) =? 0.
+
     Definition of_affine (affine_x affine_y : Z) : t :=
       {| x := affine_x mod field_modulus;
          y := affine_y mod field_modulus;

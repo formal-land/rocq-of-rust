@@ -16,6 +16,7 @@ Module Modexp.
   End Result.
 
   Definition u64_max : Z := 2 ^ 64 - 1.
+
   Definition saturating_u64 (value : Z) : Z := Z.min value u64_max.
 
   Definition decode_be (input : list Z) : Z :=
@@ -120,7 +121,9 @@ Module Modexp.
     Result.Success cost output.
 
   Definition run_byzantium := run_inner false 0 byzantium_gas.
+
   Definition run_berlin := run_inner false 200 berlin_gas.
+
   Definition run_osaka := run_inner true 500 osaka_gas.
 
   Module Test.

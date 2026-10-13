@@ -3,6 +3,7 @@ Require Import revm.revm_precompile.simulate.bn254.
 Require Import revm.revm_precompile.simulate.modexp.
 Import ListNotations.
 Open Scope Z_scope.
+
 Module Test.
   (** Geth bn256Add.json: chfast1. *)
   Lemma official_add_0 :
@@ -179,33 +180,44 @@ Module Test.
     Bn254.run_mul [3; 151; 48; 234; 141; 255; 18; 84; 192; 254; 233; 192; 234; 119; 125; 41; 169; 199; 16; 183; 230; 22; 104; 63; 25; 79; 24; 196; 59; 67; 184; 105; 7; 58; 95; 252; 198; 252; 122; 40; 195; 7; 35; 214; 229; 140; 229; 119; 53; 105; 130; 214; 91; 131; 58; 90; 92; 21; 191; 144; 36; 180; 61; 152; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0] 6000 6000 =
     Bn254.Result.Success 6000 [0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0].
   Proof. vm_compute. reflexivity. Qed.
+
   Definition generator : list Z := Modexp.encode_be 32 1 ++ Modexp.encode_be 32 2.
+
   Definition malformed : list Z := Modexp.encode_be 32 Bn254.field_modulus ++ Modexp.encode_be 32 2.
+
   Lemma coordinates_must_not_reduce : Bn254.run_add malformed 150 150 =
     Bn254.Result.InvalidPoint Bn254.Error.FieldPointNotAMember.
   Proof. vm_compute. reflexivity. Qed.
+
   Lemma off_curve : Bn254.run_mul (Modexp.encode_be 32 1 ++ Modexp.encode_be 32 1) 6000 6000 =
     Bn254.Result.InvalidPoint Bn254.Error.AffineGFailedToCreate.
   Proof. vm_compute. reflexivity. Qed.
+
   Lemma oog_before_invalid_coordinate : Bn254.run_add malformed 150 149 = Bn254.Result.OutOfGas.
   Proof. vm_compute. reflexivity. Qed.
+
   Lemma mul_oog_before_invalid_coordinate : Bn254.run_mul malformed 6000 5999 = Bn254.Result.OutOfGas.
   Proof. vm_compute. reflexivity. Qed.
+
   Lemma order_scalar_is_accepted :
     Bn254.run_mul (generator ++ Modexp.encode_be 32 Bn254.scalar_modulus) 6000 6000 =
     Bn254.Result.Success 6000 (List.repeat 0 64).
   Proof. vm_compute. reflexivity. Qed.
+
   Lemma order_plus_one_scalar_is_accepted :
     Bn254.run_mul (generator ++ Modexp.encode_be 32 (Bn254.scalar_modulus + 1)) 6000 6000 =
     Bn254.Result.Success 6000 generator.
   Proof. vm_compute. reflexivity. Qed.
+
   Lemma inverse_addition :
     Bn254.run_add (generator ++ Modexp.encode_be 32 1 ++ Modexp.encode_be 32 (Bn254.field_modulus - 2)) 150 150 =
     Bn254.Result.Success 150 (List.repeat 0 64).
   Proof. vm_compute. reflexivity. Qed.
+
   Lemma scalar_zero_does_not_hide_invalid_point :
     Bn254.run_mul malformed 6000 6000 = Bn254.Result.InvalidPoint Bn254.Error.FieldPointNotAMember.
   Proof. vm_compute. reflexivity. Qed.
+
   Lemma mul_trailing_bytes_ignored :
     Bn254.run_mul (generator ++ Modexp.encode_be 32 1 ++ [255;255]) 6000 6000 =
     Bn254.Result.Success 6000 generator.

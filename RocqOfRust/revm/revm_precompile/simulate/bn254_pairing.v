@@ -20,24 +20,37 @@ Module Bn254Pairing.
     Definition make (a0 a1 : Z) : t :=
       {| real := a0 mod Bn254.field_modulus;
          imag := a1 mod Bn254.field_modulus |}.
+
     Definition zero : t := make 0 0.
+
     Definition one : t := make 1 0.
+
     Definition of_z (value : Z) : t := make value 0.
+
     Definition xi : t := make 9 1.
+
     Definition eqb (left right : t) : bool :=
       (left.(real) =? right.(real)) && (left.(imag) =? right.(imag)).
+
     Definition is_zero (value : t) : bool := eqb value zero.
+
     Definition add (left right : t) : t :=
       make (left.(real) + right.(real)) (left.(imag) + right.(imag)).
+
     Definition sub (left right : t) : t :=
       make (left.(real) - right.(real)) (left.(imag) - right.(imag)).
+
     Definition negate (value : t) : t :=
       make (- value.(real)) (- value.(imag)).
+
     Definition mul (left right : t) : t :=
       make (left.(real) * right.(real) - left.(imag) * right.(imag))
         (left.(real) * right.(imag) + left.(imag) * right.(real)).
+
     Definition square (value : t) : t := mul value value.
+
     Definition mul_z (value : t) (scalar : Z) : t := mul value (of_z scalar).
+
     Definition inverse (value : t) : t :=
       let denominator := Bn254.Field.add
         (Bn254.Field.square value.(real))
@@ -55,7 +68,9 @@ Module Bn254Pairing.
 
     Definition infinity : t :=
       {| x := Fq2.zero; y := Fq2.one; z := Fq2.zero |}.
+
     Definition is_infinity (point : t) : bool := Fq2.is_zero point.(z).
+
     Definition of_affine (affine_x affine_y : Fq2.t) : t :=
       {| x := affine_x; y := affine_y; z := Fq2.one |}.
 
@@ -127,6 +142,7 @@ Module Bn254Pairing.
     | FieldPointNotAMember
     | AffineGFailedToCreate.
   End Error.
+
   Module Decoded.
     Inductive t : Set :=
     | Valid (point : G2.t)

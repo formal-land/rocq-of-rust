@@ -110,6 +110,7 @@ Module HistoricalFramesTest.
     option_map StatefulHost.Account.address (zero_transfer_target SpecId.TANGERINE) = Some 44 /\
     zero_transfer_target SpecId.SPURIOUS_DRAGON = None.
   Proof. vm_compute. split; reflexivity. Qed.
+
   Lemma existing_empty_account_is_not_new_before_spurious_dragon :
     StatefulHost.state_clear_aware_is_empty (host SpecId.TANGERINE) 43 = false /\
     StatefulHost.state_clear_aware_is_empty (host SpecId.SPURIOUS_DRAGON) 43 = true.
@@ -126,6 +127,7 @@ Module HistoricalFramesTest.
     StatefulHost.state_clear_aware_is_empty
       (StatefulHost.touch_account (host SpecId.SPURIOUS_DRAGON) 44) 44 = true.
   Proof. vm_compute. split; reflexivity. Qed.
+
   Lemma historical_header_fields_have_activation_boundaries :
     LegacyCall.validate_header SpecId.LONDON None None = None /\
     LegacyCall.validate_header SpecId.MERGE None None = Some LegacyCall.Rejection.PrevrandaoNotSet /\
@@ -134,6 +136,7 @@ Module HistoricalFramesTest.
     LegacyCall.validate_header SpecId.CANCUN (Some 0) None = Some LegacyCall.Rejection.ExcessBlobGasNotSet /\
     LegacyCall.validate_header SpecId.CANCUN (Some 0) (Some 0) = None.
   Proof. vm_compute. repeat split; reflexivity. Qed.
+
   Lemma historical_precompile_sets :
     List.map (fun spec => Z.of_nat (List.length (PrecompileFrame.addresses spec)))
       [SpecId.FRONTIER; SpecId.HOMESTEAD; SpecId.SPURIOUS_DRAGON;

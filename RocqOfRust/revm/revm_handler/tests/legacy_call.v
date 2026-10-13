@@ -352,8 +352,10 @@ Module Test.
   Proof. vm_compute. reflexivity. Qed.
 
   Definition creation_tx := tx <| TransactionAccounting.Transaction.gas_limit := 90000 |>.
+
   Definition created_address :=
     match CreateAddress.create 42 1 with Some address => address | None => 0 end.
+
   Definition created_account (result : LegacyCall.Result.t) :=
     match result with
     | LegacyCall.Result.Completed output =>
@@ -363,6 +365,7 @@ Module Test.
         (StatefulHost.find_account created_address output.(LegacyCall.Output.accounts))
     | _ => None
     end.
+
   Definition target_nonce (result : LegacyCall.Result.t) :=
     match result with
     | LegacyCall.Result.Completed output =>
@@ -416,6 +419,7 @@ Module Test.
     (add11_input <| StatefulHost.Input.state :=
       [(StatefulHost.empty_account 42) <| StatefulHost.Account.balance := 7 |>;
        StatefulHost.empty_account 88] |>).
+
   Definition transfer_observation (from to value : Z) :=
     let '(error, host) := CallFrame.transfer transfer_host from to value in
     (error, host.(StatefulHost.touched_accounts), CallFrame.balance host 42,
@@ -822,6 +826,7 @@ Module Test.
     LegacyCall.Result.Unsupported
       (LegacyCall.Gap.Accounting (TransactionAccounting.UnsupportedReason.TransactionType 4)).
   Proof. vm_compute. reflexivity. Qed.
+
   Definition input_with_max_nonce (code : list Z) :=
     let source := input code in
     source <| LegacyCall.Input.accounts :=

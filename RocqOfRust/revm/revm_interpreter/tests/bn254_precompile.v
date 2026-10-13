@@ -61,30 +61,37 @@ Module Test.
     direct_observation (direct SpecId.BYZANTIUM false [] 500) =
     (InstructionResult.Return, 0, List.repeat 0 64).
   Proof. vm_compute. reflexivity. Qed.
+
   Lemma before_repricing_add_oog :
     direct_observation (direct SpecId.PETERSBURG false [] 150) =
     (InstructionResult.PrecompileOOG, 150, []).
   Proof. vm_compute. reflexivity. Qed.
+
   Lemma istanbul_add_cost :
     direct_observation (direct SpecId.ISTANBUL false [] 150) =
     (InstructionResult.Return, 0, List.repeat 0 64).
   Proof. vm_compute. reflexivity. Qed.
+
   Lemma byzantium_mul_cost :
     direct_observation (direct SpecId.BYZANTIUM true [] 40000) =
     (InstructionResult.Return, 0, List.repeat 0 64).
   Proof. vm_compute. reflexivity. Qed.
+
   Lemma before_repricing_mul_oog :
     direct_observation (direct SpecId.PETERSBURG true [] 6000) =
     (InstructionResult.PrecompileOOG, 6000, []).
   Proof. vm_compute. reflexivity. Qed.
+
   Lemma istanbul_mul_cost :
     direct_observation (direct SpecId.ISTANBUL true [] 6000) =
     (InstructionResult.Return, 0, List.repeat 0 64).
   Proof. vm_compute. reflexivity. Qed.
+
   Lemma invalid_point_maps_to_error :
     direct_observation (direct SpecId.ISTANBUL false revm.revm_precompile.tests.bn254.Test.malformed 150) =
     (InstructionResult.PrecompileError, 150, []).
   Proof. vm_compute. reflexivity. Qed.
+
   Lemma byzantium_activation :
     (PrecompileFrame.is_precompile SpecId.SPURIOUS_DRAGON 6,
      PrecompileFrame.is_precompile SpecId.SPURIOUS_DRAGON 7,
@@ -92,15 +99,22 @@ Module Test.
      PrecompileFrame.is_precompile SpecId.BYZANTIUM 7,
      PrecompileFrame.supported 8) = (false, false, true, true, true).
   Proof. vm_compute. reflexivity. Qed.
+
   Definition generator_memory : list Z :=
     [96; 1; 96; 0; 82; 96; 2; 96; 32; 82].
+
   Definition scalar_one_memory : list Z := [96; 1; 96; 64; 82].
+
   Definition invalid_point_memory : list Z :=
     [96; 1; 96; 0; 82; 96; 1; 96; 32; 82].
+
   Definition output_memory (size : nat) result :=
     option_map (List.skipn 128) (calls.Test.memory_prefix (128 + size) result).
+
   Definition price (address : Z) := if address =? 6 then 150 else 6000.
+
   Definition input_size (address : Z) := if address =? 6 then 64 else 96.
+
   Definition input_memory (address : Z) := generator_memory ++
     (if address =? 6 then [] else scalar_one_memory).
 

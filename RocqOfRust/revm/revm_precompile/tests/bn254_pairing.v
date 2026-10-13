@@ -9,6 +9,7 @@ Open Scope Z_scope.
 
 Module Test.
   Definition word := Modexp.encode_be 32.
+
   Definition encoded_g2 (x_imag x_real y_imag y_real : Z) : list Z :=
     word x_imag ++ word x_real ++ word y_imag ++ word y_real.
 

@@ -38,6 +38,7 @@ Module Test.
   (* GeneralStateTests/stExample/add11.json; SHA256 ce5a21a1b744ae982aef4fee0d41c1746fb77cf2182059d005901d64502700da. *)
   Definition add11_raw : list Z :=
     [248; 99; 128; 10; 131; 6; 26; 128; 148; 9; 94; 123; 174; 166; 166; 199; 196; 194; 223; 235; 151; 126; 250; 195; 38; 175; 85; 45; 135; 131; 1; 134; 160; 128; 27; 160; 255; 182; 0; 230; 49; 21; 167; 54; 46; 120; 17; 137; 74; 145; 216; 186; 67; 48; 229; 38; 242; 33; 33; 201; 148; 196; 105; 32; 53; 223; 223; 213; 160; 97; 152; 55; 159; 202; 200; 222; 61; 191; 172; 72; 177; 101; 223; 75; 248; 142; 32; 136; 242; 148; 182; 30; 251; 154; 101; 254; 34; 129; 199; 110; 22].
+
   Lemma add11_authenticates_every_normalized_field :
     TransactionAuth.authenticate 1 (Some 966588469268559010541288244128342317224451555083) add11_raw =
     TransactionAuth.Result.Authenticated {| TransactionAccounting.Transaction.tx_type := 0;
@@ -62,6 +63,7 @@ Module Test.
   (* GeneralStateTests/stExample/accessListExample.json; SHA256 13786ad3123bc96e9f62359fc2e035f57e9cb7bc82fccfea25904f16e451c3dc. *)
   Definition access_list_raw : list Z :=
     [1; 248; 249; 1; 128; 10; 131; 6; 26; 128; 148; 9; 94; 123; 174; 166; 166; 199; 196; 194; 223; 235; 151; 126; 250; 195; 38; 175; 85; 45; 135; 131; 1; 134; 160; 0; 248; 147; 248; 89; 148; 9; 94; 123; 174; 166; 166; 199; 196; 194; 223; 235; 151; 126; 250; 195; 38; 175; 85; 45; 135; 248; 66; 160; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 160; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 1; 247; 148; 25; 94; 123; 174; 166; 166; 199; 196; 194; 223; 235; 151; 126; 250; 195; 38; 175; 85; 45; 135; 225; 160; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 128; 160; 17; 201; 126; 11; 184; 163; 86; 254; 79; 73; 179; 120; 99; 208; 89; 198; 254; 140; 211; 33; 74; 106; 192; 106; 131; 135; 162; 246; 240; 183; 95; 96; 160; 33; 35; 104; 161; 9; 125; 163; 8; 6; 237; 253; 19; 217; 195; 86; 98; 225; 186; 238; 147; 146; 53; 235; 37; 222; 134; 121; 128; 189; 14; 218; 38].
+
   Lemma access_list_authenticates_every_normalized_field :
     TransactionAuth.authenticate 1 (Some 966588469268559010541288244128342317224451555083) access_list_raw =
     TransactionAuth.Result.Authenticated {| TransactionAccounting.Transaction.tx_type := 1;
@@ -86,6 +88,7 @@ Module Test.
   (* GeneralStateTests/stExample/eip1559.json; SHA256 826e2d4d70e554a2404e73bee93857674ecc12e8db4deb31189accb5a2b2d085. *)
   Definition dynamic_fee_raw : list Z :=
     [2; 248; 193; 1; 1; 10; 130; 7; 208; 131; 61; 9; 0; 148; 204; 204; 204; 204; 204; 204; 204; 204; 204; 204; 204; 204; 204; 204; 204; 204; 204; 204; 204; 204; 128; 0; 248; 91; 248; 89; 148; 204; 204; 204; 204; 204; 204; 204; 204; 204; 204; 204; 204; 204; 204; 204; 204; 204; 204; 204; 204; 248; 66; 160; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 160; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 1; 128; 160; 214; 113; 129; 88; 152; 184; 221; 52; 50; 26; 219; 186; 76; 182; 165; 123; 170; 112; 23; 50; 60; 38; 148; 111; 55; 25; 176; 14; 112; 199; 85; 194; 160; 53; 40; 185; 239; 227; 190; 87; 234; 101; 169; 51; 209; 230; 187; 243; 183; 208; 199; 136; 48; 19; 136; 131; 193; 32; 30; 12; 100; 31; 238; 100; 100].
+
   Lemma dynamic_fee_authenticates_every_normalized_field :
     TransactionAuth.authenticate 1 (Some 966588469268559010541288244128342317224451555083) dynamic_fee_raw =
     TransactionAuth.Result.Authenticated {| TransactionAccounting.Transaction.tx_type := 2;
@@ -110,6 +113,7 @@ Module Test.
   (* GeneralStateTests/Cancun/stEIP4844-blobtransactions/opcodeBlobhashOutOfRange.json; SHA256 5e94d2568ca105d3cdd8ac6b3ac1552d9c559c97c11c4f604733c40c06e423db. *)
   Definition blob_raw : list Z :=
     [3; 249; 1; 12; 1; 128; 2; 133; 1; 42; 5; 242; 0; 131; 61; 9; 0; 148; 9; 94; 123; 174; 166; 166; 199; 196; 194; 223; 235; 151; 126; 250; 195; 38; 175; 85; 45; 135; 131; 1; 134; 160; 0; 248; 91; 248; 89; 148; 9; 94; 123; 174; 166; 166; 199; 196; 194; 223; 235; 151; 126; 250; 195; 38; 175; 85; 45; 135; 248; 66; 160; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 160; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 1; 10; 248; 66; 160; 1; 169; 21; 228; 208; 96; 20; 158; 180; 54; 89; 96; 230; 167; 164; 95; 51; 67; 147; 9; 48; 97; 17; 107; 25; 126; 50; 64; 6; 95; 242; 216; 160; 1; 169; 21; 228; 208; 96; 20; 158; 180; 54; 89; 96; 230; 167; 164; 95; 51; 67; 147; 9; 48; 97; 17; 107; 25; 126; 50; 64; 6; 95; 242; 216; 128; 160; 191; 117; 30; 213; 195; 123; 214; 93; 58; 206; 91; 115; 161; 198; 47; 115; 136; 178; 3; 168; 44; 227; 102; 57; 46; 123; 118; 253; 45; 225; 44; 177; 160; 111; 43; 83; 68; 229; 185; 151; 211; 91; 58; 7; 104; 0; 97; 150; 166; 92; 78; 255; 142; 211; 172; 173; 82; 1; 161; 5; 194; 181; 155; 78; 140].
+
   Lemma blob_authenticates_every_normalized_field :
     TransactionAuth.authenticate 1 (Some 966588469268559010541288244128342317224451555083) blob_raw =
     TransactionAuth.Result.Authenticated {| TransactionAccounting.Transaction.tx_type := 3;
@@ -133,6 +137,7 @@ Module Test.
 
   (* TransactionTests/ttSignature/invalidSignature.json; SHA256 0063434078c3093d5f8272ec7a71a269782a038861af83e94f2eca3340510cdc. *)
   Definition invalid_r_raw : list Z := [248; 99; 128; 128; 131; 15; 66; 64; 148; 9; 94; 123; 174; 166; 166; 199; 196; 194; 223; 235; 151; 126; 250; 195; 38; 175; 85; 45; 135; 131; 1; 134; 160; 128; 27; 160; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 160; 186; 223; 0; 215; 14; 194; 140; 148; 163; 181; 94; 199; 113; 188; 188; 112; 119; 141; 110; 224; 181; 28; 167; 234; 149; 20; 89; 76; 134; 27; 24; 132].
+
   Lemma native_fixture_invalid_r_is_rejected :
     TransactionAuth.authenticate 1 None invalid_r_raw =
     TransactionAuth.Result.Rejected TransactionAuth.Error.InvalidSignature.
@@ -140,6 +145,7 @@ Module Test.
 
   (* TransactionTests/ttSignature/RSsecp256k1.json; SHA256 d72bd5aa1a311c1b8a502cacb85017f434409d93afae1f38349c22c23d5d8080. *)
   Definition invalid_r_and_s_raw : list Z := [248; 95; 3; 1; 130; 82; 8; 148; 185; 79; 83; 116; 252; 229; 237; 188; 142; 42; 134; 151; 193; 83; 49; 103; 126; 110; 191; 11; 10; 128; 28; 160; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 254; 186; 174; 220; 230; 175; 72; 160; 59; 191; 210; 94; 140; 208; 54; 65; 65; 160; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 255; 254; 186; 174; 220; 230; 175; 72; 160; 59; 191; 210; 94; 140; 208; 54; 65; 65].
+
   Lemma native_fixture_invalid_r_and_s_is_rejected :
     TransactionAuth.authenticate 1 None invalid_r_and_s_raw =
     TransactionAuth.Result.Rejected TransactionAuth.Error.InvalidSignature.
@@ -147,6 +153,7 @@ Module Test.
 
   (* TransactionTests/ttSignature/ZeroSigTransaction.json; SHA256 fc22452be810fcdd599f85432683d8fe52d9b81e822f5721ef0433cbdd4db3b4. *)
   Definition invalid_v_0_raw : list Z := [223; 3; 1; 130; 199; 56; 148; 185; 79; 83; 116; 252; 229; 237; 188; 142; 42; 134; 151; 193; 83; 49; 103; 126; 110; 191; 11; 10; 128; 128; 128; 128].
+
   Lemma native_fixture_invalid_v_0_is_rejected :
     TransactionAuth.authenticate 1 None invalid_v_0_raw =
     TransactionAuth.Result.Rejected TransactionAuth.Error.InvalidSignature.
@@ -154,6 +161,7 @@ Module Test.
 
   (* TransactionTests/ttSignature/ZeroSigTransaction2.json; SHA256 9754311c71763b4dd8613a8334bc5ed52e5812f0e70d585e9a810f4f3057e3b7. *)
   Definition invalid_v_1_raw : list Z := [223; 3; 1; 130; 199; 56; 148; 185; 79; 83; 116; 252; 229; 237; 188; 142; 42; 134; 151; 193; 83; 49; 103; 126; 110; 191; 11; 10; 128; 1; 128; 128].
+
   Lemma native_fixture_invalid_v_1_is_rejected :
     TransactionAuth.authenticate 1 None invalid_v_1_raw =
     TransactionAuth.Result.Rejected TransactionAuth.Error.InvalidSignature.
@@ -161,6 +169,7 @@ Module Test.
 
   (* TransactionTests/ttSignature/WrongVRSTestIncorrectSize.json; SHA256 63196b6980c22c664ba171646fb9fef86181ff3f2f2ef766e45ffd6be2011263. *)
   Definition oversized_r_and_s_raw : list Z := [248; 99; 128; 1; 130; 82; 8; 148; 185; 79; 83; 116; 252; 229; 237; 188; 142; 42; 134; 151; 193; 83; 49; 103; 126; 110; 191; 11; 10; 128; 28; 162; 152; 255; 146; 18; 1; 85; 71; 38; 54; 125; 43; 232; 200; 4; 167; 255; 137; 204; 242; 133; 235; 197; 125; 255; 138; 228; 196; 75; 156; 25; 172; 74; 2; 195; 162; 136; 135; 50; 27; 229; 117; 200; 9; 95; 120; 157; 212; 199; 67; 223; 228; 44; 24; 32; 249; 35; 31; 152; 169; 98; 178; 16; 227; 172; 36; 82; 163; 2; 195].
+
   Lemma native_fixture_oversized_r_and_s_is_rejected :
     TransactionAuth.authenticate 1 None oversized_r_and_s_raw =
     TransactionAuth.Result.Rejected TransactionAuth.Error.InvalidSignature.
@@ -168,6 +177,7 @@ Module Test.
 
   (* TransactionTests/ttSignature/PointAtInfinity.json; SHA256 2bb7309eb0fe5f4e290d08af8226aeb5fdab278da1f69551d82f0e1c466d6b51. *)
   Definition point_at_infinity_raw : list Z := [248; 95; 1; 16; 130; 82; 8; 148; 240; 240; 240; 240; 240; 240; 240; 240; 240; 240; 240; 240; 240; 240; 240; 240; 240; 240; 240; 240; 1; 128; 28; 160; 111; 0; 16; 255; 76; 49; 194; 166; 208; 82; 108; 13; 65; 78; 108; 208; 26; 213; 210; 46; 21; 191; 255; 152; 175; 35; 134; 115; 102; 185; 77; 135; 160; 84; 19; 57; 45; 85; 97; 25; 19; 45; 167; 5; 111; 143; 181; 106; 145; 56; 163; 100; 70; 168; 164; 173; 113; 89; 201; 216; 146; 217; 243; 34; 132].
+
   Lemma native_fixture_point_at_infinity_is_rejected :
     TransactionAuth.authenticate 1 None point_at_infinity_raw =
     TransactionAuth.Result.Rejected TransactionAuth.Error.RecoveryFailed.
@@ -175,6 +185,7 @@ Module Test.
 
   (* TransactionTests/ttSignature/WrongVRSTestVOverflow.json; SHA256 3965d571c653721be8052c5a107f73bec72b3a249085d7bdc142c79b547f213e. *)
   Definition invalid_v_overflow_raw : list Z := [248; 97; 128; 1; 130; 82; 8; 148; 185; 79; 83; 116; 252; 229; 237; 188; 142; 42; 134; 151; 193; 83; 49; 103; 126; 110; 191; 11; 10; 128; 130; 1; 54; 160; 152; 255; 146; 18; 1; 85; 71; 38; 54; 125; 43; 232; 200; 4; 167; 255; 137; 204; 242; 133; 235; 197; 125; 255; 138; 228; 196; 75; 156; 25; 172; 74; 160; 136; 135; 50; 27; 229; 117; 200; 9; 95; 120; 157; 212; 199; 67; 223; 228; 44; 24; 32; 249; 35; 31; 152; 169; 98; 178; 16; 227; 172; 36; 82; 163].
+
   Lemma native_fixture_invalid_v_overflow_is_rejected :
     TransactionAuth.authenticate 1 None invalid_v_overflow_raw =
     TransactionAuth.Result.Rejected (TransactionAuth.Error.ChainIdMismatch 137 1).
@@ -240,6 +251,7 @@ Module Test.
   Proof. vm_compute. reflexivity. Qed.
   (* TransactionTests/ttVValue/V_equals37.json; SHA256 d0a327b7ee0eeddcd68e3286f33b29c21d20fafb0af533cb93c134e20f8a634d. *)
   Definition v_equals37_raw : list Z := [248; 101; 128; 134; 152; 133; 40; 64; 164; 111; 130; 214; 216; 148; 9; 94; 123; 174; 166; 166; 199; 196; 194; 223; 235; 151; 126; 250; 195; 38; 175; 85; 45; 135; 128; 128; 37; 160; 152; 255; 146; 18; 1; 85; 71; 38; 54; 125; 43; 232; 200; 4; 167; 255; 137; 204; 242; 133; 235; 197; 125; 255; 138; 228; 196; 75; 156; 25; 172; 74; 160; 24; 135; 50; 27; 229; 117; 200; 9; 95; 120; 157; 212; 199; 67; 223; 228; 44; 24; 32; 249; 35; 31; 152; 169; 98; 178; 16; 227; 172; 36; 82; 163].
+
   Lemma protected_legacy_v_equals37_recovers_native_sender :
     sender (TransactionAuth.authenticate 1 None v_equals37_raw) = Some 266395076419694023037738537452765201663280922664.
   Proof. vm_compute. reflexivity. Qed.
@@ -250,6 +262,7 @@ Module Test.
 
   (* TransactionTests/ttVValue/V_equals38.json; SHA256 150ba26fe5f2f67a937420f4848cee38d34334d4655242e9758cc46b98463fe9. *)
   Definition v_equals38_raw : list Z := [248; 126; 128; 159; 3; 30; 234; 64; 143; 142; 23; 153; 203; 136; 61; 162; 146; 123; 19; 54; 82; 29; 115; 194; 193; 74; 204; 254; 187; 112; 213; 197; 174; 70; 105; 130; 82; 8; 148; 9; 94; 123; 174; 166; 166; 199; 196; 194; 223; 235; 151; 126; 250; 195; 38; 175; 85; 45; 135; 128; 128; 38; 160; 152; 255; 146; 18; 1; 85; 71; 38; 54; 125; 43; 232; 200; 4; 167; 255; 137; 204; 242; 133; 235; 197; 125; 255; 138; 228; 196; 75; 156; 25; 172; 74; 160; 24; 135; 50; 27; 229; 117; 200; 9; 95; 120; 157; 212; 199; 67; 223; 228; 44; 24; 32; 249; 35; 31; 152; 169; 98; 178; 16; 227; 172; 36; 82; 163].
+
   Lemma protected_legacy_v_equals38_recovers_native_sender :
     sender (TransactionAuth.authenticate 1 None v_equals38_raw) = Some 900078559331821800077022732710384633134377881606.
   Proof. vm_compute. reflexivity. Qed.

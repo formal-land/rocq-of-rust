@@ -46,6 +46,7 @@ Module Test.
   Definition input : list Z :=
     List.repeat 0 31 ++ [1] ++ List.repeat 0 31 ++ [1] ++
     List.repeat 0 31 ++ [2] ++ [2; 5; 0; 13].
+
   Definition memory_data : list Z :=
     [96; 1; 96; 31; 83; 96; 1; 96; 63; 83;
      96; 2; 96; 95; 83; 96; 2; 96; 96; 83;
@@ -243,6 +244,7 @@ Module Test.
      calls.Test.stack short, calls.Test.returned_bytes short) =
     (Some [1], Some [0; 6], Some [0], Some []).
   Proof. vm_compute. reflexivity. Qed.
+
   Lemma modexp_is_not_a_precompile_before_byzantium :
     PrecompileFrame.enabled SpecId.SPURIOUS_DRAGON 5 = false /\
     PrecompileFrame.enabled SpecId.BYZANTIUM 5 = true.

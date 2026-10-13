@@ -11,8 +11,11 @@ Open Scope Z_scope.
     this is an executable arithmetic definition, not a correspondence proof. *)
 Module Bn254Miller.
   Module Fq2 := Bn254Pairing.Fq2.
+
   Module G2 := Bn254Pairing.G2.
+
   Module Fq6 := Bn254Tower.Fq6.
+
   Module Fq12 := Bn254Tower.Fq12.
 
   Definition line (a b c : Fq2.t) : Fq12.t :=
@@ -81,6 +84,7 @@ Module Bn254Miller.
      0; 1; 1; 0; -1; 0; 0; 1; 0; -1; 0; 0; 0; 0; 1; 1;
      1; 0; 0; -1; 0; 0; 1; 0; 0; 0; 0; 0; -1; 0; 0; 1;
      1; 0; 0; -1; 0; 0; 0; 1; 1; 0; -1; 0; 0; 1; 0; 1; 1].
+
   Definition loop_digits : list Z :=
     List.map (fun index => List.nth index six_u_plus_2_naf 0)
       (List.rev (List.seq 0 64)).
@@ -123,6 +127,7 @@ Module Bn254Miller.
            2821565182194536844548159561693502659359617185244120367078079554186484126554
            3505843767911556378687030309984248845540243509899259641013678093033130930403);
        G2.z := Fq2.one |}.
+
   Definition minus_q2 (q : G2.t) : G2.t :=
     {| G2.x := Fq2.mul_z q.(G2.x)
          21888242871839275220042445260109153167277707414472061641714758635765020556616;

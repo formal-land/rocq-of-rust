@@ -28,6 +28,7 @@ Open Scope Z_scope.
 
 Module CallFrame.
   Definition state : Set := InstructionContext.State.t StatefulHost.t WIRE WIRE_types.
+
   Definition machine : Set := Interpreter.t WIRE WIRE_types.
 
   Definition gas_returned (result : InstructionResult.t) : bool :=

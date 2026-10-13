@@ -4,13 +4,17 @@ Open Scope Z_scope.
 
 Module Blake2.
   Definition mask : Z := 2 ^ 64 - 1.
+
   Definition word (x : Z) : Z := Z.land x mask.
+
   Definition rotate (x n : Z) : Z :=
     word (Z.lor (Z.shiftr x n) (Z.shiftl x (64 - n))).
+
   Definition iv : list Z :=
     [0x6a09e667f3bcc908; 0xbb67ae8584caa73b; 0x3c6ef372fe94f82b;
      0xa54ff53a5f1d36f1; 0x510e527fade682d1; 0x9b05688c2b3e6c1f;
      0x1f83d9abfb41bd6b; 0x5be0cd19137e2179].
+
   Definition sigma : list (list nat) :=
     [[0;1;2;3;4;5;6;7;8;9;10;11;12;13;14;15];
      [14;10;4;8;9;15;13;6;1;12;0;2;11;7;5;3];
@@ -22,12 +26,14 @@ Module Blake2.
      [13;11;7;14;12;1;3;9;5;0;15;4;8;6;2;10];
      [6;15;14;9;11;3;0;8;12;2;13;7;1;4;10;5];
      [10;2;8;4;7;6;1;5;15;11;9;14;3;12;13;0]]%nat.
+
   Fixpoint put (index : nat) (value : Z) (values : list Z) : list Z :=
     match index, values with
     | O, _ :: rest => value :: rest
     | S i, head :: rest => head :: put i value rest
     | _, [] => []
     end.
+
   Definition g (v : list Z) (a b c d : nat) (x y : Z) : list Z :=
     let va := word (List.nth a v 0 + List.nth b v 0 + x) in
     let vd := rotate (Z.lxor (List.nth d v 0) va) 32 in
@@ -38,6 +44,7 @@ Module Blake2.
     let vc := word (vc + vd) in
     let vb := rotate (Z.lxor vb vc) 63 in
     put d vd (put c vc (put b vb (put a va v))).
+
   Definition round (m : list Z) (r : Z) (v : list Z) : list Z :=
     let s := List.nth (Z.to_nat (r mod 10)) sigma [] in
     let msg := fun i => List.nth (List.nth i s 0%nat) m 0 in
@@ -61,6 +68,7 @@ Module Blake2.
     | xO p => rounds_positive p m (rounds_positive p m state)
     | xI p => step (rounds_positive p m (rounds_positive p m state))
     end.
+
   Definition compress (count : Z) (h m : list Z) (t0 t1 : Z)
       (final_block : bool) : list Z :=
     let v := h ++ iv in
@@ -70,19 +78,25 @@ Module Blake2.
     let v := match count with Zpos p => snd (rounds_positive p m (0, v)) | _ => v end in
     List.map (fun i => Z.lxor (List.nth i h 0)
       (Z.lxor (List.nth i v 0) (List.nth (i + 8)%nat v 0))) (List.seq 0 8).
+
   Definition decode_be (bytes : list Z) : Z :=
     List.fold_left (fun value byte => 256 * value + byte) bytes 0.
+
   Definition decode_le (bytes : list Z) : Z := decode_be (List.rev bytes).
+
   Definition read_words (input : list Z) (offset count : nat) : list Z :=
     List.map (fun i => decode_le (List.firstn 8 (List.skipn (offset + 8 * i) input)))
       (List.seq 0 count).
+
   Definition encode_word (value : Z) : list Z :=
     List.map (fun i => Z.land (Z.shiftr value (8 * Z.of_nat i)) 255) (List.seq 0 8).
+
   Module Result.
     Inductive t : Set :=
     | Success (cost : Z) (output : list Z)
     | WrongLength | OutOfGas | WrongFinalIndicatorFlag.
   End Result.
+
   Definition run (input : list Z) (gas_limit : Z) : Result.t :=
     if negb (Nat.eqb (List.length input) 213) then Result.WrongLength else
     let count := decode_be (List.firstn 4 input) in

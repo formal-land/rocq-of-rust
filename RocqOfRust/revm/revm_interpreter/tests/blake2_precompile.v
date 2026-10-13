@@ -58,13 +58,16 @@ Module Test.
       List.length result.(InterpreterResult.output).(alloy_primitives.bytes.links.mod.Bytes.value).(bytes.Bytes.value)) =
       (InstructionResult.Return, 0, 64%nat).
   Proof. vm_compute. reflexivity. Qed.
+
   Lemma insufficient_gas :
     direct_observation (direct revm.revm_precompile.tests.blake2.Test.input_1 11) =
       (InstructionResult.PrecompileOOG, 11, []).
   Proof. vm_compute. reflexivity. Qed.
+
   Lemma malformed_input : direct_observation (direct [] 100) =
       (InstructionResult.PrecompileError, 100, []).
   Proof. vm_compute. reflexivity. Qed.
+
   Lemma istanbul_activation :
     (PrecompileFrame.is_precompile SpecId.PETERSBURG 9,
      PrecompileFrame.is_precompile SpecId.ISTANBUL 9,
