@@ -34,6 +34,7 @@ Module Test.
     TransactionAccounting.Transaction.max_priority_fee := None;
     TransactionAccounting.Transaction.access_list := [];
     TransactionAccounting.Transaction.max_fee_per_blob_gas := 0;
+    TransactionAccounting.Transaction.authorization_list := [];
     TransactionAccounting.Transaction.blob_hashes := [];
     TransactionAccounting.Transaction.value := 7;
     TransactionAccounting.Transaction.data := [];
@@ -820,11 +821,11 @@ Module Test.
     LegacyCall.Result.Rejected (LegacyCall.Rejection.Gas TransactionAccounting.GasError.EmptyBlobs).
   Proof. vm_compute. reflexivity. Qed.
 
-  Lemma authorization_transaction_remains_unsupported :
+  Lemma empty_authorization_transaction_is_rejected :
     LegacyCall.run 100 SpecId.PRAGUE
       (tx <| TransactionAccounting.Transaction.tx_type := 4 |>) (input [0]) =
-    LegacyCall.Result.Unsupported
-      (LegacyCall.Gap.Accounting (TransactionAccounting.UnsupportedReason.TransactionType 4)).
+    LegacyCall.Result.Rejected
+      (LegacyCall.Rejection.Gas TransactionAccounting.GasError.EmptyAuthorizationList).
   Proof. vm_compute. reflexivity. Qed.
 
   Definition input_with_max_nonce (code : list Z) :=

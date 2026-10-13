@@ -53,7 +53,8 @@ Module Test.
        TransactionAccounting.Transaction.max_fee_per_blob_gas := 0;
        TransactionAccounting.Transaction.blob_hashes := [];
        TransactionAccounting.Transaction.value := 100000;
-       TransactionAccounting.Transaction.data := []; |}.
+       TransactionAccounting.Transaction.data := [];
+       TransactionAccounting.Transaction.authorization_list := []; |}.
   Proof. vm_compute. reflexivity. Qed.
 
   Lemma add11_signing_hash_matches_independent_reference :
@@ -78,7 +79,8 @@ Module Test.
        TransactionAccounting.Transaction.max_fee_per_blob_gas := 0;
        TransactionAccounting.Transaction.blob_hashes := [];
        TransactionAccounting.Transaction.value := 100000;
-       TransactionAccounting.Transaction.data := [0]; |}.
+       TransactionAccounting.Transaction.data := [0];
+       TransactionAccounting.Transaction.authorization_list := []; |}.
   Proof. vm_compute. reflexivity. Qed.
 
   Lemma access_list_signing_hash_matches_independent_reference :
@@ -103,7 +105,8 @@ Module Test.
        TransactionAccounting.Transaction.max_fee_per_blob_gas := 0;
        TransactionAccounting.Transaction.blob_hashes := [];
        TransactionAccounting.Transaction.value := 0;
-       TransactionAccounting.Transaction.data := [0]; |}.
+       TransactionAccounting.Transaction.data := [0];
+       TransactionAccounting.Transaction.authorization_list := []; |}.
   Proof. vm_compute. reflexivity. Qed.
 
   Lemma dynamic_fee_signing_hash_matches_independent_reference :
@@ -128,7 +131,8 @@ Module Test.
        TransactionAccounting.Transaction.max_fee_per_blob_gas := 10;
        TransactionAccounting.Transaction.blob_hashes := [751061108016417963655666671466479409693641967685740960873602276217728266968; 751061108016417963655666671466479409693641967685740960873602276217728266968];
        TransactionAccounting.Transaction.value := 100000;
-       TransactionAccounting.Transaction.data := [0]; |}.
+       TransactionAccounting.Transaction.data := [0];
+       TransactionAccounting.Transaction.authorization_list := []; |}.
   Proof. vm_compute. reflexivity. Qed.
 
   Lemma blob_signing_hash_matches_independent_reference :
@@ -240,9 +244,9 @@ Module Test.
     TransactionAuth.Result.Rejected TransactionAuth.Error.MalformedFields.
   Proof. vm_compute. reflexivity. Qed.
 
-  Lemma unsupported_type4_remains_explicit :
+  Lemma malformed_type4_is_rejected :
     TransactionAuth.authenticate 1 None [4; 192] =
-    TransactionAuth.Result.Unsupported (TransactionAuth.Unsupported.TransactionType 4).
+    TransactionAuth.Result.Rejected TransactionAuth.Error.MalformedFields.
   Proof. vm_compute. reflexivity. Qed.
 
   Lemma network_blob_sidecar_requires_separate_verification :
@@ -389,6 +393,45 @@ Module Test.
   Lemma homestead_high_s_still_rejects_with_wrong_declared_sender :
     TransactionAuth.authenticate_for_spec SpecId.HOMESTEAD 1 (Some 0) high_s_add11_raw =
     TransactionAuth.Result.Rejected TransactionAuth.Error.InvalidSignature.
+  Proof. vm_compute. reflexivity. Qed.
+
+  Definition authorization_fields (nonce parity : Z) : EthereumRlp.Item.t :=
+    EthereumRlp.Item.List [
+      EthereumRlp.Item.Bytes [1]; EthereumRlp.Item.Bytes (List.repeat 0 20);
+      EthereumRlp.Item.Bytes (EthereumRlp.big_endian nonce);
+      EthereumRlp.Item.Bytes (EthereumRlp.big_endian parity);
+      EthereumRlp.Item.Bytes [1]; EthereumRlp.Item.Bytes [1]].
+
+  Definition set_code_fields : list EthereumRlp.Item.t := [
+    EthereumRlp.Item.Bytes [1]; EthereumRlp.Item.Bytes [];
+    EthereumRlp.Item.Bytes [1]; EthereumRlp.Item.Bytes [2];
+    EthereumRlp.Item.Bytes [1; 134; 160]; EthereumRlp.Item.Bytes (List.repeat 0 20);
+    EthereumRlp.Item.Bytes []; EthereumRlp.Item.Bytes []; EthereumRlp.Item.List [];
+    EthereumRlp.Item.List [authorization_fields 0 1];
+    EthereumRlp.Item.Bytes []; EthereumRlp.Item.Bytes [1]; EthereumRlp.Item.Bytes [1]].
+
+  Lemma set_code_decodes_and_preserves_signing_payload :
+    match TransactionAuth.decode_fields 4 set_code_fields with
+    | Some envelope =>
+        List.length envelope.(TransactionAuth.Envelope.transaction).(TransactionAccounting.Transaction.authorization_list) = 1%nat /\
+        envelope.(TransactionAuth.Envelope.signing_payload) =
+          4 :: EthereumRlp.encode (EthereumRlp.Item.List (List.firstn 10 set_code_fields))
+    | None => False
+    end.
+  Proof. vm_compute. split; reflexivity. Qed.
+
+  Lemma authorization_nonce_overflow_rejected :
+    TransactionAuth.authorization (authorization_fields (2 ^ 64) 0) = None.
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma authorization_parity_overflow_rejected :
+    TransactionAuth.authorization (authorization_fields 0 256) = None.
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma set_code_not_enabled_before_prague :
+    TransactionAuth.authenticate_for_spec SpecId.CANCUN 1 None
+      (4 :: EthereumRlp.encode (EthereumRlp.Item.List set_code_fields)) =
+      TransactionAuth.Result.Rejected (TransactionAuth.Error.TransactionTypeNotSupported 4).
   Proof. vm_compute. reflexivity. Qed.
 
 End Test.

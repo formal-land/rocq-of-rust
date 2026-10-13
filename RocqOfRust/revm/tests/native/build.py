@@ -47,7 +47,7 @@ def main():
     parser.add_argument("--rocq-root", type=Path)
     parser.add_argument("--output-dir", type=Path)
     parser.add_argument("--opam-switch")
-    parser.add_argument("--smoke", action="store_true", help="Run sixteen native transaction checks")
+    parser.add_argument("--smoke", action="store_true", help="Run sixteen transaction and three authorization checks")
     parser.add_argument("--bridge", action="store_true", help="Build the full-state JSONL bridge")
     parser.add_argument("--numeric-backend", choices=["inductive", "zarith"],
                         default="inductive", help="Optional Zarith extraction; requires differential validation")
@@ -59,8 +59,11 @@ def main():
         "revm/revm_handler/simulate/legacy_call.vo",
         "revm/revm_handler/simulate/eest_transaction.vo",
         "revm/revm_handler/simulate/transaction_auth.vo",
+        "revm/revm_handler/simulate/transaction_validation.vo",
         "revm/revm_handler/simulate/ethereum_commitment.vo",
     ]
+    if args.smoke:
+        dependencies.append("alloy_eip7702/tests/auth_list.vo")
     prefix = ["opam", "exec", f"--switch={args.opam_switch}", "--"] if args.opam_switch else []
     output.mkdir(parents=True, exist_ok=True)
     run(prefix+["make", "-C", str(root), "-j1", *dependencies], output,
@@ -70,16 +73,17 @@ def main():
         "-I", str(root/"plugin"), "-R", str(root), "RocqOfRust",
         "-Q", str(output), "", "-impredicative-set",
     ]
-    modules = MODULES + (["NativeTransactionSmoke"] if args.smoke else [])
+    modules = MODULES + (["NativeTransactionSmoke", "NativeAuthorizationSmoke"] if args.smoke else [])
     for module in modules:
         run(prefix+["coqc"]+flags+[str(output/f"{module}.v")], output, f"{module}.log")
     check_extraction(output)
     numeric_objects = []
-    if args.numeric_backend == "zarith":
+    if args.numeric_backend == "zarith" or args.smoke:
         shutil.copyfile(sources/"native_numeric_shifts.ml", output/"native_numeric_shifts.ml")
         run(prefix+["ocamlfind", "ocamlopt", "-package", "zarith", "-c", "native_numeric_shifts.ml"],
             output, "numeric_shifts_build.log")
-        numeric_objects = ["native_numeric_shifts.cmx"]
+        if args.numeric_backend == "zarith":
+            numeric_objects = ["native_numeric_shifts.cmx"]
     run(prefix+["ocamlfind", "ocamlopt", "-package", "zarith", "-w", "-a", "-c", "native_transactions.mli", "native_transactions.ml"],
         output, "native_library.log")
     if args.smoke:
@@ -87,6 +91,11 @@ def main():
                     "native_transaction_smoke.mli", "native_transaction_smoke.ml", "native_transaction_main.ml"],
             output, "native_smoke_build.log")
         run([str(output/"native_transaction_smokes")], output, "native_smoke_run.log")
+        run(prefix+["ocamlfind", "ocamlopt", "-package", "zarith", "-linkpkg", "-w", "-a",
+                    "-o", "native_authorization_smokes", "native_numeric_shifts.cmx",
+                    "native_authorization_smoke.mli", "native_authorization_smoke.ml",
+                    "native_authorization_main.ml"], output, "native_authorization_build.log")
+        run([str(output/"native_authorization_smokes")], output, "native_authorization_run.log")
     if args.bridge:
         shutil.copyfile(sources/"native_transaction_bridge.ml", output/"native_transaction_bridge.ml")
         shutil.copyfile(sources/f"native_numeric_{args.numeric_backend}.ml", output/"native_numeric.ml")

@@ -18,12 +18,17 @@ for fork in "${fixture_forks[@]}"; do
 done
 
 targets=(
+  alloy_eip7702/tests/auth_list.vo
   revm/revm_precompile/tests/blake2.vo
   revm/revm_precompile/tests/bn254.vo
   revm/revm_precompile/tests/bn254_pairing.vo
   revm/revm_precompile/tests/bn254_pairing_run.vo
   revm/revm_precompile/tests/kzg_point_evaluation.vo
   revm/revm_precompile/tests/secp256k1.vo
+  revm/revm_handler/tests/pre_execution.vo
+  revm/revm_handler/tests/handler.vo
+  revm/revm_handler/tests/authorization_call.vo
+  revm/revm_interpreter/tests/delegated_calls.vo
   revm/revm_handler/tests/legacy_call.vo
   revm/revm_handler/tests/eest_transaction.vo
   revm/revm_handler/tests/legacy_create.vo

@@ -31,6 +31,7 @@ EXPECTED_REJECTIONS = {
     "TransactionException.INSUFFICIENT_MAX_FEE_PER_GAS": {"GasPriceBelowBaseFee"},
     "TransactionException.GAS_ALLOWANCE_EXCEEDED": {"GasLimitAboveBlock"},
     "TransactionException.PRIORITY_GREATER_THAN_MAX_FEE_PER_GAS": {"PriorityFeeGreaterThanMaxFee"},
+    "TransactionException.TYPE_4_EMPTY_AUTHORIZATION_LIST": {"EmptyAuthorizationList"},
     "TransactionException.TYPE_3_TX_ZERO_BLOBS": {"EmptyBlobs"},
     "TransactionException.TYPE_3_TX_BLOB_COUNT_EXCEEDED": {"TooManyBlobs"},
     "TransactionException.TYPE_3_TX_INVALID_BLOB_VERSIONED_HASH": {"BlobVersionNotSupported"},
@@ -147,7 +148,15 @@ def validate_transaction(transaction: dict):
         for key in entry[1]:
             unsigned(key)
     if transaction["authorization_list"] is not None:
-        raise fixture.FixtureError("native authorization transaction is unsupported")
+        if transaction["tx_type"] != 4 or not isinstance(transaction["authorization_list"], list):
+            raise fixture.FixtureError("native authorization list requires type 4")
+        for entry in transaction["authorization_list"]:
+            exact_fields(entry, {"chain_id", "address", "nonce", "y_parity", "r", "s"})
+            for key, bits in (("chain_id", 256), ("address", 160), ("nonce", 64), ("y_parity", 8), ("r", 256), ("s", 256)):
+                if unsigned(entry[key]) >= 1 << bits:
+                    raise fixture.FixtureError("native authorization integer exceeds Rust width")
+    elif transaction["tx_type"] == 4:
+        raise fixture.FixtureError("native type 4 requires authorization list")
 
 
 def validate_authentication(authentication: dict):
@@ -266,8 +275,18 @@ def decoded_rejection_envelope(case: dict) -> dict | None:
             envelope["chain_id"], envelope["gas_price"], envelope["max_priority_fee"], envelope["value"],
             envelope["max_fee_per_blob_gas"], *envelope["signature"].values()))):
         return None
-    if (case["transaction"].get("authorization_list") is not None
-            or any(case["transaction"].get(key) != value for key, value in envelope.items()
+    if envelope["tx_type"] == 4:
+        if any(envelope[key] >= 1 << 256 for key in (
+                "chain_id", "gas_price", "max_priority_fee", "value")):
+            return None
+        if any(value >= 1 << 256 for value in envelope["signature"].values()):
+            return None
+        for authorization in envelope["authorization_list"]:
+            widths = {"chain_id": 256, "address": 160, "nonce": 64,
+                      "y_parity": 8, "r": 256, "s": 256}
+            if any(not 0 <= authorization[key] < 1 << width for key, width in widths.items()):
+                return None
+    if (any(case["transaction"].get(key) != value for key, value in envelope.items()
                    if key not in {"supported", "signature"})):
         return None
     return envelope
@@ -286,10 +305,15 @@ def validated_authentication_rejection(case: dict, output: dict) -> str | None:
         return None
     alternatives = set((case["expectation"]["exception"] or "").split("|"))
     tx_type, fork = envelope["tx_type"], case["fork"]
+    creation_name = "TransactionException.TYPE_4_TX_CONTRACT_CREATION"
+    if (tx_type == 4 and envelope["target"] is None and creation_name in alternatives
+            and output["reason"] == "MalformedFields" and output["details"] == []):
+        return creation_name
     pre_berlin = {"Frontier", "Homestead", "TangerineWhistle", "SpuriousDragon", "Byzantium",
                   "ConstantinopleFix", "Istanbul"}
     enabled = {0: fixture.SUPPORTED_FORKS, 1: fixture.SUPPORTED_FORKS - pre_berlin,
-               2: fixture.LONDON_FORKS, 3: fixture.BLOB_FORKS}[tx_type]
+               2: fixture.LONDON_FORKS, 3: fixture.BLOB_FORKS,
+               4: {"Prague", "Osaka"}}[tx_type]
     prefork_name = f"TransactionException.TYPE_{tx_type}_TX_PRE_FORK"
     if (output["reason"] == "TransactionTypeNotSupported" and output["details"] == [tx_type]
             and fork not in enabled and prefork_name in alternatives):
@@ -321,6 +345,10 @@ def mapped_rejection_prerequisites(case: dict, output: dict) -> bool:
     """Check the exact fixture inputs for newly mapped nonce and blob-fee errors."""
     reason, details = output["reason"], output["details"]
     tx = case["transaction"]
+    if reason == "EmptyAuthorizationList":
+        return (details == [] and tx["tx_type"] == 4
+                and case["fork"] in {"Prague", "Osaka"}
+                and tx["target"] is not None and tx.get("authorization_list") == [])
     if reason == "NonceOverflow":
         return details == [] and tx["nonce"] == (1 << 64) - 1
     if reason in {"NonceTooHigh", "NonceTooLow"}:

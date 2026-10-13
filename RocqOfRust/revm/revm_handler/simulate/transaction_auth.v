@@ -1,6 +1,10 @@
 From Stdlib Require Import Bool List ZArith.
 
 Require Import alloy_primitives.utils.simulate.keccak256.
+Require Import alloy_eip7702.simulate.auth_list.
+Require Import alloy_primitives.bits.links.address.
+Require Import links.M.
+Require Import ruint.links.lib.
 Require Import revm.revm_handler.simulate.ethereum_rlp.
 Require Import revm.revm_handler.simulate.ethereum_rlp_decode.
 Require Import revm.revm_handler.simulate.transaction_accounting.
@@ -102,17 +106,45 @@ Module TransactionAuth.
     }.
   End Envelope.
 
+  Definition authorization (item : EthereumRlp.Item.t) : option SignedAuthorization.t :=
+    match item with
+    | EthereumRlp.Item.List [chain; address; nonce; parity; r; s] =>
+        match uint chain, fixed_uint 20 address, uint nonce, uint parity, uint r, uint s with
+        | Some chain, Some address, Some nonce, Some parity, Some r, Some s =>
+            if TransactionAccounting.bounded 256 chain &&
+              TransactionAccounting.bounded 64 nonce &&
+              TransactionAccounting.bounded 8 parity &&
+              TransactionAccounting.bounded 256 r && TransactionAccounting.bounded 256 s then
+              Some {| SignedAuthorization.inner := {|
+                Authorization.chain_id := {| Uint.value := chain |};
+                Authorization.address := {| Address.value := address |};
+                Authorization.nonce := {| Integer.value := nonce |} |};
+                SignedAuthorization.y_parity := {| Integer.value := parity |};
+                SignedAuthorization.r := {| Uint.value := r |};
+                SignedAuthorization.s := {| Uint.value := s |} |}
+            else None
+        | _, _, _, _, _, _ => None
+        end
+    | _ => None
+    end.
+
+  Definition authorization_list (item : EthereumRlp.Item.t) : option (list SignedAuthorization.t) :=
+    match item with
+    | EthereumRlp.Item.List entries => sequence (List.map authorization entries)
+    | _ => None
+    end.
+
   Definition field_count (tx_type : Z) : nat :=
     if tx_type =? 0 then 9%nat else
     if tx_type =? 1 then 11%nat else
-    if tx_type =? 2 then 12%nat else 14%nat.
+    if tx_type =? 2 then 12%nat else if tx_type =? 4 then 13%nat else 14%nat.
 
   Definition decode_fields (tx_type : Z) (fields : list EthereumRlp.Item.t) :
       option Envelope.t :=
     if negb (Nat.eqb (List.length fields) (field_count tx_type)) then None else
     let field_at := fun index => List.nth index fields (EthereumRlp.Item.Bytes []) in
     let typed := negb (tx_type =? 0) in
-    let dynamic := (tx_type =? 2) || (tx_type =? 3) in
+    let dynamic := (tx_type =? 2) || (tx_type =? 3) || (tx_type =? 4) in
     let price_index := if tx_type =? 0 then 1%nat else
       if tx_type =? 1 then 2%nat else 3%nat in
     let gas_index := S price_index in
@@ -126,11 +158,12 @@ Module TransactionAuth.
        optional_field typed 0%nat; optional_field (tx_type =? 3) 9%nat]),
       target (field_at (S gas_index)), bytes (field_at (gas_index + 3)%nat),
       access_list (if typed then field_at (gas_index + 4)%nat else EthereumRlp.Item.List []),
-      blob_hashes (if tx_type =? 3 then field_at 10%nat else EthereumRlp.Item.List []) with
+      blob_hashes (if tx_type =? 3 then field_at 10%nat else EthereumRlp.Item.List []),
+      authorization_list (if tx_type =? 4 then field_at 9%nat else EthereumRlp.Item.List []) with
     | Some [nonce; gas; price; priority; value; v; r; s; typed_chain_id; blob_fee],
-        Some target, Some data, Some access_list, Some blob_hashes =>
+        Some target, Some data, Some access_list, Some blob_hashes, Some authorizations =>
         if (2 ^ 64 <=? nonce) || (2 ^ 64 <=? gas) then None else
-        if (tx_type =? 3) &&
+        if ((tx_type =? 3) || (tx_type =? 4)) &&
           (List.existsb (fun value => 2 ^ 256 <=? value)
             [typed_chain_id; price; priority; value; blob_fee; v; r; s] ||
            match target with None => true | Some _ => false end) then None else
@@ -157,6 +190,7 @@ Module TransactionAuth.
           TransactionAccounting.Transaction.blob_hashes := blob_hashes;
           TransactionAccounting.Transaction.value := value;
           TransactionAccounting.Transaction.data := data;
+          TransactionAccounting.Transaction.authorization_list := authorizations;
         |};
         Envelope.v := v;
         Envelope.r := r;
@@ -166,7 +200,7 @@ Module TransactionAuth.
           (if typed then [tx_type] else []) ++
           EthereumRlp.encode (EthereumRlp.Item.List signing_fields);
         |}
-    | _, _, _, _, _ => None
+    | _, _, _, _, _, _ => None
     end.
 
   Module Error.
@@ -201,7 +235,7 @@ Module TransactionAuth.
     | first :: rest =>
         let typed := first <? 128 in
         let tx_type := if typed then first else 0 in
-        if (typed && (tx_type =? 0)) || negb ((tx_type =? 0) || (tx_type =? 1) || (tx_type =? 2) || (tx_type =? 3)) then
+        if (typed && (tx_type =? 0)) || negb ((tx_type =? 0) || (tx_type =? 1) || (tx_type =? 2) || (tx_type =? 3) || (tx_type =? 4)) then
           DecodeResult.Unsupported (Unsupported.TransactionType tx_type) else
         match EthereumRlpDecode.decode (if typed then rest else input) with
         | Some (EthereumRlp.Item.List fields) =>
@@ -244,6 +278,7 @@ Module TransactionAuth.
     TransactionAccounting.Transaction.blob_hashes := tx.(TransactionAccounting.Transaction.blob_hashes);
     TransactionAccounting.Transaction.value := tx.(TransactionAccounting.Transaction.value);
     TransactionAccounting.Transaction.data := tx.(TransactionAccounting.Transaction.data);
+    TransactionAccounting.Transaction.authorization_list := tx.(TransactionAccounting.Transaction.authorization_list);
   |}.
 
   Module Result.

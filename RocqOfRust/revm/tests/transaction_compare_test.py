@@ -325,6 +325,71 @@ def test_other_engine_results_cannot_count_as_revm_execution():
         expect_error(lambda: compare.compare_execution(case(), output), "engine must be rocq_revm")
 
 
+def test_authorization_echo_requires_correct_shape_and_rust_widths():
+    transaction = case()["transaction"]
+    transaction.update(tx_type=4, authorization_list=[{
+        "chain_id": (1 << 256) - 1, "address": (1 << 160) - 1, "nonce": (1 << 64) - 1,
+        "y_parity": 255, "r": (1 << 256) - 1, "s": (1 << 256) - 1}])
+    compare.validate_transaction(transaction)
+    for field in transaction["authorization_list"][0]:
+        changed = copy.deepcopy(transaction)
+        changed["authorization_list"][0][field] += 1
+        expect_error(lambda: compare.validate_transaction(changed), "Rust width")
+    transaction["authorization_list"] = None
+    expect_error(lambda: compare.validate_transaction(transaction), "requires authorization list")
+    transaction.update(tx_type=2, authorization_list=[])
+    expect_error(lambda: compare.validate_transaction(transaction), "requires type 4")
+
+
+def test_empty_authorization_rejection_requires_type_fork_and_empty_list():
+    source, output = rejected_case()
+    source["fork"] = "Osaka"
+    source["transaction"].update(tx_type=4, authorization_list=[])
+    output.update(reason="EmptyAuthorizationList", details=[])
+    assert compare.mapped_rejection_prerequisites(source, output)
+    for key, value in (("tx_type", 2), ("target", None), ("authorization_list", [{}])):
+        bad = copy.deepcopy(source)
+        bad["transaction"][key] = value
+        assert not compare.mapped_rejection_prerequisites(bad, output)
+    source["fork"] = "Cancun"
+    assert not compare.mapped_rejection_prerequisites(source, output)
+    source["fork"] = "Osaka"
+    output["details"] = [0]
+    assert not compare.mapped_rejection_prerequisites(source, output)
+
+
+def test_type4_creation_rejection_requires_exact_decoded_envelope():
+    from transaction_fixture_test import rlp
+    source = case()
+    source["fork"] = "Osaka"
+    fields = [1, 0, 1, 10, 50000, b"", 0, b"", [], [], 0, 1, 1]
+    raw = b"\x04" + rlp(fields)
+    envelope = fixture.signed_envelope(raw)
+    source["transaction"].update({key: value for key, value in envelope.items()
+                                  if key not in {"supported", "signature"}})
+    name = "TransactionException.TYPE_4_TX_CONTRACT_CREATION"
+    source["expectation"].update(txbytes=list(raw), exception=name)
+    output = other_result("AuthenticationRejected", reason="MalformedFields", details=[])
+    assert compare.validated_authentication_rejection(source, output) == name
+    for reason in ("InvalidRlp", "InvalidSignature", "EmptyAuthorizationList"):
+        bad = copy.deepcopy(output)
+        bad["reason"] = reason
+        assert compare.validated_authentication_rejection(source, bad) is None
+    bad = copy.deepcopy(source)
+    bad["transaction"]["nonce"] += 1
+    assert compare.validated_authentication_rejection(bad, output) is None
+    for target in (b"\x00" * 20, b"\x00"):
+        fields[5] = target
+        bad = copy.deepcopy(source)
+        bad["expectation"]["txbytes"] = list(b"\x04" + rlp(fields))
+        assert compare.validated_authentication_rejection(bad, output) is None
+    fields[5] = b""
+    fields[4] = 1 << 64
+    bad = copy.deepcopy(source)
+    bad["expectation"]["txbytes"] = list(b"\x04" + rlp(fields))
+    assert compare.validated_authentication_rejection(bad, output) is None
+
+
 TESTS = tuple(value for name, value in tuple(globals().items()) if name.startswith("test_"))
 
 if __name__ == "__main__":

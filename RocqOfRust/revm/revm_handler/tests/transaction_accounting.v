@@ -2,6 +2,11 @@ From Stdlib Require Import List ZArith.
 
 Require Import revm.revm_handler.simulate.transaction_accounting.
 Require Import revm.revm_primitives.links.hardfork.
+Require Import alloy_eip7702.simulate.auth_list.
+Require Import alloy_primitives.bits.links.address.
+Require Import ruint.links.lib.
+Require Import links.M.
+Require Import simulate.RocqOfRust.
 
 Import ListNotations.
 Import TransactionAccounting.
@@ -18,6 +23,7 @@ Module Test.
     Transaction.gas_limit := limit;
     Transaction.gas_price := price;
     Transaction.max_priority_fee := None;
+    Transaction.authorization_list := [];
     Transaction.access_list := [];
     Transaction.max_fee_per_blob_gas := 0;
     Transaction.blob_hashes := [];
@@ -85,9 +91,9 @@ Module Test.
     Result.Unsupported (UnsupportedReason.Fork SpecId.AMSTERDAM).
   Proof. reflexivity. Qed.
 
-  Lemma unsupported_transaction_type_is_explicit :
+  Lemma authorization_transaction_rejected_before_prague :
     prepare SpecId.CANCUN (transaction 4 (Some 42) 50000 10 0 []) block =
-    Result.Unsupported (UnsupportedReason.TransactionType 4).
+    Result.Rejected GasError.Eip7702NotSupported.
   Proof. vm_compute. reflexivity. Qed.
 
   Lemma creation_intrinsic_includes_create_stipend :
@@ -207,6 +213,7 @@ Module Test.
     Transaction.gas_limit := limit;
     Transaction.gas_price := max_fee;
     Transaction.max_priority_fee := priority;
+    Transaction.authorization_list := [];
     Transaction.access_list := entries;
     Transaction.max_fee_per_blob_gas := 0;
     Transaction.blob_hashes := [];
@@ -318,9 +325,9 @@ Module Test.
     Result.Malformed MalformedReason.TransactionFields.
   Proof. vm_compute. reflexivity. Qed.
 
-  Lemma authorization_transaction_remains_explicitly_unsupported :
+  Lemma empty_authorization_transaction_is_rejected :
     prepare SpecId.PRAGUE (transaction 4 (Some 42) 50000 10 0 []) block =
-    Result.Unsupported (UnsupportedReason.TransactionType 4).
+    Result.Rejected GasError.EmptyAuthorizationList.
   Proof. vm_compute. reflexivity. Qed.
 
   Lemma creation_initcode_word_cost_rounds_up :
@@ -352,6 +359,7 @@ Module Test.
     Transaction.gas_limit := limit;
     Transaction.gas_price := max_fee;
     Transaction.max_priority_fee := priority;
+    Transaction.authorization_list := [];
     Transaction.access_list := [];
     Transaction.max_fee_per_blob_gas := max_blob_fee;
     Transaction.blob_hashes := hashes;
@@ -613,5 +621,80 @@ Module Test.
     observation (settle SpecId.BERLIN (tx 50000 10 0 []) block
       (frame FrameStatus.Revert 20000 20000)) =
     Some (20000, 0, 30000, 200000, 300000, 0).
+  Proof. vm_compute. reflexivity. Qed.
+
+  Definition authorization : SignedAuthorization.t := {|
+    SignedAuthorization.inner := {|
+      Authorization.chain_id := {| Uint.value := 1 |};
+      Authorization.address := {| Address.value := 43 |};
+      Authorization.nonce := {| Integer.value := 0 |} |};
+    SignedAuthorization.y_parity := {| Integer.value := 0 |};
+    SignedAuthorization.r := {| Uint.value := 1 |};
+    SignedAuthorization.s := {| Uint.value := 1 |}
+  |}.
+
+  Definition authorization_transaction :=
+    (transaction 4 (Some 42) 100000 10 0 [])
+      <| Transaction.authorization_list := [authorization] |>.
+
+  Lemma authorization_intrinsic_charged_in_osaka :
+    prepare SpecId.OSAKA authorization_transaction block =
+    Result.Ready {| InitialGas.intrinsic := 46000; InitialGas.floor := 21000;
+      InitialGas.execution := 54000; InitialGas.upfront_fee := 1000000 |}.
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma duplicate_authorizations_each_pay_intrinsic_gas :
+    prepare SpecId.OSAKA (authorization_transaction
+      <| Transaction.authorization_list := [authorization; authorization] |>) block =
+    Result.Ready {| InitialGas.intrinsic := 71000; InitialGas.floor := 21000;
+      InitialGas.execution := 29000; InitialGas.upfront_fee := 1000000 |}.
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma authorization_uses_dynamic_fee_price :
+    prepare SpecId.OSAKA (authorization_transaction
+      <| Transaction.max_priority_fee := Some 2 |>) block =
+    Result.Ready {| InitialGas.intrinsic := 46000; InitialGas.floor := 21000;
+      InitialGas.execution := 54000; InitialGas.upfront_fee := 600000 |}.
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma authorization_fee_validation_precedes_empty_list :
+    prepare SpecId.OSAKA ((transaction 4 (Some 42) 100000 10 0 [])
+      <| Transaction.max_priority_fee := Some 11 |>) block =
+    Result.Rejected GasError.PriorityFeeGreaterThanMaxFee.
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma authorization_create_rejected :
+    prepare SpecId.OSAKA
+      (authorization_transaction <| Transaction.target := None |>) block =
+    Result.Rejected GasError.AuthorizationCreate.
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma authorization_nonce_width_checked :
+    transaction_fields_valid (authorization_transaction
+      <| Transaction.authorization_list :=
+        [authorization <| SignedAuthorization.inner :=
+          authorization.(SignedAuthorization.inner)
+            <| Authorization.nonce := {| Integer.value := 2 ^ 64 |} |> |>] |>) = false.
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma authorization_refund_survives_revert_and_discards_frame_refund :
+    observation (settle_with_authorization_refund {| Integer.value := 12500 |}
+      SpecId.OSAKA authorization_transaction block
+      (frame FrameStatus.Revert 40000 20000)) =
+    Some (40000, 12000, 48000, 520000, 288000, 192000).
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma authorization_refund_survives_halt :
+    observation (settle_with_authorization_refund {| Integer.value := 12500 |}
+      SpecId.OSAKA authorization_transaction block
+      (frame FrameStatus.Halt 40000 20000)) =
+    Some (0, 12500, 87500, 125000, 525000, 350000).
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma authorization_refund_addition_wraps_at_rust_width :
+    observation (settle_with_authorization_refund {| Integer.value := 2 ^ 64 - 1 |}
+      SpecId.OSAKA authorization_transaction block
+      (frame FrameStatus.Success 40000 2)) =
+    Some (40000, 1, 59999, 400010, 359994, 239996).
   Proof. vm_compute. reflexivity. Qed.
 End Test.

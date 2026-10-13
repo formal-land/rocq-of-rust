@@ -1,6 +1,11 @@
 From Stdlib Require Import Bool List ZArith.
 
 Require Import revm.revm_primitives.links.hardfork.
+Require Import alloy_eip7702.simulate.auth_list.
+Require Import lib.simulate.lib.
+Require Import links.M.
+Require Import ruint.links.lib.
+Require Import alloy_primitives.bits.links.address.
 
 Import ListNotations.
 Open Scope Z_scope.
@@ -20,6 +25,7 @@ Module TransactionAccounting.
       gas_price : Z;
       max_priority_fee : option Z;
       access_list : list (Z * list Z);
+      authorization_list : list SignedAuthorization.t;
       max_fee_per_blob_gas : Z;
       blob_hashes : list Z;
       value : Z;
@@ -56,6 +62,9 @@ Module TransactionAccounting.
     | GasPriceBelowBaseFee
     | Eip2930NotSupported
     | Eip1559NotSupported
+    | Eip7702NotSupported
+    | EmptyAuthorizationList
+    | AuthorizationCreate
     | Eip4844NotSupported
     | PriorityFeeGreaterThanMaxFee
     | CreateInitCodeSizeLimit
@@ -119,6 +128,15 @@ Module TransactionAccounting.
   Definition bounded (bits value : Z) : bool :=
     (0 <=? value) && (value <? 2 ^ bits).
 
+  Definition authorization_fields_valid (authorization : SignedAuthorization.t) : bool :=
+    let inner := authorization.(SignedAuthorization.inner) in
+    bounded 256 inner.(Authorization.chain_id).(Uint.value) &&
+    bounded 160 inner.(Authorization.address).(Address.value) &&
+    bounded 64 inner.(Authorization.nonce).(Integer.value) &&
+    bounded 8 authorization.(SignedAuthorization.y_parity).(Integer.value) &&
+    bounded 256 authorization.(SignedAuthorization.r).(Uint.value) &&
+    bounded 256 authorization.(SignedAuthorization.s).(Uint.value).
+
   Definition transaction_fields_valid (tx : Transaction.t) : bool :=
     bounded 8 tx.(Transaction.tx_type) &&
     bounded 160 tx.(Transaction.caller) &&
@@ -139,6 +157,7 @@ Module TransactionAccounting.
      end) &&
     List.forallb (fun entry => bounded 160 (fst entry) &&
       List.forallb (bounded 256) (snd entry)) tx.(Transaction.access_list) &&
+    List.forallb authorization_fields_valid tx.(Transaction.authorization_list) &&
     bounded 128 tx.(Transaction.max_fee_per_blob_gas) &&
     List.forallb (bounded 256) tx.(Transaction.blob_hashes) &&
     bounded 256 tx.(Transaction.value) &&
@@ -168,7 +187,8 @@ Module TransactionAccounting.
     if tx_type =? 0 then true else
     if tx_type =? 1 then fork_enabled spec SpecId.BERLIN else
     if tx_type =? 2 then fork_enabled spec SpecId.LONDON else
-    if tx_type =? 3 then fork_enabled spec SpecId.CANCUN else false.
+    if tx_type =? 3 then fork_enabled spec SpecId.CANCUN else
+    if tx_type =? 4 then fork_enabled spec SpecId.PRAGUE else false.
 
   Definition calldata_tokens (spec : SpecId.t) (data : list Z) : Z :=
     let nonzero_multiplier := if fork_enabled spec SpecId.ISTANBUL then 4 else 17 in
@@ -205,6 +225,10 @@ Module TransactionAccounting.
       gas + 2400 + 1900 * Z.of_nat (List.length (snd entry)))
       tx.(Transaction.access_list) 0.
 
+  Definition authorization_list_gas (tx : Transaction.t) : Z :=
+    if tx.(Transaction.tx_type) =? 4 then
+      25000 * Z.of_nat (List.length tx.(Transaction.authorization_list)) else 0.
+
   Definition prepare_gas_with_blob_limit (spec : SpecId.t) (tx : Transaction.t)
       (block : Block.t) (max_blobs : option Z) :
       Result.t InitialGas.t :=
@@ -219,7 +243,7 @@ Module TransactionAccounting.
         Result.Malformed MalformedReason.ConfigurationFields
       else if negb ((tx.(Transaction.tx_type) =? 0) ||
         (tx.(Transaction.tx_type) =? 1) || (tx.(Transaction.tx_type) =? 2) ||
-        (tx.(Transaction.tx_type) =? 3)) then
+        (tx.(Transaction.tx_type) =? 3) || (tx.(Transaction.tx_type) =? 4)) then
         Result.Unsupported (UnsupportedReason.TransactionType tx.(Transaction.tx_type))
       else
         if fork_enabled spec SpecId.OSAKA &&
@@ -234,19 +258,28 @@ Module TransactionAccounting.
         else if (tx.(Transaction.tx_type) =? 3) &&
           negb (transaction_type_enabled spec tx.(Transaction.tx_type)) then
           Result.Rejected GasError.Eip4844NotSupported
-        else if ((tx.(Transaction.tx_type) =? 2) || (tx.(Transaction.tx_type) =? 3)) &&
+        else if (tx.(Transaction.tx_type) =? 4) &&
+          negb (transaction_type_enabled spec tx.(Transaction.tx_type)) then
+          Result.Rejected GasError.Eip7702NotSupported
+        else if ((tx.(Transaction.tx_type) =? 2) || (tx.(Transaction.tx_type) =? 3) || (tx.(Transaction.tx_type) =? 4)) &&
           (match tx.(Transaction.max_priority_fee) with
            | Some priority => tx.(Transaction.gas_price) <? priority
            | None => false
            end) then
           Result.Rejected GasError.PriorityFeeGreaterThanMaxFee
-        else if (if (tx.(Transaction.tx_type) =? 2) || (tx.(Transaction.tx_type) =? 3) then
+        else if (if (tx.(Transaction.tx_type) =? 2) || (tx.(Transaction.tx_type) =? 3) || (tx.(Transaction.tx_type) =? 4) then
           Z.min tx.(Transaction.gas_price)
             (Z.min (2 ^ 128 - 1) (block.(Block.base_fee) +
               match tx.(Transaction.max_priority_fee) with
               | Some priority => priority | None => 0 end))
           else tx.(Transaction.gas_price)) <? block.(Block.base_fee) then
           Result.Rejected GasError.GasPriceBelowBaseFee
+        else if (tx.(Transaction.tx_type) =? 4) &&
+          Nat.eqb (List.length tx.(Transaction.authorization_list)) 0 then
+          Result.Rejected GasError.EmptyAuthorizationList
+        else if (tx.(Transaction.tx_type) =? 4) &&
+          (match tx.(Transaction.target) with None => true | Some _ => false end) then
+          Result.Rejected GasError.AuthorizationCreate
         else if (tx.(Transaction.tx_type) =? 3) &&
           (tx.(Transaction.max_fee_per_blob_gas) <? block.(Block.blob_base_fee)) then
           Result.Rejected (GasError.BlobGasPriceGreaterThanMax
@@ -281,7 +314,8 @@ Module TransactionAccounting.
                 else 0)
             | Some _ => 0
             end in
-          let intrinsic := 21000 + 4 * tokens + access_list_gas tx + creation in
+          let intrinsic := 21000 + 4 * tokens + access_list_gas tx + creation +
+            authorization_list_gas tx in
           let floor := if fork_enabled spec SpecId.PRAGUE then
             21000 + 10 * tokens else 0 in
           if negb (bounded 64 tokens && bounded 64 intrinsic && bounded 64 floor) then
@@ -330,7 +364,7 @@ Module TransactionAccounting.
   (** The input frame gas is supplied by an execution layer. The signed refund
       cast matches Gas::set_final_refund, including its u64 cast; refund capping
       precedes the Prague/Osaka floor. No account balances are changed here. *)
-  Definition settle (spec : SpecId.t) (tx : Transaction.t) (block : Block.t)
+  Definition settle_with_authorization_refund (authorization_refund : u64) (spec : SpecId.t) (tx : Transaction.t) (block : Block.t)
       (frame : FrameGas.t) : Result.t Settlement.t :=
     match prepare spec tx block with
     | Result.Unsupported reason => Result.Unsupported reason
@@ -349,6 +383,11 @@ Module TransactionAccounting.
           | FrameStatus.Success => frame.(FrameGas.refunded)
           | _ => 0
           end in
+        (* Rust casts the authorization refund to i64, adds it after clearing
+           a failed frame's refund, then casts the final counter to u64. *)
+        let raw_refund := (BinOp.Wrap.add
+          ({| Integer.value := raw_refund mod 2 ^ 64 |} : u64)
+          authorization_refund).(Integer.value) in
         let refund_quotient := if fork_enabled spec SpecId.LONDON then 5 else 2 in
         let refunded := Z.min (raw_refund mod 2 ^ 64) (spent / refund_quotient) in
         let '(remaining, refunded) :=
@@ -370,4 +409,8 @@ Module TransactionAccounting.
           Settlement.blob_fee_burn := blob_fee tx block.(Block.blob_base_fee);
         |}
     end.
+
+  Definition settle (spec : SpecId.t) (tx : Transaction.t) (block : Block.t)
+      (frame : FrameGas.t) : Result.t Settlement.t :=
+    settle_with_authorization_refund {| Integer.value := 0 |} spec tx block frame.
 End TransactionAccounting.

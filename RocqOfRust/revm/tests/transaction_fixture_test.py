@@ -240,13 +240,15 @@ def test_blobs_authorizations_and_unknown_semantics_are_explicit():
     assert "transaction_type:3" not in case["unsupported"]
     assert case["transaction"]["blob_hashes"] == []
     assert case["transaction"]["max_fee_per_blob_gas"] == 2
-    raw["authorizationList"] = [{"chainId": "0x00", "nonce": "0x01"}]
+    raw["authorizationList"] = [{"chainId": "0x00", "nonce": "0x01", "address": TARGET,
+                                 "v": "0x00", "r": "0x01", "s": "0x02"}]
     raw["novelSemantics"] = "0xdead"
     case = normalize(document)
-    assert "transaction_type:4" in case["unsupported"]
+    assert "transaction_type:4" not in case["unsupported"]
     assert "transaction_field:novelSemantics" in case["unsupported"]
     assert case["source"]["transaction"]["novelSemantics"] == "0xdead"
-    assert case["transaction"]["authorization_list"] == raw["authorizationList"]
+    assert case["transaction"]["authorization_list"] == [{"chain_id": 0, "nonce": 1,
+        "address": int(TARGET, 16), "y_parity": 0, "r": 1, "s": 2}]
 
 
 def test_wrong_width_lists_duplicate_account_keys_and_storage_keys_fail():
@@ -500,7 +502,40 @@ def test_blob_environment_activates_at_cancun():
         assert case["input"]["excess_blob_gas"] is None
         assert case["input"]["max_blobs_per_tx"] is None
 
+def test_type4_signed_authorizations_are_crosschecked():
+    document = unsigned_fixture()
+    raw = document["add11"]["transaction"]
+    del raw["gasPrice"]
+    raw.update(maxFeePerGas="0x14", maxPriorityFeePerGas="0x03", chainId="0x01",
+               authorizationList=[{"chainId": "0x01", "address": TARGET, "nonce": "0x00",
+                                   "v": "0x01", "r": "0x02", "s": "0x03", "signer": SENDER}])
+    auth = [1, bytes.fromhex(TARGET[2:]), 0, 1, 2, 3]
+    fields = [1, 0, 3, 20, 400000, bytes.fromhex(TARGET[2:]), 100000, b"", [], [auth], 0, 1, 2]
+    document["add11"]["post"]["Cancun"][0]["txbytes"] = "0x" + (b"\x04" + rlp(fields)).hex()
+    parsed = normalize(document)
+    assert parsed["transaction"]["authorization_list"] == [dict(zip(
+        ("chain_id", "address", "nonce", "y_parity", "r", "s"), (1, int(TARGET, 16), 0, 1, 2, 3)))]
+    raw["authorizationList"][0]["nonce"] = "0x01"
+    expect_error(lambda: normalize(document), "authorization_list disagrees")
+
+
+def test_type4_malformed_authorizations_fail_and_invalid_signatures_are_preserved():
+    fields = [1, 0, 3, 20, 400000, bytes.fromhex(TARGET[2:]), 0, b"", [], [], 0, 1, 2]
+    assert adapter.signed_envelope(b"\x04" + rlp(fields))["authorization_list"] == []
+    fields[9] = [[1, bytes.fromhex(TARGET[2:]), (1 << 64) - 1, 2, 0, 0]]
+    assert adapter.signed_envelope(b"\x04" + rlp(fields))["authorization_list"][0]["y_parity"] == 2
+    fields[9][0][1] = b"\x00" * 19
+    expect_error(lambda: adapter.signed_envelope(b"\x04" + rlp(fields)), "20 bytes")
+    fields[9] = [[]]
+    expect_error(lambda: adapter.signed_envelope(b"\x04" + rlp(fields)), "six fields")
+    fields[9] = b""
+    expect_error(lambda: adapter.signed_envelope(b"\x04" + rlp(fields)), "must be a list")
+    expect_error(lambda: adapter.normalize_authorizations([{"chainId": "0x01", "v": "0x00", "yParity": "0x01"}]), "disagree")
+
+
 TESTS = (
+    test_type4_signed_authorizations_are_crosschecked,
+    test_type4_malformed_authorizations_fail_and_invalid_signatures_are_preserved,
     test_all_pinned_forks_reach_native_semantic_gate,
     test_pre_london_does_not_charge_supplied_base_fee,
     test_pre_london_missing_base_fee_is_accepted,
