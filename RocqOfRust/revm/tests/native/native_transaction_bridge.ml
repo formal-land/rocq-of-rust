@@ -72,11 +72,40 @@ let block value =
       previous_randao = option_field value "previous_randao"; hashes = pairs (field value "hashes");
       use_state_test_hashes = boolean (field value "use_state_test_hashes") }
 
+let bounded_field entries name bits =
+    let value = big (field entries name) in
+    if Big.numbits value > bits then fail ("authorization integer exceeds Rust width: " ^ name);
+    Native_numeric.of_big value
+
+let authorization value =
+    let value = fields ["chain_id"; "address"; "nonce"; "y_parity"; "r"; "s"] value in
+    { N.SignedAuthorization.inner =
+        { N.Authorization.chain_id = { N.Uint.value = bounded_field value "chain_id" 256 };
+          address = { N.Address.value = bounded_field value "address" 160 };
+          nonce = { N.Coq_Integer.value = bounded_field value "nonce" 64 } };
+      y_parity = { N.Coq_Integer.value = bounded_field value "y_parity" 8 };
+      r = { N.Uint.value = bounded_field value "r" 256 };
+      s = { N.Uint.value = bounded_field value "s" 256 } }
+
+let json_authorization (value : N.SignedAuthorization.t) = `Assoc
+    ["chain_id", json_z value.inner.chain_id.value;
+     "address", json_z value.inner.address.value;
+     "nonce", json_z value.inner.nonce.value;
+     "y_parity", json_z value.y_parity.value;
+     "r", json_z value.r.value; "s", json_z value.s.value]
+
 let transaction value =
     let value = fields ["tx_type"; "caller"; "target"; "nonce"; "chain_id"; "gas_limit"; "gas_price";
                         "max_priority_fee"; "access_list"; "max_fee_per_blob_gas"; "blob_hashes";
                         "value"; "data"; "authorization_list"] value in
-    if field value "authorization_list" <> `Null then fail "authorization transactions are unsupported";
+    let authorization_list = match field value "authorization_list" with
+    | `Null ->
+        if Big.equal (big (field value "tx_type")) (Big.of_int 4) then fail "type 4 requires authorization list";
+        []
+    | entries ->
+        if not (Big.equal (big (field value "tx_type")) (Big.of_int 4)) then fail "authorization list requires type 4";
+        List.map authorization (array entries)
+    in
     { Accounting.Transaction.tx_type = z_field value "tx_type";
       caller = z_field value "caller"; target = option_field value "target"; nonce = z_field value "nonce";
       chain_id = option_field value "chain_id"; gas_limit = z_field value "gas_limit";
@@ -86,7 +115,7 @@ let transaction value =
           | _ -> fail "invalid access-list entry") (array (field value "access_list"));
       max_fee_per_blob_gas = z_field value "max_fee_per_blob_gas";
       blob_hashes = z_list (field value "blob_hashes"); value = z_field value "value";
-      data = z_list (field value "data") }
+      data = z_list (field value "data"); authorization_list }
 
 let json_option_z = function None -> `Null | Some value -> json_z value
 
@@ -98,7 +127,9 @@ let json_transaction (value : Accounting.Transaction.t) = `Assoc
      "access_list", `List (List.map (fun (address, keys) -> `List [json_z address; json_z_list keys]) value.access_list);
      "max_fee_per_blob_gas", json_z value.max_fee_per_blob_gas;
      "blob_hashes", json_z_list value.blob_hashes; "value", json_z value.value;
-     "data", json_z_list value.data; "authorization_list", `Null]
+     "data", json_z_list value.data; "authorization_list",
+       (if N.Z.eqb value.tx_type (Native_numeric.of_big (Big.of_int 4))
+        then `List (List.map json_authorization value.authorization_list) else `Null)]
 
 let input value =
     let value = fields ["chain_id"; "block"; "excess_blob_gas"; "max_blobs_per_tx"; "accounts"] value in
@@ -164,6 +195,9 @@ let gas_error = function
 | Accounting.GasError.Eip2930NotSupported -> ("Eip2930NotSupported", [])
 | Accounting.GasError.Eip1559NotSupported -> ("Eip1559NotSupported", [])
 | Accounting.GasError.Eip4844NotSupported -> ("Eip4844NotSupported", [])
+| Accounting.GasError.Eip7702NotSupported -> ("Eip7702NotSupported", [])
+| Accounting.GasError.EmptyAuthorizationList -> ("EmptyAuthorizationList", [])
+| Accounting.GasError.AuthorizationCreate -> ("AuthorizationCreate", [])
 | Accounting.GasError.PriorityFeeGreaterThanMaxFee -> ("PriorityFeeGreaterThanMaxFee", [])
 | Accounting.GasError.CreateInitCodeSizeLimit -> ("CreateInitCodeSizeLimit", [])
 | Accounting.GasError.BlobGasPriceGreaterThanMax (left, right) -> ("BlobGasPriceGreaterThanMax", [left; right])

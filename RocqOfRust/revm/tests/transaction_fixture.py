@@ -218,18 +218,43 @@ def rlp_number(value: object, field: str) -> int:
     return int.from_bytes(value, "big")
 
 
+def normalize_authorizations(raw):
+    if raw is None:
+        return None
+    if not isinstance(raw, list):
+        raise FixtureError("transaction.authorizationList must be an array")
+    result = []
+    for entry in raw:
+        entry = object_field(entry, "authorization")
+        if set(entry) - {"chainId", "address", "nonce", "v", "yParity", "r", "s", "signer"}:
+            raise FixtureError("unknown authorization field")
+        parity = hex_int(entry.get("yParity", entry.get("v")), "authorization.yParity")
+        if "yParity" in entry and "v" in entry and parity != hex_int(entry["v"], "authorization.v"):
+            raise FixtureError("authorization parity fields disagree")
+        result.append({
+            "chain_id": hex_int(entry.get("chainId"), "authorization.chainId"),
+            "address": int.from_bytes(hex_bytes(entry.get("address"), "authorization.address", 20), "big"),
+            "nonce": hex_int(entry.get("nonce"), "authorization.nonce"),
+            "y_parity": parity,
+            "r": hex_int(entry.get("r"), "authorization.r"),
+            "s": hex_int(entry.get("s"), "authorization.s"),
+        })
+    return result
+
+
 def signed_envelope(encoded: bytes) -> dict:
     if not encoded:
         raise FixtureError("empty transaction envelope")
     tx_type = encoded[0] if encoded[0] < 128 else 0
-    if tx_type not in (0, 1, 2, 3):
+    if tx_type not in (0, 1, 2, 3, 4):
         return {"tx_type": tx_type, "supported": False}
     fields = decode_rlp(encoded[1:] if tx_type else encoded)
-    expected = {0: 9, 1: 11, 2: 12, 3: 14}[tx_type]
+    expected = {0: 9, 1: 11, 2: 12, 3: 14, 4: 13}[tx_type]
     if not isinstance(fields, list) or len(fields) != expected:
         raise FixtureError(f"type {tx_type} envelope must have {expected} fields")
     max_blob_fee = 0
     blob_hashes = []
+    authorizations = None
     if tx_type == 0:
         nonce, price, gas, target, value, data, parity, r, s = fields
         v = rlp_number(parity, "transaction.v")
@@ -249,6 +274,22 @@ def signed_envelope(encoded: bytes) -> dict:
         elif tx_type == 2:
             _, nonce, priority, price, gas, target, value, data, raw_list, parity, r, s = fields
             priority = rlp_number(priority, "transaction.max_priority_fee")
+        elif tx_type == 4:
+            (_, nonce, priority, price, gas, target, value, data, raw_list,
+             raw_authorizations, parity, r, s) = fields
+            priority = rlp_number(priority, "transaction.max_priority_fee")
+            if not isinstance(raw_authorizations, list):
+                raise FixtureError("RLP authorization list must be a list")
+            authorizations = []
+            for entry in raw_authorizations:
+                if not isinstance(entry, list) or len(entry) != 6:
+                    raise FixtureError("RLP authorization must have six fields")
+                if not isinstance(entry[1], bytes) or len(entry[1]) != 20:
+                    raise FixtureError("RLP authorization address must be 20 bytes")
+                authorizations.append({
+                    key: int.from_bytes(item, "big") if key == "address" else rlp_number(item, "authorization." + key)
+                    for key, item in zip(("chain_id", "address", "nonce", "y_parity", "r", "s"), entry)
+                })
         else:
             (_, nonce, priority, price, gas, target, value, data, raw_list,
              raw_blob_fee, raw_blob_hashes, parity, r, s) = fields
@@ -282,7 +323,7 @@ def signed_envelope(encoded: bytes) -> dict:
         "target": int.from_bytes(target, "big") if target else None,
         "value": rlp_number(value, "transaction.value"), "data": list(data),
         "access_list": entries, "max_fee_per_blob_gas": max_blob_fee,
-        "blob_hashes": blob_hashes,
+        "blob_hashes": blob_hashes, "authorization_list": authorizations,
         "signature": {"v": rlp_number(parity, "transaction.v"),
                       "r": rlp_number(r, "transaction.r"), "s": rlp_number(s, "transaction.s")},
     }
@@ -374,7 +415,7 @@ def normalize_case(document: object, fork: str, post_index: int | None = None,
         if inferred_type != envelope["tx_type"]:
             raise FixtureError("transaction fields disagree with signed envelope type")
         tx_type = envelope["tx_type"]
-    if tx_type not in (0, 1, 2, 3):
+    if tx_type not in (0, 1, 2, 3, 4):
         unsupported.append(f"transaction_type:{tx_type}")
     target_raw = raw_tx.get("to")
     if target_raw in ("", "0x"):
@@ -411,11 +452,11 @@ def normalize_case(document: object, fork: str, post_index: int | None = None,
         "access_list": entries, "value": value, "data": list(data),
         "max_fee_per_blob_gas": optional_int(raw_tx, "maxFeePerBlobGas", "transaction.maxFeePerBlobGas") or 0,
         "blob_hashes": blob_hashes or [],
-        "authorization_list": copy.deepcopy(raw_tx.get("authorizationList")),
+        "authorization_list": normalize_authorizations(raw_tx.get("authorizationList")),
     }
     if envelope is not None and envelope.get("supported"):
         for key in ("tx_type", "nonce", "chain_id", "gas_limit", "gas_price", "max_priority_fee",
-                    "target", "value", "data", "access_list", "max_fee_per_blob_gas", "blob_hashes"):
+                    "target", "value", "data", "access_list", "max_fee_per_blob_gas", "blob_hashes", "authorization_list"):
             if transaction[key] != envelope[key]:
                 raise FixtureError(f"selected transaction.{key} disagrees with signed envelope")
     known_tx_fields = {

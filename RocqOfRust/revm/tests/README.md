@@ -80,8 +80,46 @@ RIPEMD160 and MODEXP use the same precompile implementations as child calls.
 Osaka enforces the 16,777,216 transaction gas cap and retains Prague's calldata
 floor. MODEXP selects Osaka pricing and 1,024-byte operand limits for that fork.
 
-Authorization transactions, delegation and unimplemented precompiles remain
-explicit unsupported results. Exhausted execution and
+EIP-7702 authorization processing uses
+`revm_handler/simulate/pre_execution.v::apply_eip7702_auth_list`, following
+`pre_execution.rs`. It consumes the `AuthorizationTr` type class from the
+matching transaction interface and carries the concrete journal state explicitly.
+`journaled_state/simulate/account.v::delegate` follows the Rust account method.
+Nonce increments use checked `u64` addition; refund counts and multiplication
+use the translated fixed-width operations. Valid Rust scalar inputs and a valid
+host are required. The authorization trait has a signed instance in
+`transaction/simulate/alloy_types.v`, matching Rust. It uses
+`alloy_eip7702/simulate/auth_list.v` for the authorization signing hash and
+authority recovery, including parity and low-s checks. Recovery errors are
+projected to `None`, as consumed by the Rust trait. The signing input fields
+use `U256`, `Address`, `u64` and `u8`; hashing and curve operations reuse the
+existing Rocq definitions. Three pinned Osaka authorization signatures and
+invalid parity/high-s vectors are checked separately. The three successful
+recoveries run in a separate small executable under the native `--smoke` target,
+always using standard Zarith extraction to keep signature checks fast; only the cheap rejection checks are
+proved by computation during Rocq compilation. Fourteen state checks cover skip ordering, warming, existing-account refunds, repeated
+authorities, clearing code and the maximum nonce. Signed type-4 decoding feeds
+these definitions before the transaction call checkpoint, so authorization
+changes survive a reverted call. Intrinsic gas charges every list entry, while
+existing-authority refunds survive revert and halt before the usual cap and
+calldata floor. These definitions do not establish correspondence with the native
+Rust journal or handler.
+
+`revm_handler/simulate/handler.v::first_frame_input` follows the Rust top-level
+one-hop delegation lookup and warming. Nested calls use the existing delegated
+account load and charge its cold/warm gas. Both execute in the original call
+context; delegating to a precompile does not invoke that precompile. Focused
+checks cover these boundaries, delegated senders and skipped authorizations.
+
+The pinned `tests@v20.0.2` Osaka EIP-7702 selection has 747 cases: 683 pass
+with authenticated full-state and commitment comparison; 64 remain incomplete
+because they call the unimplemented BLS12-381 or P256 precompiles. The five Osaka
+CHAINID transaction-type cases and the self-authorization maximum-nonce case
+also pass, for 689 passes out of 753 selected state cases. All 124 pinned raw
+transaction cases pass validation. These counts do not establish full Osaka
+coverage or native REVM correspondence.
+
+Unimplemented precompiles remain explicit unsupported results. Exhausted execution and
 transfer-overflow journal behavior not yet modeled return incomplete. Inputs
 supply normalized account code hashes; their consistency with code is not
 checked by this runner. The historical fixture harness still uses its original
@@ -102,17 +140,19 @@ Normalized execution without authentication cannot establish a full fixture pass
 
 `revm_handler/simulate/transaction_auth.v` supplies standalone executable
 `TransactionAuth.authenticate_for_spec`: canonical RLP decoding for signed types
-0 through 3, legacy and typed signing payloads, fork-dependent signature checks,
+0 through 4, legacy and typed signing payloads, fork-dependent signature checks,
 chain-ID matching, secp256k1 recovery and optional declared-sender matching.
 Frontier allows high-s signatures; Homestead requires low-s. Protected legacy
-signatures activate at Spurious Dragon, and types 1/2/3 activate at
-Berlin/London/Cancun using the accounting module's shared activation predicate.
+signatures activate at Spurious Dragon, and types 1/2/3/4 activate at
+Berlin/London/Cancun/Prague using the accounting module's shared activation predicate.
 The original `authenticate` API preserves Cancun behavior for existing callers;
 the signed JSONL bridge supplies the actual execution fork. Authentication returns
 a normalized transaction with its recovered caller. It rejects blob contract
 creation in the canonical envelope layer while preserving the normalized
-handler's separate semantics. Blob network sidecars and type 4 remain explicit
-unsupported results. No external cryptographic implementation is substituted
+handler's separate semantics. Type-4 contract creation is also rejected by the
+canonical decoder. Authorization fields preserve Rust widths, including u8
+parity and u64 nonce; in-range invalid signatures are skipped during execution.
+Blob network sidecars remain explicitly unsupported. No external cryptographic implementation is substituted
 for the Rocq definitions. The decoder and authentication regression modules
 check actual historical type 0/1/2/3 envelopes, protected legacy parity, invalid
 V/R/S, infinity recovery, malformed RLP and sender mismatches. These computation

@@ -24,6 +24,7 @@ Module Test.
     TransactionAccounting.Transaction.max_priority_fee := None;
     TransactionAccounting.Transaction.access_list := [];
     TransactionAccounting.Transaction.max_fee_per_blob_gas := 0;
+    TransactionAccounting.Transaction.authorization_list := [];
     TransactionAccounting.Transaction.blob_hashes := [];
     TransactionAccounting.Transaction.value := 7;
     TransactionAccounting.Transaction.data := init_code;

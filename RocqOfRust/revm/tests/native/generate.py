@@ -356,6 +356,11 @@ def generate_transactions(root, output):
     keep+=' '+' '.join(new for _,new in items)
     accounting=(root/'revm/revm_handler/simulate/transaction_accounting.v').read_text()
     keep+=' '+' '.join('TransactionAccounting.'+name for name in re.findall(r'^  (?:Definition|Fixpoint) (\w+)',accounting,re.M))
+    # Keep authorization processing shared instead of unfolding its signature
+    # recovery and journal implementation into the transaction specialization.
+    keep += ' pre_execution.apply_eip7702_auth_list handler.first_frame_input'
+    keep += ' Impl_AuthorizationTr_for_SignedAuthorization.methods'
+    keep += ' RocqOfRust.alloy_eip7702.simulate.auth_list.SignedAuthorization.recover_authority RocqOfRust.alloy_eip7702.simulate.auth_list.Authorization.signature_hash'
     keep+=' '+ ' '.join('LegacyCall.'+name for name in re.findall(r'^  (?:Definition|Fixpoint) (\w+)',source,re.M) if name not in ['execute_with_runner','execute','run_with_runner','run'])
     code=imports+'''Definition raw_native_transaction_execute := ltac:(
      let body := eval cbv beta delta [LegacyCall.execute_with_runner]
@@ -545,6 +550,28 @@ def generate_transaction_smoke(root, output):
     (p/'native_transaction_main.ml').write_text(main)
 
 
+def generate_authorization_smoke(output):
+    names = [f"recover_pinned_authority_{i}" for i in range(3)]
+    code = """From Stdlib Require Import Extraction ExtrOcamlBasic.
+Require Import RocqOfRust.alloy_eip7702.tests.auth_list.
+Extraction Language OCaml.
+"""
+    code += 'Extraction "@NATIVE_OUTPUT@/native_authorization_smoke.ml" '
+    code += " ".join("auth_list.Test." + name for name in names) + ".\n"
+    (output / "NativeAuthorizationSmoke.v").write_text(code)
+    main = """let report name passed =
+  if passed then Printf.printf "PASS %s\\n%!" name
+  else (Printf.eprintf "FAIL %s\\n%!" name; exit 1)
+
+let () =
+"""
+    main += ";\n".join(
+        f'  report "{name}" Native_authorization_smoke.Test.{name}'
+        for name in names
+    ) + "\n"
+    (output / "native_authorization_main.ml").write_text(main)
+
+
 def generate(root, output, templates, numeric_backend="inductive"):
     output.mkdir(parents=True, exist_ok=True)
     for source in templates.iterdir():
@@ -557,9 +584,10 @@ def generate(root, output, templates, numeric_backend="inductive"):
     generate_runtime(root, output)
     generate_transactions(root, output)
     generate_transaction_smoke(root, output)
+    generate_authorization_smoke(output)
     for source in output.glob("*.v"):
         code = source.read_text().replace("@NATIVE_OUTPUT@", output.as_posix())
-        if numeric_backend == "zarith":
+        if numeric_backend == "zarith" or source.name == "NativeAuthorizationSmoke.v":
             # Only the extracted representation and arithmetic primitives change.
             # The proved canonical specialization above is left intact.
             code = """From Stdlib Require Import ZArith ExtrOcamlZBigInt.

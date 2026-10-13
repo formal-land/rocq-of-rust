@@ -5,6 +5,9 @@ Require Import alloy_primitives.bytes.simulate.mod.
 Require Import bytes.links.bytes.
 Require Import revm.revm_context_interface.links.cfg.
 Require Import revm.revm_handler.simulate.transaction_accounting.
+Require Import revm.revm_handler.simulate.pre_execution.
+Require Import revm.revm_handler.simulate.handler.
+Require Import revm.revm_context_interface.transaction.simulate.alloy_types.
 Require Import revm.revm_interpreter.interpreter_action.links.call_inputs.
 Require Import revm.revm_interpreter.interpreter_action.links.create_inputs.
 Require Import revm.revm_interpreter.links.gas.
@@ -28,11 +31,11 @@ Require Import simulate.RocqOfRust.
 Import ListNotations.
 Open Scope Z_scope.
 
-(** Ordinary legacy, EIP-2930, EIP-1559 and EIP-4844 transactions on Cancun, Prague and Osaka, including nested
+(** Ordinary legacy, EIP-2930, EIP-1559 EIP-4844 and EIP-7702 transactions on Cancun, Prague and Osaka, including nested
     calls and creation through the concrete frame runner. The caller and block
     context are supplied normalized inputs. Top-level SHA256, RIPEMD160, identity
     and MODEXP use the existing precompile frame implementation. Signature
-    decoding, other precompiles and top-level delegation remain boundaries.
+    decoding and other precompiles remain separate boundaries.
     Code hashes are supplied by the normalized database input; only their numeric
     bounds are checked here. The concrete host/runner has no native journal or
     handler correspondence proof. *)
@@ -229,6 +232,10 @@ Module LegacyCall.
        PrecompileFrame.addresses spec) host in
     let host := if tx.(TransactionAccounting.Transaction.tx_type) =? 0 then host else
       StatefulHost.warm_access_list host tx.(TransactionAccounting.Transaction.access_list) in
+    let '(authorization_refund, host) := pre_execution.apply_eip7702_auth_list
+      {| Integer.value := tx.(TransactionAccounting.Transaction.tx_type) |}
+      {| Integer.value := input.(Input.chain_id) |}
+      tx.(TransactionAccounting.Transaction.authorization_list) host in
     let result := match target with
       | None =>
         let parent := interpreter_with_spec_id
@@ -259,11 +266,11 @@ Module LegacyCall.
           end
         end
       | Some target =>
+        let '(code, host) := handler.first_frame_input target host in
+        let code := if PrecompileFrame.enabled spec target then [] else code in
         let checkpoint := host in
         let '(error, host) := CallFrame.transfer host tx.(TransactionAccounting.Transaction.caller)
           target tx.(TransactionAccounting.Transaction.value) in
-        let code := if PrecompileFrame.enabled spec target then [] else
-          (account_at target host.(StatefulHost.accounts)).(StatefulHost.Account.code) in
         let interpreter := interpreter_with_spec_id
           (make_interpreter_with_bytecode (List.map StatefulHost.rust_byte code)
             {| Stack.value := [] |}) spec in
@@ -316,7 +323,7 @@ Module LegacyCall.
           TransactionAccounting.Block.base_fee := input.(Input.block).(StatefulHost.Environment.Block.base_fee);
           TransactionAccounting.Block.blob_base_fee := input.(Input.block).(StatefulHost.Environment.Block.blob_base_fee);
         |} in
-        match TransactionAccounting.settle spec tx block {|
+        match TransactionAccounting.settle_with_authorization_refund authorization_refund spec tx block {|
           TransactionAccounting.FrameGas.status := status;
           TransactionAccounting.FrameGas.remaining := output.(InterpreterResult.gas).(Gas.remaining).(Integer.value);
           TransactionAccounting.FrameGas.refunded := output.(InterpreterResult.gas).(Gas.refunded).(Integer.value);
@@ -374,7 +381,8 @@ Module LegacyCall.
         if (match tx.(TransactionAccounting.Transaction.chain_id) with
           | None => (tx.(TransactionAccounting.Transaction.tx_type) =? 1) ||
               (tx.(TransactionAccounting.Transaction.tx_type) =? 2) ||
-              (tx.(TransactionAccounting.Transaction.tx_type) =? 3)
+              (tx.(TransactionAccounting.Transaction.tx_type) =? 3) ||
+              (tx.(TransactionAccounting.Transaction.tx_type) =? 4)
           | Some _ => false
           end) then Result.Rejected Rejection.MissingChainId else
         if match tx.(TransactionAccounting.Transaction.chain_id) with
@@ -392,9 +400,8 @@ Module LegacyCall.
         | TransactionAccounting.Result.Rejected reason => Result.Rejected (Rejection.Gas reason)
         | TransactionAccounting.Result.Ready initial =>
             let sender := account_at tx.(TransactionAccounting.Transaction.caller) input.(Input.accounts) in
-            if is_delegation sender.(StatefulHost.Account.code) then
-              Result.Unsupported Gap.Delegation
-            else if negb (Nat.eqb (List.length sender.(StatefulHost.Account.code)) 0) then
+            if negb (Nat.eqb (List.length sender.(StatefulHost.Account.code)) 0) &&
+              negb (is_delegation sender.(StatefulHost.Account.code)) then
               Result.Rejected Rejection.RejectCallerWithCode
             else if tx.(TransactionAccounting.Transaction.nonce) <? sender.(StatefulHost.Account.nonce) then
               Result.Rejected Rejection.NonceTooLow
@@ -408,12 +415,9 @@ Module LegacyCall.
             else match tx.(TransactionAccounting.Transaction.target) with
             | None => execute_with_runner run_frame fuel spec tx input None initial
             | Some target =>
-              let code := (account_at target input.(Input.accounts)).(StatefulHost.Account.code) in
               if PrecompileFrame.is_precompile spec target &&
                 negb (PrecompileFrame.supported target) then
                 Result.Unsupported Gap.TopLevelPrecompile
-              else if negb (PrecompileFrame.enabled spec target) && is_delegation code
-              then Result.Unsupported Gap.Delegation
               else execute_with_runner run_frame fuel spec tx input (Some target) initial
           end
         end
