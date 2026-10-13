@@ -28,7 +28,8 @@ Module Test.
       <| StatefulHost.accessed_storage := [(45, 1)] |>
       <| StatefulHost.logs := [{| StatefulHost.EvmLog.address := 45;
         StatefulHost.EvmLog.topics := [1]; StatefulHost.EvmLog.data := [2] |}] |>
-      <| StatefulHost.state_changes := [StatefulHost.Change.Storage 45 1 9] |>.
+      <| StatefulHost.state_changes :=
+        StatefulHost.Journal.of_list [StatefulHost.Change.Storage 45 1 9] |>.
 
   Definition should_continue (code : Bytecode.t) : bool :=
     match code.(Bytecode.action) with
@@ -78,6 +79,7 @@ Module Test.
     end.
 
   Definition writes : list Z := [96; 8; 96; 0; 85; 96; 9; 96; 0; 85].
+
   Definition returning (opcode : Z) : list Z :=
     [96; 42; 96; 0; 83; 96; 1; 96; 0; opcode; 254].
 
@@ -164,7 +166,8 @@ Module Test.
       <| StatefulHost.accessed_storage := [(47, 2); (45, 1)] |>
       <| StatefulHost.logs := [] |>
       <| StatefulHost.state_changes :=
-        [StatefulHost.Change.TransientStorage 0 1 10] |>.
+        StatefulHost.Journal.of_list
+          [StatefulHost.Change.TransientStorage 0 1 10] |>.
 
   Definition finish_host (checkpoint after : StatefulHost.t) (commit : bool) :=
     host_of (StatefulFrame.finish checkpoint

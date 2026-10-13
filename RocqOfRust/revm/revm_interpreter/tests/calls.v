@@ -46,6 +46,7 @@ Module Test.
   Definition call := call_to 43.
 
   Definition write_seven : list Z := [96; 7; 96; 0; 85].
+
   Definition store_result : list Z := [96; 0; 85; 0].
 
   Definition run (parent child : list Z) := CallRunner.run 200 (initial parent child).
@@ -201,16 +202,16 @@ Module Test.
       (call_to 44 0 0 0 30000 ++ [96; 0; 96; 0; 253])) = Some [].
   Proof. vm_compute. reflexivity. Qed.
 
-  Lemma unimplemented_child_opcode_is_not_call_failure :
-    run (call 0 0 0 50000 ++ [0]) [64] = None.
+  Lemma undefined_child_opcode_returns_call_failure :
+    stack (run (call 0 0 0 50000 ++ [0]) [12]) = Some [0].
   Proof. vm_compute. reflexivity. Qed.
 
   Lemma child_create_underflow_is_call_failure :
     stack (run (call 0 0 0 50000 ++ [0]) [240]) = Some [0].
   Proof. vm_compute. reflexivity. Qed.
 
-  Lemma precompile_call_is_explicitly_unsupported :
-    run (call_to 1 0 0 0 50000 ++ [0]) [] = None.
+  Lemma pairing_precompile_call_succeeds :
+    stack (run (call_to 8 0 0 0 50000 ++ [0]) []) = Some [1].
   Proof. vm_compute. reflexivity. Qed.
 
   Lemma call_gas_is_capped_from_the_actual_remaining_budget :

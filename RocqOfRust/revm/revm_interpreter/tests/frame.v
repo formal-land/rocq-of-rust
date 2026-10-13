@@ -29,7 +29,8 @@ Module StatefulFrame.
           | InterpreterAction.Return output =>
               if successful output.(InterpreterResult.result) then state
               else state <| @InstructionContext.State.host
-                StatefulHost.t WIRE _ _ WIRE_types _ := checkpoint |>
+                StatefulHost.t WIRE _ _ WIRE_types _ := StatefulHost.rollback checkpoint
+                  (InstructionContext.State.host _ _ _ state) |>
           | InterpreterAction.NewFrame _ => state
           end in
         Some (action, state)
@@ -48,7 +49,8 @@ Module StatefulFrame.
     finish checkpoint (Some (InterpreterAction.Return output, state)) =
     Some (InterpreterAction.Return output,
       state <| @InstructionContext.State.host
-        StatefulHost.t WIRE _ _ WIRE_types _ := checkpoint |>).
+        StatefulHost.t WIRE _ _ WIRE_types _ := StatefulHost.rollback checkpoint
+          (InstructionContext.State.host _ _ _ state) |>).
   Proof. unfold finish. now rewrite H_failed. Qed.
 
   Lemma successful_frame_keeps_host

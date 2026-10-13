@@ -207,15 +207,22 @@ Module Immediates.
   Definition Self : Set := Bytecode.t.
 
   Definition read_i16 (self : Self) : i16 := 0.
+
   Definition read_u16 (self : Self) : u16 := 0.
+
   Definition read_i8 (self : Self) : i8 := 0.
+
   Definition read_u8 (self : Self) : u8 := 0.
+
   Definition read_offset_i16 (self : Self) (offset : isize) : i16 := 0.
+
   Definition read_offset_u16 (self : Self) (offset : isize) : u16 := 0.
+
   Definition read_slice_value (self : Self) (len : usize) : list u8 :=
     Memory.take_pad
       (Z.to_nat i[len])
       (List.skipn (Z.to_nat i[self.(Bytecode.pc)]) self.(Bytecode.code)).
+
   Definition read_slice (len : usize) : RefStub.t Self (list u8) := {|
     RefStub.path := [];
     RefStub.projection := fun self => read_slice_value self len;
@@ -279,16 +286,23 @@ Module Jumps.
 
   Definition relative_jump (self : Self) (offset : isize) : Self :=
     self <| Bytecode.pc := {| Integer.value := i[self.(Bytecode.pc)] + i[offset] |} |>.
+
   Definition absolute_jump (self : Self) (offset : usize) : Self :=
     self <| Bytecode.pc := offset |>.
+
   Definition is_valid_legacy_jump (self : Self) (offset : usize) : bool * Self :=
-    (is_valid_jumpdest_aux
-      (List.length self.(Bytecode.code))
-      O
-      (Z.to_nat i[offset])
-      self.(Bytecode.code),
+    (if (0 <=? i[offset]) &&
+        (i[offset] <? Z.of_nat (List.length self.(Bytecode.code))) then
+       is_valid_jumpdest_aux
+         (List.length self.(Bytecode.code))
+         O
+         (Z.to_nat i[offset])
+         self.(Bytecode.code)
+     else false,
      self).
+
   Definition pc (self : Self) : usize := self.(Bytecode.pc).
+
   Definition opcode (self : Self) : u8 :=
     match
       List.nth_error
@@ -601,8 +615,11 @@ Module RuntimeFlag.
   Definition Self : Set := RuntimeFlags.t.
 
   Definition is_static (self : Self) : bool := self.(RuntimeFlags.is_static).
+
   Definition is_eof (_self : Self) : bool := false.
+
   Definition is_eof_init (_self : Self) : bool := false.
+
   Definition spec_id (self : Self) : SpecId.t := self.(RuntimeFlags.spec_id).
   Arguments spec_id _ /.
 
@@ -617,7 +634,9 @@ Export (hints) RuntimeFlag.
 
 Module MemoryTrait.
   Definition Self : Set := Memory.t.
+
   Definition Synthetic : Set := MemorySlice.t.
+
   Definition Synthetic1 : Set := MemorySlice.t.
 
   Definition set_data (self : Self) (memory_offset data_offset len : usize) (data : list u8) : Self :=

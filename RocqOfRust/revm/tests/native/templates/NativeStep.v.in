@@ -1,0 +1,90 @@
+From Stdlib Require Import List ZArith FunctionalExtensionality.
+Require Import Handlers.
+Require Import RocqOfRust.revm.revm_interpreter.tests.call_runner.
+Require Import RocqOfRust.revm.revm_interpreter.tests.call_frame.
+Require Import RocqOfRust.revm.revm_interpreter.tests.interpreter_types.
+Require Import RocqOfRust.revm.revm_interpreter.tests.stateful_host.
+Require Import RocqOfRust.revm.revm_interpreter.links.interpreter.
+Require Import RocqOfRust.revm.revm_interpreter.links.table.
+Require Import RocqOfRust.revm.revm_interpreter.simulate.dispatch.
+Require Import RocqOfRust.revm.revm_interpreter.simulate.interpreter.
+Require Import RocqOfRust.revm.revm_interpreter.simulate.instruction_context.
+Require Import RocqOfRust.revm.revm_interpreter.simulate.step.
+Require Import RocqOfRust.revm.revm_interpreter.simulate.gas.
+Require Import RocqOfRust.core.links.array.
+Require Import RocqOfRust.simulate.RocqOfRust.
+Import ListNotations.
+Open Scope Z_scope.
+
+Definition gas_schedule : list u64 :=
+ Eval vm_compute in
+ List.map InterpreterStep.instruction_static_gas
+   (ArrayPairs.to_list CallRunner.table.(array.value)).
+
+Lemma gas_schedule_at_eq (opcode : u8) :
+ List.nth_error gas_schedule (Z.to_nat opcode.(Integer.value)) =
+ option_map InterpreterStep.instruction_static_gas
+   (InterpreterStep.instruction_at CallRunner.table opcode).
+Proof.
+ change (List.nth_error
+   (List.map InterpreterStep.instruction_static_gas
+     (ArrayPairs.to_list CallRunner.table.(array.value)))
+   (Z.to_nat opcode.(Integer.value)) =
+   option_map InterpreterStep.instruction_static_gas
+     (InterpreterStep.instruction_at CallRunner.table opcode)).
+ rewrite nth_error_map.
+ unfold InterpreterStep.instruction_at.
+ rewrite InterpreterStep.array_pairs_nth_error_to_list.
+ reflexivity.
+Qed.
+
+Definition raw_native_step (state : CallFrame.state) :
+ InterpreterStep.Result.t StatefulHost.t WIRE WIRE_types :=
+ let interpreter := InstructionContext.State.interpreter _ _ _ state in
+ let host := InstructionContext.State.host _ _ _ state in
+ let opcode := Jumps.opcode interpreter.(Interpreter.bytecode) in
+ let interpreter := interpreter <| @Interpreter.bytecode WIRE _ WIRE_types _ :=
+   Jumps.relative_jump interpreter.(Interpreter.bytecode) (1 : isize) |> in
+ match List.nth_error gas_schedule (Z.to_nat opcode.(Integer.value)) with
+ | None => InterpreterStep.Result.MissingInstruction
+ | Some static_gas =>
+     match Impl_Gas.record_cost interpreter.(Interpreter.gas) static_gas with
+     | None => InterpreterStep.Result.OutOfGas
+         {| InstructionContext.State.interpreter :=
+              halt_oog (IInterpreterTypes := InterpreterTypes.I) interpreter;
+            InstructionContext.State.host := host |}
+     | Some gas => InterpreterStep.Result.Success
+         (native_dispatch opcode
+           {| InstructionContext.State.interpreter :=
+                interpreter <| @Interpreter.gas WIRE _ WIRE_types _ := gas |>;
+              InstructionContext.State.host := host |})
+     end
+ end.
+
+Definition native_step :=
+ Eval cbv beta iota zeta delta - [native_dispatch gas_schedule Jumps.opcode Jumps.relative_jump Impl_Gas.record_cost Z.add Z.sub Z.mul Z.div Z.modulo Z.quot Z.rem Z.pow Z.eqb Z.leb Z.ltb Z.compare Z.to_nat Z.of_nat Z.land Z.lor Z.lxor Z.shiftl Z.shiftr Z.ones Z.log2 Z.abs Z.opp Z.max Z.min Nat.add Nat.sub Nat.mul Nat.div Nat.modulo Nat.leb Nat.ltb Nat.eqb List.nth List.nth_error List.map List.length List.app List.firstn List.skipn List.fold_left List.fold_right List.repeat List.existsb List.filter List.seq RocqOfRust.alloy_primitives.utils.simulate.keccak256.Keccak256.hash StatefulHost.find_account StatefulHost.empty_account StatefulHost.warm_account StatefulHost.account_is_warm StatefulHost.account_is_empty StatefulHost.rust_word StatefulHost.rust_address StatefulHost.rust_byte]
+ in raw_native_step.
+
+Lemma native_step_eq (state : CallFrame.state) :
+ native_step state = InterpreterDispatch.step_result_stateful InterpreterTypes.I CallRunner.table state.
+Proof.
+ change (raw_native_step state = InterpreterDispatch.step_result_stateful InterpreterTypes.I CallRunner.table state).
+ unfold raw_native_step.
+ rewrite gas_schedule_at_eq.
+ unfold InterpreterDispatch.step_result_stateful, InterpreterStep.step_result,
+   InterpreterStep.prepare.
+ destruct state as [interpreter host].
+ cbn -[CallRunner.table InterpreterStep.instruction_at native_dispatch
+   Impl_Gas.record_cost halt_oog InterpreterDispatch.stateful].
+ destruct (InterpreterStep.instruction_at CallRunner.table
+   (Jumps.opcode interpreter.(Interpreter.bytecode))) as [instruction|].
+ 2: reflexivity.
+ cbn -[Impl_Gas.record_cost halt_oog native_dispatch InterpreterDispatch.stateful].
+ destruct (Impl_Gas.record_cost _ _) as [gas|].
+ 2: reflexivity.
+ f_equal. apply native_dispatch_eq.
+Qed.
+
+Lemma native_step_fn_eq : native_step =
+ InterpreterDispatch.step_result_stateful InterpreterTypes.I CallRunner.table.
+Proof. apply functional_extensionality. apply native_step_eq. Qed.

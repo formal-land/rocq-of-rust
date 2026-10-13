@@ -18,6 +18,8 @@ Require Import revm.revm_interpreter.tests.interpreter.
 Require Import revm.revm_interpreter.tests.interpreter_types.
 Require Import revm.revm_interpreter.interpreter.links.runtime_flags.
 Require Import revm.revm_interpreter.tests.stateful_host.
+Require Import revm.revm_primitives.links.hardfork.
+Require Import revm.revm_primitives.simulate.hardfork.
 Require Import ruint.links.lib.
 Require Import simulate.RocqOfRust.
 
@@ -26,6 +28,7 @@ Open Scope Z_scope.
 
 Module CallFrame.
   Definition state : Set := InstructionContext.State.t StatefulHost.t WIRE WIRE_types.
+
   Definition machine : Set := Interpreter.t WIRE WIRE_types.
 
   Definition gas_returned (result : InstructionResult.t) : bool :=
@@ -105,23 +108,37 @@ Module CallFrame.
     | None => 0
     end.
 
+  (** Match transfer_loaded's touch order. Same-address transfers never touch;
+      distinct zero-value transfers touch only the destination. Error callers
+      must roll back this returned host, preserving the address-3 exception. *)
   Definition transfer (host : StatefulHost.t) (from to value : Z) :
       option InstructionResult.t * StatefulHost.t :=
     let source := balance host from in
     let target := balance host to in
-    if source <? value then (Some InstructionResult.OutOfFunds, host)
-    else if (from =? to) || (value =? 0) then (None, host)
-    else if 2 ^ 256 <=? target + value then
-      (Some InstructionResult.OverflowPayment, host)
+    if from =? to then
+      (if source <? value then Some InstructionResult.OutOfFunds else None, host)
+    else if value =? 0 then
+      (* Loaded missing accounts become persistent on a pre-EIP-161 touch. *)
+      let host := if Impl_SpecId.is_enabled_in host.(StatefulHost.spec_id) SpecId.SPURIOUS_DRAGON
+        then host else StatefulHost.with_accounts host
+          (StatefulHost.update_account to (fun account => account) host.(StatefulHost.accounts)) in
+      (None, StatefulHost.touch_account host to)
     else
-      let accounts := StatefulHost.update_account from
-        (fun account => StatefulHost.account_with_balance account (source - value))
-        host.(StatefulHost.accounts) in
-      let accounts := StatefulHost.update_account to
-        (fun account => StatefulHost.account_with_balance account (target + value)) accounts in
-      let host := StatefulHost.with_accounts host accounts in
-      let host := StatefulHost.append_change host (StatefulHost.Change.Balance from (source - value)) in
-      (None, StatefulHost.append_change host (StatefulHost.Change.Balance to (target + value))).
+      let host := StatefulHost.touch_account host from in
+      if source <? value then (Some InstructionResult.OutOfFunds, host)
+      else
+        let host := StatefulHost.touch_account host to in
+        if 2 ^ 256 <=? target + value then
+          (Some InstructionResult.OverflowPayment, host)
+        else
+          let accounts := StatefulHost.update_account from
+            (fun account => StatefulHost.account_with_balance account (source - value))
+            host.(StatefulHost.accounts) in
+          let accounts := StatefulHost.update_account to
+            (fun account => StatefulHost.account_with_balance account (target + value)) accounts in
+          let host := StatefulHost.with_accounts host accounts in
+          let host := StatefulHost.append_change host (StatefulHost.Change.Balance from (source - value)) in
+          (None, StatefulHost.append_change host (StatefulHost.Change.Balance to (target + value))).
 
   Module Pending.
     Record t : Set := {

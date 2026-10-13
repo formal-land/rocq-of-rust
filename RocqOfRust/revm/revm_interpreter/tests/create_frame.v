@@ -21,6 +21,8 @@ Require Import revm.revm_interpreter.tests.frame.
 Require Import revm.revm_interpreter.tests.interpreter.
 Require Import revm.revm_interpreter.tests.interpreter_types.
 Require Import revm.revm_interpreter.tests.stateful_host.
+Require Import revm.revm_primitives.links.hardfork.
+Require Import revm.revm_primitives.simulate.hardfork.
 Require Import ruint.links.lib.
 Require Import simulate.RocqOfRust.
 
@@ -61,7 +63,7 @@ Module CreateFrame.
            Input.call_value := inputs.(CreateInputs.value);
            Input.input := CallInput.Bytes Impl_Bytes.new |} |>.
 
-  (** Cancun/Prague creation entry, after instruction-level checks and gas. *)
+  (** Creation entry, after instruction-level checks and gas. *)
   Definition prepare (parent : CallFrame.machine) (host : StatefulHost.t)
       (depth : nat) (inputs : CreateInputs.t) : option preparation :=
     if Nat.ltb 1024 depth then
@@ -76,6 +78,7 @@ Module CreateFrame.
         Some (Immediate (result inputs InstructionResult.OutOfFunds) host)
       else
         let nonce := account.(StatefulHost.Account.nonce) in
+        let host := StatefulHost.touch_account host caller in
         if 2 ^ 64 - 1 <=? nonce then
           Some (Immediate (result inputs InstructionResult.Return) host)
         else
@@ -99,8 +102,12 @@ Module CreateFrame.
                negb (target.(StatefulHost.Account.nonce) =? 0) then
               Some (Immediate (result inputs InstructionResult.CreateCollision) checkpoint)
             else if 2 ^ 256 <=? target.(StatefulHost.Account.balance) + value then
-              Some (Immediate (result inputs InstructionResult.OverflowPayment) checkpoint)
+              Some (Immediate (result inputs InstructionResult.OverflowPayment)
+                (StatefulHost.rollback checkpoint (StatefulHost.touch_account checkpoint address)))
             else
+              let created_nonce := if Impl_SpecId.is_enabled_in
+                host.(StatefulHost.spec_id) SpecId.SPURIOUS_DRAGON then 1 else 0 in
+              let host := StatefulHost.touch_account checkpoint address in
               let accounts := StatefulHost.update_account caller
                 (fun account => StatefulHost.account_with_balance account
                   (account.(StatefulHost.Account.balance) - value)) checkpoint.(StatefulHost.accounts) in
@@ -108,14 +115,14 @@ Module CreateFrame.
                 (fun account =>
                   {| StatefulHost.Account.address := address;
                      StatefulHost.Account.balance := account.(StatefulHost.Account.balance) + value;
-                     StatefulHost.Account.nonce := 1;
+                     StatefulHost.Account.nonce := created_nonce;
                      StatefulHost.Account.code := [];
                      StatefulHost.Account.code_hash := StatefulHost.empty_code_hash;
                      StatefulHost.Account.storage := [];
                      StatefulHost.Account.transient_storage := account.(StatefulHost.Account.transient_storage) |}) accounts in
-              let host := StatefulHost.with_accounts checkpoint accounts in
+              let host := StatefulHost.with_accounts host accounts in
               let host := StatefulHost.append_change host (StatefulHost.Change.Created address) in
-              let host := StatefulHost.append_change host (StatefulHost.Change.Nonce address 1) in
+              let host := StatefulHost.append_change host (StatefulHost.Change.Nonce address created_nonce) in
               let host := StatefulHost.append_change host
                 (StatefulHost.Change.Balance caller (account.(StatefulHost.Account.balance) - value)) in
               let host := StatefulHost.append_change host
@@ -149,19 +156,30 @@ Module CreateFrame.
 
   Definition finish (address : Z) (checkpoint host : StatefulHost.t)
       (output : InterpreterResult.t) : InterpreterResult.t * StatefulHost.t :=
-    if negb (StatefulFrame.successful output.(InterpreterResult.result)) then (output, checkpoint)
+    if negb (StatefulFrame.successful output.(InterpreterResult.result)) then
+      (output, StatefulHost.rollback checkpoint host)
     else
       let code := List.map Integer.value output.(InterpreterResult.output)
         .(alloy_primitives.bytes.links.mod.Bytes.value).(bytes.Bytes.value) in
-      let fail := fun status => (output <| InterpreterResult.result := status |>, checkpoint) in
-      if match code with byte :: _ => byte =? 239 | [] => false end then
+      let fail := fun status =>
+        (output <| InterpreterResult.result := status |>, StatefulHost.rollback checkpoint host) in
+      if Impl_SpecId.is_enabled_in host.(StatefulHost.spec_id) SpecId.LONDON &&
+        (match code with byte :: _ => byte =? 239 | [] => false end) then
         fail InstructionResult.CreateContractStartingWithEF
-      else if Nat.ltb 24576 (List.length code) then
+      else if Impl_SpecId.is_enabled_in host.(StatefulHost.spec_id) SpecId.SPURIOUS_DRAGON &&
+        Nat.ltb 24576 (List.length code) then
         fail InstructionResult.CreateContractSizeLimit
-      else match Impl_Gas.record_cost output.(InterpreterResult.gas)
-        {| Integer.value := 200 * Z.of_nat (List.length code) |} with
+      else
+        let deposit := match Impl_Gas.record_cost output.(InterpreterResult.gas)
+          {| Integer.value := 200 * Z.of_nat (List.length code) |} with
+        | Some gas => Some (output <| InterpreterResult.gas := gas |>, code)
+        | None => if Impl_SpecId.is_enabled_in host.(StatefulHost.spec_id) SpecId.HOMESTEAD
+          then None
+          else Some (output <| InterpreterResult.output := Impl_Bytes.new |>, [])
+        end in
+        match deposit with
       | None => fail InstructionResult.OutOfGas
-      | Some gas =>
+      | Some (output, code) =>
         let hash := List.fold_left (fun value byte => 256 * value + byte)
           (Keccak256.hash code) 0 in
         let accounts := StatefulHost.update_account address
@@ -174,8 +192,7 @@ Module CreateFrame.
                StatefulHost.Account.storage := account.(StatefulHost.Account.storage);
                StatefulHost.Account.transient_storage := account.(StatefulHost.Account.transient_storage) |})
           host.(StatefulHost.accounts) in
-        (output <| InterpreterResult.result := InstructionResult.Return |>
-          <| InterpreterResult.gas := gas |>,
+        (output <| InterpreterResult.result := InstructionResult.Return |>,
          StatefulHost.append_change (StatefulHost.with_accounts host accounts)
            (StatefulHost.Change.Code address code))
       end.

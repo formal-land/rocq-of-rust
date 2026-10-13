@@ -1,0 +1,19 @@
+Definition raw_native_smoke (code : list u8) : option Z :=
+ let interpreter := native_interpreter_with_spec_id
+   (native_make_interpreter_with_bytecode code {| Stack.value := [] |}) SpecId.CANCUN in
+ let host := (StatefulHost.make add11_input) <| StatefulHost.spec_id := SpecId.CANCUN |> in
+ match native_execute_with_finalization true 1000 host []
+   {| InstructionContext.State.interpreter := interpreter;
+      InstructionContext.State.host := host |} with
+ | Some (InterpreterAction.Return output, state) =>
+     match output.(InterpreterResult.result) with
+     | InstructionResult.Stop =>
+         match StatefulHost.find_account 0
+           (InstructionContext.State.host _ _ _ state).(StatefulHost.accounts) with
+         | Some account => Some (StatefulHost.lookup_word 0 account.(StatefulHost.Account.storage))
+         | None => None
+         end
+     | _ => None
+     end
+ | _ => None
+ end.

@@ -595,6 +595,8 @@ Admitted.
 Capture stable conventions and decisions from today so future work can continue with the same style and assumptions.
 
 ## Style And Architecture Conventions
+
+- Leave a blank line between successive definitions, lemmas, records, and modules. Keep a declaration and its proof together.
 - Prefer `Export (hints)` at module end instead of `Global Instance` for exposing instances/hints.
 - Avoid module synonyms like `Module X := ...` unless explicitly requested.
 - Prefer using class-instance projection style with `::` fields where appropriate in links/simulate class records.

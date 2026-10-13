@@ -65,8 +65,8 @@ Module Test.
       (calls.Test.call_to 44 0 0 0 30000 ++ [0])) = Some [1].
   Proof. vm_compute. reflexivity. Qed.
 
-  Lemma static_precompile_remains_unsupported :
-    calls.Test.run (static_call 1 0 ++ [0]) [] = None.
+  Lemma static_pairing_precompile_succeeds :
+    calls.Test.stack (calls.Test.run (static_call 8 0 ++ [0]) []) = Some [1].
   Proof. vm_compute. reflexivity. Qed.
 
   Definition return_success_byte : list Z := [96; 0; 83; 96; 1; 96; 0; 243].
