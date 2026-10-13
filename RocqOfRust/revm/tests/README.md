@@ -84,7 +84,16 @@ EIP-7702 authorization processing uses
 `revm_handler/simulate/pre_execution.v::apply_eip7702_auth_list`, following
 `pre_execution.rs`. It consumes the `AuthorizationTr` type class from the
 matching transaction interface and carries the concrete journal state explicitly.
-`journaled_state/simulate/account.v::delegate` follows the Rust account method.
+`journaled_state/simulate/account.v::delegate` calls the separate `set_code` and
+`bump_nonce` methods in Rust order. Their arguments use `B256`, `Bytecode` and
+`Address`, with explicit journal state passed in and returned.
+The typed `revm_state/simulate/account_info.v` setters follow `account_info.rs`:
+setting a hash clears cached code, while setting code recalculates its hash.
+The journal adapter converts actual fixture accounts to the typed `AccountInfo`
+record before calling those setters and preserves storage and transient storage.
+`revm_bytecode/simulate/bytecode.v::hash_slow` follows the Rust empty-code branch
+and hashes the original byte slice otherwise. This remains an observable-byte
+model, not a model or proof of Rust bytecode analysis.
 Nonce increments use checked `u64` addition; refund counts and multiplication
 use the translated fixed-width operations. Valid Rust scalar inputs and a valid
 host are required. The authorization trait has a signed instance in
