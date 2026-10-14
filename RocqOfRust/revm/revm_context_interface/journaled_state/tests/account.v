@@ -76,6 +76,7 @@ Module Test.
       updated.(AccountInfo.code), updated.(AccountInfo.code_hash)) =
     (value, info.(AccountInfo.balance), info.(AccountInfo.code), info.(AccountInfo.code_hash)).
   Proof. reflexivity. Qed.
+
   Lemma nonce_update_preserves_account_data :
     let account := (StatefulHost.empty_account 42)
       <| StatefulHost.Account.balance := 2 ^ 256 - 1 |>
