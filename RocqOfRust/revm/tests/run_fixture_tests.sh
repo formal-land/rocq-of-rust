@@ -25,6 +25,7 @@ targets=(
   revm/revm_precompile/tests/bn254_pairing_run.vo
   revm/revm_precompile/tests/kzg_point_evaluation.vo
   revm/revm_precompile/tests/secp256k1.vo
+  revm/revm_context_interface/journaled_state/tests/account.vo
   revm/revm_handler/tests/pre_execution.vo
   revm/revm_handler/tests/handler.vo
   revm/revm_handler/tests/authorization_call.vo
