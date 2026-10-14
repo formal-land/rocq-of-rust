@@ -18,6 +18,7 @@ for fork in "${fixture_forks[@]}"; do
 done
 
 targets=(
+  revm/revm_context_interface/tests/transaction_fees.vo
   alloy_eip7702/tests/auth_list.vo
   revm/revm_precompile/tests/blake2.vo
   revm/revm_precompile/tests/bn254.vo

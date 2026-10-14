@@ -407,19 +407,23 @@ Module LegacyCall.
               Result.Rejected Rejection.NonceTooLow
             else if sender.(StatefulHost.Account.nonce) <? tx.(TransactionAccounting.Transaction.nonce) then
               Result.Rejected Rejection.NonceTooHigh
-            else if negb (TransactionAccounting.payment_valid tx initial) then
+            else match TransactionAccounting.maximum_payment tx with
+            | core.links.result.Result.Err _ =>
               Result.Rejected (Rejection.Gas TransactionAccounting.GasError.PaymentOverflow)
-            else if sender.(StatefulHost.Account.balance) <?
-              TransactionAccounting.maximum_payment tx then
-              Result.Rejected Rejection.LackOfFunds
-            else match tx.(TransactionAccounting.Transaction.target) with
-            | None => execute_with_runner run_frame fuel spec tx input None initial
-            | Some target =>
-              if PrecompileFrame.is_precompile spec target &&
-                negb (PrecompileFrame.supported target) then
-                Result.Unsupported Gap.TopLevelPrecompile
-              else execute_with_runner run_frame fuel spec tx input (Some target) initial
-          end
+            | core.links.result.Result.Ok maximum_payment =>
+              if negb (TransactionAccounting.bounded 256 initial.(TransactionAccounting.InitialGas.upfront_fee)) then
+                Result.Rejected (Rejection.Gas TransactionAccounting.GasError.PaymentOverflow)
+              else if sender.(StatefulHost.Account.balance) <? maximum_payment then
+                Result.Rejected Rejection.LackOfFunds
+              else match tx.(TransactionAccounting.Transaction.target) with
+              | None => execute_with_runner run_frame fuel spec tx input None initial
+              | Some target =>
+                if PrecompileFrame.is_precompile spec target &&
+                  negb (PrecompileFrame.supported target) then
+                  Result.Unsupported Gap.TopLevelPrecompile
+                else execute_with_runner run_frame fuel spec tx input (Some target) initial
+              end
+            end
         end
     end.
 
