@@ -257,6 +257,12 @@ Module Impl_Gas.
     s.
   Qed.
 
+  Definition used (self : Self) : u64 :=
+    spent self -is {| Integer.value := i[refunded self] mod 2 ^ 64 |}.
+
+  Definition spent_sub_refunded (self : Self) : u64 :=
+    spent self -is {| Integer.value := i[self.(Gas.refunded)] mod 2 ^ 64 |}.
+
   Definition remaining (self : Self) : u64 :=
     self.(Gas.remaining).
 
@@ -492,7 +498,7 @@ Module Impl_Gas.
 
   Definition set_final_refund (self : Self) (is_london : bool) : Self :=
     let max_refund_quotient := if is_london then 5 else 2 in
-    self <| Gas.refunded := Z.min i[refunded self] i[spent self /i max_refund_quotient] |>.
+    self <| Gas.refunded := Z.min (i[refunded self] mod 2 ^ 64) i[spent self /i max_refund_quotient] |>.
 
   Lemma set_final_refund_eq
       {WIRE : Set} `{Link WIRE}
@@ -566,6 +572,9 @@ Module Impl_Gas.
     with_strategy transparent [Impl_Gas.run_set_refund] cbn.
     s.
   Qed.
+
+  Definition set_spent (self : Self) (spent : u64) : Self :=
+    self <| Gas.remaining := self.(Gas.limit) -is spent |>.
 
   Definition record_cost (self : Self) (cost : u64) : option Self :=
     match Impl_u64.checked_sub self.(Gas.remaining) cost with

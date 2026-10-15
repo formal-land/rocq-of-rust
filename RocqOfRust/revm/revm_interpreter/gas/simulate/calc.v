@@ -744,3 +744,10 @@ Module Test.
   Proof. vm_compute. repeat split; reflexivity. Qed.
 End Test.
 End SelfDestructGas.
+
+Module InitialAndFloorGas.
+  Record t : Set := {
+    initial_gas : u64;
+    floor_gas : u64;
+  }.
+End InitialAndFloorGas.

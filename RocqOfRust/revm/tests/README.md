@@ -80,6 +80,19 @@ correspondence for these defaults. The new result module models only the payment
 errors used here. Other transaction accounting and host fields still use the
 existing fixture representation.
 
+Transaction settlement now uses `revm_handler/simulate/post_execution.v` for
+refund capping, the EIP-7623 floor, caller reimbursement and beneficiary rewards.
+The functions follow `post_execution.rs`, with typed context projections passed
+explicitly and the concrete journal state passed in and out. Reimbursement uses
+saturating `u128` multiplication and a wrapping `U256` additional refund;
+beneficiary rewards retain Rust's bounded `u128` arithmetic. Caller credit
+precedes beneficiary credit, followed by account cleanup. The account adapter
+uses checked balance increases, touches on overflow and zero credit, and records
+balance changes only when the balance changes. Its change log remains a concrete
+observation log, not Rust's undo journal. The in-memory loader cannot fail; this
+is not a native `ContextTr` or `JournalTr` correspondence proof. Output/error
+classification and the other transaction phases remain in the fixture adapter.
+
 The regression build also checks legacy, EIP-2930, EIP-1559 and EIP-4844 transactions on
 Cancun, Prague and Osaka, including top-level and nested calls and creation,
 access-list charges, effective gas prices, maximum-fee affordability, nonce
