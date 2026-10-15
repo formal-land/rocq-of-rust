@@ -18,6 +18,7 @@ for fork in "${fixture_forks[@]}"; do
 done
 
 targets=(
+  revm/revm_interpreter/tests/gas_refunds.vo
   revm/revm_context_interface/tests/transaction_fees.vo
   alloy_eip7702/tests/auth_list.vo
   revm/revm_precompile/tests/blake2.vo
@@ -37,6 +38,7 @@ targets=(
   revm/revm_handler/tests/historical_frames.vo
   revm/revm_handler/tests/earliest_forks.vo
   revm/revm_handler/tests/transaction_accounting.vo
+  revm/revm_handler/tests/post_execution.vo
   revm/revm_handler/tests/transaction_validation.vo
   revm/revm_handler/tests/ethereum_rlp.vo
   revm/revm_handler/tests/ethereum_rlp_decode.vo

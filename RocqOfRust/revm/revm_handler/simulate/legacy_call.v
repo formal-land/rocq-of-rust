@@ -6,6 +6,8 @@ Require Import bytes.links.bytes.
 Require Import revm.revm_context_interface.links.cfg.
 Require Import revm.revm_handler.simulate.transaction_accounting.
 Require Import revm.revm_handler.simulate.pre_execution.
+Require Import revm.revm_handler.simulate.post_execution.
+Require Import revm.revm_interpreter.simulate.gas.
 Require Import revm.revm_handler.simulate.handler.
 Require Import revm.revm_context_interface.transaction.simulate.alloy_types.
 Require Import revm.revm_interpreter.interpreter_action.links.call_inputs.
@@ -27,6 +29,8 @@ Require Import revm.revm_interpreter.tests.stateful_host.
 Require Import revm.revm_primitives.links.hardfork.
 Require Import revm.revm_primitives.simulate.hardfork.
 Require Import simulate.RocqOfRust.
+
+#[local] Existing Instance TransactionAccounting.fee_fields.
 
 Import ListNotations.
 Open Scope Z_scope.
@@ -142,18 +146,6 @@ Module LegacyCall.
     | 239 :: 1 :: 0 :: address => Nat.eqb (List.length address) 20
     | _ => false
     end.
-
-  (** JournaledAccount::incr_balance touches the account even when checked
-      addition overflows; it leaves the balance unchanged in that case. *)
-  Definition credit (host : StatefulHost.t) (address amount : Z) : StatefulHost.t :=
-    let balance := (account_at address host.(StatefulHost.accounts)).(StatefulHost.Account.balance) in
-    let updated := if balance + amount <? 2 ^ 256 then balance + amount else balance in
-    let host := StatefulHost.with_accounts host
-      (StatefulHost.update_account address
-        (fun account => StatefulHost.account_with_balance account updated)
-        host.(StatefulHost.accounts)) in
-    StatefulHost.touch_account
-      (StatefulHost.append_change host (StatefulHost.Change.Balance address updated)) address.
 
   Definition empty (account : StatefulHost.Account.t) : bool :=
     (account.(StatefulHost.Account.balance) =? 0) &&
@@ -330,10 +322,17 @@ Module LegacyCall.
         |} with
         | TransactionAccounting.Result.Ready gas =>
           let host := InstructionContext.State.host _ _ _ state in
-          let host := credit host tx.(TransactionAccounting.Transaction.caller)
-            gas.(TransactionAccounting.Settlement.caller_reimbursement) in
+          let settled_gas := (Impl_Gas.new
+            {| Integer.value := tx.(TransactionAccounting.Transaction.gas_limit) |})
+            <| Gas.remaining := {| Integer.value := gas.(TransactionAccounting.Settlement.gas_remaining) |} |>
+            <| Gas.refunded := {| Integer.value := gas.(TransactionAccounting.Settlement.gas_refunded) |} |> in
+          let basefee : u64 := {| Integer.value := block.(TransactionAccounting.Block.base_fee) |} in
+          let host := post_execution.reimburse_caller tx basefee
+            (StatefulHost.rust_address tx.(TransactionAccounting.Transaction.caller))
+            settled_gas (StatefulHost.rust_word 0) host in
           let coinbase := input.(Input.block).(StatefulHost.Environment.Block.coinbase) in
-          let host := credit host coinbase gas.(TransactionAccounting.Settlement.beneficiary_reward) in
+          let host := post_execution.reward_beneficiary tx basefee
+            (StatefulHost.rust_address coinbase) spec settled_gas host in
           let touched := host.(StatefulHost.touched_accounts) in
           Result.Completed {|
             Output.status := output.(InterpreterResult.result);

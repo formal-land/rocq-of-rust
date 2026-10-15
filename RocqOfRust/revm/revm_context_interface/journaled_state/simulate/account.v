@@ -8,6 +8,7 @@ Require Import bytes.links.bytes.
 Require Import revm.revm_bytecode.links.bytecode.
 Require Import revm.revm_bytecode.simulate.bytecode.
 Require Import ruint.links.lib.
+Require Import ruint.simulate.add.
 Require Import lib.simulate.lib.
 Require Import revm.revm_state.simulate.account_info.
 Require Import revm.revm_interpreter.tests.stateful_host.
@@ -42,6 +43,37 @@ Module AccountAdapter.
 End AccountAdapter.
 
 Module JournaledAccount.
+  Definition set_balance (authority : Address.t) (balance : aliases.U256.t)
+      (state : StatefulHost.t) : StatefulHost.t :=
+    let state := StatefulHost.touch_account state authority.(Address.value) in
+    let account := match StatefulHost.find_account authority.(Address.value)
+        state.(StatefulHost.accounts) with
+      | Some account => account
+      | None => StatefulHost.empty_account authority.(Address.value)
+      end in
+    if account.(StatefulHost.Account.balance) =? balance.(Uint.value) then state else
+    let state := StatefulHost.with_accounts state
+      (StatefulHost.update_account authority.(Address.value)
+        (fun account => AccountAdapter.with_info account
+          (Impl_AccountInfo.set_balance (AccountAdapter.to_info account) balance))
+        state.(StatefulHost.accounts)) in
+    StatefulHost.append_change state
+      (StatefulHost.Change.Balance authority.(Address.value) balance.(Uint.value)).
+
+  Definition incr_balance (authority : Address.t) (balance : aliases.U256.t)
+      (state : StatefulHost.t) : bool * StatefulHost.t :=
+    let state := StatefulHost.touch_account state authority.(Address.value) in
+    let account := match StatefulHost.find_account authority.(Address.value)
+        state.(StatefulHost.accounts) with
+      | Some account => account
+      | None => StatefulHost.empty_account authority.(Address.value)
+      end in
+    match Impl_Uint.checked_add
+        (StatefulHost.rust_word account.(StatefulHost.Account.balance)) balance with
+    | None => (false, state)
+    | Some balance => (true, set_balance authority balance state)
+    end.
+
   Definition bump_nonce (authority : Address.t) (state : StatefulHost.t)
       : bool * StatefulHost.t :=
     let state := StatefulHost.touch_account state authority.(Address.value) in

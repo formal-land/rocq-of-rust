@@ -1,6 +1,12 @@
 From Stdlib Require Import Bool List ZArith.
 
+Require Import simulate.RocqOfRust.
+
 Require Import revm.revm_primitives.links.hardfork.
+Require Import revm.revm_handler.simulate.post_execution.
+Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.simulate.gas.
+Require Import revm.revm_interpreter.gas.simulate.calc.
 Require Import revm.revm_context_interface.simulate.transaction.
 Require Import revm.revm_context_interface.simulate.result.
 Require Import alloy_primitives.bits.simulate.fixed.
@@ -393,33 +399,36 @@ Module TransactionAccounting.
           | FrameStatus.Success | FrameStatus.Revert => frame.(FrameGas.remaining)
           | FrameStatus.Halt => 0
           end in
-        let spent := tx.(Transaction.gas_limit) - remaining in
         let raw_refund := match frame.(FrameGas.status) with
           | FrameStatus.Success => frame.(FrameGas.refunded)
           | _ => 0
           end in
-        (* Rust casts the authorization refund to i64, adds it after clearing
-           a failed frame's refund, then casts the final counter to u64. *)
-        let raw_refund := (BinOp.Wrap.add
-          ({| Integer.value := raw_refund mod 2 ^ 64 |} : u64)
-          authorization_refund).(Integer.value) in
-        let refund_quotient := if fork_enabled spec SpecId.LONDON then 5 else 2 in
-        let refunded := Z.min (raw_refund mod 2 ^ 64) (spent / refund_quotient) in
-        let '(remaining, refunded) :=
-          if spent - refunded <? initial.(InitialGas.floor) then
-            (Z.max 0 (tx.(Transaction.gas_limit) - initial.(InitialGas.floor)), 0)
-          else (remaining, refunded) in
-        let used := Z.max 0 (tx.(Transaction.gas_limit) - remaining - refunded) in
-        let price := effective_gas_price tx block.(Block.base_fee) in
+        let gas := (Impl_Gas.new {| Integer.value := tx.(Transaction.gas_limit) |})
+          <| Gas.remaining := {| Integer.value := remaining |} |>
+          <| Gas.refunded := {| Integer.value := raw_refund |} |> in
+        let authorization_refund : i64 := {| Integer.value :=
+          if authorization_refund.(Integer.value) <? 2 ^ 63
+          then authorization_refund.(Integer.value)
+          else authorization_refund.(Integer.value) - 2 ^ 64 |} in
+        let gas := post_execution.refund spec gas authorization_refund in
+        let gas := post_execution.eip7623_check_gas_floor gas {|
+          InitialAndFloorGas.initial_gas := {| Integer.value := initial.(InitialGas.intrinsic) |};
+          InitialAndFloorGas.floor_gas := {| Integer.value := initial.(InitialGas.floor) |}
+        |} in
+        let remaining := (Impl_Gas.remaining gas).(Integer.value) in
+        let refunded := (Impl_Gas.refunded gas).(Integer.value) in
+        let used := (Impl_Gas.used gas).(Integer.value) in
         let base_fee := if fork_enabled spec SpecId.LONDON then block.(Block.base_fee) else 0 in
         Result.Ready {|
           Settlement.gas_remaining := remaining;
           Settlement.gas_refunded := refunded;
           Settlement.gas_used := used;
           Settlement.caller_reimbursement :=
-            Z.min (2 ^ 128 - 1) (price * (remaining + refunded));
+            (post_execution.caller_reimbursement tx
+              {| Integer.value := block.(Block.base_fee) |} gas {| Uint.value := 0 |}).(Uint.value);
           Settlement.beneficiary_reward :=
-            Z.max 0 (price - base_fee) * used;
+            (post_execution.beneficiary_reward tx
+              {| Integer.value := block.(Block.base_fee) |} spec gas).(Uint.value);
           Settlement.base_fee_burn := base_fee * used;
           Settlement.blob_fee_burn := blob_fee tx block.(Block.blob_base_fee);
         |}

@@ -359,6 +359,7 @@ def generate_transactions(root, output):
     # Keep authorization processing shared instead of unfolding its signature
     # recovery and journal implementation into the transaction specialization.
     keep += ' pre_execution.apply_eip7702_auth_list handler.first_frame_input'
+    keep += ' post_execution.reimburse_caller post_execution.reward_beneficiary'
     keep += ' Impl_AuthorizationTr_for_SignedAuthorization.methods'
     keep += ' RocqOfRust.alloy_eip7702.simulate.auth_list.SignedAuthorization.recover_authority RocqOfRust.alloy_eip7702.simulate.auth_list.Authorization.signature_hash'
     keep+=' '+ ' '.join('LegacyCall.'+name for name in re.findall(r'^  (?:Definition|Fixpoint) (\w+)',source,re.M) if name not in ['execute_with_runner','execute','run_with_runner','run'])
