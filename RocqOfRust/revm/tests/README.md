@@ -68,6 +68,18 @@ preserves that behavior. Its default initcode limit remains 49,152 bytes in
 Osaka. These are standalone gas computations with supplied frame outcomes;
 execution support still depends on the host, frame and transaction gates.
 
+Transaction pricing and maximum-payment validation use the Rust-named defaults in
+`revm_context_interface/simulate/transaction.v::Transaction.Fees`. Its type class
+is the getter subset needed for these methods in the current Rust `Transaction`
+trait. Gas limits use `u64`, prices use `u128`, and values use `U256`; gas-cost
+multiplication and payment additions are checked, while priority and blob-fee
+arithmetic saturate as in Rust. Fixture fields are validated before this adapter
+is used, and payment errors retain their position after sender-code/nonce checks.
+The older linked `Transaction.C/Eq` interface is separate and does not prove
+correspondence for these defaults. The new result module models only the payment
+errors used here. Other transaction accounting and host fields still use the
+existing fixture representation.
+
 The regression build also checks legacy, EIP-2930, EIP-1559 and EIP-4844 transactions on
 Cancun, Prague and Osaka, including top-level and nested calls and creation,
 access-list charges, effective gas prices, maximum-fee affordability, nonce

@@ -1,6 +1,10 @@
 From Stdlib Require Import Bool List ZArith.
 
 Require Import revm.revm_primitives.links.hardfork.
+Require Import revm.revm_context_interface.simulate.transaction.
+Require Import revm.revm_context_interface.simulate.result.
+Require Import alloy_primitives.bits.simulate.fixed.
+Require Import core.links.result.
 Require Import alloy_eip7702.simulate.auth_list.
 Require Import lib.simulate.lib.
 Require Import links.M.
@@ -32,6 +36,19 @@ Module TransactionAccounting.
       data : list Z;
     }.
   End Transaction.
+
+  #[export] Instance fee_fields : transaction.Transaction.Fees.C Transaction.t := {
+    transaction.Transaction.Fees.tx_type tx := {| Integer.value := tx.(Transaction.tx_type) |};
+    transaction.Transaction.Fees.gas_limit tx := {| Integer.value := tx.(Transaction.gas_limit) |};
+    transaction.Transaction.Fees.value tx := {| Uint.value := tx.(Transaction.value) |};
+    transaction.Transaction.Fees.gas_price tx := {| Integer.value := tx.(Transaction.gas_price) |};
+    transaction.Transaction.Fees.blob_versioned_hashes tx :=
+      List.map FixedBytes.from_Z tx.(Transaction.blob_hashes);
+    transaction.Transaction.Fees.max_fee_per_blob_gas tx :=
+      {| Integer.value := tx.(Transaction.max_fee_per_blob_gas) |};
+    transaction.Transaction.Fees.max_priority_fee_per_gas tx :=
+      option_map (fun priority => {| Integer.value := priority |}) tx.(Transaction.max_priority_fee);
+  }.
 
   Module Block.
     Record t : Set := {
@@ -196,28 +213,25 @@ Module TransactionAccounting.
       tokens + (if byte =? 0 then 1 else nonzero_multiplier)) data 0.
 
   Definition effective_gas_price (tx : Transaction.t) (base_fee : Z) : Z :=
-    if (tx.(Transaction.tx_type) =? 0) || (tx.(Transaction.tx_type) =? 1) then
-      tx.(Transaction.gas_price)
-    else match tx.(Transaction.max_priority_fee) with
-    | None => tx.(Transaction.gas_price)
-    | Some priority => Z.min tx.(Transaction.gas_price)
-        (Z.min (2 ^ 128 - 1) (base_fee + priority))
-    end.
-
-  Definition maximum_gas_fee (tx : Transaction.t) : Z :=
-    tx.(Transaction.gas_limit) * tx.(Transaction.gas_price).
+    (transaction.Transaction.Fees.effective_gas_price tx
+      {| Integer.value := base_fee |}).(Integer.value).
 
   Definition total_blob_gas (tx : Transaction.t) : Z :=
-    (131072 * Z.of_nat (List.length tx.(Transaction.blob_hashes))) mod 2 ^ 64.
+    (transaction.Transaction.Fees.total_blob_gas tx).(Integer.value).
 
   Definition blob_fee (tx : Transaction.t) (price : Z) : Z :=
     if tx.(Transaction.tx_type) =? 3 then
-      Z.min (2 ^ 128 - 1) (total_blob_gas tx * price)
+      (BinOp.Saturating.mul
+        ({| Integer.value := total_blob_gas tx |} : u128)
+        {| Integer.value := price |}).(Integer.value)
     else 0.
 
-  Definition maximum_payment (tx : Transaction.t) : Z :=
-    maximum_gas_fee tx + tx.(Transaction.value) +
-      blob_fee tx tx.(Transaction.max_fee_per_blob_gas).
+  Definition maximum_payment (tx : Transaction.t)
+      : core.links.result.Result.t Z InvalidTransaction.t :=
+    match transaction.Transaction.Fees.max_balance_spending tx with
+    | core.links.result.Result.Ok amount => core.links.result.Result.Ok amount.(Uint.value)
+    | core.links.result.Result.Err error => core.links.result.Result.Err error
+    end.
 
   Definition access_list_gas (tx : Transaction.t) : Z :=
     if tx.(Transaction.tx_type) =? 0 then 0 else
@@ -340,9 +354,10 @@ Module TransactionAccounting.
     prepare_gas_with_blob_limit spec tx block None.
 
   Definition payment_valid (tx : Transaction.t) (initial : InitialGas.t) : bool :=
-    bounded 128 (maximum_gas_fee tx) &&
-    bounded 256 (maximum_payment tx) &&
-    bounded 256 initial.(InitialGas.upfront_fee).
+    match maximum_payment tx with
+    | core.links.result.Result.Ok _ => bounded 256 initial.(InitialGas.upfront_fee)
+    | core.links.result.Result.Err _ => false
+    end.
 
   Definition prepare (spec : SpecId.t) (tx : Transaction.t) (block : Block.t) :
       Result.t InitialGas.t :=

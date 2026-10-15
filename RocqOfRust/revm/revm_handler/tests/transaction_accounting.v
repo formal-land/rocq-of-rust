@@ -382,7 +382,7 @@ Module Test.
   Proof. vm_compute. reflexivity. Qed.
 
   Lemma maximum_payment_includes_maximum_blob_price :
-    maximum_payment (blob_tx 3 [versioned_hash] 7) = 893223.
+    maximum_payment (blob_tx 3 [versioned_hash] 7) = core.links.result.Result.Ok 893223.
   Proof. vm_compute. reflexivity. Qed.
 
   Lemma execution_refund_does_not_refund_blob_fee :
