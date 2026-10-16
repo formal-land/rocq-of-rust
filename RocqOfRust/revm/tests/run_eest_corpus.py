@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import fcntl
 from collections import Counter
 import hashlib
 import math
@@ -77,12 +78,23 @@ def stop_bridge(bridge: dict) -> str:
     return diagnostic
 
 
+class ExecutionIdentityError(fixture.FixtureError):
+    """A checkpoint must stop before recording output from a different executable."""
+
+
 def bridge_exchange(bridge: dict, executable: Path, request: str, timeout: float,
-                    parse_result=compare.parse_output) -> dict:
+                    parse_result=compare.parse_output, expected_hash: str | None = None) -> dict:
     """One persistent JSONL request with a wall deadline covering both pipe directions."""
     deadline = time.monotonic() + timeout
     try:
         if not bridge:
+            if expected_hash is not None:
+                try:
+                    actual_hash = hashlib.sha256(executable.read_bytes()).hexdigest()
+                except OSError as error:
+                    raise ExecutionIdentityError("cannot identify bridge before starting it") from error
+                if actual_hash != expected_hash:
+                    raise ExecutionIdentityError("bridge changed since checkpoint identification")
             errors = tempfile.TemporaryFile()
             try:
                 process = subprocess.Popen([str(executable)], stdin=subprocess.PIPE,
@@ -127,6 +139,9 @@ def bridge_exchange(bridge: dict, executable: Path, request: str, timeout: float
                             if remaining or extra:
                                 raise fixture.FixtureError("native bridge emitted unexpected additional/early output")
                             return parse_result(line.decode("utf-8"))
+    except ExecutionIdentityError:
+        stop_bridge(bridge)
+        raise
     except Exception as error:
         diagnostic = stop_bridge(bridge)
         if diagnostic:
@@ -185,7 +200,7 @@ def run_case(index: dict, case: dict, bridge: dict, executable: Path,
             request = raw_format.serialize_input(normalized)
             record["request_sha256"] = hashlib.sha256(request.encode()).hexdigest()
             record["status"] = "runner_error"
-            output = bridge_exchange(bridge, executable, request, timeout, raw_format.parse_output)
+            output = bridge_exchange(bridge, executable, request, timeout, raw_format.parse_output, executable_hash)
             record["native_output"] = output
             status, comparison = classification(index, case, output, test)
             record.update(status=status, comparison=comparison, reasons=comparison.get("reasons", []))
@@ -204,11 +219,13 @@ def run_case(index: dict, case: dict, bridge: dict, executable: Path,
                 request = compare.serialize_input(normalized, fuel, signed=True)
                 record["request_sha256"] = hashlib.sha256(request.encode()).hexdigest()
                 record["status"] = "runner_error"
-                output = bridge_exchange(bridge, executable, request, timeout)
+                output = bridge_exchange(bridge, executable, request, timeout, expected_hash=executable_hash)
                 record["native_output"] = output
                 status, comparison = classification(index, case, output, test)
                 record.update(status=status, comparison=comparison,
                               reasons=comparison.get("reasons", []))
+    except ExecutionIdentityError:
+        raise
     except TimeoutError as error:
         record.update(status="timeout", reasons=[bounded_message(error)])
     except (fixture.FixtureError, OSError, UnicodeError, ValueError) as error:
@@ -246,12 +263,62 @@ def summarize(index: dict, cases: list[dict], statuses: dict) -> dict:
                                     if name not in {"state_test", "transaction_test"}]}
 
 
+
+def harness_sha256() -> str:
+    """Fingerprint the complete Python fixture harness, independent of checkout path."""
+    digest = hashlib.sha256()
+    for path in sorted(Path(__file__).parent.rglob("*.py")):
+        digest.update(path.relative_to(Path(__file__).parent).as_posix().encode() + b"\0")
+        digest.update(path.read_bytes() + b"\0")
+    return digest.hexdigest()
+
+
+def execution_identity(executable: Path, fuel: int, timeout: float) -> dict:
+    return {"bridge_sha256": hashlib.sha256(executable.read_bytes()).hexdigest(),
+            "harness_sha256": harness_sha256(), "fuel": fuel,
+            "timeout_seconds": timeout}
+
+
+def checkpoint_manifest(index: dict, cases: list[dict], execution: dict) -> dict:
+    return {"version": 1, "pin": index["pin"], "cases": cases, "execution": execution}
+
+
+def resume_records(source, index: dict, cases: list[dict], execution: dict) -> dict:
+    # Import lazily: the independent verifier imports this module's comparison helpers.
+    import verify_eest_corpus as verifier
+    selected = {case["id"]: case for case in cases}
+    statuses = {}
+    while True:
+        offset = source.tell()
+        line = source.readline(2 * compare.MAX_WIRE_BYTES + 1)
+        if not line:
+            break
+        if len(line) > 2 * compare.MAX_WIRE_BYTES:
+            raise fixture.FixtureError("checkpoint result line exceeds size limit")
+        if not line.endswith(b"\n"):
+            # A killed writer can leave only the last record incomplete. Never
+            # discard a malformed newline-terminated record or an earlier line.
+            source.seek(offset)
+            source.truncate()
+            source.flush()
+            break
+        record = corpus.read_json(line)
+        case_id = record.get("fixture", {}).get("id") if isinstance(record, dict) else None
+        if case_id not in selected or case_id in statuses:
+            raise fixture.FixtureError("checkpoint contains unselected or duplicate case")
+        verifier.validate_record(index, selected[case_id], record)
+        if record.get("execution") != execution:
+            raise fixture.FixtureError("checkpoint execution identity differs")
+        statuses[case_id] = record["status"]
+    return statuses
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     corpus.add_selection_arguments(parser)
     parser.add_argument("--bridge", type=Path, default=DEFAULT_BRIDGE)
     parser.add_argument("--results", type=Path, required=True)
     parser.add_argument("--summary", type=Path)
+    parser.add_argument("--resume", action="store_true", help="resume an identical checkpoint")
     parser.add_argument("--fuel", type=int, default=1000000)
     parser.add_argument("--timeout", type=float, default=60)
     args = parser.parse_args()
@@ -260,19 +327,47 @@ def main() -> int:
         check_limits(args.fuel, args.timeout)
         index, cases = corpus.selected_index(args)
         executable = args.bridge.resolve()
-        executable_hash = hashlib.sha256(executable.read_bytes()).hexdigest() if executable.is_file() else None
-        statuses = {}
-        # Exclusive creation prevents clobbering an earlier inventory or a parallel worker.
-        with args.results.open("x", encoding="utf-8") as results:
+        execution = execution_identity(executable, args.fuel, args.timeout)
+        manifest = checkpoint_manifest(index, cases, execution)
+        manifest_path = Path(str(args.results) + ".manifest.json")
+        # Lock the result inode before reading, truncating, or appending it.
+        with args.results.open("r+b" if args.resume else "x+b") as results:
+            try:
+                fcntl.flock(results.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except BlockingIOError as error:
+                raise fixture.FixtureError("checkpoint is in use by another runner") from error
+            if args.resume:
+                if corpus.read_json(manifest_path.read_bytes()) != manifest:
+                    raise fixture.FixtureError("checkpoint pin, selection, or execution settings differ")
+                statuses = resume_records(results, index, cases, execution)
+                os.fsync(results.fileno())
+            else:
+                with manifest_path.open("x", encoding="utf-8") as output:
+                    output.write(json.dumps(manifest, sort_keys=True, allow_nan=False) + "\n")
+                    output.flush()
+                    os.fsync(output.fileno())
+                directory = os.open(args.results.parent, os.O_RDONLY | os.O_DIRECTORY)
+                try:
+                    os.fsync(directory)
+                finally:
+                    os.close(directory)
+                statuses = {}
             for case in cases:
-                record = run_case(index, case, bridge, executable, args.fuel, args.timeout, executable_hash)
+                if case["id"] in statuses:
+                    continue
+                record = run_case(index, case, bridge, executable, args.fuel, args.timeout,
+                                  execution["bridge_sha256"])
+                record["execution"] = execution
                 statuses[case["id"]] = record["status"]
-                results.write(json.dumps(record, separators=(",", ":"), allow_nan=False) + "\n")
+                results.write((json.dumps(record, separators=(",", ":"), allow_nan=False) + "\n").encode())
                 results.flush()
-        summary = summarize(index, cases, statuses)
-        if args.summary:
-            with args.summary.open("x", encoding="utf-8") as output:
-                output.write(json.dumps(summary, indent=2, allow_nan=False) + "\n")
+                os.fsync(results.fileno())
+            summary = summarize(index, cases, statuses)
+            if args.summary:
+                # A resumed completed checkpoint must be able to refresh its summary.
+                temporary = args.summary.with_name(args.summary.name + ".tmp")
+                temporary.write_text(json.dumps(summary, indent=2, allow_nan=False) + "\n")
+                temporary.replace(args.summary)
         print(json.dumps(summary, sort_keys=True))
         return 0 if summary["all_selected_pass"] else 1
     except (fixture.FixtureError, OSError, ValueError) as error:

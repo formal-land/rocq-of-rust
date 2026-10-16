@@ -1,0 +1,215 @@
+# Opt-in inventory run. It deliberately fails until every selected case passes.
+name: REVM Osaka inventory
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/revm-osaka.yml'
+      - 'RocqOfRust/revm/tests/**'
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: revm-osaka-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  python_checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check acquisition, checkpoints, evidence and build reuse
+        run: |
+          python RocqOfRust/revm/tests/eest_corpus_test.py
+          python RocqOfRust/revm/tests/eest_resume_test.py
+          python RocqOfRust/revm/tests/acquire_osaka_fixtures_test.py
+          python RocqOfRust/revm/tests/summarize_eest_failures_test.py
+          python RocqOfRust/revm/tests/native/test_build_reuse.py
+
+  prepare:
+    if: github.event_name == 'workflow_dispatch'
+    needs: python_checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    outputs:
+      image: ${{ steps.image.outputs.image }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Resolve one container image for build and execution
+        id: image
+        run: |
+          docker pull rocq/rocq-prover:9.0
+          echo "image=$(docker image inspect rocq/rocq-prover:9.0 --format '{{index .RepoDigests 0}}')" >> "$GITHUB_OUTPUT"
+      - uses: coq-community/docker-coq-action@v1
+        with:
+          custom_image: ${{ steps.image.outputs.image }}
+          custom_script: |
+            set -eu
+            sudo chown -R "$(id -u):$(id -g)" .
+            opam install -y --deps-only RocqOfRust/rocq-of-rust.opam
+            opam install -y zarith yojson
+            export OCAMLPATH="$PWD/RocqOfRust/plugin${OCAMLPATH:+:$OCAMLPATH}"
+            python3 RocqOfRust/revm/tests/native/build.py \
+              --numeric-backend zarith --output-dir target/revm-osaka --smoke --bridge
+            mkdir -p target/osaka-bundle
+            cp target/revm-osaka/native_transaction_bridge target/osaka-bundle/
+            sha256sum target/osaka-bundle/native_transaction_bridge > target/osaka-bundle/bridge.sha256
+            git rev-parse HEAD > target/osaka-bundle/source-commit.txt
+            python3 RocqOfRust/revm/tests/acquire_osaka_fixtures.py \
+              --output target/osaka-bundle/fixtures
+            tar -czf target/osaka-bundle.tar.gz -C target/osaka-bundle .
+      - name: Retain build diagnostics even if preparation fails
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: osaka-build-logs
+          overwrite: true
+          path: target/revm-osaka/*.log
+          if-no-files-found: warn
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        with:
+          name: osaka-executable-and-fixtures
+          overwrite: true
+          path: target/osaka-bundle.tar.gz
+          compression-level: 0
+          retention-days: 14
+
+  execute:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: osaka-executable-and-fixtures
+          path: target
+      - run: |
+          mkdir -p target/osaka-bundle target/osaka-results
+          tar -xzf target/osaka-bundle.tar.gz -C target/osaka-bundle
+          sha256sum --check target/osaka-bundle/bridge.sha256
+          test "$(git rev-parse HEAD)" = "$(cat target/osaka-bundle/source-commit.txt)"
+      - name: Find this shard's checkpoint from an earlier attempt
+        if: github.run_attempt > 1
+        id: checkpoint
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const artifacts = await github.paginate(github.rest.actions.listWorkflowRunArtifacts, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: context.runId,
+              per_page: 100
+            });
+            const name = 'osaka-results-${{ matrix.shard }}';
+            const checkpoint = artifacts.find(artifact => artifact.name === name && !artifact.expired);
+            core.setOutput('exists', checkpoint ? 'true' : 'false');
+            if (!checkpoint) core.notice(`No retained checkpoint for ${name}; starting this shard.`);
+      - name: Restore completed cases for this shard
+        if: steps.checkpoint.outputs.exists == 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: osaka-results-${{ matrix.shard }}
+          path: target/osaka-results
+      - uses: coq-community/docker-coq-action@v1
+        id: run_shard
+        with:
+          custom_image: ${{ needs.prepare.outputs.image }}
+          custom_script: |
+            set -eu
+            sudo chown -R "$(id -u):$(id -g)" target/osaka-results
+            # Check the actual runtime loader before starting any fixture.
+            target/osaka-bundle/native_transaction_bridge </dev/null
+            status=0
+            for format in state_test transaction_test; do
+              results="target/osaka-results/$format-${{ matrix.shard }}.jsonl"
+              resume=()
+              if [ -f "$results" ]; then resume=(--resume); fi
+              deadline=300m
+              if [ "$format" = transaction_test ]; then deadline=15m; fi
+              # Stop before the job deadline so retained results can still upload.
+              timeout --signal=TERM --kill-after=30s "$deadline" \
+                python3 RocqOfRust/revm/tests/run_eest_corpus.py \
+                "${resume[@]}" \
+                --fixtures target/osaka-bundle/fixtures --format "$format" --fork Osaka \
+                --shard-index '${{ matrix.shard }}' --shard-count 16 \
+                --bridge target/osaka-bundle/native_transaction_bridge \
+                --timeout 60 --fuel 1000000 \
+                --results "target/osaka-results/$format-${{ matrix.shard }}.jsonl" \
+                --summary "target/osaka-results/$format-${{ matrix.shard }}.summary.json" || status=1
+            done
+            exit "$status"
+      - name: Preserve completed cases even when a shard fails
+        if: always() && steps.run_shard.outcome != 'skipped'
+        uses: actions/upload-artifact@v4
+        with:
+          name: osaka-results-${{ matrix.shard }}
+          path: target/osaka-results/
+          overwrite: true
+          if-no-files-found: error
+          retention-days: 14
+
+  verify:
+    if: always() && needs.prepare.result == 'success'
+    needs: [prepare, execute]
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: osaka-executable-and-fixtures
+          path: target
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: osaka-results-*
+          path: target/osaka-results
+          merge-multiple: true
+      - run: |
+          mkdir -p target/osaka-bundle
+          tar -xzf target/osaka-bundle.tar.gz -C target/osaka-bundle
+          sha256sum --check target/osaka-bundle/bridge.sha256
+          test "$(git rev-parse HEAD)" = "$(cat target/osaka-bundle/source-commit.txt)"
+      - name: Verify exact Osaka identities and independent outcomes
+        run: |
+          status=0
+          for format in state_test transaction_test; do
+            python3 RocqOfRust/revm/tests/verify_eest_corpus.py \
+              --bridge target/osaka-bundle/native_transaction_bridge \
+              --fixtures target/osaka-bundle/fixtures --format "$format" --fork Osaka \
+              --results target/osaka-results/"$format"-*.jsonl \
+              > "target/osaka-results/$format.verified-summary.json" || status=1
+          done
+          exit "$status"
+      - name: Group observed failures for diagnosis
+        if: always()
+        run: |
+          shopt -s nullglob
+          results=(target/osaka-results/state_test-*.jsonl target/osaka-results/transaction_test-*.jsonl)
+          test "${#results[@]}" -gt 0
+          python3 RocqOfRust/revm/tests/summarize_eest_failures.py \
+            --results "${results[@]}" \
+            --output target/osaka-results/failure-groups.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: osaka-verified-inventory
+          overwrite: true
+          path: |
+            target/osaka-results/*.verified-summary.json
+            target/osaka-results/failure-groups.json
+          if-no-files-found: warn
+          retention-days: 14

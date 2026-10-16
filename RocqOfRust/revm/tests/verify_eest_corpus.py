@@ -28,7 +28,7 @@ def digest_or_none(value):
 
 
 def validate_record(index: dict, case: dict, record: dict):
-    if not isinstance(record, dict) or set(record) != RECORD_FIELDS:
+    if not isinstance(record, dict) or set(record) not in (RECORD_FIELDS, RECORD_FIELDS | {"execution"}):
         raise fixture.FixtureError("result record has missing or unknown fields")
     if type(record["protocol"]) is not int or record["protocol"] != corpus.RECORD_VERSION:
         raise fixture.FixtureError("wrong result protocol")
@@ -39,6 +39,18 @@ def validate_record(index: dict, case: dict, record: dict):
     if not isinstance(record["pin"], dict) or type(record["pin"].get("verified")) is not bool or record["pin"] != index["pin"]:
         raise fixture.FixtureError("result fixture pin differs from loaded index")
     runner.check_limits(record["fuel"], record["timeout_seconds"])
+    if "execution" in record:
+        execution = record["execution"]
+        if not isinstance(execution, dict) or set(execution) != {
+                "bridge_sha256", "harness_sha256", "fuel", "timeout_seconds"}:
+            raise fixture.FixtureError("invalid execution identity")
+        for key in ("bridge_sha256", "harness_sha256"):
+            if execution[key] is None:
+                raise fixture.FixtureError("execution identity requires digests")
+            digest_or_none(execution[key])
+        for key in ("bridge_sha256", "fuel", "timeout_seconds"):
+            if execution[key] != record[key]:
+                raise fixture.FixtureError("execution identity disagrees with result")
     duration = record["duration_seconds"]
     if type(duration) not in (int, float) or not math.isfinite(duration) or duration < 0:
         raise fixture.FixtureError("invalid result duration")
@@ -78,9 +90,10 @@ def validate_record(index: dict, case: dict, record: dict):
             raise fixture.FixtureError("execution-only output cannot count as complete fixture pass")
 
 
-def verify_records(index: dict, cases: list[dict], records) -> dict:
+def verify_records(index: dict, cases: list[dict], records, expected_bridge_sha256: str | None = None) -> dict:
     selected = {case["id"]: case for case in cases}
     statuses = {}
+    identity = None
     for record in records:
         if not isinstance(record, dict) or not isinstance(record.get("fixture"), dict):
             raise fixture.FixtureError("result record requires a fixture identity")
@@ -90,6 +103,13 @@ def verify_records(index: dict, cases: list[dict], records) -> dict:
         if case_id in statuses:
             raise fixture.FixtureError(f"duplicate result for exact case {case_id!r}")
         validate_record(index, selected[case_id], record)
+        if expected_bridge_sha256 is not None and record["bridge_sha256"] != expected_bridge_sha256:
+            raise fixture.FixtureError("result bridge differs from expected executable")
+        current_identity = (record.get("execution"), record["bridge_sha256"],
+                            record["fuel"], record["timeout_seconds"])
+        if identity is not None and current_identity != identity:
+            raise fixture.FixtureError("results mix different execution identities")
+        identity = current_identity
         statuses[case_id] = record["status"]
     missing = selected.keys() - statuses.keys()
     if missing:
@@ -118,10 +138,12 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     corpus.add_selection_arguments(parser)
     parser.add_argument("--results", type=Path, nargs="+", required=True)
+    parser.add_argument("--bridge", type=Path, help="require results from this executable")
     args = parser.parse_args()
     try:
         index, cases = corpus.selected_index(args)
-        summary = verify_records(index, cases, read_records(args.results))
+        expected_hash = hashlib.sha256(args.bridge.read_bytes()).hexdigest() if args.bridge else None
+        summary = verify_records(index, cases, read_records(args.results), expected_hash)
         print(json.dumps(summary, sort_keys=True))
         return 0 if summary["all_selected_pass"] else 1
     except (fixture.FixtureError, OSError, ValueError) as error:
