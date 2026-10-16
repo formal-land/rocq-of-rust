@@ -107,6 +107,10 @@ python3 -m unittest \
 python3 revm/tests/transaction_fixture_test.py
 python3 revm/tests/transaction_compare_test.py
 python3 revm/tests/eest_corpus_test.py
+python3 revm/tests/eest_resume_test.py
+python3 revm/tests/acquire_osaka_fixtures_test.py
+python3 revm/tests/summarize_eest_failures_test.py
+python3 revm/tests/native/test_build_reuse.py
 make -C "$rocq_of_rust" "${targets[@]}"
 for fork in "${fixture_forks[@]}"; do
   echo "Checking Rocq REVM reference fixtures for $fork"

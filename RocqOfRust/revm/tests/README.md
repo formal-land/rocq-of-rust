@@ -410,6 +410,52 @@ passed through the extracted bridge with matching output and gas. These
 definitions do not claim
 native-provider correspondence or a cryptographic correctness proof.
 
+### Resumable Osaka inventory
+
+The manual **REVM Osaka inventory** workflow targets exactly 14,614 Osaka state
+cases and 56 Osaka raw transaction cases from the pinned `tests@v20.0.2` index.
+Blocks, Engine API and sync cases are outside this selection. It builds one native
+bridge and uses 16 deterministic shards with at most two jobs running together.
+The `osaka-verified-inventory` artifact contains summaries and a diagnostic
+`failure-groups.json`, grouping nonpassing cases by status and test function with
+representative IDs. These groups do not establish a shared root cause.
+The workflow reports failure while any selected case is missing or does not pass;
+a complete inventory is not the same as complete semantic coverage.
+
+The workflow must exist on the default branch before GitHub enables manual
+execution. Relevant pull requests run the lightweight Python checks only. After
+merging, start it from Actions, **REVM Osaka inventory**, **Run workflow**. To
+continue interrupted jobs, use **Re-run failed jobs** on the same run. This keeps
+the successful preparation artifact and restores each failed shard's result files
+and manifests. Starting a new workflow run builds a new inventory instead. Results
+and the executable/fixture bundle are retained for 14 days; missing preparation
+artifacts require a new run. Hard cancellation or runner loss can prevent the
+latest checkpoint from uploading, so CI recovery is limited to uploaded evidence.
+
+Local runs can use the existing `run_eest_corpus.py` command with `--resume` and
+the same `--results` path. Keep its `.manifest.json` sidecar alongside the JSONL
+file, in a persistent directory rather than `/tmp`. The manifest binds the exact
+selection, fixture pin, executable digest, Python harness digest, fuel and timeout.
+Completed records are independently checked before they are skipped. Each new
+record is synchronized to disk. A partial final line is discarded and retried;
+malformed complete records and changed execution settings are rejected. A second
+writer cannot append to the same checkpoint concurrently. Previously completed
+nonpassing cases are also retained; `--resume` continues interrupted work, not
+semantic retries. After changing the executable or harness, use a new result path.
+
+The verifier accepts multiple shard files and rejects mixed execution identities.
+Supply `--bridge /path/to/native_transaction_bridge` to require results from that
+exact executable. Old result files remain verifiable, but lack the manifest needed
+for resumption. Their results cannot be mixed with newly identified records.
+
+`native/build.py --reuse --numeric-backend zarith --smoke --bridge` can reuse a
+successful local build when its source/toolchain/options fingerprint and output
+hashes match. The first such invocation needs a successful build to establish its
+stamp. Requested smoke executables still run on a cache hit. The default behavior
+and `--no-cache` rebuild; interrupted builds do not publish a success stamp. Reuse
+assumes installed dependency libraries are unchanged when their package versions
+are unchanged. It is a local optimization, not a portable build certificate.
+
 ### Raw transaction validation protocol
 
 `transaction_format.py` reads the indexed fixture's exact `txbytes` and single

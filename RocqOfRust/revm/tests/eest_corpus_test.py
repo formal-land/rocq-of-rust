@@ -127,10 +127,10 @@ def test_all_formats_in_selection_and_explicit_unsupported_results():
                     output = {"protocol": 1, "engine": "rocq_revm", "scope": "raw_transaction",
                               "kind": "Unsupported", "reason": "RawValidationUnavailable", "details": []}
                     with patch.object(runner, "bridge_exchange", return_value=output):
-                        records.append(runner.run_case(index, case, {}, Path("/missing"), 1000, 1))
+                        records.append(runner.run_case(index, case, {}, Path("/missing"), 1000, 5, "0" * 64))
                     assert records[-1]["reasons"] == ["RawValidationUnavailable"]
                 else:
-                    records.append(runner.run_case(index, case, {}, Path("/missing"), 1000, 1))
+                    records.append(runner.run_case(index, case, {}, Path("/missing"), 1000, 5, "0" * 64))
                     assert records[-1]["reasons"] == ["format:" + case["format"]]
                 assert records[-1]["status"] == "unsupported"
         summary = verify.verify_records(index, selected, records)
