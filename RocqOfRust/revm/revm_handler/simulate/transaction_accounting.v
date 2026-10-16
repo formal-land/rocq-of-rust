@@ -4,6 +4,8 @@ Require Import simulate.RocqOfRust.
 
 Require Import revm.revm_primitives.links.hardfork.
 Require Import revm.revm_handler.simulate.post_execution.
+Require Import revm.revm_handler.simulate.validation.
+Require Import alloy_primitives.links.common.
 Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.simulate.gas.
 Require Import revm.revm_interpreter.gas.simulate.calc.
@@ -249,6 +251,61 @@ Module TransactionAccounting.
     if tx.(Transaction.tx_type) =? 4 then
       25000 * Z.of_nat (List.length tx.(Transaction.authorization_list)) else 0.
 
+  Definition validation_tx_fields (tx : Transaction.t) : validation.TxFields.t := {|
+    validation.TxFields.chain_id := option_map (fun value => {| Integer.value := value |}) tx.(Transaction.chain_id);
+    validation.TxFields.kind := match tx.(Transaction.target) with
+      | None => TxKind.Create
+      | Some address => TxKind.Call {| Address.value := address |}
+      end;
+    validation.TxFields.input_length := {| Integer.value := Z.of_nat (List.length tx.(Transaction.data)) |};
+    validation.TxFields.authorization_list_len :=
+      {| Integer.value := Z.of_nat (List.length tx.(Transaction.authorization_list)) |};
+  |}.
+
+  Definition validation_block_fields (block : Block.t) : validation.BlockFields.t := {|
+    validation.BlockFields.basefee := {| Integer.value := block.(Block.base_fee) |};
+    validation.BlockFields.gas_limit := {| Integer.value := block.(Block.gas_limit) |};
+    validation.BlockFields.blob_gasprice := {| Integer.value := block.(Block.blob_base_fee) |};
+    validation.BlockFields.prevrandao := None;
+    validation.BlockFields.blob_excess_gas := None;
+  |}.
+
+  (** Header and chain checks are performed by the enclosing transaction runner.
+      The standalone gas adapter validates the remaining environment fields. *)
+  Definition validation_config (spec : SpecId.t) (max_blobs : option Z) : validation.CfgFields.t := {|
+    validation.CfgFields.chain_id := 0;
+    validation.CfgFields.tx_chain_id_check := false;
+    validation.CfgFields.tx_gas_limit_cap := {| Integer.value :=
+      if fork_enabled spec SpecId.OSAKA then 16777216 else 2 ^ 64 - 1 |};
+    validation.CfgFields.is_base_fee_check_disabled := false;
+    validation.CfgFields.is_priority_fee_check_disabled := false;
+    validation.CfgFields.is_block_gas_limit_disabled := false;
+    validation.CfgFields.max_blobs_per_tx := option_map (fun value => {| Integer.value := value |}) max_blobs;
+    validation.CfgFields.max_initcode_size := 49152;
+  |}.
+
+  Definition reject_environment (error : InvalidTransaction.t) : Result.t InitialGas.t :=
+    match error with
+    | InvalidTransaction.GasPriceLessThanBasefee => Result.Rejected GasError.GasPriceBelowBaseFee
+    | InvalidTransaction.PriorityFeeGreaterThanMaxFee => Result.Rejected GasError.PriorityFeeGreaterThanMaxFee
+    | InvalidTransaction.Eip2930NotSupported => Result.Rejected GasError.Eip2930NotSupported
+    | InvalidTransaction.Eip1559NotSupported => Result.Rejected GasError.Eip1559NotSupported
+    | InvalidTransaction.Eip4844NotSupported => Result.Rejected GasError.Eip4844NotSupported
+    | InvalidTransaction.Eip7702NotSupported => Result.Rejected GasError.Eip7702NotSupported
+    | InvalidTransaction.EmptyAuthorizationList => Result.Rejected GasError.EmptyAuthorizationList
+    | InvalidTransaction.BlobGasPriceGreaterThanMax price maximum =>
+        Result.Rejected (GasError.BlobGasPriceGreaterThanMax price.(Integer.value) maximum.(Integer.value))
+    | InvalidTransaction.EmptyBlobs => Result.Rejected GasError.EmptyBlobs
+    | InvalidTransaction.BlobVersionNotSupported => Result.Rejected GasError.BlobVersionNotSupported
+    | InvalidTransaction.TooManyBlobs have maximum =>
+        Result.Rejected (GasError.TooManyBlobs have.(Integer.value) maximum.(Integer.value))
+    | InvalidTransaction.TxGasLimitGreaterThanCap available cap =>
+        Result.Rejected (GasError.GasLimitAboveCap available.(Integer.value) cap.(Integer.value))
+    | InvalidTransaction.CallerGasLimitMoreThanBlock => Result.Rejected GasError.GasLimitAboveBlock
+    | InvalidTransaction.CreateInitCodeSizeLimit => Result.Rejected GasError.CreateInitCodeSizeLimit
+    | _ => Result.Malformed MalformedReason.ConfigurationFields
+    end.
+
   Definition prepare_gas_with_blob_limit (spec : SpecId.t) (tx : Transaction.t)
       (block : Block.t) (max_blobs : option Z) :
       Result.t InitialGas.t :=
@@ -266,66 +323,20 @@ Module TransactionAccounting.
         (tx.(Transaction.tx_type) =? 3) || (tx.(Transaction.tx_type) =? 4)) then
         Result.Unsupported (UnsupportedReason.TransactionType tx.(Transaction.tx_type))
       else
-        if fork_enabled spec SpecId.OSAKA &&
-          (16777216 <? tx.(Transaction.gas_limit)) then
-          Result.Rejected (GasError.GasLimitAboveCap tx.(Transaction.gas_limit) 16777216)
-        else if (tx.(Transaction.tx_type) =? 1) &&
-          negb (transaction_type_enabled spec tx.(Transaction.tx_type)) then
-          Result.Rejected GasError.Eip2930NotSupported
-        else if (tx.(Transaction.tx_type) =? 2) &&
-          negb (transaction_type_enabled spec tx.(Transaction.tx_type)) then
-          Result.Rejected GasError.Eip1559NotSupported
-        else if (tx.(Transaction.tx_type) =? 3) &&
-          negb (transaction_type_enabled spec tx.(Transaction.tx_type)) then
-          Result.Rejected GasError.Eip4844NotSupported
-        else if (tx.(Transaction.tx_type) =? 4) &&
-          negb (transaction_type_enabled spec tx.(Transaction.tx_type)) then
-          Result.Rejected GasError.Eip7702NotSupported
-        else if ((tx.(Transaction.tx_type) =? 2) || (tx.(Transaction.tx_type) =? 3) || (tx.(Transaction.tx_type) =? 4)) &&
-          (match tx.(Transaction.max_priority_fee) with
-           | Some priority => tx.(Transaction.gas_price) <? priority
-           | None => false
-           end) then
-          Result.Rejected GasError.PriorityFeeGreaterThanMaxFee
-        else if (if (tx.(Transaction.tx_type) =? 2) || (tx.(Transaction.tx_type) =? 3) || (tx.(Transaction.tx_type) =? 4) then
-          Z.min tx.(Transaction.gas_price)
-            (Z.min (2 ^ 128 - 1) (block.(Block.base_fee) +
-              match tx.(Transaction.max_priority_fee) with
-              | Some priority => priority | None => 0 end))
-          else tx.(Transaction.gas_price)) <? block.(Block.base_fee) then
-          Result.Rejected GasError.GasPriceBelowBaseFee
-        else if (tx.(Transaction.tx_type) =? 4) &&
-          Nat.eqb (List.length tx.(Transaction.authorization_list)) 0 then
-          Result.Rejected GasError.EmptyAuthorizationList
-        else if (tx.(Transaction.tx_type) =? 4) &&
+        let extra := validation_tx_fields tx in
+        let cfg := validation_config spec max_blobs in
+        let environment := validation_block_fields block in
+        match validation.validate_tx_type tx extra cfg environment spec with
+        | core.links.result.Result.Err error => reject_environment error
+        | core.links.result.Result.Ok _ =>
+        (* The fixture adapter cannot execute authorization contract creation.
+           This is deliberately outside Rust's validate_tx_env. *)
+        if (tx.(Transaction.tx_type) =? 4) &&
           (match tx.(Transaction.target) with None => true | Some _ => false end) then
           Result.Rejected GasError.AuthorizationCreate
-        else if (tx.(Transaction.tx_type) =? 3) &&
-          (tx.(Transaction.max_fee_per_blob_gas) <? block.(Block.blob_base_fee)) then
-          Result.Rejected (GasError.BlobGasPriceGreaterThanMax
-            block.(Block.blob_base_fee) tx.(Transaction.max_fee_per_blob_gas))
-        else if (tx.(Transaction.tx_type) =? 3) &&
-          Nat.eqb (List.length tx.(Transaction.blob_hashes)) 0 then
-          Result.Rejected GasError.EmptyBlobs
-        else if (tx.(Transaction.tx_type) =? 3) && negb
-          (List.forallb (fun hash => hash / 2 ^ 248 =? 1) tx.(Transaction.blob_hashes)) then
-          Result.Rejected GasError.BlobVersionNotSupported
-        else if (tx.(Transaction.tx_type) =? 3) &&
-          (match max_blobs with
-           | Some maximum => maximum <? Z.of_nat (List.length tx.(Transaction.blob_hashes))
-           | None => false
-           end) then
-          Result.Rejected (GasError.TooManyBlobs
-            (Z.of_nat (List.length tx.(Transaction.blob_hashes)))
-            (match max_blobs with Some maximum => maximum | None => 0 end))
-        else if block.(Block.gas_limit) <? tx.(Transaction.gas_limit) then
-          Result.Rejected GasError.GasLimitAboveBlock
-        else if fork_enabled spec SpecId.SHANGHAI &&
-          (match tx.(Transaction.target) with
-          | None => 49152 <? Z.of_nat (List.length tx.(Transaction.data))
-          | Some _ => false
-          end) then Result.Rejected GasError.CreateInitCodeSizeLimit
-        else
+        else match validation.validate_tx_limits tx extra cfg environment spec with
+        | core.links.result.Result.Err error => reject_environment error
+        | core.links.result.Result.Ok _ =>
           let tokens := calldata_tokens spec tx.(Transaction.data) in
           let creation := match tx.(Transaction.target) with
             | None => (if fork_enabled spec SpecId.HOMESTEAD then 32000 else 0) +
@@ -353,7 +364,9 @@ Module TransactionAccounting.
               InitialGas.floor := floor;
               InitialGas.execution := tx.(Transaction.gas_limit) - intrinsic;
               InitialGas.upfront_fee := upfront_fee;
-            |}.
+            |}
+        end
+        end.
 
   Definition prepare_gas (spec : SpecId.t) (tx : Transaction.t) (block : Block.t) :
       Result.t InitialGas.t :=

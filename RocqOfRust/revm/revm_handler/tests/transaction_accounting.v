@@ -669,6 +669,13 @@ Module Test.
     Result.Rejected GasError.AuthorizationCreate.
   Proof. vm_compute. reflexivity. Qed.
 
+  Lemma authorization_create_precedes_block_gas_limit :
+    prepare SpecId.OSAKA
+      (authorization_transaction <| Transaction.target := None |>)
+      (block <| Block.gas_limit := 0 |>) =
+    Result.Rejected GasError.AuthorizationCreate.
+  Proof. vm_compute. reflexivity. Qed.
+
   Lemma authorization_nonce_width_checked :
     transaction_fields_valid (authorization_transaction
       <| Transaction.authorization_list :=

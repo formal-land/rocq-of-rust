@@ -1,5 +1,7 @@
 From Stdlib Require Import List ZArith.
 
+Require Import simulate.RocqOfRust.
+Require Import alloy_primitives.bits.simulate.fixed.
 Require Import alloy_primitives.bytes.simulate.mod.
 Require Import revm.revm_context_interface.links.cfg.
 Require Import revm.revm_handler.simulate.legacy_call.
@@ -131,10 +133,10 @@ Module HistoricalFramesTest.
   Lemma historical_header_fields_have_activation_boundaries :
     LegacyCall.validate_header SpecId.LONDON None None = None /\
     LegacyCall.validate_header SpecId.MERGE None None = Some LegacyCall.Rejection.PrevrandaoNotSet /\
-    LegacyCall.validate_header SpecId.MERGE (Some 0) None = None /\
-    LegacyCall.validate_header SpecId.SHANGHAI (Some 0) None = None /\
-    LegacyCall.validate_header SpecId.CANCUN (Some 0) None = Some LegacyCall.Rejection.ExcessBlobGasNotSet /\
-    LegacyCall.validate_header SpecId.CANCUN (Some 0) (Some 0) = None.
+    LegacyCall.validate_header SpecId.MERGE (Some (FixedBytes.from_Z 0)) None = None /\
+    LegacyCall.validate_header SpecId.SHANGHAI (Some (FixedBytes.from_Z 0)) None = None /\
+    LegacyCall.validate_header SpecId.CANCUN (Some (FixedBytes.from_Z 0)) None = Some LegacyCall.Rejection.ExcessBlobGasNotSet /\
+    LegacyCall.validate_header SpecId.CANCUN (Some (FixedBytes.from_Z 0)) (Some {| Integer.value := 0 |}) = None.
   Proof. vm_compute. repeat split; reflexivity. Qed.
 
   Lemma historical_precompile_sets :

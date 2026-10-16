@@ -39,6 +39,7 @@ targets=(
   revm/revm_handler/tests/earliest_forks.vo
   revm/revm_handler/tests/transaction_accounting.vo
   revm/revm_handler/tests/post_execution.vo
+  revm/revm_handler/tests/validation.vo
   revm/revm_handler/tests/transaction_validation.vo
   revm/revm_handler/tests/ethereum_rlp.vo
   revm/revm_handler/tests/ethereum_rlp_decode.vo

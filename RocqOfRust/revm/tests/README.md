@@ -5,6 +5,25 @@ standalone rocq-of-rust checkout; no go-ethereum-fork modules are imported.
 The tests compile temporary Rocq computation goals against the handwritten
 REVM instruction simulations and concrete host/frame implementation.
 
+## Review requirements for handwritten REVM changes
+
+Before submitting changes, compare every new or modified semantic helper's
+signature and arithmetic with its Rust counterpart. Use Rust integer types such
+as `u8`, `u64`, `u128` and `usize`, including helper parameters and optional values;
+typed record fields alone are not enough. Preserve checked, saturating and
+wrapping operations explicitly. Fixture-facing `Z` values belong at the input
+boundary, with validation and conversion kept there rather than inside semantic
+helpers. Header randomness uses `B256`, not an integer substitute.
+
+For numeric transaction tags, use `Z.eqb` conditionals rather than matching on
+`Z` literals, following the extraction-performance review. Keep blank lines
+between separate definitions, lemmas and examples. Review the whole changed path for each comment,
+not only the line GitHub highlights.
+
+These requirements track Clarus's recurring Rust-type and spacing feedback,
+including the [integer-parameter comment on #1012](https://github.com/formal-land/rocq-of-rust/pull/1012#discussion_r4291942653)
+and the [numeric-dispatch comment on #1012](https://github.com/formal-land/rocq-of-rust/pull/1012#discussion_r4291906682).
+
 From `RocqOfRust`, with the Rocq toolchain active and Python's `jinja2` and
 `pycryptodome` available:
 
@@ -76,9 +95,21 @@ multiplication and payment additions are checked, while priority and blob-fee
 arithmetic saturate as in Rust. Fixture fields are validated before this adapter
 is used, and payment errors retain their position after sender-code/nonce checks.
 The older linked `Transaction.C/Eq` interface is separate and does not prove
-correspondence for these defaults. The new result module models only the payment
+correspondence for these defaults. The executable result module models the payment and environment-validation
 errors used here. Other transaction accounting and host fields still use the
 existing fixture representation.
+
+Environment validation uses the Rust-named checks in
+`revm_handler/simulate/validation.v`: header prerequisites, chain IDs, configured
+gas caps, transaction-type activation, fee and blob rules, block gas limits and
+initcode size. `Transaction.Fees.C` supplies the shared transaction getters;
+typed projection records supply the remaining transaction, block and configuration
+fields without claiming correspondence for the older linked context traits.
+The reusable validator honors the independent configuration switches and treats
+unknown transaction types as Rust's custom type. The fixture adapter retains its
+own malformed/unsupported-input boundary and EIP-7702 creation restriction,
+including their existing rejection order. Initial/floor gas calculation and
+sender-account validation remain separate phases in the adapter.
 
 Transaction settlement now uses `revm_handler/simulate/post_execution.v` for
 refund capping, the EIP-7623 floor, caller reimbursement and beneficiary rewards.
