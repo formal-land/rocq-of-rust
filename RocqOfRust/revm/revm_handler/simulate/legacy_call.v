@@ -7,6 +7,10 @@ Require Import revm.revm_context_interface.links.cfg.
 Require Import revm.revm_handler.simulate.transaction_accounting.
 Require Import revm.revm_handler.simulate.pre_execution.
 Require Import revm.revm_handler.simulate.post_execution.
+Require Import revm.revm_handler.simulate.validation.
+Require Import revm.revm_context_interface.simulate.result.
+Require Import alloy_primitives.bits.simulate.fixed.
+Require Import alloy_primitives.links.aliases.
 Require Import revm.revm_interpreter.simulate.gas.
 Require Import revm.revm_handler.simulate.handler.
 Require Import revm.revm_context_interface.transaction.simulate.alloy_types.
@@ -354,14 +358,33 @@ Module LegacyCall.
   Definition execute := execute_with_runner CallRunner.execute_with_finalization.
 
   Definition validate_header (spec : SpecId.t)
-      (previous_randao excess_blob_gas : option Z) : option Rejection.t :=
-    if Impl_SpecId.is_enabled_in spec SpecId.MERGE &&
-      (match previous_randao with None => true | Some _ => false end) then
-      Some Rejection.PrevrandaoNotSet
-    else if Impl_SpecId.is_enabled_in spec SpecId.CANCUN &&
-      (match excess_blob_gas with None => true | Some _ => false end) then
-      Some Rejection.ExcessBlobGasNotSet
-    else None.
+      (previous_randao : option aliases.B256.t) (excess_blob_gas : option u64)
+      : option Rejection.t :=
+    let block : validation.BlockFields.t := {|
+      validation.BlockFields.basefee := 0;
+      validation.BlockFields.gas_limit := 0;
+      validation.BlockFields.blob_gasprice := 0;
+      validation.BlockFields.prevrandao := previous_randao;
+      validation.BlockFields.blob_excess_gas := excess_blob_gas;
+    |} in
+    match validation.validate_header spec block with
+    | core.links.result.Result.Err InvalidHeader.PrevrandaoNotSet => Some Rejection.PrevrandaoNotSet
+    | core.links.result.Result.Err InvalidHeader.ExcessBlobGasNotSet => Some Rejection.ExcessBlobGasNotSet
+    | core.links.result.Result.Ok _ => None
+    end.
+
+  Definition validate_chain_id (spec : SpecId.t) (tx : TransactionAccounting.Transaction.t)
+      (chain_id : u64) : option Rejection.t :=
+    let cfg := (TransactionAccounting.validation_config spec None)
+      <| validation.CfgFields.chain_id := chain_id |>
+      <| validation.CfgFields.tx_chain_id_check := true |> in
+    match validation.validate_chain_id
+      {| Integer.value := tx.(TransactionAccounting.Transaction.tx_type) |}
+      (option_map (fun value => {| Integer.value := value |}) tx.(TransactionAccounting.Transaction.chain_id)) cfg with
+    | core.links.result.Result.Err InvalidTransaction.InvalidChainId => Some Rejection.InvalidChainId
+    | core.links.result.Result.Err InvalidTransaction.MissingChainId => Some Rejection.MissingChainId
+    | _ => None
+    end.
 
   Definition run_with_runner
       (run_frame : bool -> nat -> StatefulHost.t -> list CallRunner.Pending.t -> CallFrame.state ->
@@ -373,21 +396,14 @@ Module LegacyCall.
       SpecId.CANCUN | SpecId.PRAGUE | SpecId.OSAKA => true | _ => false end) then
       Result.Unsupported (Gap.Accounting (TransactionAccounting.UnsupportedReason.Fork spec))
     else if negb (input_valid input) then Result.Malformed else
-    match validate_header spec input.(Input.block).(StatefulHost.Environment.Block.previous_randao)
-      input.(Input.excess_blob_gas) with
+    match validate_header spec
+      (option_map FixedBytes.from_Z input.(Input.block).(StatefulHost.Environment.Block.previous_randao))
+      (option_map (fun value => {| Integer.value := value |}) input.(Input.excess_blob_gas)) with
     | Some reason => Result.Rejected reason
     | None =>
-        if (match tx.(TransactionAccounting.Transaction.chain_id) with
-          | None => (tx.(TransactionAccounting.Transaction.tx_type) =? 1) ||
-              (tx.(TransactionAccounting.Transaction.tx_type) =? 2) ||
-              (tx.(TransactionAccounting.Transaction.tx_type) =? 3) ||
-              (tx.(TransactionAccounting.Transaction.tx_type) =? 4)
-          | Some _ => false
-          end) then Result.Rejected Rejection.MissingChainId else
-        if match tx.(TransactionAccounting.Transaction.chain_id) with
-          | Some chain_id => negb (chain_id =? input.(Input.chain_id))
-          | None => false
-          end then Result.Rejected Rejection.InvalidChainId else
+        match validate_chain_id spec tx {| Integer.value := input.(Input.chain_id) |} with
+        | Some reason => Result.Rejected reason
+        | None =>
         let block := {|
           TransactionAccounting.Block.gas_limit := input.(Input.block).(StatefulHost.Environment.Block.gas_limit);
           TransactionAccounting.Block.base_fee := input.(Input.block).(StatefulHost.Environment.Block.base_fee);
@@ -423,6 +439,7 @@ Module LegacyCall.
                 else execute_with_runner run_frame fuel spec tx input (Some target) initial
               end
             end
+        end
         end
     end.
 
