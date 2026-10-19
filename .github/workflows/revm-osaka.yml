@@ -57,7 +57,8 @@ jobs:
             opam install -y zarith yojson
             export OCAMLPATH="$PWD/RocqOfRust/plugin${OCAMLPATH:+:$OCAMLPATH}"
             python3 RocqOfRust/revm/tests/native/build.py \
-              --numeric-backend zarith --output-dir target/revm-osaka --smoke --bridge
+              --numeric-backend zarith --output-dir target/revm-osaka --smoke --bridge \
+              --native-memory-limit-mib 8192
             mkdir -p target/osaka-bundle
             cp target/revm-osaka/native_transaction_bridge target/osaka-bundle/
             sha256sum target/osaka-bundle/native_transaction_bridge > target/osaka-bundle/bridge.sha256

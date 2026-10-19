@@ -102,5 +102,48 @@ class BuildReuseTests(unittest.TestCase):
             self.assertNotEqual(second, fingerprint())
 
 
+class CompilerLimitTests(unittest.TestCase):
+    def test_child_limits_and_parent_isolation(self):
+        import resource
+        parent_limit = resource.getrlimit(resource.RLIMIT_AS)
+        command = [sys.executable, "-c",
+                   "import json, resource; print(json.dumps([resource.getrlimit(k) "
+                   "for k in (resource.RLIMIT_AS, resource.RLIMIT_STACK, resource.RLIMIT_CORE)]))"]
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory)
+            for limit in (2048, 8192):
+                kwargs = {} if limit == 2048 else {"memory_limit_mib": limit}
+                build.run(command, output, "limits.log", **kwargs)
+                self.assertEqual(json.loads((output / "limits.log").read_text()),
+                                 [[limit * 1024**2] * 2, [64 * 1024**2] * 2, [0, 0]])
+        self.assertEqual(resource.getrlimit(resource.RLIMIT_AS), parent_limit)
+
+    def test_override_only_reaches_ocaml_compilation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            arguments = ["build.py", "--output-dir", directory, "--smoke", "--bridge",
+                         "--numeric-backend", "zarith", "--native-memory-limit-mib", "8192"]
+            with patch.object(sys, "argv", arguments), patch.object(build, "run") as run:
+                build.main()
+            native_logs = {"numeric_shifts_build.log", "native_library.log",
+                           "native_smoke_build.log", "native_authorization_build.log",
+                           "native_bridge_build.log"}
+            seen = set()
+            for call in run.call_args_list:
+                command, output, log, *limit = call.args
+                if log in native_logs:
+                    self.assertEqual(limit, [8192])
+                    seen.add(log)
+                else:
+                    self.assertEqual(limit, [])
+            self.assertEqual(seen, native_logs)
+
+    def test_nonpositive_limit_rejected_before_build(self):
+        for value in ("0", "-1"):
+            with patch.object(sys, "argv", ["build.py", "--native-memory-limit-mib", value]):
+                with self.assertRaises(SystemExit) as result:
+                    build.main()
+                self.assertEqual(result.exception.code, 2)
+
+
 if __name__ == '__main__':
     unittest.main()

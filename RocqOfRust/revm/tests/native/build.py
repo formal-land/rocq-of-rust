@@ -3,6 +3,7 @@
 import argparse
 from contextlib import contextmanager
 import fcntl
+from functools import partial
 import hashlib
 import json
 import os
@@ -23,19 +24,19 @@ MODULES = [
 ]
 
 
-def compiler_limits():
+def compiler_limits(memory_limit_mib=2048):
     resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
-    resource.setrlimit(resource.RLIMIT_AS, (2 * 1024**3, 2 * 1024**3))
+    resource.setrlimit(resource.RLIMIT_AS, (memory_limit_mib * 1024**2, memory_limit_mib * 1024**2))
     resource.setrlimit(resource.RLIMIT_STACK, (64 * 1024**2, 64 * 1024**2))
 
 
-def run(command, output, log_name):
+def run(command, output, log_name, memory_limit_mib=2048):
     started = time.monotonic()
     log = output/log_name
     with log.open("w") as stream:
         result = subprocess.run(
             command, cwd=output, stdout=stream, stderr=subprocess.STDOUT,
-            preexec_fn=compiler_limits, check=False,
+            preexec_fn=partial(compiler_limits, memory_limit_mib), check=False,
         )
     if result.returncode:
         raise SystemExit(f"Command failed ({result.returncode}); see {log}")
@@ -142,6 +143,8 @@ def main():
     parser.add_argument("--rocq-root", type=Path)
     parser.add_argument("--output-dir", type=Path)
     parser.add_argument("--opam-switch")
+    parser.add_argument("--native-memory-limit-mib", type=int, default=2048,
+                        help="Address-space cap for OCaml compilation only (default: 2048 MiB)")
     parser.add_argument("--smoke", action="store_true", help="Run sixteen transaction and three authorization checks")
     parser.add_argument("--bridge", action="store_true", help="Build the full-state JSONL bridge")
     parser.add_argument("--numeric-backend", choices=["inductive", "zarith"],
@@ -151,6 +154,8 @@ def main():
                        help="Reuse matching local inputs/outputs; assumes installed dependency packages are unmodified")
     cache.add_argument("--no-cache", action="store_true", help="Force a full native build (the default)")
     args = parser.parse_args()
+    if args.native_memory_limit_mib <= 0:
+        parser.error("--native-memory-limit-mib must be positive")
     sources = Path(__file__).resolve().parent
     root = (args.rocq_root or sources.parents[2]).resolve()
     output = (args.output_dir or root.parent/"target"/"revm-native").resolve()
@@ -193,27 +198,27 @@ def main():
         if args.numeric_backend == "zarith" or args.smoke:
             shutil.copyfile(sources/"native_numeric_shifts.ml", output/"native_numeric_shifts.ml")
             run(prefix+["ocamlfind", "ocamlopt", "-package", "zarith", "-c", "native_numeric_shifts.ml"],
-                output, "numeric_shifts_build.log")
+                output, "numeric_shifts_build.log", args.native_memory_limit_mib)
             if args.numeric_backend == "zarith":
                 numeric_objects = ["native_numeric_shifts.cmx"]
         run(prefix+["ocamlfind", "ocamlopt", "-package", "zarith", "-w", "-a", "-c", "native_transactions.mli", "native_transactions.ml"],
-            output, "native_library.log")
+            output, "native_library.log", args.native_memory_limit_mib)
         if args.smoke:
             run(prefix+["ocamlfind", "ocamlopt", "-package", "zarith", "-linkpkg", "-w", "-a", "-o", "native_transaction_smokes"]+numeric_objects+[
                         "native_transaction_smoke.mli", "native_transaction_smoke.ml", "native_transaction_main.ml"],
-                output, "native_smoke_build.log")
+                output, "native_smoke_build.log", args.native_memory_limit_mib)
             run([str(output/"native_transaction_smokes")], output, "native_smoke_run.log")
             run(prefix+["ocamlfind", "ocamlopt", "-package", "zarith", "-linkpkg", "-w", "-a",
                         "-o", "native_authorization_smokes", "native_numeric_shifts.cmx",
                         "native_authorization_smoke.mli", "native_authorization_smoke.ml",
-                        "native_authorization_main.ml"], output, "native_authorization_build.log")
+                        "native_authorization_main.ml"], output, "native_authorization_build.log", args.native_memory_limit_mib)
             run([str(output/"native_authorization_smokes")], output, "native_authorization_run.log")
         if args.bridge:
             shutil.copyfile(sources/"native_transaction_bridge.ml", output/"native_transaction_bridge.ml")
             shutil.copyfile(sources/f"native_numeric_{args.numeric_backend}.ml", output/"native_numeric.ml")
             run(prefix+["ocamlfind", "ocamlopt", "-w", "-a", "-package", "yojson,zarith", "-linkpkg",
                         *numeric_objects, "native_transactions.cmx", "native_numeric.ml", "native_transaction_bridge.ml", "-o", "native_transaction_bridge"],
-                output, "native_bridge_build.log")
+                output, "native_bridge_build.log", args.native_memory_limit_mib)
         if args.reuse:
             current = build_fingerprint(root, sources, prefix, args.numeric_backend,
                                         args.smoke, args.bridge)
