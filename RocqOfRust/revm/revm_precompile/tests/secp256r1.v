@@ -38,12 +38,12 @@ Module Secp256r1Test.
       {| Integer.value := 6900 |} = empty_output {| Integer.value := 6900 |}.
   Proof. reflexivity. Qed.
 
-  Example osaka_correct_length_is_unsupported :
+  Example osaka_zero_signature_returns_empty :
     secp256r1.p256_verify_osaka (List.repeat zero_byte 160)
-      {| Integer.value := 6900 |} = None.
+      {| Integer.value := 6900 |} = empty_output {| Integer.value := 6900 |}.
   Proof. reflexivity. Qed.
 
-  Example osaka_oog_precedes_unsupported_crypto :
+  Example osaka_oog_precedes_signature_verification :
     secp256r1.p256_verify_osaka (List.repeat zero_byte 160)
       {| Integer.value := 6899 |} = Some (Result.Err PrecompileError.OutOfGas).
   Proof. reflexivity. Qed.

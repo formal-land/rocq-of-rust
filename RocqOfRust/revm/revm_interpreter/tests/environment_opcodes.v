@@ -335,9 +335,9 @@ Module Test.
   Definition p256_valid_length_call : list Z :=
     [95; 95; 96; 160; 95; 95; 97; 1; 0; 97; 195; 80; 241; 0].
 
-  Lemma public_osaka_p256_crypto_remains_incomplete :
+  Lemma public_osaka_p256_invalid_signature_completes :
     List.map (fun spec => status (run spec 100000 p256_valid_length_call []))
       [SpecId.PRAGUE; SpecId.OSAKA; SpecId.AMSTERDAM] =
-    [Some InstructionResult.Stop; None; None].
+    [Some InstructionResult.Stop; Some InstructionResult.Stop; None].
   Proof. vm_compute. reflexivity. Qed.
 End Test.

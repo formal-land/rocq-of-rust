@@ -281,6 +281,7 @@ def generate_framehelpers(root, output):
         'Point.double', 'Point.add', 'Point.mul_positive', 'Point.mul',
     ])
     keep += ' RocqOfRust.revm.revm_precompile.simulate.modexp.Modexp.pow_mod'
+    keep += ' RocqOfRust.revm.revm_precompile.simulate.secp256r1.secp256r1.p256_verify_inner'
     items=['make_interpreter_with_bytecode','interpreter_with_spec_id','CallFrame.result','CallFrame.resume','CallFrame.child','CallFrame.transfer','CreateFrame.result','CreateFrame.child','CreateFrame.prepare','CreateFrame.resume','CreateFrame.finish','PrecompileFrame.run']
     previous=[]
     for original in items:
@@ -537,8 +538,27 @@ def generate_transaction_smoke(root, output):
     End NativeEcrecoverTest.
     '''
     recovery_names = ['native_smoke_ecrecover_valid', 'native_smoke_ecrecover_invalid']
+    # Copy definitions only, so native checks do not depend on the expensive
+    # vm_compute proofs in the source test module.
+    p256_source = (root/'revm/revm_precompile/tests/secp256r1_verification.v').read_text()
+    p256_definitions = re.findall(
+        r'^  Definition (\w+)\b.*?(?=^  (?:Definition|Example)|^End )',
+        p256_source, re.MULTILINE | re.DOTALL,
+    )
+    p256_names = [name for name in p256_definitions if name.endswith('_check')]
+    if len(p256_names) != 35 or 'input_bytes' not in p256_definitions:
+        raise ValueError('Expected input_bytes and 35 P256 regression checks')
+    code += 'Require Import RocqOfRust.revm.revm_precompile.simulate.secp256r1.\n'
+    code += 'Module NativeP256Test.\n'
+    for name in p256_definitions:
+        definition = re.search(
+            r'^  Definition ' + name + r'\b.*?(?=^  (?:Definition|Example)|^End )',
+            p256_source, re.MULTILINE | re.DOTALL,
+        )
+        code += definition.group() + '\n'
+    code += 'End NativeP256Test.\n'
     create_names=['native_smoke_create_empty','native_smoke_create_deploy']
-    exports=['NativeTxTest.'+n for n in names]+['NativeCreateTest.'+n for n in create_names]+['NativeEcrecoverTest.'+n for n in recovery_names]
+    exports=['NativeTxTest.'+n for n in names]+['NativeCreateTest.'+n for n in create_names]+['NativeEcrecoverTest.'+n for n in recovery_names]+['NativeP256Test.'+n for n in p256_names]
     code+='Extraction "@NATIVE_OUTPUT@/native_transaction_smoke.ml" '+ ' '.join(exports)+'.\n'
     (p/'NativeTransactionSmoke.v').write_text(code)
     main='''let report name passed =
@@ -547,7 +567,7 @@ def generate_transaction_smoke(root, output):
 
     let () =
     '''
-    main+=';\n'.join(f'  report "{name}" Native_transaction_smoke.{mod}.{name}' for mod,name in [('NativeTxTest',n) for n in names]+[('NativeCreateTest',n) for n in create_names]+[('NativeEcrecoverTest',n) for n in recovery_names])+'\n'
+    main+=';\n'.join(f'  report "{name}" Native_transaction_smoke.{mod}.{name}' for mod,name in [('NativeTxTest',n) for n in names]+[('NativeCreateTest',n) for n in create_names]+[('NativeEcrecoverTest',n) for n in recovery_names]+[('NativeP256Test',n) for n in p256_names])+'\n'
     (p/'native_transaction_main.ml').write_text(main)
 
 
