@@ -248,7 +248,11 @@ requires the installed OCaml packages `yojson` and `zarith`; Zarith converts
 JSON integers to and from the extracted integer type. Generated Rocq sources,
 proof artifacts, OCaml files, binaries and build logs remain in the ignored
 `target/revm-native/` directory of the rocq-of-rust checkout. Compilation is
-sequential with a 2 GiB address-space limit and a 64 MiB stack limit. The JSONL
+sequential with a default 2 GiB address-space limit and a 64 MiB stack limit.
+`--native-memory-limit-mib` changes the cap for OCaml compilation only; the
+Osaka CI build uses 8192 MiB because its native library compilation exhausted
+the default cap. Rocq compilation, smoke execution and fixture execution retain
+their 2 GiB limits. The JSONL
 executable is `target/revm-native/native_transaction_bridge`, relative to that
 checkout; it reads one signed or normalized request per line and returns the
 complete account state, logs, execution status, gas settlement, authentication
