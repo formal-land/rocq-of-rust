@@ -325,6 +325,25 @@ def test_custom_blob_schedule_and_previous_block_hash_are_preserved():
     assert case["input"]["block"]["use_state_test_hashes"] is True
 
 
+def test_osaka_transaction_blob_cap_is_independent_of_block_schedule():
+    for fork, maximum in (("Cancun", 9), ("Prague", 9), ("Osaka", 6)):
+        for schedule_fork in (fork, "Prague") if fork == "Osaka" else (fork,):
+            document = unsigned_fixture()
+            test = document["add11"]
+            test["post"] = {fork: test["post"]["Cancun"]}
+            test["config"]["blobSchedule"] = {schedule_fork: {
+                "baseFeeUpdateFraction": "0x01", "max": "0x09", "target": "0x06"}}
+            test["env"]["currentExcessBlobGas"] = "0x02"
+            result = adapter.normalize_case(document, fork)
+            assert result["input"]["max_blobs_per_tx"] == maximum
+            assert result["input"]["block"]["blob_base_fee"] == 6
+    document = unsigned_fixture()
+    test = document["add11"]
+    test["post"] = {"Osaka": test["post"]["Cancun"]}
+    test["config"].pop("blobSchedule", None)
+    assert adapter.normalize_case(document, "Osaka")["input"]["max_blobs_per_tx"] == 6
+
+
 def test_missing_randao_or_excess_is_not_fabricated():
     document = unsigned_fixture()
     test = document["add11"]
@@ -565,6 +584,7 @@ TESTS = (
     test_case_selection_never_silently_chooses_a_post_or_test,
     test_source_retained_without_aliasing_or_mutation,
     test_custom_blob_schedule_and_previous_block_hash_are_preserved,
+    test_osaka_transaction_blob_cap_is_independent_of_block_schedule,
     test_missing_randao_or_excess_is_not_fabricated,
     test_non_string_expected_exception_is_malformed,
     test_semantic_environment_extras_are_reported_but_metadata_is_harmless,

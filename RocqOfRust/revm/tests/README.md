@@ -414,6 +414,12 @@ passed through the extracted bridge with matching output and gas. These
 definitions do not claim
 native-provider correspondence or a cryptographic correctness proof.
 
+The fixture adapter supplies Osaka's six-blob transaction cap independently of
+`blobSchedule.max`, which describes the block schedule. Blob-price calculation
+still uses the supplied schedule. EEST floor-gas and transaction-gas-cap exception
+mappings check the applicable fork and exact handler details; floor-gas rejection
+also checks that the initial intrinsic gas cost did not already exceed the limit.
+
 ### Resumable Osaka inventory
 
 The manual **REVM Osaka inventory** workflow targets exactly 14,614 Osaka state

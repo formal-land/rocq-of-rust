@@ -489,6 +489,9 @@ def normalize_case(document: object, fork: str, post_index: int | None = None,
             schedule = object_field(schedule, f"config.blobSchedule.{fork}")
             fraction = hex_int(schedule.get("baseFeeUpdateFraction"), "blobSchedule.baseFeeUpdateFraction")
             max_blobs = hex_int(schedule.get("max"), "blobSchedule.max")
+    # Osaka limits each transaction to six blobs independently of the block schedule.
+    if fork == "Osaka":
+        max_blobs = 6
     explicit_blob_price = optional_int(env, "currentBlobGasPrice", "env.currentBlobGasPrice")
     blob_price = explicit_blob_price if explicit_blob_price is not None else (
         fake_exponential(excess, fraction) if excess is not None else 0
