@@ -75,9 +75,21 @@ establish a general KZG verifier or native correspondence proof.
 BLS12-381 precompiles (addresses 11 through 17) implement gas, input-length
 and leading-padding rejection following the corresponding Rust modules. P256
 (address 256 in Osaka) charges 6,900 gas and returns empty output for input
-lengths other than 160 bytes. Requests that reach the unimplemented cryptographic
-operations still return incomplete execution. These definitions do not establish
-full BLS or P256 support or native-provider correspondence. Of the 64 previously
+lengths other than 160 bytes. For 160-byte inputs, its provider checks ECDSA
+signature and public-key ranges, curve membership and the P256 verification
+equation. Invalid signatures return empty output; valid signatures return a
+32-byte word containing one. High-S signatures are accepted. The handwritten
+provider follows the P256/ECDSA module boundaries with canonical field/scalar
+wrappers and explicit reduction, but does not prove correspondence with
+RustCrypto's Montgomery limbs or homogeneous point formulas. BLS requests that
+reach unimplemented cryptographic operations still return incomplete execution.
+All 397 pinned Osaka EIP-7951 state fixtures pass through the compiled runner,
+including authenticated state and hash checks. This covers direct transaction
+calls, contract calls and creation, gas boundaries, and valid/invalid signatures.
+The native smoke tests also evaluate 35 explicit signature vectors, including
+the 17 checked-in Rust vectors. Focused Rocq examples cover input rejection
+and representative successful and failed signature verification.
+These fixture results do not establish native-provider correspondence. Of the 64 previously
 incomplete Osaka EIP-7702 precompile-pointer cases, 60 pass through the compiled
 runner with authenticated state and hash checks. The remaining four call G1
 addition on two infinity points and still require the crypto provider. This is

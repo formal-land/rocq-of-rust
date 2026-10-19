@@ -639,9 +639,10 @@ Module Test.
     Some (InstructionResult.Stop, 23603, 1, 763963, 7, 141618, 1).
   Proof. vm_compute. reflexivity. Qed.
 
-  Lemma osaka_p256_crypto_overrides_bytecode_but_stays_incomplete :
-    LegacyCall.run 100 SpecId.OSAKA (precompile_tx 256 (List.repeat 0 160)) (precompile_input 256 [254]) =
-    LegacyCall.Result.Incomplete.
+  Lemma osaka_p256_invalid_signature_overrides_bytecode :
+    precompile_observation 256 (LegacyCall.run 100 SpecId.OSAKA
+      (precompile_tx 256 (List.repeat 0 160)) (precompile_input 256 [254])) =
+    Some (InstructionResult.Return, 28540, 1, 714593, 7, 171240, []).
   Proof. vm_compute. reflexivity. Qed.
 
   Lemma osaka_p256_wrong_length_succeeds_with_exact_fees :
@@ -667,9 +668,12 @@ Module Test.
     LegacyCall.Result.Incomplete.
   Proof. vm_compute. reflexivity. Qed.
 
-  Lemma osaka_nested_valid_length_p256_is_incomplete :
-    LegacyCall.run 300 SpecId.OSAKA tx (input [95; 95; 96; 160; 95; 95; 97; 1; 0;
-      97; 195; 80; 241; 0]) = LegacyCall.Result.Incomplete.
+  Lemma osaka_nested_invalid_p256_completes :
+    match LegacyCall.run 300 SpecId.OSAKA tx (input [95; 95; 96; 160; 95; 95; 97; 1; 0;
+      97; 195; 80; 241; 0]) with
+    | LegacyCall.Result.Completed _ => true
+    | _ => false
+    end = true.
   Proof. vm_compute. reflexivity. Qed.
 
   Lemma osaka_nested_create_keeps_existing_limits_and_deposit_fees :

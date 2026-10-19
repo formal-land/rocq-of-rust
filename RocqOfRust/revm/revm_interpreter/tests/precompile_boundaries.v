@@ -54,8 +54,9 @@ Module Test.
       Some (InstructionResult.PrecompileOOG, {| Integer.value := 6899 |}, 0%nat).
   Proof. vm_compute. reflexivity. Qed.
 
-  Lemma p256_crypto_stays_incomplete :
-    direct SpecId.OSAKA 256 (List.repeat (0 : u8) 160) 6900 = None.
+  Lemma p256_invalid_signature_returns_empty_success :
+    observe (direct SpecId.OSAKA 256 (List.repeat (0 : u8) 160) 6900) =
+      Some (InstructionResult.Return, {| Integer.value := 0 |}, 0%nat).
   Proof. vm_compute. reflexivity. Qed.
 
   Lemma p256_is_not_enabled_before_osaka :
