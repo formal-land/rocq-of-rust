@@ -323,8 +323,20 @@ Module Test.
   Definition p256_call : list Z :=
     [95; 95; 95; 95; 95; 97; 1; 0; 97; 195; 80; 241; 0].
 
-  Lemma public_osaka_p256_is_explicitly_unsupported :
-    List.map (fun spec => status (run spec 100000 p256_call []))
+  Lemma public_p256_empty_input_call_respects_supported_forks :
+    List.map (fun spec =>
+      let result := run spec 100000 p256_call [] in
+      (status result, calls.Test.stack result))
+      [SpecId.PRAGUE; SpecId.OSAKA; SpecId.AMSTERDAM] =
+    [(Some InstructionResult.Stop, Some [1]);
+     (Some InstructionResult.Stop, Some [1]); (None, None)].
+  Proof. vm_compute. reflexivity. Qed.
+
+  Definition p256_valid_length_call : list Z :=
+    [95; 95; 96; 160; 95; 95; 97; 1; 0; 97; 195; 80; 241; 0].
+
+  Lemma public_osaka_p256_crypto_remains_incomplete :
+    List.map (fun spec => status (run spec 100000 p256_valid_length_call []))
       [SpecId.PRAGUE; SpecId.OSAKA; SpecId.AMSTERDAM] =
     [Some InstructionResult.Stop; None; None].
   Proof. vm_compute. reflexivity. Qed.
