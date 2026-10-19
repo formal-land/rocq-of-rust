@@ -21,6 +21,9 @@ targets=(
   revm/revm_interpreter/tests/gas_refunds.vo
   revm/revm_context_interface/tests/transaction_fees.vo
   alloy_eip7702/tests/auth_list.vo
+  revm/revm_interpreter/tests/precompile_boundaries.vo
+  revm/revm_precompile/tests/bls12_381.vo
+  revm/revm_precompile/tests/secp256r1.vo
   revm/revm_precompile/tests/blake2.vo
   revm/revm_precompile/tests/bn254.vo
   revm/revm_precompile/tests/bn254_pairing.vo

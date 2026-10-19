@@ -3,6 +3,8 @@ From Stdlib Require Import List ZArith.
 Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.bytes.simulate.mod.
 Require Import bytes.links.bytes.
+Require Import core.links.result.
+Require Import core.num.simulate.mod.
 Require Import revm.revm_interpreter.interpreter.links.runtime_flags.
 Require Import revm.revm_interpreter.interpreter_action.links.call_inputs.
 Require Import revm.revm_interpreter.links.gas.
@@ -12,12 +14,22 @@ Require Import revm.revm_interpreter.links.interpreter_action.
 Require Import revm.revm_interpreter.tests.call_frame.
 Require Import revm.revm_interpreter.tests.interpreter_types.
 Require Import revm.revm_precompile.simulate.blake2.
+Require Import revm.revm_precompile.simulate.bls12_381.g1_add.
+Require Import revm.revm_precompile.simulate.bls12_381.g1_msm.
+Require Import revm.revm_precompile.simulate.bls12_381.g2_add.
+Require Import revm.revm_precompile.simulate.bls12_381.g2_msm.
+Require Import revm.revm_precompile.simulate.bls12_381.map_fp2_to_g2.
+Require Import revm.revm_precompile.simulate.bls12_381.map_fp_to_g1.
+Require Import revm.revm_precompile.simulate.bls12_381.pairing.
+
 Require Import revm.revm_precompile.simulate.bn254.
 Require Import revm.revm_precompile.simulate.bn254_pairing_run.
+Require Import revm.revm_precompile.simulate.interface.
 Require Import revm.revm_precompile.simulate.kzg_point_evaluation.
 Require Import revm.revm_precompile.simulate.modexp.
 Require Import revm.revm_precompile.simulate.ripemd160.
 Require Import revm.revm_precompile.simulate.secp256k1.
+Require Import revm.revm_precompile.simulate.secp256r1.
 Require Import revm.revm_precompile.simulate.sha256.
 Require Import revm.revm_primitives.links.hardfork.
 Require Import revm.revm_primitives.simulate.hardfork.
@@ -218,8 +230,52 @@ Module PrecompileFrame.
     | KzgPointEvaluation.Result.Unsupported => None
     end.
 
+  (** This adapter preserves unsupported crypto as None. A recognized address
+      must never fall through to empty account bytecode in that case.
+      CallFrame.child normalizes shared input to owned Bytes before dispatch. *)
+  Definition partial_precompile (address : u64) (child : CallFrame.machine)
+      : option InterpreterResult.t :=
+    match child.(Interpreter.input).(Input.input) with
+    | CallInput.SharedBuffer _ => None
+    | CallInput.Bytes input =>
+    let bytes := input.(alloy_primitives.bytes.links.mod.Bytes.value).(bytes.Bytes.value) in
+    let gas := child.(Interpreter.gas) in
+    let limit := gas.(Gas.remaining) in
+    let address := address.(Integer.value) in
+    let result :=
+      if Z.eqb address 11 then g1_add.g1_add bytes limit else
+      if Z.eqb address 12 then g1_msm.g1_msm bytes limit else
+      if Z.eqb address 13 then g2_add.g2_add bytes limit else
+      if Z.eqb address 14 then g2_msm.g2_msm bytes limit else
+      if Z.eqb address 15 then pairing.pairing bytes limit else
+      if Z.eqb address 16 then map_fp_to_g1.map_fp_to_g1 bytes limit else
+      if Z.eqb address 17 then map_fp2_to_g2.map_fp2_to_g2 bytes limit else
+      if Z.eqb address 256 then secp256r1.p256_verify_osaka bytes limit else None in
+    match result with
+    | None => None
+    | Some (Result.Err PrecompileError.OutOfGas) =>
+      Some (CallFrame.result InstructionResult.PrecompileOOG child)
+    | Some (Result.Err _) =>
+      Some (CallFrame.result InstructionResult.PrecompileError child)
+    | Some (Result.Ok output) =>
+      if output.(PrecompileOutput.reverted) ||
+        negb (Z.eqb output.(PrecompileOutput.gas_refunded).(Integer.value) 0)
+      then None else
+      match Impl_u64.checked_sub limit output.(PrecompileOutput.gas_used) with
+      | None => Some (CallFrame.result InstructionResult.PrecompileOOG child)
+      | Some remaining => Some
+        {| InterpreterResult.result := InstructionResult.Return;
+           InterpreterResult.output := output.(PrecompileOutput.bytes);
+           InterpreterResult.gas := gas <| Gas.remaining := remaining |> |}
+      end
+    end
+    end.
+
+  (** A dispatcher exists for these addresses; individual requests can still
+      be unsupported, as indicated by run returning None. *)
   Definition supported (address : Z) : bool :=
-    (address =? 1) || (address =? 2) || (address =? 3) || (address =? 4) || (address =? 5) || (address =? 6) || (address =? 7) || (address =? 8) || (address =? 9) || (address =? 10).
+    (address =? 1) || (address =? 2) || (address =? 3) || (address =? 4) || (address =? 5) || (address =? 6) || (address =? 7) || (address =? 8) || (address =? 9) || (address =? 10) ||
+    ((11 <=? address) && (address <=? 17)) || (address =? 256).
 
   Definition enabled (spec : SpecId.t) (address : Z) : bool :=
     is_precompile spec address && supported address.
@@ -241,5 +297,6 @@ Module PrecompileFrame.
     if (address =? 9) && is_precompile
       child.(Interpreter.runtime_flag).(RuntimeFlags.spec_id) address
     then Some (blake2 child) else
-    if address =? 10 then kzg_point_evaluation child else None.
+    if address =? 10 then kzg_point_evaluation child else
+    partial_precompile {| Integer.value := address |} child.
 End PrecompileFrame.

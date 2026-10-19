@@ -605,9 +605,9 @@ Module Test.
       (precompile_input 10 []) = LegacyCall.Result.Incomplete.
   Proof. vm_compute. reflexivity. Qed.
 
-  Lemma other_top_level_precompiles_remain_explicitly_unsupported :
-    LegacyCall.run 100 SpecId.PRAGUE (precompile_tx 17 []) (precompile_input 17 []) =
-    LegacyCall.Result.Unsupported LegacyCall.Gap.TopLevelPrecompile.
+  Lemma valid_bls_crypto_remains_explicitly_incomplete :
+    LegacyCall.run 100 SpecId.PRAGUE (precompile_tx 17 (List.repeat 0 128)) (precompile_input 17 []) =
+    LegacyCall.Result.Incomplete.
   Proof. vm_compute. reflexivity. Qed.
 
   Lemma osaka_clz_executes_and_settles_exact_fees :
@@ -639,9 +639,21 @@ Module Test.
     Some (InstructionResult.Stop, 23603, 1, 763963, 7, 141618, 1).
   Proof. vm_compute. reflexivity. Qed.
 
-  Lemma osaka_p256_overrides_ordinary_bytecode_but_is_unsupported :
-    LegacyCall.run 100 SpecId.OSAKA (precompile_tx 256 []) (precompile_input 256 [254]) =
-    LegacyCall.Result.Unsupported LegacyCall.Gap.TopLevelPrecompile.
+  Lemma osaka_p256_crypto_overrides_bytecode_but_stays_incomplete :
+    LegacyCall.run 100 SpecId.OSAKA (precompile_tx 256 (List.repeat 0 160)) (precompile_input 256 [254]) =
+    LegacyCall.Result.Incomplete.
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma osaka_p256_wrong_length_succeeds_with_exact_fees :
+    precompile_observation 256 (LegacyCall.run 100 SpecId.OSAKA
+      (precompile_tx 256 []) (precompile_input 256 [254])) =
+    Some (InstructionResult.Return, 27900, 1, 720993, 7, 167400, []).
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma osaka_bls_wrong_length_burns_transaction_gas :
+    precompile_observation 11 (LegacyCall.run 100 SpecId.OSAKA
+      (precompile_tx 11 []) (precompile_input 11 [])) =
+    Some (InstructionResult.PrecompileError, 50000, 1, 500000, 0, 300000, []).
   Proof. vm_compute. reflexivity. Qed.
 
   Lemma prague_p256_address_executes_ordinary_bytecode :
@@ -651,12 +663,12 @@ Module Test.
   Proof. vm_compute. reflexivity. Qed.
 
   Lemma osaka_keeps_unimplemented_bls_precompile_explicit :
-    LegacyCall.run 100 SpecId.OSAKA (precompile_tx 11 []) (input []) =
-    LegacyCall.Result.Unsupported LegacyCall.Gap.TopLevelPrecompile.
+    LegacyCall.run 100 SpecId.OSAKA (precompile_tx 11 (List.repeat 0 256)) (input []) =
+    LegacyCall.Result.Incomplete.
   Proof. vm_compute. reflexivity. Qed.
 
-  Lemma osaka_nested_p256_is_incomplete :
-    LegacyCall.run 300 SpecId.OSAKA tx (input [95; 95; 95; 95; 95; 97; 1; 0;
+  Lemma osaka_nested_valid_length_p256_is_incomplete :
+    LegacyCall.run 300 SpecId.OSAKA tx (input [95; 95; 96; 160; 95; 95; 97; 1; 0;
       97; 195; 80; 241; 0]) = LegacyCall.Result.Incomplete.
   Proof. vm_compute. reflexivity. Qed.
 

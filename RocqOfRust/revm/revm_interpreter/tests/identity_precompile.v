@@ -188,10 +188,10 @@ Module Test.
      calls.Test.remaining_gas result) = (Some [1], Some [171; 205], Some 99982).
   Proof. vm_compute. reflexivity. Qed.
 
-  Lemma pairing_and_kzg_oog_and_other_active_precompiles_incomplete :
+  Lemma pairing_kzg_and_bls_failure_paths_return_failure :
     List.map (fun address => calls.Test.stack
       (run (call 241 address 0 0 0 0 10000 ++ [0]))) [8; 10; 17] =
-      [Some [0]; Some [0]; None].
+      [Some [0]; Some [0]; Some [0]].
   Proof. vm_compute. reflexivity. Qed.
 
   Definition init_identity :=
