@@ -54,7 +54,7 @@ These selections are not a complete EEST transaction-validation run. They do
 not establish native handler correspondence. State checks have explicitly
 limited storage/account observations and omit transaction fees, intrinsic gas,
 nonce processing and top-level value transfer. The frame runner accepts Osaka and recognizes its full precompile address set;
-unimplemented providers, including P256, remain incomplete. Unknown or unsupported execution must not be counted as success.
+requests requiring unimplemented cryptographic operations remain incomplete. Unknown or unsupported execution must not be counted as success.
 
 The full-EEST work targets the separately pinned `tests@v20.0.2` corpus. Existing
 historical and Osaka smoke results must not be reported as completion of that
@@ -71,6 +71,17 @@ Other KZG proofs return incomplete execution; the runner cannot count
 them as successful transactions. The focused checks cover the exact pinned
 inputs, the precompile output and the unsupported boundary. They do not
 establish a general KZG verifier or native correspondence proof.
+
+BLS12-381 precompiles (addresses 11 through 17) implement gas, input-length
+and leading-padding rejection following the corresponding Rust modules. P256
+(address 256 in Osaka) charges 6,900 gas and returns empty output for input
+lengths other than 160 bytes. Requests that reach the unimplemented cryptographic
+operations still return incomplete execution. These definitions do not establish
+full BLS or P256 support or native-provider correspondence. Of the 64 previously
+incomplete Osaka EIP-7702 precompile-pointer cases, 60 pass through the compiled
+runner with authenticated state and hash checks. The remaining four call G1
+addition on two infinity points and still require the crypto provider. This is
+a focused selection, not completion of the Osaka corpus.
 
 The go-ethereum-fork integration retains compatibility entry points and its
 cross-EVM proof build. Its fixture command delegates to this directory.
