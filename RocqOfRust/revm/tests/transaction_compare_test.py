@@ -390,6 +390,61 @@ def test_type4_creation_rejection_requires_exact_decoded_envelope():
     assert compare.validated_authentication_rejection(bad, output) is None
 
 
+def test_osaka_cap_rejection_requires_exact_limit_and_details():
+    source, output = rejected_case()
+    source["fork"] = "Osaka"
+    source["expectation"]["exception"] = "TransactionException.GAS_LIMIT_EXCEEDS_MAXIMUM"
+    source["transaction"]["gas_limit"] = (1 << 24) + 1
+    output.update(reason="GasLimitAboveCap", details=[(1 << 24) + 1, 1 << 24])
+    output["authentication"]["transaction"] = copy.deepcopy(source["transaction"])
+    assert compare.compare_execution(source, output)["classification"] == "authenticated_state_pass"
+    for fork in ("Cancun", "Prague"):
+        bad = copy.deepcopy(source)
+        bad["fork"] = fork
+        assert not compare.mapped_rejection_prerequisites(bad, output)
+    for limit in (1 << 24, 1 << 64):
+        bad = copy.deepcopy(source)
+        bad["transaction"]["gas_limit"] = limit
+        rejection = dict(output, details=[limit, 1 << 24])
+        assert not compare.mapped_rejection_prerequisites(bad, rejection)
+    bad = copy.deepcopy(output)
+    bad["details"][1] += 1
+    assert compare.compare_execution(source, bad)["classification"] == "execution_mismatch"
+    bad = dict(output, reason="GasLimitAboveBlock")
+    assert compare.compare_execution(source, bad)["classification"] == "execution_mismatch"
+
+
+def test_floor_rejections_require_exact_cost_fork_and_intrinsic_precedence():
+    source, output = rejected_case()
+    source["transaction"].update(tx_type=1, data=[1] * 134, gas_limit=26359,
+                                 access_list=[], authorization_list=None, target=1)
+    output.update(reason="FloorGasTooHigh", details=[26360, 26359])
+    output["authentication"]["transaction"] = copy.deepcopy(source["transaction"])
+    for fork in ("Prague", "Osaka"):
+        source["fork"] = fork
+        for exception in ("INTRINSIC_GAS_TOO_LOW", "INTRINSIC_GAS_BELOW_FLOOR_GAS_COST"):
+            source["expectation"]["exception"] = "TransactionException." + exception
+            assert compare.compare_execution(source, output)["classification"] == "authenticated_state_pass"
+    bad = copy.deepcopy(source)
+    bad["fork"] = "Cancun"
+    assert not compare.mapped_rejection_prerequisites(bad, output)
+    for details in ([26361, 26359], [26360, 26358], []):
+        bad = dict(output, details=details)
+        assert compare.compare_execution(source, bad)["classification"] == "execution_mismatch"
+    for limit in (23143, 26360):
+        bad = copy.deepcopy(source)
+        bad["transaction"]["gas_limit"] = limit
+        assert not compare.mapped_rejection_prerequisites(bad, dict(output, details=[26360, limit]))
+    # Access lists, creation and authorizations can make intrinsic gas fail first.
+    for fields in ({"access_list": [[1, [0]]]}, {"target": None},
+                   {"tx_type": 4, "authorization_list": [{}]}):
+        bad = copy.deepcopy(source)
+        bad["transaction"].update(fields)
+        assert not compare.mapped_rejection_prerequisites(bad, output)
+    bad = dict(output, reason="IntrinsicGasTooHigh")
+    assert compare.compare_execution(source, bad)["classification"] == "execution_mismatch"
+
+
 TESTS = tuple(value for name, value in tuple(globals().items()) if name.startswith("test_"))
 
 if __name__ == "__main__":

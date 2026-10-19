@@ -22,10 +22,12 @@ SETTLEMENT_FIELDS = ("gas_remaining", "gas_refunded", "gas_used", "caller_reimbu
                      "beneficiary_reward", "base_fee_burn", "blob_fee_burn")
 
 
-# Exact handler errors observed in the historical GeneralStateTests corpus.
+# EEST exception names mapped to handler errors, checked against fixture inputs.
 # Authentication rejection is checked separately against its validation stage.
 EXPECTED_REJECTIONS = {
-    "TransactionException.INTRINSIC_GAS_TOO_LOW": {"IntrinsicGasTooHigh"},
+    "TransactionException.INTRINSIC_GAS_TOO_LOW": {"IntrinsicGasTooHigh", "FloorGasTooHigh"},
+    "TransactionException.INTRINSIC_GAS_BELOW_FLOOR_GAS_COST": {"FloorGasTooHigh"},
+    "TransactionException.GAS_LIMIT_EXCEEDS_MAXIMUM": {"GasLimitAboveCap"},
     "TransactionException.INSUFFICIENT_ACCOUNT_FUNDS": {"LackOfFunds"},
     "TransactionException.SENDER_NOT_EOA": {"RejectCallerWithCode"},
     "TransactionException.INSUFFICIENT_MAX_FEE_PER_GAS": {"GasPriceBelowBaseFee"},
@@ -342,9 +344,27 @@ def validated_authentication_rejection(case: dict, output: dict) -> str | None:
 
 
 def mapped_rejection_prerequisites(case: dict, output: dict) -> bool:
-    """Check the exact fixture inputs for newly mapped nonce and blob-fee errors."""
+    """Check fixture inputs and error details before accepting mapped rejections."""
     reason, details = output["reason"], output["details"]
     tx = case["transaction"]
+    if reason == "GasLimitAboveCap":
+        maximum = 1 << 24
+        return (case["fork"] == "Osaka" and maximum < tx["gas_limit"] < 1 << 64
+                and details == [tx["gas_limit"], maximum])
+    if reason == "FloorGasTooHigh":
+        if case["fork"] not in {"Prague", "Osaka"}:
+            return False
+        tokens = sum(1 if byte == 0 else 4 for byte in tx["data"])
+        intrinsic = 21000 + 4 * tokens
+        if tx["tx_type"] != 0:
+            intrinsic += sum(2400 + 1900 * len(keys) for _, keys in tx["access_list"])
+        if tx["target"] is None:
+            intrinsic += 32000 + 2 * ((len(tx["data"]) + 31) // 32)
+        if tx["tx_type"] == 4:
+            intrinsic += 25000 * len(tx["authorization_list"] or [])
+        floor = 21000 + 10 * tokens
+        return (intrinsic <= tx["gas_limit"] < floor < 1 << 64
+                and details == [floor, tx["gas_limit"]])
     if reason == "EmptyAuthorizationList":
         return (details == [] and tx["tx_type"] == 4
                 and case["fork"] in {"Prague", "Osaka"}
