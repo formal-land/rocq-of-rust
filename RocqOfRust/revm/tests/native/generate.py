@@ -282,6 +282,8 @@ def generate_framehelpers(root, output):
     ])
     keep += ' RocqOfRust.revm.revm_precompile.simulate.modexp.Modexp.pow_mod'
     keep += ' RocqOfRust.revm.revm_precompile.simulate.secp256r1.secp256r1.p256_verify_inner'
+    keep += ' RocqOfRust.revm.revm_precompile.simulate.bls12_381.g1_add.g1_add.g1_add'
+    keep += ' RocqOfRust.revm.revm_precompile.simulate.bls12_381.g1_msm.g1_msm.g1_msm'
     items=['make_interpreter_with_bytecode','interpreter_with_spec_id','CallFrame.result','CallFrame.resume','CallFrame.child','CallFrame.transfer','CreateFrame.result','CreateFrame.child','CreateFrame.prepare','CreateFrame.resume','CreateFrame.finish','PrecompileFrame.run']
     previous=[]
     for original in items:

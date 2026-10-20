@@ -62,4 +62,11 @@ Module bls_utils.
           end
         end
       end.
+
+  (** The provider returns exactly 96 bytes, as the Rust array type requires. *)
+  Definition pad_g1_point (unpadded : list u8) : list u8 :=
+    let padding := List.repeat ({| Integer.value := 0 |} : u8)
+      (Z.to_nat bls12_381_const.FP_PAD_BY.(Integer.value)) in
+    let width := Z.to_nat bls12_381_const.FP_LENGTH.(Integer.value) in
+    padding ++ List.firstn width unpadded ++ padding ++ List.skipn width unpadded.
 End bls_utils.

@@ -73,8 +73,23 @@ inputs, the precompile output and the unsupported boundary. They do not
 establish a general KZG verifier or native correspondence proof.
 
 BLS12-381 precompiles (addresses 11 through 17) implement gas, input-length
-and leading-padding rejection following the corresponding Rust modules. P256
-(address 256 in Osaka) charges 6,900 gas and returns empty output for input
+and leading-padding rejection following the corresponding Rust modules. G1
+addition also checks canonical coordinates and curve membership, then computes
+and encodes the sum. As in Rust, addition does not require subgroup membership.
+G1 multi-scalar multiplication additionally checks subgroup membership before
+skipping zero scalars, reduces scalar values modulo the subgroup order, and
+accumulates products in Jacobian coordinates. Validation errors retain the
+Rust iterator order, so an earlier invalid point precedes later padding errors.
+The provider follows the Arkworks wrapper functions using bounded field and
+scalar wrappers with explicit reduction. This is an executable mathematical
+model, not a correspondence proof for Arkworks Montgomery representation or
+its internal multiplication algorithm. All 91 pinned Osaka G1-addition and
+227 G1MSM fixtures pass with authenticated state and hash checks, independently
+verified against the pinned selection. The G1MSM selection includes 18 variable
+input-length cases. Twelve focused Rocq examples cover addition; eleven cover
+MSM scalar boundaries, subgroup rejection and validation order.
+
+P256 (address 256 in Osaka) charges 6,900 gas and returns empty output for input
 lengths other than 160 bytes. For 160-byte inputs, its provider checks ECDSA
 signature and public-key ranges, curve membership and the P256 verification
 equation. Invalid signatures return empty output; valid signatures return a
@@ -89,11 +104,11 @@ calls, contract calls and creation, gas boundaries, and valid/invalid signatures
 The native smoke tests also evaluate 35 explicit signature vectors, including
 the 17 checked-in Rust vectors. Focused Rocq examples cover input rejection
 and representative successful and failed signature verification.
-These fixture results do not establish native-provider correspondence. Of the 64 previously
-incomplete Osaka EIP-7702 precompile-pointer cases, 60 pass through the compiled
-runner with authenticated state and hash checks. The remaining four call G1
-addition on two infinity points and still require the crypto provider. This is
-a focused selection, not completion of the Osaka corpus.
+These fixture results do not establish native-provider correspondence. All 64 previously
+incomplete Osaka EIP-7702 precompile-pointer cases pass through the compiled
+runner with authenticated state and hash checks, including the four that call
+G1 addition on two infinity points. This is a focused selection, not completion
+of the Osaka corpus.
 
 The go-ethereum-fork integration retains compatibility entry points and its
 cross-EVM proof build. Its fixture command delegates to this directory.
