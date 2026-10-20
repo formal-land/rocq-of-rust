@@ -69,4 +69,14 @@ Module bls_utils.
       (Z.to_nat bls12_381_const.FP_PAD_BY.(Integer.value)) in
     let width := Z.to_nat bls12_381_const.FP_LENGTH.(Integer.value) in
     padding ++ List.firstn width unpadded ++ padding ++ List.skipn width unpadded.
+
+  (** The provider returns the four field coordinates as 192 bytes. *)
+  Definition pad_g2_point (unpadded : list u8) : list u8 :=
+    let padding := List.repeat ({| Integer.value := 0 |} : u8)
+      (Z.to_nat bls12_381_const.FP_PAD_BY.(Integer.value)) in
+    let width := Z.to_nat bls12_381_const.FP_LENGTH.(Integer.value) in
+    padding ++ List.firstn width unpadded ++
+    padding ++ List.firstn width (List.skipn width unpadded) ++
+    padding ++ List.firstn width (List.skipn (2 * width) unpadded) ++
+    padding ++ List.skipn (3 * width) unpadded.
 End bls_utils.

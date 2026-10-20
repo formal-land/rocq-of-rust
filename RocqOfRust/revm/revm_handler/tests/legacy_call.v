@@ -605,8 +605,11 @@ Module Test.
       (precompile_input 10 []) = LegacyCall.Result.Incomplete.
   Proof. vm_compute. reflexivity. Qed.
 
-  Lemma valid_bls_crypto_remains_explicitly_incomplete :
-    LegacyCall.run 100 SpecId.PRAGUE (precompile_tx 17 (List.repeat 0 128)) (precompile_input 17 []) =
+  Lemma valid_bls_pairing_remains_explicitly_incomplete :
+    LegacyCall.run 100 SpecId.PRAGUE
+      ((precompile_tx 15 (List.repeat 0 384))
+        <| TransactionAccounting.Transaction.gas_limit := 95000 |>)
+      (precompile_input 15 []) =
     LegacyCall.Result.Incomplete.
   Proof. vm_compute. reflexivity. Qed.
 
@@ -663,8 +666,16 @@ Module Test.
     Some (InstructionResult.InvalidFEOpcode, 50000, 1, 500000, 0, 300000, []).
   Proof. vm_compute. reflexivity. Qed.
 
-  Lemma osaka_keeps_unimplemented_bls_precompile_explicit :
-    LegacyCall.run 100 SpecId.OSAKA (precompile_tx 13 (List.repeat 0 512)) (input []) =
+  Lemma osaka_g2_add_infinity_returns_with_exact_fees :
+    precompile_observation 13 (LegacyCall.run 100 SpecId.OSAKA
+      (precompile_tx 13 (List.repeat 0 512)) (precompile_input 13 [])) =
+    Some (InstructionResult.Return, 26120, 1, 738793, 7, 156720, List.repeat 0 256).
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma osaka_keeps_unimplemented_bls_pairing_explicit :
+    LegacyCall.run 100 SpecId.OSAKA
+      ((precompile_tx 15 (List.repeat 0 384))
+        <| TransactionAccounting.Transaction.gas_limit := 95000 |>) (input []) =
     LegacyCall.Result.Incomplete.
   Proof. vm_compute. reflexivity. Qed.
 

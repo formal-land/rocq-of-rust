@@ -25,6 +25,8 @@ targets=(
   revm/revm_precompile/tests/bls12_381.vo
   revm/revm_precompile/tests/bls12_381_g1.vo
   revm/revm_precompile/tests/bls12_381_g1_msm.vo
+  revm/revm_precompile/tests/bls12_381_g2.vo
+  revm/revm_precompile/tests/bls12_381_map.vo
   revm/revm_precompile/tests/secp256r1.vo
   revm/revm_precompile/tests/secp256r1_verification.vo
   revm/revm_precompile/tests/blake2.vo

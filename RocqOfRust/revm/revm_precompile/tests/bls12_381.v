@@ -49,8 +49,10 @@ Module BlsBoundaryTests.
     g2_add.g2_add (bytes 512 17) 600 = Some (Result.Err PrecompileError.Bls12381FpPaddingInvalid).
   Proof. vm_compute. reflexivity. Qed.
 
-  Example g2_add_valid_encoding_stays_unsupported :
-    g2_add.g2_add (bytes 512 0) 600 = None.
+  Example g2_add_infinity_plus_infinity :
+    g2_add.g2_add (bytes 512 0) 600 =
+      Some (Result.Ok (Impl_PrecompileOutput.new 600
+        (alloy_primitives.bytes.simulate.mod.Impl_Bytes.copy_from_slice (bytes 256 0)))).
   Proof. vm_compute. reflexivity. Qed.
 
   Example map_fp_to_g1_gas_precedes_length :
@@ -65,10 +67,6 @@ Module BlsBoundaryTests.
     map_fp_to_g1.map_fp_to_g1 (bytes 64 17) 5500 = Some (Result.Err PrecompileError.Bls12381FpPaddingInvalid).
   Proof. vm_compute. reflexivity. Qed.
 
-  Example map_fp_to_g1_valid_encoding_stays_unsupported :
-    map_fp_to_g1.map_fp_to_g1 (bytes 64 0) 5500 = None.
-  Proof. vm_compute. reflexivity. Qed.
-
   Example map_fp2_to_g2_gas_precedes_length :
     map_fp2_to_g2.map_fp2_to_g2 [] 0 = Some (Result.Err PrecompileError.OutOfGas).
   Proof. vm_compute. reflexivity. Qed.
@@ -79,10 +77,6 @@ Module BlsBoundaryTests.
 
   Example map_fp2_to_g2_invalid_padding :
     map_fp2_to_g2.map_fp2_to_g2 (bytes 128 17) 23800 = Some (Result.Err PrecompileError.Bls12381FpPaddingInvalid).
-  Proof. vm_compute. reflexivity. Qed.
-
-  Example map_fp2_to_g2_valid_encoding_stays_unsupported :
-    map_fp2_to_g2.map_fp2_to_g2 (bytes 128 0) 23800 = None.
   Proof. vm_compute. reflexivity. Qed.
 
   Example g1_msm_length_precedes_gas :
@@ -115,8 +109,10 @@ Module BlsBoundaryTests.
     g2_msm.g2_msm (bytes 288 17) 22500 = Some (Result.Err PrecompileError.Bls12381FpPaddingInvalid).
   Proof. vm_compute. reflexivity. Qed.
 
-  Example g2_msm_valid_encoding_stays_unsupported :
-    g2_msm.g2_msm (bytes 288 0) 22500 = None.
+  Example g2_msm_infinity_times_zero :
+    g2_msm.g2_msm (bytes 288 0) 22500 =
+      Some (Result.Ok (Impl_PrecompileOutput.new 22500
+        (alloy_primitives.bytes.simulate.mod.Impl_Bytes.copy_from_slice (bytes 256 0)))).
   Proof. vm_compute. reflexivity. Qed.
 
   Example pairing_length_precedes_gas :
@@ -140,8 +136,9 @@ Module BlsBoundaryTests.
       Some (Result.Err PrecompileError.Bls12381FpPaddingInvalid).
   Proof. vm_compute. reflexivity. Qed.
 
-  Example g2_msm_does_not_skip_unknown_first_point :
-    g2_msm.g2_msm (bytes 288 0 ++ bytes 288 17) 45000 = None.
+  Example g2_msm_checks_later_padding_after_zero_scalar :
+    g2_msm.g2_msm (bytes 288 0 ++ bytes 288 17) 45000 =
+      Some (Result.Err PrecompileError.Bls12381FpPaddingInvalid).
   Proof. vm_compute. reflexivity. Qed.
 
   Example pairing_checks_later_padding_before_crypto :
