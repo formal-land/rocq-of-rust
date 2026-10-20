@@ -75,8 +75,9 @@ Module Test.
       {| Integer.value := 100000 |}, 0%nat)) 7.
   Proof. vm_compute. reflexivity. Qed.
 
-  Lemma bls_valid_encoding_stays_incomplete :
-    direct SpecId.OSAKA 11 (List.repeat (0 : u8) 256) 375 = None.
+  Lemma bls_g1_infinity_addition_returns_output :
+    observe (direct SpecId.OSAKA 11 (List.repeat (0 : u8) 256) 375) =
+      Some (InstructionResult.Return, {| Integer.value := 0 |}, 128%nat).
   Proof. vm_compute. reflexivity. Qed.
 
   Lemma unresolved_shared_input_stays_incomplete :

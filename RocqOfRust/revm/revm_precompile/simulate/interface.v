@@ -18,7 +18,11 @@ Module PrecompileError.
   | Bls12381FpPaddingInvalid
   | Bls12381FpPaddingLength
   | Bls12381G1PaddingLength
-  | Bls12381G2PaddingLength.
+  | Bls12381G2PaddingLength
+  | NonCanonicalFp
+  | Bls12381G1NotOnCurve
+  | Bls12381G1NotInSubgroup
+  | Bls12381ScalarInputLength.
 End PrecompileError.
 
 Module PrecompileOutput.

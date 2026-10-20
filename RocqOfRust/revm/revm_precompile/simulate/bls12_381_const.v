@@ -24,6 +24,8 @@ Module bls12_381_const.
 
   Definition MSM_MULTIPLIER : u64 := {| Integer.value := 1000 |}.
 
+  Definition SCALAR_LENGTH : usize := {| Integer.value := 32 |}.
+
   Definition FP_LENGTH : usize := {| Integer.value := 48 |}.
 
   Definition FP_PAD_BY : usize := {| Integer.value := 16 |}.

@@ -664,7 +664,7 @@ Module Test.
   Proof. vm_compute. reflexivity. Qed.
 
   Lemma osaka_keeps_unimplemented_bls_precompile_explicit :
-    LegacyCall.run 100 SpecId.OSAKA (precompile_tx 11 (List.repeat 0 256)) (input []) =
+    LegacyCall.run 100 SpecId.OSAKA (precompile_tx 13 (List.repeat 0 512)) (input []) =
     LegacyCall.Result.Incomplete.
   Proof. vm_compute. reflexivity. Qed.
 
