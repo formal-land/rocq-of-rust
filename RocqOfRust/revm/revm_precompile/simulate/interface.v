@@ -20,6 +20,7 @@ Module PrecompileError.
   | Bls12381G1PaddingLength
   | Bls12381G2PaddingLength
   | NonCanonicalFp
+  | Bls12381G2NotOnCurve
   | Bls12381G1NotOnCurve
   | Bls12381G1NotInSubgroup
   | Bls12381ScalarInputLength.

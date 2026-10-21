@@ -89,6 +89,31 @@ verified against the pinned selection. The G1MSM selection includes 18 variable
 input-length cases. Twelve focused Rocq examples cover addition; eleven cover
 MSM scalar boundaries, subgroup rejection and validation order.
 
+G2 addition and multi-scalar multiplication use the corresponding Rust provider
+functions with bounded Fq2 coefficients in wire order `x.c0, x.c1, y.c0, y.c1`.
+Addition checks the curve but not subgroup membership; MSM checks subgroup
+membership before skipping zero scalars. The subgroup check uses multiplication
+by the raw group order and retains the checked-in Rust provider's G1-named
+subgroup error. Correspondence with Arkworks' optimized subgroup check and
+internal arithmetic is not proved. All 97 pinned Osaka G2-addition fixtures and
+242 G2MSM fixtures pass with independently verified state and hash checks; the
+MSM selection includes 30 variable input-length cases. Fourteen focused Rocq
+examples check parsing and validation order, and a transaction check verifies
+G2 addition's returned bytes and exact gas settlement.
+
+The field-to-G1 and Fq2-to-G2 maps implement the SWU map, isogeny and cofactor
+clearing with constants from the Arkworks 0.5.0 curve definitions.
+The `g1_swu_iso` and `g2_swu_iso` modules retain bounded field coefficients,
+Rust's sign selection and zero-denominator behavior. G2 cofactor clearing uses
+the Rust endomorphism formula. Checked square roots and inverses retain explicit
+incomplete results for unexpected internal failures; mapping totality and
+correspondence with Arkworks arithmetic are not proved. All 40 pinned Osaka G1
+mapping fixtures and 37 G2 mapping fixtures pass with independently verified
+state and hash checks, including the G1 isogeny-kernel cases. Ten focused Rocq
+examples check canonical input rejection, validation order, and successful zero
+inputs' gas and output lengths. Pairing remains incomplete for inputs requiring
+its cryptographic operation.
+
 P256 (address 256 in Osaka) charges 6,900 gas and returns empty output for input
 lengths other than 160 bytes. For 160-byte inputs, its provider checks ECDSA
 signature and public-key ranges, curve membership and the P256 verification
