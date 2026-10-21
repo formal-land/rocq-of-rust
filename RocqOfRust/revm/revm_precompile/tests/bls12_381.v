@@ -127,8 +127,11 @@ Module BlsBoundaryTests.
     pairing.pairing (bytes 384 17) 70300 = Some (Result.Err PrecompileError.Bls12381FpPaddingInvalid).
   Proof. vm_compute. reflexivity. Qed.
 
-  Example pairing_valid_encoding_stays_unsupported :
-    pairing.pairing (bytes 384 0) 70300 = None.
+  Example pairing_infinity_returns_true :
+    pairing.pairing (bytes 384 0) 70300 =
+      Some (Result.Ok (Impl_PrecompileOutput.new 70300
+        (alloy_primitives.bytes.simulate.mod.Impl_Bytes.copy_from_slice
+          (bytes 31 0 ++ [(1 : u8)])))).
   Proof. vm_compute. reflexivity. Qed.
 
   Example g1_msm_checks_later_padding_after_zero_scalar :

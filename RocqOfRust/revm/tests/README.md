@@ -111,8 +111,22 @@ correspondence with Arkworks arithmetic are not proved. All 40 pinned Osaka G1
 mapping fixtures and 37 G2 mapping fixtures pass with independently verified
 state and hash checks, including the G1 isogeny-kernel cases. Ten focused Rocq
 examples check canonical input rejection, validation order, and successful zero
-inputs' gas and output lengths. Pairing remains incomplete for inputs requiring
-its cryptographic operation.
+inputs' gas and output lengths.
+
+BLS pairing uses the Fq6/Fq12 tower, homogeneous G2 line preparation, the
+Miller loop and final-exponentiation chain from Arkworks 0.5. The `fq6`, `fq12`
+and `bls12` modules retain bounded coefficients, the signed u64 family parameter,
+and explicit state parameters. All input padding is checked before point
+parsing; canonical coordinates, curve and subgroup membership are checked even
+when a point's partner is infinity. All-infinity input returns true after
+validation. All 94 pinned Osaka pairing fixtures pass with independently
+verified state and hash checks, including finite true/false pairings and
+variable input lengths. Thirteen focused Rocq examples check validation order,
+subgroup rejection and gas boundaries; transaction checks verify exact fees.
+Field operations use mathematical canonical residues rather than Montgomery
+limbs. These results do not prove Arkworks correspondence or complete the full
+Osaka suite. Unexpected internal coefficient or inverse failures remain explicit
+incomplete execution, never a successful pairing result.
 
 P256 (address 256 in Osaka) charges 6,900 gas and returns empty output for input
 lengths other than 160 bytes. For 160-byte inputs, its provider checks ECDSA
@@ -121,8 +135,7 @@ equation. Invalid signatures return empty output; valid signatures return a
 32-byte word containing one. High-S signatures are accepted. The handwritten
 provider follows the P256/ECDSA module boundaries with canonical field/scalar
 wrappers and explicit reduction, but does not prove correspondence with
-RustCrypto's Montgomery limbs or homogeneous point formulas. BLS requests that
-reach unimplemented cryptographic operations still return incomplete execution.
+RustCrypto's Montgomery limbs or homogeneous point formulas.
 All 397 pinned Osaka EIP-7951 state fixtures pass through the compiled runner,
 including authenticated state and hash checks. This covers direct transaction
 calls, contract calls and creation, gas boundaries, and valid/invalid signatures.
@@ -315,7 +328,9 @@ sequential with a default 2 GiB address-space limit and a 64 MiB stack limit.
 `--native-memory-limit-mib` changes the cap for OCaml compilation only; the
 Osaka CI build uses 8192 MiB because its native library compilation exhausted
 the default cap. Rocq compilation, smoke execution and fixture execution retain
-their 2 GiB limits. The JSONL
+their 2 GiB limits. Local validation of the BLS pairing smoke executable required
+3072 MiB for OCaml compilation; this can be selected with
+`--native-memory-limit-mib 3072`. The JSONL
 executable is `target/revm-native/native_transaction_bridge`, relative to that
 checkout; it reads one signed or normalized request per line and returns the
 complete account state, logs, execution status, gas settlement, authentication
