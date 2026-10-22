@@ -616,7 +616,7 @@ def generate(root, output, templates, numeric_backend="inductive"):
     generate_authorization_smoke(output)
     for source in output.glob("*.v"):
         code = source.read_text().replace("@NATIVE_OUTPUT@", output.as_posix())
-        if numeric_backend == "zarith" or source.name == "NativeAuthorizationSmoke.v":
+        if numeric_backend == "zarith" or source.name in {"NativeAuthorizationSmoke.v", "NativeNumericSmoke.v"}:
             # Only the extracted representation and arithmetic primitives change.
             # The proved canonical specialization above is left intact.
             code = """From Stdlib Require Import ZArith ExtrOcamlZBigInt.
@@ -624,6 +624,7 @@ Extract Constant Z.shiftl => "Native_numeric_shifts.shiftl".
 Extract Constant Z.shiftr => "Native_numeric_shifts.shiftr".
 Extract Constant N.shiftl => "Native_numeric_shifts.shiftl_nonnegative".
 Extract Constant N.shiftr => "Native_numeric_shifts.shiftr_nonnegative".
+Extract Constant Z.pow => "Native_numeric_shifts.pow".
 Extract Constant Z.land => "Z.logand".
 Extract Constant Z.lor => "Z.logor".
 Extract Constant Z.lxor => "Z.logxor".

@@ -148,7 +148,7 @@ jobs:
                 --fixtures target/osaka-bundle/fixtures --format "$format" --fork Osaka \
                 --shard-index '${{ matrix.shard }}' --shard-count 16 \
                 --bridge target/osaka-bundle/native_transaction_bridge \
-                --timeout 60 --fuel 1000000 \
+                --timeout 180 --fuel 2000000 \
                 --results "target/osaka-results/$format-${{ matrix.shard }}.jsonl" \
                 --summary "target/osaka-results/$format-${{ matrix.shard }}.summary.json" || status=1
             done

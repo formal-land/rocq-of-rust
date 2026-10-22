@@ -87,6 +87,32 @@ Module Memory.
     reflexivity.
   Qed.
 
+  (** Traverse existing bytes without first allocating a unary offset. The
+      counter decreases only when positive, so valid usize values stay valid. *)
+  Fixpoint skip_bytes (offset : usize) (data : list u8) {struct data} : list u8 :=
+    match data with
+    | [] => []
+    | _ :: rest =>
+      if i[offset] <=? 0 then data else
+      skip_bytes {| Integer.value := i[offset] - 1 |} rest
+    end.
+
+  Lemma skip_bytes_eq (offset : usize) (data : list u8) :
+    skip_bytes offset data = List.skipn (Z.to_nat i[offset]) data.
+  Proof.
+    revert offset.
+    induction data as [|byte rest IH]; intro offset.
+    - cbn [skip_bytes]. rewrite List.skipn_nil. reflexivity.
+    - cbn [skip_bytes].
+      destruct (i[offset] <=? 0) eqn:Hoffset.
+      + apply Z.leb_le in Hoffset.
+        assert (Z.to_nat i[offset] = 0%nat) as Hzero by lia.
+        rewrite Hzero. reflexivity.
+      + apply Z.leb_gt in Hoffset.
+        assert (Z.to_nat i[offset] = S (Z.to_nat (i[offset] - 1))) as Hsucc by lia.
+        rewrite Hsucc. cbn [List.skipn]. apply IH.
+  Qed.
+
   (** Get a slice of memory, returning zeros for out-of-bounds *)
   Definition slice (self : t) (offset len : usize) : list u8 :=
     take_pad (Z.to_nat i[len]) (List.skipn (Z.to_nat i[offset]) self.(value)).
@@ -671,7 +697,7 @@ Module MemoryTrait.
       let count : usize := {| Integer.value := Z.min i[len] (available - i[data_offset]) |} in
       let start := data_range.(Range.start) +i data_offset in
       List.firstn (Z.to_nat i[count])
-        (List.skipn (Z.to_nat i[start]) self.(Memory.shared_buffer)) in
+        (Memory.skip_bytes start self.(Memory.shared_buffer)) in
     Memory.set self memory_offset (Memory.take_pad (Z.to_nat i[len]) data).
 
   Definition set (self : Self) (memory_offset : usize) (data : list u8) : Self :=
@@ -692,14 +718,47 @@ Module MemoryTrait.
   Definition global_slice (self : Self) (range : Range.t usize) : Synthetic :=
     (* Empty call ranges use usize::MAX as a sentinel offset. *)
     if i[range.(Range.end_)] <=? i[range.(Range.start)] then [] else
-    let offset := Z.to_nat i[range.(Range.start)] in
     let len :=
       Z.to_nat
         (i[range.(Range.end_)] - i[range.(Range.start)]) in
     List.firstn len
-      (List.skipn offset self.(Memory.shared_buffer)).
+      (Memory.skip_bytes range.(Range.start) self.(Memory.shared_buffer)).
+
+  Lemma global_slice_skipn (self : Self) (range : Range.t usize) :
+    global_slice self range =
+    if i[range.(Range.end_)] <=? i[range.(Range.start)] then [] else
+    List.firstn
+      (Z.to_nat (i[range.(Range.end_)] - i[range.(Range.start)]))
+      (List.skipn (Z.to_nat i[range.(Range.start)]) self.(Memory.shared_buffer)).
+  Proof.
+    unfold global_slice.
+    rewrite Memory.skip_bytes_eq.
+    reflexivity.
+  Qed.
+
+  Lemma set_data_from_global_skipn
+      (self : Self) (memory_offset data_offset len : usize)
+      (data_range : Range.t usize) :
+    set_data_from_global self memory_offset data_offset len data_range =
+    let available := i[data_range.(Range.end_)] - i[data_range.(Range.start)] in
+    let data :=
+      if (i[len] =? 0) || (available <=? i[data_offset]) then [] else
+      let count := Z.min i[len] (available - i[data_offset]) in
+      let start := data_range.(Range.start) +i data_offset in
+      List.firstn (Z.to_nat count)
+        (List.skipn (Z.to_nat i[start]) self.(Memory.shared_buffer)) in
+    Memory.set self memory_offset (Memory.take_pad (Z.to_nat i[len]) data).
+  Proof.
+    unfold set_data_from_global.
+    rewrite Memory.skip_bytes_eq.
+    reflexivity.
+  Qed.
 
   Module Test.
+    Lemma huge_shared_offset_stops_at_buffer_end :
+      Memory.skip_bytes {| Integer.value := 2 ^ 64 - 1 |} [(42 : u8)] = [].
+    Proof. vm_compute. reflexivity. Qed.
+
     Lemma empty_shared_sentinel_does_not_materialize_offset :
       global_slice
         {| Memory.value := []; Memory.shared_buffer := [(42 : u8)] |}

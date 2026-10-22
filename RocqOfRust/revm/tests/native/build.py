@@ -90,7 +90,7 @@ def build_fingerprint(root, sources, prefix, numeric_backend, smoke, bridge):
 def required_outputs(smoke, bridge):
     names = ["native_transactions.cmx", "native_transactions.o", "native_transactions.cmi"]
     if smoke:
-        names += ["native_transaction_smokes", "native_authorization_smokes"]
+        names += ["native_transaction_smokes", "native_authorization_smokes", "native_numeric_smokes"]
     if bridge:
         names.append("native_transaction_bridge")
     return names
@@ -180,6 +180,7 @@ def main():
                 if args.smoke:
                     run([str(output/"native_transaction_smokes")], output, "native_smoke_run.log")
                     run([str(output/"native_authorization_smokes")], output, "native_authorization_run.log")
+                    run([str(output/"native_numeric_smokes")], output, "native_numeric_run.log")
                 print(f"Reused verified native transaction extraction: {output}")
                 return
         (output / "build-success.json").unlink(missing_ok=True)
@@ -190,7 +191,7 @@ def main():
             "-I", str(root/"plugin"), "-R", str(root), "RocqOfRust",
             "-Q", str(output), "", "-impredicative-set",
         ]
-        modules = MODULES + (["NativeTransactionSmoke", "NativeAuthorizationSmoke"] if args.smoke else [])
+        modules = MODULES + (["NativeTransactionSmoke", "NativeAuthorizationSmoke", "NativeNumericSmoke"] if args.smoke else [])
         for module in modules:
             run(prefix+["coqc"]+flags+[str(output/f"{module}.v")], output, f"{module}.log")
         check_extraction(output)
@@ -213,6 +214,11 @@ def main():
                         "native_authorization_smoke.mli", "native_authorization_smoke.ml",
                         "native_authorization_main.ml"], output, "native_authorization_build.log", args.native_memory_limit_mib)
             run([str(output/"native_authorization_smokes")], output, "native_authorization_run.log")
+            run(prefix+["ocamlfind", "ocamlopt", "-package", "zarith", "-linkpkg", "-w", "-a",
+                        "-o", "native_numeric_smokes", "native_numeric_shifts.cmx",
+                        "native_numeric_smoke.mli", "native_numeric_smoke.ml",
+                        "native_numeric_main.ml"], output, "native_numeric_build.log", args.native_memory_limit_mib)
+            run([str(output/"native_numeric_smokes")], output, "native_numeric_run.log")
         if args.bridge:
             shutil.copyfile(sources/"native_transaction_bridge.ml", output/"native_transaction_bridge.ml")
             shutil.copyfile(sources/f"native_numeric_{args.numeric_backend}.ml", output/"native_numeric.ml")

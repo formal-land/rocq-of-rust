@@ -126,7 +126,7 @@ class CompilerLimitTests(unittest.TestCase):
                 build.main()
             native_logs = {"numeric_shifts_build.log", "native_library.log",
                            "native_smoke_build.log", "native_authorization_build.log",
-                           "native_bridge_build.log"}
+                           "native_bridge_build.log", "native_numeric_build.log"}
             seen = set()
             for call in run.call_args_list:
                 command, output, log, *limit = call.args

@@ -1,0 +1,38 @@
+From Stdlib Require Import List ZArith Extraction ExtrOcamlBasic.
+Import ListNotations.
+Open Scope Z_scope.
+
+Definition power_inputs : list (Z * Z) :=
+  flat_map (fun base => map (fun exponent => (base, exponent))
+    [-2; -1; 0; 1; 2; 3; 7; 8; 31; 64; 255; 256])
+    [-257; -2; -1; 0; 1; 2; 256].
+
+(* Expected values are computed by Rocq before arithmetic extraction. *)
+Definition power_reference : list ((Z * Z) * Z) :=
+  Eval vm_compute in
+    map (fun input => (input, Z.pow (fst input) (snd input))) power_inputs.
+
+Definition powers_match (_ : unit) : bool :=
+  forallb (fun entry =>
+    let '((base, exponent), expected) := entry in
+    Z.eqb (Z.pow base exponent) expected) power_reference.
+
+Definition shift_inputs : list (Z * Z) :=
+  flat_map (fun value => map (fun count => (value, count))
+    [-256; -64; -8; -1; 0; 1; 7; 8; 9; 63; 64; 256])
+    [-257; -256; -1; 0; 1; 255; 256].
+
+Definition shift_reference : list ((Z * Z) * (Z * Z)) :=
+  Eval vm_compute in
+    map (fun input =>
+      (input, (Z.shiftl (fst input) (snd input),
+               Z.shiftr (fst input) (snd input)))) shift_inputs.
+
+Definition shifts_match (_ : unit) : bool :=
+  forallb (fun entry =>
+    let '((value, count), (expected_left, expected_right)) := entry in
+    andb (Z.eqb (Z.shiftl value count) expected_left)
+      (Z.eqb (Z.shiftr value count) expected_right)) shift_reference.
+
+Extraction Language OCaml.
+Extraction "@NATIVE_OUTPUT@/native_numeric_smoke.ml" powers_match shifts_match.
