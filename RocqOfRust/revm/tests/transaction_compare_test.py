@@ -390,6 +390,39 @@ def test_type4_creation_rejection_requires_exact_decoded_envelope():
     assert compare.validated_authentication_rejection(bad, output) is None
 
 
+def test_type3_creation_rejection_requires_exact_decoded_envelope():
+    from transaction_fixture_test import rlp
+    source = case()
+    source["fork"] = "Osaka"
+    fields = [1, 0, 1, 10, 50000, b"", 0, b"", [], 1, [b"\x01" + b"\x00" * 31], 0, 1, 1]
+    raw = b"\x03" + rlp(fields)
+    envelope = fixture.signed_envelope(raw)
+    source["transaction"].update({key: value for key, value in envelope.items()
+                                  if key not in {"supported", "signature"}})
+    name = "TransactionException.TYPE_3_TX_CONTRACT_CREATION"
+    source["expectation"].update(txbytes=list(raw), exception=name)
+    output = other_result("AuthenticationRejected", reason="MalformedFields", details=[])
+    assert compare.validated_authentication_rejection(source, output) == name
+    for reason in ("MalformedRlp", "InvalidSignature", "TransactionTypeNotSupported"):
+        bad = copy.deepcopy(output)
+        bad["reason"] = reason
+        assert compare.validated_authentication_rejection(source, bad) is None
+    for key, value in (("nonce", 1), ("target", 0), ("gas_price", 11)):
+        bad = copy.deepcopy(source)
+        bad["transaction"][key] = value
+        assert compare.validated_authentication_rejection(bad, output) is None
+    for index, value in ((4, 1 << 64), (3, 1 << 256), (5, b"\x00"),
+                         (5, b"\x00" * 20), (10, [b"\x01"])):
+        changed = list(fields)
+        changed[index] = value
+        bad = copy.deepcopy(source)
+        bad["expectation"]["txbytes"] = list(b"\x03" + rlp(changed))
+        assert compare.validated_authentication_rejection(bad, output) is None
+    bad = copy.deepcopy(output)
+    bad["details"] = [0]
+    assert compare.validated_authentication_rejection(source, bad) is None
+
+
 def test_osaka_cap_rejection_requires_exact_limit_and_details():
     source, output = rejected_case()
     source["fork"] = "Osaka"
@@ -443,6 +476,25 @@ def test_floor_rejections_require_exact_cost_fork_and_intrinsic_precedence():
         assert not compare.mapped_rejection_prerequisites(bad, output)
     bad = dict(output, reason="IntrinsicGasTooHigh")
     assert compare.compare_execution(source, bad)["classification"] == "execution_mismatch"
+
+
+def test_payment_overflow_requires_both_fixture_and_rust_product_overflow():
+    source, output = rejected_case()
+    source["transaction"].update(gas_limit=16777216,
+        gas_price=5513909011300771210646237381366090850155713555506693525688456381329244268)
+    source["expectation"]["exception"] = "TransactionException.GASLIMIT_PRICE_PRODUCT_OVERFLOW"
+    output.update(reason="PaymentOverflow", details=[])
+    output["authentication"]["transaction"] = copy.deepcopy(source["transaction"])
+    assert compare.compare_execution(source, output)["classification"] == "authenticated_state_pass"
+    for limit, price in ((1, 1), (50000, 1 << 128), (1 << 64, 1 << 255),
+                         (16777216, 1 << 256), (-1, 1), (1, -1)):
+        bad = copy.deepcopy(source)
+        bad["transaction"].update(gas_limit=limit, gas_price=price)
+        assert not compare.mapped_rejection_prerequisites(bad, output)
+    assert not compare.mapped_rejection_prerequisites(source, dict(output, details=[1]))
+    bad = copy.deepcopy(source)
+    bad["transaction"].update(gas_limit=1, gas_price=1, value=(1 << 256) - 1)
+    assert not compare.mapped_rejection_prerequisites(bad, output)
 
 
 TESTS = tuple(value for name, value in tuple(globals().items()) if name.startswith("test_"))

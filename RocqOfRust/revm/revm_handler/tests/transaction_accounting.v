@@ -81,6 +81,40 @@ Module Test.
     Result.Rejected GasError.PaymentOverflow.
   Proof. vm_compute. reflexivity. Qed.
 
+  Lemma fixture_gas_price_preserves_u128_max :
+    (fixture_gas_price {| Uint.value := 2 ^ 128 - 1 |}).(Integer.value) =
+      2 ^ 128 - 1.
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma fixture_gas_price_saturates_above_u128 :
+    (fixture_gas_price {| Uint.value := 2 ^ 128 |}).(Integer.value) =
+      2 ^ 128 - 1.
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma oversized_fixture_gas_price_reaches_checked_payment :
+    prepare SpecId.OSAKA (tx 50000 (2 ^ 128) 0 []) block =
+    Result.Rejected GasError.PaymentOverflow.
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma osaka_high_gas_price_fixture_rejects_payment :
+    prepare SpecId.OSAKA
+      (tx 16777216
+        5513909011300771210646237381366090850155713555506693525688456381329244268
+        1 [])
+      {| Block.gas_limit := 89128960; Block.base_fee := 10; Block.blob_base_fee := 0 |} =
+    Result.Rejected GasError.PaymentOverflow.
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma negative_fixture_gas_price_remains_malformed :
+    prepare SpecId.OSAKA (tx 50000 (-1) 0 []) block =
+    Result.Malformed MalformedReason.TransactionFields.
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma fixture_gas_price_above_u256_remains_malformed :
+    prepare SpecId.OSAKA (tx 50000 (2 ^ 256) 0 []) block =
+    Result.Malformed MalformedReason.TransactionFields.
+  Proof. vm_compute. reflexivity. Qed.
+
   Lemma value_addition_checks_u256 :
     prepare SpecId.CANCUN (tx 50000 10 (2 ^ 256 - 1) []) block =
     Result.Rejected GasError.PaymentOverflow.

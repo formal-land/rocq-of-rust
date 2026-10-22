@@ -1,5 +1,8 @@
 From Stdlib Require Import List ZArith.
+Require Import core.links.result.
+Require Import revm.revm_precompile.simulate.interface.
 Require Import revm.revm_precompile.simulate.kzg_point_evaluation.
+Require Import simulate.RocqOfRust.
 
 Import ListNotations.
 Open Scope Z_scope.
@@ -19,9 +22,11 @@ Module Test.
     versioned_hash ++ z ++ List.repeat 0 32 ++
     KzgPointEvaluation.infinity ++ KzgPointEvaluation.infinity.
 
+  (** Malformed proof encoding; finite false proofs are checked by the native
+      EEST vectors rather than repeated large vm_compute evaluations. *)
   Definition bad_input : list Z :=
     versioned_hash ++ z ++ List.repeat 0 31 ++ [1] ++
-    KzgPointEvaluation.infinity ++ KzgPointEvaluation.infinity.
+    KzgPointEvaluation.infinity ++ List.repeat 0 48.
 
   Lemma pinned_versioned_hash :
     KzgPointEvaluation.versioned_hash KzgPointEvaluation.infinity = versioned_hash.
@@ -75,10 +80,51 @@ Module Test.
       50000 = KzgPointEvaluation.Result.InvalidInput.
   Proof. vm_compute. reflexivity. Qed.
 
-  Lemma other_proofs_stay_incomplete :
+  Lemma invalid_compressed_points_are_rejected :
     KzgPointEvaluation.run
       (KzgPointEvaluation.versioned_hash (List.repeat 0 48) ++ z ++ List.repeat 0 32 ++
        List.repeat 0 48 ++ List.repeat 0 48) 50000 =
-      KzgPointEvaluation.Result.Unsupported.
+      KzgPointEvaluation.Result.InvalidInput.
   Proof. vm_compute. reflexivity. Qed.
 End Test.
+
+Module TypedTest.
+  Definition bytes (input : list Z) : list u8 :=
+    List.map (fun byte => {| Integer.value := byte |}) input.
+
+  Example gas_error_precedes_length_error :
+    kzg_point_evaluation.run [] 49999 =
+      Some (Result.Err PrecompileError.OutOfGas).
+  Proof. vm_compute. reflexivity. Qed.
+
+  Example length_error_is_distinct :
+    kzg_point_evaluation.run [] 50000 =
+      Some (Result.Err PrecompileError.BlobInvalidInputLength).
+  Proof. vm_compute. reflexivity. Qed.
+
+  Example hash_error_precedes_proof_error :
+    kzg_point_evaluation.run (List.repeat (0 : u8) 192) 50000 =
+      Some (Result.Err PrecompileError.BlobMismatchedVersion).
+  Proof. vm_compute. reflexivity. Qed.
+
+  Example malformed_proof_reports_verification_error :
+    kzg_point_evaluation.run (bytes Test.bad_input) 50000 =
+      Some (Result.Err PrecompileError.BlobVerifyKzgProofFailed).
+  Proof. vm_compute. reflexivity. Qed.
+
+  Example successful_output_preserves_rust_fields :
+    match kzg_point_evaluation.run (bytes Test.good_input) 50000 with
+    | Some (Result.Ok output) =>
+      Some (output.(PrecompileOutput.gas_used).(Integer.value),
+        output.(PrecompileOutput.gas_refunded).(Integer.value),
+        output.(PrecompileOutput.reverted))
+    | _ => None
+    end = Some (50000, 0, false).
+  Proof. vm_compute. reflexivity. Qed.
+
+  Example success_accepts_maximum_u64_gas :
+    kzg_point_evaluation.run (bytes Test.good_input)
+      {| Integer.value := 2 ^ 64 - 1 |} =
+    kzg_point_evaluation.run (bytes Test.good_input) 50000.
+  Proof. vm_compute. reflexivity. Qed.
+End TypedTest.

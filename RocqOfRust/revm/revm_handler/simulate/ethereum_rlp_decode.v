@@ -9,9 +9,22 @@ Open Scope Z_scope.
 Module EthereumRlpDecode.
   Definition byte_valid (byte : Z) : bool := (0 <=? byte) && (byte <? 256).
 
+  (** Recurse over available input, never over an untrusted length converted to
+      nat. This also avoids measuring the entire remaining stream per child. *)
+  Fixpoint split_prefix {A : Set} (size : Z) (input : list A) {struct input} :
+      option (list A * list A) :=
+    if size <=? 0 then Some ([], input) else
+    match input with
+    | [] => None
+    | value :: tail =>
+        match split_prefix (size - 1) tail with
+        | Some (prefix, rest) => Some (value :: prefix, rest)
+        | None => None
+        end
+    end.
+
   Definition split_payload (size : Z) (input : list Z) : option (list Z * list Z) :=
-    if (size <? 0) || (Z.of_nat (List.length input) <? size) then None else
-    Some (List.firstn (Z.to_nat size) input, List.skipn (Z.to_nat size) input).
+    if size <? 0 then None else split_prefix size input.
 
   Definition long_payload (length_size : Z) (input : list Z) :
       option (list Z * list Z) :=

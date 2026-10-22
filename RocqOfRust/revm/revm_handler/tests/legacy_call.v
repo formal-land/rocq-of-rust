@@ -596,13 +596,14 @@ Module Test.
     Some (InstructionResult.PrecompileOOG, 50000, 1, 500000, 0, 300000, []).
   Proof. vm_compute. reflexivity. Qed.
 
-  Lemma unimplemented_kzg_proof_stays_incomplete :
+  Lemma invalid_kzg_proof_is_completed_exceptional_halt :
     let invalid_point := List.repeat 0 48 in
     let data := KzgPointEvaluation.versioned_hash invalid_point ++
       List.repeat 0 64 ++ invalid_point ++ invalid_point in
-    LegacyCall.run 100 SpecId.CANCUN
+    precompile_observation 10 (LegacyCall.run 100 SpecId.CANCUN
       ((precompile_tx 10 data) <| TransactionAccounting.Transaction.gas_limit := 75000 |>)
-      (precompile_input 10 []) = LegacyCall.Result.Incomplete.
+      (precompile_input 10 [])) =
+    Some (InstructionResult.PrecompileError, 75000, 1, 250000, 0, 450000, []).
   Proof. vm_compute. reflexivity. Qed.
 
   Lemma prague_bls_pairing_infinity_returns_with_exact_fees :

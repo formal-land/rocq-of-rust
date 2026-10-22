@@ -207,29 +207,6 @@ Module PrecompileFrame.
     | _ => CallFrame.result InstructionResult.PrecompileError child
     end.
 
-  Definition kzg_point_evaluation (child : CallFrame.machine) : option InterpreterResult.t :=
-    let input := match child.(Interpreter.input).(Input.input) with
-      | CallInput.Bytes input => input
-      | CallInput.SharedBuffer _ => Impl_Bytes.new
-      end in
-    let gas := child.(Interpreter.gas) in
-    match KzgPointEvaluation.run
-      (List.map Integer.value
-        input.(alloy_primitives.bytes.links.mod.Bytes.value).(bytes.Bytes.value))
-      gas.(Gas.remaining).(Integer.value) with
-    | KzgPointEvaluation.Result.Success cost output => Some
-      {| InterpreterResult.result := InstructionResult.Return;
-         InterpreterResult.output := Impl_Bytes.copy_from_slice
-           (List.map (fun byte => {| Integer.value := byte |}) output);
-         InterpreterResult.gas := gas
-           <| Gas.remaining := {| Integer.value := gas.(Gas.remaining).(Integer.value) - cost |} |> |}
-    | KzgPointEvaluation.Result.OutOfGas =>
-      Some (CallFrame.result InstructionResult.PrecompileOOG child)
-    | KzgPointEvaluation.Result.InvalidInput =>
-      Some (CallFrame.result InstructionResult.PrecompileError child)
-    | KzgPointEvaluation.Result.Unsupported => None
-    end.
-
   (** This adapter preserves unsupported crypto as None. A recognized address
       must never fall through to empty account bytecode in that case.
       CallFrame.child normalizes shared input to owned Bytes before dispatch. *)
@@ -243,6 +220,7 @@ Module PrecompileFrame.
     let limit := gas.(Gas.remaining) in
     let address := address.(Integer.value) in
     let result :=
+      if Z.eqb address 10 then kzg_point_evaluation.run bytes limit else
       if Z.eqb address 11 then g1_add.g1_add bytes limit else
       if Z.eqb address 12 then g1_msm.g1_msm bytes limit else
       if Z.eqb address 13 then g2_add.g2_add bytes limit else
@@ -297,6 +275,5 @@ Module PrecompileFrame.
     if (address =? 9) && is_precompile
       child.(Interpreter.runtime_flag).(RuntimeFlags.spec_id) address
     then Some (blake2 child) else
-    if address =? 10 then kzg_point_evaluation child else
     partial_precompile {| Integer.value := address |} child.
 End PrecompileFrame.
