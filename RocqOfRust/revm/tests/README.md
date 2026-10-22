@@ -61,16 +61,23 @@ historical and Osaka smoke results must not be reported as completion of that
 corpus. Full transaction, raw-transaction and blockchain coverage requires
 additional execution definitions and exact result accounting.
 
-The Cancun KZG point-evaluation precompile has an executable identity-point
-slice. It checks the 50,000-gas boundary, 192-byte input, versioned hash and
-canonical scalars before handling a commitment and proof that are both the
-compressed BLS12-381 point at infinity. In that case the proof succeeds exactly
-when the claimed value is zero. All six pinned Cancun direct-call EEST cases
-passed through the extracted transaction bridge, including gas and state checks.
-Other KZG proofs return incomplete execution; the runner cannot count
-them as successful transactions. The focused checks cover the exact pinned
-inputs, the precompile output and the unsupported boundary. They do not
-establish a general KZG verifier or native correspondence proof.
+The Cancun KZG point-evaluation precompile validates the 50,000-gas boundary,
+192-byte input and versioned hash, then executes the verification equation from
+`kzg_point_evaluation/arkworks.rs`. Its helper parses compressed G1 points with
+canonical coordinates and subgroup checks, reads canonical scalar-field values,
+and uses the Ethereum trusted setup G2 point with the shared BLS pairing code.
+Invalid encodings and false proofs complete with a precompile error; unexpected
+internal pairing failures remain incomplete. The Rust-shaped entry point takes byte values and a `u64` gas limit, preserves
+Rust's distinct length/hash/verification errors, and returns `PrecompileOutput`.
+The transaction runner uses the shared typed precompile adapter with checked gas
+subtraction. The legacy integer entry point remains only for fixture checks;
+cryptographic helpers use bounded field and Rust integer representations. This executable model does not establish correspondence
+to native Rust or Arkworks Montgomery arithmetic. The pinned Osaka point-evaluation
+selection passes all 180 cases through the compiled transaction runner, including
+122 external proof vectors. The 94 BLS pairing regressions and 664 related
+precompile-call cases also pass through the typed entry point integration. All
+938 selected results are checked by the corpus verifier. These are selected-fixture
+results, not a full Osaka corpus pass.
 
 BLS12-381 precompiles (addresses 11 through 17) implement gas, input-length
 and leading-padding rejection following the corresponding Rust modules. G1

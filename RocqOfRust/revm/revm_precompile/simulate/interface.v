@@ -2,12 +2,15 @@ Require Import alloy_primitives.bytes.links.mod.
 Require Import core.links.result.
 Require Import simulate.RocqOfRust.
 
-(** Executable subset of interface.rs used by the P256 and BLS boundary paths.
+(** Executable subset of interface.rs used by the P256, KZG and BLS boundary paths.
     The older linked interface does not contain the current BLS errors. This
     module supplies no native-provider or linked-interface correspondence proof. *)
 Module PrecompileError.
   Inductive t : Set :=
   | OutOfGas
+  | BlobInvalidInputLength
+  | BlobMismatchedVersion
+  | BlobVerifyKzgProofFailed
   | Bls12381G1AddInputLength
   | Bls12381G2AddInputLength
   | Bls12381G1MsmInputLength
@@ -20,6 +23,7 @@ Module PrecompileError.
   | Bls12381G1PaddingLength
   | Bls12381G2PaddingLength
   | NonCanonicalFp
+  | KzgInvalidG1Point
   | Bls12381G2NotOnCurve
   | Bls12381G1NotOnCurve
   | Bls12381G1NotInSubgroup

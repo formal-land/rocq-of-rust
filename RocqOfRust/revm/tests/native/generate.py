@@ -289,6 +289,7 @@ def generate_framehelpers(root, output):
     keep += ' RocqOfRust.revm.revm_precompile.simulate.bls12_381.map_fp_to_g1.map_fp_to_g1.map_fp_to_g1'
     keep += ' RocqOfRust.revm.revm_precompile.simulate.bls12_381.map_fp2_to_g2.map_fp2_to_g2.map_fp2_to_g2'
     keep += ' RocqOfRust.revm.revm_precompile.simulate.bls12_381.pairing.pairing.pairing'
+    keep += ' RocqOfRust.revm.revm_precompile.simulate.kzg_point_evaluation.kzg_point_evaluation.run'
     items=['make_interpreter_with_bytecode','interpreter_with_spec_id','CallFrame.result','CallFrame.resume','CallFrame.child','CallFrame.transfer','CreateFrame.result','CreateFrame.child','CreateFrame.prepare','CreateFrame.resume','CreateFrame.finish','PrecompileFrame.run']
     previous=[]
     for original in items:
