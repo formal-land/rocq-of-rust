@@ -29,6 +29,7 @@ EXPECTED_REJECTIONS = {
     "TransactionException.INTRINSIC_GAS_BELOW_FLOOR_GAS_COST": {"FloorGasTooHigh"},
     "TransactionException.GAS_LIMIT_EXCEEDS_MAXIMUM": {"GasLimitAboveCap"},
     "TransactionException.INSUFFICIENT_ACCOUNT_FUNDS": {"LackOfFunds"},
+    "TransactionException.GASLIMIT_PRICE_PRODUCT_OVERFLOW": {"PaymentOverflow"},
     "TransactionException.SENDER_NOT_EOA": {"RejectCallerWithCode"},
     "TransactionException.INSUFFICIENT_MAX_FEE_PER_GAS": {"GasPriceBelowBaseFee"},
     "TransactionException.GAS_ALLOWANCE_EXCEEDED": {"GasLimitAboveBlock"},
@@ -273,9 +274,9 @@ def decoded_rejection_envelope(case: dict) -> dict | None:
         return None
     if not envelope.get("supported") or envelope["nonce"] >= 1 << 64 or envelope["gas_limit"] >= 1 << 64:
         return None
-    if envelope["tx_type"] == 3 and (envelope["target"] is None or any(value >= 1 << 256 for value in (
+    if envelope["tx_type"] == 3 and any(value >= 1 << 256 for value in (
             envelope["chain_id"], envelope["gas_price"], envelope["max_priority_fee"], envelope["value"],
-            envelope["max_fee_per_blob_gas"], *envelope["signature"].values()))):
+            envelope["max_fee_per_blob_gas"], *envelope["signature"].values())):
         return None
     if envelope["tx_type"] == 4:
         if any(envelope[key] >= 1 << 256 for key in (
@@ -307,8 +308,8 @@ def validated_authentication_rejection(case: dict, output: dict) -> str | None:
         return None
     alternatives = set((case["expectation"]["exception"] or "").split("|"))
     tx_type, fork = envelope["tx_type"], case["fork"]
-    creation_name = "TransactionException.TYPE_4_TX_CONTRACT_CREATION"
-    if (tx_type == 4 and envelope["target"] is None and creation_name in alternatives
+    creation_name = f"TransactionException.TYPE_{tx_type}_TX_CONTRACT_CREATION"
+    if (tx_type in {3, 4} and envelope["target"] is None and creation_name in alternatives
             and output["reason"] == "MalformedFields" and output["details"] == []):
         return creation_name
     pre_berlin = {"Frontier", "Homestead", "TangerineWhistle", "SpuriousDragon", "Byzantium",
@@ -347,6 +348,13 @@ def mapped_rejection_prerequisites(case: dict, output: dict) -> bool:
     """Check fixture inputs and error details before accepting mapped rejections."""
     reason, details = output["reason"], output["details"]
     tx = case["transaction"]
+    if reason == "PaymentOverflow":
+        limit, price = tx["gas_limit"], tx["gas_price"]
+        # EEST checks the original U256 product; Rust caps fixture prices to
+        # u128 and checks that narrower product. Both must overflow here.
+        return (details == [] and 0 <= limit < 1 << 64 and 0 <= price < 1 << 256
+                and limit * price >= 1 << 256
+                and limit * min(price, (1 << 128) - 1) >= 1 << 128)
     if reason == "GasLimitAboveCap":
         maximum = 1 << 24
         return (case["fork"] == "Osaka" and maximum < tx["gas_limit"] < 1 << 64

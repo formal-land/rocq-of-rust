@@ -1,4 +1,4 @@
-From Stdlib Require Import List ZArith.
+From Stdlib Require Import Bool Lia List ZArith.
 
 Require Import revm.revm_handler.simulate.ethereum_rlp.
 Require Import revm.revm_handler.simulate.ethereum_rlp_decode.
@@ -6,6 +6,45 @@ Require Import revm.revm_handler.simulate.transaction_auth.
 
 Import ListNotations.
 Open Scope Z_scope.
+
+Lemma split_prefix_exact {A : Set} (size : nat) (input : list A) :
+  EthereumRlpDecode.split_prefix (Z.of_nat size) input =
+    if (size <=? List.length input)%nat then
+      Some (List.firstn size input, List.skipn size input)
+    else None.
+Proof.
+  revert size. induction input as [|value tail IH]; intros [|size];
+    try reflexivity.
+  rewrite Nat2Z.inj_succ.
+  cbn [EthereumRlpDecode.split_prefix].
+  assert (H_positive : (Z.succ (Z.of_nat size) <=? 0) = false)
+    by (apply Z.leb_gt; lia).
+  rewrite H_positive.
+  replace (Z.succ (Z.of_nat size) - 1) with (Z.of_nat size) by lia.
+  rewrite IH. simpl.
+  destruct (size <=? List.length tail)%nat; reflexivity.
+Qed.
+
+Lemma split_payload_preserves_length_checked_split (size : Z) (input : list Z) :
+  EthereumRlpDecode.split_payload size input =
+    if (size <? 0) || (Z.of_nat (List.length input) <? size) then None else
+    Some (List.firstn (Z.to_nat size) input, List.skipn (Z.to_nat size) input).
+Proof.
+  unfold EthereumRlpDecode.split_payload.
+  destruct (size <? 0) eqn:H_negative; simpl; [reflexivity|].
+  apply Z.ltb_ge in H_negative.
+  rewrite <- (Z2Nat.id size H_negative) at 1.
+  rewrite split_prefix_exact.
+  destruct (Z.of_nat (List.length input) <? size) eqn:H_length.
+  - apply Z.ltb_lt in H_length.
+    assert (H_short : (Z.to_nat size <=? List.length input)%nat = false).
+    { apply Nat.leb_gt. lia. }
+    rewrite H_short. reflexivity.
+  - apply Z.ltb_ge in H_length.
+    assert (H_enough : (Z.to_nat size <=? List.length input)%nat = true).
+    { apply Nat.leb_le. lia. }
+    rewrite H_enough. reflexivity.
+Qed.
 
 Module Test.
   Definition nested : EthereumRlp.Item.t := EthereumRlp.Item.List

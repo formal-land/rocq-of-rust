@@ -5,6 +5,7 @@ Require Import simulate.RocqOfRust.
 Require Import revm.revm_primitives.links.hardfork.
 Require Import revm.revm_handler.simulate.post_execution.
 Require Import revm.revm_handler.simulate.validation.
+Require Import alloy_primitives.links.aliases.
 Require Import alloy_primitives.links.common.
 Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.simulate.gas.
@@ -45,11 +46,18 @@ Module TransactionAccounting.
     }.
   End Transaction.
 
+  (** statetest-types/src/test.rs converts the fixture U256 gas price with
+      try_into().unwrap_or(u128::MAX). Keep that conversion at this boundary;
+      fee validation and arithmetic still use Rust's u128. *)
+  Definition fixture_gas_price (price : aliases.U256.t) : u128 :=
+    {| Integer.value := Z.min price.(Uint.value) (2 ^ 128 - 1) |}.
+
   #[export] Instance fee_fields : transaction.Transaction.Fees.C Transaction.t := {
     transaction.Transaction.Fees.tx_type tx := {| Integer.value := tx.(Transaction.tx_type) |};
     transaction.Transaction.Fees.gas_limit tx := {| Integer.value := tx.(Transaction.gas_limit) |};
     transaction.Transaction.Fees.value tx := {| Uint.value := tx.(Transaction.value) |};
-    transaction.Transaction.Fees.gas_price tx := {| Integer.value := tx.(Transaction.gas_price) |};
+    transaction.Transaction.Fees.gas_price tx :=
+      fixture_gas_price {| Uint.value := tx.(Transaction.gas_price) |};
     transaction.Transaction.Fees.blob_versioned_hashes tx :=
       List.map FixedBytes.from_Z tx.(Transaction.blob_hashes);
     transaction.Transaction.Fees.max_fee_per_blob_gas tx :=
@@ -175,7 +183,7 @@ Module TransactionAccounting.
      | None => true
      end) &&
     bounded 64 tx.(Transaction.gas_limit) &&
-    bounded 128 tx.(Transaction.gas_price) &&
+    bounded 256 tx.(Transaction.gas_price) &&
     (match tx.(Transaction.max_priority_fee) with
      | Some priority => bounded 128 priority
      | None => true
