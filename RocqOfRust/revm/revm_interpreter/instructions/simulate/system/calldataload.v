@@ -4,6 +4,7 @@ Require Import simulate.RocqOfRust.
 Require Import alloy_primitives.bits.simulate.fixed.
 Require Import alloy_primitives.links.aliases.
 Require Import core.convert.simulate.mod.
+Require Import core.ops.links.range.
 Require Import core.ops.simulate.deref.
 Require Import core.simulate.cmp.
 Require Import core.slice.simulate.mod.
@@ -57,20 +58,29 @@ Definition calldataload
   let input :=
     IInterpreterTypes.(InterpreterTypes.InputsTrait_for_Input).(InputTraits.input)
       .(RefStub.projection) interpreter.(Interpreter.input) in
-  let bytes :=
-    match input with
-    | call_inputs.CallInput.Bytes bytes =>
-        call_inputs.CallInput.bytes_as_ref bytes
-    | call_inputs.CallInput.SharedBuffer range =>
-        let bytes :=
-          IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory).(MemoryTrait.global_slice)
-            interpreter.(Interpreter.memory) range in
-        IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory)
-          .(MemoryTrait.Deref_for_Synthetic)
-          .(Deref.deref)
-          .(RefStub.projection) bytes
-    end in
-  let word := calldata_word bytes offset in
+  let input_len := call_inputs.CallInput.len input in
+  let word := if i[offset] <? i[input_len] then
+    let count : usize := {| Integer.value := Z.min 32 (i[input_len] - i[offset]) |} in
+    let bytes :=
+      match input with
+      | call_inputs.CallInput.Bytes bytes =>
+          List.firstn (Z.to_nat i[count])
+            (List.skipn (Z.to_nat i[offset]) (call_inputs.CallInput.bytes_as_ref bytes))
+      | call_inputs.CallInput.SharedBuffer range =>
+          (* Rust's borrowed slice exposes only these bytes to the word copy.
+             Narrow the range before materializing the executable list slice. *)
+          let start := range.(Range.start) +i offset in
+          let bytes :=
+            IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory).(MemoryTrait.global_slice)
+              interpreter.(Interpreter.memory)
+              {| Range.start := start; Range.end_ := start +i count |} in
+          IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory)
+            .(MemoryTrait.Deref_for_Synthetic)
+            .(Deref.deref)
+            .(RefStub.projection) bytes
+      end in
+    calldata_word bytes 0
+  else {| Uint.value := 0 |} in
   let stack :=
     offset_ptr_stub.(RefStub.injection)
       interpreter.(Interpreter.stack)

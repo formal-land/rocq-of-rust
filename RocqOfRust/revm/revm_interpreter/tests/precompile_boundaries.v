@@ -80,6 +80,18 @@ Module Test.
       Some (InstructionResult.Return, {| Integer.value := 0 |}, 128%nat).
   Proof. vm_compute. reflexivity. Qed.
 
+  Lemma available_shared_input_is_consumed :
+    let child := InstructionContext.State.interpreter _ _ _ (calls.Test.initial [0%Z] []) in
+    let child := child <| @Interpreter.memory WIRE _ WIRE_types _ :=
+      child.(Interpreter.memory) <| Memory.shared_buffer := List.repeat (0 : u8) 160 |> |> in
+    let child := child <| @Interpreter.input WIRE _ WIRE_types _ :=
+      child.(Interpreter.input) <| Input.input := CallInput.SharedBuffer
+        {| Range.start := {| Integer.value := 0 |};
+           Range.end_ := {| Integer.value := 160 |} |} |> |> in
+    observe (PrecompileFrame.partial_precompile 256 child) =
+      Some (InstructionResult.Return, {| Integer.value := 93100 |}, 0%nat).
+  Proof. vm_compute. reflexivity. Qed.
+
   Lemma unresolved_shared_input_stays_incomplete :
     let child := InstructionContext.State.interpreter _ _ _ (calls.Test.initial [0%Z] []) in
     let child := child <| @Interpreter.input WIRE _ WIRE_types _ :=

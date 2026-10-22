@@ -76,19 +76,15 @@ Module CallFrame.
 
   Definition child (parent : machine) (inputs : CallInputs.t)
       (code : list u8) : machine :=
-    let input := match inputs.(CallInputs.input) with
-      | CallInput.Bytes data => data
-      | CallInput.SharedBuffer range =>
-          let len := range.(Range.end_).(Integer.value) - range.(Range.start).(Integer.value) in
-          if len =? 0 then Impl_Bytes.new else
-            Impl_Bytes.copy_from_slice
-              (Memory.slice parent.(Interpreter.memory) range.(Range.start)
-                {| Integer.value := len |})
-      end in
     let value := match inputs.(CallInputs.value) with
       | CallValue.Transfer value | CallValue.Apparent value => value end in
     let interpreter := make_interpreter_with_bytecode code {| Stack.value := [] |} in
+    (* Each frame's ranges are local to its parent's memory. Retain that
+       immutable buffer for input reads; the child starts with empty local memory. *)
     interpreter
+      <| @Interpreter.memory WIRE _ WIRE_types _ :=
+        interpreter.(Interpreter.memory)
+          <| Memory.shared_buffer := parent.(Interpreter.memory).(Memory.value) |> |>
       <| @Interpreter.runtime_flag WIRE _ WIRE_types _ :=
         parent.(Interpreter.runtime_flag)
           <| RuntimeFlags.is_static := inputs.(CallInputs.is_static) |> |>
@@ -100,7 +96,7 @@ Module CallFrame.
         {| Input.target_address := inputs.(CallInputs.target_address);
            Input.caller_address := inputs.(CallInputs.caller);
            Input.call_value := value;
-           Input.input := CallInput.Bytes input |} |>.
+           Input.input := inputs.(CallInputs.input) |} |>.
 
   Definition balance (host : StatefulHost.t) (address : Z) : Z :=
     match StatefulHost.find_account address host.(StatefulHost.accounts) with
