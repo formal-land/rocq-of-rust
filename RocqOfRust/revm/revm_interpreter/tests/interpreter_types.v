@@ -67,6 +67,26 @@ Module Memory.
     destruct l; cbn; rewrite IH; reflexivity.
   Qed.
 
+  Lemma take_pad_firstn_min (len available : nat) (data : list u8) :
+    take_pad len (List.firstn (Nat.min len available) data) =
+    take_pad len (List.firstn available data).
+  Proof.
+    revert available data.
+    induction len as [|len IH]; intros [|available] [|byte data];
+      cbn; try reflexivity.
+    f_equal. apply IH.
+  Qed.
+
+  Lemma shared_copy_slice (len offset available start : nat) (data : list u8) :
+    take_pad len (List.skipn offset (List.firstn available (List.skipn start data))) =
+    take_pad len
+      (List.firstn (Nat.min len (available - offset)) (List.skipn (start + offset) data)).
+  Proof.
+    rewrite List.skipn_firstn_comm, List.skipn_skipn.
+    rewrite (Nat.add_comm offset start), take_pad_firstn_min.
+    reflexivity.
+  Qed.
+
   (** Get a slice of memory, returning zeros for out-of-bounds *)
   Definition slice (self : t) (offset len : usize) : list u8 :=
     take_pad (Z.to_nat i[len]) (List.skipn (Z.to_nat i[offset]) self.(value)).
@@ -645,14 +665,14 @@ Module MemoryTrait.
   Definition set_data_from_global
       (self : Self) (memory_offset data_offset len : usize)
       (data_range : Range.t usize) : Self :=
-    let range_start := Z.to_nat i[data_range.(Range.start)] in
-    let range_len :=
-      Z.to_nat
-        (i[data_range.(Range.end_)] - i[data_range.(Range.start)]) in
+    let available := i[data_range.(Range.end_)] - i[data_range.(Range.start)] in
     let data :=
-      List.firstn range_len
-        (List.skipn range_start self.(Memory.shared_buffer)) in
-    Memory.set_data self memory_offset data_offset len data.
+      if (i[len] =? 0) || (available <=? i[data_offset]) then [] else
+      let count : usize := {| Integer.value := Z.min i[len] (available - i[data_offset]) |} in
+      let start := data_range.(Range.start) +i data_offset in
+      List.firstn (Z.to_nat i[count])
+        (List.skipn (Z.to_nat i[start]) self.(Memory.shared_buffer)) in
+    Memory.set self memory_offset (Memory.take_pad (Z.to_nat i[len]) data).
 
   Definition set (self : Self) (memory_offset : usize) (data : list u8) : Self :=
     Memory.set self memory_offset data.
@@ -670,6 +690,8 @@ Module MemoryTrait.
     Memory.slice self range.(Range.start) (range.(Range.end_) -i range.(Range.start)).
 
   Definition global_slice (self : Self) (range : Range.t usize) : Synthetic :=
+    (* Empty call ranges use usize::MAX as a sentinel offset. *)
+    if i[range.(Range.end_)] <=? i[range.(Range.start)] then [] else
     let offset := Z.to_nat i[range.(Range.start)] in
     let len :=
       Z.to_nat
@@ -678,6 +700,42 @@ Module MemoryTrait.
       (List.skipn offset self.(Memory.shared_buffer)).
 
   Module Test.
+    Lemma empty_shared_sentinel_does_not_materialize_offset :
+      global_slice
+        {| Memory.value := []; Memory.shared_buffer := [(42 : u8)] |}
+        {| Range.start := {| Integer.value := 2 ^ 64 - 1 |};
+           Range.end_ := {| Integer.value := 2 ^ 64 - 1 |} |} = [].
+    Proof. vm_compute. reflexivity. Qed.
+
+    Lemma shared_copy_stops_at_range_end :
+      (set_data_from_global
+        {| Memory.value := [(7 : u8); (8 : u8); (9 : u8); (10 : u8)];
+           Memory.shared_buffer := [(90 : u8); (42 : u8); (43 : u8); (99 : u8)] |}
+        1 1 3 {| Range.start := {| Integer.value := 1 |}; Range.end_ := {| Integer.value := 3 |} |}).(Memory.value) =
+      [(7 : u8); (43 : u8); (0 : u8); (0 : u8)].
+    Proof. vm_compute. reflexivity. Qed.
+
+    Lemma shared_copy_pads_short_buffer :
+      (set_data_from_global
+        {| Memory.value := []; Memory.shared_buffer := [(90 : u8); (42 : u8)] |}
+        0 0 3 {| Range.start := {| Integer.value := 1 |}; Range.end_ := {| Integer.value := 5 |} |}).(Memory.value) =
+      [(42 : u8); (0 : u8); (0 : u8)].
+    Proof. vm_compute. reflexivity. Qed.
+
+    Lemma shared_copy_large_offset_pads_without_reading :
+      (set_data_from_global
+        {| Memory.value := []; Memory.shared_buffer := [(42 : u8)] |}
+        0 {| Integer.value := 2 ^ 64 - 1 |} 2
+        {| Range.start := {| Integer.value := 0 |}; Range.end_ := {| Integer.value := 1 |} |}).(Memory.value) = [(0 : u8); (0 : u8)].
+    Proof. vm_compute. reflexivity. Qed.
+
+    Lemma shared_copy_zero_length_preserves_empty_write_behavior :
+      (set_data_from_global
+        {| Memory.value := [(7 : u8)]; Memory.shared_buffer := [(42 : u8)] |}
+        3 0 0 {| Range.start := {| Integer.value := 0 |}; Range.end_ := {| Integer.value := 1 |} |}).(Memory.value) =
+      [(7 : u8); (0 : u8); (0 : u8)].
+    Proof. vm_compute. reflexivity. Qed.
+
     Goal
       global_slice
         {| Memory.value := [(9 : u8)];

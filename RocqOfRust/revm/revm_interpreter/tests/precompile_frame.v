@@ -5,6 +5,7 @@ Require Import alloy_primitives.bytes.simulate.mod.
 Require Import bytes.links.bytes.
 Require Import core.links.result.
 Require Import core.num.simulate.mod.
+Require Import core.ops.links.range.
 Require Import revm.revm_interpreter.interpreter.links.runtime_flags.
 Require Import revm.revm_interpreter.interpreter_action.links.call_inputs.
 Require Import revm.revm_interpreter.links.gas.
@@ -71,14 +72,33 @@ Module PrecompileFrame.
 
   Definition ripemd160_cost := linear_cost 600 120.
 
+  Definition input_available (child : CallFrame.machine) : bool :=
+    match child.(Interpreter.input).(Input.input) with
+    | CallInput.Bytes _ => true
+    | CallInput.SharedBuffer range =>
+      let start := range.(Range.start).(Integer.value) in
+      let finish := range.(Range.end_).(Integer.value) in
+      if start =? finish then true else
+      (0 <=? start) && (start <? finish) &&
+        (finish <=? Z.of_nat (List.length child.(Interpreter.memory).(Memory.shared_buffer)))
+    end.
+
+  (** Precompiles consume the whole input; bytecode calls retain a shared range. *)
+  Definition input_bytes (child : CallFrame.machine) :
+      alloy_primitives.bytes.links.mod.Bytes.t :=
+    match child.(Interpreter.input).(Input.input) with
+    | CallInput.Bytes input => input
+    | CallInput.SharedBuffer range =>
+      Impl_Bytes.copy_from_slice
+        (revm.revm_interpreter.tests.interpreter_types.MemoryTrait.global_slice
+          child.(Interpreter.memory) range)
+    end.
+
   Definition complete (cost_of : list u8 -> Z)
       (output_of : alloy_primitives.bytes.links.mod.Bytes.t ->
         alloy_primitives.bytes.links.mod.Bytes.t)
       (child : CallFrame.machine) : InterpreterResult.t :=
-    let input := match child.(Interpreter.input).(Input.input) with
-      | CallInput.Bytes input => input
-      | CallInput.SharedBuffer _ => Impl_Bytes.new
-      end in
+    let input := input_bytes child in
     let cost := cost_of input.(alloy_primitives.bytes.links.mod.Bytes.value)
       .(bytes.Bytes.value) in
     let gas := child.(Interpreter.gas) in
@@ -111,10 +131,7 @@ Module PrecompileFrame.
           input.(alloy_primitives.bytes.links.mod.Bytes.value).(bytes.Bytes.value))))).
 
   Definition modexp (child : CallFrame.machine) : InterpreterResult.t :=
-    let input := match child.(Interpreter.input).(Input.input) with
-      | CallInput.Bytes input => input
-      | CallInput.SharedBuffer _ => Impl_Bytes.new
-      end in
+    let input := input_bytes child in
     let gas := child.(Interpreter.gas) in
     let run_modexp :=
       if Impl_SpecId.is_enabled_in
@@ -138,10 +155,7 @@ Module PrecompileFrame.
     end.
 
   Definition blake2 (child : CallFrame.machine) : InterpreterResult.t :=
-    let input := match child.(Interpreter.input).(Input.input) with
-      | CallInput.Bytes input => input
-      | CallInput.SharedBuffer _ => Impl_Bytes.new
-      end in
+    let input := input_bytes child in
     let gas := child.(Interpreter.gas) in
     match Blake2.run
       (List.map Integer.value
@@ -158,10 +172,7 @@ Module PrecompileFrame.
     end.
 
   Definition bn254 (multiply : bool) (child : CallFrame.machine) : InterpreterResult.t :=
-    let input := match child.(Interpreter.input).(Input.input) with
-      | CallInput.Bytes input => input
-      | CallInput.SharedBuffer _ => Impl_Bytes.new
-      end in
+    let input := input_bytes child in
     let gas := child.(Interpreter.gas) in
     let istanbul := Impl_SpecId.is_enabled_in
       child.(Interpreter.runtime_flag).(RuntimeFlags.spec_id) SpecId.ISTANBUL in
@@ -183,10 +194,7 @@ Module PrecompileFrame.
     end.
 
   Definition bn254_pairing (child : CallFrame.machine) : InterpreterResult.t :=
-    let input := match child.(Interpreter.input).(Input.input) with
-      | CallInput.Bytes input => input
-      | CallInput.SharedBuffer _ => Impl_Bytes.new
-      end in
+    let input := input_bytes child in
     let gas := child.(Interpreter.gas) in
     let istanbul := Impl_SpecId.is_enabled_in
       child.(Interpreter.runtime_flag).(RuntimeFlags.spec_id) SpecId.ISTANBUL in
@@ -209,12 +217,11 @@ Module PrecompileFrame.
 
   (** This adapter preserves unsupported crypto as None. A recognized address
       must never fall through to empty account bytecode in that case.
-      CallFrame.child normalizes shared input to owned Bytes before dispatch. *)
+      Shared input is materialized only when the precompile consumes it. *)
   Definition partial_precompile (address : u64) (child : CallFrame.machine)
       : option InterpreterResult.t :=
-    match child.(Interpreter.input).(Input.input) with
-    | CallInput.SharedBuffer _ => None
-    | CallInput.Bytes input =>
+    if negb (input_available child) then None else
+    let input := input_bytes child in
     let bytes := input.(alloy_primitives.bytes.links.mod.Bytes.value).(bytes.Bytes.value) in
     let gas := child.(Interpreter.gas) in
     let limit := gas.(Gas.remaining) in
@@ -246,7 +253,6 @@ Module PrecompileFrame.
            InterpreterResult.output := output.(PrecompileOutput.bytes);
            InterpreterResult.gas := gas <| Gas.remaining := remaining |> |}
       end
-    end
     end.
 
   (** A dispatcher exists for these addresses; individual requests can still
@@ -261,6 +267,7 @@ Module PrecompileFrame.
   Definition run (address : Z) (child : CallFrame.machine) : option InterpreterResult.t :=
     if negb (is_precompile child.(Interpreter.runtime_flag).(RuntimeFlags.spec_id) address)
     then None else
+    if negb (input_available child) then None else
     if address =? 1 then Some (ecrecover child) else
     if address =? 2 then Some (sha256 child) else
     if address =? 3 then Some (ripemd160 child) else

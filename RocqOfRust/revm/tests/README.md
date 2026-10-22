@@ -207,6 +207,20 @@ observation log, not Rust's undo journal. The in-memory loader cannot fail; this
 is not a native `ContextTr` or `JournalTr` correspondence proof. Output/error
 classification and the other transaction phases remain in the fixture adapter.
 
+Child-call calldata retains a range into an immutable snapshot of its immediate
+parent's local memory. Child writes and nested return-data copies do not change
+that snapshot. Calldata word loads and copies materialize only the requested
+bytes, while precompiles consume the full input. The concrete list-slice proof
+and regression checks do not establish native shared-memory correspondence;
+`calldataload_eq` remains an existing admitted boundary.
+
+The shared-input batch passes the focused call, static-call and precompile
+boundary checks and 664 pinned Osaka precompile-call fixtures. A separate
+eight-case execution selection passes its two low-gas cases; the six existing
+stress-case timeouts remain at the unchanged 60-second limit. In particular,
+loads near the end of a large shared input still traverse a linked list. These
+results do not establish completion of the Osaka suite.
+
 The regression build also checks legacy, EIP-2930, EIP-1559 and EIP-4844 transactions on
 Cancun, Prague and Osaka, including top-level and nested calls and creation,
 access-list charges, effective gas prices, maximum-fee affordability, nonce

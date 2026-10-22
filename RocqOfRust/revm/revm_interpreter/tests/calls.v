@@ -192,6 +192,76 @@ Module Test.
       [54; 96; 0; 96; 0; 55; 54; 96; 0; 243]) = Some [42].
   Proof. vm_compute. reflexivity. Qed.
 
+  Lemma shared_calldataload_respects_nonzero_input_range :
+    returned_bytes (run
+      ([96; 42; 96; 1; 83; 96; 99; 96; 2; 83] ++
+       [96; 0; 96; 0; 96; 1; 96; 1; 96; 0; 96; 43; 97; 195; 80; 241; 0])
+      [96; 0; 53; 96; 0; 82; 96; 32; 96; 0; 243]) =
+    Some (42 :: List.repeat 0 31).
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma shared_calldataload_at_end_is_zero :
+    returned_bytes (run
+      ([96; 42; 96; 0; 83; 96; 99; 96; 1; 83] ++ call 0 1 0 50000 ++ [0])
+      [96; 1; 53; 96; 0; 82; 96; 32; 96; 0; 243]) =
+    Some (List.repeat 0 32).
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma shared_calldataload_large_offset_is_zero :
+    returned_bytes (run
+      ([96; 42; 96; 0; 83] ++ call 0 1 0 50000 ++ [0])
+      ([127] ++ List.repeat 255 32 ++ [53; 96; 0; 82; 96; 32; 96; 0; 243])) =
+    Some (List.repeat 0 32).
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma shared_calldata_survives_child_memory_write :
+    returned_bytes (run
+      ([96; 42; 96; 0; 83] ++ call 0 1 0 50000 ++ [0])
+      [96; 99; 96; 0; 83; 96; 0; 53; 96; 0; 82; 96; 1; 96; 0; 243]) =
+    Some [42].
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma shared_calldatacopy_pads_at_input_boundary :
+    returned_bytes (run
+      ([96; 42; 96; 0; 83; 96; 43; 96; 1; 83; 96; 99; 96; 2; 83] ++
+       call 0 2 0 50000 ++ [0])
+      [96; 4; 96; 1; 96; 0; 55; 96; 4; 96; 0; 243]) = Some [43; 0; 0; 0].
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma shared_input_reaches_identity_precompile :
+    returned_bytes (run
+      ([96; 42; 96; 0; 83] ++ call_to 4 0 1 0 50000 ++ [0]) []) = Some [42].
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma nested_shared_input_uses_immediate_parent_memory :
+    returned_bytes (run
+      ([96; 42; 96; 0; 83] ++ call 0 1 0 50000 ++ [0])
+      ([96; 99; 96; 0; 83] ++ call_to 4 0 1 1 30000 ++ [96; 1; 96; 0; 243])) =
+    Some [99].
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma child_memory_does_not_modify_shared_parent :
+    memory_prefix 1 (run
+      ([96; 42; 96; 0; 83] ++ call 0 1 0 50000 ++ [0])
+      [96; 99; 96; 0; 83; 0]) = Some [42].
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma shared_calldataload_combines_range_and_word_offsets :
+    returned_bytes (run
+      ([96; 42; 96; 1; 83; 96; 43; 96; 2; 83; 96; 99; 96; 3; 83] ++
+       [96; 0; 96; 0; 96; 2; 96; 1; 96; 0; 96; 43; 97; 195; 80; 241; 0])
+      [96; 1; 53; 96; 0; 82; 96; 32; 96; 0; 243]) =
+    Some (43 :: List.repeat 0 31).
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma nested_return_write_preserves_original_calldata :
+    returned_bytes (run
+      ([96; 42; 96; 0; 83] ++ call 0 1 0 50000 ++ [0])
+      ([96; 88; 96; 0; 83; 96; 99; 96; 1; 83] ++
+       [96; 1; 96; 0; 96; 1; 96; 1; 96; 0; 96; 4; 97; 117; 48; 241] ++
+       [96; 0; 53; 96; 0; 82; 96; 1; 96; 0; 243])) = Some [42].
+  Proof. vm_compute. reflexivity. Qed.
+
   Lemma grandchild_write_survives_two_returns :
     storage 44 (run (call 0 0 0 50000 ++ [0])
       (call_to 44 0 0 0 30000 ++ [0])) = Some [(0, 9)].
