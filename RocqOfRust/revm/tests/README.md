@@ -210,16 +210,21 @@ classification and the other transaction phases remain in the fixture adapter.
 Child-call calldata retains a range into an immutable snapshot of its immediate
 parent's local memory. Child writes and nested return-data copies do not change
 that snapshot. Calldata word loads and copies materialize only the requested
-bytes, while precompiles consume the full input. The concrete list-slice proof
-and regression checks do not establish native shared-memory correspondence;
-`calldataload_eq` remains an existing admitted boundary.
+bytes, while precompiles consume the full input. Shared-range indexing uses a
+positive-guarded `usize` counter rather than constructing a unary index first;
+`Memory.skip_bytes_eq` proves equality to the previous list traversal. The
+concrete list-slice proof and regression checks do not establish native
+shared-memory correspondence; `calldataload_eq` remains an existing admitted
+boundary. The `global_slice_skipn` and `set_data_from_global_skipn` lemmas
+also prove that both complete operations retain their previous list-based
+results for all inputs.
 
-The shared-input batch passes the focused call, static-call and precompile
-boundary checks and 664 pinned Osaka precompile-call fixtures. A separate
-eight-case execution selection passes its two low-gas cases; the six existing
-stress-case timeouts remain at the unchanged 60-second limit. In particular,
-loads near the end of a large shared input still traverse a linked list. These
-results do not establish completion of the Osaka suite.
+The original shared-input batch passed the focused call, static-call and
+precompile boundary checks and 664 pinned Osaka precompile-call fixtures. Its
+eight-case execution selection passed two low-gas cases and timed out on six
+stress cases at the 60-second limit. The arithmetic and indexing follow-up
+results are recorded below. Loads near the end of a large shared input still
+traverse a linked list; this is not constant-time indexed memory.
 
 The regression build also checks legacy, EIP-2930, EIP-1559 and EIP-4844 transactions on
 Cancun, Prague and Osaka, including top-level and nested calls and creation,
@@ -492,6 +497,38 @@ replaced with guarded numeric shifts. Enormous right shifts return the exact
 sign extension; enormous zero left shifts remain zero. Nonrepresentable left
 shifts of nonzero numbers terminate as resource failures, never a successful
 EVM outcome. Bitwise Z operations use Zarith's infinite two's-complement operations.
+Integer powers use a guarded Zarith mapping instead of extracted repeated
+multiplication. Negative exponents return zero, and zero exponents return one,
+matching `Z.pow`. Huge exponents with bases zero or ±1 are handled without a
+machine-integer conversion; other nonrepresentable exponents remain resource
+failures. `--smoke` compares 84 power cases against values computed by Rocq
+before extraction and checks the huge-exponent boundaries. It also compares
+168 left/right shift results against Rocq-computed references, covering signed
+values and positive and negative shift counts, with seven additional checks
+for 100-bit shift counts and resource failures. This mapping shares
+the arithmetic trust boundary above; it is not a correspondence proof.
+
+`FixedBytes.bytes_be` extracts each byte with a shift and mask. Its Rocq
+equality proof covers the previous division-based definition for every byte
+count and integer, including negative inputs. This proof is separate from the
+trusted mapping of arithmetic operations to the native runtime.
+
+The combined arithmetic, byte-conversion and shared-indexing batch passes
+938 pinned Osaka precompile fixtures and all 56 Osaka raw-transaction cases.
+At two million fuel and a 120-second deadline, its eight-case stress selection
+has seven passes and one timeout. A separate retry of that case
+(`return50000_2`, high-gas variant) passes with a 180-second deadline, taking
+about 114 seconds. Each run is independently verified; the original timeout
+remains recorded rather than being replaced by the retry. These are selected
+fixture results, not a fresh full-Osaka pass.
+
+The full Osaka workflow uses two million fuel and a 180-second per-case
+deadline. Earlier diagnostics at one million fuel and 60 seconds had three
+incomplete results and three timeouts; the three incomplete cases passed
+after increasing the execution budget. Fuel bounds the extracted runner, not
+Ethereum gas. The per-process 2 GiB fixture memory limit and shard job deadlines
+remain unchanged. CLI defaults remain one million fuel and 60 seconds.
+
 Division and remainder retain Stdlib's signed and zero-divisor
 semantics. Performance is unmeasured until both modes are built and compared.
 

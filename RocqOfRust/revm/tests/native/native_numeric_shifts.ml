@@ -21,3 +21,15 @@ let shiftl value count =
 let shiftr value count =
     if Z.sign count < 0 then shiftl_nonnegative value (Z.neg count)
     else shiftr_nonnegative value count
+
+(* Z.pow returns zero for negative exponents, including bases zero and one.
+   Handle constant-size results before narrowing a nonnegative exponent. *)
+let pow base exponent =
+    if Z.sign exponent < 0 then Z.zero
+    else if Z.equal exponent Z.zero then Z.one
+    else if Z.equal base Z.zero then Z.zero
+    else if Z.equal base Z.one then Z.one
+    else if Z.equal base Z.minus_one then
+        if Z.testbit exponent 0 then Z.minus_one else Z.one
+    else if Z.fits_int exponent then Z.pow base (Z.to_int exponent)
+    else raise Numeric_resource_limit
