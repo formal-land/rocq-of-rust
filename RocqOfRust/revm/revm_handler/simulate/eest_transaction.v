@@ -14,7 +14,7 @@ Module EestTransaction.
   Definition nonce_overflow (tx : TransactionAccounting.Transaction.t)
       (input : EestTypes.Input.t) : bool :=
     TransactionAccounting.transaction_fields_valid tx &&
-    EestTypes.input_valid input &&
+    EestContext.input_valid input &&
     (tx.(TransactionAccounting.Transaction.nonce) =? 2 ^ 64 - 1) &&
     ((EestTypes.account_at tx.(TransactionAccounting.Transaction.caller)
       input.(EestTypes.Input.accounts)).(EestTypes.Account.nonce) =? 2 ^ 64 - 1).

@@ -221,9 +221,9 @@ Module Handler.
       end
     end.
 
-  Definition run_without_catch_error {DB Error : Set} `{Database.C DB Error} `{PrecompileProvider.C DB Error}
+  Definition run_without_catch_error_with_gas {DB Error : Set} `{Database.C DB Error} `{PrecompileProvider.C DB Error}
       (fuel : nat) (precompile_addresses : list Address.t) (ctx : Context.t DB Error)
-      : option (Result.t ExecutionResult.t (EVMError.t Error) * Context.t DB Error) :=
+      : option (Result.t (ExecutionResult.t * Gas.t) (EVMError.t Error) * Context.t DB Error) :=
     match validate ctx with
     | Result.Err error => Some (Result.Err error, ctx)
     | Result.Ok initial =>
@@ -238,17 +238,46 @@ Module Handler.
           match post_execution ctx result initial (cast_integer IntegerKind.I64 eip7702_refund) with
           | None => None
           | Some (Result.Err error, ctx) => Some (Result.Err error, ctx)
-          | Some (Result.Ok result, ctx) => execution_result ctx result
+          | Some (Result.Ok result, ctx) =>
+            let gas := (FrameResult.into_interpreter_result result).(InterpreterResult.gas) in
+            option_map (fun '(output, ctx) =>
+              (match output with
+               | Result.Ok output => Result.Ok (output, gas)
+               | Result.Err error => Result.Err error
+               end, ctx)) (execution_result ctx result)
           end
         end
       end
     end.
+
+  Definition discard_gas {DB Error : Set}
+      (output : Result.t (ExecutionResult.t * Gas.t) (EVMError.t Error) * Context.t DB Error) :=
+    let '(result, ctx) := output in
+    (match result with
+     | Result.Ok (result, _) => Result.Ok result
+     | Result.Err error => Result.Err error
+     end, ctx).
+
+  Definition run_without_catch_error {DB Error : Set} `{Database.C DB Error} `{PrecompileProvider.C DB Error}
+      (fuel : nat) (precompile_addresses : list Address.t) (ctx : Context.t DB Error)
+      : option (Result.t ExecutionResult.t (EVMError.t Error) * Context.t DB Error) :=
+    option_map discard_gas (run_without_catch_error_with_gas fuel precompile_addresses ctx).
 
   Definition catch_error {DB Error : Set} (ctx : Context.t DB Error) (error : EVMError.t Error)
       : option (Result.t ExecutionResult.t (EVMError.t Error) * Context.t DB Error) :=
     option_map (fun journal => (Result.Err error, ctx <| Context.journaled_state := journal |>
       <| Context.local := Impl_LocalContext.clear ctx.(Context.local) |>))
       (Impl_Journal.discard_tx ctx.(Context.journaled_state)).
+
+  Definition run_with_gas {DB Error : Set} `{Database.C DB Error} `{PrecompileProvider.C DB Error}
+      (fuel : nat) (precompile_addresses : list Address.t) (ctx : Context.t DB Error)
+      : option (Result.t (ExecutionResult.t * Gas.t) (EVMError.t Error) * Context.t DB Error) :=
+    match run_without_catch_error_with_gas fuel precompile_addresses ctx with
+    | None => None
+    | Some (Result.Err error, ctx) =>
+        option_map (fun '(_, ctx) => (Result.Err error, ctx)) (catch_error ctx error)
+    | Some (Result.Ok result, ctx) => Some (Result.Ok result, ctx)
+    end.
 
   Definition run {DB Error : Set} `{Database.C DB Error} `{PrecompileProvider.C DB Error}
       (fuel : nat) (precompile_addresses : list Address.t) (ctx : Context.t DB Error)

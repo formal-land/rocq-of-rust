@@ -6,6 +6,16 @@ Require Import revm.revm_handler.tests.transaction_cases.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_primitives.links.hardfork.
 
+Require Import core.links.result.
+Require Import core.ops.links.range.
+Require Import alloy_primitives.bytes.simulate.mod.
+Require Import revm.revm_handler.simulate.handler.
+Require Import revm.revm_handler.simulate.frame_data.
+Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.interpreter_InterpreterResult.
+Require Import revm.revm_interpreter.simulate.gas.
+Require Import revm.revm_interpreter.gas.simulate.calc.
+
 Module Test.
   Example stop_applies_value_nonce_and_exact_fees :
     TransactionCases.observation (EestContext.run 100 SpecId.OSAKA TransactionCases.tx (TransactionCases.input [0])) =
@@ -49,5 +59,56 @@ Module Test.
         (EestTypes.account_at 77 output.(EestTypes.Output.accounts)).(EestTypes.Account.storage)
     | _ => None
     end = Some [(1, 2)].
+  Proof. vm_compute. reflexivity. Qed.
+  (* Start at the post-execution boundary with an applied authorization refund.
+     ExecutionResult drops that refund for both failure variants. *)
+  Definition failed_authorization_gas (status : InstructionResult.t) (remaining floor : u64) :=
+    let ctx := EestContext.context SpecId.OSAKA
+      (TransactionCases.tx <| TransactionAccounting.Transaction.gas_limit := 100000 |>)
+      (TransactionCases.input [0]) in
+    let frame := FrameResult.Call (CallOutcome.new
+      {| InterpreterResult.result := status;
+         InterpreterResult.output := Impl_Bytes.new;
+         InterpreterResult.gas := Impl_Gas.erase_cost (Impl_Gas.new_spent 100000) remaining |}
+      {| Range.start := (0 : usize); Range.end_ := (0 : usize) |}) in
+    match Handler.post_execution ctx frame
+      {| InitialAndFloorGas.initial_gas := 46000; InitialAndFloorGas.floor_gas := floor |} 12500 with
+    | Some (Result.Ok frame, ctx) =>
+        let gas := (FrameResult.into_interpreter_result frame).(InterpreterResult.gas) in
+        match Handler.execution_result ctx frame with
+        | Some (Result.Ok result, ctx) =>
+            match EestContext.completed ctx result gas with
+            | EestTypes.Result.Completed output =>
+                let gas := output.(EestTypes.Output.gas) in
+                Some (output.(EestTypes.Output.status),
+                  gas.(TransactionAccounting.Settlement.gas_remaining),
+                  gas.(TransactionAccounting.Settlement.gas_refunded),
+                  gas.(TransactionAccounting.Settlement.gas_used),
+                  gas.(TransactionAccounting.Settlement.caller_reimbursement))
+            | _ => None
+            end
+        | _ => None
+        end
+    | _ => None
+    end.
+
+  Example exceptional_halt_preserves_authorization_refund :
+    failed_authorization_gas InstructionResult.OutOfGas 0 21000 =
+    Some (InstructionResult.OutOfGas, 0, 12500, 87500, 125000).
+  Proof. vm_compute. reflexivity. Qed.
+
+  Example revert_preserves_authorization_refund_and_remaining_gas :
+    failed_authorization_gas InstructionResult.Revert 20000 21000 =
+    Some (InstructionResult.Revert, 20000, 12500, 67500, 325000).
+  Proof. vm_compute. reflexivity. Qed.
+
+  Example reverted_authorization_refund_is_capped :
+    failed_authorization_gas InstructionResult.Revert 50000 21000 =
+    Some (InstructionResult.Revert, 50000, 10000, 40000, 600000).
+  Proof. vm_compute. reflexivity. Qed.
+
+  Example reverted_authorization_refund_respects_gas_floor :
+    failed_authorization_gas InstructionResult.Revert 50000 45000 =
+    Some (InstructionResult.Revert, 55000, 0, 45000, 550000).
   Proof. vm_compute. reflexivity. Qed.
 End Test.

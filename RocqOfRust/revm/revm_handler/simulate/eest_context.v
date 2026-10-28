@@ -25,6 +25,8 @@ Require Import alloy_primitives.bits.links.address.
 Require Import alloy_primitives.links.aliases.
 Require Import alloy_primitives.links.common.
 Require Import core.links.result.
+Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.simulate.gas.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_handler.simulate.transaction_accounting.
 Require Import revm.revm_context_interface.links.journaled_state.
@@ -207,18 +209,18 @@ Module EestContext.
         else 0;
     |}.
 
-  Definition completed (ctx : Context.t EestTypes.Input.t unit) (result : ExecutionResult.t) : EestTypes.Result.t :=
-    let '(status, used, refunded, data, logs) := match result with
-      | ExecutionResult.Success reason used refunded logs output =>
+  Definition completed (ctx : Context.t EestTypes.Input.t unit) (result : ExecutionResult.t) (gas : Gas.t) : EestTypes.Result.t :=
+    let '(status, data, logs) := match result with
+      | ExecutionResult.Success reason _ _ logs output =>
           (match reason with SuccessReason.Stop => InstructionResult.Stop | SuccessReason.Return => InstructionResult.Return
             | SuccessReason.SelfDestruct => InstructionResult.SelfDestruct end,
-          used, refunded, Output.into_data output, logs)
-      | ExecutionResult.Revert used data => (InstructionResult.Revert, used, (0 : u64), data, [])
-      | ExecutionResult.Halt reason used => (halt_status reason, used, (0 : u64), Impl_Bytes.new, [])
+          Output.into_data output, logs)
+      | ExecutionResult.Revert _ data => (InstructionResult.Revert, data, [])
+      | ExecutionResult.Halt reason _ => (halt_status reason, Impl_Bytes.new, [])
       end in
     EestTypes.Result.Completed {|
       EestTypes.Output.status := status;
-      EestTypes.Output.gas := settlement ctx used refunded;
+      EestTypes.Output.gas := settlement ctx (Impl_Gas.used gas) (cast_integer IntegerKind.U64 gas.(Gas.refunded));
       EestTypes.Output.data := List.map Integer.value data.(alloy_primitives.bytes.links.mod.Bytes.value).(bytes.Bytes.value);
       EestTypes.Output.accounts := accounts ctx;
       EestTypes.Output.logs := List.map log logs;
@@ -265,9 +267,9 @@ Module EestContext.
   Definition run (fuel : nat) (spec : SpecId.t) (tx : TransactionAccounting.Transaction.t)
       (input : EestTypes.Input.t) : EestTypes.Result.t :=
     if negb (input_valid input && TransactionAccounting.transaction_fields_valid tx) then EestTypes.Result.Malformed else
-    match Handler.run fuel (EthPrecompiles.warm_addresses spec) (context spec tx input) with
+    match Handler.run_with_gas fuel (EthPrecompiles.warm_addresses spec) (context spec tx input) with
     | None => EestTypes.Result.Incomplete
     | Some (Result.Err error, _) => rejected error
-    | Some (Result.Ok result, ctx) => completed ctx result
+    | Some (Result.Ok (result, gas), ctx) => completed ctx result gas
     end.
 End EestContext.

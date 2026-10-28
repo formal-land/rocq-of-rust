@@ -40,4 +40,27 @@ Module Test.
     EestTransaction.run 100 SpecId.OSAKA max_tx (TransactionCases.input_with_max_nonce [0]) =
     EestTypes.Result.Rejected EestTypes.Rejection.NonceOverflow.
   Proof. vm_compute. reflexivity. Qed.
+  Lemma u256_block_number_cannot_bypass_nonce_overflow :
+    let input := TransactionCases.input_with_max_nonce [0] in
+    EestTransaction.run 100 SpecId.OSAKA max_tx
+      (input <| EestTypes.Input.block := input.(EestTypes.Input.block)
+        <| EestTypes.Block.number := 2 ^ 200 |> |>) =
+    EestTypes.Result.Rejected EestTypes.Rejection.NonceOverflow.
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma u256_timestamp_cannot_bypass_nonce_overflow :
+    let input := TransactionCases.input_with_max_nonce [0] in
+    EestTransaction.run 100 SpecId.OSAKA max_tx
+      (input <| EestTypes.Input.block := input.(EestTypes.Input.block)
+        <| EestTypes.Block.timestamp := 2 ^ 200 |> |>) =
+    EestTypes.Result.Rejected EestTypes.Rejection.NonceOverflow.
+  Proof. vm_compute. reflexivity. Qed.
+
+  Lemma out_of_range_block_remains_malformed_with_max_nonce :
+    let input := TransactionCases.input_with_max_nonce [0] in
+    EestTransaction.run 100 SpecId.OSAKA max_tx
+      (input <| EestTypes.Input.block := input.(EestTypes.Input.block)
+        <| EestTypes.Block.number := 2 ^ 256 |> |>) =
+    EestTypes.Result.Malformed.
+  Proof. vm_compute. reflexivity. Qed.
 End Test.
