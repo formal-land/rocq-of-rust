@@ -2,7 +2,7 @@ From Stdlib Require Import Bool List ZArith.
 
 Require Import alloy_primitives.utils.simulate.keccak256.
 Require Import revm.revm_handler.simulate.ethereum_rlp.
-Require Import revm.revm_interpreter.tests.stateful_host.
+Require Import revm.revm_handler.simulate.eest_types.
 
 Import ListNotations.
 Open Scope Z_scope.
@@ -154,28 +154,28 @@ Module EthereumCommitment.
        EthereumRlp.encode_uint (snd slot)))
       (List.filter (fun slot => negb (snd slot =? 0)) slots)).
 
-  Definition account_valid (account : StatefulHost.Account.t) : bool :=
-    bounded 160 account.(StatefulHost.Account.address) &&
-    bounded 64 account.(StatefulHost.Account.nonce) &&
-    bounded 256 account.(StatefulHost.Account.balance) &&
-    List.forallb (bounded 8) account.(StatefulHost.Account.code) &&
-    storage_valid account.(StatefulHost.Account.storage).
+  Definition account_valid (account : EestTypes.Account.t) : bool :=
+    bounded 160 account.(EestTypes.Account.address) &&
+    bounded 64 account.(EestTypes.Account.nonce) &&
+    bounded 256 account.(EestTypes.Account.balance) &&
+    List.forallb (bounded 8) account.(EestTypes.Account.code) &&
+    storage_valid account.(EestTypes.Account.storage).
 
-  Definition state_root (accounts : list StatefulHost.Account.t) : option (list Z) :=
+  Definition state_root (accounts : list EestTypes.Account.t) : option (list Z) :=
     if negb (List.forallb account_valid accounts &&
-      distinct (List.map StatefulHost.Account.address accounts)) then None else
-    let fix collect (accounts : list StatefulHost.Account.t) : option (list (list Z * list Z)) :=
+      distinct (List.map EestTypes.Account.address accounts)) then None else
+    let fix collect (accounts : list EestTypes.Account.t) : option (list (list Z * list Z)) :=
       match accounts with
       | [] => Some []
       | account :: rest =>
-        match storage_root account.(StatefulHost.Account.storage), collect rest with
+        match storage_root account.(EestTypes.Account.storage), collect rest with
         | Some storage, Some rest =>
-          Some ((Keccak256.hash (EthereumRlp.fixed_big_endian 20 account.(StatefulHost.Account.address)),
+          Some ((Keccak256.hash (EthereumRlp.fixed_big_endian 20 account.(EestTypes.Account.address)),
             EthereumRlp.encode_list [
-              EthereumRlp.encode_uint account.(StatefulHost.Account.nonce);
-              EthereumRlp.encode_uint account.(StatefulHost.Account.balance);
+              EthereumRlp.encode_uint account.(EestTypes.Account.nonce);
+              EthereumRlp.encode_uint account.(EestTypes.Account.balance);
               EthereumRlp.encode_bytes storage;
-              EthereumRlp.encode_bytes (Keccak256.hash account.(StatefulHost.Account.code))]) :: rest)
+              EthereumRlp.encode_bytes (Keccak256.hash account.(EestTypes.Account.code))]) :: rest)
         | _, _ => None
         end
       end in
@@ -184,18 +184,18 @@ Module EthereumCommitment.
     | None => None
     end.
 
-  Definition log_valid (log : StatefulHost.EvmLog.t) : bool :=
-    bounded 160 log.(StatefulHost.EvmLog.address) &&
-    (Z.of_nat (List.length log.(StatefulHost.EvmLog.topics)) <=? 4) &&
-    List.forallb (bounded 256) log.(StatefulHost.EvmLog.topics) &&
-    List.forallb (bounded 8) log.(StatefulHost.EvmLog.data).
+  Definition log_valid (log : EestTypes.EvmLog.t) : bool :=
+    bounded 160 log.(EestTypes.EvmLog.address) &&
+    (Z.of_nat (List.length log.(EestTypes.EvmLog.topics)) <=? 4) &&
+    List.forallb (bounded 256) log.(EestTypes.EvmLog.topics) &&
+    List.forallb (bounded 8) log.(EestTypes.EvmLog.data).
 
-  Definition logs_hash (logs : list StatefulHost.EvmLog.t) : option (list Z) :=
+  Definition logs_hash (logs : list EestTypes.EvmLog.t) : option (list Z) :=
     if negb (List.forallb log_valid logs) then None else
     Some (Keccak256.hash (EthereumRlp.encode_list (List.map (fun log =>
       EthereumRlp.encode_list [
-        EthereumRlp.encode_bytes (EthereumRlp.fixed_big_endian 20 log.(StatefulHost.EvmLog.address));
+        EthereumRlp.encode_bytes (EthereumRlp.fixed_big_endian 20 log.(EestTypes.EvmLog.address));
         EthereumRlp.encode_list (List.map (fun topic =>
-          EthereumRlp.encode_bytes (EthereumRlp.fixed_big_endian 32 topic)) log.(StatefulHost.EvmLog.topics));
-        EthereumRlp.encode_bytes log.(StatefulHost.EvmLog.data)]) logs))).
+          EthereumRlp.encode_bytes (EthereumRlp.fixed_big_endian 32 topic)) log.(EestTypes.EvmLog.topics));
+        EthereumRlp.encode_bytes log.(EestTypes.EvmLog.data)]) logs))).
 End EthereumCommitment.

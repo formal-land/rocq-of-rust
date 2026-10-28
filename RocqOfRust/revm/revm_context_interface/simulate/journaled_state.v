@@ -8,6 +8,30 @@ Require Import revm.revm_bytecode.links.bytecode.
 Require Import revm.revm_context_interface.links.journaled_state.
 Require Import ruint.links.lib.
 
+Module TransferError.
+  Inductive t : Set :=
+  | OutOfFunds
+  | OverflowPayment
+  | CreateCollision.
+End TransferError.
+
+Module JournalCheckpoint.
+  Record t : Set := {
+    log_i : usize;
+    journal_i : usize;
+  }.
+End JournalCheckpoint.
+
+Module JournalLoadError.
+  Inductive t (Error : Set) : Set :=
+  | DBError (error : Error)
+  | ColdLoadSkipped.
+
+  Arguments DBError {Error}.
+
+  Arguments ColdLoadSkipped {Error}.
+End JournalLoadError.
+
 Module Impl_Deref_for_StateLoad.
   Definition Self (T : Set) `{Link T} : Set :=
     StateLoad.t T.

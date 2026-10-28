@@ -19,8 +19,7 @@ from generate import generate
 
 
 MODULES = [
-    "OwnedAccountLoad", "CallHelpers", "OwnedHost", "Handlers", "NativeStep",
-    "FrameHelpers", "NativeRuntime", "NativeTransactions",
+    "ContextLoad", "ContextOwned", "ContextHandlers", "ContextRuntime", "NativeTransactions",
 ]
 
 
@@ -145,7 +144,7 @@ def main():
     parser.add_argument("--opam-switch")
     parser.add_argument("--native-memory-limit-mib", type=int, default=2048,
                         help="Address-space cap for OCaml compilation only (default: 2048 MiB)")
-    parser.add_argument("--smoke", action="store_true", help="Run sixteen transaction and three authorization checks")
+    parser.add_argument("--smoke", action="store_true", help="Run transaction, authorization, cryptographic and numeric smoke checks")
     parser.add_argument("--bridge", action="store_true", help="Build the full-state JSONL bridge")
     parser.add_argument("--numeric-backend", choices=["inductive", "zarith"],
                         default="inductive", help="Optional Zarith extraction; requires differential validation")
@@ -160,14 +159,17 @@ def main():
     root = (args.rocq_root or sources.parents[2]).resolve()
     output = (args.output_dir or root.parent/"target"/"revm-native").resolve()
     dependencies = [
-        "revm/revm_handler/simulate/legacy_call.vo",
+        "revm/revm_handler/simulate/eest_context.vo",
+        "revm/revm_context/journal/simulate/load_code.vo",
+        "revm/revm_handler/simulate/eest_types.vo",
         "revm/revm_handler/simulate/eest_transaction.vo",
         "revm/revm_handler/simulate/transaction_auth.vo",
         "revm/revm_handler/simulate/transaction_validation.vo",
         "revm/revm_handler/simulate/ethereum_commitment.vo",
     ]
     if args.smoke:
-        dependencies.append("alloy_eip7702/tests/auth_list.vo")
+        dependencies.extend(["alloy_eip7702/tests/auth_list.vo",
+                             "revm/revm_handler/tests/transaction_cases.vo"])
     prefix = ["opam", "exec", f"--switch={args.opam_switch}", "--"] if args.opam_switch else []
     output.mkdir(parents=True, exist_ok=True)
     with output_lock(output):

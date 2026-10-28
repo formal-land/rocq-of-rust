@@ -21,7 +21,12 @@ Module InvalidTransaction.
   | TooManyBlobs (have max : usize)
   | EmptyAuthorizationList
   | CallerGasLimitMoreThanBlock
-  | CreateInitCodeSizeLimit.
+  | CreateInitCodeSizeLimit
+  | RejectCallerWithCode
+  | NonceTooHigh (tx state : u64)
+  | NonceTooLow (tx state : u64)
+  | CallGasCostMoreThanGasLimit (gas_limit initial_gas : u64)
+  | GasFloorMoreThanGasLimit (gas_floor gas_limit : u64).
 End InvalidTransaction.
 
 Module InvalidHeader.

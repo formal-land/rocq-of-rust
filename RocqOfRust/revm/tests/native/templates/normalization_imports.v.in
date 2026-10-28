@@ -4,10 +4,7 @@ Require Import RocqOfRust.revm.revm_precompile.simulate.bn254_miller.
 Require Import RocqOfRust.revm.revm_precompile.simulate.bn254_pairing.
 Require Import RocqOfRust.revm.revm_precompile.simulate.bn254_pairing_run.
 Require Import RocqOfRust.revm.revm_precompile.simulate.bn254_tower.
-Require Import RocqOfRust.revm.revm_interpreter.tests.call_frame.
 Require Import RocqOfRust.revm.revm_interpreter.simulate.dispatch.
-Require Import RocqOfRust.revm.revm_interpreter.tests.interpreter_types.
-Require Import RocqOfRust.revm.revm_interpreter.tests.stateful_host.
 Require Import RocqOfRust.revm.revm_interpreter.simulate.instruction_context.
 Require Import RocqOfRust.simulate.RocqOfRust.
 Import ListNotations.
@@ -15,3 +12,5 @@ Open Scope Z_scope.
 Require Import RocqOfRust.revm.revm_interpreter.instructions.contract.simulate.call_helpers.
 Require Import RocqOfRust.revm.revm_interpreter.instructions.simulate.contract.call.
 Require Import RocqOfRust.revm.revm_interpreter.instructions.contract.simulate.account_load.
+Require Import RocqOfRust.revm.revm_interpreter.simulate.eth_types.
+Require Import RocqOfRust.revm.revm_handler.simulate.eest_types.
