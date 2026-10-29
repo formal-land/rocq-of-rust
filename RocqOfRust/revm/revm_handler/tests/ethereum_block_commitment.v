@@ -3,7 +3,7 @@
 From Stdlib Require Import List ZArith.
 
 Require Import revm.revm_handler.simulate.ethereum_block_commitment.
-Require Import revm.revm_interpreter.tests.stateful_host.
+Require Import revm.revm_handler.simulate.eest_types.
 
 Import ListNotations.
 Import EthereumBlockCommitment.
@@ -38,10 +38,10 @@ Module Test.
     receipts_root [successful_typed_receipt] = Some [94; 251; 84; 54; 46; 221; 69; 113; 67; 227; 219; 71; 234; 211; 42; 185; 79; 143; 14; 208; 193; 99; 39; 213; 111; 77; 169; 191; 104; 167; 147; 189].
   Proof. vm_compute. reflexivity. Qed.
 
-  Definition sample_log : StatefulHost.EvmLog.t := {|
-    StatefulHost.EvmLog.address := 66051;
-    StatefulHost.EvmLog.topics := [263430; 11259375];
-    StatefulHost.EvmLog.data := [7; 8; 9];
+  Definition sample_log : EestTypes.EvmLog.t := {|
+    EestTypes.EvmLog.address := 66051;
+    EestTypes.EvmLog.topics := [263430; 11259375];
+    EestTypes.EvmLog.data := [7; 8; 9];
   |}.
 
   Lemma log_bloom_reference : bloom_value [sample_log] = 778003621321024646393609123396689674168325413748251209692091200949627260375103977437569908027826864579780674936382995570364260182292975110699844305458663147042617421005679430683168077361894317465866853936734688517251386903666926362326565472091813775806376535094777817906071628945502658516070442913043626501570244123215218743998420789955556992486104555973139451893193009193290163669243725443947532922269216510163221387558959882652052495653434024904887695917646979074146313033842328061846944458843793616823277087376046029604496142297830922314816037769019849300922279584861424627744768.

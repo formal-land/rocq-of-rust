@@ -1,5 +1,6 @@
 From Stdlib Require Import List ZArith.
 
+Require Import alloy_primitives.bits.links.address.
 Require Import alloy_primitives.bits.simulate.fixed.
 Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.links.aliases.
@@ -25,4 +26,22 @@ Module Impl_Bytecode.
     FixedBytes.from_Z
       (List.fold_left (fun value byte => 256 * value + byte)%Z
         (Keccak256.hash (List.map Integer.value (original_byte_slice self))) 0%Z).
+
+  (** This projection assumes bytes from a valid native raw-bytecode constructor.
+      The byte-only model does not represent a forced legacy EF0100 encoding. *)
+  Definition delegated_address (code : Bytecode.t) : option Address.t :=
+    match code.(Bytecode.original_bytes)
+      .(alloy_primitives.bytes.links.mod.Bytes.value).(bytes.Bytes.value) with
+    | magic0 :: magic1 :: version :: address =>
+        if (magic0.(Integer.value) =? 239) &&
+           (magic1.(Integer.value) =? 1) &&
+           (version.(Integer.value) =? 0) &&
+           Nat.eqb (List.length address) 20 then
+          Some {| Address.value :=
+            List.fold_left
+              (fun (n : Z) (byte : u8) => Z.add (Z.mul 256 n) byte.(Integer.value))
+              address 0 |}
+        else None
+    | _ => None
+    end.
 End Impl_Bytecode.

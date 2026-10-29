@@ -1,0 +1,73 @@
+From Stdlib Require Import List ZArith FunctionalExtensionality Extraction ExtrOcamlBasic ExtrOcamlString.
+Require Import RocqOfRust.simulate.RocqOfRust.
+Require Import RocqOfRust.core.links.result.
+Require Import RocqOfRust.alloy_primitives.bits.links.address.
+Require Import RocqOfRust.alloy_primitives.bytes.simulate.mod.
+Require Import RocqOfRust.revm.revm_bytecode.links.bytecode.
+Require Import RocqOfRust.revm.revm_context.journal.simulate.inner.
+Require Import RocqOfRust.revm.revm_context.journal.simulate.load_code.
+Require Import RocqOfRust.revm.revm_context.simulate.context.
+Require Import RocqOfRust.revm.revm_context.simulate.journal.
+Require Import RocqOfRust.revm.revm_context_interface.links.host.
+Require Import RocqOfRust.revm.revm_context_interface.links.journaled_state.
+Require Import RocqOfRust.revm.revm_context_interface.simulate.context.
+Require Import RocqOfRust.revm.revm_context_interface.simulate.journaled_state.
+Require Import RocqOfRust.revm.revm_database_interface.simulate.lib.
+Require Import RocqOfRust.revm.revm_state.simulate.lib.
+
+(** Continuation form exposes the owned value to partial evaluation. The code
+    projection is reconstructed only after proving that a code load fills it. *)
+Definition context_load_then {DB Error K : Set} `{Database.C DB Error}
+    (self : Context.t DB Error) (address : Address.t) (load_code skip_cold : bool)
+    (k : Result.t AccountInfoLoad.t LoadError.t -> Context.t DB Error -> K) : K :=
+  let journal := self.(Context.journaled_state) in
+  let spec := journal.(Journal.inner).(JournalInner.spec) in
+  let '(result, db, inner) := Impl_JournalInner.load_account_optional
+    journal.(Journal.inner) journal.(Journal.database) address load_code skip_cold in
+  let self := self <| Context.journaled_state := Impl_Journal.new_with_inner db inner |> in
+  match result with
+  | Result.Err JournalLoadError.ColdLoadSkipped => k (Result.Err LoadError.ColdLoadSkipped) self
+  | Result.Err (JournalLoadError.DBError error) =>
+      k (Result.Err LoadError.DBError) (self <| Context.error := Result.Err (ContextError.Db error) |>)
+  | Result.Ok (account, is_cold) =>
+      let info := account.(Account.info) in
+      let info := if load_code then info <| AccountInfo.code := Some (match info.(AccountInfo.code) with
+        | Some code => code | None => {| Bytecode.original_bytes := Impl_Bytes.new |} end) |> else info in
+      k (Result.Ok {| AccountInfoLoad.account := Cow.Owned info;
+        AccountInfoLoad.is_cold := is_cold;
+        AccountInfoLoad.is_empty := Impl_Account.state_clear_aware_is_empty account spec |}) self
+  end.
+
+Lemma context_load_then_eq {DB Error K : Set} `{Database.C DB Error}
+    (self : Context.t DB Error) (address : Address.t) (load_code skip_cold : bool)
+    (k : Result.t AccountInfoLoad.t LoadError.t -> Context.t DB Error -> K) :
+  context_load_then self address load_code skip_cold k =
+  let '(result, self) := Impl_Host_for_Context.load_account_info_skip_cold_load self address load_code skip_cold in
+  k result self.
+Proof.
+  pose proof (load_code_present self.(Context.journaled_state).(Journal.inner)
+    self.(Context.journaled_state).(Journal.database) address skip_cold) as code_present.
+  unfold context_load_then, Impl_Host_for_Context.load_account_info_skip_cold_load,
+    Impl_Host_for_Context.finish_load, Impl_Journal.load_account_info_skip_cold_load, Impl_Journal.finish.
+  destruct load_code.
+  - destruct (Impl_JournalInner.load_account_optional _ _ _ true _) as [[[[account is_cold] | error] db] inner] eqn:loaded;
+      cbn beta iota zeta in *.
+    + destruct code_present as [code code_present]. rewrite code_present.
+      destruct account as [info transaction_id storage status]. destruct info. cbn in *. subst. reflexivity.
+    + destruct error; reflexivity.
+  - destruct (Impl_JournalInner.load_account_optional _ _ _ false _) as [[[[account is_cold] | error] db] inner];
+      cbn beta iota zeta; try reflexivity. destruct error; reflexivity.
+Qed.
+
+Definition raw_context_load_then {DB Error K : Set} `{Database.C DB Error}
+    (self : Context.t DB Error) (address : Address.t) (load_code skip_cold : bool)
+    (k : Result.t AccountInfoLoad.t LoadError.t -> Context.t DB Error -> K) : K :=
+  let '(result, self) := Impl_Host_for_Context.load_account_info_skip_cold_load self address load_code skip_cold in
+  k result self.
+
+Lemma context_load_then_fn_eq {DB Error K : Set} `{Database.C DB Error} :
+  @context_load_then DB Error K H = @raw_context_load_then DB Error K H.
+Proof.
+  repeat (apply functional_extensionality; intro).
+  apply context_load_then_eq.
+Qed.

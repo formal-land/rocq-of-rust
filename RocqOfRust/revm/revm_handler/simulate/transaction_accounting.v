@@ -24,7 +24,7 @@ Import ListNotations.
 Open Scope Z_scope.
 
 (** Standalone gas accounting from gas/calc.rs, handler.rs::last_frame_result
-    and post_execution.rs. This module does not execute bytecode or validate
+    and PostExecution.rs. This module does not execute bytecode or validate
     signatures, sender nonce/balance, block headers or journal state. *)
 Module TransactionAccounting.
   Module Transaction.
@@ -431,8 +431,8 @@ Module TransactionAccounting.
           if authorization_refund.(Integer.value) <? 2 ^ 63
           then authorization_refund.(Integer.value)
           else authorization_refund.(Integer.value) - 2 ^ 64 |} in
-        let gas := post_execution.refund spec gas authorization_refund in
-        let gas := post_execution.eip7623_check_gas_floor gas {|
+        let gas := PostExecution.refund spec gas authorization_refund in
+        let gas := PostExecution.eip7623_check_gas_floor gas {|
           InitialAndFloorGas.initial_gas := {| Integer.value := initial.(InitialGas.intrinsic) |};
           InitialAndFloorGas.floor_gas := {| Integer.value := initial.(InitialGas.floor) |}
         |} in
@@ -445,10 +445,10 @@ Module TransactionAccounting.
           Settlement.gas_refunded := refunded;
           Settlement.gas_used := used;
           Settlement.caller_reimbursement :=
-            (post_execution.caller_reimbursement tx
+            (PostExecution.caller_reimbursement tx
               {| Integer.value := block.(Block.base_fee) |} gas {| Uint.value := 0 |}).(Uint.value);
           Settlement.beneficiary_reward :=
-            (post_execution.beneficiary_reward tx
+            (PostExecution.beneficiary_reward tx
               {| Integer.value := block.(Block.base_fee) |} spec gas).(Uint.value);
           Settlement.base_fee_burn := base_fee * used;
           Settlement.blob_fee_burn := blob_fee tx block.(Block.blob_base_fee);

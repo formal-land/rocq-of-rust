@@ -5,6 +5,7 @@ Require Import alloy_primitives.links.aliases.
 Require Import bytes.links.bytes.
 Require Import core.links.result.
 Require Import revm.revm_bytecode.links.bytecode.
+Require Import revm.revm_bytecode.simulate.bytecode.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_context_interface.links.journaled_state.
 Require Import revm.revm_context_interface.simulate.host.
@@ -28,23 +29,7 @@ Definition loaded_bytecode (account : AccountInfoLoad.t) : Bytecode.t :=
       {| Bytecode.original_bytes := account_info_load_original_bytes account |}
   end.
 
-(** This projection assumes bytes from a valid native raw-bytecode constructor.
-    The byte-only model does not represent a forced legacy EF0100 encoding. *)
-Definition delegated_address (code : Bytecode.t) : option Address.t :=
-  match code.(Bytecode.original_bytes)
-    .(alloy_primitives.bytes.links.mod.Bytes.value).(bytes.Bytes.value) with
-  | magic0 :: magic1 :: version :: address =>
-      if (magic0.(Integer.value) =? 239) &&
-         (magic1.(Integer.value) =? 1) &&
-         (version.(Integer.value) =? 0) &&
-         Nat.eqb (List.length address) 20 then
-        Some {| Address.value :=
-          List.fold_left
-            (fun (n : Z) (byte : u8) => Z.add (Z.mul 256 n) byte.(Integer.value))
-            address 0 |}
-      else None
-  | _ => None
-  end.
+Definition delegated_address := Impl_Bytecode.delegated_address.
 
 Definition load_account_delegated
     {H : Set} `{Link H}

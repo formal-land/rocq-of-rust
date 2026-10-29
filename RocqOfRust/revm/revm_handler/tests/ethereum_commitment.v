@@ -5,7 +5,7 @@
 From Stdlib Require Import List ZArith.
 
 Require Import revm.revm_handler.simulate.ethereum_commitment.
-Require Import revm.revm_interpreter.tests.stateful_host.
+Require Import revm.revm_handler.simulate.eest_types.
 
 Import ListNotations.
 Import EthereumCommitment.
@@ -74,14 +74,14 @@ Module Test.
   Proof. vm_compute. reflexivity. Qed.
 
   Definition account (address balance nonce : Z) (storage : list (Z * Z)) :
-      StatefulHost.Account.t := {|
-    StatefulHost.Account.address := address;
-    StatefulHost.Account.balance := balance;
-    StatefulHost.Account.nonce := nonce;
-    StatefulHost.Account.code := [];
-    StatefulHost.Account.code_hash := 0;
-    StatefulHost.Account.storage := storage;
-    StatefulHost.Account.transient_storage := [];
+      EestTypes.Account.t := {|
+    EestTypes.Account.address := address;
+    EestTypes.Account.balance := balance;
+    EestTypes.Account.nonce := nonce;
+    EestTypes.Account.code := [];
+    EestTypes.Account.code_hash := 0;
+    EestTypes.Account.storage := storage;
+    EestTypes.Account.transient_storage := [];
   |}.
 
   Lemma duplicate_accounts_are_rejected :
@@ -117,28 +117,28 @@ Module Test.
     storage_root [(1, 2); (3, 0)] = storage_root [(1, 2)].
   Proof. vm_compute. reflexivity. Qed.
 
-  Definition add11_post_accounts : list StatefulHost.Account.t := [
-    {| StatefulHost.Account.address := 53487961227895705414387420465070519070468943239;
-       StatefulHost.Account.balance := 1000000000000100000;
-       StatefulHost.Account.nonce := 0;
-       StatefulHost.Account.code := [96; 1; 96; 1; 1; 96; 0; 85; 0];
-       StatefulHost.Account.code_hash := 87753042811415548233916357503970785711690406064839499034040606682585769981253;
-       StatefulHost.Account.storage := [(0, 2)];
-       StatefulHost.Account.transient_storage := [] |};
-    {| StatefulHost.Account.address := 244687034288125203496486448490407391986876152250;
-       StatefulHost.Account.balance := 0;
-       StatefulHost.Account.nonce := 1;
-       StatefulHost.Account.code := [];
-       StatefulHost.Account.code_hash := 89477152217924674838424037953991966239322087453347756267410168184682657981552;
-       StatefulHost.Account.storage := [];
-       StatefulHost.Account.transient_storage := [] |};
-    {| StatefulHost.Account.address := 966588469268559010541288244128342317224451555083;
-       StatefulHost.Account.balance := 999999999999468880;
-       StatefulHost.Account.nonce := 1;
-       StatefulHost.Account.code := [];
-       StatefulHost.Account.code_hash := 89477152217924674838424037953991966239322087453347756267410168184682657981552;
-       StatefulHost.Account.storage := [];
-       StatefulHost.Account.transient_storage := [] |}
+  Definition add11_post_accounts : list EestTypes.Account.t := [
+    {| EestTypes.Account.address := 53487961227895705414387420465070519070468943239;
+       EestTypes.Account.balance := 1000000000000100000;
+       EestTypes.Account.nonce := 0;
+       EestTypes.Account.code := [96; 1; 96; 1; 1; 96; 0; 85; 0];
+       EestTypes.Account.code_hash := 87753042811415548233916357503970785711690406064839499034040606682585769981253;
+       EestTypes.Account.storage := [(0, 2)];
+       EestTypes.Account.transient_storage := [] |};
+    {| EestTypes.Account.address := 244687034288125203496486448490407391986876152250;
+       EestTypes.Account.balance := 0;
+       EestTypes.Account.nonce := 1;
+       EestTypes.Account.code := [];
+       EestTypes.Account.code_hash := 89477152217924674838424037953991966239322087453347756267410168184682657981552;
+       EestTypes.Account.storage := [];
+       EestTypes.Account.transient_storage := [] |};
+    {| EestTypes.Account.address := 966588469268559010541288244128342317224451555083;
+       EestTypes.Account.balance := 999999999999468880;
+       EestTypes.Account.nonce := 1;
+       EestTypes.Account.code := [];
+       EestTypes.Account.code_hash := 89477152217924674838424037953991966239322087453347756267410168184682657981552;
+       EestTypes.Account.storage := [];
+       EestTypes.Account.transient_storage := [] |}
   ].
 
   Definition add11_expected_root : list Z :=
@@ -157,27 +157,27 @@ Module Test.
   Proof. vm_compute. reflexivity. Qed.
 
   Lemma nonempty_logs_reference : logs_hash [{|
-      StatefulHost.EvmLog.address := 66051;
-      StatefulHost.EvmLog.topics := [263430; 11259375];
-      StatefulHost.EvmLog.data := [7; 8; 9] |}] = Some
+      EestTypes.EvmLog.address := 66051;
+      EestTypes.EvmLog.topics := [263430; 11259375];
+      EestTypes.EvmLog.data := [7; 8; 9] |}] = Some
     [12;157;214;69;253;248;213;176;130;250;255;225;180;114;161;94;107;2;221;18;247;32;155;130;100;135;107;238;101;98;98;60].
   Proof. vm_compute. reflexivity. Qed.
 
   Lemma log_topic_overflow_is_rejected : logs_hash [{|
-      StatefulHost.EvmLog.address := 1;
-      StatefulHost.EvmLog.topics := [2 ^ 256];
-      StatefulHost.EvmLog.data := [] |}] = None.
+      EestTypes.EvmLog.address := 1;
+      EestTypes.EvmLog.topics := [2 ^ 256];
+      EestTypes.EvmLog.data := [] |}] = None.
   Proof. vm_compute. reflexivity. Qed.
 
   Lemma too_many_log_topics_are_rejected : logs_hash [{|
-      StatefulHost.EvmLog.address := 1;
-      StatefulHost.EvmLog.topics := [1; 2; 3; 4; 5];
-      StatefulHost.EvmLog.data := [] |}] = None.
+      EestTypes.EvmLog.address := 1;
+      EestTypes.EvmLog.topics := [1; 2; 3; 4; 5];
+      EestTypes.EvmLog.data := [] |}] = None.
   Proof. vm_compute. reflexivity. Qed.
 
   Lemma log_data_nonbyte_is_rejected : logs_hash [{|
-      StatefulHost.EvmLog.address := 1;
-      StatefulHost.EvmLog.topics := [];
-      StatefulHost.EvmLog.data := [256] |}] = None.
+      EestTypes.EvmLog.address := 1;
+      EestTypes.EvmLog.topics := [];
+      EestTypes.EvmLog.data := [256] |}] = None.
   Proof. vm_compute. reflexivity. Qed.
 End Test.

@@ -1,8 +1,7 @@
 module Big = Z
 module N = Native_transactions
-module Host = N.StatefulHost
+module Fixture = N.EestTypes
 module Accounting = N.TransactionAccounting
-module Handler = N.LegacyCall
 module Authentication = N.TransactionAuth
 module Raw_validation = N.TransactionValidation
 module Commitments = N.EthereumCommitment
@@ -51,12 +50,12 @@ let json_pairs values = `List (List.map (fun (left, right) -> `List [json_z left
 
 let account value =
     let value = fields ["address"; "balance"; "nonce"; "code"; "code_hash"; "storage"; "transient_storage"] value in
-    { Host.Account.address = z_field value "address";
+    { Fixture.Account.address = z_field value "address";
       balance = z_field value "balance"; nonce = z_field value "nonce";
       code = z_list (field value "code"); code_hash = z_field value "code_hash";
       storage = pairs (field value "storage"); transient_storage = pairs (field value "transient_storage") }
 
-let json_account (value : Host.Account.t) = `Assoc
+let json_account (value : Fixture.Account.t) = `Assoc
     ["address", json_z value.address; "balance", json_z value.balance;
      "nonce", json_z value.nonce; "code", json_z_list value.code;
      "code_hash", json_z value.code_hash; "storage", json_pairs value.storage;
@@ -65,7 +64,7 @@ let json_account (value : Host.Account.t) = `Assoc
 let block value =
     let value = fields ["coinbase"; "gas_limit"; "number"; "timestamp"; "difficulty"; "base_fee";
                         "blob_base_fee"; "previous_randao"; "hashes"; "use_state_test_hashes"] value in
-    { Host.Environment.Block.coinbase = z_field value "coinbase";
+    { Fixture.Block.coinbase = z_field value "coinbase";
       gas_limit = z_field value "gas_limit"; number = z_field value "number";
       timestamp = z_field value "timestamp"; difficulty = z_field value "difficulty";
       base_fee = z_field value "base_fee"; blob_base_fee = z_field value "blob_base_fee";
@@ -133,7 +132,7 @@ let json_transaction (value : Accounting.Transaction.t) = `Assoc
 
 let input value =
     let value = fields ["chain_id"; "block"; "excess_blob_gas"; "max_blobs_per_tx"; "accounts"] value in
-    { Handler.Input.chain_id = z_field value "chain_id"; block = block (field value "block");
+    { Fixture.Input.chain_id = z_field value "chain_id"; block = block (field value "block");
       excess_blob_gas = option_field value "excess_blob_gas";
       max_blobs_per_tx = option_field value "max_blobs_per_tx";
       accounts = List.map account (array (field value "accounts")) }
@@ -144,7 +143,7 @@ let json_gas (value : Accounting.Settlement.t) = `Assoc
      "beneficiary_reward", json_z value.beneficiary_reward; "base_fee_burn", json_z value.base_fee_burn;
      "blob_fee_burn", json_z value.blob_fee_burn]
 
-let json_log (value : Host.EvmLog.t) = `Assoc
+let json_log (value : Fixture.EvmLog.t) = `Assoc
     ["address", json_z value.address; "topics", json_z_list value.topics; "data", json_z_list value.data]
 
 let status_name = function
@@ -211,21 +210,21 @@ let gas_error = function
 | Accounting.GasError.PaymentOverflow -> ("PaymentOverflow", [])
 
 let rejection = function
-| Handler.Rejection.Gas reason -> gas_error reason
-| Handler.Rejection.PrevrandaoNotSet -> ("PrevrandaoNotSet", [])
-| Handler.Rejection.ExcessBlobGasNotSet -> ("ExcessBlobGasNotSet", [])
-| Handler.Rejection.InvalidChainId -> ("InvalidChainId", [])
-| Handler.Rejection.MissingChainId -> ("MissingChainId", [])
-| Handler.Rejection.RejectCallerWithCode -> ("RejectCallerWithCode", [])
-| Handler.Rejection.NonceTooLow -> ("NonceTooLow", [])
-| Handler.Rejection.NonceTooHigh -> ("NonceTooHigh", [])
-| Handler.Rejection.NonceOverflow -> ("NonceOverflow", [])
-| Handler.Rejection.LackOfFunds -> ("LackOfFunds", [])
+| Fixture.Rejection.Gas reason -> gas_error reason
+| Fixture.Rejection.PrevrandaoNotSet -> ("PrevrandaoNotSet", [])
+| Fixture.Rejection.ExcessBlobGasNotSet -> ("ExcessBlobGasNotSet", [])
+| Fixture.Rejection.InvalidChainId -> ("InvalidChainId", [])
+| Fixture.Rejection.MissingChainId -> ("MissingChainId", [])
+| Fixture.Rejection.RejectCallerWithCode -> ("RejectCallerWithCode", [])
+| Fixture.Rejection.NonceTooLow -> ("NonceTooLow", [])
+| Fixture.Rejection.NonceTooHigh -> ("NonceTooHigh", [])
+| Fixture.Rejection.NonceOverflow -> ("NonceOverflow", [])
+| Fixture.Rejection.LackOfFunds -> ("LackOfFunds", [])
 
 let gap = function
-| Handler.Gap.TopLevelPrecompile -> ("TopLevelPrecompile", [])
-| Handler.Gap.Delegation -> ("Delegation", [])
-| Handler.Gap.Accounting reason ->
+| Fixture.Gap.TopLevelPrecompile -> ("TopLevelPrecompile", [])
+| Fixture.Gap.Delegation -> ("Delegation", [])
+| Fixture.Gap.Accounting reason ->
     match reason with
     | Accounting.UnsupportedReason.Fork spec -> ("Fork", [N.SpecId.get_discriminant spec])
     | Accounting.UnsupportedReason.TransactionType tx_type -> ("TransactionType", [tx_type])
@@ -247,22 +246,22 @@ let json_commitments accounts logs =
     | _ -> fail "completed state or log commitment is malformed"
 
 let json_result authentication initial_accounts = function
-| Handler.Result.Completed value -> response authentication "Completed"
+| Fixture.Result.Completed value -> response authentication "Completed"
     ["status", `String (status_name value.status); "gas", json_gas value.gas;
      "data", json_z_list value.data; "accounts", `List (List.map json_account value.accounts);
      "logs", `List (List.map json_log value.logs);
      "commitments", json_commitments value.accounts value.logs]
-| Handler.Result.Rejected reason ->
+| Fixture.Result.Rejected reason ->
     let reason, details = rejection reason in
     response authentication "Rejected"
         ["reason", `String reason; "details", json_z_list details;
          "accounts", `List (List.map json_account initial_accounts); "logs", `List [];
          "commitments", json_commitments initial_accounts []]
-| Handler.Result.Unsupported reason ->
+| Fixture.Result.Unsupported reason ->
     let reason, details = gap reason in
     response authentication "Unsupported" ["reason", `String reason; "details", json_z_list details]
-| Handler.Result.Malformed -> response authentication "Malformed" []
-| Handler.Result.Incomplete -> response authentication "Incomplete" []
+| Fixture.Result.Malformed -> response authentication "Malformed" []
+| Fixture.Result.Incomplete -> response authentication "Incomplete" []
 
 let authentication_error = function
 | Authentication.Error.MalformedRlp -> ("MalformedRlp", [])

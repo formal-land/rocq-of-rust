@@ -4,7 +4,7 @@ Require Import revm.revm_primitives.links.hardfork.
 Module RuntimeFlags.
   RocqOfRustLinkRecord "revm_interpreter::interpreter::runtime_flags::RuntimeFlags" := {
     is_static : bool;
-    spec_id : SpecId.t;
+    spec_id : SpecId.t
   }.
 
   Definition non_static (spec : SpecId.t) : t := {|

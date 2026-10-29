@@ -3,7 +3,7 @@ From Stdlib Require Import Bool List ZArith.
 Require Import alloy_primitives.utils.simulate.keccak256.
 Require Import revm.revm_handler.simulate.ethereum_commitment.
 Require Import revm.revm_handler.simulate.ethereum_rlp.
-Require Import revm.revm_interpreter.tests.stateful_host.
+Require Import revm.revm_handler.simulate.eest_types.
 
 Import ListNotations.
 Open Scope Z_scope.
@@ -22,7 +22,7 @@ Module EthereumBlockCommitment.
       transaction_type : Z;
       outcome : Outcome.t;
       cumulative_gas_used : Z;
-      logs : list StatefulHost.EvmLog.t;
+      logs : list EestTypes.EvmLog.t;
     }.
   End Receipt.
 
@@ -37,16 +37,16 @@ Module EthereumBlockCommitment.
     Z.lor (Z.lor (Z.shiftl 1 (bit 0%nat)) (Z.shiftl 1 (bit 2%nat)))
       (Z.shiftl 1 (bit 4%nat)).
 
-  Definition bloom_value (logs : list StatefulHost.EvmLog.t) : Z :=
+  Definition bloom_value (logs : list EestTypes.EvmLog.t) : Z :=
     List.fold_left (fun bloom log =>
       let address := EthereumRlp.fixed_big_endian 20
-        log.(StatefulHost.EvmLog.address) in
+        log.(EestTypes.EvmLog.address) in
       let bloom := Z.lor bloom (bloom_item address) in
       List.fold_left (fun bloom topic =>
         Z.lor bloom (bloom_item (EthereumRlp.fixed_big_endian 32 topic)))
-        log.(StatefulHost.EvmLog.topics) bloom) logs 0.
+        log.(EestTypes.EvmLog.topics) bloom) logs 0.
 
-  Definition logs_bloom (logs : list StatefulHost.EvmLog.t) : option (list Z) :=
+  Definition logs_bloom (logs : list EestTypes.EvmLog.t) : option (list Z) :=
     if List.forallb EthereumCommitment.log_valid logs
     then Some (EthereumRlp.fixed_big_endian 256 (bloom_value logs))
     else None.
@@ -62,14 +62,14 @@ Module EthereumBlockCommitment.
     | Receipt.Outcome.Status _ => true
     end.
 
-  Definition encode_log (log : StatefulHost.EvmLog.t) : list Z :=
+  Definition encode_log (log : EestTypes.EvmLog.t) : list Z :=
     EthereumRlp.encode_list [
       EthereumRlp.encode_bytes (EthereumRlp.fixed_big_endian 20
-        log.(StatefulHost.EvmLog.address));
+        log.(EestTypes.EvmLog.address));
       EthereumRlp.encode_list (List.map (fun topic =>
         EthereumRlp.encode_bytes (EthereumRlp.fixed_big_endian 32 topic))
-        log.(StatefulHost.EvmLog.topics));
-      EthereumRlp.encode_bytes log.(StatefulHost.EvmLog.data)].
+        log.(EestTypes.EvmLog.topics));
+      EthereumRlp.encode_bytes log.(EestTypes.EvmLog.data)].
 
   Definition receipt_bytes (receipt : Receipt.t) : option (list Z) :=
     if negb (receipt_valid receipt) then None else
