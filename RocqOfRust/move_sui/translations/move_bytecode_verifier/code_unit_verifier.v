@@ -2397,7 +2397,11 @@ Module code_unit_verifier.
                                 []
                                 []
                                 [];
-                              M.read (| UnsupportedLiteral |)
+                              M.read (|
+                                M.impossible (|
+                                  "[ROR003] floating-point literal in code_unit_verifier::CodeUnitVerifier::<'a>::verify_function"
+                                |)
+                              |)
                             ]
                           |)
                         ]

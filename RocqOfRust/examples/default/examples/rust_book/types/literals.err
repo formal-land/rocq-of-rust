@@ -1,0 +1,18 @@
+warning: [ROR003] floating-point literal in main
+ --> examples/rust_book/types/literals.rs:9:13
+  |
+9 |     let f = 1.0;
+  |             ^^^
+  |
+  = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in main
+ --> examples/rust_book/types/literals.rs:5:13
+  |
+5 |     let z = 3f32;
+  |             ^^^^
+  |
+  = note: Execution of this expression is unsupported
+
+warning: 2 warnings emitted
+

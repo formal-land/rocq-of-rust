@@ -3346,7 +3346,13 @@ Module rc.
                                             "Residual",
                                           γ0_0
                                         |) in
-                                      M.never_to_any (| M.read (| M.break (||) |) |)));
+                                      M.never_to_any (|
+                                        M.read (|
+                                          M.impossible (|
+                                            "[ROR001] value-carrying break in rc::Rc::<T>::try_map"
+                                          |)
+                                        |)
+                                      |)));
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ0_0 :=
@@ -21815,7 +21821,13 @@ Module rc.
                                             "Residual",
                                           γ0_0
                                         |) in
-                                      M.never_to_any (| M.read (| M.break (||) |) |)));
+                                      M.never_to_any (|
+                                        M.read (|
+                                          M.impossible (|
+                                            "[ROR001] value-carrying break in rc::UniqueRc::<T>::try_map"
+                                          |)
+                                        |)
+                                      |)));
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ0_0 :=

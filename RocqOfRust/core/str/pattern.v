@@ -17895,7 +17895,9 @@ Module str.
                                                 fun γ => ltac:(M.monadic (Value.Tuple []))
                                               ]
                                             |) in
-                                          M.continue (||)
+                                          M.impossible (|
+                                            "[ROR002] labeled loop or block exit in str::pattern::TwoWaySearcher::next"
+                                          |)
                                         |)
                                       |)));
                                   fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -18262,7 +18264,9 @@ Module str.
                                                                                   (Value.Tuple []))
                                                                             ]
                                                                           |) in
-                                                                        M.continue (||)
+                                                                        M.impossible (|
+                                                                          "[ROR002] labeled loop or block exit in str::pattern::TwoWaySearcher::next"
+                                                                        |)
                                                                       |)
                                                                     |)));
                                                                 fun γ =>
@@ -18687,7 +18691,9 @@ Module str.
                                                                                   (Value.Tuple []))
                                                                             ]
                                                                           |) in
-                                                                        M.continue (||)
+                                                                        M.impossible (|
+                                                                          "[ROR002] labeled loop or block exit in str::pattern::TwoWaySearcher::next"
+                                                                        |)
                                                                       |)
                                                                     |)));
                                                                 fun γ =>
@@ -19289,7 +19295,9 @@ Module str.
                                                 fun γ => ltac:(M.monadic (Value.Tuple []))
                                               ]
                                             |) in
-                                          M.continue (||)
+                                          M.impossible (|
+                                            "[ROR002] labeled loop or block exit in str::pattern::TwoWaySearcher::next_back"
+                                          |)
                                         |)
                                       |)));
                                   fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -19743,7 +19751,9 @@ Module str.
                                                                                   (Value.Tuple []))
                                                                             ]
                                                                           |) in
-                                                                        M.continue (||)
+                                                                        M.impossible (|
+                                                                          "[ROR002] labeled loop or block exit in str::pattern::TwoWaySearcher::next_back"
+                                                                        |)
                                                                       |)
                                                                     |)));
                                                                 fun γ =>
@@ -20130,7 +20140,9 @@ Module str.
                                                                                   (Value.Tuple []))
                                                                             ]
                                                                           |) in
-                                                                        M.continue (||)
+                                                                        M.impossible (|
+                                                                          "[ROR002] labeled loop or block exit in str::pattern::TwoWaySearcher::next_back"
+                                                                        |)
                                                                       |)
                                                                     |)));
                                                                 fun γ =>

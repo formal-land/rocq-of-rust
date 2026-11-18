@@ -2414,7 +2414,10 @@ Module reference_safety.
         (τ : list Ty.t)
         (α : list Value.t)
         : M :=
-      ltac:(M.monadic UnsupportedLiteral).
+      ltac:(M.monadic
+        (M.impossible (|
+          "[ROR003] floating-point literal in reference_safety::abstract_state::REF_PARAM_EDGE_COST_GROWTH"
+        |))).
     
     Global Instance Instance_IsConstant_value_REF_PARAM_EDGE_COST_GROWTH :
       M.IsFunction.C

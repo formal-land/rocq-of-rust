@@ -872,7 +872,14 @@ Module pow.
                                             M.call_closure (|
                                               Ty.path "bool",
                                               BinOp.lt,
-                                              [ M.read (| exp |); M.read (| UnsupportedLiteral |) ]
+                                              [
+                                                M.read (| exp |);
+                                                M.read (|
+                                                  M.impossible (|
+                                                    "[ROR003] floating-point literal in pow::<impl Uint<BITS, LIMBS>>::approx_pow2"
+                                                  |)
+                                                |)
+                                              ]
                                             |)
                                           |) in
                                         let _ :=

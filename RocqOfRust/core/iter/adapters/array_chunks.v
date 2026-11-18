@@ -1819,7 +1819,9 @@ Module iter.
                                             M.read (| remainder |)
                                           ]
                                         |) in
-                                      M.break (||)
+                                      M.impossible (|
+                                        "[ROR001] value-carrying break in <iter::adapters::array_chunks::ArrayChunks<I, N> as iter::traits::iterator::Iterator>::try_fold"
+                                      |)
                                     |)
                                   |)))
                             ]

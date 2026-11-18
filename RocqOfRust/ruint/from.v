@@ -6729,7 +6729,14 @@ Module from.
                               M.call_closure (|
                                 Ty.path "bool",
                                 BinOp.lt,
-                                [ M.read (| value |); M.read (| UnsupportedLiteral |) ]
+                                [
+                                  M.read (| value |);
+                                  M.read (|
+                                    M.impossible (|
+                                      "[ROR003] floating-point literal in from::<impl std::convert::TryFrom<f64> for Uint<BITS, LIMBS>>::try_from"
+                                    |)
+                                  |)
+                                ]
                               |)
                             |) in
                           let _ :=
@@ -7093,7 +7100,14 @@ Module from.
                               M.call_closure (|
                                 Ty.path "bool",
                                 BinOp.lt,
-                                [ M.read (| value |); M.read (| UnsupportedLiteral |) ]
+                                [
+                                  M.read (| value |);
+                                  M.read (|
+                                    M.impossible (|
+                                      "[ROR003] floating-point literal in from::<impl std::convert::TryFrom<f64> for Uint<BITS, LIMBS>>::try_from"
+                                    |)
+                                  |)
+                                ]
                               |)
                             |) in
                           let _ :=
@@ -7169,7 +7183,14 @@ Module from.
                   M.call_closure (|
                     Ty.path "f64",
                     BinOp.Wrap.add,
-                    [ M.read (| value |); M.read (| UnsupportedLiteral |) ]
+                    [
+                      M.read (| value |);
+                      M.read (|
+                        M.impossible (|
+                          "[ROR003] floating-point literal in from::<impl std::convert::TryFrom<f64> for Uint<BITS, LIMBS>>::try_from"
+                        |)
+                      |)
+                    ]
                   |) in
                 let~ bits : Ty.path "u64" :=
                   M.call_closure (|

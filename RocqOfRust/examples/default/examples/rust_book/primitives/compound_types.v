@@ -34,9 +34,11 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     ltac:(M.monadic
       (M.read (|
         let~ logical : Ty.path "bool" := Value.Bool true in
-        let~ a_float : Ty.path "f64" := M.read (| UnsupportedLiteral |) in
+        let~ a_float : Ty.path "f64" :=
+          M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |) in
         let~ an_integer : Ty.path "i32" := Value.Integer IntegerKind.I32 5 in
-        let~ default_float : Ty.path "f64" := M.read (| UnsupportedLiteral |) in
+        let~ default_float : Ty.path "f64" :=
+          M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |) in
         let~ default_integer : Ty.path "i32" := Value.Integer IntegerKind.I32 7 in
         let~ inferred_type : Ty.path "i64" := Value.Integer IntegerKind.I64 12 in
         let~ _ : Ty.tuple [] :=

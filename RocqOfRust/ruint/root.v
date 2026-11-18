@@ -518,7 +518,13 @@ Module root.
                                     match γ with
                                     | [] =>
                                       ltac:(M.monadic
-                                        (M.never_to_any (| M.read (| M.break (||) |) |)))
+                                        (M.never_to_any (|
+                                          M.read (|
+                                            M.impossible (|
+                                              "[ROR001] value-carrying break in root::<impl Uint<BITS, LIMBS>>::root"
+                                            |)
+                                          |)
+                                        |)))
                                     | _ => M.impossible "wrong number of arguments"
                                     end)
                               |)));

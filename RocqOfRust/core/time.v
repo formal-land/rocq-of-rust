@@ -4792,7 +4792,14 @@ Module time.
                               M.call_closure (|
                                 Ty.path "bool",
                                 BinOp.lt,
-                                [ M.read (| secs |); M.read (| UnsupportedLiteral |) ]
+                                [
+                                  M.read (| secs |);
+                                  M.read (|
+                                    M.impossible (|
+                                      "[ROR003] floating-point literal in time::Duration::try_from_secs_f32"
+                                    |)
+                                  |)
+                                ]
                               |)
                             |) in
                           let _ :=
@@ -5662,7 +5669,14 @@ Module time.
                               M.call_closure (|
                                 Ty.path "bool",
                                 BinOp.lt,
-                                [ M.read (| secs |); M.read (| UnsupportedLiteral |) ]
+                                [
+                                  M.read (| secs |);
+                                  M.read (|
+                                    M.impossible (|
+                                      "[ROR003] floating-point literal in time::Duration::try_from_secs_f64"
+                                    |)
+                                  |)
+                                ]
                               |)
                             |) in
                           let _ :=

@@ -5285,7 +5285,9 @@ Module iter.
                                                                                                   |) in
                                                                                                 M.never_to_any (|
                                                                                                   M.read (|
-                                                                                                    M.break (||)
+                                                                                                    M.impossible (|
+                                                                                                      "[ROR001] value-carrying break in <iter::adapters::flatten::FlattenCompat<I, U> as iter::traits::iterator::Iterator>::size_hint"
+                                                                                                    |)
                                                                                                   |)
                                                                                                 |)));
                                                                                             fun γ =>
@@ -5394,7 +5396,9 @@ Module iter.
                                                                                                   |) in
                                                                                                 M.never_to_any (|
                                                                                                   M.read (|
-                                                                                                    M.break (||)
+                                                                                                    M.impossible (|
+                                                                                                      "[ROR001] value-carrying break in <iter::adapters::flatten::FlattenCompat<I, U> as iter::traits::iterator::Iterator>::size_hint"
+                                                                                                    |)
                                                                                                   |)
                                                                                                 |)));
                                                                                             fun γ =>
@@ -5446,7 +5450,9 @@ Module iter.
                                                                                       |) in
                                                                                     M.never_to_any (|
                                                                                       M.read (|
-                                                                                        M.break (||)
+                                                                                        M.impossible (|
+                                                                                          "[ROR001] value-carrying break in <iter::adapters::flatten::FlattenCompat<I, U> as iter::traits::iterator::Iterator>::size_hint"
+                                                                                        |)
                                                                                       |)
                                                                                     |)));
                                                                                 fun γ =>
@@ -5625,7 +5631,9 @@ Module iter.
                                                                                                   |) in
                                                                                                 M.never_to_any (|
                                                                                                   M.read (|
-                                                                                                    M.break (||)
+                                                                                                    M.impossible (|
+                                                                                                      "[ROR001] value-carrying break in <iter::adapters::flatten::FlattenCompat<I, U> as iter::traits::iterator::Iterator>::size_hint"
+                                                                                                    |)
                                                                                                   |)
                                                                                                 |)));
                                                                                             fun γ =>
@@ -5677,7 +5685,9 @@ Module iter.
                                                                                       |) in
                                                                                     M.never_to_any (|
                                                                                       M.read (|
-                                                                                        M.break (||)
+                                                                                        M.impossible (|
+                                                                                          "[ROR001] value-carrying break in <iter::adapters::flatten::FlattenCompat<I, U> as iter::traits::iterator::Iterator>::size_hint"
+                                                                                        |)
                                                                                       |)
                                                                                     |)));
                                                                                 fun γ =>
@@ -5726,7 +5736,11 @@ Module iter.
                                                                             γ0_0
                                                                           |) in
                                                                         M.never_to_any (|
-                                                                          M.read (| M.break (||) |)
+                                                                          M.read (|
+                                                                            M.impossible (|
+                                                                              "[ROR001] value-carrying break in <iter::adapters::flatten::FlattenCompat<I, U> as iter::traits::iterator::Iterator>::size_hint"
+                                                                            |)
+                                                                          |)
                                                                         |)));
                                                                     fun γ =>
                                                                       ltac:(M.monadic

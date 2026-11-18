@@ -2897,7 +2897,13 @@ Module sync.
                                 0
                               |) in
                             let x := M.copy (| Ty.path "bool", γ0_0 |) in
-                            M.never_to_any (| M.read (| M.break (||) |) |)));
+                            M.never_to_any (|
+                              M.read (|
+                                M.impossible (|
+                                  "[ROR001] value-carrying break in sync::atomic::AtomicBool::update"
+                                |)
+                              |)
+                            |)));
                         fun γ =>
                           ltac:(M.monadic
                             (let γ0_0 :=
@@ -4237,7 +4243,13 @@ Module sync.
                                 0
                               |) in
                             let x := M.copy (| Ty.apply (Ty.path "*mut") [] [ T ], γ0_0 |) in
-                            M.never_to_any (| M.read (| M.break (||) |) |)));
+                            M.never_to_any (|
+                              M.read (|
+                                M.impossible (|
+                                  "[ROR001] value-carrying break in sync::atomic::AtomicPtr::<T>::update"
+                                |)
+                              |)
+                            |)));
                         fun γ =>
                           ltac:(M.monadic
                             (let γ0_0 :=
@@ -6472,7 +6484,13 @@ Module sync.
                                 0
                               |) in
                             let x := M.copy (| Ty.path "i8", γ0_0 |) in
-                            M.never_to_any (| M.read (| M.break (||) |) |)));
+                            M.never_to_any (|
+                              M.read (|
+                                M.impossible (|
+                                  "[ROR001] value-carrying break in sync::atomic::AtomicI8::update"
+                                |)
+                              |)
+                            |)));
                         fun γ =>
                           ltac:(M.monadic
                             (let γ0_0 :=
@@ -8243,7 +8261,13 @@ Module sync.
                                 0
                               |) in
                             let x := M.copy (| Ty.path "u8", γ0_0 |) in
-                            M.never_to_any (| M.read (| M.break (||) |) |)));
+                            M.never_to_any (|
+                              M.read (|
+                                M.impossible (|
+                                  "[ROR001] value-carrying break in sync::atomic::AtomicU8::update"
+                                |)
+                              |)
+                            |)));
                         fun γ =>
                           ltac:(M.monadic
                             (let γ0_0 :=
@@ -10027,7 +10051,13 @@ Module sync.
                                 0
                               |) in
                             let x := M.copy (| Ty.path "i16", γ0_0 |) in
-                            M.never_to_any (| M.read (| M.break (||) |) |)));
+                            M.never_to_any (|
+                              M.read (|
+                                M.impossible (|
+                                  "[ROR001] value-carrying break in sync::atomic::AtomicI16::update"
+                                |)
+                              |)
+                            |)));
                         fun γ =>
                           ltac:(M.monadic
                             (let γ0_0 :=
@@ -11811,7 +11841,13 @@ Module sync.
                                 0
                               |) in
                             let x := M.copy (| Ty.path "u16", γ0_0 |) in
-                            M.never_to_any (| M.read (| M.break (||) |) |)));
+                            M.never_to_any (|
+                              M.read (|
+                                M.impossible (|
+                                  "[ROR001] value-carrying break in sync::atomic::AtomicU16::update"
+                                |)
+                              |)
+                            |)));
                         fun γ =>
                           ltac:(M.monadic
                             (let γ0_0 :=
@@ -13595,7 +13631,13 @@ Module sync.
                                 0
                               |) in
                             let x := M.copy (| Ty.path "i32", γ0_0 |) in
-                            M.never_to_any (| M.read (| M.break (||) |) |)));
+                            M.never_to_any (|
+                              M.read (|
+                                M.impossible (|
+                                  "[ROR001] value-carrying break in sync::atomic::AtomicI32::update"
+                                |)
+                              |)
+                            |)));
                         fun γ =>
                           ltac:(M.monadic
                             (let γ0_0 :=
@@ -15379,7 +15421,13 @@ Module sync.
                                 0
                               |) in
                             let x := M.copy (| Ty.path "u32", γ0_0 |) in
-                            M.never_to_any (| M.read (| M.break (||) |) |)));
+                            M.never_to_any (|
+                              M.read (|
+                                M.impossible (|
+                                  "[ROR001] value-carrying break in sync::atomic::AtomicU32::update"
+                                |)
+                              |)
+                            |)));
                         fun γ =>
                           ltac:(M.monadic
                             (let γ0_0 :=
@@ -17163,7 +17211,13 @@ Module sync.
                                 0
                               |) in
                             let x := M.copy (| Ty.path "i64", γ0_0 |) in
-                            M.never_to_any (| M.read (| M.break (||) |) |)));
+                            M.never_to_any (|
+                              M.read (|
+                                M.impossible (|
+                                  "[ROR001] value-carrying break in sync::atomic::AtomicI64::update"
+                                |)
+                              |)
+                            |)));
                         fun γ =>
                           ltac:(M.monadic
                             (let γ0_0 :=
@@ -18947,7 +19001,13 @@ Module sync.
                                 0
                               |) in
                             let x := M.copy (| Ty.path "u64", γ0_0 |) in
-                            M.never_to_any (| M.read (| M.break (||) |) |)));
+                            M.never_to_any (|
+                              M.read (|
+                                M.impossible (|
+                                  "[ROR001] value-carrying break in sync::atomic::AtomicU64::update"
+                                |)
+                              |)
+                            |)));
                         fun γ =>
                           ltac:(M.monadic
                             (let γ0_0 :=
@@ -20734,7 +20794,13 @@ Module sync.
                                 0
                               |) in
                             let x := M.copy (| Ty.path "isize", γ0_0 |) in
-                            M.never_to_any (| M.read (| M.break (||) |) |)));
+                            M.never_to_any (|
+                              M.read (|
+                                M.impossible (|
+                                  "[ROR001] value-carrying break in sync::atomic::AtomicIsize::update"
+                                |)
+                              |)
+                            |)));
                         fun γ =>
                           ltac:(M.monadic
                             (let γ0_0 :=
@@ -22521,7 +22587,13 @@ Module sync.
                                 0
                               |) in
                             let x := M.copy (| Ty.path "usize", γ0_0 |) in
-                            M.never_to_any (| M.read (| M.break (||) |) |)));
+                            M.never_to_any (|
+                              M.read (|
+                                M.impossible (|
+                                  "[ROR001] value-carrying break in sync::atomic::AtomicUsize::update"
+                                |)
+                              |)
+                            |)));
                         fun γ =>
                           ltac:(M.monadic
                             (let γ0_0 :=

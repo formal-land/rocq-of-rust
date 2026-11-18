@@ -162,7 +162,14 @@ Definition random_animal (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
                           M.call_closure (|
                             Ty.path "bool",
                             BinOp.lt,
-                            [ M.read (| random_number |); M.read (| UnsupportedLiteral |) ]
+                            [
+                              M.read (| random_number |);
+                              M.read (|
+                                M.impossible (|
+                                  "[ROR003] floating-point literal in random_animal"
+                                |)
+                              |)
+                            ]
                           |)
                         |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
@@ -323,7 +330,8 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   | [], [], [] =>
     ltac:(M.monadic
       (M.read (|
-        let~ random_number : Ty.path "f64" := M.read (| UnsupportedLiteral |) in
+        let~ random_number : Ty.path "f64" :=
+          M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |) in
         let~ animal :
             Ty.apply
               (Ty.path "alloc::boxed::Box")

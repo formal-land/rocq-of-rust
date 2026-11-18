@@ -1,0 +1,74 @@
+warning: [ROR003] floating-point literal in Point::origin
+  --> examples/rust_book/functions/associated_functions_and_methods.rs:14:20
+   |
+14 |         Point { y: 0.0, x: 1.0 }
+   |                    ^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in Point::origin
+  --> examples/rust_book/functions/associated_functions_and_methods.rs:14:28
+   |
+14 |         Point { y: 0.0, x: 1.0 }
+   |                            ^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in Rectangle::perimeter
+  --> examples/rust_book/functions/associated_functions_and_methods.rs:50:9
+   |
+50 |         2.0 * ((x1 - x2).abs() + (y1 - y2).abs())
+   |         ^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in main
+   --> examples/rust_book/functions/associated_functions_and_methods.rs:104:22
+    |
+104 |     square.translate(1.0, 1.0);
+    |                      ^^^
+    |
+    = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in main
+   --> examples/rust_book/functions/associated_functions_and_methods.rs:104:27
+    |
+104 |     square.translate(1.0, 1.0);
+    |                           ^^^
+    |
+    = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in main
+  --> examples/rust_book/functions/associated_functions_and_methods.rs:95:24
+   |
+95 |         p2: Point::new(1.0, 1.0),
+   |                        ^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in main
+  --> examples/rust_book/functions/associated_functions_and_methods.rs:95:29
+   |
+95 |         p2: Point::new(1.0, 1.0),
+   |                             ^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in main
+  --> examples/rust_book/functions/associated_functions_and_methods.rs:84:24
+   |
+84 |         p2: Point::new(3.0, 4.0),
+   |                        ^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in main
+  --> examples/rust_book/functions/associated_functions_and_methods.rs:84:29
+   |
+84 |         p2: Point::new(3.0, 4.0),
+   |                             ^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: 9 warnings emitted
+

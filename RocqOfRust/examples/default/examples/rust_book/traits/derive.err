@@ -1,0 +1,18 @@
+warning: [ROR003] floating-point literal in Inches::to_centimeters
+  --> examples/rust_book/traits/derive.rs:13:37
+   |
+13 |         Centimeters(inches as f64 * 2.54)
+   |                                     ^^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in main
+  --> examples/rust_book/traits/derive.rs:35:29
+   |
+35 |     let meter = Centimeters(100.0);
+   |                             ^^^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: 2 warnings emitted
+

@@ -56,7 +56,9 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                             |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                          M.never_to_any (| M.read (| M.break (||) |) |)));
+                          M.never_to_any (|
+                            M.read (| M.impossible (| "[ROR001] value-carrying break in main" |) |)
+                          |)));
                       fun γ => ltac:(M.monadic (Value.Tuple []))
                     ]
                   |)

@@ -1,0 +1,10 @@
+warning: [ROR002] labeled loop or block exit in main
+  --> examples/rust_book/flow_of_control/loop_nesting_and_labels.rs:15:13
+   |
+15 |             break 'outer;
+   |             ^^^^^^^^^^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: 1 warning emitted
+

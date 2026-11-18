@@ -25,7 +25,12 @@ Module Impl_associated_functions_and_methods_Point.
           "associated_functions_and_methods::Point"
           []
           []
-          [ ("y", M.read (| UnsupportedLiteral |)); ("x", M.read (| UnsupportedLiteral |)) ]))
+          [
+            ("y",
+              M.read (| M.impossible (| "[ROR003] floating-point literal in Point::origin" |) |));
+            ("x",
+              M.read (| M.impossible (| "[ROR003] floating-point literal in Point::origin" |) |))
+          ]))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -274,7 +279,11 @@ Module Impl_associated_functions_and_methods_Rectangle.
                           Ty.path "f64",
                           BinOp.Wrap.mul,
                           [
-                            M.read (| UnsupportedLiteral |);
+                            M.read (|
+                              M.impossible (|
+                                "[ROR003] floating-point literal in Rectangle::perimeter"
+                              |)
+                            |);
                             M.call_closure (|
                               Ty.path "f64",
                               BinOp.Wrap.add,
@@ -724,7 +733,10 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                     [],
                     []
                   |),
-                  [ M.read (| UnsupportedLiteral |); M.read (| UnsupportedLiteral |) ]
+                  [
+                    M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |);
+                    M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |)
+                  ]
                 |))
             ] in
         let~ _ : Ty.tuple [] :=
@@ -970,7 +982,10 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                     [],
                     []
                   |),
-                  [ M.read (| UnsupportedLiteral |); M.read (| UnsupportedLiteral |) ]
+                  [
+                    M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |);
+                    M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |)
+                  ]
                 |))
             ] in
         let~ _ : Ty.tuple [] :=
@@ -984,8 +999,8 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
             |),
             [
               M.borrow (| Pointer.Kind.MutRef, square |);
-              M.read (| UnsupportedLiteral |);
-              M.read (| UnsupportedLiteral |)
+              M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |);
+              M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |)
             ]
           |) in
         let~ pair_ : Ty.path "associated_functions_and_methods::Pair" :=

@@ -62,7 +62,10 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
             "foreign_function_interface::Complex"
             []
             []
-            [ ("re", M.read (| UnsupportedLiteral |)); ("im", M.read (| UnsupportedLiteral |)) ] in
+            [
+              ("re", M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |));
+              ("im", M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |))
+            ] in
         let~ z_sqrt : Ty.path "foreign_function_interface::Complex" :=
           M.call_closure (|
             Ty.path "foreign_function_interface::Complex",
@@ -420,7 +423,11 @@ Module Impl_core_fmt_Debug_for_foreign_function_interface_Complex.
                             "im"
                           |)
                         |);
-                        M.read (| UnsupportedLiteral |)
+                        M.read (|
+                          M.impossible (|
+                            "[ROR003] floating-point literal in <Complex as std::fmt::Debug>::fmt"
+                          |)
+                        |)
                       ]
                     |)
                   |) in
