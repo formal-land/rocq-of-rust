@@ -82,8 +82,6 @@ jobs:
             time cargo build
             export RUST_MIN_STACK=800000000
             time cargo rocq-of-rust
-            sed -i 's/Module Impl_core_default_Default_where_core_default_Default_T_for_array_expr_T./(* Module Impl_core_default_Default_where_core_default_Default_T_for_array_expr_T./' src/array/mod.v
-            sed -i 's/End Impl_core_default_Default_where_core_default_Default_T_for_array_expr_T./End Impl_core_default_Default_where_core_default_Default_T_for_array_expr_T. *)/' src/array/mod.v
             rsync -rcv src/ ../../../../RocqOfRust/core/ --include='*/' --include='*.v' --include='*.rs' --exclude='*'
             cd ../../../..
           endGroup

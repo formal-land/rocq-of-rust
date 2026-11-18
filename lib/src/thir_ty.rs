@@ -67,7 +67,7 @@ pub(crate) fn compile_type<'a>(
                     subst
                         .as_const()
                         .as_ref()
-                        .map(|constant| compile_const(env, span, constant))
+                        .map(|constant| compile_const(env, span, generics, constant))
                 })
                 .collect();
             let tys = substs
@@ -91,7 +91,7 @@ pub(crate) fn compile_type<'a>(
         TyKind::Str => RocqType::path(&["str"]),
         TyKind::Array(ty, const_) => Rc::new(RocqType::Application {
             func: RocqType::path(&["array"]),
-            consts: vec![compile_const(env, span, const_)],
+            consts: vec![compile_const(env, span, generics, const_)],
             tys: vec![compile_type(env, span, generics, ty)],
         }),
         TyKind::Slice(ty) => Rc::new(RocqType::Application {
@@ -178,7 +178,7 @@ pub(crate) fn compile_type<'a>(
                         generic_arg
                             .as_const()
                             .as_ref()
-                            .map(|constant| compile_const(env, span, constant))
+                            .map(|constant| compile_const(env, span, generics, constant))
                     })
                     .collect();
                 let ty_args = alias_ty

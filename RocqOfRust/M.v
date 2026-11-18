@@ -1056,6 +1056,9 @@ Arguments pointer_coercion /.
 
 Parameter struct_record_update : Value.t -> list (string * Value.t) -> Value.t.
 
+(** An opaque Rust constant still depending on its generic arguments. *)
+Parameter symbolic_const : string -> list Value.t -> list Ty.t -> Value.t.
+
 Parameter unevaluated_const : Value.t -> Value.t.
 
 Parameter yield : Value.t -> M.

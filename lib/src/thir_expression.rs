@@ -987,7 +987,7 @@ pub(crate) fn compile_expr<'a>(
             let func = Expr::local_var("lib.repeat");
             let args = vec![
                 compile_expr(env, generics, thir, value).read(),
-                compile_const(env, &expr.span, count),
+                compile_const(env, &expr.span, generics, count),
             ];
 
             Rc::new(Expr::Call {
@@ -1207,7 +1207,7 @@ pub(crate) fn compile_expr<'a>(
                                     generic_arg
                                         .as_const()
                                         .as_ref()
-                                        .map(|ct| compile_const(env, &expr.span, ct))
+                                        .map(|ct| compile_const(env, &expr.span, generics, ct))
                                 })
                                 .collect();
                             let generic_tys = generic_args
@@ -1254,7 +1254,7 @@ pub(crate) fn compile_expr<'a>(
                                     generic_arg
                                         .as_const()
                                         .as_ref()
-                                        .map(|ct| compile_const(env, &expr.span, ct))
+                                        .map(|ct| compile_const(env, &expr.span, generics, ct))
                                 })
                                 .collect::<Vec<_>>();
                             let method_name = symbol.unwrap().to_string();
@@ -1265,7 +1265,7 @@ pub(crate) fn compile_expr<'a>(
                                     generic_arg
                                         .as_const()
                                         .as_ref()
-                                        .map(|ct| compile_const(env, &expr.span, ct))
+                                        .map(|ct| compile_const(env, &expr.span, generics, ct))
                                 })
                                 .collect::<Vec<_>>();
                             let generic_tys = generic_args
@@ -1297,7 +1297,7 @@ pub(crate) fn compile_expr<'a>(
                                     generic_arg
                                         .as_const()
                                         .as_ref()
-                                        .map(|ct| compile_const(env, &expr.span, ct))
+                                        .map(|ct| compile_const(env, &expr.span, generics, ct))
                                 })
                                 .collect::<Vec<_>>();
                             let generic_tys = generic_args
@@ -1325,7 +1325,7 @@ pub(crate) fn compile_expr<'a>(
                                     generic_arg
                                         .as_const()
                                         .as_ref()
-                                        .map(|ct| compile_const(env, &expr.span, ct))
+                                        .map(|ct| compile_const(env, &expr.span, generics, ct))
                                 })
                                 .collect::<Vec<_>>();
                             let generic_tys = generic_args
@@ -1566,6 +1566,7 @@ fn compile_block<'a>(
 pub(crate) fn compile_const<'tcx>(
     env: &Env<'tcx>,
     span: &rustc_span::Span,
+    generics: &'tcx rustc_middle::ty::Generics,
     const_: &Const<'tcx>,
 ) -> Rc<Expr> {
     match &const_.kind() {
@@ -1577,17 +1578,41 @@ pub(crate) fn compile_const<'tcx>(
         ConstKind::Infer(_) => Expr::local_var("InferConst"),
         ConstKind::Bound(_, _) => Expr::local_var("BoundConst"),
         ConstKind::Placeholder(_) => Expr::local_var("PlaceholderConst"),
-        ConstKind::Unevaluated(unevaluated_const) => {
-            // We do not know yet how to handle this kind of constant. We return something that
-            // type-check for now.
-            let path = compile_def_id(env, unevaluated_const.def);
-
-            Rc::new(Expr::Call {
-                func: Expr::local_var("M.unevaluated_const"),
-                args: vec![Rc::new(Expr::Literal(Rc::new(Literal::String(
-                    path.to_name().as_str().to_string(),
-                ))))],
-                kind: CallKind::Pure,
+        ConstKind::Unevaluated(uv) => {
+            let tcx = env.tcx;
+            let typing_env = rustc_middle::ty::TypingEnv::post_analysis(tcx, uv.def);
+            match tcx.const_eval_resolve_for_typeck(typing_env, *uv, *span) {
+                Ok(Ok(tree)) => {
+                    let ty = tcx.type_of(uv.def).instantiate(tcx, uv.args);
+                    return compile_const(env, span, generics, &Const::new_value(tcx, tree, ty));
+                }
+                Err(rustc_middle::mir::interpret::ErrorHandled::TooGeneric(_)) => {}
+                Err(error) => error.emit_note(tcx),
+                Ok(Err(_)) => emit_warning_with_note(
+                    env,
+                    span,
+                    "The evaluated constant cannot be represented as a value tree",
+                    Some("Its symbolic identity is retained"),
+                ),
+            }
+            // rustc's verbose DefPath includes impl and anonymous-const disambiguators.
+            let owner = format!(
+                "{}{}",
+                tcx.crate_name(uv.def.krate),
+                tcx.def_path(uv.def).to_string_no_crate_verbose()
+            );
+            Rc::new(Expr::SymbolicConst {
+                owner,
+                consts: uv
+                    .args
+                    .consts()
+                    .map(|c| compile_const(env, span, generics, &c))
+                    .collect(),
+                tys: uv
+                    .args
+                    .types()
+                    .map(|t| compile_type(env, span, generics, &t))
+                    .collect(),
             })
         }
         ConstKind::Value(value) => match *value.valtree {
@@ -1630,7 +1655,7 @@ pub(crate) fn compile_const<'tcx>(
                 let fields = destructured
                     .fields
                     .iter()
-                    .map(|field| compile_const(env, span, field))
+                    .map(|field| compile_const(env, span, generics, field))
                     .collect();
 
                 match value.ty.kind() {

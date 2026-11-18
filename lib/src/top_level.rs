@@ -712,7 +712,12 @@ fn compile_top_level_item_without_local_items<'a>(
                         .skip(1)
                         .filter_map(|generic_arg| {
                             generic_arg.as_const().as_ref().map(|ct| {
-                                crate::thir_expression::compile_const(env, &item.span, ct)
+                                crate::thir_expression::compile_const(
+                                    env,
+                                    &item.span,
+                                    impl_generics,
+                                    ct,
+                                )
                             })
                         })
                         .collect();
