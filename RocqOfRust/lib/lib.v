@@ -111,6 +111,9 @@ Module Integer.
     | IntegerKind.Isize => Z.modulo (z + 2^63) (2^64) - 2^63
     end.
 
+  Definition invalid_division (kind : IntegerKind.t) (a b : Z) : bool :=
+    (b =? 0) || ((b =? -1) && (a =? min kind) && (min kind <? 0)).
+
   Definition normalize_option (kind : IntegerKind.t) (z : Z) : option Z :=
     if z <? min kind then
       None
@@ -244,11 +247,22 @@ Module BinOp.
     Definition mul : Value.t :=
       make_arithmetic Z.mul.
 
-    Definition div : Value.t :=
-      make_arithmetic Z.div.
+    (* The generated / and % operators panic even in release mode on these inputs.
+       The Rust wrapping methods handle signed overflow before reaching this operator. *)
+    Definition make_division (op : Z -> Z -> Z) : Value.t :=
+      M.closure (fun args =>
+        match args with
+        | [Value.Integer kind a; Value.Integer _ b] =>
+          if Integer.invalid_division kind a b then
+            M.panic (Panic.Make "invalid integer division")
+          else
+            M.pure (Value.Integer kind (Integer.normalize_wrap kind (op a b)))
+        | _ => M.impossible "expected two integers for division"
+        end).
 
-    Definition rem : Value.t :=
-      make_arithmetic Z.modulo.
+    Definition div : Value.t := make_division Z.quot.
+
+    Definition rem : Value.t := make_division Z.rem.
 
     Definition shl : Value.t :=
       make_arithmetic Z.shiftl.

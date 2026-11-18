@@ -58,11 +58,13 @@ Module BinOp.
     Definition mul {kind : IntegerKind.t} (a b : Integer.t kind) : Integer.t kind :=
       make_arithmetic Z.mul a b.
 
+    (* Value computations on the successful path of a wrapping operation.
+       A zero divisor takes the panic path in the operational model. *)
     Definition div {kind : IntegerKind.t} (a b : Integer.t kind) : Integer.t kind :=
-      make_arithmetic Z.div a b.
+      make_arithmetic Z.quot a b.
 
     Definition rem {kind : IntegerKind.t} (a b : Integer.t kind) : Integer.t kind :=
-      make_arithmetic Z.modulo a b.
+      make_arithmetic Z.rem a b.
 
     Definition shl {kind : IntegerKind.t} (a b : Integer.t kind) : Integer.t kind :=
       make_arithmetic Z.shiftl a b.
@@ -92,10 +94,12 @@ Module BinOp.
       make_arithmetic Z.mul a b.
 
     Definition div {kind : IntegerKind.t} (a b : Integer.t kind) : option (Integer.t kind) :=
-      make_arithmetic Z.div a b.
+      if Integer.invalid_division kind a.(Integer.value) b.(Integer.value) then None
+      else make_arithmetic Z.quot a b.
 
     Definition rem {kind : IntegerKind.t} (a b : Integer.t kind) : option (Integer.t kind) :=
-      make_arithmetic Z.modulo a b.
+      if Integer.invalid_division kind a.(Integer.value) b.(Integer.value) then None
+      else make_arithmetic Z.rem a b.
 
     Definition shl {kind : IntegerKind.t} (a b : Integer.t kind) : option (Integer.t kind) :=
       make_arithmetic Z.shiftl a b.
@@ -122,10 +126,10 @@ Module BinOp.
       make_arithmetic Z.mul a b.
 
     Definition div {kind : IntegerKind.t} (a b : Integer.t kind) : Integer.t kind :=
-      make_arithmetic Z.div a b.
+      make_arithmetic Z.quot a b.
 
     Definition rem {kind : IntegerKind.t} (a b : Integer.t kind) : Integer.t kind :=
-      make_arithmetic Z.modulo a b.
+      make_arithmetic Z.rem a b.
 
     Definition shl {kind : IntegerKind.t} (a b : Integer.t kind) : Integer.t kind :=
       make_arithmetic Z.shiftl a b.
