@@ -495,7 +495,9 @@ fn get_if_conditions<'a>(
     let expr = thir.exprs.get(*expr_id).unwrap();
 
     match &expr.kind {
-        thir::ExprKind::Scope { value, .. } => get_if_conditions(env, generics, thir, value),
+        thir::ExprKind::Scope {
+            value, lint_level, ..
+        } => get_if_conditions(&env.in_scope(*lint_level), generics, thir, value),
         thir::ExprKind::Let { expr, pat, .. } => {
             let pattern = crate::thir_pattern::compile_pattern(env, generics, pat);
             let expr = compile_expr(env, generics, thir, expr);
@@ -598,7 +600,9 @@ pub(crate) fn compile_expr<'a>(
     let ty = compile_type(env, &expr.span, generics, &expr.ty);
 
     match &expr.kind {
-        thir::ExprKind::Scope { value, .. } => compile_expr(env, generics, thir, value),
+        thir::ExprKind::Scope {
+            value, lint_level, ..
+        } => compile_expr(&env.in_scope(*lint_level), generics, thir, value),
         thir::ExprKind::Box { value } => {
             let value_ty = compile_type(
                 env,
@@ -957,10 +961,16 @@ pub(crate) fn compile_expr<'a>(
             kind: CallKind::Effectful,
         })
         .alloc(ty),
+        thir::ExprKind::Break { value: Some(_), .. } => {
+            env.unsupported(expr.span, "ROR001", "value-carrying break")
+        }
+        thir::ExprKind::Break { .. } | thir::ExprKind::Continue { .. } if env.labeled_exit() => {
+            env.unsupported(expr.span, "ROR002", "labeled loop or block exit")
+        }
         thir::ExprKind::Break { .. } => Rc::new(Expr::ControlFlow(LoopControlFlow::Break)),
         thir::ExprKind::Continue { .. } => Rc::new(Expr::ControlFlow(LoopControlFlow::Continue)),
         thir::ExprKind::ConstContinue { .. } => {
-            Rc::new(Expr::ControlFlow(LoopControlFlow::Continue))
+            env.unsupported(expr.span, "ROR001", "const-continue with a value")
         }
         thir::ExprKind::Return { value } => {
             let value = match value {
@@ -1173,6 +1183,9 @@ pub(crate) fn compile_expr<'a>(
             .alloc(ty),
             rustc_ast::LitKind::Bool(c) => {
                 Rc::new(Expr::Literal(Rc::new(Literal::Bool(c)))).alloc(ty)
+            }
+            rustc_ast::LitKind::Float(..) => {
+                env.unsupported(expr.span, "ROR003", "floating-point literal")
             }
             _ => Rc::new(Expr::Literal(Rc::new(Literal::Error))),
         },
