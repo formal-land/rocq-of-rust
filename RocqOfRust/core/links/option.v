@@ -130,13 +130,14 @@ Module Impl_Option.
         F: FnOnce(T) -> U
   *)
   Instance run_map {F T U : Set} `{Link F} `{Link T} `{Link U}
-      (Run_FnOnce_for_F : function.FnOnce.Run F T U)
+      (Run_FnOnce_for_F : function.FnOnce.Run F (OneElementTuple.t T) U)
       (self: Self T) (f : F) :
     Run.Trait
       (option.Impl_core_option_Option_T.map (Φ T)) [] [ Φ U; Φ F ] [ φ self; φ f ]
       (option U).
   Proof.
-  Admitted.
+    constructor. destruct self; run_symbolic.
+  Defined.
   Global Opaque run_map.
 
   (* pub fn ok_or<E>(self, err: E) -> Result<T, E> *)
