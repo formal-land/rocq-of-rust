@@ -13,7 +13,15 @@ for source in *.rs; do
   name=${source%.rs}
   rustc -C overflow-checks=off "$source" -o "$work/native"
   "$work/native"
-  "$translator" translate --path "$source" --output-path "$work"
+  if ! "$translator" translate --path "$source" --output-path "$work" 2>"$work/$name.err"; then
+    cat "$work/$name.err" >&2
+    exit 1
+  fi
+  cat "$work/$name.err" >&2
+  if [[ -f "$name.warnings" ]]; then
+    sed -n 's/^warning: \(\[ROR[0-9]*\].*\)$/\1/p' "$work/$name.err" | sort > "$work/warnings"
+    diff -u "$name.warnings" "$work/warnings"
+  fi
   coqc "${flags[@]}" "$work/$name.v"
   cp "${name}_check.v" "$work/"
   coqc "${flags[@]}" "$work/${name}_check.v"
