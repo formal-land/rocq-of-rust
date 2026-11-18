@@ -291,6 +291,7 @@ jobs:
           endGroup
           startGroup "Compare Rust and Rocq semantics"
             cargo build --locked --bin rocq-of-rust
+            LD_LIBRARY_PATH="$(rustc --print sysroot)/lib:${LD_LIBRARY_PATH:-}" python3 tests/standalone.py target/debug/rocq-of-rust
             bash tests/semantics/check.sh target/debug/rocq-of-rust
           endGroup
           startGroup "Compile Rocq translations"
