@@ -320,7 +320,7 @@ Module Char.
 
   Global Instance IsLink : Link t := {
     Φ := Ty.path "char";
-    φ '(Make c) := Value.UnicodeChar c;
+    φ c := Value.UnicodeChar (let '(Make z) := c in z);
   }.
 
   Definition of_ty : OfTy.t (Ty.path "char").

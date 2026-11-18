@@ -178,6 +178,7 @@ Module BinOp.
       match args with
       | [value1; value2] =>
         match value1, value2 with
+        | Value.UnicodeChar a, Value.UnicodeChar b => M.pure (Value.Bool (Z.eqb a b))
         | Value.Bool b1, Value.Bool b2 =>
           M.pure (Value.Bool (Bool.eqb b1 b2))
         | Value.Integer kind1 i1, Value.Integer kind2 i2 =>
@@ -194,27 +195,20 @@ Module BinOp.
   Definition ne : Value.t :=
     M.closure (fun args =>
       match args with
-      | [value1; value2] =>
-        match args with
-        | [value1; value2] =>
-          match value1, value2 with
-          | Value.Bool b1, Value.Bool b2 =>
-            M.pure (Value.Bool (negb (Bool.eqb b1 b2)))
-          | Value.Integer kind1 i1, Value.Integer kind2 i2 =>
-            if negb (IntegerKind.eqb kind1 kind2) then
-              M.impossible "expected the same kind of integers"
-            else
-              M.pure (Value.Bool (negb (Z.eqb i1 i2)))
-          | _, _ => M.impossible "expected two values for ne"
-          end
-        | _ => M.impossible "expected two values for ne"
-        end
+      | [Value.UnicodeChar a; Value.UnicodeChar b] => M.pure (Value.Bool (negb (Z.eqb a b)))
+      | [Value.Bool a; Value.Bool b] => M.pure (Value.Bool (negb (Bool.eqb a b)))
+      | [Value.Integer kind1 a; Value.Integer kind2 b] =>
+        if negb (IntegerKind.eqb kind1 kind2) then
+          M.impossible "expected the same kind of integers"
+        else
+          M.pure (Value.Bool (negb (Z.eqb a b)))
       | _ => M.impossible "expected two values for ne"
       end
     ).
   Definition make_Z_comparison (cmp : Z -> Z -> bool) : Value.t :=
     M.closure (fun args =>
       match args with
+      | [Value.UnicodeChar a; Value.UnicodeChar b] => M.pure (Value.Bool (cmp a b))
       | [Value.Integer kind1 i1; Value.Integer kind2 i2] =>
         if negb (IntegerKind.eqb kind1 kind2) then
           M.impossible "expected the same kind of integers"

@@ -187,12 +187,14 @@ pub(crate) fn compile_pattern<'a>(
         PatKind::Range(range) => {
             if !matches!(
                 range.ty.kind(),
-                rustc_middle::ty::TyKind::Int(_) | rustc_middle::ty::TyKind::Uint(_)
+                rustc_middle::ty::TyKind::Int(_)
+                    | rustc_middle::ty::TyKind::Uint(_)
+                    | rustc_middle::ty::TyKind::Char
             ) {
                 emit_warning_with_note(
                     env,
                     &pat.span,
-                    "Only integer ranges in patterns are currently supported.",
+                    "Only integer and character ranges in patterns are currently supported.",
                     None,
                 );
 
