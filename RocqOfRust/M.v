@@ -771,6 +771,13 @@ Arguments call_logical_op /.
 Definition impossible {A : Set} (payload : A) : M :=
   LowM.Impossible payload.
 
+(** Rust's assume intrinsic has a defined execution only for true. *)
+Definition assume (condition : Value.t) : M :=
+  match condition with
+  | Value.Bool true => pure (Value.Tuple [])
+  | _ => impossible "false or ill-typed assumption"
+  end.
+
 Module Panic.
   Inductive t : Set :=
   | Make (message : string).

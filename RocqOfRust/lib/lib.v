@@ -53,6 +53,13 @@ Definition get_associated_constant (ty : Ty.t) (name : string) (return_ty : Ty.t
   let* constant := call_primitive (Primitive.GetAssociatedFunction ty name [] []) in
   call_closure (Ty.apply (Ty.path "*") [] [return_ty]) constant [].
 
+(** An associated constant is selected by its trait and substituted arguments. *)
+Parameter trait_constant_value : string -> Ty.t -> list Value.t -> list Ty.t -> string -> Value.t.
+
+Definition get_trait_constant (trait : string) (receiver : Ty.t)
+    (consts : list Value.t) (types : list Ty.t) (name : string) (return_ty : Ty.t) : M :=
+  M.alloc return_ty (trait_constant_value trait receiver consts types name).
+
 (** ** Integer types *)
 
 (** A value with an address of type `ref str`. *)

@@ -1415,6 +1415,41 @@ pub(crate) fn compile_expr<'a>(
 
             match parent_kind {
                 DefKind::Variant => Rc::new(Expr::GetConstant { path, return_ty }),
+                DefKind::Trait => {
+                    let self_ty = compile_type(env, &expr.span, generics, &args.type_at(0));
+                    let mut constants = Vec::new();
+                    let mut types = Vec::new();
+                    for arg in args.iter().skip(1) {
+                        if let Some(c) = arg.as_const() {
+                            constants.push(compile_const(env, &expr.span, generics, &c));
+                        }
+                        if let Some(t) = arg.as_type() {
+                            types.push(Rc::new(Expr::Ty(compile_type(
+                                env, &expr.span, generics, &t,
+                            ))));
+                        }
+                    }
+                    Rc::new(Expr::Call {
+                        func: Expr::local_var("get_trait_constant"),
+                        args: vec![
+                            Rc::new(Expr::InternalString(
+                                compile_def_id(env, parent).to_string(),
+                            )),
+                            Rc::new(Expr::Ty(self_ty)),
+                            Rc::new(Expr::Array {
+                                elements: constants,
+                                is_internal: true,
+                            }),
+                            Rc::new(Expr::Array {
+                                elements: types,
+                                is_internal: true,
+                            }),
+                            Rc::new(Expr::InternalString(symbol.unwrap().to_string())),
+                            Rc::new(Expr::Ty(return_ty)),
+                        ],
+                        kind: CallKind::Effectful,
+                    })
+                }
                 DefKind::Impl { .. } => {
                     let parent_type = env.tcx.type_of(parent).instantiate(env.tcx, args);
                     let ty = compile_type(env, &expr.span, generics, &parent_type);

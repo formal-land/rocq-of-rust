@@ -89,3 +89,7 @@ Module SliceMetadata.
   Defined.
 End SliceMetadata.
 Export (hints) SliceMetadata.
+
+
+Instance run_assume (b : bool) : Run.Trait intrinsics.assume [] [] [φ b] unit.
+Proof. constructor. destruct b; run_symbolic. Defined.

@@ -951,6 +951,18 @@ fn compile_function_body(
         return None;
     }
 
+    if env
+        .tcx
+        .is_intrinsic(owner.to_def_id(), rustc_span::sym::assume)
+    {
+        let arg = &args.expect("assume has a signature")[0].0;
+        return Some(Rc::new(Expr::Call {
+            func: Expr::local_var("M.assume"),
+            args: vec![Expr::local_var(arg)],
+            kind: CallKind::Effectful,
+        }));
+    }
+
     let ret_ty = ret_ty.unwrap_or_else(|| RocqType::path(&["Expected ret_ty"]));
 
     let body_without_bindings = compile_hir_id(env, body.value.hir_id).read();
