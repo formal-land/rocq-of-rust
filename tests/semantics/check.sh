@@ -29,5 +29,7 @@ done
 cp core_char.v "$work/"
 coqc "${flags[@]}" "$work/core_char.v"
 cp assumptions.v "$work/"
-coqc "${flags[@]}" "$work/assumptions.v"
+coqc "${flags[@]}" "$work/assumptions.v" | tee "$work/assumptions.log"
+python3 summarize_assumptions.py < "$work/assumptions.log" > "$work/assumptions.actual"
+diff -u assumptions.expected "$work/assumptions.actual"
 python3 exhaustive_division.py
