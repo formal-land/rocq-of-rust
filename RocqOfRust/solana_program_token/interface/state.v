@@ -5737,10 +5737,7 @@ Module state.
           ("signers",
             Ty.apply
               (Ty.path "array")
-              [
-                M.unevaluated_const
-                  (mk_str (| "spl_token_interface_state_Multisig_signers_discriminant" |))
-              ]
+              [ Value.Integer IntegerKind.Usize 11 ]
               [ Ty.path "solana_address::Address" ])
         ];
     } *)

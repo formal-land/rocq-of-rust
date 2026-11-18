@@ -8407,10 +8407,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_be_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 1 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -8444,10 +8441,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_le_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 1 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -8482,10 +8476,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_ne_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 1 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -18733,10 +18724,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_be_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 2 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -18770,10 +18758,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_le_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 2 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -18808,10 +18793,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_ne_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 2 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -29059,10 +29041,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_be_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 4 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -29096,10 +29075,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_le_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 4 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -29134,10 +29110,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_ne_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 4 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -39385,10 +39358,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_be_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -39422,10 +39392,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_le_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -39460,10 +39427,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_ne_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -49779,10 +49743,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_be_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 16 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -49816,10 +49777,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_le_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 16 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -49854,10 +49812,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_ne_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 16 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -60224,10 +60179,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_be_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -60261,10 +60213,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_le_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -60299,10 +60248,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_ne_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -70587,10 +70533,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_be_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 1 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -70624,10 +70567,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_le_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 1 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -70662,10 +70602,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_ne_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 1 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -82057,10 +81994,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_be_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 2 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -82094,10 +82028,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_le_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 2 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -82132,10 +82063,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_ne_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 2 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -92342,10 +92270,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_be_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 4 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -92379,10 +92304,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_le_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 4 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -92417,10 +92339,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_ne_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 4 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -102586,10 +102505,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_be_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -102623,10 +102539,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_le_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -102661,10 +102574,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_ne_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -112830,10 +112740,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_be_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 16 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -112867,10 +112774,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_le_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 16 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -112905,10 +112809,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_ne_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 16 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -123117,10 +123018,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_be_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -123154,10 +123052,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_le_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -123192,10 +123087,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_ne_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|

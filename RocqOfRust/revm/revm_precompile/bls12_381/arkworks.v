@@ -648,14 +648,7 @@ Module bls12_381.
               Ty.apply
                 (Ty.path "&")
                 []
-                [
-                  Ty.apply
-                    (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (| "revm_precompile_bls12_381_arkworks_read_fp2_discriminant" |))
-                    ]
-                    [ Ty.path "u8" ]
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 48 ] [ Ty.path "u8" ]
                 ],
               input_1
             |) in
@@ -664,14 +657,7 @@ Module bls12_381.
               Ty.apply
                 (Ty.path "&")
                 []
-                [
-                  Ty.apply
-                    (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (| "revm_precompile_bls12_381_arkworks_read_fp2_discriminant" |))
-                    ]
-                    [ Ty.path "u8" ]
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 48 ] [ Ty.path "u8" ]
                 ],
               input_2
             |) in
@@ -1861,14 +1847,7 @@ Module bls12_381.
               Ty.apply
                 (Ty.path "&")
                 []
-                [
-                  Ty.apply
-                    (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (| "revm_precompile_bls12_381_arkworks_read_g1_discriminant" |))
-                    ]
-                    [ Ty.path "u8" ]
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 48 ] [ Ty.path "u8" ]
                 ],
               x
             |) in
@@ -1877,14 +1856,7 @@ Module bls12_381.
               Ty.apply
                 (Ty.path "&")
                 []
-                [
-                  Ty.apply
-                    (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (| "revm_precompile_bls12_381_arkworks_read_g1_discriminant" |))
-                    ]
-                    [ Ty.path "u8" ]
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 48 ] [ Ty.path "u8" ]
                 ],
               y
             |) in
@@ -2197,16 +2169,7 @@ Module bls12_381.
               Ty.apply
                 (Ty.path "&")
                 []
-                [
-                  Ty.apply
-                    (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (|
-                          "revm_precompile_bls12_381_arkworks_read_g1_no_subgroup_check_discriminant"
-                        |))
-                    ]
-                    [ Ty.path "u8" ]
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 48 ] [ Ty.path "u8" ]
                 ],
               x
             |) in
@@ -2215,16 +2178,7 @@ Module bls12_381.
               Ty.apply
                 (Ty.path "&")
                 []
-                [
-                  Ty.apply
-                    (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (|
-                          "revm_precompile_bls12_381_arkworks_read_g1_no_subgroup_check_discriminant"
-                        |))
-                    ]
-                    [ Ty.path "u8" ]
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 48 ] [ Ty.path "u8" ]
                 ],
               y
             |) in
@@ -2800,13 +2754,7 @@ Module bls12_381.
               input
             |) in
           M.catch_return
-            (Ty.apply
-              (Ty.path "array")
-              [
-                M.unevaluated_const
-                  (mk_str (| "revm_precompile_bls12_381_arkworks_encode_g1_point_discriminant" |))
-              ]
-              [ Ty.path "u8" ]) (|
+            (Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 96 ] [ Ty.path "u8" ]) (|
             ltac:(M.monadic
               (M.read (|
                 let~ output :
@@ -3191,14 +3139,7 @@ Module bls12_381.
               Ty.apply
                 (Ty.path "&")
                 []
-                [
-                  Ty.apply
-                    (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (| "revm_precompile_bls12_381_arkworks_read_g2_discriminant" |))
-                    ]
-                    [ Ty.path "u8" ]
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 48 ] [ Ty.path "u8" ]
                 ],
               a_x_0
             |) in
@@ -3207,14 +3148,7 @@ Module bls12_381.
               Ty.apply
                 (Ty.path "&")
                 []
-                [
-                  Ty.apply
-                    (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (| "revm_precompile_bls12_381_arkworks_read_g2_discriminant" |))
-                    ]
-                    [ Ty.path "u8" ]
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 48 ] [ Ty.path "u8" ]
                 ],
               a_x_1
             |) in
@@ -3223,14 +3157,7 @@ Module bls12_381.
               Ty.apply
                 (Ty.path "&")
                 []
-                [
-                  Ty.apply
-                    (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (| "revm_precompile_bls12_381_arkworks_read_g2_discriminant" |))
-                    ]
-                    [ Ty.path "u8" ]
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 48 ] [ Ty.path "u8" ]
                 ],
               a_y_0
             |) in
@@ -3239,14 +3166,7 @@ Module bls12_381.
               Ty.apply
                 (Ty.path "&")
                 []
-                [
-                  Ty.apply
-                    (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (| "revm_precompile_bls12_381_arkworks_read_g2_discriminant" |))
-                    ]
-                    [ Ty.path "u8" ]
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 48 ] [ Ty.path "u8" ]
                 ],
               a_y_1
             |) in
@@ -3563,16 +3483,7 @@ Module bls12_381.
               Ty.apply
                 (Ty.path "&")
                 []
-                [
-                  Ty.apply
-                    (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (|
-                          "revm_precompile_bls12_381_arkworks_read_g2_no_subgroup_check_discriminant"
-                        |))
-                    ]
-                    [ Ty.path "u8" ]
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 48 ] [ Ty.path "u8" ]
                 ],
               a_x_0
             |) in
@@ -3581,16 +3492,7 @@ Module bls12_381.
               Ty.apply
                 (Ty.path "&")
                 []
-                [
-                  Ty.apply
-                    (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (|
-                          "revm_precompile_bls12_381_arkworks_read_g2_no_subgroup_check_discriminant"
-                        |))
-                    ]
-                    [ Ty.path "u8" ]
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 48 ] [ Ty.path "u8" ]
                 ],
               a_x_1
             |) in
@@ -3599,16 +3501,7 @@ Module bls12_381.
               Ty.apply
                 (Ty.path "&")
                 []
-                [
-                  Ty.apply
-                    (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (|
-                          "revm_precompile_bls12_381_arkworks_read_g2_no_subgroup_check_discriminant"
-                        |))
-                    ]
-                    [ Ty.path "u8" ]
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 48 ] [ Ty.path "u8" ]
                 ],
               a_y_0
             |) in
@@ -3617,16 +3510,7 @@ Module bls12_381.
               Ty.apply
                 (Ty.path "&")
                 []
-                [
-                  Ty.apply
-                    (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (|
-                          "revm_precompile_bls12_381_arkworks_read_g2_no_subgroup_check_discriminant"
-                        |))
-                    ]
-                    [ Ty.path "u8" ]
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 48 ] [ Ty.path "u8" ]
                 ],
               a_y_1
             |) in
@@ -4161,13 +4045,7 @@ Module bls12_381.
               input
             |) in
           M.catch_return
-            (Ty.apply
-              (Ty.path "array")
-              [
-                M.unevaluated_const
-                  (mk_str (| "revm_precompile_bls12_381_arkworks_encode_g2_point_discriminant" |))
-              ]
-              [ Ty.path "u8" ]) (|
+            (Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 192 ] [ Ty.path "u8" ]) (|
             ltac:(M.monadic
               (M.read (|
                 let~ output :
@@ -7596,48 +7474,30 @@ Module bls12_381.
                             [
                               Ty.apply
                                 (Ty.path "array")
-                                [
-                                  M.unevaluated_const
-                                    (mk_str (| "revm_precompile_bls12_381_G1Point_discriminant" |))
-                                ]
+                                [ Value.Integer IntegerKind.Usize 48 ]
                                 [ Ty.path "u8" ];
                               Ty.apply
                                 (Ty.path "array")
-                                [
-                                  M.unevaluated_const
-                                    (mk_str (| "revm_precompile_bls12_381_G1Point_discriminant" |))
-                                ]
+                                [ Value.Integer IntegerKind.Usize 48 ]
                                 [ Ty.path "u8" ]
                             ];
                           Ty.tuple
                             [
                               Ty.apply
                                 (Ty.path "array")
-                                [
-                                  M.unevaluated_const
-                                    (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
-                                ]
+                                [ Value.Integer IntegerKind.Usize 48 ]
                                 [ Ty.path "u8" ];
                               Ty.apply
                                 (Ty.path "array")
-                                [
-                                  M.unevaluated_const
-                                    (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
-                                ]
+                                [ Value.Integer IntegerKind.Usize 48 ]
                                 [ Ty.path "u8" ];
                               Ty.apply
                                 (Ty.path "array")
-                                [
-                                  M.unevaluated_const
-                                    (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
-                                ]
+                                [ Value.Integer IntegerKind.Usize 48 ]
                                 [ Ty.path "u8" ];
                               Ty.apply
                                 (Ty.path "array")
-                                [
-                                  M.unevaluated_const
-                                    (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
-                                ]
+                                [ Value.Integer IntegerKind.Usize 48 ]
                                 [ Ty.path "u8" ]
                             ]
                         ]
@@ -10437,18 +10297,9 @@ Module bls12_381.
                 [
                   Ty.apply
                     (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (| "revm_precompile_bls12_381_G1Point_discriminant" |))
-                    ]
+                    [ Value.Integer IntegerKind.Usize 48 ]
                     [ Ty.path "u8" ];
-                  Ty.apply
-                    (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (| "revm_precompile_bls12_381_G1Point_discriminant" |))
-                    ]
-                    [ Ty.path "u8" ]
+                  Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 48 ] [ Ty.path "u8" ]
                 ],
               a
             |) in
@@ -10458,18 +10309,9 @@ Module bls12_381.
                 [
                   Ty.apply
                     (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (| "revm_precompile_bls12_381_G1Point_discriminant" |))
-                    ]
+                    [ Value.Integer IntegerKind.Usize 48 ]
                     [ Ty.path "u8" ];
-                  Ty.apply
-                    (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (| "revm_precompile_bls12_381_G1Point_discriminant" |))
-                    ]
-                    [ Ty.path "u8" ]
+                  Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 48 ] [ Ty.path "u8" ]
                 ],
               b
             |) in
@@ -10478,15 +10320,7 @@ Module bls12_381.
               (Ty.path "core::result::Result")
               []
               [
-                Ty.apply
-                  (Ty.path "array")
-                  [
-                    M.unevaluated_const
-                      (mk_str (|
-                        "revm_precompile_bls12_381_arkworks_p1_add_affine_bytes_discriminant"
-                      |))
-                  ]
-                  [ Ty.path "u8" ];
+                Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 96 ] [ Ty.path "u8" ];
                 Ty.path "revm_precompile::interface::PrecompileError"
               ]) (|
             ltac:(M.monadic
@@ -11047,32 +10881,17 @@ Module bls12_381.
                 [
                   Ty.apply
                     (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
-                    ]
+                    [ Value.Integer IntegerKind.Usize 48 ]
                     [ Ty.path "u8" ];
                   Ty.apply
                     (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
-                    ]
+                    [ Value.Integer IntegerKind.Usize 48 ]
                     [ Ty.path "u8" ];
                   Ty.apply
                     (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
-                    ]
+                    [ Value.Integer IntegerKind.Usize 48 ]
                     [ Ty.path "u8" ];
-                  Ty.apply
-                    (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
-                    ]
-                    [ Ty.path "u8" ]
+                  Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 48 ] [ Ty.path "u8" ]
                 ],
               a
             |) in
@@ -11082,32 +10901,17 @@ Module bls12_381.
                 [
                   Ty.apply
                     (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
-                    ]
+                    [ Value.Integer IntegerKind.Usize 48 ]
                     [ Ty.path "u8" ];
                   Ty.apply
                     (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
-                    ]
+                    [ Value.Integer IntegerKind.Usize 48 ]
                     [ Ty.path "u8" ];
                   Ty.apply
                     (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
-                    ]
+                    [ Value.Integer IntegerKind.Usize 48 ]
                     [ Ty.path "u8" ];
-                  Ty.apply
-                    (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
-                    ]
-                    [ Ty.path "u8" ]
+                  Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 48 ] [ Ty.path "u8" ]
                 ],
               b
             |) in
@@ -11116,15 +10920,7 @@ Module bls12_381.
               (Ty.path "core::result::Result")
               []
               [
-                Ty.apply
-                  (Ty.path "array")
-                  [
-                    M.unevaluated_const
-                      (mk_str (|
-                        "revm_precompile_bls12_381_arkworks_p2_add_affine_bytes_discriminant"
-                      |))
-                  ]
-                  [ Ty.path "u8" ];
+                Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 192 ] [ Ty.path "u8" ];
                 Ty.path "revm_precompile::interface::PrecompileError"
               ]) (|
             ltac:(M.monadic
@@ -11725,16 +11521,7 @@ Module bls12_381.
               Ty.apply
                 (Ty.path "&")
                 []
-                [
-                  Ty.apply
-                    (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (|
-                          "revm_precompile_bls12_381_arkworks_map_fp_to_g1_bytes_discriminant"
-                        |))
-                    ]
-                    [ Ty.path "u8" ]
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 48 ] [ Ty.path "u8" ]
                 ],
               fp_bytes
             |) in
@@ -11743,15 +11530,7 @@ Module bls12_381.
               (Ty.path "core::result::Result")
               []
               [
-                Ty.apply
-                  (Ty.path "array")
-                  [
-                    M.unevaluated_const
-                      (mk_str (|
-                        "revm_precompile_bls12_381_arkworks_map_fp_to_g1_bytes_discriminant"
-                      |))
-                  ]
-                  [ Ty.path "u8" ];
+                Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 96 ] [ Ty.path "u8" ];
                 Ty.path "revm_precompile::interface::PrecompileError"
               ]) (|
             ltac:(M.monadic
@@ -12085,16 +11864,7 @@ Module bls12_381.
               Ty.apply
                 (Ty.path "&")
                 []
-                [
-                  Ty.apply
-                    (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (|
-                          "revm_precompile_bls12_381_arkworks_map_fp2_to_g2_bytes_discriminant"
-                        |))
-                    ]
-                    [ Ty.path "u8" ]
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 48 ] [ Ty.path "u8" ]
                 ],
               fp2_x
             |) in
@@ -12103,16 +11873,7 @@ Module bls12_381.
               Ty.apply
                 (Ty.path "&")
                 []
-                [
-                  Ty.apply
-                    (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (|
-                          "revm_precompile_bls12_381_arkworks_map_fp2_to_g2_bytes_discriminant"
-                        |))
-                    ]
-                    [ Ty.path "u8" ]
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 48 ] [ Ty.path "u8" ]
                 ],
               fp2_y
             |) in
@@ -12121,15 +11882,7 @@ Module bls12_381.
               (Ty.path "core::result::Result")
               []
               [
-                Ty.apply
-                  (Ty.path "array")
-                  [
-                    M.unevaluated_const
-                      (mk_str (|
-                        "revm_precompile_bls12_381_arkworks_map_fp2_to_g2_bytes_discriminant"
-                      |))
-                  ]
-                  [ Ty.path "u8" ];
+                Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 192 ] [ Ty.path "u8" ];
                 Ty.path "revm_precompile::interface::PrecompileError"
               ]) (|
             ltac:(M.monadic
@@ -12471,13 +12224,7 @@ Module bls12_381.
               (Ty.path "core::result::Result")
               []
               [
-                Ty.apply
-                  (Ty.path "array")
-                  [
-                    M.unevaluated_const
-                      (mk_str (| "revm_precompile_bls12_381_arkworks_p1_msm_bytes_discriminant" |))
-                  ]
-                  [ Ty.path "u8" ];
+                Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 96 ] [ Ty.path "u8" ];
                 Ty.path "revm_precompile::interface::PrecompileError"
               ]) (|
             ltac:(M.monadic
@@ -14176,13 +13923,7 @@ Module bls12_381.
               (Ty.path "core::result::Result")
               []
               [
-                Ty.apply
-                  (Ty.path "array")
-                  [
-                    M.unevaluated_const
-                      (mk_str (| "revm_precompile_bls12_381_arkworks_p2_msm_bytes_discriminant" |))
-                  ]
-                  [ Ty.path "u8" ];
+                Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 192 ] [ Ty.path "u8" ];
                 Ty.path "revm_precompile::interface::PrecompileError"
               ]) (|
             ltac:(M.monadic

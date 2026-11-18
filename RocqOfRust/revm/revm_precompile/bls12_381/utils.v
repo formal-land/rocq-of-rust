@@ -35,12 +35,7 @@ Module bls12_381.
                   [
                     Ty.apply
                       (Ty.path "array")
-                      [
-                        M.unevaluated_const
-                          (mk_str (|
-                            "revm_precompile_bls12_381_utils_remove_fp_padding_discriminant"
-                          |))
-                      ]
+                      [ Value.Integer IntegerKind.Usize 48 ]
                       [ Ty.path "u8" ]
                   ];
                 Ty.path "revm_precompile::interface::PrecompileError"
@@ -522,12 +517,7 @@ Module bls12_381.
                       [
                         Ty.apply
                           (Ty.path "array")
-                          [
-                            M.unevaluated_const
-                              (mk_str (|
-                                "revm_precompile_bls12_381_utils_remove_g1_padding_discriminant"
-                              |))
-                          ]
+                          [ Value.Integer IntegerKind.Usize 48 ]
                           [ Ty.path "u8" ]
                       ]
                   ];
@@ -1261,12 +1251,7 @@ Module bls12_381.
                       [
                         Ty.apply
                           (Ty.path "array")
-                          [
-                            M.unevaluated_const
-                              (mk_str (|
-                                "revm_precompile_bls12_381_utils_remove_g2_padding_discriminant"
-                              |))
-                          ]
+                          [ Value.Integer IntegerKind.Usize 48 ]
                           [ Ty.path "u8" ]
                       ]
                   ];

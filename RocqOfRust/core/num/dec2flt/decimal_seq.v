@@ -15,13 +15,7 @@ Module num.
               ("decimal_point", Ty.path "i32");
               ("truncated", Ty.path "bool");
               ("digits",
-                Ty.apply
-                  (Ty.path "array")
-                  [
-                    M.unevaluated_const
-                      (mk_str (| "core_num_dec2flt_decimal_seq_DecimalSeq_digits_discriminant" |))
-                  ]
-                  [ Ty.path "u8" ])
+                Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 768 ] [ Ty.path "u8" ])
             ];
         } *)
       

@@ -163,18 +163,12 @@ Module collections.
               ("keys",
                 Ty.apply
                   (Ty.path "array")
-                  [
-                    M.unevaluated_const
-                      (mk_str (| "alloc_collections_btree_node_LeafNode_keys_discriminant" |))
-                  ]
+                  [ Value.Integer IntegerKind.Usize 11 ]
                   [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ K ] ]);
               ("vals",
                 Ty.apply
                   (Ty.path "array")
-                  [
-                    M.unevaluated_const
-                      (mk_str (| "alloc_collections_btree_node_LeafNode_vals_discriminant" |))
-                  ]
+                  [ Value.Integer IntegerKind.Usize 11 ]
                   [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ V ] ])
             ];
         } *)
@@ -459,10 +453,7 @@ Module collections.
               ("edges",
                 Ty.apply
                   (Ty.path "array")
-                  [
-                    M.unevaluated_const
-                      (mk_str (| "alloc_collections_btree_node_InternalNode_edges_discriminant" |))
-                  ]
+                  [ Value.Integer IntegerKind.Usize 12 ]
                   [
                     Ty.apply
                       (Ty.path "core::mem::maybe_uninit::MaybeUninit")

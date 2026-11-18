@@ -1410,7 +1410,7 @@ Module any.
           ("data",
             Ty.apply
               (Ty.path "array")
-              [ M.unevaluated_const (mk_str (| "core_any_TypeId_data_discriminant" |)) ]
+              [ Value.Integer IntegerKind.Usize 2 ]
               [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ])
         ];
     } *)

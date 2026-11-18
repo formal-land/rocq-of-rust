@@ -2841,12 +2841,7 @@ Module string.
                                                 [
                                                   Ty.apply
                                                     (Ty.path "array")
-                                                    [
-                                                      M.unevaluated_const
-                                                        (mk_str (|
-                                                          "core_num_from_le_bytes_discriminant"
-                                                        |))
-                                                    ]
+                                                    [ Value.Integer IntegerKind.Usize 2 ]
                                                     [ Ty.path "u8" ]
                                                 ]
                                                 (Ty.path "u16")
@@ -2894,12 +2889,7 @@ Module string.
                                                   [
                                                     Ty.apply
                                                       (Ty.path "array")
-                                                      [
-                                                        M.unevaluated_const
-                                                          (mk_str (|
-                                                            "core_num_from_le_bytes_discriminant"
-                                                          |))
-                                                      ]
+                                                      [ Value.Integer IntegerKind.Usize 2 ]
                                                       [ Ty.path "u8" ]
                                                   ]
                                                   (Ty.path "u16")
@@ -2932,12 +2922,7 @@ Module string.
                                                   [
                                                     Ty.apply
                                                       (Ty.path "array")
-                                                      [
-                                                        M.unevaluated_const
-                                                          (mk_str (|
-                                                            "core_num_from_le_bytes_discriminant"
-                                                          |))
-                                                      ]
+                                                      [ Value.Integer IntegerKind.Usize 2 ]
                                                       [ Ty.path "u8" ]
                                                   ]
                                                   (Ty.path "u16")
@@ -2968,12 +2953,7 @@ Module string.
                                                   [
                                                     Ty.apply
                                                       (Ty.path "array")
-                                                      [
-                                                        M.unevaluated_const
-                                                          (mk_str (|
-                                                            "core_num_from_le_bytes_discriminant"
-                                                          |))
-                                                      ]
+                                                      [ Value.Integer IntegerKind.Usize 2 ]
                                                       [ Ty.path "u8" ]
                                                   ]
                                                   (Ty.path "u16")
@@ -3004,12 +2984,7 @@ Module string.
                                                   [
                                                     Ty.apply
                                                       (Ty.path "array")
-                                                      [
-                                                        M.unevaluated_const
-                                                          (mk_str (|
-                                                            "core_num_from_le_bytes_discriminant"
-                                                          |))
-                                                      ]
+                                                      [ Value.Integer IntegerKind.Usize 2 ]
                                                       [ Ty.path "u8" ]
                                                   ]
                                                   (Ty.path "u16")
@@ -3424,12 +3399,7 @@ Module string.
                                                 [
                                                   Ty.apply
                                                     (Ty.path "array")
-                                                    [
-                                                      M.unevaluated_const
-                                                        (mk_str (|
-                                                          "core_num_from_le_bytes_discriminant"
-                                                        |))
-                                                    ]
+                                                    [ Value.Integer IntegerKind.Usize 2 ]
                                                     [ Ty.path "u8" ]
                                                 ]
                                                 (Ty.path "u16")
@@ -3485,12 +3455,7 @@ Module string.
                                                   [
                                                     Ty.apply
                                                       (Ty.path "array")
-                                                      [
-                                                        M.unevaluated_const
-                                                          (mk_str (|
-                                                            "core_num_from_le_bytes_discriminant"
-                                                          |))
-                                                      ]
+                                                      [ Value.Integer IntegerKind.Usize 2 ]
                                                       [ Ty.path "u8" ]
                                                   ]
                                                   (Ty.path "u16")
@@ -3536,12 +3501,7 @@ Module string.
                                                 [
                                                   Ty.apply
                                                     (Ty.path "array")
-                                                    [
-                                                      M.unevaluated_const
-                                                        (mk_str (|
-                                                          "core_num_from_le_bytes_discriminant"
-                                                        |))
-                                                    ]
+                                                    [ Value.Integer IntegerKind.Usize 2 ]
                                                     [ Ty.path "u8" ]
                                                 ]
                                                 (Ty.path "u16")
@@ -3594,12 +3554,7 @@ Module string.
                                                   [
                                                     Ty.apply
                                                       (Ty.path "array")
-                                                      [
-                                                        M.unevaluated_const
-                                                          (mk_str (|
-                                                            "core_num_from_le_bytes_discriminant"
-                                                          |))
-                                                      ]
+                                                      [ Value.Integer IntegerKind.Usize 2 ]
                                                       [ Ty.path "u8" ]
                                                   ]
                                                   (Ty.path "u16")
@@ -3632,12 +3587,7 @@ Module string.
                                                   [
                                                     Ty.apply
                                                       (Ty.path "array")
-                                                      [
-                                                        M.unevaluated_const
-                                                          (mk_str (|
-                                                            "core_num_from_le_bytes_discriminant"
-                                                          |))
-                                                      ]
+                                                      [ Value.Integer IntegerKind.Usize 2 ]
                                                       [ Ty.path "u8" ]
                                                   ]
                                                   (Ty.path "u16")
@@ -3668,12 +3618,7 @@ Module string.
                                                   [
                                                     Ty.apply
                                                       (Ty.path "array")
-                                                      [
-                                                        M.unevaluated_const
-                                                          (mk_str (|
-                                                            "core_num_from_le_bytes_discriminant"
-                                                          |))
-                                                      ]
+                                                      [ Value.Integer IntegerKind.Usize 2 ]
                                                       [ Ty.path "u8" ]
                                                   ]
                                                   (Ty.path "u16")
@@ -3704,12 +3649,7 @@ Module string.
                                                   [
                                                     Ty.apply
                                                       (Ty.path "array")
-                                                      [
-                                                        M.unevaluated_const
-                                                          (mk_str (|
-                                                            "core_num_from_le_bytes_discriminant"
-                                                          |))
-                                                      ]
+                                                      [ Value.Integer IntegerKind.Usize 2 ]
                                                       [ Ty.path "u8" ]
                                                   ]
                                                   (Ty.path "u16")
@@ -4202,12 +4142,7 @@ Module string.
                                                 [
                                                   Ty.apply
                                                     (Ty.path "array")
-                                                    [
-                                                      M.unevaluated_const
-                                                        (mk_str (|
-                                                          "core_num_from_be_bytes_discriminant"
-                                                        |))
-                                                    ]
+                                                    [ Value.Integer IntegerKind.Usize 2 ]
                                                     [ Ty.path "u8" ]
                                                 ]
                                                 (Ty.path "u16")
@@ -4255,12 +4190,7 @@ Module string.
                                                   [
                                                     Ty.apply
                                                       (Ty.path "array")
-                                                      [
-                                                        M.unevaluated_const
-                                                          (mk_str (|
-                                                            "core_num_from_be_bytes_discriminant"
-                                                          |))
-                                                      ]
+                                                      [ Value.Integer IntegerKind.Usize 2 ]
                                                       [ Ty.path "u8" ]
                                                   ]
                                                   (Ty.path "u16")
@@ -4293,12 +4223,7 @@ Module string.
                                                   [
                                                     Ty.apply
                                                       (Ty.path "array")
-                                                      [
-                                                        M.unevaluated_const
-                                                          (mk_str (|
-                                                            "core_num_from_be_bytes_discriminant"
-                                                          |))
-                                                      ]
+                                                      [ Value.Integer IntegerKind.Usize 2 ]
                                                       [ Ty.path "u8" ]
                                                   ]
                                                   (Ty.path "u16")
@@ -4329,12 +4254,7 @@ Module string.
                                                   [
                                                     Ty.apply
                                                       (Ty.path "array")
-                                                      [
-                                                        M.unevaluated_const
-                                                          (mk_str (|
-                                                            "core_num_from_be_bytes_discriminant"
-                                                          |))
-                                                      ]
+                                                      [ Value.Integer IntegerKind.Usize 2 ]
                                                       [ Ty.path "u8" ]
                                                   ]
                                                   (Ty.path "u16")
@@ -4365,12 +4285,7 @@ Module string.
                                                   [
                                                     Ty.apply
                                                       (Ty.path "array")
-                                                      [
-                                                        M.unevaluated_const
-                                                          (mk_str (|
-                                                            "core_num_from_be_bytes_discriminant"
-                                                          |))
-                                                      ]
+                                                      [ Value.Integer IntegerKind.Usize 2 ]
                                                       [ Ty.path "u8" ]
                                                   ]
                                                   (Ty.path "u16")
@@ -4785,12 +4700,7 @@ Module string.
                                                 [
                                                   Ty.apply
                                                     (Ty.path "array")
-                                                    [
-                                                      M.unevaluated_const
-                                                        (mk_str (|
-                                                          "core_num_from_be_bytes_discriminant"
-                                                        |))
-                                                    ]
+                                                    [ Value.Integer IntegerKind.Usize 2 ]
                                                     [ Ty.path "u8" ]
                                                 ]
                                                 (Ty.path "u16")
@@ -4846,12 +4756,7 @@ Module string.
                                                   [
                                                     Ty.apply
                                                       (Ty.path "array")
-                                                      [
-                                                        M.unevaluated_const
-                                                          (mk_str (|
-                                                            "core_num_from_be_bytes_discriminant"
-                                                          |))
-                                                      ]
+                                                      [ Value.Integer IntegerKind.Usize 2 ]
                                                       [ Ty.path "u8" ]
                                                   ]
                                                   (Ty.path "u16")
@@ -4897,12 +4802,7 @@ Module string.
                                                 [
                                                   Ty.apply
                                                     (Ty.path "array")
-                                                    [
-                                                      M.unevaluated_const
-                                                        (mk_str (|
-                                                          "core_num_from_be_bytes_discriminant"
-                                                        |))
-                                                    ]
+                                                    [ Value.Integer IntegerKind.Usize 2 ]
                                                     [ Ty.path "u8" ]
                                                 ]
                                                 (Ty.path "u16")
@@ -4955,12 +4855,7 @@ Module string.
                                                   [
                                                     Ty.apply
                                                       (Ty.path "array")
-                                                      [
-                                                        M.unevaluated_const
-                                                          (mk_str (|
-                                                            "core_num_from_be_bytes_discriminant"
-                                                          |))
-                                                      ]
+                                                      [ Value.Integer IntegerKind.Usize 2 ]
                                                       [ Ty.path "u8" ]
                                                   ]
                                                   (Ty.path "u16")
@@ -4993,12 +4888,7 @@ Module string.
                                                   [
                                                     Ty.apply
                                                       (Ty.path "array")
-                                                      [
-                                                        M.unevaluated_const
-                                                          (mk_str (|
-                                                            "core_num_from_be_bytes_discriminant"
-                                                          |))
-                                                      ]
+                                                      [ Value.Integer IntegerKind.Usize 2 ]
                                                       [ Ty.path "u8" ]
                                                   ]
                                                   (Ty.path "u16")
@@ -5029,12 +4919,7 @@ Module string.
                                                   [
                                                     Ty.apply
                                                       (Ty.path "array")
-                                                      [
-                                                        M.unevaluated_const
-                                                          (mk_str (|
-                                                            "core_num_from_be_bytes_discriminant"
-                                                          |))
-                                                      ]
+                                                      [ Value.Integer IntegerKind.Usize 2 ]
                                                       [ Ty.path "u8" ]
                                                   ]
                                                   (Ty.path "u16")
@@ -5065,12 +4950,7 @@ Module string.
                                                   [
                                                     Ty.apply
                                                       (Ty.path "array")
-                                                      [
-                                                        M.unevaluated_const
-                                                          (mk_str (|
-                                                            "core_num_from_be_bytes_discriminant"
-                                                          |))
-                                                      ]
+                                                      [ Value.Integer IntegerKind.Usize 2 ]
                                                       [ Ty.path "u8" ]
                                                   ]
                                                   (Ty.path "u16")

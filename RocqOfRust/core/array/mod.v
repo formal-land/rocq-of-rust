@@ -2869,12 +2869,9 @@ Module array.
         (* Instance *) [ ("default", InstanceField.Method (default T)) ].
   End Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_32_T.
   
-  (* Module Impl_core_default_Default_where_core_default_Default_T_for_array_expr_T.
+  Module Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_31_T.
     Definition Self (T : Ty.t) : Ty.t :=
-      Ty.apply
-        (Ty.path "array")
-        [ M.unevaluated_const (mk_str (| "core_array_discriminant" |)) ]
-        [ T ].
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 31 ] [ T ].
     
     (*
                 fn default() -> [T; $n] {
@@ -3055,3089 +3052,3236 @@ Module array.
         (* Trait polymorphic types *) []
         (Self T)
         (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-    (*
-                fn default() -> [T; $n] {
-                    [$t::default(), $($ts::default()),*]
-                }
-    *)
-    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [] =>
-        ltac:(M.monadic
-          (Value.Array
-            [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::default::Default"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-    (*
-                fn default() -> [T; $n] {
-                    [$t::default(), $($ts::default()),*]
-                }
-    *)
-    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [] =>
-        ltac:(M.monadic
-          (Value.Array
-            [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::default::Default"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-    (*
-                fn default() -> [T; $n] {
-                    [$t::default(), $($ts::default()),*]
-                }
-    *)
-    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [] =>
-        ltac:(M.monadic
-          (Value.Array
-            [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::default::Default"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-    (*
-                fn default() -> [T; $n] {
-                    [$t::default(), $($ts::default()),*]
-                }
-    *)
-    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [] =>
-        ltac:(M.monadic
-          (Value.Array
-            [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::default::Default"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-    (*
-                fn default() -> [T; $n] {
-                    [$t::default(), $($ts::default()),*]
-                }
-    *)
-    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [] =>
-        ltac:(M.monadic
-          (Value.Array
-            [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::default::Default"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-    (*
-                fn default() -> [T; $n] {
-                    [$t::default(), $($ts::default()),*]
-                }
-    *)
-    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [] =>
-        ltac:(M.monadic
-          (Value.Array
-            [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::default::Default"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-    (*
-                fn default() -> [T; $n] {
-                    [$t::default(), $($ts::default()),*]
-                }
-    *)
-    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [] =>
-        ltac:(M.monadic
-          (Value.Array
-            [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::default::Default"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-    (*
-                fn default() -> [T; $n] {
-                    [$t::default(), $($ts::default()),*]
-                }
-    *)
-    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [] =>
-        ltac:(M.monadic
-          (Value.Array
-            [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::default::Default"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-    (*
-                fn default() -> [T; $n] {
-                    [$t::default(), $($ts::default()),*]
-                }
-    *)
-    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [] =>
-        ltac:(M.monadic
-          (Value.Array
-            [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::default::Default"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-    (*
-                fn default() -> [T; $n] {
-                    [$t::default(), $($ts::default()),*]
-                }
-    *)
-    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [] =>
-        ltac:(M.monadic
-          (Value.Array
-            [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::default::Default"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-    (*
-                fn default() -> [T; $n] {
-                    [$t::default(), $($ts::default()),*]
-                }
-    *)
-    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [] =>
-        ltac:(M.monadic
-          (Value.Array
-            [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::default::Default"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-    (*
-                fn default() -> [T; $n] {
-                    [$t::default(), $($ts::default()),*]
-                }
-    *)
-    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [] =>
-        ltac:(M.monadic
-          (Value.Array
-            [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::default::Default"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-    (*
-                fn default() -> [T; $n] {
-                    [$t::default(), $($ts::default()),*]
-                }
-    *)
-    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [] =>
-        ltac:(M.monadic
-          (Value.Array
-            [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::default::Default"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-    (*
-                fn default() -> [T; $n] {
-                    [$t::default(), $($ts::default()),*]
-                }
-    *)
-    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [] =>
-        ltac:(M.monadic
-          (Value.Array
-            [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::default::Default"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-    (*
-                fn default() -> [T; $n] {
-                    [$t::default(), $($ts::default()),*]
-                }
-    *)
-    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [] =>
-        ltac:(M.monadic
-          (Value.Array
-            [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::default::Default"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-    (*
-                fn default() -> [T; $n] {
-                    [$t::default(), $($ts::default()),*]
-                }
-    *)
-    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [] =>
-        ltac:(M.monadic
-          (Value.Array
-            [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::default::Default"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-    (*
-                fn default() -> [T; $n] {
-                    [$t::default(), $($ts::default()),*]
-                }
-    *)
-    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [] =>
-        ltac:(M.monadic
-          (Value.Array
-            [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::default::Default"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-    (*
-                fn default() -> [T; $n] {
-                    [$t::default(), $($ts::default()),*]
-                }
-    *)
-    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [] =>
-        ltac:(M.monadic
-          (Value.Array
-            [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::default::Default"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-    (*
-                fn default() -> [T; $n] {
-                    [$t::default(), $($ts::default()),*]
-                }
-    *)
-    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [] =>
-        ltac:(M.monadic
-          (Value.Array
-            [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::default::Default"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-    (*
-                fn default() -> [T; $n] {
-                    [$t::default(), $($ts::default()),*]
-                }
-    *)
-    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [] =>
-        ltac:(M.monadic
-          (Value.Array
-            [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::default::Default"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-    (*
-                fn default() -> [T; $n] {
-                    [$t::default(), $($ts::default()),*]
-                }
-    *)
-    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [] =>
-        ltac:(M.monadic
-          (Value.Array
-            [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::default::Default"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-    (*
-                fn default() -> [T; $n] {
-                    [$t::default(), $($ts::default()),*]
-                }
-    *)
-    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [] =>
-        ltac:(M.monadic
-          (Value.Array
-            [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::default::Default"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-    (*
-                fn default() -> [T; $n] {
-                    [$t::default(), $($ts::default()),*]
-                }
-    *)
-    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [] =>
-        ltac:(M.monadic
-          (Value.Array
-            [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::default::Default"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-    (*
-                fn default() -> [T; $n] {
-                    [$t::default(), $($ts::default()),*]
-                }
-    *)
-    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [] =>
-        ltac:(M.monadic
-          (Value.Array
-            [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::default::Default"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-    (*
-                fn default() -> [T; $n] {
-                    [$t::default(), $($ts::default()),*]
-                }
-    *)
-    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [] =>
-        ltac:(M.monadic
-          (Value.Array
-            [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::default::Default"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-    (*
-                fn default() -> [T; $n] {
-                    [$t::default(), $($ts::default()),*]
-                }
-    *)
-    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [] =>
-        ltac:(M.monadic
-          (Value.Array
-            [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::default::Default"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-    (*
-                fn default() -> [T; $n] {
-                    [$t::default(), $($ts::default()),*]
-                }
-    *)
-    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [] =>
-        ltac:(M.monadic
-          (Value.Array
-            [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::default::Default"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-    (*
-                fn default() -> [T; $n] {
-                    [$t::default(), $($ts::default()),*]
-                }
-    *)
-    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [] =>
-        ltac:(M.monadic
-          (Value.Array
-            [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::default::Default"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-    (*
-                fn default() -> [T; $n] {
-                    [$t::default(), $($ts::default()),*]
-                }
-    *)
-    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [] =>
-        ltac:(M.monadic
-          (Value.Array
-            [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::default::Default"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-    (*
-                fn default() -> [T; $n] {
-                    [$t::default(), $($ts::default()),*]
-                }
-    *)
-    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [] =>
-        ltac:(M.monadic
-          (Value.Array
-            [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::default::Default"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-  End Impl_core_default_Default_where_core_default_Default_T_for_array_expr_T. *)
+  End Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_31_T.
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  Module Impl_core_default_Default_for_array_expr_T.
+  Module Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_30_T.
     Definition Self (T : Ty.t) : Ty.t :=
-      Ty.apply
-        (Ty.path "array")
-        [ M.unevaluated_const (mk_str (| "core_array_discriminant" |)) ]
-        [ T ].
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 30 ] [ T ].
+    
+    (*
+                fn default() -> [T; $n] {
+                    [$t::default(), $($ts::default()),*]
+                }
+    *)
+    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.Array
+            [
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
+  End Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_30_T.
+  
+  Module Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_29_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 29 ] [ T ].
+    
+    (*
+                fn default() -> [T; $n] {
+                    [$t::default(), $($ts::default()),*]
+                }
+    *)
+    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.Array
+            [
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
+  End Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_29_T.
+  
+  Module Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_28_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 28 ] [ T ].
+    
+    (*
+                fn default() -> [T; $n] {
+                    [$t::default(), $($ts::default()),*]
+                }
+    *)
+    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.Array
+            [
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
+  End Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_28_T.
+  
+  Module Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_27_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 27 ] [ T ].
+    
+    (*
+                fn default() -> [T; $n] {
+                    [$t::default(), $($ts::default()),*]
+                }
+    *)
+    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.Array
+            [
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
+  End Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_27_T.
+  
+  Module Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_26_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 26 ] [ T ].
+    
+    (*
+                fn default() -> [T; $n] {
+                    [$t::default(), $($ts::default()),*]
+                }
+    *)
+    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.Array
+            [
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
+  End Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_26_T.
+  
+  Module Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_25_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 25 ] [ T ].
+    
+    (*
+                fn default() -> [T; $n] {
+                    [$t::default(), $($ts::default()),*]
+                }
+    *)
+    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.Array
+            [
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
+  End Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_25_T.
+  
+  Module Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_24_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 24 ] [ T ].
+    
+    (*
+                fn default() -> [T; $n] {
+                    [$t::default(), $($ts::default()),*]
+                }
+    *)
+    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.Array
+            [
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
+  End Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_24_T.
+  
+  Module Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_23_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 23 ] [ T ].
+    
+    (*
+                fn default() -> [T; $n] {
+                    [$t::default(), $($ts::default()),*]
+                }
+    *)
+    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.Array
+            [
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
+  End Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_23_T.
+  
+  Module Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_22_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 22 ] [ T ].
+    
+    (*
+                fn default() -> [T; $n] {
+                    [$t::default(), $($ts::default()),*]
+                }
+    *)
+    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.Array
+            [
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
+  End Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_22_T.
+  
+  Module Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_21_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 21 ] [ T ].
+    
+    (*
+                fn default() -> [T; $n] {
+                    [$t::default(), $($ts::default()),*]
+                }
+    *)
+    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.Array
+            [
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
+  End Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_21_T.
+  
+  Module Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_20_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 20 ] [ T ].
+    
+    (*
+                fn default() -> [T; $n] {
+                    [$t::default(), $($ts::default()),*]
+                }
+    *)
+    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.Array
+            [
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
+  End Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_20_T.
+  
+  Module Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_19_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 19 ] [ T ].
+    
+    (*
+                fn default() -> [T; $n] {
+                    [$t::default(), $($ts::default()),*]
+                }
+    *)
+    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.Array
+            [
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
+  End Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_19_T.
+  
+  Module Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_18_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 18 ] [ T ].
+    
+    (*
+                fn default() -> [T; $n] {
+                    [$t::default(), $($ts::default()),*]
+                }
+    *)
+    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.Array
+            [
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
+  End Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_18_T.
+  
+  Module Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_17_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 17 ] [ T ].
+    
+    (*
+                fn default() -> [T; $n] {
+                    [$t::default(), $($ts::default()),*]
+                }
+    *)
+    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.Array
+            [
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
+  End Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_17_T.
+  
+  Module Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_16_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 16 ] [ T ].
+    
+    (*
+                fn default() -> [T; $n] {
+                    [$t::default(), $($ts::default()),*]
+                }
+    *)
+    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.Array
+            [
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
+  End Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_16_T.
+  
+  Module Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_15_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 15 ] [ T ].
+    
+    (*
+                fn default() -> [T; $n] {
+                    [$t::default(), $($ts::default()),*]
+                }
+    *)
+    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.Array
+            [
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
+  End Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_15_T.
+  
+  Module Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_14_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 14 ] [ T ].
+    
+    (*
+                fn default() -> [T; $n] {
+                    [$t::default(), $($ts::default()),*]
+                }
+    *)
+    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.Array
+            [
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
+  End Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_14_T.
+  
+  Module Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_13_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 13 ] [ T ].
+    
+    (*
+                fn default() -> [T; $n] {
+                    [$t::default(), $($ts::default()),*]
+                }
+    *)
+    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.Array
+            [
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
+  End Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_13_T.
+  
+  Module Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_12_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 12 ] [ T ].
+    
+    (*
+                fn default() -> [T; $n] {
+                    [$t::default(), $($ts::default()),*]
+                }
+    *)
+    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.Array
+            [
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
+  End Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_12_T.
+  
+  Module Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_11_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 11 ] [ T ].
+    
+    (*
+                fn default() -> [T; $n] {
+                    [$t::default(), $($ts::default()),*]
+                }
+    *)
+    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.Array
+            [
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
+  End Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_11_T.
+  
+  Module Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_10_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 10 ] [ T ].
+    
+    (*
+                fn default() -> [T; $n] {
+                    [$t::default(), $($ts::default()),*]
+                }
+    *)
+    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.Array
+            [
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
+  End Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_10_T.
+  
+  Module Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_9_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 9 ] [ T ].
+    
+    (*
+                fn default() -> [T; $n] {
+                    [$t::default(), $($ts::default()),*]
+                }
+    *)
+    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.Array
+            [
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
+  End Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_9_T.
+  
+  Module Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_8_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ T ].
+    
+    (*
+                fn default() -> [T; $n] {
+                    [$t::default(), $($ts::default()),*]
+                }
+    *)
+    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.Array
+            [
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
+  End Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_8_T.
+  
+  Module Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_7_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 7 ] [ T ].
+    
+    (*
+                fn default() -> [T; $n] {
+                    [$t::default(), $($ts::default()),*]
+                }
+    *)
+    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.Array
+            [
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
+  End Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_7_T.
+  
+  Module Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_6_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 6 ] [ T ].
+    
+    (*
+                fn default() -> [T; $n] {
+                    [$t::default(), $($ts::default()),*]
+                }
+    *)
+    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.Array
+            [
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
+  End Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_6_T.
+  
+  Module Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_5_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 5 ] [ T ].
+    
+    (*
+                fn default() -> [T; $n] {
+                    [$t::default(), $($ts::default()),*]
+                }
+    *)
+    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.Array
+            [
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
+  End Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_5_T.
+  
+  Module Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_4_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 4 ] [ T ].
+    
+    (*
+                fn default() -> [T; $n] {
+                    [$t::default(), $($ts::default()),*]
+                }
+    *)
+    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.Array
+            [
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
+  End Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_4_T.
+  
+  Module Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_3_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 3 ] [ T ].
+    
+    (*
+                fn default() -> [T; $n] {
+                    [$t::default(), $($ts::default()),*]
+                }
+    *)
+    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.Array
+            [
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
+  End Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_3_T.
+  
+  Module Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_2_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 2 ] [ T ].
+    
+    (*
+                fn default() -> [T; $n] {
+                    [$t::default(), $($ts::default()),*]
+                }
+    *)
+    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.Array
+            [
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |);
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
+  End Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_2_T.
+  
+  Module Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_1_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 1 ] [ T ].
+    
+    (*
+                fn default() -> [T; $n] {
+                    [$t::default(), $($ts::default()),*]
+                }
+    *)
+    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.Array
+            [
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
+  End Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_1_T.
+  
+  Module Impl_core_default_Default_for_array_Usize_0_T.
+    Definition Self (T : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 0 ] [ T ].
     
     (*             fn default() -> [T; $n] { [] } *)
     Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -6155,7 +6299,7 @@ Module array.
         (* Trait polymorphic types *) []
         (Self T)
         (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-  End Impl_core_default_Default_for_array_expr_T.
+  End Impl_core_default_Default_for_array_Usize_0_T.
   
   Module Impl_array_N_T.
     Definition Self (N : Value.t) (T : Ty.t) : Ty.t := Ty.apply (Ty.path "array") [ N ] [ T ].
