@@ -990,7 +990,8 @@ Definition is_struct_tuple (value : Value.t) (constructor : string) : M :=
   let* value := deref value in
   let* value := read value in
   match value with
-  | Value.StructTuple current_constructor _ _ _ =>
+  | Value.StructTuple current_constructor _ _ _
+  | Value.StructRecord current_constructor _ _ _ =>
     match PrimString.compare current_constructor constructor with
     | Eq => pure (Value.Tuple [])
     | _ => break_match
