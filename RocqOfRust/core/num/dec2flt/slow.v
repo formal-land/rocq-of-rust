@@ -194,8 +194,12 @@ Module num.
                       |),
                       [
                         M.read (|
-                          get_constant (|
-                            "core::num::dec2flt::float::RawFloat::INFINITE_POWER",
+                          get_trait_constant (|
+                            "core::num::dec2flt::float::RawFloat",
+                            F,
+                            [],
+                            [],
+                            "INFINITE_POWER",
                             Ty.path "i32"
                           |)
                         |)
@@ -758,8 +762,12 @@ Module num.
                                           BinOp.gt,
                                           [
                                             M.read (|
-                                              get_constant (|
-                                                "core::num::dec2flt::float::RawFloat::EXP_MIN",
+                                              get_trait_constant (|
+                                                "core::num::dec2flt::float::RawFloat",
+                                                F,
+                                                [],
+                                                [],
+                                                "EXP_MIN",
                                                 Ty.path "i32"
                                               |)
                                             |);
@@ -781,8 +789,12 @@ Module num.
                                             BinOp.Wrap.sub,
                                             [
                                               M.read (|
-                                                get_constant (|
-                                                  "core::num::dec2flt::float::RawFloat::EXP_MIN",
+                                                get_trait_constant (|
+                                                  "core::num::dec2flt::float::RawFloat",
+                                                  F,
+                                                  [],
+                                                  [],
+                                                  "EXP_MIN",
                                                   Ty.path "i32"
                                                 |)
                                               |);
@@ -901,8 +913,12 @@ Module num.
                                           [
                                             M.read (| exp2 |);
                                             M.read (|
-                                              get_constant (|
-                                                "core::num::dec2flt::float::RawFloat::EXP_MIN",
+                                              get_trait_constant (|
+                                                "core::num::dec2flt::float::RawFloat",
+                                                F,
+                                                [],
+                                                [],
+                                                "EXP_MIN",
                                                 Ty.path "i32"
                                               |)
                                             |)
@@ -912,8 +928,12 @@ Module num.
                                       ]
                                     |);
                                     M.read (|
-                                      get_constant (|
-                                        "core::num::dec2flt::float::RawFloat::INFINITE_POWER",
+                                      get_trait_constant (|
+                                        "core::num::dec2flt::float::RawFloat",
+                                        F,
+                                        [],
+                                        [],
+                                        "INFINITE_POWER",
                                         Ty.path "i32"
                                       |)
                                     |)
@@ -944,8 +964,12 @@ Module num.
                             M.cast
                               (Ty.path "usize")
                               (M.read (|
-                                get_constant (|
-                                  "core::num::dec2flt::float::RawFloat::SIG_BITS",
+                                get_trait_constant (|
+                                  "core::num::dec2flt::float::RawFloat",
+                                  F,
+                                  [],
+                                  [],
+                                  "SIG_BITS",
                                   Ty.path "u32"
                                 |)
                               |));
@@ -990,8 +1014,12 @@ Module num.
                                           BinOp.Wrap.add,
                                           [
                                             M.read (|
-                                              get_constant (|
-                                                "core::num::dec2flt::float::RawFloat::SIG_BITS",
+                                              get_trait_constant (|
+                                                "core::num::dec2flt::float::RawFloat",
+                                                F,
+                                                [],
+                                                [],
+                                                "SIG_BITS",
                                                 Ty.path "u32"
                                               |)
                                             |);
@@ -1069,8 +1097,12 @@ Module num.
                                                       [
                                                         M.read (| exp2 |);
                                                         M.read (|
-                                                          get_constant (|
-                                                            "core::num::dec2flt::float::RawFloat::EXP_MIN",
+                                                          get_trait_constant (|
+                                                            "core::num::dec2flt::float::RawFloat",
+                                                            F,
+                                                            [],
+                                                            [],
+                                                            "EXP_MIN",
                                                             Ty.path "i32"
                                                           |)
                                                         |)
@@ -1080,8 +1112,12 @@ Module num.
                                                   ]
                                                 |);
                                                 M.read (|
-                                                  get_constant (|
-                                                    "core::num::dec2flt::float::RawFloat::INFINITE_POWER",
+                                                  get_trait_constant (|
+                                                    "core::num::dec2flt::float::RawFloat",
+                                                    F,
+                                                    [],
+                                                    [],
+                                                    "INFINITE_POWER",
                                                     Ty.path "i32"
                                                   |)
                                                 |)
@@ -1115,8 +1151,12 @@ Module num.
                           [
                             M.read (| exp2 |);
                             M.read (|
-                              get_constant (|
-                                "core::num::dec2flt::float::RawFloat::EXP_MIN",
+                              get_trait_constant (|
+                                "core::num::dec2flt::float::RawFloat",
+                                F,
+                                [],
+                                [],
+                                "EXP_MIN",
                                 Ty.path "i32"
                               |)
                             |)
@@ -1146,8 +1186,12 @@ Module num.
                                       [
                                         Value.Integer IntegerKind.U64 1;
                                         M.read (|
-                                          get_constant (|
-                                            "core::num::dec2flt::float::RawFloat::SIG_BITS",
+                                          get_trait_constant (|
+                                            "core::num::dec2flt::float::RawFloat",
+                                            F,
+                                            [],
+                                            [],
+                                            "SIG_BITS",
                                             Ty.path "u32"
                                           |)
                                         |)
@@ -1187,8 +1231,12 @@ Module num.
                               [
                                 Value.Integer IntegerKind.U64 1;
                                 M.read (|
-                                  get_constant (|
-                                    "core::num::dec2flt::float::RawFloat::SIG_BITS",
+                                  get_trait_constant (|
+                                    "core::num::dec2flt::float::RawFloat",
+                                    F,
+                                    [],
+                                    [],
+                                    "SIG_BITS",
                                     Ty.path "u32"
                                   |)
                                 |)

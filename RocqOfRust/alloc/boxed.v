@@ -2063,8 +2063,12 @@ Module boxed.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            get_constant (|
-                              "core::mem::SizedTypeProperties::IS_ZST",
+                            get_trait_constant (|
+                              "core::mem::SizedTypeProperties",
+                              T,
+                              [],
+                              [],
+                              "IS_ZST",
                               Ty.path "bool"
                             |) in
                           let _ :=
@@ -2580,8 +2584,12 @@ Module boxed.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            get_constant (|
-                              "core::mem::SizedTypeProperties::IS_ZST",
+                            get_trait_constant (|
+                              "core::mem::SizedTypeProperties",
+                              T,
+                              [],
+                              [],
+                              "IS_ZST",
                               Ty.path "bool"
                             |) in
                           let _ :=
@@ -4635,8 +4643,12 @@ Module boxed.
                               Ty.path "bool",
                               LogicalOp.or (|
                                 M.read (|
-                                  get_constant (|
-                                    "core::mem::SizedTypeProperties::IS_ZST",
+                                  get_trait_constant (|
+                                    "core::mem::SizedTypeProperties",
+                                    T,
+                                    [],
+                                    [],
+                                    "IS_ZST",
                                     Ty.path "bool"
                                   |)
                                 |),
@@ -5127,8 +5139,12 @@ Module boxed.
                               Ty.path "bool",
                               LogicalOp.or (|
                                 M.read (|
-                                  get_constant (|
-                                    "core::mem::SizedTypeProperties::IS_ZST",
+                                  get_trait_constant (|
+                                    "core::mem::SizedTypeProperties",
+                                    T,
+                                    [],
+                                    [],
+                                    "IS_ZST",
                                     Ty.path "bool"
                                   |)
                                 |),
@@ -5897,8 +5913,12 @@ Module boxed.
                               Ty.path "bool",
                               LogicalOp.or (|
                                 M.read (|
-                                  get_constant (|
-                                    "core::mem::SizedTypeProperties::IS_ZST",
+                                  get_trait_constant (|
+                                    "core::mem::SizedTypeProperties",
+                                    T,
+                                    [],
+                                    [],
+                                    "IS_ZST",
                                     Ty.path "bool"
                                   |)
                                 |),
@@ -6378,8 +6398,12 @@ Module boxed.
                               Ty.path "bool",
                               LogicalOp.or (|
                                 M.read (|
-                                  get_constant (|
-                                    "core::mem::SizedTypeProperties::IS_ZST",
+                                  get_trait_constant (|
+                                    "core::mem::SizedTypeProperties",
+                                    T,
+                                    [],
+                                    [],
+                                    "IS_ZST",
                                     Ty.path "bool"
                                   |)
                                 |),

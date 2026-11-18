@@ -135,8 +135,12 @@ Module slice.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
+                              get_trait_constant (|
+                                "core::mem::SizedTypeProperties",
+                                T,
+                                [],
+                                [],
+                                "IS_ZST",
                                 Ty.path "bool"
                               |) in
                             let _ :=
@@ -281,8 +285,12 @@ Module slice.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
+                              get_trait_constant (|
+                                "core::mem::SizedTypeProperties",
+                                T,
+                                [],
+                                [],
+                                "IS_ZST",
                                 Ty.path "bool"
                               |) in
                             let _ :=
@@ -490,7 +498,14 @@ Module slice.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      get_constant (| "core::mem::SizedTypeProperties::IS_ZST", Ty.path "bool" |) in
+                      get_trait_constant (|
+                        "core::mem::SizedTypeProperties",
+                        T,
+                        [],
+                        [],
+                        "IS_ZST",
+                        Ty.path "bool"
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ len : Ty.apply (Ty.path "&mut") [] [ Ty.path "usize" ] :=
@@ -646,7 +661,14 @@ Module slice.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      get_constant (| "core::mem::SizedTypeProperties::IS_ZST", Ty.path "bool" |) in
+                      get_trait_constant (|
+                        "core::mem::SizedTypeProperties",
+                        T,
+                        [],
+                        [],
+                        "IS_ZST",
+                        Ty.path "bool"
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ len : Ty.path "usize" :=
@@ -744,7 +766,14 @@ Module slice.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      get_constant (| "core::mem::SizedTypeProperties::IS_ZST", Ty.path "bool" |) in
+                      get_trait_constant (|
+                        "core::mem::SizedTypeProperties",
+                        T,
+                        [],
+                        [],
+                        "IS_ZST",
+                        Ty.path "bool"
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ len : Ty.path "usize" :=
@@ -928,8 +957,12 @@ Module slice.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
+                              get_trait_constant (|
+                                "core::mem::SizedTypeProperties",
+                                T,
+                                [],
+                                [],
+                                "IS_ZST",
                                 Ty.path "bool"
                               |) in
                             let _ :=
@@ -1229,8 +1262,12 @@ Module slice.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
+                              get_trait_constant (|
+                                "core::mem::SizedTypeProperties",
+                                T,
+                                [],
+                                [],
+                                "IS_ZST",
                                 Ty.path "bool"
                               |) in
                             let _ :=
@@ -1281,8 +1318,12 @@ Module slice.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
+                              get_trait_constant (|
+                                "core::mem::SizedTypeProperties",
+                                T,
+                                [],
+                                [],
+                                "IS_ZST",
                                 Ty.path "bool"
                               |) in
                             let _ :=
@@ -2049,8 +2090,12 @@ Module slice.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          get_constant (|
-                            "core::mem::SizedTypeProperties::IS_ZST",
+                          get_trait_constant (|
+                            "core::mem::SizedTypeProperties",
+                            T,
+                            [],
+                            [],
+                            "IS_ZST",
                             Ty.path "bool"
                           |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
@@ -2164,7 +2209,14 @@ Module slice.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      get_constant (| "core::mem::SizedTypeProperties::IS_ZST", Ty.path "bool" |) in
+                      get_trait_constant (|
+                        "core::mem::SizedTypeProperties",
+                        T,
+                        [],
+                        [],
+                        "IS_ZST",
+                        Ty.path "bool"
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ len : Ty.path "usize" :=
@@ -2297,8 +2349,12 @@ Module slice.
                                         fun γ =>
                                           ltac:(M.monadic
                                             (let γ :=
-                                              get_constant (|
-                                                "core::mem::SizedTypeProperties::IS_ZST",
+                                              get_trait_constant (|
+                                                "core::mem::SizedTypeProperties",
+                                                T,
+                                                [],
+                                                [],
+                                                "IS_ZST",
                                                 Ty.path "bool"
                                               |) in
                                             let _ :=
@@ -2405,8 +2461,12 @@ Module slice.
                                       fun γ =>
                                         ltac:(M.monadic
                                           (let γ :=
-                                            get_constant (|
-                                              "core::mem::SizedTypeProperties::IS_ZST",
+                                            get_trait_constant (|
+                                              "core::mem::SizedTypeProperties",
+                                              T,
+                                              [],
+                                              [],
+                                              "IS_ZST",
                                               Ty.path "bool"
                                             |) in
                                           let _ :=
@@ -2639,8 +2699,12 @@ Module slice.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
+                              get_trait_constant (|
+                                "core::mem::SizedTypeProperties",
+                                T,
+                                [],
+                                [],
+                                "IS_ZST",
                                 Ty.path "bool"
                               |) in
                             let _ :=
@@ -2908,8 +2972,12 @@ Module slice.
                                     fun γ =>
                                       ltac:(M.monadic
                                         (let γ :=
-                                          get_constant (|
-                                            "core::mem::SizedTypeProperties::IS_ZST",
+                                          get_trait_constant (|
+                                            "core::mem::SizedTypeProperties",
+                                            T,
+                                            [],
+                                            [],
+                                            "IS_ZST",
                                             Ty.path "bool"
                                           |) in
                                         let _ :=
@@ -3035,8 +3103,12 @@ Module slice.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
+                              get_trait_constant (|
+                                "core::mem::SizedTypeProperties",
+                                T,
+                                [],
+                                [],
+                                "IS_ZST",
                                 Ty.path "bool"
                               |) in
                             let _ :=
@@ -4026,8 +4098,12 @@ Module slice.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
+                              get_trait_constant (|
+                                "core::mem::SizedTypeProperties",
+                                T,
+                                [],
+                                [],
+                                "IS_ZST",
                                 Ty.path "bool"
                               |) in
                             let _ :=
@@ -4307,8 +4383,12 @@ Module slice.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
+                              get_trait_constant (|
+                                "core::mem::SizedTypeProperties",
+                                T,
+                                [],
+                                [],
+                                "IS_ZST",
                                 Ty.path "bool"
                               |) in
                             let _ :=
@@ -4853,8 +4933,12 @@ Module slice.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  get_constant (|
-                                    "core::mem::SizedTypeProperties::IS_ZST",
+                                  get_trait_constant (|
+                                    "core::mem::SizedTypeProperties",
+                                    T,
+                                    [],
+                                    [],
+                                    "IS_ZST",
                                     Ty.path "bool"
                                   |) in
                                 let _ :=
@@ -5039,8 +5123,12 @@ Module slice.
                                         fun γ =>
                                           ltac:(M.monadic
                                             (let γ :=
-                                              get_constant (|
-                                                "core::mem::SizedTypeProperties::IS_ZST",
+                                              get_trait_constant (|
+                                                "core::mem::SizedTypeProperties",
+                                                T,
+                                                [],
+                                                [],
+                                                "IS_ZST",
                                                 Ty.path "bool"
                                               |) in
                                             let _ :=
@@ -5147,8 +5235,12 @@ Module slice.
                                       fun γ =>
                                         ltac:(M.monadic
                                           (let γ :=
-                                            get_constant (|
-                                              "core::mem::SizedTypeProperties::IS_ZST",
+                                            get_trait_constant (|
+                                              "core::mem::SizedTypeProperties",
+                                              T,
+                                              [],
+                                              [],
+                                              "IS_ZST",
                                               Ty.path "bool"
                                             |) in
                                           let _ :=
@@ -5385,8 +5477,12 @@ Module slice.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
+                              get_trait_constant (|
+                                "core::mem::SizedTypeProperties",
+                                T,
+                                [],
+                                [],
+                                "IS_ZST",
                                 Ty.path "bool"
                               |) in
                             let _ :=
@@ -5885,8 +5981,12 @@ Module slice.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
+                              get_trait_constant (|
+                                "core::mem::SizedTypeProperties",
+                                T,
+                                [],
+                                [],
+                                "IS_ZST",
                                 Ty.path "bool"
                               |) in
                             let _ :=
@@ -6040,8 +6140,12 @@ Module slice.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
+                              get_trait_constant (|
+                                "core::mem::SizedTypeProperties",
+                                T,
+                                [],
+                                [],
+                                "IS_ZST",
                                 Ty.path "bool"
                               |) in
                             let _ :=
@@ -6249,7 +6353,14 @@ Module slice.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      get_constant (| "core::mem::SizedTypeProperties::IS_ZST", Ty.path "bool" |) in
+                      get_trait_constant (|
+                        "core::mem::SizedTypeProperties",
+                        T,
+                        [],
+                        [],
+                        "IS_ZST",
+                        Ty.path "bool"
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ len : Ty.apply (Ty.path "&mut") [] [ Ty.path "usize" ] :=
@@ -6408,7 +6519,14 @@ Module slice.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      get_constant (| "core::mem::SizedTypeProperties::IS_ZST", Ty.path "bool" |) in
+                      get_trait_constant (|
+                        "core::mem::SizedTypeProperties",
+                        T,
+                        [],
+                        [],
+                        "IS_ZST",
+                        Ty.path "bool"
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ len : Ty.path "usize" :=
@@ -6518,7 +6636,14 @@ Module slice.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      get_constant (| "core::mem::SizedTypeProperties::IS_ZST", Ty.path "bool" |) in
+                      get_trait_constant (|
+                        "core::mem::SizedTypeProperties",
+                        T,
+                        [],
+                        [],
+                        "IS_ZST",
+                        Ty.path "bool"
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ len : Ty.path "usize" :=
@@ -6714,8 +6839,12 @@ Module slice.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
+                              get_trait_constant (|
+                                "core::mem::SizedTypeProperties",
+                                T,
+                                [],
+                                [],
+                                "IS_ZST",
                                 Ty.path "bool"
                               |) in
                             let _ :=
@@ -7005,8 +7134,12 @@ Module slice.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
+                              get_trait_constant (|
+                                "core::mem::SizedTypeProperties",
+                                T,
+                                [],
+                                [],
+                                "IS_ZST",
                                 Ty.path "bool"
                               |) in
                             let _ :=
@@ -7057,8 +7190,12 @@ Module slice.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
+                              get_trait_constant (|
+                                "core::mem::SizedTypeProperties",
+                                T,
+                                [],
+                                [],
+                                "IS_ZST",
                                 Ty.path "bool"
                               |) in
                             let _ :=
@@ -7843,8 +7980,12 @@ Module slice.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          get_constant (|
-                            "core::mem::SizedTypeProperties::IS_ZST",
+                          get_trait_constant (|
+                            "core::mem::SizedTypeProperties",
+                            T,
+                            [],
+                            [],
+                            "IS_ZST",
                             Ty.path "bool"
                           |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
@@ -7967,7 +8108,14 @@ Module slice.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      get_constant (| "core::mem::SizedTypeProperties::IS_ZST", Ty.path "bool" |) in
+                      get_trait_constant (|
+                        "core::mem::SizedTypeProperties",
+                        T,
+                        [],
+                        [],
+                        "IS_ZST",
+                        Ty.path "bool"
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ len : Ty.path "usize" :=
@@ -8112,8 +8260,12 @@ Module slice.
                                         fun γ =>
                                           ltac:(M.monadic
                                             (let γ :=
-                                              get_constant (|
-                                                "core::mem::SizedTypeProperties::IS_ZST",
+                                              get_trait_constant (|
+                                                "core::mem::SizedTypeProperties",
+                                                T,
+                                                [],
+                                                [],
+                                                "IS_ZST",
                                                 Ty.path "bool"
                                               |) in
                                             let _ :=
@@ -8229,8 +8381,12 @@ Module slice.
                                       fun γ =>
                                         ltac:(M.monadic
                                           (let γ :=
-                                            get_constant (|
-                                              "core::mem::SizedTypeProperties::IS_ZST",
+                                            get_trait_constant (|
+                                              "core::mem::SizedTypeProperties",
+                                              T,
+                                              [],
+                                              [],
+                                              "IS_ZST",
                                               Ty.path "bool"
                                             |) in
                                           let _ :=
@@ -8461,8 +8617,12 @@ Module slice.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
+                              get_trait_constant (|
+                                "core::mem::SizedTypeProperties",
+                                T,
+                                [],
+                                [],
+                                "IS_ZST",
                                 Ty.path "bool"
                               |) in
                             let _ :=
@@ -8739,8 +8899,12 @@ Module slice.
                                     fun γ =>
                                       ltac:(M.monadic
                                         (let γ :=
-                                          get_constant (|
-                                            "core::mem::SizedTypeProperties::IS_ZST",
+                                          get_trait_constant (|
+                                            "core::mem::SizedTypeProperties",
+                                            T,
+                                            [],
+                                            [],
+                                            "IS_ZST",
                                             Ty.path "bool"
                                           |) in
                                         let _ :=
@@ -8875,8 +9039,12 @@ Module slice.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
+                              get_trait_constant (|
+                                "core::mem::SizedTypeProperties",
+                                T,
+                                [],
+                                [],
+                                "IS_ZST",
                                 Ty.path "bool"
                               |) in
                             let _ :=
@@ -9900,8 +10068,12 @@ Module slice.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
+                              get_trait_constant (|
+                                "core::mem::SizedTypeProperties",
+                                T,
+                                [],
+                                [],
+                                "IS_ZST",
                                 Ty.path "bool"
                               |) in
                             let _ :=
@@ -10194,8 +10366,12 @@ Module slice.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
+                              get_trait_constant (|
+                                "core::mem::SizedTypeProperties",
+                                T,
+                                [],
+                                [],
+                                "IS_ZST",
                                 Ty.path "bool"
                               |) in
                             let _ :=
@@ -10641,8 +10817,12 @@ Module slice.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  get_constant (|
-                                    "core::mem::SizedTypeProperties::IS_ZST",
+                                  get_trait_constant (|
+                                    "core::mem::SizedTypeProperties",
+                                    T,
+                                    [],
+                                    [],
+                                    "IS_ZST",
                                     Ty.path "bool"
                                   |) in
                                 let _ :=
@@ -10839,8 +11019,12 @@ Module slice.
                                         fun γ =>
                                           ltac:(M.monadic
                                             (let γ :=
-                                              get_constant (|
-                                                "core::mem::SizedTypeProperties::IS_ZST",
+                                              get_trait_constant (|
+                                                "core::mem::SizedTypeProperties",
+                                                T,
+                                                [],
+                                                [],
+                                                "IS_ZST",
                                                 Ty.path "bool"
                                               |) in
                                             let _ :=
@@ -10956,8 +11140,12 @@ Module slice.
                                       fun γ =>
                                         ltac:(M.monadic
                                           (let γ :=
-                                            get_constant (|
-                                              "core::mem::SizedTypeProperties::IS_ZST",
+                                            get_trait_constant (|
+                                              "core::mem::SizedTypeProperties",
+                                              T,
+                                              [],
+                                              [],
+                                              "IS_ZST",
                                               Ty.path "bool"
                                             |) in
                                           let _ :=
@@ -11192,8 +11380,12 @@ Module slice.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
+                              get_trait_constant (|
+                                "core::mem::SizedTypeProperties",
+                                T,
+                                [],
+                                [],
+                                "IS_ZST",
                                 Ty.path "bool"
                               |) in
                             let _ :=

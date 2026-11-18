@@ -2707,8 +2707,12 @@ Module net.
                                               (M.read (|
                                                 let~ result : T :=
                                                   M.read (|
-                                                    get_constant (|
-                                                      "core::net::parser::ReadNumberHelper::ZERO",
+                                                    get_trait_constant (|
+                                                      "core::net::parser::ReadNumberHelper",
+                                                      T,
+                                                      [],
+                                                      [],
+                                                      "ZERO",
                                                       T
                                                     |)
                                                   |) in

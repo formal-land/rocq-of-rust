@@ -9743,7 +9743,16 @@ Module state.
                   |),
                   [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| account_data |) |) |) ]
                 |);
-                M.read (| get_constant (| "solana_program_pack::Pack::LEN", Ty.path "usize" |) |)
+                M.read (|
+                  get_trait_constant (|
+                    "solana_program_pack::Pack",
+                    Ty.path "spl_token_interface::state::Account",
+                    [],
+                    [],
+                    "LEN",
+                    Ty.path "usize"
+                  |)
+                |)
               ]
             |),
             ltac:(M.monadic

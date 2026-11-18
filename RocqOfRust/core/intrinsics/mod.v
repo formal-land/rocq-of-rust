@@ -1035,31 +1035,7 @@ Module intrinsics.
   *)
   Definition assume (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ b ] =>
-      ltac:(M.monadic
-        (let b := M.alloc (| Ty.path "bool", b |) in
-        M.match_operator (|
-          Ty.tuple [],
-          M.alloc (| Ty.tuple [], Value.Tuple [] |),
-          [
-            fun γ =>
-              ltac:(M.monadic
-                (let γ :=
-                  M.alloc (|
-                    Ty.path "bool",
-                    M.call_closure (| Ty.path "bool", UnOp.not, [ M.read (| b |) ] |)
-                  |) in
-                let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                M.never_to_any (|
-                  M.call_closure (|
-                    Ty.path "never",
-                    M.get_function (| "core::intrinsics::unreachable", [], [] |),
-                    []
-                  |)
-                |)));
-            fun γ => ltac:(M.monadic (Value.Tuple []))
-          ]
-        |)))
+    | [], [], [ b ] => ltac:(M.monadic (M.assume (| b |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   

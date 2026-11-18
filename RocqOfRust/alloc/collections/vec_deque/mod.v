@@ -4264,8 +4264,12 @@ Module collections.
                                 LogicalOp.or (|
                                   LogicalOp.or (|
                                     M.read (|
-                                      get_constant (|
-                                        "core::mem::SizedTypeProperties::IS_ZST",
+                                      get_trait_constant (|
+                                        "core::mem::SizedTypeProperties",
+                                        T,
+                                        [],
+                                        [],
+                                        "IS_ZST",
                                         Ty.path "bool"
                                       |)
                                     |),
@@ -7821,7 +7825,14 @@ Module collections.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      get_constant (| "core::mem::SizedTypeProperties::IS_ZST", Ty.path "bool" |) in
+                      get_trait_constant (|
+                        "core::mem::SizedTypeProperties",
+                        T,
+                        [],
+                        [],
+                        "IS_ZST",
+                        Ty.path "bool"
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       get_associated_constant (| Ty.path "usize", "MAX", Ty.path "usize" |)
@@ -9220,8 +9231,12 @@ Module collections.
                                 Ty.path "bool",
                                 LogicalOp.or (|
                                   M.read (|
-                                    get_constant (|
-                                      "core::mem::SizedTypeProperties::IS_ZST",
+                                    get_trait_constant (|
+                                      "core::mem::SizedTypeProperties",
+                                      T,
+                                      [],
+                                      [],
+                                      "IS_ZST",
                                       Ty.path "bool"
                                     |)
                                   |),
@@ -16278,8 +16293,12 @@ Module collections.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
+                              get_trait_constant (|
+                                "core::mem::SizedTypeProperties",
+                                T,
+                                [],
+                                [],
+                                "IS_ZST",
                                 Ty.path "bool"
                               |) in
                             let _ :=
@@ -17714,8 +17733,12 @@ Module collections.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
+                              get_trait_constant (|
+                                "core::mem::SizedTypeProperties",
+                                T,
+                                [],
+                                [],
+                                "IS_ZST",
                                 Ty.path "bool"
                               |) in
                             let _ :=
@@ -28260,8 +28283,12 @@ Module collections.
                               UnOp.not,
                               [
                                 M.read (|
-                                  get_constant (|
-                                    "core::mem::SizedTypeProperties::IS_ZST",
+                                  get_trait_constant (|
+                                    "core::mem::SizedTypeProperties",
+                                    T,
+                                    [],
+                                    [],
+                                    "IS_ZST",
                                     Ty.path "bool"
                                   |)
                                 |)

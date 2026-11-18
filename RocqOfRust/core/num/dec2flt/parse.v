@@ -2903,7 +2903,14 @@ Module num.
                                 Value.Integer IntegerKind.Usize 3
                               |) in
                             M.read (|
-                              get_constant (| "core::num::dec2flt::float::RawFloat::INFINITY", F |)
+                              get_trait_constant (|
+                                "core::num::dec2flt::float::RawFloat",
+                                F,
+                                [],
+                                [],
+                                "INFINITY",
+                                F
+                              |)
                             |)));
                         fun γ =>
                           ltac:(M.monadic
@@ -2920,7 +2927,14 @@ Module num.
                                 Value.Integer IntegerKind.Usize 8
                               |) in
                             M.read (|
-                              get_constant (| "core::num::dec2flt::float::RawFloat::INFINITY", F |)
+                              get_trait_constant (|
+                                "core::num::dec2flt::float::RawFloat",
+                                F,
+                                [],
+                                [],
+                                "INFINITY",
+                                F
+                              |)
                             |)));
                         fun γ =>
                           ltac:(M.monadic
@@ -2937,7 +2951,14 @@ Module num.
                                 Value.Integer IntegerKind.Usize 3
                               |) in
                             M.read (|
-                              get_constant (| "core::num::dec2flt::float::RawFloat::NAN", F |)
+                              get_trait_constant (|
+                                "core::num::dec2flt::float::RawFloat",
+                                F,
+                                [],
+                                [],
+                                "NAN",
+                                F
+                              |)
                             |)));
                         fun γ =>
                           ltac:(M.monadic

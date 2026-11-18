@@ -31613,8 +31613,12 @@ Module processor.
                                                 |),
                                                 [
                                                   M.read (|
-                                                    get_constant (|
-                                                      "solana_program_pack::Pack::LEN",
+                                                    get_trait_constant (|
+                                                      "solana_program_pack::Pack",
+                                                      Ty.path "spl_token_interface::state::Account",
+                                                      [],
+                                                      [],
+                                                      "LEN",
                                                       Ty.path "usize"
                                                     |)
                                                   |)

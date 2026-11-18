@@ -52,8 +52,12 @@ Module slice.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            get_constant (|
-                              "core::mem::SizedTypeProperties::IS_ZST",
+                            get_trait_constant (|
+                              "core::mem::SizedTypeProperties",
+                              T,
+                              [],
+                              [],
+                              "IS_ZST",
                               Ty.path "bool"
                             |) in
                           let _ :=

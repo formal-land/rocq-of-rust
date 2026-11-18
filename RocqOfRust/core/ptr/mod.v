@@ -168,8 +168,12 @@ Module ptr.
                             |);
                             LogicalOp.or (|
                               M.read (|
-                                get_constant (|
-                                  "core::mem::SizedTypeProperties::IS_ZST",
+                                get_trait_constant (|
+                                  "core::mem::SizedTypeProperties",
+                                  T,
+                                  [],
+                                  [],
+                                  "IS_ZST",
                                   Ty.path "bool"
                                 |)
                               |),
@@ -262,8 +266,12 @@ Module ptr.
                             |);
                             LogicalOp.or (|
                               M.read (|
-                                get_constant (|
-                                  "core::mem::SizedTypeProperties::IS_ZST",
+                                get_trait_constant (|
+                                  "core::mem::SizedTypeProperties",
+                                  T,
+                                  [],
+                                  [],
+                                  "IS_ZST",
                                   Ty.path "bool"
                                 |)
                               |),
@@ -2585,8 +2593,12 @@ Module ptr.
                               []
                             |);
                             M.read (|
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
+                              get_trait_constant (|
+                                "core::mem::SizedTypeProperties",
+                                T,
+                                [],
+                                [],
+                                "IS_ZST",
                                 Ty.path "bool"
                               |)
                             |)
@@ -2702,8 +2714,12 @@ Module ptr.
                               []
                             |);
                             M.read (|
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
+                              get_trait_constant (|
+                                "core::mem::SizedTypeProperties",
+                                T,
+                                [],
+                                [],
+                                "IS_ZST",
                                 Ty.path "bool"
                               |)
                             |)
@@ -2878,8 +2894,12 @@ Module ptr.
                               []
                             |);
                             M.read (|
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
+                              get_trait_constant (|
+                                "core::mem::SizedTypeProperties",
+                                T,
+                                [],
+                                [],
+                                "IS_ZST",
                                 Ty.path "bool"
                               |)
                             |)

@@ -290,8 +290,12 @@ Module fmt.
                                         Pointer.Kind.Ref,
                                         M.deref (|
                                           M.read (|
-                                            get_constant (|
-                                              "ruint::fmt::base::Base::PREFIX",
+                                            get_trait_constant (|
+                                              "ruint::fmt::base::Base",
+                                              Ty.path "ruint::fmt::base::Decimal",
+                                              [],
+                                              [],
+                                              "PREFIX",
                                               Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
                                             |)
                                           |)
@@ -379,8 +383,12 @@ Module fmt.
                                             M.deref (| M.read (| self |) |)
                                           |);
                                           M.read (|
-                                            get_constant (|
-                                              "ruint::fmt::base::Base::MAX",
+                                            get_trait_constant (|
+                                              "ruint::fmt::base::Base",
+                                              Ty.path "ruint::fmt::base::Decimal",
+                                              [],
+                                              [],
+                                              "MAX",
                                               Ty.path "u64"
                                             |)
                                           |)
@@ -570,8 +578,13 @@ Module fmt.
                                                                               fun γ =>
                                                                                 ltac:(M.monadic
                                                                                   (M.read (|
-                                                                                    get_constant (|
-                                                                                      "ruint::fmt::base::Base::WIDTH",
+                                                                                    get_trait_constant (|
+                                                                                      "ruint::fmt::base::Base",
+                                                                                      Ty.path
+                                                                                        "ruint::fmt::base::Decimal",
+                                                                                      [],
+                                                                                      [],
+                                                                                      "WIDTH",
                                                                                       Ty.path
                                                                                         "usize"
                                                                                     |)
@@ -727,8 +740,12 @@ Module fmt.
                           Pointer.Kind.Ref,
                           M.deref (|
                             M.read (|
-                              get_constant (|
-                                "ruint::fmt::base::Base::PREFIX",
+                              get_trait_constant (|
+                                "ruint::fmt::base::Base",
+                                Ty.path "ruint::fmt::base::Decimal",
+                                [],
+                                [],
+                                "PREFIX",
                                 Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
                               |)
                             |)
@@ -920,8 +937,12 @@ Module fmt.
                                         Pointer.Kind.Ref,
                                         M.deref (|
                                           M.read (|
-                                            get_constant (|
-                                              "ruint::fmt::base::Base::PREFIX",
+                                            get_trait_constant (|
+                                              "ruint::fmt::base::Base",
+                                              Ty.path "ruint::fmt::base::Binary",
+                                              [],
+                                              [],
+                                              "PREFIX",
                                               Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
                                             |)
                                           |)
@@ -1009,8 +1030,12 @@ Module fmt.
                                             M.deref (| M.read (| self |) |)
                                           |);
                                           M.read (|
-                                            get_constant (|
-                                              "ruint::fmt::base::Base::MAX",
+                                            get_trait_constant (|
+                                              "ruint::fmt::base::Base",
+                                              Ty.path "ruint::fmt::base::Binary",
+                                              [],
+                                              [],
+                                              "MAX",
                                               Ty.path "u64"
                                             |)
                                           |)
@@ -1200,8 +1225,13 @@ Module fmt.
                                                                               fun γ =>
                                                                                 ltac:(M.monadic
                                                                                   (M.read (|
-                                                                                    get_constant (|
-                                                                                      "ruint::fmt::base::Base::WIDTH",
+                                                                                    get_trait_constant (|
+                                                                                      "ruint::fmt::base::Base",
+                                                                                      Ty.path
+                                                                                        "ruint::fmt::base::Binary",
+                                                                                      [],
+                                                                                      [],
+                                                                                      "WIDTH",
                                                                                       Ty.path
                                                                                         "usize"
                                                                                     |)
@@ -1357,8 +1387,12 @@ Module fmt.
                           Pointer.Kind.Ref,
                           M.deref (|
                             M.read (|
-                              get_constant (|
-                                "ruint::fmt::base::Base::PREFIX",
+                              get_trait_constant (|
+                                "ruint::fmt::base::Base",
+                                Ty.path "ruint::fmt::base::Binary",
+                                [],
+                                [],
+                                "PREFIX",
                                 Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
                               |)
                             |)
@@ -1492,8 +1526,12 @@ Module fmt.
                                         Pointer.Kind.Ref,
                                         M.deref (|
                                           M.read (|
-                                            get_constant (|
-                                              "ruint::fmt::base::Base::PREFIX",
+                                            get_trait_constant (|
+                                              "ruint::fmt::base::Base",
+                                              Ty.path "ruint::fmt::base::Octal",
+                                              [],
+                                              [],
+                                              "PREFIX",
                                               Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
                                             |)
                                           |)
@@ -1581,8 +1619,12 @@ Module fmt.
                                             M.deref (| M.read (| self |) |)
                                           |);
                                           M.read (|
-                                            get_constant (|
-                                              "ruint::fmt::base::Base::MAX",
+                                            get_trait_constant (|
+                                              "ruint::fmt::base::Base",
+                                              Ty.path "ruint::fmt::base::Octal",
+                                              [],
+                                              [],
+                                              "MAX",
                                               Ty.path "u64"
                                             |)
                                           |)
@@ -1772,8 +1814,13 @@ Module fmt.
                                                                               fun γ =>
                                                                                 ltac:(M.monadic
                                                                                   (M.read (|
-                                                                                    get_constant (|
-                                                                                      "ruint::fmt::base::Base::WIDTH",
+                                                                                    get_trait_constant (|
+                                                                                      "ruint::fmt::base::Base",
+                                                                                      Ty.path
+                                                                                        "ruint::fmt::base::Octal",
+                                                                                      [],
+                                                                                      [],
+                                                                                      "WIDTH",
                                                                                       Ty.path
                                                                                         "usize"
                                                                                     |)
@@ -1929,8 +1976,12 @@ Module fmt.
                           Pointer.Kind.Ref,
                           M.deref (|
                             M.read (|
-                              get_constant (|
-                                "ruint::fmt::base::Base::PREFIX",
+                              get_trait_constant (|
+                                "ruint::fmt::base::Base",
+                                Ty.path "ruint::fmt::base::Octal",
+                                [],
+                                [],
+                                "PREFIX",
                                 Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
                               |)
                             |)
@@ -2064,8 +2115,12 @@ Module fmt.
                                         Pointer.Kind.Ref,
                                         M.deref (|
                                           M.read (|
-                                            get_constant (|
-                                              "ruint::fmt::base::Base::PREFIX",
+                                            get_trait_constant (|
+                                              "ruint::fmt::base::Base",
+                                              Ty.path "ruint::fmt::base::Hexadecimal",
+                                              [],
+                                              [],
+                                              "PREFIX",
                                               Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
                                             |)
                                           |)
@@ -2153,8 +2208,12 @@ Module fmt.
                                             M.deref (| M.read (| self |) |)
                                           |);
                                           M.read (|
-                                            get_constant (|
-                                              "ruint::fmt::base::Base::MAX",
+                                            get_trait_constant (|
+                                              "ruint::fmt::base::Base",
+                                              Ty.path "ruint::fmt::base::Hexadecimal",
+                                              [],
+                                              [],
+                                              "MAX",
                                               Ty.path "u64"
                                             |)
                                           |)
@@ -2344,8 +2403,13 @@ Module fmt.
                                                                               fun γ =>
                                                                                 ltac:(M.monadic
                                                                                   (M.read (|
-                                                                                    get_constant (|
-                                                                                      "ruint::fmt::base::Base::WIDTH",
+                                                                                    get_trait_constant (|
+                                                                                      "ruint::fmt::base::Base",
+                                                                                      Ty.path
+                                                                                        "ruint::fmt::base::Hexadecimal",
+                                                                                      [],
+                                                                                      [],
+                                                                                      "WIDTH",
                                                                                       Ty.path
                                                                                         "usize"
                                                                                     |)
@@ -2501,8 +2565,12 @@ Module fmt.
                           Pointer.Kind.Ref,
                           M.deref (|
                             M.read (|
-                              get_constant (|
-                                "ruint::fmt::base::Base::PREFIX",
+                              get_trait_constant (|
+                                "ruint::fmt::base::Base",
+                                Ty.path "ruint::fmt::base::Hexadecimal",
+                                [],
+                                [],
+                                "PREFIX",
                                 Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
                               |)
                             |)
@@ -2636,8 +2704,12 @@ Module fmt.
                                         Pointer.Kind.Ref,
                                         M.deref (|
                                           M.read (|
-                                            get_constant (|
-                                              "ruint::fmt::base::Base::PREFIX",
+                                            get_trait_constant (|
+                                              "ruint::fmt::base::Base",
+                                              Ty.path "ruint::fmt::base::Hexadecimal",
+                                              [],
+                                              [],
+                                              "PREFIX",
                                               Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
                                             |)
                                           |)
@@ -2725,8 +2797,12 @@ Module fmt.
                                             M.deref (| M.read (| self |) |)
                                           |);
                                           M.read (|
-                                            get_constant (|
-                                              "ruint::fmt::base::Base::MAX",
+                                            get_trait_constant (|
+                                              "ruint::fmt::base::Base",
+                                              Ty.path "ruint::fmt::base::Hexadecimal",
+                                              [],
+                                              [],
+                                              "MAX",
                                               Ty.path "u64"
                                             |)
                                           |)
@@ -2916,8 +2992,13 @@ Module fmt.
                                                                               fun γ =>
                                                                                 ltac:(M.monadic
                                                                                   (M.read (|
-                                                                                    get_constant (|
-                                                                                      "ruint::fmt::base::Base::WIDTH",
+                                                                                    get_trait_constant (|
+                                                                                      "ruint::fmt::base::Base",
+                                                                                      Ty.path
+                                                                                        "ruint::fmt::base::Hexadecimal",
+                                                                                      [],
+                                                                                      [],
+                                                                                      "WIDTH",
                                                                                       Ty.path
                                                                                         "usize"
                                                                                     |)
@@ -3073,8 +3154,12 @@ Module fmt.
                           Pointer.Kind.Ref,
                           M.deref (|
                             M.read (|
-                              get_constant (|
-                                "ruint::fmt::base::Base::PREFIX",
+                              get_trait_constant (|
+                                "ruint::fmt::base::Base",
+                                Ty.path "ruint::fmt::base::Hexadecimal",
+                                [],
+                                [],
+                                "PREFIX",
                                 Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
                               |)
                             |)

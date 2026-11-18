@@ -95,7 +95,14 @@ Module raw_vec.
             fun γ =>
               ltac:(M.monadic
                 (let γ :=
-                  get_constant (| "core::mem::SizedTypeProperties::IS_ZST", Ty.path "bool" |) in
+                  get_trait_constant (|
+                    "core::mem::SizedTypeProperties",
+                    T,
+                    [],
+                    [],
+                    "IS_ZST",
+                    Ty.path "bool"
+                  |) in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                 M.read (|
                   get_constant (|
@@ -218,8 +225,12 @@ Module raw_vec.
                   [
                     M.read (| capacity |);
                     M.read (|
-                      get_constant (|
-                        "core::mem::SizedTypeProperties::LAYOUT",
+                      get_trait_constant (|
+                        "core::mem::SizedTypeProperties",
+                        T,
+                        [],
+                        [],
+                        "LAYOUT",
                         Ty.path "core::alloc::layout::Layout"
                       |)
                     |)
@@ -280,8 +291,12 @@ Module raw_vec.
                     M.read (| capacity |);
                     Value.StructTuple "alloc::alloc::Global" [] [] [];
                     M.read (|
-                      get_constant (|
-                        "core::mem::SizedTypeProperties::LAYOUT",
+                      get_trait_constant (|
+                        "core::mem::SizedTypeProperties",
+                        T,
+                        [],
+                        [],
+                        "LAYOUT",
                         Ty.path "core::alloc::layout::Layout"
                       |)
                     |)
@@ -596,8 +611,12 @@ Module raw_vec.
                     M.read (| capacity |);
                     M.read (| alloc |);
                     M.read (|
-                      get_constant (|
-                        "core::mem::SizedTypeProperties::LAYOUT",
+                      get_trait_constant (|
+                        "core::mem::SizedTypeProperties",
+                        T,
+                        [],
+                        [],
+                        "LAYOUT",
                         Ty.path "core::alloc::layout::Layout"
                       |)
                     |)
@@ -669,8 +688,12 @@ Module raw_vec.
                   M.read (| capacity |);
                   M.read (| alloc |);
                   M.read (|
-                    get_constant (|
-                      "core::mem::SizedTypeProperties::LAYOUT",
+                    get_trait_constant (|
+                      "core::mem::SizedTypeProperties",
+                      T,
+                      [],
+                      [],
+                      "LAYOUT",
                       Ty.path "core::alloc::layout::Layout"
                     |)
                   |)
@@ -764,8 +787,12 @@ Module raw_vec.
                     M.read (| capacity |);
                     M.read (| alloc |);
                     M.read (|
-                      get_constant (|
-                        "core::mem::SizedTypeProperties::LAYOUT",
+                      get_trait_constant (|
+                        "core::mem::SizedTypeProperties",
+                        T,
+                        [],
+                        [],
+                        "LAYOUT",
                         Ty.path "core::alloc::layout::Layout"
                       |)
                     |)
@@ -1452,8 +1479,12 @@ Module raw_vec.
               M.read (| len |);
               M.read (| additional |);
               M.read (|
-                get_constant (|
-                  "core::mem::SizedTypeProperties::LAYOUT",
+                get_trait_constant (|
+                  "core::mem::SizedTypeProperties",
+                  T,
+                  [],
+                  [],
+                  "LAYOUT",
                   Ty.path "core::alloc::layout::Layout"
                 |)
               |)
@@ -1506,8 +1537,12 @@ Module raw_vec.
                 |)
               |);
               M.read (|
-                get_constant (|
-                  "core::mem::SizedTypeProperties::LAYOUT",
+                get_trait_constant (|
+                  "core::mem::SizedTypeProperties",
+                  T,
+                  [],
+                  [],
+                  "LAYOUT",
                   Ty.path "core::alloc::layout::Layout"
                 |)
               |)
@@ -1571,8 +1606,12 @@ Module raw_vec.
               M.read (| len |);
               M.read (| additional |);
               M.read (|
-                get_constant (|
-                  "core::mem::SizedTypeProperties::LAYOUT",
+                get_trait_constant (|
+                  "core::mem::SizedTypeProperties",
+                  T,
+                  [],
+                  [],
+                  "LAYOUT",
                   Ty.path "core::alloc::layout::Layout"
                 |)
               |)
@@ -1634,8 +1673,12 @@ Module raw_vec.
               M.read (| len |);
               M.read (| additional |);
               M.read (|
-                get_constant (|
-                  "core::mem::SizedTypeProperties::LAYOUT",
+                get_trait_constant (|
+                  "core::mem::SizedTypeProperties",
+                  T,
+                  [],
+                  [],
+                  "LAYOUT",
                   Ty.path "core::alloc::layout::Layout"
                 |)
               |)
@@ -1704,8 +1747,12 @@ Module raw_vec.
               M.read (| len |);
               M.read (| additional |);
               M.read (|
-                get_constant (|
-                  "core::mem::SizedTypeProperties::LAYOUT",
+                get_trait_constant (|
+                  "core::mem::SizedTypeProperties",
+                  T,
+                  [],
+                  [],
+                  "LAYOUT",
                   Ty.path "core::alloc::layout::Layout"
                 |)
               |)
@@ -1765,8 +1812,12 @@ Module raw_vec.
               |);
               M.read (| cap |);
               M.read (|
-                get_constant (|
-                  "core::mem::SizedTypeProperties::LAYOUT",
+                get_trait_constant (|
+                  "core::mem::SizedTypeProperties",
+                  T,
+                  [],
+                  [],
+                  "LAYOUT",
                   Ty.path "core::alloc::layout::Layout"
                 |)
               |)
@@ -1823,8 +1874,12 @@ Module raw_vec.
                 |)
               |);
               M.read (|
-                get_constant (|
-                  "core::mem::SizedTypeProperties::LAYOUT",
+                get_trait_constant (|
+                  "core::mem::SizedTypeProperties",
+                  T,
+                  [],
+                  [],
+                  "LAYOUT",
                   Ty.path "core::alloc::layout::Layout"
                 |)
               |)

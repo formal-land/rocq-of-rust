@@ -770,8 +770,12 @@ Module num.
                           |)
                         |));
                       M.read (|
-                        get_constant (|
-                          "core::num::dec2flt::float::RawFloat::SIG_BITS",
+                        get_trait_constant (|
+                          "core::num::dec2flt::float::RawFloat",
+                          F,
+                          [],
+                          [],
+                          "SIG_BITS",
                           Ty.path "u32"
                         |)
                       |)

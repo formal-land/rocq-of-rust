@@ -1460,16 +1460,24 @@ Module boxed.
                                                                         |),
                                                                         ltac:(M.monadic
                                                                           (M.read (|
-                                                                            get_constant (|
-                                                                              "core::mem::SizedTypeProperties::IS_ZST",
+                                                                            get_trait_constant (|
+                                                                              "core::mem::SizedTypeProperties",
+                                                                              T,
+                                                                              [],
+                                                                              [],
+                                                                              "IS_ZST",
                                                                               Ty.path "bool"
                                                                             |)
                                                                           |)))
                                                                       |),
                                                                       ltac:(M.monadic
                                                                         (M.read (|
-                                                                          get_constant (|
-                                                                            "core::mem::SizedTypeProperties::IS_ZST",
+                                                                          get_trait_constant (|
+                                                                            "core::mem::SizedTypeProperties",
+                                                                            H,
+                                                                            [],
+                                                                            [],
+                                                                            "IS_ZST",
                                                                             Ty.path "bool"
                                                                           |)
                                                                         |)))

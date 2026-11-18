@@ -1348,8 +1348,12 @@ Module iter.
             : M :=
           let Self : Ty.t := Self I in
           ltac:(M.monadic
-            (get_constant (|
-              "core::iter::adapters::zip::TrustedRandomAccessNoCoerce::MAY_HAVE_SIDE_EFFECT",
+            (get_trait_constant (|
+              "core::iter::adapters::zip::TrustedRandomAccessNoCoerce",
+              I,
+              [],
+              [],
+              "MAY_HAVE_SIDE_EFFECT",
               Ty.path "bool"
             |))).
         

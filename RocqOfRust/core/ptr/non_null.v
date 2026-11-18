@@ -1665,7 +1665,14 @@ Module ptr.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      get_constant (| "core::mem::SizedTypeProperties::IS_ZST", Ty.path "bool" |) in
+                      get_trait_constant (|
+                        "core::mem::SizedTypeProperties",
+                        T,
+                        [],
+                        [],
+                        "IS_ZST",
+                        Ty.path "bool"
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (| self |)));
                 fun γ =>

@@ -3407,7 +3407,9 @@ Module marker.
       match ε, τ, α with
       | [], [ T ], [] =>
         ltac:(M.monadic
-          (M.read (| get_constant (| "core::marker::variance::sealed::Sealed::VALUE", T |) |)))
+          (M.read (|
+            get_trait_constant (| "core::marker::variance::sealed::Sealed", T, [], [], "VALUE", T |)
+          |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
