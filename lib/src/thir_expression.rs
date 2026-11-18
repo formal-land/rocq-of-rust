@@ -831,22 +831,11 @@ pub(crate) fn compile_expr<'a>(
             let lhs = compile_expr(env, generics, thir, lhs);
             let rhs = compile_expr(env, generics, thir, rhs);
 
-            Rc::new(Expr::Let {
-                name: Some("β".to_string()),
-                ty: None,
-                init: lhs,
-                body: Rc::new(Expr::Call {
-                    func: Expr::local_var("M.write"),
-                    args: vec![
-                        Expr::local_var("β"),
-                        Rc::new(Expr::Call {
-                            func: Expr::local_var(path),
-                            args: vec![Expr::local_var("β").read(), rhs.read()],
-                            kind: CallKind::Closure(result_ty),
-                        }),
-                    ],
-                    kind: CallKind::Effectful,
-                }),
+            Rc::new(Expr::CompoundAssign {
+                operator: path.to_owned(),
+                result_ty,
+                lhs,
+                rhs,
             })
             .alloc(ty)
         }

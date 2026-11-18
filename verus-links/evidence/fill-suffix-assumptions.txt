@@ -1,0 +1,36 @@
+eq_refl : FillSuffixLink.linked_function = BridgeContract.target_function
+     : FillSuffixLink.linked_function = BridgeContract.target_function
+eq_refl : FillSuffixLink.linked_site = BridgeContract.target_site
+     : FillSuffixLink.linked_site = BridgeContract.target_site
+eq_refl
+:
+Assertion.covered FillSuffixLink.observed_paths BridgeContract.pre_syntax =
+true
+     : Assertion.covered FillSuffixLink.observed_paths
+         BridgeContract.pre_syntax =
+       true
+eq_refl
+:
+Assertion.covered FillSuffixLink.observed_paths BridgeContract.post_syntax =
+true
+     : Assertion.covered FillSuffixLink.observed_paths
+         BridgeContract.post_syntax =
+       true
+Axioms:
+M.Ty.tuple : list M.Ty.t -> M.Ty.t
+M.Ty.t : Set
+M.IsFunction.t : PrimString.string -> M.PolymorphicFunction.t -> Prop
+M.IsAssociatedFunction.t :
+  M.Ty.t -> PrimString.string -> M.PolymorphicFunction.t -> Prop
+PrimString.string : Set
+M.Ty.path : PrimString.string -> M.Ty.t
+PrimString.compare : PrimString.string -> PrimString.string -> comparison
+lib.Ty.apply : M.Ty.t -> list M.Value.t -> list M.Ty.t -> M.Ty.t
+M.IsTraitInstance :
+  PrimString.string ->
+  list M.Value.t -> list M.Ty.t -> M.Ty.t -> M.Instance.t -> Prop
+M.IsProvidedMethod :
+  PrimString.string ->
+  PrimString.string -> (M.Ty.t -> M.PolymorphicFunction.t) -> Prop
+Theory:
+Set is impredicative

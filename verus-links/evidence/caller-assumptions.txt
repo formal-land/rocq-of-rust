@@ -1,0 +1,34 @@
+eq_refl : TwiceLink.linked_function = BridgeContract.target_function
+     : TwiceLink.linked_function = BridgeContract.target_function
+eq_refl : TwiceLink.linked_site = BridgeContract.target_site
+     : TwiceLink.linked_site = BridgeContract.target_site
+eq_refl
+:
+Assertion.covered TwiceLink.observed_paths BridgeContract.pre_syntax = true
+     : Assertion.covered TwiceLink.observed_paths BridgeContract.pre_syntax =
+       true
+eq_refl
+:
+Assertion.covered TwiceLink.observed_paths BridgeContract.post_syntax = true
+     : Assertion.covered TwiceLink.observed_paths BridgeContract.post_syntax =
+       true
+Axioms:
+M.Ty.tuple : list M.Ty.t -> M.Ty.t
+M.Ty.t : Set
+M.IsFunction.t : PrimString.string -> M.PolymorphicFunction.t -> Prop
+M.IsAssociatedFunction.t :
+  M.Ty.t -> PrimString.string -> M.PolymorphicFunction.t -> Prop
+PrimString.string : Set
+M.Ty.path : PrimString.string -> M.Ty.t
+PrimString.compare : PrimString.string -> PrimString.string -> comparison
+lib.Ty.apply : M.Ty.t -> list M.Value.t -> list M.Ty.t -> M.Ty.t
+M.IsTraitInstance :
+  PrimString.string ->
+  list M.Value.t -> list M.Ty.t -> M.Ty.t -> M.Instance.t -> Prop
+M.IsProvidedMethod :
+  PrimString.string ->
+  PrimString.string -> (M.Ty.t -> M.PolymorphicFunction.t) -> Prop
+nested.Instance_IsFunction_left_mut :
+  M.IsFunction.C "nested::left_mut" nested.left_mut
+Theory:
+Set is impredicative

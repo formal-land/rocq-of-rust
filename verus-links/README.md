@@ -1,45 +1,61 @@
-# Interpreting Verus assertions over rocq-of-rust executions
+# Checking Verus assertions against Rust execution in Rocq
 
-This experiment connects an actual Verus postcondition to the execution of an actual translated Rust function. The assertion language lives in a Rocq library above the execution model. The proposed division of responsibility is that Verus supplies the typed formula and rocq-of-rust supplies witnesses for the program values, heap observations and lifetimes appearing in that formula.
+`rocq-of-rust verus` reads a typed Verus assertion, generates its Rocq meaning, translates the Rust function body, and replays a handwritten proof that connects them. The indexed loop gives a case in which Verus reports an open obligation and Rocq proves the same source postcondition over the translated execution. [Checked results and assumptions](RESULTS.md)
 
-## Evidence
+## Try the fallback
 
-The single Rust source uses `cfg_attr` to enable Verus contracts. Both compilers see one copy of each function body. Verus verified all three functions with `--no-cheating`. The Python exporter reads the three typed VIR postconditions and generates shallow Gallina predicates. Rocq-of-rust separately translates the bodies. Rocq 9.0.1 checked proofs of all three exported contracts about these bodies. The prototype pins the function signatures and accepts a small grammar of `u32` observations, specification equality and conjunction. It reads a version-specific debug dump. A production implementation should consume typed VIR directly. [Rust](pair.rs) · [Exporter](export_contracts.py) · [Generated predicates](Contracts.v) · [Generated execution model](pair.v)
-
-| Function | What the Rocq proof connects |
-|---|---|
-| `copy_right(p)` | The entry stack contains the original record. The successful return stack contains a record whose two fields equal the original right field. |
-| `left_mut(p)` | The returned pointer is the subpointer to the left field. The return stack still contains the original record. For every later value written through this field pointer, its update operation makes the left field equal to that value and preserves the original right field. |
-| `write_through(p, v)` | A caller invokes the translated accessor, writes through the returned pointer, and returns with the updated record. This checks composition for an actual client, for arbitrary input and written value. |
-
-For `left_mut`, the contract observes the returned reference twice. Dereferencing it at return gives the initial left field. Dereferencing it at borrow expiry gives the later value. Taking the parent record at function return for both observations makes the translated claim false. Rocq checks that counterexample with initial fields 10 and 20 and a later write of 100. A separate negative control changed `copy_right`'s first postcondition to say that the left field kept its original value. Verus rejected it, the exporter changed the corresponding equality, and Rocq rejected the execution proof. [Execution proofs and counterexample](PairProof.v) · [Verus semantics of mutable references](https://github.com/verus-lang/verus/blob/439c01c78eb6e6f0a85b43d43fdcd29d2af49f47/source/docs/guide/src/mutable-references.md)
-
-## How much semantics has to agree?
-
-A common interpretation can permit multiple representations. For this fragment, choosing a word representation that preserves and reflects equality gives equivalent meanings for the whole borrow postcondition. Rocq checked that theorem as well as a counterexample where collapsing every word to one value makes a false contract provable. The theorem is closed under the global context. Equality is sufficient here. A larger fragment needs correspondence for every operation it adds, including bounds, casts, overflow and equality of sequences. For quantifiers it also needs a precise domain of represented values. For example, an encoding of `u32` into integers restricts a universal quantifier to integers between zero and 2³²−1. [Representation theorem](View.v)
-
-The observation called `final` has one intended meaning tied to the end of a borrow. Its implementation in Rocq depends on the borrow. For a nonescaping input, an output stack at return can supply it. For a returned field borrow, the update function of a typed field subpointer relates the parent's eventual value to the child's. This experiment uses the second rule for one exclusive reference to a fixed record on a singleton stack. The universal quantification ranges over future field values. A semantics for general client executions would also have to show how every permitted sequence of reborrows, writes and loan expiries satisfies that relation, with a frame for unrelated memory. [Subpointer read/write laws](../RocqOfRust/links/M.v)
-
-I would give each supported Verus construct a compositional interpretation in Rocq, and each executable use a separate correspondence lemma with the Rust state. Pure ghost values can live entirely in the assertion library. For example a sequence view of a vector would require lemmas connecting length, lookup and mutation to the concrete vector model, including the specification's behavior outside its recommended index range. Tracked tokens and atomic invariants need additional ownership or protocol semantics. They cannot be recovered from a pair of heaps alone. VerusBelt offers a Rocq/Iris account of several such constructs. [Verus sequence interface](https://github.com/verus-lang/verus/blob/439c01c78eb6e6f0a85b43d43fdcd29d2af49f47/source/vstd/seq.rs) · [VerusBelt](https://github.com/verus-lang/verus-belt)
-
-## What a proof can discharge
-
-The semantics-level theorem for a function combines its translated body, its preconditions, and the interpreted postcondition. A Verus diagnostic for an intermediate assertion additionally needs proof of the context at that program point, including path assumptions, call contracts, ghost state and the current borrow state. An erased assertion may have no corresponding executable instruction. Name the point on the Verus side and relate it to the Rocq execution if needed.
-
-To credit a Rocq proof in Verus, either check an implication to the actual Verus VC in its scoped theory, or implement a rule that admits a source-level lemma once its semantic interpretation and all required model-correspondence obligations are checked. Proving a formula in one selected heap or ghost model is insufficient if Verus allows other observations that violate it. The working example targets the source-level route. Export of the supported postconditions is automatic. The witness and execution proofs are handwritten. Upstream Verus does not consume the resulting proof.
-
-The execution theorems depend on rocq-of-rust's model declarations and impredicative Set. The caller theorem additionally uses the translator's admitted function-lookup registration for `pair::left_mut`. The other two execution theorems refer directly to their translated functions. The extractor is experimental trusted code, with no mechanized proof of VIR translation correctness.
-
-## Reproduce
-
-The base is rocq-of-rust `ca1374ae2`, the translator's pinned nightly is `nightly-2025-12-07`, and the Verus release is `0.2026.11.02.8bf68ee` on Rust 1.99.1. Run in a scratch copy of this directory with the matching tools. Set `ROCQ_OF_RUST_LIB` to a compiled RocqOfRust directory from the base revision.
+Run these commands from the repository root with the built CLI, Verus and Rocq on the path. The first command removes the loop invariant that tells Verus what happens to the suffix. The executable Rust and all three postconditions stay the same.
 
 ```bash
-verus --crate-type lib --no-cheating --log vir pair.rs
-python3 export_contracts.py .verus-log/crate.vir Contracts.v
-rocq-of-rust translate --path pair.rs --output-path .
-for f in Contracts pair View PairProof; do
-  coqc -Q . "" -R "$ROCQ_OF_RUST_LIB" RocqOfRust -I "$ROCQ_OF_RUST_LIB/plugin" \
-    -impredicative-set "$f.v" || exit 1
-done
+work=$(mktemp -d)
+sed '/forall|j: int| i <= j < old(xs)/d' verus-links/fill.rs > "$work/fill.rs"
+rocq-of-rust verus --path "$work/fill.rs" --function fill_prefix \
+  --at 11:9 --proof verus-links/FillSuffixProof.v --output-path "$work/results"
 ```
+
+Verus points to `final(xs)@[j] == old(xs)@[j]` for `n <= j < old(xs)@.len()`. The Rocq proof characterizes the entire slice after iteration `i` as `repeat value i ++ skipn i initial`. Each iteration writes one in-bounds element. At `i = n`, looking up any index in the suffix gives the same result as looking it up in the initial slice. The execution theorem also restores the caller’s entire stack frame. [Rust source](fill.rs) · [Execution statement](FillLink.v) · [Proof by induction](FillProof.v)
+
+| CLI exit | Meaning |
+|---|---|
+| 0 | Verus verified the crate. Export succeeded, and any requested proof checked. |
+| 1 | Input, translation, or proof replay failed. The report identifies the failing stage. |
+| 2 | Rocq checked the selected execution property. Verus still reports an open or inconclusive obligation in the crate. |
+| 3 | Export succeeded with an open or inconclusive Verus result. The run requested export only. |
+
+Each invocation creates a fresh directory and prints its path. It contains `result.json`, the Rust snapshot and SHA-256, the typed VIR, Verus diagnostics, the translated Rust body, and `BridgeContract.v` with source ranges in the JSON report. When a proof checks, `Replay.log` records its Rocq assumptions. Drop `--at` to select the complete postcondition or omit `--proof` to export. A successful Rocq result is scoped to the named theorem. Verus continues to report its own whole-crate result.
+
+## Memory examples
+
+| Function | Executable property |
+|---|---|
+| `nested::swap` | Two disjoint mutable borrows into a nested record exchange their fields. The outer sentinel keeps its initial value. [Rust](nested.rs) · [Proof](SwapProof.v) |
+| `nested::left_mut` | The result is the pointer to the nested left field. Its initial target equals the entry field. For every later write through this pointer, the parent at borrow expiry contains the written value and preserves its other fields. [Execution statement](BorrowLink.v) · [Proof](BorrowProof.v) |
+| `nested::write_twice` | A real caller invokes the accessor and writes twice. The second write determines the final field. The sibling and sentinel survive. [Proof](TwiceProof.v) |
+| `fill::fill_prefix` | For every valid 64-bit `usize` bound up to the slice length, the loop terminates and fills exactly the prefix, including the empty and full cases. Both ordinary and compound counter assignment replay. [Proof](FillProof.v) |
+| `checkpoint::set_word` | An erased inline assertion after a write reads the value at that program point. Moving it before the write invalidates the source anchor. [Rust](checkpoint.rs) · [Execution statement](CheckpointLink.v) |
+
+## Writing an execution link
+
+The supported input is a standalone Rust file using `#[cfg_attr(verus_only, verus_spec(...))]` contracts. Both tools read the same staged file. The shared-body check admits gated Verus imports and proof blocks and rejects conditional executable statements and executable macro expansion. The examples exercise safe, exclusive references to records and mutable slices of `u32` on x86-64 Linux.
+
+The exporter checks typed single-variant record projections and resolved slice-view operations. It emits syntax for scalar observations, sequence length and lookup, integer comparisons, mathematical addition and subtraction, conjunction, implication, and universal quantification over integers. The interpreter distinguishes entry, current and borrow-expiry observations. A bounded quantified lookup requires an actual element. Index expressions in premises need additional definedness machinery and currently produce a diagnostic. Machine-word and stack validity are obligations of the execution link. [VIR adapter](vir_contract.py) · [Assertion language and interpretation](Assertion.v)
+
+A proof named `FooProof.v` has a sibling `FooLink.v`. The link defines `linked_function`, `linked_site`, the supported `observed_paths`, and `execution_claim`, parameterized by the interpreted precondition and selected assertion. Its author identifies the translated function, relates observations to real stack slots or pointer operations, and states what successful execution establishes. For an inline assertion or loop invariant the link also records `linked_source_sha256` to anchor the reviewed program point. The proof exports `checked_execution`. Replay checks its type against the regenerated claim, checks that the link covers each observation, and compares the theorem’s assumptions with those of the reviewed statement. Local proof dependencies use ordinary unqualified `Require Import` or `Require Export` from sibling source files. [Small worked link](SwapLink.v) · [Source-anchored link](CheckpointLink.v)
+
+The hand-authored link is part of the specification a reviewer must read. Rocq checks the proof about rocq-of-rust's model. Trust also includes the pinned VIR adapter, Rust translation, the model’s existing declarations, and the interpretation of the supported Verus operations. Importing a proof into Verus would additionally require a checked connection to its verification condition.
+
+## Build and replay
+
+The checked configuration uses Verus `0.2026.11.02.8bf68ee` with Rust 1.99.1, rocq-of-rust's `nightly-2025-12-07`, and Rocq 9.0.1 with impredicative Set. The library and plugin must match the Rocq compiler. Python 3.10 or later runs the adapter.
+
+```bash
+cargo build --locked --bin rocq-of-rust
+make -C RocqOfRust simulate/RocqOfRust.vo
+export PATH="$PWD/target/debug:$PATH"
+export ROCQ_OF_RUST_LIB="$PWD/RocqOfRust"
+export RUSTUP_TOOLCHAIN=nightly-2025-12-07
+export LD_LIBRARY_PATH="$(rustc --print sysroot)/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+python3 verus-links/replay_examples.py --output-path /tmp/verus-bridge-replay
+```
+
+Set `VERUS` or `COQC` to select tool executables. `ROCQ_OF_RUST_BRIDGE` locates the bridge directory if the executable is moved away from its build checkout. The suite regenerates every body and contract, creates the weakened invariant and mutation controls in scratch space, and replays the original pair experiment. [Test cases](replay_examples.py) · [Original pair experiment](PAIR.md)

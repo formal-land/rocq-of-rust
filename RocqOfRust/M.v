@@ -797,6 +797,16 @@ Arguments read /.
 Definition write (pointer : Value.t) (update : Value.t) : M :=
   call_primitive (Primitive.StateWrite pointer update).
 
+(** Built-in compound assignment evaluates the RHS before the place. Bind both
+    inside this operation so a following update cannot be hoisted across the
+    preceding statement by the monadic notation. *)
+Definition compound_assign (ty : Ty.t) (op : Value.t) (rhs lhs : M) : M :=
+  let* value := rhs in
+  let* place := lhs in
+  let* old := read place in
+  let* new_value := call_closure ty op [old; value] in
+  write place new_value.
+
 Definition copy (ty : Ty.t) (r : Value.t) : M :=
   let* v := read r in
   alloc ty v.
@@ -850,27 +860,19 @@ Definition catch_return (ty : Ty.t) (body : M) : M :=
       end
     ).
 
-Definition catch_continue (ty : Ty.t) (body : M) : M :=
-  catch
-    ty
-    body
-    (fun exception =>
-      if Exception.is_continue exception then
-        alloc (Ty.tuple []) (Value.Tuple [])
-      else
-        raise exception
-    ).
+(** A loop body returns a place. Thread that place directly to the
+    continuation so it keeps its pointer type in the typed execution. *)
+Definition catch_loop_control (handles : Exception.t -> bool) (body : M) : M :=
+  LowM.let_ body (fun result =>
+    match result with
+    | inl place => pure place
+    | inr exception =>
+        if handles exception then alloc (Ty.tuple []) (Value.Tuple [])
+        else raise exception
+    end).
 
-Definition catch_break (ty : Ty.t) (body : M) : M :=
-  catch
-    ty
-    body
-    (fun exception =>
-      if Exception.is_break exception then
-        alloc (Ty.tuple []) (Value.Tuple [])
-      else
-        raise exception
-    ).
+Definition catch_continue (_ : Ty.t) := catch_loop_control Exception.is_continue.
+Definition catch_break (_ : Ty.t) := catch_loop_control Exception.is_break.
 
 Definition loop (ty : Ty.t) (body : M) : M :=
   LowM.Loop
