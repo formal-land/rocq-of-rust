@@ -1595,15 +1595,21 @@ pub(crate) fn compile_const<'tcx>(
                 TyKind::Bool => Rc::new(Expr::Literal(Rc::new(Literal::Bool(
                     leaf.try_to_bool().unwrap(),
                 )))),
-                TyKind::Int(_) | TyKind::Uint(_) => Rc::new(Expr::Literal(Rc::new(
-                    Literal::Integer(compile_literal_integer(
-                        env,
-                        span,
-                        &value.ty,
-                        false,
-                        leaf.to_uint(leaf.size()),
-                    )),
-                ))),
+                TyKind::Int(_) => {
+                    let signed = leaf.to_int(leaf.size());
+                    Rc::new(Expr::Literal(Rc::new(Literal::Integer(
+                        compile_literal_integer(
+                            env,
+                            span,
+                            &value.ty,
+                            signed < 0,
+                            signed.unsigned_abs(),
+                        ),
+                    ))))
+                }
+                TyKind::Uint(_) => Rc::new(Expr::Literal(Rc::new(Literal::Integer(
+                    compile_literal_integer(env, span, &value.ty, false, leaf.to_uint(leaf.size())),
+                )))),
                 _ => {
                     emit_warning_with_note(
                         env,
