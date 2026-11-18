@@ -2,11 +2,14 @@ Require Import simulate.RocqOfRust.
 Require Import alloy_primitives.bits.links.fixed_FixedBytes.
 Require Import alloy_primitives.bits.links.address.
 Require Import alloy_primitives.bits.links.fixed_FixedBytes.
+Require Import alloy_primitives.bits.simulate.fixed.
 Require Import alloy_primitives.bytes.links.mod.
+Require Import alloy_primitives.bytes.simulate.mod.
 Require Import alloy_primitives.links.common.
 Require Import alloy_primitives.links.aliases.
 Require Import alloy_primitives.log.links.mod.
 Require Import core.links.result.
+Require Import revm.revm_bytecode.links.bytecode.
 Require Import revm.revm_context_interface.links.cfg.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_context_interface.links.journaled_state.
@@ -382,13 +385,27 @@ Module TestHostWithAccount.
     StateLoad.is_cold := false;
   |}.
 
+  Definition test_account_info_load (load_code : bool) : AccountInfoLoad.t := {|
+    AccountInfoLoad.account := Cow.Owned {|
+      AccountInfo.balance := Impl_Uint.ZERO;
+      AccountInfo.nonce := 0;
+      AccountInfo.code_hash := FixedBytes.from_Z
+        89477152217924674838424037953991966239322087453347756267410168184682657981552;
+      AccountInfo.code := if load_code then
+        Some {| revm.revm_bytecode.links.bytecode.Bytecode.original_bytes :=
+          Impl_Bytes.new |} else None;
+    |};
+    AccountInfoLoad.is_cold := false;
+    AccountInfoLoad.is_empty := true;
+  |}.
+
   Definition load_account_info_skip_cold_load
       (self : t)
       (_address : Address.t)
-      (_load_code : bool)
+      (load_code : bool)
       (_skip_cold_load : bool) :
       Result.t AccountInfoLoad.t LoadError.t * t :=
-    (Result.Err LoadError.DBError, Make).
+    (Result.Ok (test_account_info_load load_code), Make).
 
   Definition load_account_delegated (self : t) (_address : Address.t) :
       option (StateLoad.t AccountLoad.t) * t :=

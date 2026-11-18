@@ -4,6 +4,14 @@ Require Import ruint.links.add.
 Require Import ruint.links.lib.
 
 Module Impl_Uint.
+  (** Both operands are valid unsigned BITS-bit values, as in Rust. *)
+  Definition checked_add {BITS LIMBS : usize} (x1 x2 : lib.Uint.t BITS LIMBS) :
+      option (lib.Uint.t BITS LIMBS) :=
+    let sum := (x1.(lib.Uint.value) + x2.(lib.Uint.value))%Z in
+    if sum <? 2 ^ BITS.(Integer.value) then
+      Some {| lib.Uint.value := sum |}
+    else None.
+
   Definition wrapping_add {BITS LIMBS : usize} (x1 x2 : lib.Uint.t BITS LIMBS) :
       lib.Uint.t BITS LIMBS :=
     {| lib.Uint.value := (x1.(lib.Uint.value) + x2.(lib.Uint.value)) mod (2 ^ BITS.(Integer.value)) |}.

@@ -118,10 +118,32 @@ Module Impl_AsRef_for_Ref.
   Definition Self (T : Set) `{Link T} : Set :=
     '& T.
 
-  Parameter as_ref :
+  Parameter abstract_as_ref :
     forall {T U : Set} `{Link T} `{Link U},
       AsRef.C T U ->
       RefStub.t (Self T) U.
+
+  (** Immediate references carry a readable value. Other reference forms still
+      use the existing abstract model; no heap read is fabricated here. *)
+  Definition as_ref
+      {T U : Set} `{Link T} `{Link U}
+      (inner : AsRef.C T U) : RefStub.t (Self T) U :=
+    let abstract := abstract_as_ref inner in
+    {| RefStub.path := abstract.(RefStub.path);
+       RefStub.projection ref :=
+         match ref.(Ref.core) with
+         | Ref.Core.Immediate (Some value) =>
+             inner.(AsRef.as_ref).(RefStub.projection) value
+         | _ => abstract.(RefStub.projection) ref
+         end;
+       RefStub.injection := abstract.(RefStub.injection) |}.
+
+  Lemma immediate_projection
+      {T U : Set} `{Link T} `{Link U}
+      (inner : AsRef.C T U) (value : T) :
+    (as_ref inner).(RefStub.projection) (Ref.immediate Pointer.Kind.Ref value) =
+      inner.(AsRef.as_ref).(RefStub.projection) value.
+  Proof. reflexivity. Qed.
 
   Instance I
       {T U : Set} `{Link T} `{Link U}

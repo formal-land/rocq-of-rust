@@ -32,21 +32,66 @@ Require Import revm.revm_interpreter.instructions.simulate.bitwise.sgt.
 Require Import revm.revm_interpreter.instructions.simulate.bitwise.shl.
 Require Import revm.revm_interpreter.instructions.simulate.bitwise.shr.
 Require Import revm.revm_interpreter.instructions.simulate.bitwise.slt.
+Require Import revm.revm_interpreter.instructions.simulate.block_info.basefee.
+Require Import revm.revm_interpreter.instructions.simulate.block_info.blob_basefee.
+Require Import revm.revm_interpreter.instructions.simulate.block_info.block_number.
+Require Import revm.revm_interpreter.instructions.simulate.block_info.chainid.
+Require Import revm.revm_interpreter.instructions.simulate.block_info.coinbase.
+Require Import revm.revm_interpreter.instructions.simulate.block_info.difficulty.
+Require Import revm.revm_interpreter.instructions.simulate.block_info.gaslimit.
+Require Import revm.revm_interpreter.instructions.simulate.block_info.timestamp.
+Require Import revm.revm_interpreter.instructions.simulate.contract.call.
+Require Import revm.revm_interpreter.instructions.simulate.contract.call_code.
+Require Import revm.revm_interpreter.instructions.simulate.contract.create.
+Require Import revm.revm_interpreter.instructions.simulate.contract.delegate_call.
+Require Import revm.revm_interpreter.instructions.simulate.contract.static_call.
+Require Import revm.revm_interpreter.instructions.simulate.control.invalid.
 Require Import revm.revm_interpreter.instructions.simulate.control.jump.
 Require Import revm.revm_interpreter.instructions.simulate.control.jumpdest.
 Require Import revm.revm_interpreter.instructions.simulate.control.jumpi.
+Require Import revm.revm_interpreter.instructions.simulate.control.pc.
+Require Import revm.revm_interpreter.instructions.simulate.control.ret.
+Require Import revm.revm_interpreter.instructions.simulate.control.revert.
 Require Import revm.revm_interpreter.instructions.simulate.control.stop.
 Require Import revm.revm_interpreter.instructions.simulate.control.unknown.
+Require Import revm.revm_interpreter.instructions.simulate.host.balance.
+Require Import revm.revm_interpreter.instructions.simulate.host.blockhash.
+Require Import revm.revm_interpreter.instructions.simulate.host.extcodecopy.
+Require Import revm.revm_interpreter.instructions.simulate.host.extcodehash.
+Require Import revm.revm_interpreter.instructions.simulate.host.extcodesize.
+Require Import revm.revm_interpreter.instructions.simulate.host.log.
+Require Import revm.revm_interpreter.instructions.simulate.host.selfbalance.
+Require Import revm.revm_interpreter.instructions.simulate.host.selfdestruct.
+Require Import revm.revm_interpreter.instructions.simulate.host.sload.
 Require Import revm.revm_interpreter.instructions.simulate.host.sstore.
+Require Import revm.revm_interpreter.instructions.simulate.host.tload.
+Require Import revm.revm_interpreter.instructions.simulate.host.tstore.
+Require Import revm.revm_interpreter.instructions.simulate.memory.mcopy.
 Require Import revm.revm_interpreter.instructions.simulate.memory.mload.
+Require Import revm.revm_interpreter.instructions.simulate.memory.msize.
 Require Import revm.revm_interpreter.instructions.simulate.memory.mstore.
+Require Import revm.revm_interpreter.instructions.simulate.memory.mstore8.
 Require Import revm.revm_interpreter.instructions.simulate.stack.dup.
 Require Import revm.revm_interpreter.instructions.simulate.stack.pop.
 Require Import revm.revm_interpreter.instructions.simulate.stack.push.
 Require Import revm.revm_interpreter.instructions.simulate.stack.push0.
 Require Import revm.revm_interpreter.instructions.simulate.stack.swap.
+Require Import revm.revm_interpreter.instructions.simulate.system.address.
+Require Import revm.revm_interpreter.instructions.simulate.system.calldatacopy.
+Require Import revm.revm_interpreter.instructions.simulate.system.calldataload.
+Require Import revm.revm_interpreter.instructions.simulate.system.calldatasize.
+Require Import revm.revm_interpreter.instructions.simulate.system.caller.
+Require Import revm.revm_interpreter.instructions.simulate.system.callvalue.
+Require Import revm.revm_interpreter.instructions.simulate.system.codecopy.
+Require Import revm.revm_interpreter.instructions.simulate.system.codesize.
+Require Import revm.revm_interpreter.instructions.simulate.system.gas.
+Require Import revm.revm_interpreter.instructions.simulate.system.keccak256.
 Require Import revm.revm_interpreter.instructions.simulate.system.returndatacopy.
+Require Import revm.revm_interpreter.instructions.simulate.system.returndatasize.
 Require Import revm.revm_interpreter.instructions.simulate.table.
+Require Import revm.revm_interpreter.instructions.simulate.tx_info.blob_hash.
+Require Import revm.revm_interpreter.instructions.simulate.tx_info.gasprice.
+Require Import revm.revm_interpreter.instructions.simulate.tx_info.origin.
 Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_action.
@@ -266,6 +311,28 @@ Module InterpreterDispatch.
           Some instruction /\
         InterpreterStep.instruction_static_gas instruction =
           {| Integer.value := 5 |};
+    table_callvalue :
+      exists instruction,
+        InterpreterStep.instruction_at
+          table
+          {| Integer.value := 52 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 2 |};
+    table_calldataload :
+      exists instruction,
+        InterpreterStep.instruction_at
+          table
+          {| Integer.value := 53 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 3 |};
+    table_returndatasize :
+      exists instruction,
+        InterpreterStep.instruction_at table {| Integer.value := 61 |} =
+          Some instruction /\
+        InterpreterStep.instruction_static_gas instruction =
+          {| Integer.value := 2 |};
     table_returndatacopy :
       exists instruction,
         InterpreterStep.instruction_at
@@ -286,104 +353,299 @@ Module InterpreterDispatch.
 
   Definition simple
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
       (opcode : u8)
       (state : InstructionContext.State.t H WIRE WIRE_types) :
       InstructionContext.State.t H WIRE WIRE_types :=
-    InstructionContext.map_interpreter
-      (if Z.eqb opcode.(Integer.value) 0 then
-        stop
+    (if Z.eqb opcode.(Integer.value) 0 then
+        InstructionContext.map_interpreter (stop)
       else if Z.eqb opcode.(Integer.value) 1 then
-        add
+        InstructionContext.map_interpreter (add)
       else if Z.eqb opcode.(Integer.value) 2 then
-        mul
+        InstructionContext.map_interpreter (mul)
       else if Z.eqb opcode.(Integer.value) 3 then
-        sub
+        InstructionContext.map_interpreter (sub)
       else if Z.eqb opcode.(Integer.value) 4 then
-        div
+        InstructionContext.map_interpreter (div)
       else if Z.eqb opcode.(Integer.value) 5 then
-        sdiv
+        InstructionContext.map_interpreter (sdiv)
       else if Z.eqb opcode.(Integer.value) 6 then
-        rem
+        InstructionContext.map_interpreter (rem)
       else if Z.eqb opcode.(Integer.value) 7 then
-        smod
+        InstructionContext.map_interpreter (smod)
       else if Z.eqb opcode.(Integer.value) 8 then
-        addmod
+        InstructionContext.map_interpreter (addmod)
       else if Z.eqb opcode.(Integer.value) 9 then
-        mulmod
+        InstructionContext.map_interpreter (mulmod)
       else if Z.eqb opcode.(Integer.value) 10 then
-        exp IInterpreterTypes
+        InstructionContext.map_interpreter (exp IInterpreterTypes)
       else if Z.eqb opcode.(Integer.value) 11 then
-        signextend
+        InstructionContext.map_interpreter (signextend)
       else if Z.eqb opcode.(Integer.value) 16 then
-        op_lt
+        InstructionContext.map_interpreter (op_lt)
       else if Z.eqb opcode.(Integer.value) 17 then
-        op_gt
+        InstructionContext.map_interpreter (op_gt)
       else if Z.eqb opcode.(Integer.value) 18 then
-        op_slt
+        InstructionContext.map_interpreter (op_slt)
       else if Z.eqb opcode.(Integer.value) 19 then
-        op_sgt
+        InstructionContext.map_interpreter (op_sgt)
       else if Z.eqb opcode.(Integer.value) 20 then
-        op_eq
+        InstructionContext.map_interpreter (op_eq)
       else if Z.eqb opcode.(Integer.value) 21 then
-        op_iszero
+        InstructionContext.map_interpreter (op_iszero)
       else if Z.eqb opcode.(Integer.value) 22 then
-        op_bitand
+        InstructionContext.map_interpreter (op_bitand)
       else if Z.eqb opcode.(Integer.value) 23 then
-        op_bitor
+        InstructionContext.map_interpreter (op_bitor)
       else if Z.eqb opcode.(Integer.value) 24 then
-        op_bitxor
+        InstructionContext.map_interpreter (op_bitxor)
       else if Z.eqb opcode.(Integer.value) 25 then
-        op_not
+        InstructionContext.map_interpreter (op_not)
       else if Z.eqb opcode.(Integer.value) 26 then
-        op_byte
+        InstructionContext.map_interpreter (op_byte)
       else if Z.eqb opcode.(Integer.value) 27 then
-        op_shl
+        InstructionContext.map_interpreter (op_shl)
       else if Z.eqb opcode.(Integer.value) 28 then
-        op_shr
+        InstructionContext.map_interpreter (op_shr)
       else if Z.eqb opcode.(Integer.value) 29 then
-        op_sar
+        InstructionContext.map_interpreter (op_sar)
       else if Z.eqb opcode.(Integer.value) 30 then
-        op_clz
+        InstructionContext.map_interpreter (op_clz)
+      else if Z.eqb opcode.(Integer.value) 32 then
+        InstructionContext.map_interpreter (keccak256)
+      else if Z.eqb opcode.(Integer.value) 48 then
+        InstructionContext.map_interpreter (address)
+      else if Z.eqb opcode.(Integer.value) 50 then
+        fun state =>
+          let '(interpreter, host) := origin
+            (IInterpreterTypes := IInterpreterTypes) (IHost := IHost)
+            (@InstructionContext.State.interpreter
+              H WIRE _ _ WIRE_types _ state)
+            (@InstructionContext.State.host H WIRE _ _ WIRE_types _ state) in
+          {| InstructionContext.State.interpreter := interpreter;
+             InstructionContext.State.host := host |}
+      else if Z.eqb opcode.(Integer.value) 51 then
+        InstructionContext.map_interpreter (caller)
+      else if Z.eqb opcode.(Integer.value) 52 then
+        InstructionContext.map_interpreter (callvalue)
+      else if Z.eqb opcode.(Integer.value) 53 then
+        InstructionContext.map_interpreter (calldataload)
+      else if Z.eqb opcode.(Integer.value) 54 then
+        InstructionContext.map_interpreter (calldatasize)
+      else if Z.eqb opcode.(Integer.value) 55 then
+        InstructionContext.map_interpreter (calldatacopy)
+      else if Z.eqb opcode.(Integer.value) 56 then
+        InstructionContext.map_interpreter (codesize)
+      else if Z.eqb opcode.(Integer.value) 57 then
+        InstructionContext.map_interpreter (codecopy)
+      else if Z.eqb opcode.(Integer.value) 58 then
+        fun state =>
+          let '(interpreter, host) := gasprice
+            (IInterpreterTypes := IInterpreterTypes) (IHost := IHost)
+            (@InstructionContext.State.interpreter
+              H WIRE _ _ WIRE_types _ state)
+            (@InstructionContext.State.host H WIRE _ _ WIRE_types _ state) in
+          {| InstructionContext.State.interpreter := interpreter;
+             InstructionContext.State.host := host |}
+      else if Z.eqb opcode.(Integer.value) 61 then
+        InstructionContext.map_interpreter (returndatasize)
       else if Z.eqb opcode.(Integer.value) 62 then
-        returndatacopy
+        InstructionContext.map_interpreter (returndatacopy)
+      else if Z.eqb opcode.(Integer.value) 64 then
+        fun state =>
+          let '(interpreter, host) := blockhash
+            (IInterpreterTypes := IInterpreterTypes) (IHost := IHost)
+            (@InstructionContext.State.interpreter
+              H WIRE _ _ WIRE_types _ state)
+            (@InstructionContext.State.host H WIRE _ _ WIRE_types _ state) in
+          {| InstructionContext.State.interpreter := interpreter;
+             InstructionContext.State.host := host |}
+      else if Z.eqb opcode.(Integer.value) 66 then
+        fun state =>
+          let '(interpreter, host) := timestamp
+            (IInterpreterTypes := IInterpreterTypes) (IHost := IHost)
+            (@InstructionContext.State.interpreter
+              H WIRE _ _ WIRE_types _ state)
+            (@InstructionContext.State.host H WIRE _ _ WIRE_types _ state) in
+          {| InstructionContext.State.interpreter := interpreter;
+             InstructionContext.State.host := host |}
+      else if Z.eqb opcode.(Integer.value) 67 then
+        fun state =>
+          let '(interpreter, host) := block_number
+            (IInterpreterTypes := IInterpreterTypes) (IHost := IHost)
+            (@InstructionContext.State.interpreter
+              H WIRE _ _ WIRE_types _ state)
+            (@InstructionContext.State.host H WIRE _ _ WIRE_types _ state) in
+          {| InstructionContext.State.interpreter := interpreter;
+             InstructionContext.State.host := host |}
+      else if Z.eqb opcode.(Integer.value) 65 then
+        fun state =>
+          let '(interpreter, host) := coinbase
+            (IInterpreterTypes := IInterpreterTypes) (IHost := IHost)
+            (@InstructionContext.State.interpreter
+              H WIRE _ _ WIRE_types _ state)
+            (@InstructionContext.State.host H WIRE _ _ WIRE_types _ state) in
+          {| InstructionContext.State.interpreter := interpreter;
+             InstructionContext.State.host := host |}
+      else if Z.eqb opcode.(Integer.value) 69 then
+        fun state =>
+          let '(interpreter, host) := gaslimit
+            (IInterpreterTypes := IInterpreterTypes) (IHost := IHost)
+            (@InstructionContext.State.interpreter
+              H WIRE _ _ WIRE_types _ state)
+            (@InstructionContext.State.host H WIRE _ _ WIRE_types _ state) in
+          {| InstructionContext.State.interpreter := interpreter;
+             InstructionContext.State.host := host |}
+      else if Z.eqb opcode.(Integer.value) 70 then
+        fun state =>
+          let '(interpreter, host) := chainid
+            (IInterpreterTypes := IInterpreterTypes) (IHost := IHost)
+            (@InstructionContext.State.interpreter
+              H WIRE _ _ WIRE_types _ state)
+            (@InstructionContext.State.host H WIRE _ _ WIRE_types _ state) in
+          {| InstructionContext.State.interpreter := interpreter;
+             InstructionContext.State.host := host |}
+      else if Z.eqb opcode.(Integer.value) 72 then
+        fun state =>
+          let '(interpreter, host) := basefee
+            (IInterpreterTypes := IInterpreterTypes) (IHost := IHost)
+            (@InstructionContext.State.interpreter
+              H WIRE _ _ WIRE_types _ state)
+            (@InstructionContext.State.host H WIRE _ _ WIRE_types _ state) in
+          {| InstructionContext.State.interpreter := interpreter;
+             InstructionContext.State.host := host |}
+      else if Z.eqb opcode.(Integer.value) 73 then
+        fun state =>
+          let '(interpreter, host) := blob_hash
+            (IInterpreterTypes := IInterpreterTypes) (IHost := IHost)
+            (@InstructionContext.State.interpreter
+              H WIRE _ _ WIRE_types _ state)
+            (@InstructionContext.State.host H WIRE _ _ WIRE_types _ state) in
+          {| InstructionContext.State.interpreter := interpreter;
+             InstructionContext.State.host := host |}
+      else if Z.eqb opcode.(Integer.value) 74 then
+        fun state =>
+          let '(interpreter, host) := blob_basefee
+            (IInterpreterTypes := IInterpreterTypes) (IHost := IHost)
+            (@InstructionContext.State.interpreter
+              H WIRE _ _ WIRE_types _ state)
+            (@InstructionContext.State.host H WIRE _ _ WIRE_types _ state) in
+          {| InstructionContext.State.interpreter := interpreter;
+             InstructionContext.State.host := host |}
+      else if Z.eqb opcode.(Integer.value) 68 then
+        fun state =>
+          let '(interpreter, host) := difficulty
+            (IInterpreterTypes := IInterpreterTypes) (IHost := IHost)
+            (@InstructionContext.State.interpreter
+              H WIRE _ _ WIRE_types _ state)
+            (@InstructionContext.State.host H WIRE _ _ WIRE_types _ state) in
+          {| InstructionContext.State.interpreter := interpreter;
+             InstructionContext.State.host := host |}
       else if Z.eqb opcode.(Integer.value) 80 then
-        pop
+        InstructionContext.map_interpreter (pop)
       else if Z.eqb opcode.(Integer.value) 81 then
-        mload
+        InstructionContext.map_interpreter (mload)
       else if Z.eqb opcode.(Integer.value) 82 then
-        mstore
+        InstructionContext.map_interpreter (mstore)
+      else if Z.eqb opcode.(Integer.value) 83 then
+        InstructionContext.map_interpreter (mstore8)
       else if Z.eqb opcode.(Integer.value) 86 then
-        jump
+        InstructionContext.map_interpreter (jump)
       else if Z.eqb opcode.(Integer.value) 87 then
-        jumpi
+        InstructionContext.map_interpreter (jumpi)
+      else if Z.eqb opcode.(Integer.value) 88 then
+        InstructionContext.map_interpreter (pc)
+      else if Z.eqb opcode.(Integer.value) 89 then
+        InstructionContext.map_interpreter (msize)
+      else if Z.eqb opcode.(Integer.value) 90 then
+        InstructionContext.map_interpreter (gas)
       else if Z.eqb opcode.(Integer.value) 91 then
-        jumpdest
+        InstructionContext.map_interpreter (jumpdest)
+      else if Z.eqb opcode.(Integer.value) 94 then
+        InstructionContext.map_interpreter (mcopy)
       else if Z.eqb opcode.(Integer.value) 95 then
-        push0
+        InstructionContext.map_interpreter (push0)
+      else if Z.eqb opcode.(Integer.value) 160 then
+        fun state =>
+          let '(interpreter, host) := log 0
+            (IInterpreterTypes := IInterpreterTypes) (IHost := IHost)
+            (InstructionContext.State.interpreter _ _ _ state)
+            (InstructionContext.State.host _ _ _ state) in
+          {| InstructionContext.State.interpreter := interpreter;
+             InstructionContext.State.host := host |}
+      else if Z.eqb opcode.(Integer.value) 161 then
+        fun state =>
+          let '(interpreter, host) := log 1
+            (IInterpreterTypes := IInterpreterTypes) (IHost := IHost)
+            (InstructionContext.State.interpreter _ _ _ state)
+            (InstructionContext.State.host _ _ _ state) in
+          {| InstructionContext.State.interpreter := interpreter;
+             InstructionContext.State.host := host |}
+      else if Z.eqb opcode.(Integer.value) 162 then
+        fun state =>
+          let '(interpreter, host) := log 2
+            (IInterpreterTypes := IInterpreterTypes) (IHost := IHost)
+            (InstructionContext.State.interpreter _ _ _ state)
+            (InstructionContext.State.host _ _ _ state) in
+          {| InstructionContext.State.interpreter := interpreter;
+             InstructionContext.State.host := host |}
+      else if Z.eqb opcode.(Integer.value) 163 then
+        fun state =>
+          let '(interpreter, host) := log 3
+            (IInterpreterTypes := IInterpreterTypes) (IHost := IHost)
+            (InstructionContext.State.interpreter _ _ _ state)
+            (InstructionContext.State.host _ _ _ state) in
+          {| InstructionContext.State.interpreter := interpreter;
+             InstructionContext.State.host := host |}
+      else if Z.eqb opcode.(Integer.value) 164 then
+        fun state =>
+          let '(interpreter, host) := log 4
+            (IInterpreterTypes := IInterpreterTypes) (IHost := IHost)
+            (InstructionContext.State.interpreter _ _ _ state)
+            (InstructionContext.State.host _ _ _ state) in
+          {| InstructionContext.State.interpreter := interpreter;
+             InstructionContext.State.host := host |}
+      else if Z.eqb opcode.(Integer.value) 243 then
+        InstructionContext.map_interpreter (ret)
+      else if Z.eqb opcode.(Integer.value) 253 then
+        InstructionContext.map_interpreter (revert)
+      else if Z.eqb opcode.(Integer.value) 254 then
+        InstructionContext.map_interpreter (invalid)
+      else if Z.eqb opcode.(Integer.value) 255 then
+        fun state =>
+          let '(interpreter, host) := selfdestruct
+            (IInterpreterTypes := IInterpreterTypes) (IHost := IHost)
+            (InstructionContext.State.interpreter _ _ _ state)
+            (InstructionContext.State.host _ _ _ state) in
+          {| InstructionContext.State.interpreter := interpreter;
+             InstructionContext.State.host := host |}
       else if
         (96 <=? opcode.(Integer.value)) &&
         (opcode.(Integer.value) <=? 127)
       then
-        push {| Integer.value := opcode.(Integer.value) - 95 |}
+        InstructionContext.map_interpreter (push {| Integer.value := opcode.(Integer.value) - 95 |})
       else if
         (128 <=? opcode.(Integer.value)) &&
         (opcode.(Integer.value) <=? 143)
       then
-        dup {| Integer.value := opcode.(Integer.value) - 127 |}
+        InstructionContext.map_interpreter (dup {| Integer.value := opcode.(Integer.value) - 127 |})
       else if
         (144 <=? opcode.(Integer.value)) &&
         (opcode.(Integer.value) <=? 159)
       then
-        swap {| Integer.value := opcode.(Integer.value) - 143 |}
+        InstructionContext.map_interpreter (swap {| Integer.value := opcode.(Integer.value) - 143 |})
       else
-        unknown)
+        InstructionContext.map_interpreter unknown)
       state.
 
   Lemma simple_stop
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -396,6 +658,8 @@ Module InterpreterDispatch.
 
   Lemma simple_add
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -408,6 +672,8 @@ Module InterpreterDispatch.
 
   Lemma simple_sub
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -420,6 +686,8 @@ Module InterpreterDispatch.
 
   Lemma simple_mul
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -432,6 +700,8 @@ Module InterpreterDispatch.
 
   Lemma simple_div
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -444,6 +714,8 @@ Module InterpreterDispatch.
 
   Lemma simple_sdiv
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -456,6 +728,8 @@ Module InterpreterDispatch.
 
   Lemma simple_mod
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -468,6 +742,8 @@ Module InterpreterDispatch.
 
   Lemma simple_smod
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -480,6 +756,8 @@ Module InterpreterDispatch.
 
   Lemma simple_addmod
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -492,6 +770,8 @@ Module InterpreterDispatch.
 
   Lemma simple_mulmod
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -504,6 +784,8 @@ Module InterpreterDispatch.
 
   Lemma simple_exp
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -516,6 +798,8 @@ Module InterpreterDispatch.
 
   Lemma simple_signextend
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -528,6 +812,8 @@ Module InterpreterDispatch.
 
   Lemma simple_lt
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -538,6 +824,8 @@ Module InterpreterDispatch.
 
   Lemma simple_gt
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -548,6 +836,8 @@ Module InterpreterDispatch.
 
   Lemma simple_slt
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -558,6 +848,8 @@ Module InterpreterDispatch.
 
   Lemma simple_sgt
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -568,6 +860,8 @@ Module InterpreterDispatch.
 
   Lemma simple_eq
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -578,6 +872,8 @@ Module InterpreterDispatch.
 
   Lemma simple_iszero
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -588,6 +884,8 @@ Module InterpreterDispatch.
 
   Lemma simple_and
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -598,6 +896,8 @@ Module InterpreterDispatch.
 
   Lemma simple_or
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -608,6 +908,8 @@ Module InterpreterDispatch.
 
   Lemma simple_xor
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -618,6 +920,8 @@ Module InterpreterDispatch.
 
   Lemma simple_not
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -628,6 +932,8 @@ Module InterpreterDispatch.
 
   Lemma simple_byte
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -638,6 +944,8 @@ Module InterpreterDispatch.
 
   Lemma simple_shl
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -648,6 +956,8 @@ Module InterpreterDispatch.
 
   Lemma simple_shr
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -658,6 +968,8 @@ Module InterpreterDispatch.
 
   Lemma simple_sar
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -668,6 +980,8 @@ Module InterpreterDispatch.
 
   Lemma simple_clz
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -676,8 +990,22 @@ Module InterpreterDispatch.
     InstructionContext.map_interpreter op_clz state.
   Proof. reflexivity. Qed.
 
+  Lemma simple_returndatasize
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 61 |} state =
+    InstructionContext.map_interpreter returndatasize state.
+  Proof. reflexivity. Qed.
+
   Lemma simple_returndatacopy
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -688,8 +1016,34 @@ Module InterpreterDispatch.
     reflexivity.
   Qed.
 
+  Lemma simple_callvalue
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 52 |} state =
+    InstructionContext.map_interpreter callvalue state.
+  Proof. reflexivity. Qed.
+
+  Lemma simple_calldataload
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 53 |} state =
+    InstructionContext.map_interpreter calldataload state.
+  Proof. reflexivity. Qed.
+
   Lemma simple_push1
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -703,6 +1057,8 @@ Module InterpreterDispatch.
 
   Lemma simple_pop
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -713,6 +1069,8 @@ Module InterpreterDispatch.
 
   Lemma simple_mload
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -723,6 +1081,8 @@ Module InterpreterDispatch.
 
   Lemma simple_mstore
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -733,6 +1093,8 @@ Module InterpreterDispatch.
 
   Lemma simple_jump
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -743,6 +1105,8 @@ Module InterpreterDispatch.
 
   Lemma simple_jumpi
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -753,6 +1117,8 @@ Module InterpreterDispatch.
 
   Lemma simple_jumpdest
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -761,8 +1127,22 @@ Module InterpreterDispatch.
     InstructionContext.map_interpreter jumpdest state.
   Proof. reflexivity. Qed.
 
+  Lemma simple_gas
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
+      (state : InstructionContext.State.t H WIRE WIRE_types) :
+    simple {| Integer.value := 90 |} state =
+    InstructionContext.map_interpreter gas state.
+  Proof. reflexivity. Qed.
+
   Lemma simple_push0
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -773,6 +1153,8 @@ Module InterpreterDispatch.
 
   Lemma simple_push32
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -784,6 +1166,8 @@ Module InterpreterDispatch.
 
   Lemma simple_dup1
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -795,6 +1179,8 @@ Module InterpreterDispatch.
 
   Lemma simple_dup16
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -806,6 +1192,8 @@ Module InterpreterDispatch.
 
   Lemma simple_swap1
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -817,6 +1205,8 @@ Module InterpreterDispatch.
 
   Lemma simple_swap16
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       `{IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -828,6 +1218,8 @@ Module InterpreterDispatch.
 
   Definition step_result_simple
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       (IInterpreterTypes : InterpreterTypes.C WIRE_types)
@@ -857,7 +1249,127 @@ Module InterpreterDispatch.
       (opcode : u8)
       (state : InstructionContext.State.t H WIRE WIRE_types) :
       InstructionContext.State.t H WIRE WIRE_types :=
-    if Z.eqb opcode.(Integer.value) 85 then
+    if Z.eqb opcode.(Integer.value) 240 then
+      let '(interpreter, host) := create false
+        (InstructionContext.State.interpreter _ _ _ state)
+        (InstructionContext.State.host _ _ _ state) in
+      {| InstructionContext.State.interpreter := interpreter;
+         InstructionContext.State.host := host |}
+    else if Z.eqb opcode.(Integer.value) 241 then
+      let '(interpreter, host) := call
+        (InstructionContext.State.interpreter _ _ _ state)
+        (InstructionContext.State.host _ _ _ state) in
+      {| InstructionContext.State.interpreter := interpreter;
+         InstructionContext.State.host := host |}
+    else if Z.eqb opcode.(Integer.value) 242 then
+      let '(interpreter, host) := call_code
+        (InstructionContext.State.interpreter _ _ _ state)
+        (InstructionContext.State.host _ _ _ state) in
+      {| InstructionContext.State.interpreter := interpreter;
+         InstructionContext.State.host := host |}
+    else if Z.eqb opcode.(Integer.value) 244 then
+      let '(interpreter, host) := delegate_call
+        (InstructionContext.State.interpreter _ _ _ state)
+        (InstructionContext.State.host _ _ _ state) in
+      {| InstructionContext.State.interpreter := interpreter;
+         InstructionContext.State.host := host |}
+    else if Z.eqb opcode.(Integer.value) 245 then
+      let '(interpreter, host) := create true
+        (InstructionContext.State.interpreter _ _ _ state)
+        (InstructionContext.State.host _ _ _ state) in
+      {| InstructionContext.State.interpreter := interpreter;
+         InstructionContext.State.host := host |}
+    else if Z.eqb opcode.(Integer.value) 250 then
+      let '(interpreter, host) := static_call
+        (InstructionContext.State.interpreter _ _ _ state)
+        (InstructionContext.State.host _ _ _ state) in
+      {| InstructionContext.State.interpreter := interpreter;
+         InstructionContext.State.host := host |}
+    else if Z.eqb opcode.(Integer.value) 49 then
+      match state with
+      | {|
+          InstructionContext.State.interpreter := interpreter;
+          InstructionContext.State.host := host
+        |} =>
+          let '(interpreter, host) := balance interpreter host in
+          {|
+            InstructionContext.State.interpreter := interpreter;
+            InstructionContext.State.host := host;
+          |}
+      end
+    else if Z.eqb opcode.(Integer.value) 59 then
+      match state with
+      | {|
+          InstructionContext.State.interpreter := interpreter;
+          InstructionContext.State.host := host
+        |} =>
+          let '(interpreter, host) := extcodesize interpreter host in
+          {|
+            InstructionContext.State.interpreter := interpreter;
+            InstructionContext.State.host := host;
+          |}
+      end
+    else if Z.eqb opcode.(Integer.value) 60 then
+      match state with
+      | {|
+          InstructionContext.State.interpreter := interpreter;
+          InstructionContext.State.host := host
+        |} =>
+          let '(interpreter, host) := extcodecopy interpreter host in
+          {|
+            InstructionContext.State.interpreter := interpreter;
+            InstructionContext.State.host := host;
+          |}
+      end
+    else if Z.eqb opcode.(Integer.value) 63 then
+      match state with
+      | {|
+          InstructionContext.State.interpreter := interpreter;
+          InstructionContext.State.host := host
+        |} =>
+          let '(interpreter, host) := extcodehash interpreter host in
+          {|
+            InstructionContext.State.interpreter := interpreter;
+            InstructionContext.State.host := host;
+          |}
+      end
+    else if Z.eqb opcode.(Integer.value) 70 then
+      match state with
+      | {|
+          InstructionContext.State.interpreter := interpreter;
+          InstructionContext.State.host := host
+        |} =>
+          let '(interpreter, host) := chainid interpreter host in
+          {|
+            InstructionContext.State.interpreter := interpreter;
+            InstructionContext.State.host := host;
+          |}
+      end
+    else if Z.eqb opcode.(Integer.value) 71 then
+      match state with
+      | {|
+          InstructionContext.State.interpreter := interpreter;
+          InstructionContext.State.host := host
+        |} =>
+          let '(interpreter, host) := selfbalance interpreter host in
+          {|
+            InstructionContext.State.interpreter := interpreter;
+            InstructionContext.State.host := host;
+          |}
+      end
+    else if Z.eqb opcode.(Integer.value) 84 then
+      match state with
+      | {|
+          InstructionContext.State.interpreter := interpreter;
+          InstructionContext.State.host := host
+        |} =>
+          let '(interpreter, host) := sload interpreter host in
+          {|
+            InstructionContext.State.interpreter := interpreter;
+            InstructionContext.State.host := host;
+          |}
+      end
+    else if Z.eqb opcode.(Integer.value) 85 then
       match state with
       | {|
           InstructionContext.State.interpreter := interpreter;
@@ -868,6 +1380,22 @@ Module InterpreterDispatch.
             InstructionContext.State.interpreter := interpreter;
             InstructionContext.State.host := host;
           |}
+      end
+    else if Z.eqb opcode.(Integer.value) 92 then
+      match state with
+      | {| InstructionContext.State.interpreter := interpreter;
+           InstructionContext.State.host := host |} =>
+          let '(interpreter, host) := tload interpreter host in
+          {| InstructionContext.State.interpreter := interpreter;
+             InstructionContext.State.host := host |}
+      end
+    else if Z.eqb opcode.(Integer.value) 93 then
+      match state with
+      | {| InstructionContext.State.interpreter := interpreter;
+           InstructionContext.State.host := host |} =>
+          let '(interpreter, host) := tstore interpreter host in
+          {| InstructionContext.State.interpreter := interpreter;
+             InstructionContext.State.host := host |}
       end
     else
       simple opcode state.
@@ -931,12 +1459,15 @@ Module InterpreterDispatch.
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
+      `{run_Host_for_H : !Host.Run H H_types}
       (run_InterpreterTypes_for_WIRE :
         InterpreterTypes.Run WIRE WIRE_types)
       (IInterpreterTypes : InterpreterTypes.C WIRE_types)
       (InterpreterTypesEq :
         InterpreterTypes.Eq.t
           WIRE WIRE_types run_InterpreterTypes_for_WIRE IInterpreterTypes)
+      (HostEq : @Host.Eq.t H _ H_types _ run_Host_for_H IHost)
       (state : InstructionContext.State.t H WIRE WIRE_types) :
     let table :=
       FragmentInstructionTable.table
@@ -1017,6 +1548,8 @@ Module InterpreterDispatch.
 
   Fixpoint run_plain_fuel
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       (fuel : nat)
@@ -1083,6 +1616,8 @@ Module InterpreterDispatch.
 
   Lemma run_plain_fuel_finished
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       (fuel : nat)
@@ -1109,6 +1644,8 @@ Module InterpreterDispatch.
 
   Lemma run_plain_fuel_running
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       (fuel : nat)
@@ -1137,6 +1674,8 @@ Module InterpreterDispatch.
 
   Instance run_run_plain
       (WIRE H : Set) `{Link WIRE} `{Link H}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       {run_InterpreterTypes_for_WIRE :
@@ -1165,6 +1704,8 @@ Module InterpreterDispatch.
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
+      `{run_Host_for_H : !Host.Run H H_types}
       (run_InterpreterTypes_for_WIRE :
         InterpreterTypes.Run WIRE WIRE_types)
       (initial_state final_state :
@@ -1202,6 +1743,8 @@ Module InterpreterDispatch.
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
+      `{run_Host_for_H : !Host.Run H H_types}
       (run_InterpreterTypes_for_WIRE :
         InterpreterTypes.Run WIRE WIRE_types)
       (IInterpreterTypes : InterpreterTypes.C WIRE_types)
@@ -1210,6 +1753,7 @@ Module InterpreterDispatch.
       (InterpreterTypesEq :
         InterpreterTypes.Eq.t
           WIRE WIRE_types run_InterpreterTypes_for_WIRE IInterpreterTypes)
+      (HostEq : @Host.Eq.t H _ H_types _ run_Host_for_H IHost)
       (fuel : nat)
       (initial_state final_state :
         InstructionContext.State.t H WIRE WIRE_types)
@@ -1233,8 +1777,31 @@ Module InterpreterDispatch.
     (* Admitted boundary: iteration of step_simple_eq and take_next_action. *)
   Admitted.
 
+  Definition advance
+      {WIRE : Set} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (IInterpreterTypes : InterpreterTypes.C WIRE_types)
+      (interpreter : Interpreter.t WIRE WIRE_types) :
+      Interpreter.t WIRE WIRE_types :=
+    interpreter <| Interpreter.bytecode :=
+      IInterpreterTypes.(InterpreterTypes.Jumps_for_Bytecode)
+        .(Jumps.relative_jump) interpreter.(Interpreter.bytecode)
+        {| Integer.value := 1 |} |>.
+
+  Definition prepare_success
+      {WIRE : Set} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (IInterpreterTypes : InterpreterTypes.C WIRE_types)
+      (interpreter : Interpreter.t WIRE WIRE_types)
+      (gas : Gas.t) : Interpreter.t WIRE WIRE_types :=
+    advance IInterpreterTypes interpreter <| Interpreter.gas := gas |>.
+
   Lemma step_result_success
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       (IInterpreterTypes : InterpreterTypes.C WIRE_types)
@@ -1300,8 +1867,55 @@ Module InterpreterDispatch.
     reflexivity.
   Qed.
 
+  Lemma step_result_success_state
+      {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (IInterpreterTypes : InterpreterTypes.C WIRE_types)
+      (table : array.t (Instruction.t WIRE H WIRE_types)
+        {| Integer.value := 256 |})
+      (interpreter : Interpreter.t WIRE WIRE_types) (host : H)
+      (opcode : u8) (instruction : Instruction.t WIRE H WIRE_types)
+      (static_gas : u64) (gas : Gas.t)
+      (operation : InstructionContext.State.t H WIRE WIRE_types ->
+        InstructionContext.State.t H WIRE WIRE_types)
+      (H_dispatch : forall state,
+        simple (IInterpreterTypes := IInterpreterTypes) opcode state =
+          operation state)
+      (H_opcode : IInterpreterTypes.(InterpreterTypes.Jumps_for_Bytecode)
+        .(Jumps.opcode) interpreter.(Interpreter.bytecode) = opcode)
+      (H_instruction : InterpreterStep.instruction_at table opcode =
+        Some instruction)
+      (H_static_gas : InterpreterStep.instruction_static_gas instruction =
+        static_gas)
+      (H_charge : Impl_Gas.record_cost interpreter.(Interpreter.gas)
+        static_gas = Some gas) :
+    step_result_simple IInterpreterTypes table
+      {| InstructionContext.State.interpreter := interpreter;
+         InstructionContext.State.host := host |} =
+    InterpreterStep.Result.Success
+      (operation
+        {| InstructionContext.State.interpreter :=
+             prepare_success IInterpreterTypes interpreter gas;
+           InstructionContext.State.host := host |}).
+  Proof.
+    destruct interpreter.
+    cbn in H_charge.
+    unfold prepare_success, advance.
+    unfold step_result_simple, InterpreterStep.step_result,
+      InterpreterStep.prepare.
+    rewrite H_opcode, H_instruction, H_static_gas.
+    cbn in H_charge |- *.
+    rewrite H_charge, H_dispatch.
+    reflexivity.
+  Qed.
+
   Lemma step_result_stop
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       (IInterpreterTypes : InterpreterTypes.C WIRE_types)
@@ -1360,6 +1974,8 @@ Module InterpreterDispatch.
 
   Lemma step_result_add
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       (IInterpreterTypes : InterpreterTypes.C WIRE_types)
@@ -1418,6 +2034,8 @@ Module InterpreterDispatch.
 
   Lemma step_result_sub
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       (IInterpreterTypes : InterpreterTypes.C WIRE_types)
@@ -1476,6 +2094,8 @@ Module InterpreterDispatch.
 
   Lemma step_result_mul
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       (IInterpreterTypes : InterpreterTypes.C WIRE_types)
@@ -1534,6 +2154,8 @@ Module InterpreterDispatch.
 
   Lemma step_result_returndatacopy
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       (IInterpreterTypes : InterpreterTypes.C WIRE_types)
@@ -1592,6 +2214,8 @@ Module InterpreterDispatch.
 
   Lemma step_result_out_of_gas
       {H WIRE : Set} `{Link H} `{Link WIRE}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      `{IHost : !Host.C H H_types}
       {WIRE_types : InterpreterTypes.Types.t}
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       (IInterpreterTypes : InterpreterTypes.C WIRE_types)
@@ -1642,4 +2266,5 @@ Module InterpreterDispatch.
     rewrite H_charge.
     reflexivity.
   Qed.
+
 End InterpreterDispatch.

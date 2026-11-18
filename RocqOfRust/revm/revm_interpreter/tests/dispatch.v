@@ -2,7 +2,9 @@ Require Import Stdlib.Lists.List.
 Require Import Stdlib.ZArith.ZArith.
 
 Require Import alloy_primitives.links.aliases.
+Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_interpreter.instructions.simulate.table.
+Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.simulate.dispatch.
 Require Import revm.revm_interpreter.simulate.instruction_context.
@@ -10,6 +12,7 @@ Require Import revm.revm_interpreter.simulate.step.
 Require Import revm.revm_interpreter.tests.host.
 Require Import revm.revm_interpreter.tests.interpreter.
 Require Import revm.revm_interpreter.tests.interpreter_types.
+Require Import revm.revm_interpreter.interpreter.links.runtime_flags.
 Require Import revm.revm_primitives.links.hardfork.
 Require Import ruint.links.lib.
 Require Import simulate.RocqOfRust.
@@ -17,6 +20,8 @@ Require Import simulate.RocqOfRust.
 Parameter run_InterpreterTypes_for_WIRE :
   RocqOfRust.revm.revm_interpreter.links.interpreter_types.InterpreterTypes.Run
     WIRE WIRE_types.
+
+Parameter run_Host_for_TestHost : Host.Run TestHost.t TestHost.host_types.
 
 Definition bytecode_is_not_end (bytecode : Bytecode.t) : bool :=
   Z.ltb
@@ -35,7 +40,8 @@ Definition interpreter_with_spec_id
   Interpreter.input := interpreter.(Interpreter.input);
   Interpreter.sub_routine := interpreter.(Interpreter.sub_routine);
   Interpreter.control := interpreter.(Interpreter.control);
-  Interpreter.runtime_flag := spec_id;
+  Interpreter.runtime_flag := interpreter.(Interpreter.runtime_flag)
+    <| RuntimeFlags.spec_id := spec_id |>;
   Interpreter.extend := interpreter.(Interpreter.extend);
 |}.
 
@@ -54,6 +60,7 @@ Definition run_plain_stack_at
   let table :=
     FragmentInstructionTable.table
       (H := TestHost.t)
+      (run_host := run_Host_for_TestHost)
       run_InterpreterTypes_for_WIRE in
   match
     InterpreterDispatch.run_plain_fuel
@@ -98,6 +105,7 @@ Definition table_static_gas (opcode : Z) : option Z :=
   let table :=
     FragmentInstructionTable.table
       (H := TestHost.t)
+      (run_host := run_Host_for_TestHost)
       run_InterpreterTypes_for_WIRE in
   match
     InterpreterStep.instruction_at
@@ -110,6 +118,112 @@ Definition table_static_gas (opcode : Z) : option Z :=
           .(Integer.value)
   | None => None
   end.
+
+Module Test.
+  Lemma number_static_gas : table_static_gas 67 = Some 2.
+  Proof. timeout 5 vm_compute. reflexivity. Qed.
+
+  Lemma timestamp_static_gas : table_static_gas 66 = Some 2.
+  Proof. timeout 5 vm_compute. reflexivity. Qed.
+
+  Lemma gaslimit_static_gas : table_static_gas 69 = Some 2.
+  Proof. timeout 5 vm_compute. reflexivity. Qed.
+
+  Lemma coinbase_static_gas : table_static_gas 65 = Some 2.
+  Proof. timeout 5 vm_compute. reflexivity. Qed.
+
+  Lemma chainid_static_gas : table_static_gas 70 = Some 2.
+  Proof. timeout 5 vm_compute. reflexivity. Qed.
+
+  Lemma chainid_at_istanbul :
+    run_plain_stack_at SpecId.ISTANBUL [byte 70; byte 0] = Some (words [1]).
+  Proof. timeout 5 vm_compute. reflexivity. Qed.
+
+  Lemma chainid_before_istanbul_does_not_push :
+    run_plain_stack_at SpecId.PETERSBURG [byte 70; byte 0] = Some [].
+  Proof. timeout 5 vm_compute. reflexivity. Qed.
+
+  Lemma chainid_before_istanbul_not_activated :
+    let interpreter := interpreter_with_spec_id
+      (make_interpreter_with_bytecode [byte 70] {| Stack.value := [] |})
+      SpecId.PETERSBURG in
+    let initial_state : InstructionContext.State.t TestHost.t WIRE WIRE_types :=
+      {| InstructionContext.State.interpreter := interpreter;
+         InstructionContext.State.host := TestHost.Make |} in
+    match InterpreterDispatch.simple (IInterpreterTypes := InterpreterTypes.I)
+      (byte 70) initial_state with
+    | {| InstructionContext.State.interpreter := final_interpreter;
+         InstructionContext.State.host := _ |} =>
+        LoopControl.instruction_result_bytecode final_interpreter.(Interpreter.bytecode)
+    end = InstructionResult.NotActivated.
+  Proof. timeout 5 vm_compute. reflexivity. Qed.
+
+  Lemma basefee_static_gas : table_static_gas 72 = Some 2.
+  Proof. timeout 5 vm_compute. reflexivity. Qed.
+
+  Lemma basefee_at_london :
+    run_plain_stack_at SpecId.LONDON [byte 72; byte 0] = Some (words [0]).
+  Proof. timeout 5 vm_compute. reflexivity. Qed.
+
+  Lemma basefee_before_london_does_not_push :
+    run_plain_stack_at SpecId.BERLIN [byte 72; byte 0] = Some [].
+  Proof. timeout 5 vm_compute. reflexivity. Qed.
+
+  Lemma basefee_before_london_not_activated :
+    let interpreter := interpreter_with_spec_id
+      (make_interpreter_with_bytecode [byte 72] {| Stack.value := [] |})
+      SpecId.BERLIN in
+    let initial_state : InstructionContext.State.t TestHost.t WIRE WIRE_types :=
+      {| InstructionContext.State.interpreter := interpreter;
+         InstructionContext.State.host := TestHost.Make |} in
+    match InterpreterDispatch.simple (IInterpreterTypes := InterpreterTypes.I)
+      (byte 72) initial_state with
+    | {| InstructionContext.State.interpreter := final_interpreter;
+         InstructionContext.State.host := _ |} =>
+        LoopControl.instruction_result_bytecode final_interpreter.(Interpreter.bytecode)
+    end = InstructionResult.NotActivated.
+  Proof. timeout 5 vm_compute. reflexivity. Qed.
+
+
+  Lemma blob_basefee_static_gas : table_static_gas 74 = Some 2.
+  Proof. timeout 5 vm_compute. reflexivity. Qed.
+
+  Lemma blob_basefee_at_cancun :
+    run_plain_stack_at SpecId.CANCUN [byte 74; byte 0] = Some (words [0]).
+  Proof. timeout 5 vm_compute. reflexivity. Qed.
+
+  Lemma blob_basefee_before_cancun_does_not_push :
+    run_plain_stack_at SpecId.SHANGHAI [byte 74; byte 0] = Some [].
+  Proof. timeout 5 vm_compute. reflexivity. Qed.
+
+  Lemma blob_basefee_before_cancun_not_activated :
+    let interpreter := interpreter_with_spec_id
+      (make_interpreter_with_bytecode [byte 74] {| Stack.value := [] |})
+      SpecId.SHANGHAI in
+    let initial_state : InstructionContext.State.t TestHost.t WIRE WIRE_types :=
+      {| InstructionContext.State.interpreter := interpreter;
+         InstructionContext.State.host := TestHost.Make |} in
+    match InterpreterDispatch.simple (IInterpreterTypes := InterpreterTypes.I)
+      (byte 74) initial_state with
+    | {| InstructionContext.State.interpreter := final_interpreter;
+         InstructionContext.State.host := _ |} =>
+        LoopControl.instruction_result_bytecode final_interpreter.(Interpreter.bytecode)
+    end = InstructionResult.NotActivated.
+  Proof. timeout 5 vm_compute. reflexivity. Qed.
+
+  Lemma difficulty_static_gas : table_static_gas 68 = Some 2.
+  Proof. timeout 5 vm_compute. reflexivity. Qed.
+
+  Lemma timestamp_and_number :
+    run_plain_stack [byte 66; byte 67; byte 0] = Some (words [1; 0]).
+  Proof. timeout 5 vm_compute. reflexivity. Qed.
+
+  (** Host reads and interpreter-only operations share the same runner. *)
+  Lemma number_add :
+    run_plain_stack [byte 67; byte 96; byte 2; byte 1; byte 0] =
+    Some (words [3]).
+  Proof. timeout 5 vm_compute. reflexivity. Qed.
+End Test.
 
 (** The executable prefix of GeneralStateTests/stExample/add11.json. *)
 Goal
@@ -174,10 +288,10 @@ Goal
   Some (words [1; 16; 15; 14; 13; 12; 11; 10; 9; 8; 7; 6; 5; 4; 3; 2; 17]).
 Proof. timeout 5 vm_compute. reflexivity. Qed.
 
-(** Memory and control-flow opcodes used by the remaining shift fixtures. *)
+(** Memory and control-flow opcode gas entries. *)
 Goal
-  List.map table_static_gas [81; 82; 86; 87; 91] =
-  List.map (@Some Z) [3; 3; 8; 10; 1].
+  List.map table_static_gas [81; 82; 83; 86; 87; 89; 91] =
+  List.map (@Some Z) [3; 3; 3; 8; 10; 2; 1].
 Proof. timeout 5 vm_compute. reflexivity. Qed.
 
 Goal

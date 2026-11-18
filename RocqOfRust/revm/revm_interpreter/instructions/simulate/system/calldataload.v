@@ -1,6 +1,11 @@
+Require Import Stdlib.Lists.List.
+
 Require Import simulate.RocqOfRust.
 Require Import alloy_primitives.bits.simulate.fixed.
+Require Import alloy_primitives.links.aliases.
 Require Import core.convert.simulate.mod.
+Require Import core.ops.links.range.
+Require Import core.ops.simulate.deref.
 Require Import core.simulate.cmp.
 Require Import core.slice.simulate.mod.
 Require Import revm.revm_interpreter.gas.simulate.constants.
@@ -12,6 +17,34 @@ Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import ruint.links.lib.
 
+Import ListNotations.
+
+Open Scope Z_scope.
+
+Fixpoint calldata_take_pad (len : nat) (bytes : list u8) : list u8 :=
+  match len with
+  | O => []
+  | S len =>
+      match bytes with
+      | [] => (0 : u8) :: calldata_take_pad len []
+      | byte :: bytes => byte :: calldata_take_pad len bytes
+      end
+  end.
+
+Definition calldata_word (bytes : list u8) (offset : usize) : aliases.U256.t :=
+  (* Check the binary offset before converting it to a unary list index. *)
+  let bytes :=
+    if i[offset] <? Z.of_nat (List.length bytes) then
+      List.skipn (Z.to_nat i[offset]) bytes
+    else [] in
+  let bytes :=
+    calldata_take_pad 32 bytes in
+  {| Uint.value :=
+       List.fold_left
+         (fun (value : Z) (byte : u8) => (256 * value + i[byte])%Z)
+         bytes
+         (0 : Z) |}.
+
 Definition calldataload
     {WIRE : Set} `{Link WIRE}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
@@ -20,26 +53,55 @@ Definition calldataload
     Interpreter.t WIRE WIRE_types :=
   popn_top_macro interpreter 0
     id (fun _ offset_ptr_stub interpreter =>
-  let word := Impl_FixedBytes.ZERO in
   let offset_ptr := offset_ptr_stub.(RefStub.projection) interpreter.(Interpreter.stack) in
   let offset := as_usize_saturated_macro offset_ptr in
   let input :=
     IInterpreterTypes.(InterpreterTypes.InputsTrait_for_Input).(InputTraits.input)
       .(RefStub.projection) interpreter.(Interpreter.input) in
   let input_len := call_inputs.CallInput.len input in
-  let _ :=
-    if i[offset] <? i[input_len] then
+  let word := if i[offset] <? i[input_len] then
+    let count : usize := {| Integer.value := Z.min 32 (i[input_len] - i[offset]) |} in
+    let bytes :=
       match input with
-      | call_inputs.CallInput.Bytes _ => tt
-      | call_inputs.CallInput.SharedBuffer _ => tt
-      end
-    else tt in
+      | call_inputs.CallInput.Bytes bytes =>
+          List.firstn (Z.to_nat i[count])
+            (List.skipn (Z.to_nat i[offset]) (call_inputs.CallInput.bytes_as_ref bytes))
+      | call_inputs.CallInput.SharedBuffer range =>
+          (* Rust's borrowed slice exposes only these bytes to the word copy.
+             Narrow the range before materializing the executable list slice. *)
+          let start := range.(Range.start) +i offset in
+          let bytes :=
+            IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory).(MemoryTrait.global_slice)
+              interpreter.(Interpreter.memory)
+              {| Range.start := start; Range.end_ := start +i count |} in
+          IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory)
+            .(MemoryTrait.Deref_for_Synthetic)
+            .(Deref.deref)
+            .(RefStub.projection) bytes
+      end in
+    calldata_word bytes 0
+  else {| Uint.value := 0 |} in
   let stack :=
     offset_ptr_stub.(RefStub.injection)
       interpreter.(Interpreter.stack)
-      (Into.into word) in
+      word in
   interpreter <| Interpreter.stack := stack |>
   ).
+
+Module Test.
+  Goal
+    calldata_word [(1 : u8); (2 : u8)] 0 =
+    {| Uint.value := 1 * 256 ^ 31 + 2 * 256 ^ 30 |}.
+  Proof. vm_compute. reflexivity. Qed.
+
+  Goal
+    calldata_word [(1 : u8); (2 : u8)] 1 =
+    {| Uint.value := 2 * 256 ^ 31 |}.
+  Proof. vm_compute. reflexivity. Qed.
+
+  Goal calldata_word [(1 : u8); (2 : u8)] 2 = {| Uint.value := 0 |}.
+  Proof. vm_compute. reflexivity. Qed.
+End Test.
 
 Lemma calldataload_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}

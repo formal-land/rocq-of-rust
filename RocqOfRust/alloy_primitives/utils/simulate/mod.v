@@ -2,10 +2,15 @@ Require Import simulate.RocqOfRust.
 Require Import alloy_primitives.bits.simulate.fixed.
 Require Import alloy_primitives.links.aliases.
 Require Import alloy_primitives.utils.links.mod.
+Require Import alloy_primitives.utils.simulate.keccak256.
 Require Import core.convert.links.mod.
 Require Import core.convert.simulate.mod.
 
-Parameter keccak256_primitive : list u8 -> aliases.B256.t.
+(** Computation does not discharge the admitted Rust correspondence below. *)
+Definition keccak256_primitive (bytes : list u8) : aliases.B256.t :=
+  FixedBytes.from_Z
+    (List.fold_left (fun acc byte => (256 * acc + byte)%Z)
+      (Keccak256.hash (List.map Integer.value bytes)) 0).
 
 Definition keccak256
     {T : Set} `{Link T}

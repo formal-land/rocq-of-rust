@@ -11,6 +11,18 @@ Require Import revm.revm_interpreter.simulate.interpreter.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 
 Module InterpreterStep.
+  Lemma array_pairs_nth_error_to_list
+      {A : Set} {length : nat}
+      (xs : ArrayPairs.t A length) (index : nat) :
+      ArrayPairs.nth_error xs index =
+        List.nth_error (ArrayPairs.to_list xs) index.
+  Proof.
+    revert xs index.
+    induction length as [|length IH]; intros xs index.
+    - destruct xs, index; reflexivity.
+    - destruct xs as [x rest], index; simpl; auto.
+  Qed.
+
   Module Preparation.
     Inductive t
         (H WIRE : Set) `{Link H} `{Link WIRE}
@@ -35,8 +47,8 @@ Module InterpreterStep.
           (Instruction.t WIRE H WIRE_types)
           {| Integer.value := 256 |})
       (opcode : u8) : option (Instruction.t WIRE H WIRE_types) :=
-    List.nth_error
-      (ArrayPairs.to_list table.(array.value))
+    ArrayPairs.nth_error
+      table.(array.value)
       (Z.to_nat opcode.(Integer.value)).
 
   Definition instruction_static_gas

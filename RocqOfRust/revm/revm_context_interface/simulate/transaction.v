@@ -1,7 +1,13 @@
 Require Import simulate.RocqOfRust.
+Require Import alloy_primitives.links.aliases.
+Require Import core.links.result.
+Require Import lib.simulate.lib.
+Require Import ruint.simulate.add.
+Require Import revm.revm_context_interface.simulate.result.
 Require Import alloy_primitives.links.common.
 Require Import core.links.error.
 Require Import revm.revm_context_interface.links.transaction.
+Require Import ruint.links.lib.
 
 Module TransactionError.
   Class C (Self : Set) `{Link Self} : Set := {
@@ -22,6 +28,100 @@ End TransactionError.
 Export (hints) TransactionError.
 
 Module Transaction.
+  (** Executable getter subset for the fee defaults in current transaction.rs.
+      The C/Eq interface below this module describes the older linked API;
+      it does not establish correspondence for these executable defaults.
+      Scalar and Uint inputs must satisfy their Rust validity invariants. *)
+  Module Fees.
+    Class C (Self : Set) : Set := {
+      tx_type : Self -> u8;
+      gas_limit : Self -> u64;
+      value : Self -> aliases.U256.t;
+      gas_price : Self -> u128;
+      blob_versioned_hashes : Self -> list aliases.B256.t;
+      max_fee_per_blob_gas : Self -> u128;
+      max_priority_fee_per_gas : Self -> option u128;
+    }.
+
+    Definition total_blob_gas {Self : Set} `{C Self} (self : Self) : u64 :=
+      BinOp.Wrap.mul {| Integer.value := 131072 |}
+        {| Integer.value := Z.of_nat (List.length (blob_versioned_hashes self)) |}.
+
+    Definition calc_max_data_fee {Self : Set} `{C Self} (self : Self) : aliases.U256.t :=
+      let blob_gas : u128 := {| Integer.value := (total_blob_gas self).(Integer.value) |} in
+      {| Uint.value := (BinOp.Saturating.mul blob_gas (max_fee_per_blob_gas self)).(Integer.value) |}.
+
+    Definition max_fee_per_gas {Self : Set} `{C Self} (self : Self) : u128 :=
+      gas_price self.
+
+    Definition effective_gas_price {Self : Set} `{C Self} (self : Self)
+        (base_fee : u128) : u128 :=
+      if BinOp.eq (tx_type self) {| Integer.value := 0 |} ||
+        BinOp.eq (tx_type self) {| Integer.value := 1 |} then gas_price self else
+      let max_price := gas_price self in
+      match max_priority_fee_per_gas self with
+      | None => max_price
+      | Some priority =>
+        let price := BinOp.Saturating.add base_fee priority in
+        if BinOp.le max_price price then max_price else price
+      end.
+
+    Definition max_balance_spending {Self : Set} `{C Self} (self : Self)
+        : Result.t aliases.U256.t InvalidTransaction.t :=
+      let limit : u128 := {| Integer.value := (gas_limit self).(Integer.value) |} in
+      match BinOp.Checked.mul limit (max_fee_per_gas self) with
+      | None => Result.Err InvalidTransaction.OverflowPaymentInTransaction
+      | Some gas_cost =>
+        match Impl_Uint.checked_add {| Uint.value := gas_cost.(Integer.value) |} (value self) with
+        | None => Result.Err InvalidTransaction.OverflowPaymentInTransaction
+        | Some spending =>
+          if BinOp.eq (tx_type self) {| Integer.value := 3 |} then
+            match Impl_Uint.checked_add spending (calc_max_data_fee self) with
+            | None => Result.Err InvalidTransaction.OverflowPaymentInTransaction
+            | Some spending => Result.Ok spending
+            end
+          else Result.Ok spending
+        end
+      end.
+
+    Definition ensure_enough_balance {Self : Set} `{C Self} (self : Self)
+        (balance : aliases.U256.t) : Result.t unit InvalidTransaction.t :=
+      match max_balance_spending self with
+      | Result.Err error => Result.Err error
+      | Result.Ok spending =>
+        if spending.(Uint.value) >? balance.(Uint.value) then
+          Result.Err (InvalidTransaction.LackOfFundForMaxFee spending balance)
+        else Result.Ok tt
+      end.
+
+    Definition effective_balance_spending {Self : Set} `{C Self} (self : Self)
+        (base_fee blob_price : u128) : Result.t aliases.U256.t InvalidTransaction.t :=
+      let limit : u128 := {| Integer.value := (gas_limit self).(Integer.value) |} in
+      match BinOp.Checked.mul limit (effective_gas_price self base_fee) with
+      | None => Result.Err InvalidTransaction.OverflowPaymentInTransaction
+      | Some gas_cost =>
+        match Impl_Uint.checked_add {| Uint.value := gas_cost.(Integer.value) |} (value self) with
+        | None => Result.Err InvalidTransaction.OverflowPaymentInTransaction
+        | Some spending =>
+          if BinOp.eq (tx_type self) {| Integer.value := 3 |} then
+            let blob_gas : u128 := {| Integer.value := (total_blob_gas self).(Integer.value) |} in
+            let blob_fee := BinOp.Saturating.mul blob_price blob_gas in
+            match Impl_Uint.checked_add spending {| Uint.value := blob_fee.(Integer.value) |} with
+            | None => Result.Err InvalidTransaction.OverflowPaymentInTransaction
+            | Some spending => Result.Ok spending
+            end
+          else Result.Ok spending
+        end
+      end.
+
+    Definition gas_balance_spending {Self : Set} `{C Self} (self : Self)
+        (base_fee blob_price : u128) : Result.t aliases.U256.t InvalidTransaction.t :=
+      match effective_balance_spending self base_fee blob_price with
+      | Result.Err error => Result.Err error
+      | Result.Ok spending => Result.Ok (Impl_Uint.wrapping_sub spending (value self))
+      end.
+  End Fees.
+
   Class C
       (Self : Set) `{Link Self}
       (types : Transaction.Types.t)

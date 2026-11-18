@@ -3,7 +3,11 @@ Require Import alloy_primitives.bytes.links.mod.
 Require Import revm.revm_bytecode.bytecode.
 
 Module Bytecode.
-  Parameter t : Set.
+  (** Observable original bytes. The Rust representation remains abstract in
+      [to_value]; this is not an implementation of bytecode analysis. *)
+  Record t : Set := {
+    original_bytes : alloy_primitives.bytes.links.mod.Bytes.t;
+  }.
 
   Parameter to_value : t -> Value.t.
 

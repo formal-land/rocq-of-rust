@@ -1,0 +1,31 @@
+let require name result =
+    if result then Printf.printf "PASS %s\n%!" name
+    else (Printf.eprintf "FAIL %s\n%!" name; exit 1)
+
+let () =
+    require "powers match Rocq reference" (Native_numeric_smoke.powers_match ());
+    require "shifts match Rocq reference" (Native_numeric_smoke.shifts_match ());
+    let huge = Z.shift_left Z.one 100 in
+    let pow = Native_numeric_shifts.pow in
+    require "huge exponent zero base" (Z.equal (pow Z.zero huge) Z.zero);
+    require "huge exponent unit base" (Z.equal (pow Z.one huge) Z.one);
+    require "huge even exponent negative unit" (Z.equal (pow Z.minus_one huge) Z.one);
+    require "huge odd exponent negative unit"
+        (Z.equal (pow Z.minus_one (Z.succ huge)) Z.minus_one);
+    require "huge negative exponent" (Z.equal (pow Z.one (Z.neg huge)) Z.zero);
+    require "nonrepresentable result remains a resource failure"
+        (try ignore (pow (Z.of_int 2) huge); false
+         with Native_numeric_shifts.Numeric_resource_limit -> true);
+    let shiftl = Native_numeric_shifts.shiftl in
+    let shiftr = Native_numeric_shifts.shiftr in
+    require "huge right shift positive" (Z.equal (shiftr (Z.of_int 257) huge) Z.zero);
+    require "huge right shift negative" (Z.equal (shiftr (Z.of_int (-257)) huge) Z.minus_one);
+    require "huge negative left shift" (Z.equal (shiftl (Z.of_int (-257)) (Z.neg huge)) Z.minus_one);
+    require "huge left shift zero" (Z.equal (shiftl Z.zero huge) Z.zero);
+    require "huge negative right shift zero" (Z.equal (shiftr Z.zero (Z.neg huge)) Z.zero);
+    require "huge left shift remains a resource failure"
+        (try ignore (shiftl Z.one huge); false
+         with Native_numeric_shifts.Numeric_resource_limit -> true);
+    require "huge negative right shift remains a resource failure"
+        (try ignore (shiftr Z.one (Z.neg huge)); false
+         with Native_numeric_shifts.Numeric_resource_limit -> true)

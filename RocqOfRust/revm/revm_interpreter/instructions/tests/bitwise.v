@@ -18,6 +18,7 @@ Require Import revm.revm_interpreter.instructions.simulate.bitwise.sar.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.tests.interpreter.
 Require Import revm.revm_interpreter.tests.interpreter_types.
+Require Import revm.revm_interpreter.interpreter.links.runtime_flags.
 Require Import revm.revm_primitives.links.hardfork.
 Require Import ruint.links.lib.
 
@@ -32,7 +33,7 @@ Definition make_interpreter_osaka (stack : Stack.t) : Interpreter.t WIRE WIRE_ty
     Interpreter.input := interpreter.(Interpreter.input);
     Interpreter.sub_routine := interpreter.(Interpreter.sub_routine);
     Interpreter.control := interpreter.(Interpreter.control);
-    Interpreter.runtime_flag := SpecId.OSAKA;
+    Interpreter.runtime_flag := RuntimeFlags.non_static SpecId.OSAKA;
     Interpreter.extend := interpreter.(Interpreter.extend);
   |}.
 

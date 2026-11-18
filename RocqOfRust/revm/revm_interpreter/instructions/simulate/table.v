@@ -17,15 +17,49 @@ Require Import revm.revm_interpreter.instructions.links.bitwise.sgt.
 Require Import revm.revm_interpreter.instructions.links.bitwise.shl.
 Require Import revm.revm_interpreter.instructions.links.bitwise.shr.
 Require Import revm.revm_interpreter.instructions.links.bitwise.slt.
+Require Import revm.revm_interpreter.instructions.links.block_info.
+Require Import revm.revm_interpreter.instructions.links.contract.call.
+Require Import revm.revm_interpreter.instructions.links.contract.call_code.
+Require Import revm.revm_interpreter.instructions.links.contract.create.
+Require Import revm.revm_interpreter.instructions.links.contract.delegate_call.
+Require Import revm.revm_interpreter.instructions.links.contract.static_call.
+Require Import revm.revm_interpreter.instructions.links.control.invalid.
 Require Import revm.revm_interpreter.instructions.links.control.jump.
 Require Import revm.revm_interpreter.instructions.links.control.jumpdest.
 Require Import revm.revm_interpreter.instructions.links.control.jumpi.
+Require Import revm.revm_interpreter.instructions.links.control.pc.
+Require Import revm.revm_interpreter.instructions.links.control.ret.
+Require Import revm.revm_interpreter.instructions.links.control.revert.
 Require Import revm.revm_interpreter.instructions.links.control.stop.
 Require Import revm.revm_interpreter.instructions.links.control.unknown.
+Require Import revm.revm_interpreter.instructions.links.host.balance.
+Require Import revm.revm_interpreter.instructions.links.host.blockhash.
+Require Import revm.revm_interpreter.instructions.links.host.extcodecopy.
+Require Import revm.revm_interpreter.instructions.links.host.extcodehash.
+Require Import revm.revm_interpreter.instructions.links.host.extcodesize.
+Require Import revm.revm_interpreter.instructions.links.host.log.
+Require Import revm.revm_interpreter.instructions.links.host.selfdestruct.
+Require Import revm.revm_interpreter.instructions.links.host.tload.
+Require Import revm.revm_interpreter.instructions.links.host.tstore.
+Require Import revm.revm_interpreter.instructions.links.memory.mcopy.
 Require Import revm.revm_interpreter.instructions.links.memory.mload.
+Require Import revm.revm_interpreter.instructions.links.memory.msize.
 Require Import revm.revm_interpreter.instructions.links.memory.mstore.
+Require Import revm.revm_interpreter.instructions.links.memory.mstore8.
 Require Import revm.revm_interpreter.instructions.links.stack.
+Require Import revm.revm_interpreter.instructions.links.system.address.
+Require Import revm.revm_interpreter.instructions.links.system.calldatacopy.
+Require Import revm.revm_interpreter.instructions.links.system.calldataload.
+Require Import revm.revm_interpreter.instructions.links.system.calldatasize.
+Require Import revm.revm_interpreter.instructions.links.system.caller.
+Require Import revm.revm_interpreter.instructions.links.system.callvalue.
+Require Import revm.revm_interpreter.instructions.links.system.codecopy.
+Require Import revm.revm_interpreter.instructions.links.system.codesize.
+Require Import revm.revm_interpreter.instructions.links.system.gas.
+Require Import revm.revm_interpreter.instructions.links.system.keccak256.
 Require Import revm.revm_interpreter.instructions.links.system.returndatacopy.
+Require Import revm.revm_interpreter.instructions.links.system.returndatasize.
+Require Import revm.revm_interpreter.instructions.links.tx_info.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.addmod.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.div.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.exp.
@@ -49,16 +83,32 @@ Require Import revm.revm_interpreter.instructions.simulate.bitwise.sgt.
 Require Import revm.revm_interpreter.instructions.simulate.bitwise.shl.
 Require Import revm.revm_interpreter.instructions.simulate.bitwise.shr.
 Require Import revm.revm_interpreter.instructions.simulate.bitwise.slt.
+Require Import revm.revm_interpreter.instructions.simulate.block_info.basefee.
+Require Import revm.revm_interpreter.instructions.simulate.block_info.blob_basefee.
+Require Import revm.revm_interpreter.instructions.simulate.block_info.block_number.
+Require Import revm.revm_interpreter.instructions.simulate.block_info.chainid.
+Require Import revm.revm_interpreter.instructions.simulate.block_info.coinbase.
+Require Import revm.revm_interpreter.instructions.simulate.block_info.difficulty.
+Require Import revm.revm_interpreter.instructions.simulate.block_info.gaslimit.
+Require Import revm.revm_interpreter.instructions.simulate.block_info.timestamp.
 Require Import revm.revm_interpreter.instructions.simulate.control.jump.
 Require Import revm.revm_interpreter.instructions.simulate.control.jumpdest.
 Require Import revm.revm_interpreter.instructions.simulate.control.jumpi.
 Require Import revm.revm_interpreter.instructions.simulate.memory.mload.
+Require Import revm.revm_interpreter.instructions.simulate.memory.msize.
 Require Import revm.revm_interpreter.instructions.simulate.memory.mstore.
+Require Import revm.revm_interpreter.instructions.simulate.memory.mstore8.
 Require Import revm.revm_interpreter.instructions.simulate.stack.dup.
 Require Import revm.revm_interpreter.instructions.simulate.stack.pop.
 Require Import revm.revm_interpreter.instructions.simulate.stack.push.
 Require Import revm.revm_interpreter.instructions.simulate.stack.push0.
 Require Import revm.revm_interpreter.instructions.simulate.stack.swap.
+Require Import revm.revm_interpreter.instructions.simulate.system.calldataload.
+Require Import revm.revm_interpreter.instructions.simulate.system.callvalue.
+Require Import revm.revm_interpreter.instructions.simulate.system.gas.
+Require Import revm.revm_interpreter.instructions.simulate.tx_info.blob_hash.
+Require Import revm.revm_interpreter.instructions.simulate.tx_info.gasprice.
+Require Import revm.revm_interpreter.instructions.simulate.tx_info.origin.
 Require Import revm.revm_interpreter.links.instruction_context.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.links.table.
@@ -97,6 +147,57 @@ Module FragmentInstructionTable.
     Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
     Function1.of_run
       (fun context => run_stop run_InterpreterTypes_for_WIRE context).
+
+  Definition create_function
+      (is_create2 : bool)
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types)
+      (run_host : Host.Run H H_types) :
+      Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run (fun context => run_create is_create2 run_types run_host context).
+
+  Definition call_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types)
+      (run_host : Host.Run H H_types) :
+      Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run (fun context => run_call run_types run_host context).
+
+  Definition call_code_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types)
+      (run_host : Host.Run H H_types) :
+      Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run (fun context => run_call_code run_types run_host context).
+
+  Definition delegate_call_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types)
+      (run_host : Host.Run H H_types) :
+      Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run (fun context => run_delegate_call run_types run_host context).
+
+  Definition static_call_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types)
+      (run_host : Host.Run H H_types) :
+      Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run (fun context => run_static_call run_types run_host context).
 
   Definition add_function
       {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -339,6 +440,94 @@ Module FragmentInstructionTable.
     Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
     Function1.of_run (fun context => run_bitwise_clz run_types context).
 
+  Definition block_number_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types)
+      (run_host : Host.Run H H_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_block_number run_types run_host context).
+
+  Definition timestamp_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types)
+      (run_host : Host.Run H H_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_timestamp run_types run_host context).
+
+  Definition gaslimit_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types)
+      (run_host : Host.Run H H_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_gaslimit run_types run_host context).
+
+  Definition chainid_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types)
+      (run_host : Host.Run H H_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_chainid run_types run_host context).
+
+  Definition basefee_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types)
+      (run_host : Host.Run H H_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_basefee run_types run_host context).
+
+  Definition blob_basefee_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types)
+      (run_host : Host.Run H H_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_blob_basefee run_types run_host context).
+
+  Definition difficulty_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types)
+      (run_host : Host.Run H H_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_difficulty run_types run_host context).
+
+  Definition coinbase_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types)
+      (run_host : Host.Run H H_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_coinbase run_types run_host context).
+
   Definition unknown_function
       {WIRE H : Set} `{Link WIRE} `{Link H}
       {WIRE_types : InterpreterTypes.Types.t}
@@ -359,6 +548,144 @@ Module FragmentInstructionTable.
     Function1.of_run
       (fun context =>
         run_returndatacopy run_InterpreterTypes_for_WIRE context).
+
+  Definition address_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run (fun context => run_address run_types context).
+
+  Definition balance_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types)
+      (run_host : Host.Run H H_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run (fun context => run_balance run_types run_host context).
+
+  Definition extcodesize_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types)
+      (run_host : Host.Run H H_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run (fun context => run_extcodesize run_types run_host context).
+
+  Definition extcodecopy_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types)
+      (run_host : Host.Run H H_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run (fun context => run_extcodecopy run_types run_host context).
+
+  Definition extcodehash_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types)
+      (run_host : Host.Run H H_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run (fun context => run_extcodehash run_types run_host context).
+
+  Definition caller_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (run_InterpreterTypes_for_WIRE :
+        InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_caller run_InterpreterTypes_for_WIRE context).
+
+  Definition callvalue_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (run_InterpreterTypes_for_WIRE :
+        InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_callvalue run_InterpreterTypes_for_WIRE context).
+
+  Definition calldataload_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (run_InterpreterTypes_for_WIRE :
+        InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_calldataload run_InterpreterTypes_for_WIRE context).
+
+  Definition calldatacopy_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run (fun context => run_calldatacopy run_types context).
+
+  Definition calldatasize_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run (fun context => run_calldatasize run_types context).
+
+  Definition ret_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run (fun context => run_ret run_types context).
+
+  Definition revert_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run (fun context => run_revert run_types context).
+
+  Definition codecopy_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (run_types : InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run (fun context => run_codecopy run_types context).
+
+  Definition gas_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_InterpreterTypes_for_WIRE :
+        InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_gas run_InterpreterTypes_for_WIRE context).
+
+  Definition returndatasize_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_returndatasize run_InterpreterTypes_for_WIRE context).
 
   Definition pop_function
       {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -391,6 +718,28 @@ Module FragmentInstructionTable.
     Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
     Function1.of_run
       (fun context => run_mstore run_InterpreterTypes_for_WIRE context).
+
+  Definition mstore8_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_InterpreterTypes_for_WIRE :
+        InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_mstore8 run_InterpreterTypes_for_WIRE context).
+
+  Definition msize_function
+      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE_types : InterpreterTypes.Types.t}
+      `{InterpreterTypes.Types.AreLinks WIRE_types}
+      {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+      (run_InterpreterTypes_for_WIRE :
+        InterpreterTypes.Run WIRE WIRE_types) :
+    Function1.t (InstructionContext.t H WIRE WIRE_types) unit :=
+    Function1.of_run
+      (fun context => run_msize run_InterpreterTypes_for_WIRE context).
 
   Definition jump_function
       {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -481,7 +830,8 @@ Module FragmentInstructionTable.
       `{InterpreterTypes.Types.AreLinks WIRE_types}
       {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
       (run_InterpreterTypes_for_WIRE :
-        InterpreterTypes.Run WIRE WIRE_types) :
+        InterpreterTypes.Run WIRE WIRE_types)
+      {run_host : Host.Run H H_types} :
     array.t
       (Instruction.t WIRE H WIRE_types)
       {| Integer.value := 256 |} :=
@@ -489,6 +839,16 @@ Module FragmentInstructionTable.
       Instruction.fn_ :=
         unknown_function (H := H) run_InterpreterTypes_for_WIRE;
       Instruction.static_gas := {| Integer.value := 0 |};
+    |} in
+    let chainid_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ :=
+        chainid_function run_InterpreterTypes_for_WIRE run_host;
+      Instruction.static_gas := {| Integer.value := 2 |};
+    |} in
+    let selfbalance_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ :=
+        unknown_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 5 |};
     |} in
     let stop_instruction : Instruction.t WIRE H WIRE_types := {|
       Instruction.fn_ :=
@@ -611,10 +971,38 @@ Module FragmentInstructionTable.
       Instruction.fn_ := clz_function (H := H) run_InterpreterTypes_for_WIRE;
       Instruction.static_gas := {| Integer.value := 5 |};
     |} in
+    let callvalue_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ :=
+        callvalue_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 2 |};
+    |} in
+    let calldataload_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ :=
+        calldataload_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 3 |};
+    |} in
+    let calldatacopy_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ := calldatacopy_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 0 |};
+    |} in
+    let codecopy_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ := codecopy_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 0 |};
+    |} in
+    let returndatasize_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ :=
+        returndatasize_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 2 |};
+    |} in
     let returndatacopy_instruction : Instruction.t WIRE H WIRE_types := {|
       Instruction.fn_ :=
         returndatacopy_function (H := H) run_InterpreterTypes_for_WIRE;
       Instruction.static_gas := {| Integer.value := 0 |};
+    |} in
+    let gas_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ :=
+        gas_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 2 |};
     |} in
     let pop_instruction : Instruction.t WIRE H WIRE_types := {|
       Instruction.fn_ :=
@@ -630,6 +1018,16 @@ Module FragmentInstructionTable.
       Instruction.fn_ :=
         mstore_function (H := H) run_InterpreterTypes_for_WIRE;
       Instruction.static_gas := {| Integer.value := 3 |};
+    |} in
+    let mstore8_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ :=
+        mstore8_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 3 |};
+    |} in
+    let msize_instruction : Instruction.t WIRE H WIRE_types := {|
+      Instruction.fn_ :=
+        msize_function (H := H) run_InterpreterTypes_for_WIRE;
+      Instruction.static_gas := {| Integer.value := 2 |};
     |} in
     let jump_instruction : Instruction.t WIRE H WIRE_types := {|
       Instruction.fn_ :=
@@ -675,6 +1073,55 @@ Module FragmentInstructionTable.
           run_InterpreterTypes_for_WIRE;
       Instruction.static_gas := {| Integer.value := 3 |};
     |} in
+    let tail_after_stack :
+        ArrayPairs.t (Instruction.t WIRE H WIRE_types) 96 :=
+      let log_instruction := fun N : Z =>
+        {| Instruction.fn_ := Function1.of_run
+             (fun context => run_log (N := {| Integer.value := N |})
+               run_InterpreterTypes_for_WIRE run_host context);
+           Instruction.static_gas := {| Integer.value := 0 |} |} in
+      ArrayPair.Build_t (log_instruction 0)
+      (ArrayPair.Build_t (log_instruction 1)
+      (ArrayPair.Build_t (log_instruction 2)
+      (ArrayPair.Build_t (log_instruction 3)
+      (ArrayPair.Build_t (log_instruction 4)
+      (prepend_repeat unknown_instruction 75 16
+        (ArrayPair.Build_t
+          {| Instruction.fn_ := create_function false run_InterpreterTypes_for_WIRE run_host;
+             Instruction.static_gas := {| Integer.value := 0 |} |}
+        (ArrayPair.Build_t
+          {| Instruction.fn_ := call_function run_InterpreterTypes_for_WIRE run_host;
+             Instruction.static_gas := {| Integer.value := 0 |} |}
+        (ArrayPair.Build_t
+          {| Instruction.fn_ := call_code_function run_InterpreterTypes_for_WIRE run_host;
+             Instruction.static_gas := {| Integer.value := 0 |} |}
+        (ArrayPair.Build_t
+          {| Instruction.fn_ := ret_function (H := H) run_InterpreterTypes_for_WIRE;
+             Instruction.static_gas := {| Integer.value := 0 |} |}
+        (ArrayPair.Build_t
+          {| Instruction.fn_ := delegate_call_function run_InterpreterTypes_for_WIRE run_host;
+             Instruction.static_gas := {| Integer.value := 0 |} |}
+        (ArrayPair.Build_t
+          {| Instruction.fn_ := create_function true run_InterpreterTypes_for_WIRE run_host;
+             Instruction.static_gas := {| Integer.value := 0 |} |}
+          (prepend_repeat unknown_instruction 4 6
+            (ArrayPair.Build_t
+              {| Instruction.fn_ := static_call_function run_InterpreterTypes_for_WIRE run_host;
+                 Instruction.static_gas := {| Integer.value := 0 |} |}
+          (prepend_repeat unknown_instruction 2 3
+            (ArrayPair.Build_t
+              {| Instruction.fn_ := revert_function (H := H) run_InterpreterTypes_for_WIRE;
+                 Instruction.static_gas := {| Integer.value := 0 |} |}
+              (ArrayPair.Build_t
+                {| Instruction.fn_ := Function1.of_run
+                     (fun context => run_invalid run_InterpreterTypes_for_WIRE context);
+                   Instruction.static_gas := {| Integer.value := 0 |} |}
+                (ArrayPair.Build_t
+                  {| Instruction.fn_ := Function1.of_run
+                       (fun context => run_selfdestruct
+                         run_InterpreterTypes_for_WIRE run_host context);
+                     Instruction.static_gas := {| Integer.value := 0 |} |}
+                  (ArrayPairs.repeat unknown_instruction 0)))))))))))))))))) in
     let tail_after_push0 :
         ArrayPairs.t (Instruction.t WIRE H WIRE_types) 161 :=
       ArrayPair.Build_t
@@ -682,33 +1129,142 @@ Module FragmentInstructionTable.
         (prepend_map push_instruction 1 32 128
           (prepend_map dup_instruction 1 16 112
             (prepend_map swap_instruction 1 16 96
-              (ArrayPairs.repeat unknown_instruction 96)))) in
+              tail_after_stack))) in
     let tail_after_jumpdest :
         ArrayPairs.t (Instruction.t WIRE H WIRE_types) 164 :=
-      prepend_repeat unknown_instruction 3 161 tail_after_push0 in
+      ArrayPair.Build_t
+        {| Instruction.fn_ := Function1.of_run
+             (fun context => run_tload run_InterpreterTypes_for_WIRE run_host context);
+           Instruction.static_gas := {| Integer.value := 100 |} |}
+        (ArrayPair.Build_t
+          {| Instruction.fn_ := Function1.of_run
+               (fun context => run_tstore run_InterpreterTypes_for_WIRE run_host context);
+             Instruction.static_gas := {| Integer.value := 100 |} |}
+          (ArrayPair.Build_t
+            {| Instruction.fn_ := Function1.of_run
+                 (fun context => run_mcopy run_InterpreterTypes_for_WIRE context);
+               Instruction.static_gas := {| Integer.value := 0 |} |}
+            tail_after_push0)) in
     let tail_after_jumpi :
         ArrayPairs.t (Instruction.t WIRE H WIRE_types) 168 :=
-      prepend_repeat unknown_instruction 3 165
-        (ArrayPair.Build_t jumpdest_instruction tail_after_jumpdest) in
+      ArrayPair.Build_t
+        {| Instruction.fn_ := Function1.of_run
+             (fun context => run_pc run_InterpreterTypes_for_WIRE context);
+           Instruction.static_gas := {| Integer.value := 2 |} |}
+        (ArrayPair.Build_t msize_instruction
+          (ArrayPair.Build_t gas_instruction
+            (ArrayPair.Build_t jumpdest_instruction tail_after_jumpdest))) in
     let tail_after_mstore :
         ArrayPairs.t (Instruction.t WIRE H WIRE_types) 173 :=
-      prepend_repeat unknown_instruction 3 170
-        (ArrayPair.Build_t jump_instruction
-          (ArrayPair.Build_t jumpi_instruction tail_after_jumpi)) in
+      ArrayPair.Build_t mstore8_instruction
+        (prepend_repeat unknown_instruction 2 170
+          (ArrayPair.Build_t jump_instruction
+            (ArrayPair.Build_t jumpi_instruction tail_after_jumpi))) in
     let tail_after_pop :
         ArrayPairs.t (Instruction.t WIRE H WIRE_types) 175 :=
       ArrayPair.Build_t mload_instruction
         (ArrayPair.Build_t mstore_instruction tail_after_mstore) in
+    let tail_after_chainid :
+        ArrayPairs.t (Instruction.t WIRE H WIRE_types) 186 :=
+      ArrayPair.Build_t chainid_instruction
+        (ArrayPair.Build_t selfbalance_instruction
+          (ArrayPair.Build_t
+            {| Instruction.fn_ := basefee_function
+                 run_InterpreterTypes_for_WIRE run_host;
+               Instruction.static_gas := {| Integer.value := 2 |} |}
+            (ArrayPair.Build_t
+              {| Instruction.fn_ := Function1.of_run
+                   (fun context => run_blob_hash run_InterpreterTypes_for_WIRE run_host context);
+                 Instruction.static_gas := {| Integer.value := 3 |} |}
+              (ArrayPair.Build_t
+                {| Instruction.fn_ := blob_basefee_function
+                     run_InterpreterTypes_for_WIRE run_host;
+                   Instruction.static_gas := {| Integer.value := 2 |} |}
+                (prepend_repeat unknown_instruction 5 176
+                  (ArrayPair.Build_t pop_instruction tail_after_pop)))))) in
+    let tail_after_number :
+        ArrayPairs.t (Instruction.t WIRE H WIRE_types) 188 :=
+      ArrayPair.Build_t
+        {| Instruction.fn_ := difficulty_function
+             run_InterpreterTypes_for_WIRE run_host;
+           Instruction.static_gas := {| Integer.value := 2 |} |}
+        (ArrayPair.Build_t
+          {| Instruction.fn_ := gaslimit_function
+               run_InterpreterTypes_for_WIRE run_host;
+             Instruction.static_gas := {| Integer.value := 2 |} |}
+          tail_after_chainid) in
     let tail_after_returndatacopy :
         ArrayPairs.t (Instruction.t WIRE H WIRE_types) 193 :=
-      prepend_repeat unknown_instruction 17 176
-        (ArrayPair.Build_t pop_instruction tail_after_pop) in
+      ArrayPair.Build_t
+        {| Instruction.fn_ := extcodehash_function run_InterpreterTypes_for_WIRE run_host;
+           Instruction.static_gas := {| Integer.value := 0 |} |}
+      (ArrayPair.Build_t
+        {| Instruction.fn_ := Function1.of_run
+             (fun context => run_blockhash run_InterpreterTypes_for_WIRE run_host context);
+           Instruction.static_gas := {| Integer.value := 20 |} |}
+        (ArrayPair.Build_t
+          {| Instruction.fn_ := coinbase_function
+               run_InterpreterTypes_for_WIRE run_host;
+             Instruction.static_gas := {| Integer.value := 2 |} |}
+        (ArrayPair.Build_t
+          {| Instruction.fn_ := timestamp_function
+               run_InterpreterTypes_for_WIRE run_host;
+             Instruction.static_gas := {| Integer.value := 2 |} |}
+        (ArrayPair.Build_t
+          {| Instruction.fn_ := block_number_function
+               run_InterpreterTypes_for_WIRE run_host;
+             Instruction.static_gas := {| Integer.value := 2 |} |}
+          tail_after_number)))) in
+    let tail_after_callvalue :
+        ArrayPairs.t (Instruction.t WIRE H WIRE_types) 204 :=
+      ArrayPair.Build_t callvalue_instruction
+        (ArrayPair.Build_t calldataload_instruction
+          (ArrayPair.Build_t
+            {| Instruction.fn_ := calldatasize_function (H := H) run_InterpreterTypes_for_WIRE;
+               Instruction.static_gas := {| Integer.value := 2 |} |}
+          (ArrayPair.Build_t calldatacopy_instruction
+          (ArrayPair.Build_t
+            {| Instruction.fn_ := Function1.of_run
+                 (fun context => run_codesize run_InterpreterTypes_for_WIRE context);
+               Instruction.static_gas := {| Integer.value := 2 |} |}
+          (ArrayPair.Build_t codecopy_instruction
+          (ArrayPair.Build_t
+            {| Instruction.fn_ := Function1.of_run
+                 (fun context => run_gasprice run_InterpreterTypes_for_WIRE run_host context);
+               Instruction.static_gas := {| Integer.value := 2 |} |}
+          (ArrayPair.Build_t
+            {| Instruction.fn_ := extcodesize_function run_InterpreterTypes_for_WIRE run_host;
+               Instruction.static_gas := {| Integer.value := 0 |} |}
+          (ArrayPair.Build_t
+            {| Instruction.fn_ := extcodecopy_function run_InterpreterTypes_for_WIRE run_host;
+               Instruction.static_gas := {| Integer.value := 0 |} |}
+            (ArrayPair.Build_t
+              returndatasize_instruction
+              (ArrayPair.Build_t
+                returndatacopy_instruction
+                tail_after_returndatacopy)))))))))) in
     let tail_after_bitwise :
         ArrayPairs.t (Instruction.t WIRE H WIRE_types) 225 :=
-      prepend_repeat unknown_instruction 31 194
+      ArrayPair.Build_t unknown_instruction
         (ArrayPair.Build_t
-          returndatacopy_instruction
-          tail_after_returndatacopy) in
+          {| Instruction.fn_ := Function1.of_run
+               (fun context => run_keccak256 run_InterpreterTypes_for_WIRE context);
+             Instruction.static_gas := {| Integer.value := 0 |} |}
+        (prepend_repeat unknown_instruction 15 208
+        (ArrayPair.Build_t
+          {| Instruction.fn_ := address_function (H := H) run_InterpreterTypes_for_WIRE;
+             Instruction.static_gas := {| Integer.value := 2 |} |}
+          (ArrayPair.Build_t
+            {| Instruction.fn_ := balance_function run_InterpreterTypes_for_WIRE run_host;
+               Instruction.static_gas := {| Integer.value := 0 |} |}
+            (ArrayPair.Build_t
+              {| Instruction.fn_ := Function1.of_run
+                   (fun context => run_origin run_InterpreterTypes_for_WIRE run_host context);
+                 Instruction.static_gas := {| Integer.value := 2 |} |}
+              (ArrayPair.Build_t
+                {| Instruction.fn_ := caller_function (H := H) run_InterpreterTypes_for_WIRE;
+                   Instruction.static_gas := {| Integer.value := 2 |} |}
+                tail_after_callvalue)))))) in
     let bitwise_instructions :
         ArrayPairs.t (Instruction.t WIRE H WIRE_types) 240 :=
       ArrayPair.Build_t lt_instruction
@@ -762,4 +1318,5 @@ Module FragmentInstructionTable.
                                   240
                                   bitwise_instructions))))))))))))
       ).
+
 End FragmentInstructionTable.

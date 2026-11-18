@@ -3,6 +3,7 @@ Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.tests.interpreter_types.
+Require Import revm.revm_interpreter.interpreter.links.runtime_flags.
 Require Import revm.revm_primitives.links.hardfork.
 
 Definition empty_input : Input.t := {|
@@ -30,14 +31,15 @@ Definition make_interpreter_with_bytecode
   Interpreter.gas := {|
     Gas.limit := 1000000;
     Gas.memory := {|
-      MemoryGas.expansion_cost := 10;
-      MemoryGas.words_num := 12;
+      MemoryGas.expansion_cost := 0;
+      MemoryGas.words_num := 0;
     |};
     Gas.refunded := 0;
     Gas.remaining := 1000000;
   |};
   Interpreter.stack := stack;
-  Interpreter.return_data := tt;
+  Interpreter.return_data :=
+    {| alloy_primitives.bytes.links.mod.Bytes.value := {| bytes.Bytes.value := [] |} |};
   Interpreter.memory := {|
     Memory.value := [];
     Memory.shared_buffer := [];
@@ -48,8 +50,8 @@ Definition make_interpreter_with_bytecode
     Control.gas := {|
       Gas.limit := 1000000;
       Gas.memory := {|
-        MemoryGas.expansion_cost := 10;
-        MemoryGas.words_num := 12;
+        MemoryGas.expansion_cost := 0;
+        MemoryGas.words_num := 0;
       |};
       Gas.refunded := 0;
       Gas.remaining := 1000000;
@@ -57,7 +59,7 @@ Definition make_interpreter_with_bytecode
     Control.instruction_result := None;
     Control.next_action := None;
   |};
-  Interpreter.runtime_flag := SpecId.PRAGUE;
+  Interpreter.runtime_flag := RuntimeFlags.non_static SpecId.PRAGUE;
   Interpreter.extend := tt;
 |}.
 

@@ -1,3 +1,4 @@
+From Stdlib Require Import Lia.
 Require Import simulate.RocqOfRust.
 Require Export alloy_primitives.bits.links.fixed.
 Require Import alloy_primitives.links.aliases.
@@ -12,14 +13,35 @@ Module FixedBytes.
     List.fold_left (fun acc byte => 256 * acc + i[byte] : Z) bytes 0.
 
   (** Generate n bytes in big-endian order directly as ArrayPairs. *)
-  Fixpoint bytes_be (n : nat) (value : Z) : ArrayPairs.t u8 n :=
+  Fixpoint bytes_be_div (n : nat) (value : Z) : ArrayPairs.t u8 n :=
     match n return ArrayPairs.t u8 n with
     | O => ArrayEmpty.Make
     | S n' =>
       let shift := (Z.of_nat n' * 8)%Z in
       {| ArrayPair.x := {| Integer.value := (value / 2 ^ shift) mod 256 |};
+         ArrayPair.xs := bytes_be_div n' value |}
+    end.
+
+  (** Byte extraction uses shifts and masks, as for a fixed-width word. *)
+  Fixpoint bytes_be (n : nat) (value : Z) : ArrayPairs.t u8 n :=
+    match n return ArrayPairs.t u8 n with
+    | O => ArrayEmpty.Make
+    | S n' =>
+      let shift := (Z.of_nat n' * 8)%Z in
+      {| ArrayPair.x := {| Integer.value := Z.land (Z.shiftr value shift) 255 |};
          ArrayPair.xs := bytes_be n' value |}
     end.
+
+  Lemma bytes_be_eq (n : nat) (value : Z) :
+    bytes_be n value = bytes_be_div n value.
+  Proof.
+    induction n as [|n IH]; cbn [bytes_be bytes_be_div]; [reflexivity|].
+    rewrite IH.
+    rewrite Z.shiftr_div_pow2 by lia.
+    change 255%Z with (Z.ones 8).
+    rewrite Z.land_ones by lia.
+    reflexivity.
+  Qed.
 
   (** Convert from [Z] interpreting in big-endian. *)
   Definition from_Z {N : usize} (value : Z) : FixedBytes.t N :=

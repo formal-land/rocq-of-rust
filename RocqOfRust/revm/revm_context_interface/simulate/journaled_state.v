@@ -1,9 +1,36 @@
 Require Import simulate.RocqOfRust.
 Require Import core.ops.links.deref.
 Require Import core.ops.simulate.deref.
+Require Import alloy_primitives.bits.simulate.fixed.
 Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.links.aliases.
+Require Import revm.revm_bytecode.links.bytecode.
 Require Import revm.revm_context_interface.links.journaled_state.
+Require Import ruint.links.lib.
+
+Module TransferError.
+  Inductive t : Set :=
+  | OutOfFunds
+  | OverflowPayment
+  | CreateCollision.
+End TransferError.
+
+Module JournalCheckpoint.
+  Record t : Set := {
+    log_i : usize;
+    journal_i : usize;
+  }.
+End JournalCheckpoint.
+
+Module JournalLoadError.
+  Inductive t (Error : Set) : Set :=
+  | DBError (error : Error)
+  | ColdLoadSkipped.
+
+  Arguments DBError {Error}.
+
+  Arguments ColdLoadSkipped {Error}.
+End JournalLoadError.
 
 Module Impl_Deref_for_StateLoad.
   Definition Self (T : Set) `{Link T} : Set :=
@@ -70,14 +97,46 @@ Module Impl_Eip7702CodeLoad.
 End Impl_Eip7702CodeLoad.
 Export (hints) Impl_Eip7702CodeLoad.
 
-Parameter account_info_load_original_bytes :
+Parameter abstract_account_info_load_original_bytes :
   AccountInfoLoad.t -> Bytes.t.
 
-Parameter account_info_load_is_empty :
-  AccountInfoLoad.t -> bool.
+Definition account_info_load_original_bytes (load : AccountInfoLoad.t) : Bytes.t :=
+  match load.(AccountInfoLoad.account) with
+  | Cow.Owned account =>
+      match account.(AccountInfo.code) with
+      | Some code => code.(Bytecode.original_bytes)
+      | None => abstract_account_info_load_original_bytes load
+      end
+  | Cow.Borrowed _ => abstract_account_info_load_original_bytes load
+  end.
 
-Parameter account_info_load_code_hash :
-  AccountInfoLoad.t -> aliases.B256.t.
+Parameter borrowed_account_is_empty : '& AccountInfo.t -> bool.
 
-Parameter account_info_load_balance :
-  AccountInfoLoad.t -> aliases.U256.t.
+Definition account_info_load_is_empty (load : AccountInfoLoad.t) : bool :=
+  match load.(AccountInfoLoad.account) with
+  | Cow.Owned account =>
+      let code_hash := FixedBytes.to_Z account.(AccountInfo.code_hash) in
+      ((code_hash =? 0) ||
+        (code_hash =? 89477152217924674838424037953991966239322087453347756267410168184682657981552)) &&
+      (account.(AccountInfo.balance).(Uint.value) =? 0) &&
+      (account.(AccountInfo.nonce).(Integer.value) =? 0)
+  | Cow.Borrowed account => borrowed_account_is_empty account
+  end.
+
+Parameter borrowed_account_code_hash :
+  '& AccountInfo.t -> aliases.B256.t.
+
+Definition account_info_load_code_hash (load : AccountInfoLoad.t) : aliases.B256.t :=
+  match load.(AccountInfoLoad.account) with
+  | Cow.Owned account => account.(AccountInfo.code_hash)
+  | Cow.Borrowed account => borrowed_account_code_hash account
+  end.
+
+Parameter borrowed_account_balance :
+  '& AccountInfo.t -> aliases.U256.t.
+
+Definition account_info_load_balance (load : AccountInfoLoad.t) : aliases.U256.t :=
+  match load.(AccountInfoLoad.account) with
+  | Cow.Owned account => account.(AccountInfo.balance)
+  | Cow.Borrowed account => borrowed_account_balance account
+  end.

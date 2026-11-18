@@ -9,22 +9,68 @@ Require Import revm.revm_primitives.links.hardfork.
 Require Import revm.revm_primitives.simulate.hardfork.
 Require Import ruint.links.lib.
 
-Definition sstore_refund (spec_id : SpecId.t) (vals : '& SStoreResult.t) : i64 :=
-  {| Integer.value := 0 |}.
+(** Native refund delta before the transaction-wide refund cap. *)
+Definition sstore_refund (spec_id : SpecId.t) (vals : SStoreResult.t) : i64 :=
+  let original := vals.(SStoreResult.original_value).(Uint.value) in
+  let present := vals.(SStoreResult.present_value).(Uint.value) in
+  let new := vals.(SStoreResult.new_value).(Uint.value) in
+  let refund := (
+    if Impl_SpecId.is_enabled_in spec_id SpecId.ISTANBUL then
+      let clears_schedule :=
+        if Impl_SpecId.is_enabled_in spec_id SpecId.LONDON then
+          SSTORE_RESET.(Integer.value) - COLD_SLOAD_COST.(Integer.value) +
+          ACCESS_LIST_STORAGE_KEY.(Integer.value)
+        else REFUND_SSTORE_CLEARS.(Integer.value) in
+      if new =? present then 0
+      else if (original =? present) && (new =? 0) then clears_schedule
+      else
+        let refund :=
+          if original =? 0 then 0
+          else if present =? 0 then - clears_schedule
+          else if new =? 0 then clears_schedule
+          else 0 in
+        if original =? new then
+          let '(reset_gas, load_gas) :=
+            if Impl_SpecId.is_enabled_in spec_id SpecId.BERLIN then
+              (SSTORE_RESET.(Integer.value) - COLD_SLOAD_COST.(Integer.value),
+               WARM_STORAGE_READ_COST.(Integer.value))
+            else
+              (SSTORE_RESET.(Integer.value), ISTANBUL_SLOAD_GAS.(Integer.value)) in
+          refund +
+            (if original =? 0 then SSTORE_SET.(Integer.value) - load_gas
+             else reset_gas - load_gas)
+        else refund
+    else if negb (present =? 0) && (new =? 0) then
+      REFUND_SSTORE_CLEARS.(Integer.value)
+    else 0)%Z in
+  {| Integer.value := refund |}.
 
 Lemma sstore_refund_eq (stack : Stack.t)
-    (spec_id : SpecId.t) (vals : '& SStoreResult.t) :
+    (spec_id : SpecId.t) (vals_ref : '& SStoreResult.t)
+    (vals : SStoreResult.t) :
+  CanRead.t stack vals vals_ref ->
   {{
     SimulateM.eval_f
-      (run_sstore_refund spec_id vals)
+      (run_sstore_refund spec_id vals_ref)
       stack 🌲
     (Output.Success (sstore_refund spec_id vals), stack)
   }}.
 Proof.
 Admitted.
 
+Definition cost_per_word_impl (len : usize) (multiple : u64) : option u64 :=
+  let num_words :=
+    (Impl_usize.saturating_add len
+      (@lib.Integer_of_Z IntegerKind.Usize 31)) /i
+      (@lib.Integer_of_Z IntegerKind.Usize 32) in
+  BinOp.Checked.mul multiple
+    {| Integer.value := num_words.(Integer.value) |}.
+
 Definition create2_cost (len : usize) : option u64 :=
-  Some {| Integer.value := 0 |}.
+  match cost_per_word_impl len KECCAK256WORD with
+  | Some word_cost => BinOp.Checked.add CREATE word_cost
+  | None => None
+  end.
 
 Lemma create2_cost_eq (stack : Stack.t) (len : usize) :
   {{
@@ -97,15 +143,6 @@ Lemma exp_cost_eq (stack : Stack.t)
 Proof.
 Admitted.
 
-Definition cost_per_word_impl (len : usize) (multiple : u64) : option u64 :=
-  let num_words :=
-    lib.BinOp.Wrap.div
-      (Impl_usize.saturating_add len
-        (@lib.Integer_of_Z IntegerKind.Usize 31))
-      (@lib.Integer_of_Z IntegerKind.Usize 32) in
-  BinOp.Checked.mul multiple
-    {| Integer.value := num_words.(Integer.value) |}.
-
 Definition copy_cost_impl (base_cost : u64) (len : usize) : option u64 :=
   match cost_per_word_impl len COPY with
   | Some word_cost => BinOp.Checked.add base_cost word_cost
@@ -157,7 +194,16 @@ Proof.
 Admitted.
 
 Definition log_cost (n : u8) (len : u64) : option u64 :=
-  Some {| Integer.value := 0 |}.
+  match BinOp.Checked.mul LOGDATA len with
+  | None => None
+  | Some data_cost =>
+    match BinOp.Checked.add LOG data_cost with
+    | None => None
+    | Some base_cost =>
+      BinOp.Checked.add base_cost
+        (LOGTOPIC *i (M.cast_integer IntegerKind.U64 n))
+    end
+  end.
 
 Lemma log_cost_eq (stack : Stack.t) (n : u8) (len : u64) :
   {{
@@ -170,7 +216,10 @@ Proof.
 Admitted.
 
 Definition keccak256_cost (len : usize) : option u64 :=
-  Some {| Integer.value := 0 |}.
+  match cost_per_word_impl len KECCAK256WORD with
+  | Some word_cost => BinOp.Checked.add KECCAK256 word_cost
+  | None => None
+  end.
 
 Lemma keccak256_cost_eq (stack : Stack.t) (len : usize) :
   {{
@@ -196,7 +245,11 @@ Proof.
 Admitted.
 
 Definition initcode_cost (len : usize) : u64 :=
-  {| Integer.value := 0 |}.
+  let num_words :=
+    (Impl_usize.saturating_add len
+      (@lib.Integer_of_Z IntegerKind.Usize 31)) /i
+      (@lib.Integer_of_Z IntegerKind.Usize 32) in
+  INITCODE_WORD_COST *i {| Integer.value := num_words.(Integer.value) |}.
 
 Lemma initcode_cost_eq (stack : Stack.t) (len : usize) :
   {{
@@ -494,7 +547,10 @@ Module SstoreTest.
 End SstoreTest.
 
 Definition static_selfdestruct_cost (spec_id : SpecId.t) : u64 :=
-  {| Integer.value := 0 |}.
+  if Impl_SpecId.is_enabled_in spec_id SpecId.TANGERINE then
+    5000
+  else
+    0.
 
 Lemma static_selfdestruct_cost_eq (stack : Stack.t) (spec_id : SpecId.t) :
   {{
@@ -506,25 +562,45 @@ Lemma static_selfdestruct_cost_eq (stack : Stack.t) (spec_id : SpecId.t) :
 Proof.
 Admitted.
 
+Definition selfdestruct_cold_beneficiary_cost (spec_id : SpecId.t) : u64 :=
+  if Impl_SpecId.is_enabled_in spec_id SpecId.BERLIN then
+    COLD_ACCOUNT_ACCESS_COST
+  else
+    0.
+
 Definition dyn_selfdestruct_cost
     (spec_id : SpecId.t)
-    (res : '& (StateLoad.t SelfDestructResult.t)) :
+    (res : StateLoad.t SelfDestructResult.t) :
     u64 :=
-  {| Integer.value := 0 |}.
+  let should_charge_topup :=
+    if Impl_SpecId.is_enabled_in spec_id SpecId.SPURIOUS_DRAGON then
+      res.(StateLoad.data).(SelfDestructResult.had_value) &&
+        negb res.(StateLoad.data).(SelfDestructResult.target_exists)
+    else
+      negb res.(StateLoad.data).(SelfDestructResult.target_exists) in
+  let gas :=
+    if Impl_SpecId.is_enabled_in spec_id SpecId.TANGERINE && should_charge_topup then
+      NEWACCOUNT
+    else
+      0 in
+  if res.(StateLoad.is_cold) then
+    gas +i selfdestruct_cold_beneficiary_cost spec_id
+  else
+    gas.
 
 Lemma dyn_selfdestruct_cost_eq (stack : Stack.t)
-    (spec_id : SpecId.t) (res : '& (StateLoad.t SelfDestructResult.t)) :
+    (spec_id : SpecId.t)
+    (res_ref : '& (StateLoad.t SelfDestructResult.t))
+    (res : StateLoad.t SelfDestructResult.t) :
+  CanRead.t stack res res_ref ->
   {{
     SimulateM.eval_f
-      (run_dyn_selfdestruct_cost spec_id res)
+      (run_dyn_selfdestruct_cost spec_id res_ref)
       stack 🌲
     (Output.Success (dyn_selfdestruct_cost spec_id res), stack)
   }}.
 Proof.
 Admitted.
-
-Definition selfdestruct_cold_beneficiary_cost (spec_id : SpecId.t) : u64 :=
-  {| Integer.value := 0 |}.
 
 Lemma selfdestruct_cold_beneficiary_cost_eq (stack : Stack.t) (spec_id : SpecId.t) :
   {{
@@ -540,7 +616,7 @@ Definition selfdestruct_cost
     (spec_id : SpecId.t)
     (res : StateLoad.t SelfDestructResult.t) :
     u64 :=
-  {| Integer.value := 0 |}.
+  static_selfdestruct_cost spec_id +i dyn_selfdestruct_cost spec_id res.
 
 Lemma selfdestruct_cost_eq (stack : Stack.t)
     (spec_id : SpecId.t) (res : StateLoad.t SelfDestructResult.t) :
@@ -557,7 +633,14 @@ Definition calc_call_static_gas
     (spec_id : SpecId.t)
     (has_transfer : bool) :
     u64 :=
-  {| Integer.value := 0 |}.
+  let gas :=
+    if Impl_SpecId.is_enabled_in spec_id SpecId.BERLIN then
+      WARM_STORAGE_READ_COST
+    else if Impl_SpecId.is_enabled_in spec_id SpecId.TANGERINE then
+      700
+    else
+      40 in
+  if has_transfer then gas +i CALLVALUE else gas.
 
 Lemma calc_call_static_gas_eq (stack : Stack.t)
     (spec_id : SpecId.t) (has_transfer : bool) :
@@ -622,3 +705,49 @@ Lemma memory_gas_eq (stack : Stack.t) (num_words : usize) :
   }}.
 Proof.
 Admitted.
+
+Module SelfDestructGas.
+Module Test.
+  Definition result (had_value target_exists is_cold : bool) :
+      StateLoad.t SelfDestructResult.t :=
+    {| StateLoad.data :=
+         {| SelfDestructResult.had_value := had_value;
+            SelfDestructResult.target_exists := target_exists;
+            SelfDestructResult.previously_destroyed := false |};
+       StateLoad.is_cold := is_cold |}.
+
+  Lemma selfdestruct_new_account_activation :
+    selfdestruct_cost SpecId.HOMESTEAD (result true false true) = 0 /\
+    selfdestruct_cost SpecId.TANGERINE (result false false true) = 30000 /\
+    selfdestruct_cost SpecId.SPURIOUS_DRAGON (result false false true) = 5000 /\
+    selfdestruct_cost SpecId.SPURIOUS_DRAGON (result true false true) = 30000.
+  Proof. vm_compute. repeat split; reflexivity. Qed.
+
+  Lemma selfdestruct_cancun_costs :
+    selfdestruct_cost SpecId.CANCUN (result true true false) = 5000 /\
+    selfdestruct_cost SpecId.CANCUN (result true true true) = 7600 /\
+    selfdestruct_cost SpecId.CANCUN (result false false true) = 7600 /\
+    selfdestruct_cost SpecId.CANCUN (result true false false) = 30000 /\
+    selfdestruct_cost SpecId.CANCUN (result true false true) = 32600.
+  Proof. vm_compute. repeat split; reflexivity. Qed.
+
+  Lemma selfdestruct_base_cost_activation :
+    static_selfdestruct_cost SpecId.HOMESTEAD = 0 /\
+    static_selfdestruct_cost SpecId.TANGERINE = 5000 /\
+    static_selfdestruct_cost SpecId.CANCUN = 5000.
+  Proof. vm_compute. repeat split; reflexivity. Qed.
+
+  Lemma selfdestruct_cold_cost_activation :
+    selfdestruct_cold_beneficiary_cost SpecId.ISTANBUL = 0 /\
+    selfdestruct_cold_beneficiary_cost SpecId.BERLIN = 2600 /\
+    selfdestruct_cold_beneficiary_cost SpecId.PRAGUE = 2600.
+  Proof. vm_compute. repeat split; reflexivity. Qed.
+End Test.
+End SelfDestructGas.
+
+Module InitialAndFloorGas.
+  Record t : Set := {
+    initial_gas : u64;
+    floor_gas : u64;
+  }.
+End InitialAndFloorGas.
