@@ -5410,12 +5410,7 @@ Module result.
                 ltac:(M.monadic
                   (let γ0_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "core::ops::try_trait::Yeet", 0 |) in
-                  let e :=
-                    M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
-                      γ0_0
-                    |) in
+                  let e := M.copy (| E, γ0_0 |) in
                   Value.StructTuple
                     "core::result::Result::Err"
                     []

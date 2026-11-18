@@ -12623,12 +12623,7 @@ Module string.
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
-                  let c :=
-                    M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
-                      γ
-                    |) in
+                  let c := M.copy (| Ty.path "char", γ |) in
                   M.read (|
                     let~ _ : Ty.tuple [] :=
                       M.call_closure (|

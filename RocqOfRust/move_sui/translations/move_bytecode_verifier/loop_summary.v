@@ -2211,12 +2211,7 @@ Module loop_summary.
                       "move_bytecode_verifier::loop_summary::NodeId",
                       0
                     |) in
-                  let ancestor :=
-                    M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
-                      γ0_0
-                    |) in
+                  let ancestor := M.copy (| Ty.path "u16", γ0_0 |) in
                   M.match_operator (|
                     Ty.path "bool",
                     β2,
@@ -2229,12 +2224,7 @@ Module loop_summary.
                               "move_bytecode_verifier::loop_summary::NodeId",
                               0
                             |) in
-                          let descendant :=
-                            M.copy (|
-                              Ty.path
-                                "Type for variables in patterns in function parameters is not handled",
-                              γ0_0
-                            |) in
+                          let descendant := M.copy (| Ty.path "u16", γ0_0 |) in
                           LogicalOp.and (|
                             M.call_closure (|
                               Ty.path "bool",
@@ -4432,12 +4422,7 @@ Module loop_summary.
                       "move_bytecode_verifier::loop_summary::NodeId",
                       0
                     |) in
-                  let id :=
-                    M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
-                      γ0_0
-                    |) in
+                  let id := M.copy (| Ty.path "u16", γ0_0 |) in
                   M.cast (Ty.path "usize") (M.read (| id |))))
             ]
           |)))

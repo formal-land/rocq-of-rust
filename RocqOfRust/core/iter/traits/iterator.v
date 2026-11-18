@@ -1812,8 +1812,7 @@ Module iter.
                       (let _ := M.read (| γ |) in
                       let predicate :=
                         M.alloc (|
-                          Ty.path
-                            "Type for variables in patterns in function parameters is not handled",
+                          Ty.apply (Ty.path "&mut") [] [ P ],
                           M.borrow (| Pointer.Kind.MutRef, γ |)
                         |) in
                       M.read (|

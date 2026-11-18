@@ -9298,12 +9298,7 @@ Module collections.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ := M.deref (| M.read (| γ |) |) in
-                      let elem :=
-                        M.copy (|
-                          Ty.path
-                            "Type for variables in patterns in function parameters is not handled",
-                          γ
-                        |) in
+                      let elem := M.copy (| T, γ |) in
                       M.read (|
                         let~ _ : Ty.path "bool" :=
                           M.call_closure (|

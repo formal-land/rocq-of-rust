@@ -19093,8 +19093,15 @@ Module collections.
                     (let _ := M.read (| γ |) in
                     let other :=
                       M.alloc (|
-                        Ty.path
-                          "Type for variables in patterns in function parameters is not handled",
+                        Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::collections::linked_list::LinkedList")
+                              []
+                              [ T; Ty.path "alloc::alloc::Global" ]
+                          ],
                         M.borrow (| Pointer.Kind.MutRef, γ |)
                       |) in
                     M.read (|
@@ -19273,12 +19280,7 @@ Module collections.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
-                    let elem :=
-                      M.copy (|
-                        Ty.path
-                          "Type for variables in patterns in function parameters is not handled",
-                        γ
-                      |) in
+                    let elem := M.copy (| T, γ |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
                         M.call_closure (|

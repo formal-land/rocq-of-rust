@@ -34,16 +34,10 @@ Module signed.
                   let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                   let result :=
                     M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
+                      Ty.apply (Ty.path "alloy_primitives::signed::int::Signed") [ BITS; LIMBS ] [],
                       γ0_0
                     |) in
-                  let overflow :=
-                    M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
-                      γ0_1
-                    |) in
+                  let overflow := M.copy (| Ty.path "bool", γ0_1 |) in
                   M.read (|
                     let~ _ : Ty.tuple [] :=
                       M.match_operator (|

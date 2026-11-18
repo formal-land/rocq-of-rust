@@ -6462,12 +6462,7 @@ Module iter.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
-                    let start :=
-                      M.copy (|
-                        Ty.path
-                          "Type for variables in patterns in function parameters is not handled",
-                        γ
-                      |) in
+                    let start := M.copy (| Ty.path "char", γ |) in
                     M.match_operator (|
                       Ty.tuple
                         [
@@ -6479,12 +6474,7 @@ Module iter.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ := M.deref (| M.read (| γ |) |) in
-                            let end_ :=
-                              M.copy (|
-                                Ty.path
-                                  "Type for variables in patterns in function parameters is not handled",
-                                γ
-                              |) in
+                            let end_ := M.copy (| Ty.path "char", γ |) in
                             M.read (|
                               let~ start : Ty.path "u32" :=
                                 M.cast (Ty.path "u32") (M.read (| start |)) in
@@ -7689,12 +7679,7 @@ Module iter.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
-                    let start :=
-                      M.copy (|
-                        Ty.path
-                          "Type for variables in patterns in function parameters is not handled",
-                        γ
-                      |) in
+                    let start := M.copy (| Ty.path "core::ascii::ascii_char::AsciiChar", γ |) in
                     M.match_operator (|
                       Ty.tuple
                         [
@@ -7707,11 +7692,7 @@ Module iter.
                           ltac:(M.monadic
                             (let γ := M.deref (| M.read (| γ |) |) in
                             let end_ :=
-                              M.copy (|
-                                Ty.path
-                                  "Type for variables in patterns in function parameters is not handled",
-                                γ
-                              |) in
+                              M.copy (| Ty.path "core::ascii::ascii_char::AsciiChar", γ |) in
                             M.call_closure (|
                               Ty.tuple
                                 [
@@ -8281,12 +8262,7 @@ Module iter.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
-                    let start :=
-                      M.copy (|
-                        Ty.path
-                          "Type for variables in patterns in function parameters is not handled",
-                        γ
-                      |) in
+                    let start := M.copy (| Ty.path "core::net::ip_addr::Ipv4Addr", γ |) in
                     M.match_operator (|
                       Ty.tuple
                         [
@@ -8298,12 +8274,7 @@ Module iter.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ := M.deref (| M.read (| γ |) |) in
-                            let end_ :=
-                              M.copy (|
-                                Ty.path
-                                  "Type for variables in patterns in function parameters is not handled",
-                                γ
-                              |) in
+                            let end_ := M.copy (| Ty.path "core::net::ip_addr::Ipv4Addr", γ |) in
                             M.call_closure (|
                               Ty.tuple
                                 [
@@ -8646,12 +8617,7 @@ Module iter.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
-                    let start :=
-                      M.copy (|
-                        Ty.path
-                          "Type for variables in patterns in function parameters is not handled",
-                        γ
-                      |) in
+                    let start := M.copy (| Ty.path "core::net::ip_addr::Ipv6Addr", γ |) in
                     M.match_operator (|
                       Ty.tuple
                         [
@@ -8663,12 +8629,7 @@ Module iter.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ := M.deref (| M.read (| γ |) |) in
-                            let end_ :=
-                              M.copy (|
-                                Ty.path
-                                  "Type for variables in patterns in function parameters is not handled",
-                                γ
-                              |) in
+                            let end_ := M.copy (| Ty.path "core::net::ip_addr::Ipv6Addr", γ |) in
                             M.call_closure (|
                               Ty.tuple
                                 [

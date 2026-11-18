@@ -11688,12 +11688,7 @@ Module vec.
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
-                  let item :=
-                    M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
-                      γ
-                    |) in
+                  let item := M.copy (| T, γ |) in
                   M.read (|
                     let~ _ : Ty.tuple [] :=
                       M.call_closure (|
@@ -11790,12 +11785,7 @@ Module vec.
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
-                  let item :=
-                    M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
-                      γ
-                    |) in
+                  let item := M.copy (| T, γ |) in
                   M.read (|
                     let~ len : Ty.path "usize" :=
                       M.call_closure (|

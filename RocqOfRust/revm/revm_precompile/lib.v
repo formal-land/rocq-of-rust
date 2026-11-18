@@ -4903,19 +4903,26 @@ Module Impl_core_convert_From_Tuple_revm_precompile_id_PrecompileId_alloy_primit
                 (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                 let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                 let γ0_2 := M.SubPointer.get_tuple_field (| γ, 2 |) in
-                let id :=
-                  M.copy (|
-                    Ty.path "Type for variables in patterns in function parameters is not handled",
-                    γ0_0
-                  |) in
+                let id := M.copy (| Ty.path "revm_precompile::id::PrecompileId", γ0_0 |) in
                 let address :=
-                  M.copy (|
-                    Ty.path "Type for variables in patterns in function parameters is not handled",
-                    γ0_1
-                  |) in
+                  M.copy (| Ty.path "alloy_primitives::bits::address::Address", γ0_1 |) in
                 let fn_ :=
                   M.copy (|
-                    Ty.path "Type for variables in patterns in function parameters is not handled",
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
+                        Ty.path "u64"
+                      ]
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.path "revm_precompile::interface::PrecompileOutput";
+                          Ty.path "revm_precompile::interface::PrecompileError"
+                        ]),
                     γ0_2
                   |) in
                 Value.mkStructRecord

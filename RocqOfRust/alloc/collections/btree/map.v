@@ -25908,18 +25908,8 @@ Module collections.
                     ltac:(M.monadic
                       (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                       let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                      let k :=
-                        M.copy (|
-                          Ty.path
-                            "Type for variables in patterns in function parameters is not handled",
-                          γ0_0
-                        |) in
-                      let v :=
-                        M.copy (|
-                          Ty.path
-                            "Type for variables in patterns in function parameters is not handled",
-                          γ0_1
-                        |) in
+                      let k := M.copy (| K, γ0_0 |) in
+                      let v := M.copy (| V, γ0_1 |) in
                       M.read (|
                         let~ _ : Ty.apply (Ty.path "core::option::Option") [] [ V ] :=
                           M.call_closure (|
@@ -26161,19 +26151,9 @@ Module collections.
                       (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                       let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                       let γ0_0 := M.deref (| M.read (| γ0_0 |) |) in
-                      let k :=
-                        M.copy (|
-                          Ty.path
-                            "Type for variables in patterns in function parameters is not handled",
-                          γ0_0
-                        |) in
+                      let k := M.copy (| K, γ0_0 |) in
                       let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
-                      let v :=
-                        M.copy (|
-                          Ty.path
-                            "Type for variables in patterns in function parameters is not handled",
-                          γ0_1
-                        |) in
+                      let v := M.copy (| V, γ0_1 |) in
                       M.read (|
                         let~ _ : Ty.apply (Ty.path "core::option::Option") [] [ V ] :=
                           M.call_closure (|
