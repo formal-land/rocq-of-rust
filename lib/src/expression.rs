@@ -135,12 +135,6 @@ pub(crate) enum Expr {
         ty: Rc<RocqType>,
         expr: Rc<Expr>,
     },
-    CompoundAssign {
-        operator: String,
-        result_ty: Rc<RocqType>,
-        lhs: Rc<Expr>,
-        rhs: Rc<Expr>,
-    },
     /// The logical operators are lazily evaluated, so the second
     /// parameter [rhs] must be in monadic form.
     LogicalOperator {
@@ -296,7 +290,7 @@ impl Expr {
             } => func.has_return() || args.iter().any(|arg| arg.has_return()),
             Expr::CallTy { func, ty: _ } => func.has_return(),
             Expr::Alloc { ty: _, expr } => expr.has_return(),
-            Expr::CompoundAssign { lhs, rhs, .. } | Expr::LogicalOperator { lhs, rhs, .. } => lhs.has_return() || rhs.has_return(),
+            Expr::LogicalOperator { name: _, lhs, rhs } => lhs.has_return() || rhs.has_return(),
             Expr::Cast {
                 target_ty: _,
                 source,
@@ -702,14 +696,6 @@ impl Expr {
             Expr::CallTy { func, ty } => func.to_rocq().apply(ty.to_rocq()),
             Expr::Alloc { ty, expr } => rocq::Expression::just_name("M.alloc")
                 .monadic_apply_many(&[ty.to_rocq(), expr.to_rocq()]),
-            Expr::CompoundAssign { operator, result_ty, lhs, rhs } => {
-                rocq::Expression::just_name("M.compound_assign").monadic_apply_many(&[
-                    result_ty.to_rocq(),
-                    rocq::Expression::just_name(operator),
-                    rhs.read().to_rocq().monadic(),
-                    lhs.to_rocq().monadic(),
-                ])
-            }
             Expr::LogicalOperator { name, lhs, rhs } => rocq::Expression::just_name(name.as_str())
                 .monadic_apply_many(&[lhs.to_rocq(), rocq::Expression::monadic(rhs.to_rocq())]),
             Expr::Cast { target_ty, source } => rocq::Expression::just_name("M.cast")

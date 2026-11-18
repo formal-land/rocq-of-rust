@@ -682,69 +682,6 @@ Module Notations.
 End Notations.
 Import Notations.
 
-(** A tactic that replaces all [M.run] markers with a bind operation.
-    This allows to represent Rust programs without introducing
-    explicit names for all intermediate computation results. *)
-Ltac monadic e :=
-  lazymatch e with
-  | context ctxt [let v := ?x in @?f v] =>
-    refine (let_ _ _);
-      [ monadic x
-      | let v' := fresh v in
-        intro v';
-        let y := (eval cbn beta in (f v')) in
-        lazymatch context ctxt [let v := x in y] with
-        | let _ := x in y => monadic y
-        | _ =>
-          refine (let_ _ _);
-            [ monadic y
-            | let w := fresh "v" in
-              intro w;
-              let z := context ctxt [w] in
-              monadic z
-            ]
-        end
-      ]
-  (* We uses the `let~` notation for lets that come from the source code, in order to keep this
-     abstraction barrier. The code below is simply a copy and paste of the code for the
-     normal `let`. *)
-  | context ctxt [let~ v : ?ty := ?x in @?f v] =>
-    refine (let_user_monadic ty _ _);
-      [ monadic x
-      | let v' := fresh v in
-        intro v';
-        let y := (eval cbn beta in (f v')) in
-        lazymatch context ctxt [let v := x in y] with
-        | let _ := x in y => monadic y
-        | _ =>
-          refine (let_ _ _);
-            [ monadic y
-            | let w := fresh "v" in
-              intro w;
-              let z := context ctxt [w] in
-              monadic z
-            ]
-        end
-      ]
-  | context ctxt [run ?x] =>
-    lazymatch context ctxt [run x] with
-    | run x => monadic x
-    | _ =>
-      refine (let_ _ _);
-        [ monadic x
-        | let v := fresh "v" in
-          intro v;
-          let y := context ctxt [v] in
-          monadic y
-        ]
-    end
-  | _ =>
-    lazymatch type of e with
-    | M => exact e
-    | _ => exact (pure e)
-    end
-  end.
-
 Definition raise (exception : Exception.t) : M :=
   LowM.Pure (inr exception).
 
@@ -806,6 +743,80 @@ Definition compound_assign (ty : Ty.t) (op : Value.t) (rhs lhs : M) : M :=
   let* old := read place in
   let* new_value := call_closure ty op [old; value] in
   write place new_value.
+
+(** A tactic that replaces all [M.run] markers with a bind operation.
+    This allows to represent Rust programs without introducing
+    explicit names for all intermediate computation results. *)
+Ltac monadic e :=
+  lazymatch e with
+  | context ctxt [let v := ?x in @?f v] =>
+    lazymatch f with
+    (* A built-in compound assignment has a let-bound place that appears
+       in both the read and write. Elaborate the operands in place so the
+       general let case cannot move the update before a preceding statement. *)
+    | (fun p => run (write p (run (call_closure ?ty ?op [run (read p); ?rhs])))) =>
+      let r := constr:((ltac:(monadic rhs) : M)) in
+      let l := constr:((ltac:(monadic x) : M)) in
+      let e' := context ctxt [run (compound_assign ty op r l)] in
+      monadic e'
+    | _ =>
+      refine (let_ _ _);
+        [ monadic x
+        | let v' := fresh v in
+          intro v';
+          let y := (eval cbn beta in (f v')) in
+          lazymatch context ctxt [let v := x in y] with
+          | let _ := x in y => monadic y
+          | _ =>
+            refine (let_ _ _);
+              [ monadic y
+              | let w := fresh "v" in
+                intro w;
+                let z := context ctxt [w] in
+                monadic z
+              ]
+          end
+        ]
+    end
+  (* We uses the `let~` notation for lets that come from the source code, in order to keep this
+     abstraction barrier. The code below is simply a copy and paste of the code for the
+     normal `let`. *)
+  | context ctxt [let~ v : ?ty := ?x in @?f v] =>
+    refine (let_user_monadic ty _ _);
+      [ monadic x
+      | let v' := fresh v in
+        intro v';
+        let y := (eval cbn beta in (f v')) in
+        lazymatch context ctxt [let v := x in y] with
+        | let _ := x in y => monadic y
+        | _ =>
+          refine (let_ _ _);
+            [ monadic y
+            | let w := fresh "v" in
+              intro w;
+              let z := context ctxt [w] in
+              monadic z
+            ]
+        end
+      ]
+  | context ctxt [run ?x] =>
+    lazymatch context ctxt [run x] with
+    | run x => monadic x
+    | _ =>
+      refine (let_ _ _);
+        [ monadic x
+        | let v := fresh "v" in
+          intro v;
+          let y := context ctxt [v] in
+          monadic y
+        ]
+    end
+  | _ =>
+    lazymatch type of e with
+    | M => exact e
+    | _ => exact (pure e)
+    end
+  end.
 
 Definition copy (ty : Ty.t) (r : Value.t) : M :=
   let* v := read r in
