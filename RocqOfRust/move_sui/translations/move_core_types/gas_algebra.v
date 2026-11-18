@@ -1098,8 +1098,12 @@ Module gas_algebra.
                     [
                       M.borrow (|
                         Pointer.Kind.Ref,
-                        get_constant (|
-                          "move_core_types::gas_algebra::ToUnit::MULTIPLIER",
+                        get_trait_constant (|
+                          "move_core_types::gas_algebra::ToUnit",
+                          U,
+                          [],
+                          [ T ],
+                          "MULTIPLIER",
                           Ty.path "u64"
                         |)
                       |);
@@ -1209,8 +1213,12 @@ Module gas_algebra.
                         |)
                       |);
                       M.read (|
-                        get_constant (|
-                          "move_core_types::gas_algebra::ToUnit::MULTIPLIER",
+                        get_trait_constant (|
+                          "move_core_types::gas_algebra::ToUnit",
+                          U,
+                          [],
+                          [ T ],
+                          "MULTIPLIER",
                           Ty.path "u64"
                         |)
                       |)
@@ -1278,14 +1286,22 @@ Module gas_algebra.
                     |)
                   |);
                   M.read (|
-                    get_constant (|
-                      "move_core_types::gas_algebra::ToUnitFractional::NOMINATOR",
+                    get_trait_constant (|
+                      "move_core_types::gas_algebra::ToUnitFractional",
+                      U,
+                      [],
+                      [ T ],
+                      "NOMINATOR",
                       Ty.path "u64"
                     |)
                   |);
                   M.read (|
-                    get_constant (|
-                      "move_core_types::gas_algebra::ToUnitFractional::DENOMINATOR",
+                    get_trait_constant (|
+                      "move_core_types::gas_algebra::ToUnitFractional",
+                      U,
+                      [],
+                      [ T ],
+                      "DENOMINATOR",
                       Ty.path "u64"
                     |)
                   |)
@@ -1347,14 +1363,22 @@ Module gas_algebra.
                     |)
                   |);
                   M.read (|
-                    get_constant (|
-                      "move_core_types::gas_algebra::ToUnitFractional::NOMINATOR",
+                    get_trait_constant (|
+                      "move_core_types::gas_algebra::ToUnitFractional",
+                      U,
+                      [],
+                      [ T ],
+                      "NOMINATOR",
                       Ty.path "u64"
                     |)
                   |);
                   M.read (|
-                    get_constant (|
-                      "move_core_types::gas_algebra::ToUnitFractional::DENOMINATOR",
+                    get_trait_constant (|
+                      "move_core_types::gas_algebra::ToUnitFractional",
+                      U,
+                      [],
+                      [ T ],
+                      "DENOMINATOR",
                       Ty.path "u64"
                     |)
                   |)
@@ -2480,21 +2504,22 @@ Module gas_algebra.
               Ty.apply (Ty.path "move_core_types::gas_algebra::GasQuantity") [] [ U ],
               rhs
             |) in
-          M.write (|
-            M.deref (| M.read (| self |) |),
-            M.call_closure (|
-              Ty.apply (Ty.path "move_core_types::gas_algebra::GasQuantity") [] [ U ],
-              M.get_trait_method (|
-                "core::ops::arith::Add",
+          M.let_ (|
+            ltac:(M.monadic
+              (M.call_closure (|
                 Ty.apply (Ty.path "move_core_types::gas_algebra::GasQuantity") [] [ U ],
-                [],
-                [ Ty.apply (Ty.path "move_core_types::gas_algebra::GasQuantity") [] [ U ] ],
-                "add",
-                [],
-                []
-              |),
-              [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-            |)
+                M.get_trait_method (|
+                  "core::ops::arith::Add",
+                  Ty.apply (Ty.path "move_core_types::gas_algebra::GasQuantity") [] [ U ],
+                  [],
+                  [ Ty.apply (Ty.path "move_core_types::gas_algebra::GasQuantity") [] [ U ] ],
+                  "add",
+                  [],
+                  []
+                |),
+                [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+              |))),
+            fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.

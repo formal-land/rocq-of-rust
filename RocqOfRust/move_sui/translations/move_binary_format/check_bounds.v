@@ -23567,8 +23567,12 @@ Module check_bounds.
                                 []
                                 [];
                               M.read (|
-                                get_constant (|
-                                  "move_binary_format::internals::ModuleIndex::KIND",
+                                get_trait_constant (|
+                                  "move_binary_format::internals::ModuleIndex",
+                                  I,
+                                  [],
+                                  [],
+                                  "KIND",
                                   Ty.path "move_binary_format::IndexKind"
                                 |)
                               |);
@@ -24302,8 +24306,12 @@ Module check_bounds.
                               []
                               [];
                             M.read (|
-                              get_constant (|
-                                "move_binary_format::internals::ModuleIndex::KIND",
+                              get_trait_constant (|
+                                "move_binary_format::internals::ModuleIndex",
+                                I,
+                                [],
+                                [],
+                                "KIND",
                                 Ty.path "move_binary_format::IndexKind"
                               |)
                             |);
