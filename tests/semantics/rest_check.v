@@ -34,12 +34,12 @@ Example first_parameter :
 Proof. vm_compute. reflexivity. Qed.
 
 Module Three.
-  RocqOfRustLinkTupleStruct "rest::Three" := { x : u8; y : u8; z : u8 }.
+  RocqOfRustLinkTupleStruct "rest::Three" := { left : u8; center : u8; right : u8 }.
 End Three.
 Export (hints) Three.
 Instance run_outer (x : Three.t) : Run.Trait outer_fields [] [] [φ x] u8.
 Proof. constructor. run_symbolic. Defined.
 Example interior_rest :
-  Evaluate.eval_f 80 (run_outer {|Three.x := bytev 1; Three.y := bytev 2; Three.z := bytev 4|}) []%stack =
+  Evaluate.eval_f 80 (run_outer {|Three.left := bytev 1; Three.center := bytev 2; Three.right := bytev 4|}) []%stack =
   Execution.Done (Output.Success (bytev 5), []%stack).
 Proof. vm_compute. reflexivity. Qed.
