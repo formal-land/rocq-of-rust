@@ -1,0 +1,111 @@
+Impl_Option.callback_has_trivial_drop
+  core.simulate.option.Impl_Option.map_eq
+M.IsAssociatedFunction.t
+  core.simulate.option.Impl_Option.map_eq
+  core.slice.simulate.mod.Impl_Slice.len_eq
+  core.slice.simulate.mod.Impl_Slice.is_empty_eq
+  alloc.vec.simulate.mod.Impl_Vec_T_A.len_eq
+  alloc.vec.simulate.mod.Impl_Vec_T_A.is_empty_eq
+M.IsFunction.t
+  core.simulate.option.Impl_Option.map_eq
+  core.slice.simulate.mod.Impl_Slice.len_eq
+  core.slice.simulate.mod.Impl_Slice.is_empty_eq
+  alloc.vec.simulate.mod.Impl_Vec_T_A.len_eq
+  alloc.vec.simulate.mod.Impl_Vec_T_A.is_empty_eq
+M.IsProvidedMethod
+  core.simulate.option.Impl_Option.map_eq
+  core.slice.simulate.mod.Impl_Slice.len_eq
+  core.slice.simulate.mod.Impl_Slice.is_empty_eq
+  alloc.vec.simulate.mod.Impl_Vec_T_A.len_eq
+  alloc.vec.simulate.mod.Impl_Vec_T_A.is_empty_eq
+M.IsTraitInstance
+  core.simulate.option.Impl_Option.map_eq
+  core.slice.simulate.mod.Impl_Slice.len_eq
+  core.slice.simulate.mod.Impl_Slice.is_empty_eq
+  alloc.vec.simulate.mod.Impl_Vec_T_A.len_eq
+  alloc.vec.simulate.mod.Impl_Vec_T_A.is_empty_eq
+M.SimulateM.TodoLoop
+  core.simulate.option.Impl_Option.map_eq
+  core.slice.simulate.mod.Impl_Slice.len_eq
+  core.slice.simulate.mod.Impl_Slice.is_empty_eq
+  alloc.vec.simulate.mod.Impl_Vec_T_A.len_eq
+  alloc.vec.simulate.mod.Impl_Vec_T_A.is_empty_eq
+M.Ty.path
+  core.simulate.option.Impl_Option.map_eq
+  core.slice.simulate.mod.Impl_Slice.len_eq
+  core.slice.simulate.mod.Impl_Slice.is_empty_eq
+  alloc.vec.simulate.mod.Impl_Vec_T_A.len_eq
+  alloc.vec.simulate.mod.Impl_Vec_T_A.is_empty_eq
+M.Ty.t
+  core.simulate.option.Impl_Option.map_eq
+  core.slice.simulate.mod.Impl_Slice.len_eq
+  core.slice.simulate.mod.Impl_Slice.is_empty_eq
+  alloc.vec.simulate.mod.Impl_Vec_T_A.len_eq
+  alloc.vec.simulate.mod.Impl_Vec_T_A.is_empty_eq
+M.Ty.tuple
+  core.simulate.option.Impl_Option.map_eq
+  core.slice.simulate.mod.Impl_Slice.len_eq
+  core.slice.simulate.mod.Impl_Slice.is_empty_eq
+  alloc.vec.simulate.mod.Impl_Vec_T_A.len_eq
+  alloc.vec.simulate.mod.Impl_Vec_T_A.is_empty_eq
+PrimString.compare
+  core.simulate.option.Impl_Option.map_eq
+  core.slice.simulate.mod.Impl_Slice.len_eq
+  core.slice.simulate.mod.Impl_Slice.is_empty_eq
+  alloc.vec.simulate.mod.Impl_Vec_T_A.len_eq
+  alloc.vec.simulate.mod.Impl_Vec_T_A.is_empty_eq
+PrimString.string
+  core.simulate.option.Impl_Option.map_eq
+  core.slice.simulate.mod.Impl_Slice.len_eq
+  core.slice.simulate.mod.Impl_Slice.is_empty_eq
+  alloc.vec.simulate.mod.Impl_Vec_T_A.len_eq
+  alloc.vec.simulate.mod.Impl_Vec_T_A.is_empty_eq
+Set is impredicative
+  core.simulate.option.Impl_Option.map_eq
+  core.slice.simulate.mod.Impl_Slice.len_eq
+  core.slice.simulate.mod.Impl_Slice.is_empty_eq
+  alloc.vec.simulate.mod.Impl_Vec_T_A.len_eq
+  alloc.vec.simulate.mod.Impl_Vec_T_A.is_empty_eq
+lib.Ty.apply
+  core.simulate.option.Impl_Option.map_eq
+  core.slice.simulate.mod.Impl_Slice.len_eq
+  core.slice.simulate.mod.Impl_Slice.is_empty_eq
+  alloc.vec.simulate.mod.Impl_Vec_T_A.len_eq
+  alloc.vec.simulate.mod.Impl_Vec_T_A.is_empty_eq
+lib.Ty.associated_in_trait
+  core.slice.simulate.mod.Impl_Slice.len_eq
+  core.slice.simulate.mod.Impl_Slice.is_empty_eq
+lib.trait_constant_value
+  alloc.vec.simulate.mod.Impl_Vec_T_A.len_eq
+  alloc.vec.simulate.mod.Impl_Vec_T_A.is_empty_eq
+metadata.ptr.metadata.Instance_IsFunction_metadata
+  core.slice.simulate.mod.Impl_Slice.len_eq
+  core.slice.simulate.mod.Impl_Slice.is_empty_eq
+mod.SliceMetadata.body
+  core.slice.simulate.mod.Impl_Slice.len_eq
+  core.slice.simulate.mod.Impl_Slice.is_empty_eq
+mod.SliceMetadata.metadata_type
+  core.slice.simulate.mod.Impl_Slice.len_eq
+  core.slice.simulate.mod.Impl_Slice.is_empty_eq
+mod.Vec.max_slice_len_value
+  alloc.vec.simulate.mod.Impl_Vec_T_A.len_eq
+  alloc.vec.simulate.mod.Impl_Vec_T_A.is_empty_eq
+mod.Vec.size_of
+  alloc.vec.simulate.mod.Impl_Vec_T_A.len_eq
+  alloc.vec.simulate.mod.Impl_Vec_T_A.is_empty_eq
+mod.intrinsics.Instance_IsFunction_assume
+  alloc.vec.simulate.mod.Impl_Vec_T_A.len_eq
+  alloc.vec.simulate.mod.Impl_Vec_T_A.is_empty_eq
+mod.intrinsics.Instance_IsFunction_ptr_metadata
+  core.slice.simulate.mod.Impl_Slice.len_eq
+  core.slice.simulate.mod.Impl_Slice.is_empty_eq
+mod.intrinsics.ptr_metadata
+  core.slice.simulate.mod.Impl_Slice.len_eq
+  core.slice.simulate.mod.Impl_Slice.is_empty_eq
+mod.slice.Impl_slice_T.AssociatedFunction_len
+  core.slice.simulate.mod.Impl_Slice.is_empty_eq
+mod.vec.Impl_alloc_vec_Vec_T_A.AssociatedFunction_len
+  alloc.vec.simulate.mod.Impl_Vec_T_A.is_empty_eq
+raw_vec.RawVec.to_value
+  alloc.vec.simulate.mod.Impl_Vec_T_A.len_eq
+  alloc.vec.simulate.mod.Impl_Vec_T_A.is_empty_eq
