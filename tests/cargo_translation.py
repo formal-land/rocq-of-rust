@@ -41,3 +41,10 @@ with TemporaryDirectory() as temp:
     stamp = root.stat().st_mtime_ns
     cargo("rocq-of-rust")
     assert root.stat().st_mtime_ns == stamp
+    for _ in range(2):
+        deprecated = subprocess.run(
+            ["cargo", "rocq-of-rust", "--configuration-file", "unused.json", "--generate-reorder"],
+            cwd=crate, env=env, capture_output=True, text=True, check=True,
+        )
+        for option in ("--configuration-file", "--generate-reorder"):
+            assert f"{option} is deprecated and ignored" in deprecated.stderr
