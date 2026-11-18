@@ -12178,23 +12178,29 @@ Module check_bounds.
             ltac:(M.monadic
               (M.read (|
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "move_binary_format::check_bounds::BoundsChecker",
-                      "context"
-                    |),
-                    Value.StructTuple
-                      "move_binary_format::check_bounds::BoundsCheckingContext::ModuleFunction"
-                      []
-                      []
-                      [
-                        Value.StructTuple
-                          "move_binary_format::file_format::FunctionDefinitionIndex"
-                          []
-                          []
-                          [ M.cast (Ty.path "u16") (M.read (| function_def_idx |)) ]
-                      ]
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (Value.StructTuple
+                        "move_binary_format::check_bounds::BoundsCheckingContext::ModuleFunction"
+                        []
+                        []
+                        [
+                          Value.StructTuple
+                            "move_binary_format::file_format::FunctionDefinitionIndex"
+                            []
+                            []
+                            [ M.cast (Ty.path "u16") (M.read (| function_def_idx |)) ]
+                        ])),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "move_binary_format::check_bounds::BoundsChecker",
+                            "context"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.match_operator (|

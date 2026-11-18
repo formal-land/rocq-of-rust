@@ -2130,16 +2130,22 @@ Module slice.
                                           ]
                                           [ M.read (| left |) ] in
                                       let~ _ : Ty.tuple [] :=
-                                        M.write (|
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "core::slice::iter::Split",
-                                            "v"
-                                          |),
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| right |) |)
-                                          |)
+                                        M.let_ (|
+                                          ltac:(M.monadic
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| right |) |)
+                                            |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (M.write (|
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| self |) |),
+                                                  "core::slice::iter::Split",
+                                                  "v"
+                                                |),
+                                                rhs'
+                                              |)))
                                         |) in
                                       ret
                                     |)))
@@ -2622,16 +2628,22 @@ Module slice.
                                           ]
                                           [ M.read (| right |) ] in
                                       let~ _ : Ty.tuple [] :=
-                                        M.write (|
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "core::slice::iter::Split",
-                                            "v"
-                                          |),
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| left |) |)
-                                          |)
+                                        M.let_ (|
+                                          ltac:(M.monadic
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| left |) |)
+                                            |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (M.write (|
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| self |) |),
+                                                  "core::slice::iter::Split",
+                                                  "v"
+                                                |),
+                                                rhs'
+                                              |)))
                                         |) in
                                       ret
                                     |)))
@@ -3447,58 +3459,64 @@ Module slice.
                         |)
                       ] in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::slice::iter::SplitInclusive",
-                        "v"
-                      |),
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                M.get_trait_method (|
-                                  "core::ops::index::Index",
-                                  Ty.apply (Ty.path "slice") [] [ T ],
-                                  [],
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                  M.get_trait_method (|
+                                    "core::ops::index::Index",
+                                    Ty.apply (Ty.path "slice") [] [ T ],
+                                    [],
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::ops::range::RangeFrom")
+                                        []
+                                        [ Ty.path "usize" ]
+                                    ],
+                                    "index",
+                                    [],
+                                    []
+                                  |),
                                   [
-                                    Ty.apply
-                                      (Ty.path "core::ops::range::RangeFrom")
-                                      []
-                                      [ Ty.path "usize" ]
-                                  ],
-                                  "index",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.read (|
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "core::slice::iter::SplitInclusive",
-                                          "v"
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "core::slice::iter::SplitInclusive",
+                                            "v"
+                                          |)
                                         |)
                                       |)
-                                    |)
-                                  |);
-                                  Value.mkStructRecord
-                                    "core::ops::range::RangeFrom"
-                                    []
-                                    [ Ty.path "usize" ]
-                                    [ ("start", M.read (| idx |)) ]
-                                ]
+                                    |);
+                                    Value.mkStructRecord
+                                      "core::ops::range::RangeFrom"
+                                      []
+                                      [ Ty.path "usize" ]
+                                      [ ("start", M.read (| idx |)) ]
+                                  ]
+                                |)
                               |)
                             |)
                           |)
-                        |)
-                      |)
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::slice::iter::SplitInclusive",
+                              "v"
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   ret
                 |)))
@@ -4061,58 +4079,64 @@ Module slice.
                         |)
                       ] in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::slice::iter::SplitInclusive",
-                        "v"
-                      |),
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                M.get_trait_method (|
-                                  "core::ops::index::Index",
-                                  Ty.apply (Ty.path "slice") [] [ T ],
-                                  [],
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                  M.get_trait_method (|
+                                    "core::ops::index::Index",
+                                    Ty.apply (Ty.path "slice") [] [ T ],
+                                    [],
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::ops::range::RangeTo")
+                                        []
+                                        [ Ty.path "usize" ]
+                                    ],
+                                    "index",
+                                    [],
+                                    []
+                                  |),
                                   [
-                                    Ty.apply
-                                      (Ty.path "core::ops::range::RangeTo")
-                                      []
-                                      [ Ty.path "usize" ]
-                                  ],
-                                  "index",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.read (|
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "core::slice::iter::SplitInclusive",
-                                          "v"
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "core::slice::iter::SplitInclusive",
+                                            "v"
+                                          |)
                                         |)
                                       |)
-                                    |)
-                                  |);
-                                  Value.mkStructRecord
-                                    "core::ops::range::RangeTo"
-                                    []
-                                    [ Ty.path "usize" ]
-                                    [ ("end_", M.read (| idx |)) ]
-                                ]
+                                    |);
+                                    Value.mkStructRecord
+                                      "core::ops::range::RangeTo"
+                                      []
+                                      [ Ty.path "usize" ]
+                                      [ ("end_", M.read (| idx |)) ]
+                                  ]
+                                |)
                               |)
                             |)
                           |)
-                        |)
-                      |)
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::slice::iter::SplitInclusive",
+                              "v"
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   ret
                 |)))
@@ -4839,16 +4863,22 @@ Module slice.
                                           |) in
                                         M.read (|
                                           let~ _ : Ty.tuple [] :=
-                                            M.write (|
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (| M.read (| self |) |),
-                                                "core::slice::iter::SplitMut",
-                                                "v"
-                                              |),
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.deref (| M.read (| tail |) |)
-                                              |)
+                                            M.let_ (|
+                                              ltac:(M.monadic
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (| M.read (| tail |) |)
+                                                |))),
+                                              fun rhs' =>
+                                                ltac:(M.monadic
+                                                  (M.write (|
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      M.deref (| M.read (| self |) |),
+                                                      "core::slice::iter::SplitMut",
+                                                      "v"
+                                                    |),
+                                                    rhs'
+                                                  |)))
                                             |) in
                                           M.alloc (|
                                             Ty.apply
@@ -5383,16 +5413,22 @@ Module slice.
                                           |) in
                                         M.read (|
                                           let~ _ : Ty.tuple [] :=
-                                            M.write (|
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (| M.read (| self |) |),
-                                                "core::slice::iter::SplitMut",
-                                                "v"
-                                              |),
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.deref (| M.read (| head |) |)
-                                              |)
+                                            M.let_ (|
+                                              ltac:(M.monadic
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (| M.read (| head |) |)
+                                                |))),
+                                              fun rhs' =>
+                                                ltac:(M.monadic
+                                                  (M.write (|
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      M.deref (| M.read (| self |) |),
+                                                      "core::slice::iter::SplitMut",
+                                                      "v"
+                                                    |),
+                                                    rhs'
+                                                  |)))
                                             |) in
                                           M.alloc (|
                                             Ty.apply
@@ -6140,16 +6176,22 @@ Module slice.
                               |) in
                             M.read (|
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::slice::iter::SplitInclusiveMut",
-                                    "v"
-                                  |),
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.deref (| M.read (| tail |) |)
-                                  |)
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (| M.read (| tail |) |)
+                                    |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::slice::iter::SplitInclusiveMut",
+                                          "v"
+                                        |),
+                                        rhs'
+                                      |)))
                                 |) in
                               M.alloc (|
                                 Ty.apply
@@ -6775,16 +6817,22 @@ Module slice.
                               |) in
                             M.read (|
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::slice::iter::SplitInclusiveMut",
-                                    "v"
-                                  |),
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.deref (| M.read (| head |) |)
-                                  |)
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (| M.read (| head |) |)
+                                    |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::slice::iter::SplitInclusiveMut",
+                                          "v"
+                                        |),
+                                        rhs'
+                                      |)))
                                 |) in
                               M.alloc (|
                                 Ty.apply
@@ -9437,61 +9485,67 @@ Module slice.
                             |)
                           ] in
                       let~ _ : Ty.tuple [] :=
-                        M.write (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::slice::iter::Windows",
-                            "v"
-                          |),
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                    M.get_trait_method (|
-                                      "core::ops::index::Index",
-                                      Ty.apply (Ty.path "slice") [] [ T ],
-                                      [],
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                      M.get_trait_method (|
+                                        "core::ops::index::Index",
+                                        Ty.apply (Ty.path "slice") [] [ T ],
+                                        [],
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::ops::range::RangeFrom")
+                                            []
+                                            [ Ty.path "usize" ]
+                                        ],
+                                        "index",
+                                        [],
+                                        []
+                                      |),
                                       [
-                                        Ty.apply
-                                          (Ty.path "core::ops::range::RangeFrom")
-                                          []
-                                          [ Ty.path "usize" ]
-                                      ],
-                                      "index",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.read (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "core::slice::iter::Windows",
-                                              "v"
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::slice::iter::Windows",
+                                                "v"
+                                              |)
                                             |)
                                           |)
-                                        |)
-                                      |);
-                                      Value.mkStructRecord
-                                        "core::ops::range::RangeFrom"
-                                        []
-                                        [ Ty.path "usize" ]
-                                        [ ("start", Value.Integer IntegerKind.Usize 1) ]
-                                    ]
+                                        |);
+                                        Value.mkStructRecord
+                                          "core::ops::range::RangeFrom"
+                                          []
+                                          [ Ty.path "usize" ]
+                                          [ ("start", Value.Integer IntegerKind.Usize 1) ]
+                                      ]
+                                    |)
                                   |)
                                 |)
                               |)
-                            |)
-                          |)
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (M.write (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::slice::iter::Windows",
+                                  "v"
+                                |),
+                                rhs'
+                              |)))
                         |) in
                       ret
                     |)))
@@ -9870,53 +9924,59 @@ Module slice.
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::slice::iter::Windows",
-                                "v"
-                              |),
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                        M.get_trait_method (|
-                                          "core::ops::index::Index",
-                                          Ty.apply (Ty.path "slice") [] [ T ],
-                                          [],
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                          M.get_trait_method (|
+                                            "core::ops::index::Index",
+                                            Ty.apply (Ty.path "slice") [] [ T ],
+                                            [],
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::ops::range::RangeFrom")
+                                                []
+                                                [ Ty.path "usize" ]
+                                            ],
+                                            "index",
+                                            [],
+                                            []
+                                          |),
                                           [
-                                            Ty.apply
-                                              (Ty.path "core::ops::range::RangeFrom")
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| rest |) |)
+                                            |);
+                                            Value.mkStructRecord
+                                              "core::ops::range::RangeFrom"
                                               []
                                               [ Ty.path "usize" ]
-                                          ],
-                                          "index",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| rest |) |)
-                                          |);
-                                          Value.mkStructRecord
-                                            "core::ops::range::RangeFrom"
-                                            []
-                                            [ Ty.path "usize" ]
-                                            [ ("start", Value.Integer IntegerKind.Usize 1) ]
-                                        ]
+                                              [ ("start", Value.Integer IntegerKind.Usize 1) ]
+                                          ]
+                                        |)
                                       |)
                                     |)
                                   |)
-                                |)
-                              |)
+                                |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::slice::iter::Windows",
+                                      "v"
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           M.alloc (|
                             Ty.apply
@@ -9934,61 +9994,67 @@ Module slice.
                       ltac:(M.monadic
                         (M.read (|
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::slice::iter::Windows",
-                                "v"
-                              |),
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                        M.get_trait_method (|
-                                          "core::ops::index::Index",
-                                          Ty.apply (Ty.path "slice") [] [ T ],
-                                          [],
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                          M.get_trait_method (|
+                                            "core::ops::index::Index",
+                                            Ty.apply (Ty.path "slice") [] [ T ],
+                                            [],
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::ops::range::RangeTo")
+                                                []
+                                                [ Ty.path "usize" ]
+                                            ],
+                                            "index",
+                                            [],
+                                            []
+                                          |),
                                           [
-                                            Ty.apply
-                                              (Ty.path "core::ops::range::RangeTo")
-                                              []
-                                              [ Ty.path "usize" ]
-                                          ],
-                                          "index",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.read (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::slice::iter::Windows",
-                                                  "v"
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.read (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "core::slice::iter::Windows",
+                                                    "v"
+                                                  |)
                                                 |)
                                               |)
-                                            |)
-                                          |);
-                                          Value.mkStructRecord
-                                            "core::ops::range::RangeTo"
-                                            []
-                                            [ Ty.path "usize" ]
-                                            [ ("end_", Value.Integer IntegerKind.Usize 0) ]
-                                        ]
+                                            |);
+                                            Value.mkStructRecord
+                                              "core::ops::range::RangeTo"
+                                              []
+                                              [ Ty.path "usize" ]
+                                              [ ("end_", Value.Integer IntegerKind.Usize 0) ]
+                                          ]
+                                        |)
                                       |)
                                     |)
                                   |)
-                                |)
-                              |)
+                                |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::slice::iter::Windows",
+                                      "v"
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           M.alloc (|
                             Ty.apply
@@ -10535,69 +10601,77 @@ Module slice.
                           |)
                         |) in
                       let~ _ : Ty.tuple [] :=
-                        M.write (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::slice::iter::Windows",
-                            "v"
-                          |),
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                    M.get_trait_method (|
-                                      "core::ops::index::Index",
-                                      Ty.apply (Ty.path "slice") [] [ T ],
-                                      [],
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                      M.get_trait_method (|
+                                        "core::ops::index::Index",
+                                        Ty.apply (Ty.path "slice") [] [ T ],
+                                        [],
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::ops::range::RangeTo")
+                                            []
+                                            [ Ty.path "usize" ]
+                                        ],
+                                        "index",
+                                        [],
+                                        []
+                                      |),
                                       [
-                                        Ty.apply
-                                          (Ty.path "core::ops::range::RangeTo")
-                                          []
-                                          [ Ty.path "usize" ]
-                                      ],
-                                      "index",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.read (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "core::slice::iter::Windows",
-                                              "v"
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::slice::iter::Windows",
+                                                "v"
+                                              |)
                                             |)
                                           |)
-                                        |)
-                                      |);
-                                      Value.mkStructRecord
-                                        "core::ops::range::RangeTo"
-                                        []
-                                        [ Ty.path "usize" ]
-                                        [
-                                          ("end_",
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              BinOp.Wrap.sub,
-                                              [ M.read (| end_ |); Value.Integer IntegerKind.Usize 1
-                                              ]
-                                            |))
-                                        ]
-                                    ]
+                                        |);
+                                        Value.mkStructRecord
+                                          "core::ops::range::RangeTo"
+                                          []
+                                          [ Ty.path "usize" ]
+                                          [
+                                            ("end_",
+                                              M.call_closure (|
+                                                Ty.path "usize",
+                                                BinOp.Wrap.sub,
+                                                [
+                                                  M.read (| end_ |);
+                                                  Value.Integer IntegerKind.Usize 1
+                                                ]
+                                              |))
+                                          ]
+                                      ]
+                                    |)
                                   |)
                                 |)
                               |)
-                            |)
-                          |)
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (M.write (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::slice::iter::Windows",
+                                  "v"
+                                |),
+                                rhs'
+                              |)))
                         |) in
                       M.alloc (|
                         Ty.apply
@@ -10615,61 +10689,67 @@ Module slice.
                   ltac:(M.monadic
                     (M.read (|
                       let~ _ : Ty.tuple [] :=
-                        M.write (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::slice::iter::Windows",
-                            "v"
-                          |),
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                    M.get_trait_method (|
-                                      "core::ops::index::Index",
-                                      Ty.apply (Ty.path "slice") [] [ T ],
-                                      [],
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                      M.get_trait_method (|
+                                        "core::ops::index::Index",
+                                        Ty.apply (Ty.path "slice") [] [ T ],
+                                        [],
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::ops::range::RangeTo")
+                                            []
+                                            [ Ty.path "usize" ]
+                                        ],
+                                        "index",
+                                        [],
+                                        []
+                                      |),
                                       [
-                                        Ty.apply
-                                          (Ty.path "core::ops::range::RangeTo")
-                                          []
-                                          [ Ty.path "usize" ]
-                                      ],
-                                      "index",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.read (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "core::slice::iter::Windows",
-                                              "v"
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::slice::iter::Windows",
+                                                "v"
+                                              |)
                                             |)
                                           |)
-                                        |)
-                                      |);
-                                      Value.mkStructRecord
-                                        "core::ops::range::RangeTo"
-                                        []
-                                        [ Ty.path "usize" ]
-                                        [ ("end_", Value.Integer IntegerKind.Usize 0) ]
-                                    ]
+                                        |);
+                                        Value.mkStructRecord
+                                          "core::ops::range::RangeTo"
+                                          []
+                                          [ Ty.path "usize" ]
+                                          [ ("end_", Value.Integer IntegerKind.Usize 0) ]
+                                      ]
+                                    |)
                                   |)
                                 |)
                               |)
-                            |)
-                          |)
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (M.write (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::slice::iter::Windows",
+                                  "v"
+                                |),
+                                rhs'
+                              |)))
                         |) in
                       M.alloc (|
                         Ty.apply
@@ -11172,16 +11252,22 @@ Module slice.
                                   |) in
                                 M.read (|
                                   let~ _ : Ty.tuple [] :=
-                                    M.write (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "core::slice::iter::Chunks",
-                                        "v"
-                                      |),
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| snd |) |)
-                                      |)
+                                    M.let_ (|
+                                      ltac:(M.monadic
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| snd |) |)
+                                        |))),
+                                      fun rhs' =>
+                                        ltac:(M.monadic
+                                          (M.write (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "core::slice::iter::Chunks",
+                                              "v"
+                                            |),
+                                            rhs'
+                                          |)))
                                     |) in
                                   M.alloc (|
                                     Ty.apply
@@ -11611,16 +11697,22 @@ Module slice.
                                   |) in
                                 M.read (|
                                   let~ _ : Ty.tuple [] :=
-                                    M.write (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "core::slice::iter::Chunks",
-                                        "v"
-                                      |),
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| rest |) |)
-                                      |)
+                                    M.let_ (|
+                                      ltac:(M.monadic
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| rest |) |)
+                                        |))),
+                                      fun rhs' =>
+                                        ltac:(M.monadic
+                                          (M.write (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "core::slice::iter::Chunks",
+                                              "v"
+                                            |),
+                                            rhs'
+                                          |)))
                                     |) in
                                   M.alloc (|
                                     Ty.apply
@@ -11657,61 +11749,67 @@ Module slice.
                   ltac:(M.monadic
                     (M.read (|
                       let~ _ : Ty.tuple [] :=
-                        M.write (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::slice::iter::Chunks",
-                            "v"
-                          |),
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                    M.get_trait_method (|
-                                      "core::ops::index::Index",
-                                      Ty.apply (Ty.path "slice") [] [ T ],
-                                      [],
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                      M.get_trait_method (|
+                                        "core::ops::index::Index",
+                                        Ty.apply (Ty.path "slice") [] [ T ],
+                                        [],
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::ops::range::RangeTo")
+                                            []
+                                            [ Ty.path "usize" ]
+                                        ],
+                                        "index",
+                                        [],
+                                        []
+                                      |),
                                       [
-                                        Ty.apply
-                                          (Ty.path "core::ops::range::RangeTo")
-                                          []
-                                          [ Ty.path "usize" ]
-                                      ],
-                                      "index",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.read (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "core::slice::iter::Chunks",
-                                              "v"
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::slice::iter::Chunks",
+                                                "v"
+                                              |)
                                             |)
                                           |)
-                                        |)
-                                      |);
-                                      Value.mkStructRecord
-                                        "core::ops::range::RangeTo"
-                                        []
-                                        [ Ty.path "usize" ]
-                                        [ ("end_", Value.Integer IntegerKind.Usize 0) ]
-                                    ]
+                                        |);
+                                        Value.mkStructRecord
+                                          "core::ops::range::RangeTo"
+                                          []
+                                          [ Ty.path "usize" ]
+                                          [ ("end_", Value.Integer IntegerKind.Usize 0) ]
+                                      ]
+                                    |)
                                   |)
                                 |)
                               |)
-                            |)
-                          |)
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (M.write (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::slice::iter::Chunks",
+                                  "v"
+                                |),
+                                rhs'
+                              |)))
                         |) in
                       M.alloc (|
                         Ty.apply
@@ -12339,16 +12437,22 @@ Module slice.
                                   |) in
                                 M.read (|
                                   let~ _ : Ty.tuple [] :=
-                                    M.write (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "core::slice::iter::Chunks",
-                                        "v"
-                                      |),
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| fst |) |)
-                                      |)
+                                    M.let_ (|
+                                      ltac:(M.monadic
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| fst |) |)
+                                        |))),
+                                      fun rhs' =>
+                                        ltac:(M.monadic
+                                          (M.write (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "core::slice::iter::Chunks",
+                                              "v"
+                                            |),
+                                            rhs'
+                                          |)))
                                     |) in
                                   M.alloc (|
                                     Ty.apply
@@ -12587,61 +12691,67 @@ Module slice.
                               |)
                             |) in
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::slice::iter::Chunks",
-                                "v"
-                              |),
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                        M.get_trait_method (|
-                                          "core::ops::index::Index",
-                                          Ty.apply (Ty.path "slice") [] [ T ],
-                                          [],
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                          M.get_trait_method (|
+                                            "core::ops::index::Index",
+                                            Ty.apply (Ty.path "slice") [] [ T ],
+                                            [],
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::ops::range::RangeTo")
+                                                []
+                                                [ Ty.path "usize" ]
+                                            ],
+                                            "index",
+                                            [],
+                                            []
+                                          |),
                                           [
-                                            Ty.apply
-                                              (Ty.path "core::ops::range::RangeTo")
-                                              []
-                                              [ Ty.path "usize" ]
-                                          ],
-                                          "index",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.read (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::slice::iter::Chunks",
-                                                  "v"
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.read (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "core::slice::iter::Chunks",
+                                                    "v"
+                                                  |)
                                                 |)
                                               |)
-                                            |)
-                                          |);
-                                          Value.mkStructRecord
-                                            "core::ops::range::RangeTo"
-                                            []
-                                            [ Ty.path "usize" ]
-                                            [ ("end_", M.read (| start |)) ]
-                                        ]
+                                            |);
+                                            Value.mkStructRecord
+                                              "core::ops::range::RangeTo"
+                                              []
+                                              [ Ty.path "usize" ]
+                                              [ ("end_", M.read (| start |)) ]
+                                          ]
+                                        |)
                                       |)
                                     |)
                                   |)
-                                |)
-                              |)
+                                |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::slice::iter::Chunks",
+                                      "v"
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           M.alloc (|
                             Ty.apply
@@ -12660,61 +12770,67 @@ Module slice.
                       ltac:(M.monadic
                         (M.read (|
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::slice::iter::Chunks",
-                                "v"
-                              |),
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                        M.get_trait_method (|
-                                          "core::ops::index::Index",
-                                          Ty.apply (Ty.path "slice") [] [ T ],
-                                          [],
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                          M.get_trait_method (|
+                                            "core::ops::index::Index",
+                                            Ty.apply (Ty.path "slice") [] [ T ],
+                                            [],
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::ops::range::RangeTo")
+                                                []
+                                                [ Ty.path "usize" ]
+                                            ],
+                                            "index",
+                                            [],
+                                            []
+                                          |),
                                           [
-                                            Ty.apply
-                                              (Ty.path "core::ops::range::RangeTo")
-                                              []
-                                              [ Ty.path "usize" ]
-                                          ],
-                                          "index",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.read (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::slice::iter::Chunks",
-                                                  "v"
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.read (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "core::slice::iter::Chunks",
+                                                    "v"
+                                                  |)
                                                 |)
                                               |)
-                                            |)
-                                          |);
-                                          Value.mkStructRecord
-                                            "core::ops::range::RangeTo"
-                                            []
-                                            [ Ty.path "usize" ]
-                                            [ ("end_", Value.Integer IntegerKind.Usize 0) ]
-                                        ]
+                                            |);
+                                            Value.mkStructRecord
+                                              "core::ops::range::RangeTo"
+                                              []
+                                              [ Ty.path "usize" ]
+                                              [ ("end_", Value.Integer IntegerKind.Usize 0) ]
+                                          ]
+                                        |)
                                       |)
                                     |)
                                   |)
-                                |)
-                              |)
+                                |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::slice::iter::Chunks",
+                                      "v"
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           M.alloc (|
                             Ty.apply
@@ -13222,13 +13338,18 @@ Module slice.
                                   |) in
                                 M.read (|
                                   let~ _ : Ty.tuple [] :=
-                                    M.write (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "core::slice::iter::ChunksMut",
-                                        "v"
-                                      |),
-                                      M.read (| tail |)
+                                    M.let_ (|
+                                      ltac:(M.monadic (M.read (| tail |))),
+                                      fun rhs' =>
+                                        ltac:(M.monadic
+                                          (M.write (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "core::slice::iter::ChunksMut",
+                                              "v"
+                                            |),
+                                            rhs'
+                                          |)))
                                     |) in
                                   M.alloc (|
                                     Ty.apply
@@ -13679,13 +13800,18 @@ Module slice.
                                       |) in
                                     M.read (|
                                       let~ _ : Ty.tuple [] :=
-                                        M.write (|
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "core::slice::iter::ChunksMut",
-                                            "v"
-                                          |),
-                                          M.read (| rest |)
+                                        M.let_ (|
+                                          ltac:(M.monadic (M.read (| rest |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (M.write (|
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| self |) |),
+                                                  "core::slice::iter::ChunksMut",
+                                                  "v"
+                                                |),
+                                                rhs'
+                                              |)))
                                         |) in
                                       M.alloc (|
                                         Ty.apply
@@ -13732,47 +13858,53 @@ Module slice.
                   ltac:(M.monadic
                     (M.read (|
                       let~ _ : Ty.tuple [] :=
-                        M.write (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::slice::iter::ChunksMut",
-                            "v"
-                          |),
-                          M.call_closure (|
-                            Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                            M.pointer_coercion
-                              M.PointerCoercion.Unsize
-                              (Ty.apply
-                                (Ty.path "*mut")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 0 ]
-                                    [ T ]
-                                ])
-                              (Ty.apply
-                                (Ty.path "*mut")
-                                []
-                                [ Ty.apply (Ty.path "slice") [] [ T ] ]),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.MutPointer,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 0 ]
-                                        [ T ],
-                                      Value.Array []
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.call_closure (|
+                              Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                              M.pointer_coercion
+                                M.PointerCoercion.Unsize
+                                (Ty.apply
+                                  (Ty.path "*mut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 0 ]
+                                      [ T ]
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "*mut")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ T ] ]),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.MutPointer,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 0 ]
+                                          [ T ],
+                                        Value.Array []
+                                      |)
                                     |)
                                   |)
                                 |)
-                              |)
-                            ]
-                          |)
+                              ]
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (M.write (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::slice::iter::ChunksMut",
+                                  "v"
+                                |),
+                                rhs'
+                              |)))
                         |) in
                       M.alloc (|
                         Ty.apply
@@ -14401,13 +14533,18 @@ Module slice.
                                   |) in
                                 M.read (|
                                   let~ _ : Ty.tuple [] :=
-                                    M.write (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "core::slice::iter::ChunksMut",
-                                        "v"
-                                      |),
-                                      M.read (| head |)
+                                    M.let_ (|
+                                      ltac:(M.monadic (M.read (| head |))),
+                                      fun rhs' =>
+                                        ltac:(M.monadic
+                                          (M.write (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "core::slice::iter::ChunksMut",
+                                              "v"
+                                            |),
+                                            rhs'
+                                          |)))
                                     |) in
                                   M.alloc (|
                                     Ty.apply
@@ -14805,13 +14942,18 @@ Module slice.
                                               |) in
                                             M.read (|
                                               let~ _ : Ty.tuple [] :=
-                                                M.write (|
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| self |) |),
-                                                    "core::slice::iter::ChunksMut",
-                                                    "v"
-                                                  |),
-                                                  M.read (| head |)
+                                                M.let_ (|
+                                                  ltac:(M.monadic (M.read (| head |))),
+                                                  fun rhs' =>
+                                                    ltac:(M.monadic
+                                                      (M.write (|
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          M.deref (| M.read (| self |) |),
+                                                          "core::slice::iter::ChunksMut",
+                                                          "v"
+                                                        |),
+                                                        rhs'
+                                                      |)))
                                                 |) in
                                               M.alloc (|
                                                 Ty.apply
@@ -14860,50 +15002,56 @@ Module slice.
                       ltac:(M.monadic
                         (M.read (|
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::slice::iter::ChunksMut",
-                                "v"
-                              |),
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "*mut")
-                                  []
-                                  [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                M.pointer_coercion
-                                  M.PointerCoercion.Unsize
-                                  (Ty.apply
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.call_closure (|
+                                  Ty.apply
                                     (Ty.path "*mut")
                                     []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 0 ]
-                                        [ T ]
-                                    ])
-                                  (Ty.apply
-                                    (Ty.path "*mut")
-                                    []
-                                    [ Ty.apply (Ty.path "slice") [] [ T ] ]),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.MutPointer,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 0 ]
-                                            [ T ],
-                                          Value.Array []
+                                    [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                  M.pointer_coercion
+                                    M.PointerCoercion.Unsize
+                                    (Ty.apply
+                                      (Ty.path "*mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 0 ]
+                                          [ T ]
+                                      ])
+                                    (Ty.apply
+                                      (Ty.path "*mut")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ T ] ]),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.MutPointer,
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 0 ]
+                                              [ T ],
+                                            Value.Array []
+                                          |)
                                         |)
                                       |)
                                     |)
-                                  |)
-                                ]
-                              |)
+                                  ]
+                                |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::slice::iter::ChunksMut",
+                                      "v"
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           M.alloc (|
                             Ty.apply
@@ -15577,16 +15725,22 @@ Module slice.
                                     |) in
                                   M.read (|
                                     let~ _ : Ty.tuple [] :=
-                                      M.write (|
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "core::slice::iter::ChunksExact",
-                                          "v"
-                                        |),
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| rest |) |)
-                                        |)
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| rest |) |)
+                                          |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (M.write (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::slice::iter::ChunksExact",
+                                                "v"
+                                              |),
+                                              rhs'
+                                            |)))
                                       |) in
                                     M.alloc (|
                                       Ty.apply
@@ -15822,61 +15976,67 @@ Module slice.
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
-                        M.write (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::slice::iter::ChunksExact",
-                            "v"
-                          |),
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                    M.get_trait_method (|
-                                      "core::ops::index::Index",
-                                      Ty.apply (Ty.path "slice") [] [ T ],
-                                      [],
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                      M.get_trait_method (|
+                                        "core::ops::index::Index",
+                                        Ty.apply (Ty.path "slice") [] [ T ],
+                                        [],
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::ops::range::RangeFrom")
+                                            []
+                                            [ Ty.path "usize" ]
+                                        ],
+                                        "index",
+                                        [],
+                                        []
+                                      |),
                                       [
-                                        Ty.apply
-                                          (Ty.path "core::ops::range::RangeFrom")
-                                          []
-                                          [ Ty.path "usize" ]
-                                      ],
-                                      "index",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.read (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "core::slice::iter::ChunksExact",
-                                              "v"
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::slice::iter::ChunksExact",
+                                                "v"
+                                              |)
                                             |)
                                           |)
-                                        |)
-                                      |);
-                                      Value.mkStructRecord
-                                        "core::ops::range::RangeFrom"
-                                        []
-                                        [ Ty.path "usize" ]
-                                        [ ("start", M.read (| start |)) ]
-                                    ]
+                                        |);
+                                        Value.mkStructRecord
+                                          "core::ops::range::RangeFrom"
+                                          []
+                                          [ Ty.path "usize" ]
+                                          [ ("start", M.read (| start |)) ]
+                                      ]
+                                    |)
                                   |)
                                 |)
                               |)
-                            |)
-                          |)
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (M.write (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::slice::iter::ChunksExact",
+                                  "v"
+                                |),
+                                rhs'
+                              |)))
                         |) in
                       M.alloc (|
                         Ty.apply
@@ -15905,61 +16065,67 @@ Module slice.
                   ltac:(M.monadic
                     (M.read (|
                       let~ _ : Ty.tuple [] :=
-                        M.write (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::slice::iter::ChunksExact",
-                            "v"
-                          |),
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                    M.get_trait_method (|
-                                      "core::ops::index::Index",
-                                      Ty.apply (Ty.path "slice") [] [ T ],
-                                      [],
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                      M.get_trait_method (|
+                                        "core::ops::index::Index",
+                                        Ty.apply (Ty.path "slice") [] [ T ],
+                                        [],
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::ops::range::RangeTo")
+                                            []
+                                            [ Ty.path "usize" ]
+                                        ],
+                                        "index",
+                                        [],
+                                        []
+                                      |),
                                       [
-                                        Ty.apply
-                                          (Ty.path "core::ops::range::RangeTo")
-                                          []
-                                          [ Ty.path "usize" ]
-                                      ],
-                                      "index",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.read (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "core::slice::iter::ChunksExact",
-                                              "v"
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::slice::iter::ChunksExact",
+                                                "v"
+                                              |)
                                             |)
                                           |)
-                                        |)
-                                      |);
-                                      Value.mkStructRecord
-                                        "core::ops::range::RangeTo"
-                                        []
-                                        [ Ty.path "usize" ]
-                                        [ ("end_", Value.Integer IntegerKind.Usize 0) ]
-                                    ]
+                                        |);
+                                        Value.mkStructRecord
+                                          "core::ops::range::RangeTo"
+                                          []
+                                          [ Ty.path "usize" ]
+                                          [ ("end_", Value.Integer IntegerKind.Usize 0) ]
+                                      ]
+                                    |)
                                   |)
                                 |)
                               |)
-                            |)
-                          |)
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (M.write (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::slice::iter::ChunksExact",
+                                  "v"
+                                |),
+                                rhs'
+                              |)))
                         |) in
                       M.alloc (|
                         Ty.apply
@@ -16307,13 +16473,22 @@ Module slice.
                               |) in
                             M.read (|
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::slice::iter::ChunksExact",
-                                    "v"
-                                  |),
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| fst |) |) |)
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| fst |) |)
+                                    |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::slice::iter::ChunksExact",
+                                          "v"
+                                        |),
+                                        rhs'
+                                      |)))
                                 |) in
                               M.alloc (|
                                 Ty.apply
@@ -16502,61 +16677,67 @@ Module slice.
                               |)
                             |) in
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::slice::iter::ChunksExact",
-                                "v"
-                              |),
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                        M.get_trait_method (|
-                                          "core::ops::index::Index",
-                                          Ty.apply (Ty.path "slice") [] [ T ],
-                                          [],
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                          M.get_trait_method (|
+                                            "core::ops::index::Index",
+                                            Ty.apply (Ty.path "slice") [] [ T ],
+                                            [],
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::ops::range::RangeTo")
+                                                []
+                                                [ Ty.path "usize" ]
+                                            ],
+                                            "index",
+                                            [],
+                                            []
+                                          |),
                                           [
-                                            Ty.apply
-                                              (Ty.path "core::ops::range::RangeTo")
-                                              []
-                                              [ Ty.path "usize" ]
-                                          ],
-                                          "index",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.read (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::slice::iter::ChunksExact",
-                                                  "v"
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.read (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "core::slice::iter::ChunksExact",
+                                                    "v"
+                                                  |)
                                                 |)
                                               |)
-                                            |)
-                                          |);
-                                          Value.mkStructRecord
-                                            "core::ops::range::RangeTo"
-                                            []
-                                            [ Ty.path "usize" ]
-                                            [ ("end_", M.read (| start |)) ]
-                                        ]
+                                            |);
+                                            Value.mkStructRecord
+                                              "core::ops::range::RangeTo"
+                                              []
+                                              [ Ty.path "usize" ]
+                                              [ ("end_", M.read (| start |)) ]
+                                          ]
+                                        |)
                                       |)
                                     |)
                                   |)
-                                |)
-                              |)
+                                |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::slice::iter::ChunksExact",
+                                      "v"
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           M.alloc (|
                             Ty.apply
@@ -16575,61 +16756,67 @@ Module slice.
                       ltac:(M.monadic
                         (M.read (|
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::slice::iter::ChunksExact",
-                                "v"
-                              |),
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                        M.get_trait_method (|
-                                          "core::ops::index::Index",
-                                          Ty.apply (Ty.path "slice") [] [ T ],
-                                          [],
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                          M.get_trait_method (|
+                                            "core::ops::index::Index",
+                                            Ty.apply (Ty.path "slice") [] [ T ],
+                                            [],
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::ops::range::RangeTo")
+                                                []
+                                                [ Ty.path "usize" ]
+                                            ],
+                                            "index",
+                                            [],
+                                            []
+                                          |),
                                           [
-                                            Ty.apply
-                                              (Ty.path "core::ops::range::RangeTo")
-                                              []
-                                              [ Ty.path "usize" ]
-                                          ],
-                                          "index",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.read (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::slice::iter::ChunksExact",
-                                                  "v"
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.read (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "core::slice::iter::ChunksExact",
+                                                    "v"
+                                                  |)
                                                 |)
                                               |)
-                                            |)
-                                          |);
-                                          Value.mkStructRecord
-                                            "core::ops::range::RangeTo"
-                                            []
-                                            [ Ty.path "usize" ]
-                                            [ ("end_", Value.Integer IntegerKind.Usize 0) ]
-                                        ]
+                                            |);
+                                            Value.mkStructRecord
+                                              "core::ops::range::RangeTo"
+                                              []
+                                              [ Ty.path "usize" ]
+                                              [ ("end_", Value.Integer IntegerKind.Usize 0) ]
+                                          ]
+                                        |)
                                       |)
                                     |)
                                   |)
-                                |)
-                              |)
+                                |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::slice::iter::ChunksExact",
+                                      "v"
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           M.alloc (|
                             Ty.apply
@@ -17323,16 +17510,22 @@ Module slice.
                                     |) in
                                   M.read (|
                                     let~ _ : Ty.tuple [] :=
-                                      M.write (|
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "core::slice::iter::ChunksExactMut",
-                                          "v"
-                                        |),
-                                        M.borrow (|
-                                          Pointer.Kind.MutPointer,
-                                          M.deref (| M.read (| rest |) |)
-                                        |)
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (M.borrow (|
+                                            Pointer.Kind.MutPointer,
+                                            M.deref (| M.read (| rest |) |)
+                                          |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (M.write (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::slice::iter::ChunksExactMut",
+                                                "v"
+                                              |),
+                                              rhs'
+                                            |)))
                                       |) in
                                     M.alloc (|
                                       Ty.apply
@@ -17562,27 +17755,11 @@ Module slice.
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
-                        M.write (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::slice::iter::ChunksExactMut",
-                            "v"
-                          |),
-                          M.read (|
-                            M.SubPointer.get_tuple_field (|
-                              M.alloc (|
-                                Ty.tuple
-                                  [
-                                    Ty.apply
-                                      (Ty.path "*mut")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ T ] ];
-                                    Ty.apply
-                                      (Ty.path "*mut")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                                  ],
-                                M.call_closure (|
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.read (|
+                              M.SubPointer.get_tuple_field (|
+                                M.alloc (|
                                   Ty.tuple
                                     [
                                       Ty.apply
@@ -17594,30 +17771,52 @@ Module slice.
                                         []
                                         [ Ty.apply (Ty.path "slice") [] [ T ] ]
                                     ],
-                                  M.get_associated_function (|
-                                    Ty.apply
-                                      (Ty.path "*mut")
+                                  M.call_closure (|
+                                    Ty.tuple
+                                      [
+                                        Ty.apply
+                                          (Ty.path "*mut")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ T ] ];
+                                        Ty.apply
+                                          (Ty.path "*mut")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                      ],
+                                    M.get_associated_function (|
+                                      Ty.apply
+                                        (Ty.path "*mut")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                      "split_at_mut",
+                                      [],
                                       []
-                                      [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                    "split_at_mut",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.read (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "core::slice::iter::ChunksExactMut",
-                                        "v"
-                                      |)
-                                    |);
-                                    M.read (| start |)
-                                  ]
-                                |)
-                              |),
-                              1
-                            |)
-                          |)
+                                    |),
+                                    [
+                                      M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::slice::iter::ChunksExactMut",
+                                          "v"
+                                        |)
+                                      |);
+                                      M.read (| start |)
+                                    ]
+                                  |)
+                                |),
+                                1
+                              |)
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (M.write (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::slice::iter::ChunksExactMut",
+                                  "v"
+                                |),
+                                rhs'
+                              |)))
                         |) in
                       M.alloc (|
                         Ty.apply
@@ -17647,47 +17846,53 @@ Module slice.
                   ltac:(M.monadic
                     (M.read (|
                       let~ _ : Ty.tuple [] :=
-                        M.write (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::slice::iter::ChunksExactMut",
-                            "v"
-                          |),
-                          M.call_closure (|
-                            Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                            M.pointer_coercion
-                              M.PointerCoercion.Unsize
-                              (Ty.apply
-                                (Ty.path "*mut")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 0 ]
-                                    [ T ]
-                                ])
-                              (Ty.apply
-                                (Ty.path "*mut")
-                                []
-                                [ Ty.apply (Ty.path "slice") [] [ T ] ]),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.MutPointer,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 0 ]
-                                        [ T ],
-                                      Value.Array []
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.call_closure (|
+                              Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                              M.pointer_coercion
+                                M.PointerCoercion.Unsize
+                                (Ty.apply
+                                  (Ty.path "*mut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 0 ]
+                                      [ T ]
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "*mut")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ T ] ]),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.MutPointer,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 0 ]
+                                          [ T ],
+                                        Value.Array []
+                                      |)
                                     |)
                                   |)
                                 |)
-                              |)
-                            ]
-                          |)
+                              ]
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (M.write (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::slice::iter::ChunksExactMut",
+                                  "v"
+                                |),
+                                rhs'
+                              |)))
                         |) in
                       M.alloc (|
                         Ty.apply
@@ -18046,13 +18251,18 @@ Module slice.
                               |) in
                             M.read (|
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::slice::iter::ChunksExactMut",
-                                    "v"
-                                  |),
-                                  M.read (| head |)
+                                M.let_ (|
+                                  ltac:(M.monadic (M.read (| head |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::slice::iter::ChunksExactMut",
+                                          "v"
+                                        |),
+                                        rhs'
+                                      |)))
                                 |) in
                               M.alloc (|
                                 Ty.apply
@@ -18428,13 +18638,18 @@ Module slice.
                                               |) in
                                             M.read (|
                                               let~ _ : Ty.tuple [] :=
-                                                M.write (|
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| self |) |),
-                                                    "core::slice::iter::ChunksExactMut",
-                                                    "v"
-                                                  |),
-                                                  M.read (| head |)
+                                                M.let_ (|
+                                                  ltac:(M.monadic (M.read (| head |))),
+                                                  fun rhs' =>
+                                                    ltac:(M.monadic
+                                                      (M.write (|
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          M.deref (| M.read (| self |) |),
+                                                          "core::slice::iter::ChunksExactMut",
+                                                          "v"
+                                                        |),
+                                                        rhs'
+                                                      |)))
                                                 |) in
                                               M.alloc (|
                                                 Ty.apply
@@ -18483,50 +18698,56 @@ Module slice.
                       ltac:(M.monadic
                         (M.read (|
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::slice::iter::ChunksExactMut",
-                                "v"
-                              |),
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "*mut")
-                                  []
-                                  [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                M.pointer_coercion
-                                  M.PointerCoercion.Unsize
-                                  (Ty.apply
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.call_closure (|
+                                  Ty.apply
                                     (Ty.path "*mut")
                                     []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 0 ]
-                                        [ T ]
-                                    ])
-                                  (Ty.apply
-                                    (Ty.path "*mut")
-                                    []
-                                    [ Ty.apply (Ty.path "slice") [] [ T ] ]),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.MutPointer,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 0 ]
-                                            [ T ],
-                                          Value.Array []
+                                    [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                  M.pointer_coercion
+                                    M.PointerCoercion.Unsize
+                                    (Ty.apply
+                                      (Ty.path "*mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 0 ]
+                                          [ T ]
+                                      ])
+                                    (Ty.apply
+                                      (Ty.path "*mut")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ T ] ]),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.MutPointer,
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 0 ]
+                                              [ T ],
+                                            Value.Array []
+                                          |)
                                         |)
                                       |)
                                     |)
-                                  |)
-                                ]
-                              |)
+                                  ]
+                                |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::slice::iter::ChunksExactMut",
+                                      "v"
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           M.alloc (|
                             Ty.apply
@@ -19046,61 +19267,67 @@ Module slice.
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::slice::iter::ArrayWindows",
-                                "v"
-                              |),
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                        M.get_trait_method (|
-                                          "core::ops::index::Index",
-                                          Ty.apply (Ty.path "slice") [] [ T ],
-                                          [],
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                          M.get_trait_method (|
+                                            "core::ops::index::Index",
+                                            Ty.apply (Ty.path "slice") [] [ T ],
+                                            [],
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::ops::range::RangeFrom")
+                                                []
+                                                [ Ty.path "usize" ]
+                                            ],
+                                            "index",
+                                            [],
+                                            []
+                                          |),
                                           [
-                                            Ty.apply
-                                              (Ty.path "core::ops::range::RangeFrom")
-                                              []
-                                              [ Ty.path "usize" ]
-                                          ],
-                                          "index",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.read (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::slice::iter::ArrayWindows",
-                                                  "v"
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.read (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "core::slice::iter::ArrayWindows",
+                                                    "v"
+                                                  |)
                                                 |)
                                               |)
-                                            |)
-                                          |);
-                                          Value.mkStructRecord
-                                            "core::ops::range::RangeFrom"
-                                            []
-                                            [ Ty.path "usize" ]
-                                            [ ("start", Value.Integer IntegerKind.Usize 1) ]
-                                        ]
+                                            |);
+                                            Value.mkStructRecord
+                                              "core::ops::range::RangeFrom"
+                                              []
+                                              [ Ty.path "usize" ]
+                                              [ ("start", Value.Integer IntegerKind.Usize 1) ]
+                                          ]
+                                        |)
                                       |)
                                     |)
                                   |)
-                                |)
-                              |)
+                                |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::slice::iter::ArrayWindows",
+                                      "v"
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                         |)));
@@ -19290,58 +19517,64 @@ Module slice.
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::slice::iter::ArrayWindows",
-                    "v"
-                  |),
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                            M.get_trait_method (|
-                              "core::ops::index::Index",
-                              Ty.apply (Ty.path "slice") [] [ T ],
-                              [],
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                              M.get_trait_method (|
+                                "core::ops::index::Index",
+                                Ty.apply (Ty.path "slice") [] [ T ],
+                                [],
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::ops::range::RangeFrom")
+                                    []
+                                    [ Ty.path "usize" ]
+                                ],
+                                "index",
+                                [],
+                                []
+                              |),
                               [
-                                Ty.apply
-                                  (Ty.path "core::ops::range::RangeFrom")
-                                  []
-                                  [ Ty.path "usize" ]
-                              ],
-                              "index",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "core::slice::iter::ArrayWindows",
-                                      "v"
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::slice::iter::ArrayWindows",
+                                        "v"
+                                      |)
                                     |)
                                   |)
-                                |)
-                              |);
-                              Value.mkStructRecord
-                                "core::ops::range::RangeFrom"
-                                []
-                                [ Ty.path "usize" ]
-                                [ ("start", M.read (| idx |)) ]
-                            ]
+                                |);
+                                Value.mkStructRecord
+                                  "core::ops::range::RangeFrom"
+                                  []
+                                  [ Ty.path "usize" ]
+                                  [ ("start", M.read (| idx |)) ]
+                              ]
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  |)
+                    |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::slice::iter::ArrayWindows",
+                          "v"
+                        |),
+                        rhs'
+                      |)))
                 |) in
               M.alloc (|
                 Ty.apply
@@ -19533,93 +19766,99 @@ Module slice.
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::slice::iter::ArrayWindows",
-                                "v"
-                              |),
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                        M.get_trait_method (|
-                                          "core::ops::index::Index",
-                                          Ty.apply (Ty.path "slice") [] [ T ],
-                                          [],
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                          M.get_trait_method (|
+                                            "core::ops::index::Index",
+                                            Ty.apply (Ty.path "slice") [] [ T ],
+                                            [],
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::ops::range::RangeTo")
+                                                []
+                                                [ Ty.path "usize" ]
+                                            ],
+                                            "index",
+                                            [],
+                                            []
+                                          |),
                                           [
-                                            Ty.apply
-                                              (Ty.path "core::ops::range::RangeTo")
-                                              []
-                                              [ Ty.path "usize" ]
-                                          ],
-                                          "index",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.read (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::slice::iter::ArrayWindows",
-                                                  "v"
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.read (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "core::slice::iter::ArrayWindows",
+                                                    "v"
+                                                  |)
                                                 |)
                                               |)
-                                            |)
-                                          |);
-                                          Value.mkStructRecord
-                                            "core::ops::range::RangeTo"
-                                            []
-                                            [ Ty.path "usize" ]
-                                            [
-                                              ("end_",
-                                                M.call_closure (|
-                                                  Ty.path "usize",
-                                                  BinOp.Wrap.sub,
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.path "usize",
-                                                      M.get_associated_function (|
-                                                        Ty.apply (Ty.path "slice") [] [ T ],
-                                                        "len",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (|
-                                                            M.read (|
-                                                              M.SubPointer.get_struct_record_field (|
-                                                                M.deref (| M.read (| self |) |),
-                                                                "core::slice::iter::ArrayWindows",
-                                                                "v"
+                                            |);
+                                            Value.mkStructRecord
+                                              "core::ops::range::RangeTo"
+                                              []
+                                              [ Ty.path "usize" ]
+                                              [
+                                                ("end_",
+                                                  M.call_closure (|
+                                                    Ty.path "usize",
+                                                    BinOp.Wrap.sub,
+                                                    [
+                                                      M.call_closure (|
+                                                        Ty.path "usize",
+                                                        M.get_associated_function (|
+                                                          Ty.apply (Ty.path "slice") [] [ T ],
+                                                          "len",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.deref (|
+                                                              M.read (|
+                                                                M.SubPointer.get_struct_record_field (|
+                                                                  M.deref (| M.read (| self |) |),
+                                                                  "core::slice::iter::ArrayWindows",
+                                                                  "v"
+                                                                |)
                                                               |)
                                                             |)
                                                           |)
-                                                        |)
-                                                      ]
-                                                    |);
-                                                    Value.Integer IntegerKind.Usize 1
-                                                  ]
-                                                |))
-                                            ]
-                                        ]
+                                                        ]
+                                                      |);
+                                                      Value.Integer IntegerKind.Usize 1
+                                                    ]
+                                                  |))
+                                              ]
+                                          ]
+                                        |)
                                       |)
                                     |)
                                   |)
-                                |)
-                              |)
+                                |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::slice::iter::ArrayWindows",
+                                      "v"
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                         |)));
@@ -19691,58 +19930,64 @@ Module slice.
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::slice::iter::ArrayWindows",
-                    "v"
-                  |),
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                            M.get_trait_method (|
-                              "core::ops::index::Index",
-                              Ty.apply (Ty.path "slice") [] [ T ],
-                              [],
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                              M.get_trait_method (|
+                                "core::ops::index::Index",
+                                Ty.apply (Ty.path "slice") [] [ T ],
+                                [],
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::ops::range::RangeTo")
+                                    []
+                                    [ Ty.path "usize" ]
+                                ],
+                                "index",
+                                [],
+                                []
+                              |),
                               [
-                                Ty.apply
-                                  (Ty.path "core::ops::range::RangeTo")
-                                  []
-                                  [ Ty.path "usize" ]
-                              ],
-                              "index",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "core::slice::iter::ArrayWindows",
-                                      "v"
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::slice::iter::ArrayWindows",
+                                        "v"
+                                      |)
                                     |)
                                   |)
-                                |)
-                              |);
-                              Value.mkStructRecord
-                                "core::ops::range::RangeTo"
-                                []
-                                [ Ty.path "usize" ]
-                                [ ("end_", M.read (| idx |)) ]
-                            ]
+                                |);
+                                Value.mkStructRecord
+                                  "core::ops::range::RangeTo"
+                                  []
+                                  [ Ty.path "usize" ]
+                                  [ ("end_", M.read (| idx |)) ]
+                              ]
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  |)
+                    |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::slice::iter::ArrayWindows",
+                          "v"
+                        |),
+                        rhs'
+                      |)))
                 |) in
               M.alloc (|
                 Ty.apply
@@ -20250,16 +20495,22 @@ Module slice.
                                   |) in
                                 M.read (|
                                   let~ _ : Ty.tuple [] :=
-                                    M.write (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "core::slice::iter::RChunks",
-                                        "v"
-                                      |),
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| rest |) |)
-                                      |)
+                                    M.let_ (|
+                                      ltac:(M.monadic
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| rest |) |)
+                                        |))),
+                                      fun rhs' =>
+                                        ltac:(M.monadic
+                                          (M.write (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "core::slice::iter::RChunks",
+                                              "v"
+                                            |),
+                                            rhs'
+                                          |)))
                                     |) in
                                   M.alloc (|
                                     Ty.apply
@@ -20704,16 +20955,22 @@ Module slice.
                                   |) in
                                 M.read (|
                                   let~ _ : Ty.tuple [] :=
-                                    M.write (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "core::slice::iter::RChunks",
-                                        "v"
-                                      |),
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| rest |) |)
-                                      |)
+                                    M.let_ (|
+                                      ltac:(M.monadic
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| rest |) |)
+                                        |))),
+                                      fun rhs' =>
+                                        ltac:(M.monadic
+                                          (M.write (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "core::slice::iter::RChunks",
+                                              "v"
+                                            |),
+                                            rhs'
+                                          |)))
                                     |) in
                                   M.alloc (|
                                     Ty.apply
@@ -20750,61 +21007,67 @@ Module slice.
                   ltac:(M.monadic
                     (M.read (|
                       let~ _ : Ty.tuple [] :=
-                        M.write (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::slice::iter::RChunks",
-                            "v"
-                          |),
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                    M.get_trait_method (|
-                                      "core::ops::index::Index",
-                                      Ty.apply (Ty.path "slice") [] [ T ],
-                                      [],
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                      M.get_trait_method (|
+                                        "core::ops::index::Index",
+                                        Ty.apply (Ty.path "slice") [] [ T ],
+                                        [],
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::ops::range::RangeTo")
+                                            []
+                                            [ Ty.path "usize" ]
+                                        ],
+                                        "index",
+                                        [],
+                                        []
+                                      |),
                                       [
-                                        Ty.apply
-                                          (Ty.path "core::ops::range::RangeTo")
-                                          []
-                                          [ Ty.path "usize" ]
-                                      ],
-                                      "index",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.read (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "core::slice::iter::RChunks",
-                                              "v"
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::slice::iter::RChunks",
+                                                "v"
+                                              |)
                                             |)
                                           |)
-                                        |)
-                                      |);
-                                      Value.mkStructRecord
-                                        "core::ops::range::RangeTo"
-                                        []
-                                        [ Ty.path "usize" ]
-                                        [ ("end_", Value.Integer IntegerKind.Usize 0) ]
-                                    ]
+                                        |);
+                                        Value.mkStructRecord
+                                          "core::ops::range::RangeTo"
+                                          []
+                                          [ Ty.path "usize" ]
+                                          [ ("end_", Value.Integer IntegerKind.Usize 0) ]
+                                      ]
+                                    |)
                                   |)
                                 |)
                               |)
-                            |)
-                          |)
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (M.write (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::slice::iter::RChunks",
+                                  "v"
+                                |),
+                                rhs'
+                              |)))
                         |) in
                       M.alloc (|
                         Ty.apply
@@ -21401,16 +21664,22 @@ Module slice.
                                   |) in
                                 M.read (|
                                   let~ _ : Ty.tuple [] :=
-                                    M.write (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "core::slice::iter::RChunks",
-                                        "v"
-                                      |),
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| snd |) |)
-                                      |)
+                                    M.let_ (|
+                                      ltac:(M.monadic
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| snd |) |)
+                                        |))),
+                                      fun rhs' =>
+                                        ltac:(M.monadic
+                                          (M.write (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "core::slice::iter::RChunks",
+                                              "v"
+                                            |),
+                                            rhs'
+                                          |)))
                                     |) in
                                   M.alloc (|
                                     Ty.apply
@@ -21642,61 +21911,67 @@ Module slice.
                               |)
                             |) in
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::slice::iter::RChunks",
-                                "v"
-                              |),
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                        M.get_trait_method (|
-                                          "core::ops::index::Index",
-                                          Ty.apply (Ty.path "slice") [] [ T ],
-                                          [],
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                          M.get_trait_method (|
+                                            "core::ops::index::Index",
+                                            Ty.apply (Ty.path "slice") [] [ T ],
+                                            [],
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::ops::range::RangeFrom")
+                                                []
+                                                [ Ty.path "usize" ]
+                                            ],
+                                            "index",
+                                            [],
+                                            []
+                                          |),
                                           [
-                                            Ty.apply
-                                              (Ty.path "core::ops::range::RangeFrom")
-                                              []
-                                              [ Ty.path "usize" ]
-                                          ],
-                                          "index",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.read (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::slice::iter::RChunks",
-                                                  "v"
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.read (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "core::slice::iter::RChunks",
+                                                    "v"
+                                                  |)
                                                 |)
                                               |)
-                                            |)
-                                          |);
-                                          Value.mkStructRecord
-                                            "core::ops::range::RangeFrom"
-                                            []
-                                            [ Ty.path "usize" ]
-                                            [ ("start", M.read (| end_ |)) ]
-                                        ]
+                                            |);
+                                            Value.mkStructRecord
+                                              "core::ops::range::RangeFrom"
+                                              []
+                                              [ Ty.path "usize" ]
+                                              [ ("start", M.read (| end_ |)) ]
+                                          ]
+                                        |)
                                       |)
                                     |)
                                   |)
-                                |)
-                              |)
+                                |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::slice::iter::RChunks",
+                                      "v"
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           M.alloc (|
                             Ty.apply
@@ -21715,61 +21990,67 @@ Module slice.
                       ltac:(M.monadic
                         (M.read (|
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::slice::iter::RChunks",
-                                "v"
-                              |),
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                        M.get_trait_method (|
-                                          "core::ops::index::Index",
-                                          Ty.apply (Ty.path "slice") [] [ T ],
-                                          [],
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                          M.get_trait_method (|
+                                            "core::ops::index::Index",
+                                            Ty.apply (Ty.path "slice") [] [ T ],
+                                            [],
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::ops::range::RangeTo")
+                                                []
+                                                [ Ty.path "usize" ]
+                                            ],
+                                            "index",
+                                            [],
+                                            []
+                                          |),
                                           [
-                                            Ty.apply
-                                              (Ty.path "core::ops::range::RangeTo")
-                                              []
-                                              [ Ty.path "usize" ]
-                                          ],
-                                          "index",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.read (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::slice::iter::RChunks",
-                                                  "v"
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.read (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "core::slice::iter::RChunks",
+                                                    "v"
+                                                  |)
                                                 |)
                                               |)
-                                            |)
-                                          |);
-                                          Value.mkStructRecord
-                                            "core::ops::range::RangeTo"
-                                            []
-                                            [ Ty.path "usize" ]
-                                            [ ("end_", Value.Integer IntegerKind.Usize 0) ]
-                                        ]
+                                            |);
+                                            Value.mkStructRecord
+                                              "core::ops::range::RangeTo"
+                                              []
+                                              [ Ty.path "usize" ]
+                                              [ ("end_", Value.Integer IntegerKind.Usize 0) ]
+                                          ]
+                                        |)
                                       |)
                                     |)
                                   |)
-                                |)
-                              |)
+                                |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::slice::iter::RChunks",
+                                      "v"
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           M.alloc (|
                             Ty.apply
@@ -22278,13 +22559,18 @@ Module slice.
                                   |) in
                                 M.read (|
                                   let~ _ : Ty.tuple [] :=
-                                    M.write (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "core::slice::iter::RChunksMut",
-                                        "v"
-                                      |),
-                                      M.read (| rest |)
+                                    M.let_ (|
+                                      ltac:(M.monadic (M.read (| rest |))),
+                                      fun rhs' =>
+                                        ltac:(M.monadic
+                                          (M.write (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "core::slice::iter::RChunksMut",
+                                              "v"
+                                            |),
+                                            rhs'
+                                          |)))
                                     |) in
                                   M.alloc (|
                                     Ty.apply
@@ -22803,13 +23089,18 @@ Module slice.
                                           |) in
                                         M.read (|
                                           let~ _ : Ty.tuple [] :=
-                                            M.write (|
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (| M.read (| self |) |),
-                                                "core::slice::iter::RChunksMut",
-                                                "v"
-                                              |),
-                                              M.read (| head |)
+                                            M.let_ (|
+                                              ltac:(M.monadic (M.read (| head |))),
+                                              fun rhs' =>
+                                                ltac:(M.monadic
+                                                  (M.write (|
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      M.deref (| M.read (| self |) |),
+                                                      "core::slice::iter::RChunksMut",
+                                                      "v"
+                                                    |),
+                                                    rhs'
+                                                  |)))
                                             |) in
                                           M.alloc (|
                                             Ty.apply
@@ -22858,47 +23149,53 @@ Module slice.
                   ltac:(M.monadic
                     (M.read (|
                       let~ _ : Ty.tuple [] :=
-                        M.write (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::slice::iter::RChunksMut",
-                            "v"
-                          |),
-                          M.call_closure (|
-                            Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                            M.pointer_coercion
-                              M.PointerCoercion.Unsize
-                              (Ty.apply
-                                (Ty.path "*mut")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 0 ]
-                                    [ T ]
-                                ])
-                              (Ty.apply
-                                (Ty.path "*mut")
-                                []
-                                [ Ty.apply (Ty.path "slice") [] [ T ] ]),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.MutPointer,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 0 ]
-                                        [ T ],
-                                      Value.Array []
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.call_closure (|
+                              Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                              M.pointer_coercion
+                                M.PointerCoercion.Unsize
+                                (Ty.apply
+                                  (Ty.path "*mut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 0 ]
+                                      [ T ]
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "*mut")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ T ] ]),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.MutPointer,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 0 ]
+                                          [ T ],
+                                        Value.Array []
+                                      |)
                                     |)
                                   |)
                                 |)
-                              |)
-                            ]
-                          |)
+                              ]
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (M.write (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::slice::iter::RChunksMut",
+                                  "v"
+                                |),
+                                rhs'
+                              |)))
                         |) in
                       M.alloc (|
                         Ty.apply
@@ -23500,13 +23797,18 @@ Module slice.
                                   |) in
                                 M.read (|
                                   let~ _ : Ty.tuple [] :=
-                                    M.write (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "core::slice::iter::RChunksMut",
-                                        "v"
-                                      |),
-                                      M.read (| tail |)
+                                    M.let_ (|
+                                      ltac:(M.monadic (M.read (| tail |))),
+                                      fun rhs' =>
+                                        ltac:(M.monadic
+                                          (M.write (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "core::slice::iter::RChunksMut",
+                                              "v"
+                                            |),
+                                            rhs'
+                                          |)))
                                     |) in
                                   M.alloc (|
                                     Ty.apply
@@ -23850,13 +24152,18 @@ Module slice.
                                               |) in
                                             M.read (|
                                               let~ _ : Ty.tuple [] :=
-                                                M.write (|
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| self |) |),
-                                                    "core::slice::iter::RChunksMut",
-                                                    "v"
-                                                  |),
-                                                  M.read (| tail |)
+                                                M.let_ (|
+                                                  ltac:(M.monadic (M.read (| tail |))),
+                                                  fun rhs' =>
+                                                    ltac:(M.monadic
+                                                      (M.write (|
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          M.deref (| M.read (| self |) |),
+                                                          "core::slice::iter::RChunksMut",
+                                                          "v"
+                                                        |),
+                                                        rhs'
+                                                      |)))
                                                 |) in
                                               M.alloc (|
                                                 Ty.apply
@@ -23905,50 +24212,56 @@ Module slice.
                       ltac:(M.monadic
                         (M.read (|
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::slice::iter::RChunksMut",
-                                "v"
-                              |),
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "*mut")
-                                  []
-                                  [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                M.pointer_coercion
-                                  M.PointerCoercion.Unsize
-                                  (Ty.apply
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.call_closure (|
+                                  Ty.apply
                                     (Ty.path "*mut")
                                     []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 0 ]
-                                        [ T ]
-                                    ])
-                                  (Ty.apply
-                                    (Ty.path "*mut")
-                                    []
-                                    [ Ty.apply (Ty.path "slice") [] [ T ] ]),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.MutPointer,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 0 ]
-                                            [ T ],
-                                          Value.Array []
+                                    [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                  M.pointer_coercion
+                                    M.PointerCoercion.Unsize
+                                    (Ty.apply
+                                      (Ty.path "*mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 0 ]
+                                          [ T ]
+                                      ])
+                                    (Ty.apply
+                                      (Ty.path "*mut")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ T ] ]),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.MutPointer,
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 0 ]
+                                              [ T ],
+                                            Value.Array []
+                                          |)
                                         |)
                                       |)
                                     |)
-                                  |)
-                                ]
-                              |)
+                                  ]
+                                |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::slice::iter::RChunksMut",
+                                      "v"
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           M.alloc (|
                             Ty.apply
@@ -24639,13 +24952,22 @@ Module slice.
                               |) in
                             M.read (|
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::slice::iter::RChunksExact",
-                                    "v"
-                                  |),
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| fst |) |) |)
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| fst |) |)
+                                    |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::slice::iter::RChunksExact",
+                                          "v"
+                                        |),
+                                        rhs'
+                                      |)))
                                 |) in
                               M.alloc (|
                                 Ty.apply
@@ -24880,93 +25202,99 @@ Module slice.
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
-                        M.write (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::slice::iter::RChunksExact",
-                            "v"
-                          |),
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                    M.get_trait_method (|
-                                      "core::ops::index::Index",
-                                      Ty.apply (Ty.path "slice") [] [ T ],
-                                      [],
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                      M.get_trait_method (|
+                                        "core::ops::index::Index",
+                                        Ty.apply (Ty.path "slice") [] [ T ],
+                                        [],
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::ops::range::RangeTo")
+                                            []
+                                            [ Ty.path "usize" ]
+                                        ],
+                                        "index",
+                                        [],
+                                        []
+                                      |),
                                       [
-                                        Ty.apply
-                                          (Ty.path "core::ops::range::RangeTo")
-                                          []
-                                          [ Ty.path "usize" ]
-                                      ],
-                                      "index",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.read (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "core::slice::iter::RChunksExact",
-                                              "v"
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::slice::iter::RChunksExact",
+                                                "v"
+                                              |)
                                             |)
                                           |)
-                                        |)
-                                      |);
-                                      Value.mkStructRecord
-                                        "core::ops::range::RangeTo"
-                                        []
-                                        [ Ty.path "usize" ]
-                                        [
-                                          ("end_",
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              BinOp.Wrap.sub,
-                                              [
-                                                M.call_closure (|
-                                                  Ty.path "usize",
-                                                  M.get_associated_function (|
-                                                    Ty.apply (Ty.path "slice") [] [ T ],
-                                                    "len",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (|
-                                                        M.read (|
-                                                          M.SubPointer.get_struct_record_field (|
-                                                            M.deref (| M.read (| self |) |),
-                                                            "core::slice::iter::RChunksExact",
-                                                            "v"
+                                        |);
+                                        Value.mkStructRecord
+                                          "core::ops::range::RangeTo"
+                                          []
+                                          [ Ty.path "usize" ]
+                                          [
+                                            ("end_",
+                                              M.call_closure (|
+                                                Ty.path "usize",
+                                                BinOp.Wrap.sub,
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.path "usize",
+                                                    M.get_associated_function (|
+                                                      Ty.apply (Ty.path "slice") [] [ T ],
+                                                      "len",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (|
+                                                          M.read (|
+                                                            M.SubPointer.get_struct_record_field (|
+                                                              M.deref (| M.read (| self |) |),
+                                                              "core::slice::iter::RChunksExact",
+                                                              "v"
+                                                            |)
                                                           |)
                                                         |)
                                                       |)
-                                                    |)
-                                                  ]
-                                                |);
-                                                M.read (| end_ |)
-                                              ]
-                                            |))
-                                        ]
-                                    ]
+                                                    ]
+                                                  |);
+                                                  M.read (| end_ |)
+                                                ]
+                                              |))
+                                          ]
+                                      ]
+                                    |)
                                   |)
                                 |)
                               |)
-                            |)
-                          |)
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (M.write (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::slice::iter::RChunksExact",
+                                  "v"
+                                |),
+                                rhs'
+                              |)))
                         |) in
                       M.alloc (|
                         Ty.apply
@@ -24995,61 +25323,67 @@ Module slice.
                   ltac:(M.monadic
                     (M.read (|
                       let~ _ : Ty.tuple [] :=
-                        M.write (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::slice::iter::RChunksExact",
-                            "v"
-                          |),
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                    M.get_trait_method (|
-                                      "core::ops::index::Index",
-                                      Ty.apply (Ty.path "slice") [] [ T ],
-                                      [],
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                      M.get_trait_method (|
+                                        "core::ops::index::Index",
+                                        Ty.apply (Ty.path "slice") [] [ T ],
+                                        [],
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::ops::range::RangeTo")
+                                            []
+                                            [ Ty.path "usize" ]
+                                        ],
+                                        "index",
+                                        [],
+                                        []
+                                      |),
                                       [
-                                        Ty.apply
-                                          (Ty.path "core::ops::range::RangeTo")
-                                          []
-                                          [ Ty.path "usize" ]
-                                      ],
-                                      "index",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.read (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "core::slice::iter::RChunksExact",
-                                              "v"
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::slice::iter::RChunksExact",
+                                                "v"
+                                              |)
                                             |)
                                           |)
-                                        |)
-                                      |);
-                                      Value.mkStructRecord
-                                        "core::ops::range::RangeTo"
-                                        []
-                                        [ Ty.path "usize" ]
-                                        [ ("end_", Value.Integer IntegerKind.Usize 0) ]
-                                    ]
+                                        |);
+                                        Value.mkStructRecord
+                                          "core::ops::range::RangeTo"
+                                          []
+                                          [ Ty.path "usize" ]
+                                          [ ("end_", Value.Integer IntegerKind.Usize 0) ]
+                                      ]
+                                    |)
                                   |)
                                 |)
                               |)
-                            |)
-                          |)
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (M.write (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::slice::iter::RChunksExact",
+                                  "v"
+                                |),
+                                rhs'
+                              |)))
                         |) in
                       M.alloc (|
                         Ty.apply
@@ -25413,13 +25747,22 @@ Module slice.
                               |) in
                             M.read (|
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::slice::iter::RChunksExact",
-                                    "v"
-                                  |),
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| snd |) |) |)
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| snd |) |)
+                                    |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::slice::iter::RChunksExact",
+                                          "v"
+                                        |),
+                                        rhs'
+                                      |)))
                                 |) in
                               M.alloc (|
                                 Ty.apply
@@ -25635,61 +25978,67 @@ Module slice.
                               |)
                             |) in
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::slice::iter::RChunksExact",
-                                "v"
-                              |),
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                        M.get_trait_method (|
-                                          "core::ops::index::Index",
-                                          Ty.apply (Ty.path "slice") [] [ T ],
-                                          [],
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                          M.get_trait_method (|
+                                            "core::ops::index::Index",
+                                            Ty.apply (Ty.path "slice") [] [ T ],
+                                            [],
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::ops::range::RangeFrom")
+                                                []
+                                                [ Ty.path "usize" ]
+                                            ],
+                                            "index",
+                                            [],
+                                            []
+                                          |),
                                           [
-                                            Ty.apply
-                                              (Ty.path "core::ops::range::RangeFrom")
-                                              []
-                                              [ Ty.path "usize" ]
-                                          ],
-                                          "index",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.read (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::slice::iter::RChunksExact",
-                                                  "v"
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.read (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "core::slice::iter::RChunksExact",
+                                                    "v"
+                                                  |)
                                                 |)
                                               |)
-                                            |)
-                                          |);
-                                          Value.mkStructRecord
-                                            "core::ops::range::RangeFrom"
-                                            []
-                                            [ Ty.path "usize" ]
-                                            [ ("start", M.read (| end_ |)) ]
-                                        ]
+                                            |);
+                                            Value.mkStructRecord
+                                              "core::ops::range::RangeFrom"
+                                              []
+                                              [ Ty.path "usize" ]
+                                              [ ("start", M.read (| end_ |)) ]
+                                          ]
+                                        |)
                                       |)
                                     |)
                                   |)
-                                |)
-                              |)
+                                |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::slice::iter::RChunksExact",
+                                      "v"
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           M.alloc (|
                             Ty.apply
@@ -25708,61 +26057,67 @@ Module slice.
                       ltac:(M.monadic
                         (M.read (|
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::slice::iter::RChunksExact",
-                                "v"
-                              |),
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                        M.get_trait_method (|
-                                          "core::ops::index::Index",
-                                          Ty.apply (Ty.path "slice") [] [ T ],
-                                          [],
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                          M.get_trait_method (|
+                                            "core::ops::index::Index",
+                                            Ty.apply (Ty.path "slice") [] [ T ],
+                                            [],
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::ops::range::RangeTo")
+                                                []
+                                                [ Ty.path "usize" ]
+                                            ],
+                                            "index",
+                                            [],
+                                            []
+                                          |),
                                           [
-                                            Ty.apply
-                                              (Ty.path "core::ops::range::RangeTo")
-                                              []
-                                              [ Ty.path "usize" ]
-                                          ],
-                                          "index",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.read (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::slice::iter::RChunksExact",
-                                                  "v"
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.read (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "core::slice::iter::RChunksExact",
+                                                    "v"
+                                                  |)
                                                 |)
                                               |)
-                                            |)
-                                          |);
-                                          Value.mkStructRecord
-                                            "core::ops::range::RangeTo"
-                                            []
-                                            [ Ty.path "usize" ]
-                                            [ ("end_", Value.Integer IntegerKind.Usize 0) ]
-                                        ]
+                                            |);
+                                            Value.mkStructRecord
+                                              "core::ops::range::RangeTo"
+                                              []
+                                              [ Ty.path "usize" ]
+                                              [ ("end_", Value.Integer IntegerKind.Usize 0) ]
+                                          ]
+                                        |)
                                       |)
                                     |)
                                   |)
-                                |)
-                              |)
+                                |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::slice::iter::RChunksExact",
+                                      "v"
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           M.alloc (|
                             Ty.apply
@@ -26426,13 +26781,18 @@ Module slice.
                                   |) in
                                 M.read (|
                                   let~ _ : Ty.tuple [] :=
-                                    M.write (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "core::slice::iter::RChunksExactMut",
-                                        "v"
-                                      |),
-                                      M.read (| head |)
+                                    M.let_ (|
+                                      ltac:(M.monadic (M.read (| head |))),
+                                      fun rhs' =>
+                                        ltac:(M.monadic
+                                          (M.write (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "core::slice::iter::RChunksExactMut",
+                                              "v"
+                                            |),
+                                            rhs'
+                                          |)))
                                     |) in
                                   M.alloc (|
                                     Ty.apply
@@ -26778,13 +27138,18 @@ Module slice.
                                   |) in
                                 M.read (|
                                   let~ _ : Ty.tuple [] :=
-                                    M.write (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "core::slice::iter::RChunksExactMut",
-                                        "v"
-                                      |),
-                                      M.read (| fst |)
+                                    M.let_ (|
+                                      ltac:(M.monadic (M.read (| fst |))),
+                                      fun rhs' =>
+                                        ltac:(M.monadic
+                                          (M.write (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "core::slice::iter::RChunksExactMut",
+                                              "v"
+                                            |),
+                                            rhs'
+                                          |)))
                                     |) in
                                   M.alloc (|
                                     Ty.apply
@@ -26835,47 +27200,53 @@ Module slice.
                   ltac:(M.monadic
                     (M.read (|
                       let~ _ : Ty.tuple [] :=
-                        M.write (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::slice::iter::RChunksExactMut",
-                            "v"
-                          |),
-                          M.call_closure (|
-                            Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                            M.pointer_coercion
-                              M.PointerCoercion.Unsize
-                              (Ty.apply
-                                (Ty.path "*mut")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 0 ]
-                                    [ T ]
-                                ])
-                              (Ty.apply
-                                (Ty.path "*mut")
-                                []
-                                [ Ty.apply (Ty.path "slice") [] [ T ] ]),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.MutPointer,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 0 ]
-                                        [ T ],
-                                      Value.Array []
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.call_closure (|
+                              Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                              M.pointer_coercion
+                                M.PointerCoercion.Unsize
+                                (Ty.apply
+                                  (Ty.path "*mut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 0 ]
+                                      [ T ]
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "*mut")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ T ] ]),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.MutPointer,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 0 ]
+                                          [ T ],
+                                        Value.Array []
+                                      |)
                                     |)
                                   |)
                                 |)
-                              |)
-                            ]
-                          |)
+                              ]
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (M.write (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::slice::iter::RChunksExactMut",
+                                  "v"
+                                |),
+                                rhs'
+                              |)))
                         |) in
                       M.alloc (|
                         Ty.apply
@@ -27250,13 +27621,18 @@ Module slice.
                               |) in
                             M.read (|
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::slice::iter::RChunksExactMut",
-                                    "v"
-                                  |),
-                                  M.read (| tail |)
+                                M.let_ (|
+                                  ltac:(M.monadic (M.read (| tail |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::slice::iter::RChunksExactMut",
+                                          "v"
+                                        |),
+                                        rhs'
+                                      |)))
                                 |) in
                               M.alloc (|
                                 Ty.apply
@@ -27587,13 +27963,18 @@ Module slice.
                                               |) in
                                             M.read (|
                                               let~ _ : Ty.tuple [] :=
-                                                M.write (|
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| self |) |),
-                                                    "core::slice::iter::RChunksExactMut",
-                                                    "v"
-                                                  |),
-                                                  M.read (| tail |)
+                                                M.let_ (|
+                                                  ltac:(M.monadic (M.read (| tail |))),
+                                                  fun rhs' =>
+                                                    ltac:(M.monadic
+                                                      (M.write (|
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          M.deref (| M.read (| self |) |),
+                                                          "core::slice::iter::RChunksExactMut",
+                                                          "v"
+                                                        |),
+                                                        rhs'
+                                                      |)))
                                                 |) in
                                               M.alloc (|
                                                 Ty.apply
@@ -27642,50 +28023,56 @@ Module slice.
                       ltac:(M.monadic
                         (M.read (|
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::slice::iter::RChunksExactMut",
-                                "v"
-                              |),
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "*mut")
-                                  []
-                                  [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                M.pointer_coercion
-                                  M.PointerCoercion.Unsize
-                                  (Ty.apply
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.call_closure (|
+                                  Ty.apply
                                     (Ty.path "*mut")
                                     []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 0 ]
-                                        [ T ]
-                                    ])
-                                  (Ty.apply
-                                    (Ty.path "*mut")
-                                    []
-                                    [ Ty.apply (Ty.path "slice") [] [ T ] ]),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.MutPointer,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 0 ]
-                                            [ T ],
-                                          Value.Array []
+                                    [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                  M.pointer_coercion
+                                    M.PointerCoercion.Unsize
+                                    (Ty.apply
+                                      (Ty.path "*mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 0 ]
+                                          [ T ]
+                                      ])
+                                    (Ty.apply
+                                      (Ty.path "*mut")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ T ] ]),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.MutPointer,
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 0 ]
+                                              [ T ],
+                                            Value.Array []
+                                          |)
                                         |)
                                       |)
                                     |)
-                                  |)
-                                ]
-                              |)
+                                  ]
+                                |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::slice::iter::RChunksExactMut",
+                                      "v"
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           M.alloc (|
                             Ty.apply
@@ -28329,16 +28716,22 @@ Module slice.
                                   |) in
                                 M.read (|
                                   let~ _ : Ty.tuple [] :=
-                                    M.write (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "core::slice::iter::ChunkBy",
-                                        "slice"
-                                      |),
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| tail |) |)
-                                      |)
+                                    M.let_ (|
+                                      ltac:(M.monadic
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| tail |) |)
+                                        |))),
+                                      fun rhs' =>
+                                        ltac:(M.monadic
+                                          (M.write (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "core::slice::iter::ChunkBy",
+                                              "slice"
+                                            |),
+                                            rhs'
+                                          |)))
                                     |) in
                                   M.alloc (|
                                     Ty.apply
@@ -28882,16 +29275,22 @@ Module slice.
                                   |) in
                                 M.read (|
                                   let~ _ : Ty.tuple [] :=
-                                    M.write (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "core::slice::iter::ChunkBy",
-                                        "slice"
-                                      |),
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| head |) |)
-                                      |)
+                                    M.let_ (|
+                                      ltac:(M.monadic
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| head |) |)
+                                        |))),
+                                      fun rhs' =>
+                                        ltac:(M.monadic
+                                          (M.write (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "core::slice::iter::ChunkBy",
+                                              "slice"
+                                            |),
+                                            rhs'
+                                          |)))
                                     |) in
                                   M.alloc (|
                                     Ty.apply
@@ -29545,16 +29944,22 @@ Module slice.
                                   |) in
                                 M.read (|
                                   let~ _ : Ty.tuple [] :=
-                                    M.write (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "core::slice::iter::ChunkByMut",
-                                        "slice"
-                                      |),
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (| M.read (| tail |) |)
-                                      |)
+                                    M.let_ (|
+                                      ltac:(M.monadic
+                                        (M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.deref (| M.read (| tail |) |)
+                                        |))),
+                                      fun rhs' =>
+                                        ltac:(M.monadic
+                                          (M.write (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "core::slice::iter::ChunkByMut",
+                                              "slice"
+                                            |),
+                                            rhs'
+                                          |)))
                                     |) in
                                   M.alloc (|
                                     Ty.apply
@@ -30118,16 +30523,22 @@ Module slice.
                                   |) in
                                 M.read (|
                                   let~ _ : Ty.tuple [] :=
-                                    M.write (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "core::slice::iter::ChunkByMut",
-                                        "slice"
-                                      |),
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (| M.read (| head |) |)
-                                      |)
+                                    M.let_ (|
+                                      ltac:(M.monadic
+                                        (M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.deref (| M.read (| head |) |)
+                                        |))),
+                                      fun rhs' =>
+                                        ltac:(M.monadic
+                                          (M.write (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "core::slice::iter::ChunkByMut",
+                                              "slice"
+                                            |),
+                                            rhs'
+                                          |)))
                                     |) in
                                   M.alloc (|
                                     Ty.apply

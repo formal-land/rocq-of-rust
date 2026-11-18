@@ -2531,27 +2531,33 @@ Module tx.
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "revm_context::tx::TxEnv",
-                                  "tx_type"
-                                |),
-                                M.cast
-                                  (Ty.path "u8")
-                                  (M.call_closure (|
-                                    Ty.path "u8",
-                                    BinOp.Wrap.add,
-                                    [
-                                      M.read (|
-                                        get_constant (|
-                                          "revm_context_interface::transaction::transaction_type::TransactionType::Eip2930_discriminant",
-                                          Ty.path "u8"
-                                        |)
-                                      |);
-                                      Value.Integer IntegerKind.U8 0
-                                    ]
-                                  |))
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.cast
+                                    (Ty.path "u8")
+                                    (M.call_closure (|
+                                      Ty.path "u8",
+                                      BinOp.Wrap.add,
+                                      [
+                                        M.read (|
+                                          get_constant (|
+                                            "revm_context_interface::transaction::transaction_type::TransactionType::Eip2930_discriminant",
+                                            Ty.path "u8"
+                                          |)
+                                        |);
+                                        Value.Integer IntegerKind.U8 0
+                                      ]
+                                    |)))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "revm_context::tx::TxEnv",
+                                        "tx_type"
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)));
@@ -2592,27 +2598,33 @@ Module tx.
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "revm_context::tx::TxEnv",
-                                  "tx_type"
-                                |),
-                                M.cast
-                                  (Ty.path "u8")
-                                  (M.call_closure (|
-                                    Ty.path "u8",
-                                    BinOp.Wrap.add,
-                                    [
-                                      M.read (|
-                                        get_constant (|
-                                          "revm_context_interface::transaction::transaction_type::TransactionType::Eip1559_discriminant",
-                                          Ty.path "u8"
-                                        |)
-                                      |);
-                                      Value.Integer IntegerKind.U8 0
-                                    ]
-                                  |))
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.cast
+                                    (Ty.path "u8")
+                                    (M.call_closure (|
+                                      Ty.path "u8",
+                                      BinOp.Wrap.add,
+                                      [
+                                        M.read (|
+                                          get_constant (|
+                                            "revm_context_interface::transaction::transaction_type::TransactionType::Eip1559_discriminant",
+                                            Ty.path "u8"
+                                          |)
+                                        |);
+                                        Value.Integer IntegerKind.U8 0
+                                      ]
+                                    |)))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "revm_context::tx::TxEnv",
+                                        "tx_type"
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)));
@@ -2704,27 +2716,33 @@ Module tx.
                                   M.never_to_any (|
                                     M.read (|
                                       let~ _ : Ty.tuple [] :=
-                                        M.write (|
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "revm_context::tx::TxEnv",
-                                            "tx_type"
-                                          |),
-                                          M.cast
-                                            (Ty.path "u8")
-                                            (M.call_closure (|
-                                              Ty.path "u8",
-                                              BinOp.Wrap.add,
-                                              [
-                                                M.read (|
-                                                  get_constant (|
-                                                    "revm_context_interface::transaction::transaction_type::TransactionType::Eip4844_discriminant",
-                                                    Ty.path "u8"
-                                                  |)
-                                                |);
-                                                Value.Integer IntegerKind.U8 0
-                                              ]
-                                            |))
+                                        M.let_ (|
+                                          ltac:(M.monadic
+                                            (M.cast
+                                              (Ty.path "u8")
+                                              (M.call_closure (|
+                                                Ty.path "u8",
+                                                BinOp.Wrap.add,
+                                                [
+                                                  M.read (|
+                                                    get_constant (|
+                                                      "revm_context_interface::transaction::transaction_type::TransactionType::Eip4844_discriminant",
+                                                      Ty.path "u8"
+                                                    |)
+                                                  |);
+                                                  Value.Integer IntegerKind.U8 0
+                                                ]
+                                              |)))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (M.write (|
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| self |) |),
+                                                  "revm_context::tx::TxEnv",
+                                                  "tx_type"
+                                                |),
+                                                rhs'
+                                              |)))
                                         |) in
                                       M.return_ (|
                                         Value.StructTuple
@@ -2838,27 +2856,33 @@ Module tx.
                                   M.never_to_any (|
                                     M.read (|
                                       let~ _ : Ty.tuple [] :=
-                                        M.write (|
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "revm_context::tx::TxEnv",
-                                            "tx_type"
-                                          |),
-                                          M.cast
-                                            (Ty.path "u8")
-                                            (M.call_closure (|
-                                              Ty.path "u8",
-                                              BinOp.Wrap.add,
-                                              [
-                                                M.read (|
-                                                  get_constant (|
-                                                    "revm_context_interface::transaction::transaction_type::TransactionType::Eip7702_discriminant",
-                                                    Ty.path "u8"
-                                                  |)
-                                                |);
-                                                Value.Integer IntegerKind.U8 0
-                                              ]
-                                            |))
+                                        M.let_ (|
+                                          ltac:(M.monadic
+                                            (M.cast
+                                              (Ty.path "u8")
+                                              (M.call_closure (|
+                                                Ty.path "u8",
+                                                BinOp.Wrap.add,
+                                                [
+                                                  M.read (|
+                                                    get_constant (|
+                                                      "revm_context_interface::transaction::transaction_type::TransactionType::Eip7702_discriminant",
+                                                      Ty.path "u8"
+                                                    |)
+                                                  |);
+                                                  Value.Integer IntegerKind.U8 0
+                                                ]
+                                              |)))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (M.write (|
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| self |) |),
+                                                  "revm_context::tx::TxEnv",
+                                                  "tx_type"
+                                                |),
+                                                rhs'
+                                              |)))
                                         |) in
                                       M.return_ (|
                                         Value.StructTuple
@@ -2948,71 +2972,24 @@ Module tx.
             |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_context::tx::TxEnv",
-                  "authorization_list"
-                |),
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "alloc::vec::Vec")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "either::Either")
-                        []
-                        [
-                          Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
-                          Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
-                        ];
-                      Ty.path "alloc::alloc::Global"
-                    ],
-                  M.get_trait_method (|
-                    "core::iter::traits::iterator::Iterator",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply
-                      (Ty.path "core::iter::adapters::map::Map")
+                      (Ty.path "alloc::vec::Vec")
                       []
                       [
                         Ty.apply
-                          (Ty.path "alloc::vec::into_iter::IntoIter")
+                          (Ty.path "either::Either")
                           []
                           [
                             Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
-                            Ty.path "alloc::alloc::Global"
+                            Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
                           ];
-                        Ty.function
-                          [ Ty.path "alloy_eip7702::auth_list::SignedAuthorization" ]
-                          (Ty.apply
-                            (Ty.path "either::Either")
-                            []
-                            [
-                              Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
-                              Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
-                            ])
+                        Ty.path "alloc::alloc::Global"
                       ],
-                    [],
-                    [],
-                    "collect",
-                    [],
-                    [
-                      Ty.apply
-                        (Ty.path "alloc::vec::Vec")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "either::Either")
-                            []
-                            [
-                              Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
-                              Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
-                            ];
-                          Ty.path "alloc::alloc::Global"
-                        ]
-                    ]
-                  |),
-                  [
-                    M.call_closure (|
+                    M.get_trait_method (|
+                      "core::iter::traits::iterator::Iterator",
                       Ty.apply
                         (Ty.path "core::iter::adapters::map::Map")
                         []
@@ -3034,40 +3011,51 @@ Module tx.
                                 Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
                               ])
                         ],
-                      M.get_trait_method (|
-                        "core::iter::traits::iterator::Iterator",
+                      [],
+                      [],
+                      "collect",
+                      [],
+                      [
                         Ty.apply
-                          (Ty.path "alloc::vec::into_iter::IntoIter")
+                          (Ty.path "alloc::vec::Vec")
                           []
                           [
-                            Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
-                            Ty.path "alloc::alloc::Global"
-                          ],
-                        [],
-                        [],
-                        "map",
-                        [],
-                        [
-                          Ty.apply
-                            (Ty.path "either::Either")
-                            []
-                            [
-                              Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
-                              Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
-                            ];
-                          Ty.function
-                            [ Ty.path "alloy_eip7702::auth_list::SignedAuthorization" ]
-                            (Ty.apply
+                            Ty.apply
                               (Ty.path "either::Either")
                               []
                               [
                                 Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
                                 Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
-                              ])
-                        ]
-                      |),
-                      [
-                        M.call_closure (|
+                              ];
+                            Ty.path "alloc::alloc::Global"
+                          ]
+                      ]
+                    |),
+                    [
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::iter::adapters::map::Map")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::vec::into_iter::IntoIter")
+                              []
+                              [
+                                Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
+                                Ty.path "alloc::alloc::Global"
+                              ];
+                            Ty.function
+                              [ Ty.path "alloy_eip7702::auth_list::SignedAuthorization" ]
+                              (Ty.apply
+                                (Ty.path "either::Either")
+                                []
+                                [
+                                  Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
+                                  Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
+                                ])
+                          ],
+                        M.get_trait_method (|
+                          "core::iter::traits::iterator::Iterator",
                           Ty.apply
                             (Ty.path "alloc::vec::into_iter::IntoIter")
                             []
@@ -3075,34 +3063,76 @@ Module tx.
                               Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
                               Ty.path "alloc::alloc::Global"
                             ],
-                          M.get_trait_method (|
-                            "core::iter::traits::collect::IntoIterator",
+                          [],
+                          [],
+                          "map",
+                          [],
+                          [
                             Ty.apply
-                              (Ty.path "alloc::vec::Vec")
+                              (Ty.path "either::Either")
+                              []
+                              [
+                                Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
+                                Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
+                              ];
+                            Ty.function
+                              [ Ty.path "alloy_eip7702::auth_list::SignedAuthorization" ]
+                              (Ty.apply
+                                (Ty.path "either::Either")
+                                []
+                                [
+                                  Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
+                                  Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
+                                ])
+                          ]
+                        |),
+                        [
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "alloc::vec::into_iter::IntoIter")
                               []
                               [
                                 Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
                                 Ty.path "alloc::alloc::Global"
                               ],
-                            [],
-                            [],
-                            "into_iter",
-                            [],
+                            M.get_trait_method (|
+                              "core::iter::traits::collect::IntoIterator",
+                              Ty.apply
+                                (Ty.path "alloc::vec::Vec")
+                                []
+                                [
+                                  Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
+                                  Ty.path "alloc::alloc::Global"
+                                ],
+                              [],
+                              [],
+                              "into_iter",
+                              [],
+                              []
+                            |),
+                            [ M.read (| auth |) ]
+                          |);
+                          M.constructor_as_closure
+                            "either::Either::Left"
                             []
-                          |),
-                          [ M.read (| auth |) ]
-                        |);
-                        M.constructor_as_closure
-                          "either::Either::Left"
-                          []
-                          [
-                            Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
-                            Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
-                          ]
-                      ]
-                    |)
-                  ]
-                |)
+                            [
+                              Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
+                              Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
+                            ]
+                        ]
+                      |)
+                    ]
+                  |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_context::tx::TxEnv",
+                        "authorization_list"
+                      |),
+                      rhs'
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -3146,71 +3176,24 @@ Module tx.
             |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_context::tx::TxEnv",
-                  "authorization_list"
-                |),
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "alloc::vec::Vec")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "either::Either")
-                        []
-                        [
-                          Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
-                          Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
-                        ];
-                      Ty.path "alloc::alloc::Global"
-                    ],
-                  M.get_trait_method (|
-                    "core::iter::traits::iterator::Iterator",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply
-                      (Ty.path "core::iter::adapters::map::Map")
+                      (Ty.path "alloc::vec::Vec")
                       []
                       [
                         Ty.apply
-                          (Ty.path "alloc::vec::into_iter::IntoIter")
+                          (Ty.path "either::Either")
                           []
                           [
-                            Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization";
-                            Ty.path "alloc::alloc::Global"
+                            Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
+                            Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
                           ];
-                        Ty.function
-                          [ Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization" ]
-                          (Ty.apply
-                            (Ty.path "either::Either")
-                            []
-                            [
-                              Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
-                              Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
-                            ])
+                        Ty.path "alloc::alloc::Global"
                       ],
-                    [],
-                    [],
-                    "collect",
-                    [],
-                    [
-                      Ty.apply
-                        (Ty.path "alloc::vec::Vec")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "either::Either")
-                            []
-                            [
-                              Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
-                              Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
-                            ];
-                          Ty.path "alloc::alloc::Global"
-                        ]
-                    ]
-                  |),
-                  [
-                    M.call_closure (|
+                    M.get_trait_method (|
+                      "core::iter::traits::iterator::Iterator",
                       Ty.apply
                         (Ty.path "core::iter::adapters::map::Map")
                         []
@@ -3232,40 +3215,51 @@ Module tx.
                                 Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
                               ])
                         ],
-                      M.get_trait_method (|
-                        "core::iter::traits::iterator::Iterator",
+                      [],
+                      [],
+                      "collect",
+                      [],
+                      [
                         Ty.apply
-                          (Ty.path "alloc::vec::into_iter::IntoIter")
+                          (Ty.path "alloc::vec::Vec")
                           []
                           [
-                            Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization";
-                            Ty.path "alloc::alloc::Global"
-                          ],
-                        [],
-                        [],
-                        "map",
-                        [],
-                        [
-                          Ty.apply
-                            (Ty.path "either::Either")
-                            []
-                            [
-                              Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
-                              Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
-                            ];
-                          Ty.function
-                            [ Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization" ]
-                            (Ty.apply
+                            Ty.apply
                               (Ty.path "either::Either")
                               []
                               [
                                 Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
                                 Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
-                              ])
-                        ]
-                      |),
-                      [
-                        M.call_closure (|
+                              ];
+                            Ty.path "alloc::alloc::Global"
+                          ]
+                      ]
+                    |),
+                    [
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::iter::adapters::map::Map")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::vec::into_iter::IntoIter")
+                              []
+                              [
+                                Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization";
+                                Ty.path "alloc::alloc::Global"
+                              ];
+                            Ty.function
+                              [ Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization" ]
+                              (Ty.apply
+                                (Ty.path "either::Either")
+                                []
+                                [
+                                  Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
+                                  Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
+                                ])
+                          ],
+                        M.get_trait_method (|
+                          "core::iter::traits::iterator::Iterator",
                           Ty.apply
                             (Ty.path "alloc::vec::into_iter::IntoIter")
                             []
@@ -3273,34 +3267,76 @@ Module tx.
                               Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization";
                               Ty.path "alloc::alloc::Global"
                             ],
-                          M.get_trait_method (|
-                            "core::iter::traits::collect::IntoIterator",
+                          [],
+                          [],
+                          "map",
+                          [],
+                          [
                             Ty.apply
-                              (Ty.path "alloc::vec::Vec")
+                              (Ty.path "either::Either")
+                              []
+                              [
+                                Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
+                                Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
+                              ];
+                            Ty.function
+                              [ Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization" ]
+                              (Ty.apply
+                                (Ty.path "either::Either")
+                                []
+                                [
+                                  Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
+                                  Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
+                                ])
+                          ]
+                        |),
+                        [
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "alloc::vec::into_iter::IntoIter")
                               []
                               [
                                 Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization";
                                 Ty.path "alloc::alloc::Global"
                               ],
-                            [],
-                            [],
-                            "into_iter",
-                            [],
+                            M.get_trait_method (|
+                              "core::iter::traits::collect::IntoIterator",
+                              Ty.apply
+                                (Ty.path "alloc::vec::Vec")
+                                []
+                                [
+                                  Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization";
+                                  Ty.path "alloc::alloc::Global"
+                                ],
+                              [],
+                              [],
+                              "into_iter",
+                              [],
+                              []
+                            |),
+                            [ M.read (| auth |) ]
+                          |);
+                          M.constructor_as_closure
+                            "either::Either::Right"
                             []
-                          |),
-                          [ M.read (| auth |) ]
-                        |);
-                        M.constructor_as_closure
-                          "either::Either::Right"
-                          []
-                          [
-                            Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
-                            Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
-                          ]
-                      ]
-                    |)
-                  ]
-                |)
+                            [
+                              Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
+                              Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
+                            ]
+                        ]
+                      |)
+                    ]
+                  |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_context::tx::TxEnv",
+                        "authorization_list"
+                      |),
+                      rhs'
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -5595,13 +5631,18 @@ Module tx.
             M.alloc (| Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ], tx_type |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  self,
-                  "revm_context::tx::TxEnvBuilder",
-                  "tx_type"
-                |),
-                M.read (| tx_type |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| tx_type |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        self,
+                        "revm_context::tx::TxEnvBuilder",
+                        "tx_type"
+                      |),
+                      rhs'
+                    |)))
               |) in
             self
           |)))
@@ -5657,13 +5698,18 @@ Module tx.
           let caller := M.alloc (| Ty.path "alloy_primitives::bits::address::Address", caller |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  self,
-                  "revm_context::tx::TxEnvBuilder",
-                  "caller"
-                |),
-                M.read (| caller |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| caller |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        self,
+                        "revm_context::tx::TxEnvBuilder",
+                        "caller"
+                      |),
+                      rhs'
+                    |)))
               |) in
             self
           |)))
@@ -5689,13 +5735,18 @@ Module tx.
           let gas_limit := M.alloc (| Ty.path "u64", gas_limit |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  self,
-                  "revm_context::tx::TxEnvBuilder",
-                  "gas_limit"
-                |),
-                M.read (| gas_limit |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| gas_limit |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        self,
+                        "revm_context::tx::TxEnvBuilder",
+                        "gas_limit"
+                      |),
+                      rhs'
+                    |)))
               |) in
             self
           |)))
@@ -5722,13 +5773,18 @@ Module tx.
           let max_fee_per_gas := M.alloc (| Ty.path "u128", max_fee_per_gas |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  self,
-                  "revm_context::tx::TxEnvBuilder",
-                  "gas_price"
-                |),
-                M.read (| max_fee_per_gas |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| max_fee_per_gas |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        self,
+                        "revm_context::tx::TxEnvBuilder",
+                        "gas_price"
+                      |),
+                      rhs'
+                    |)))
               |) in
             self
           |)))
@@ -5755,13 +5811,18 @@ Module tx.
           let gas_price := M.alloc (| Ty.path "u128", gas_price |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  self,
-                  "revm_context::tx::TxEnvBuilder",
-                  "gas_price"
-                |),
-                M.read (| gas_price |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| gas_price |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        self,
+                        "revm_context::tx::TxEnvBuilder",
+                        "gas_price"
+                      |),
+                      rhs'
+                    |)))
               |) in
             self
           |)))
@@ -5788,13 +5849,18 @@ Module tx.
           let kind := M.alloc (| Ty.path "alloy_primitives::common::TxKind", kind |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  self,
-                  "revm_context::tx::TxEnvBuilder",
-                  "kind"
-                |),
-                M.read (| kind |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| kind |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        self,
+                        "revm_context::tx::TxEnvBuilder",
+                        "kind"
+                      |),
+                      rhs'
+                    |)))
               |) in
             self
           |)))
@@ -5820,17 +5886,23 @@ Module tx.
           let target := M.alloc (| Ty.path "alloy_primitives::bits::address::Address", target |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  self,
-                  "revm_context::tx::TxEnvBuilder",
-                  "kind"
-                |),
-                Value.StructTuple
-                  "alloy_primitives::common::TxKind::Call"
-                  []
-                  []
-                  [ M.read (| target |) ]
+              M.let_ (|
+                ltac:(M.monadic
+                  (Value.StructTuple
+                    "alloy_primitives::common::TxKind::Call"
+                    []
+                    []
+                    [ M.read (| target |) ])),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        self,
+                        "revm_context::tx::TxEnvBuilder",
+                        "kind"
+                      |),
+                      rhs'
+                    |)))
               |) in
             self
           |)))
@@ -5855,13 +5927,19 @@ Module tx.
           (let self := M.alloc (| Ty.path "revm_context::tx::TxEnvBuilder", self |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  self,
-                  "revm_context::tx::TxEnvBuilder",
-                  "kind"
-                |),
-                Value.StructTuple "alloy_primitives::common::TxKind::Create" [] [] []
+              M.let_ (|
+                ltac:(M.monadic
+                  (Value.StructTuple "alloy_primitives::common::TxKind::Create" [] [] [])),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        self,
+                        "revm_context::tx::TxEnvBuilder",
+                        "kind"
+                      |),
+                      rhs'
+                    |)))
               |) in
             self
           |)))
@@ -5923,13 +6001,18 @@ Module tx.
             |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  self,
-                  "revm_context::tx::TxEnvBuilder",
-                  "value"
-                |),
-                M.read (| value |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| value |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        self,
+                        "revm_context::tx::TxEnvBuilder",
+                        "value"
+                      |),
+                      rhs'
+                    |)))
               |) in
             self
           |)))
@@ -5955,13 +6038,18 @@ Module tx.
           let data := M.alloc (| Ty.path "alloy_primitives::bytes_::Bytes", data |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  self,
-                  "revm_context::tx::TxEnvBuilder",
-                  "data"
-                |),
-                M.read (| data |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| data |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        self,
+                        "revm_context::tx::TxEnvBuilder",
+                        "data"
+                      |),
+                      rhs'
+                    |)))
               |) in
             self
           |)))
@@ -5987,13 +6075,18 @@ Module tx.
           let nonce := M.alloc (| Ty.path "u64", nonce |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  self,
-                  "revm_context::tx::TxEnvBuilder",
-                  "nonce"
-                |),
-                M.read (| nonce |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| nonce |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        self,
+                        "revm_context::tx::TxEnvBuilder",
+                        "nonce"
+                      |),
+                      rhs'
+                    |)))
               |) in
             self
           |)))
@@ -6023,13 +6116,18 @@ Module tx.
             |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  self,
-                  "revm_context::tx::TxEnvBuilder",
-                  "chain_id"
-                |),
-                M.read (| chain_id |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| chain_id |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        self,
+                        "revm_context::tx::TxEnvBuilder",
+                        "chain_id"
+                      |),
+                      rhs'
+                    |)))
               |) in
             self
           |)))
@@ -6055,13 +6153,18 @@ Module tx.
           let access_list := M.alloc (| Ty.path "alloy_eip2930::AccessList", access_list |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  self,
-                  "revm_context::tx::TxEnvBuilder",
-                  "access_list"
-                |),
-                M.read (| access_list |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| access_list |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        self,
+                        "revm_context::tx::TxEnvBuilder",
+                        "access_list"
+                      |),
+                      rhs'
+                    |)))
               |) in
             self
           |)))
@@ -6092,13 +6195,18 @@ Module tx.
             |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  self,
-                  "revm_context::tx::TxEnvBuilder",
-                  "gas_priority_fee"
-                |),
-                M.read (| gas_priority_fee |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| gas_priority_fee |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        self,
+                        "revm_context::tx::TxEnvBuilder",
+                        "gas_priority_fee"
+                      |),
+                      rhs'
+                    |)))
               |) in
             self
           |)))
@@ -6138,13 +6246,18 @@ Module tx.
             |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  self,
-                  "revm_context::tx::TxEnvBuilder",
-                  "blob_hashes"
-                |),
-                M.read (| blob_hashes |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| blob_hashes |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        self,
+                        "revm_context::tx::TxEnvBuilder",
+                        "blob_hashes"
+                      |),
+                      rhs'
+                    |)))
               |) in
             self
           |)))
@@ -6171,13 +6284,18 @@ Module tx.
           let max_fee_per_blob_gas := M.alloc (| Ty.path "u128", max_fee_per_blob_gas |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  self,
-                  "revm_context::tx::TxEnvBuilder",
-                  "max_fee_per_blob_gas"
-                |),
-                M.read (| max_fee_per_blob_gas |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| max_fee_per_blob_gas |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        self,
+                        "revm_context::tx::TxEnvBuilder",
+                        "max_fee_per_blob_gas"
+                      |),
+                      rhs'
+                    |)))
               |) in
             self
           |)))
@@ -6223,13 +6341,18 @@ Module tx.
             |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  self,
-                  "revm_context::tx::TxEnvBuilder",
-                  "authorization_list"
-                |),
-                M.read (| authorization_list |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| authorization_list |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        self,
+                        "revm_context::tx::TxEnvBuilder",
+                        "authorization_list"
+                      |),
+                      rhs'
+                    |)))
               |) in
             self
           |)))
@@ -6270,71 +6393,24 @@ Module tx.
             |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  self,
-                  "revm_context::tx::TxEnvBuilder",
-                  "authorization_list"
-                |),
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "alloc::vec::Vec")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "either::Either")
-                        []
-                        [
-                          Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
-                          Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
-                        ];
-                      Ty.path "alloc::alloc::Global"
-                    ],
-                  M.get_trait_method (|
-                    "core::iter::traits::iterator::Iterator",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply
-                      (Ty.path "core::iter::adapters::map::Map")
+                      (Ty.path "alloc::vec::Vec")
                       []
                       [
                         Ty.apply
-                          (Ty.path "alloc::vec::into_iter::IntoIter")
+                          (Ty.path "either::Either")
                           []
                           [
                             Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
-                            Ty.path "alloc::alloc::Global"
+                            Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
                           ];
-                        Ty.function
-                          [ Ty.path "alloy_eip7702::auth_list::SignedAuthorization" ]
-                          (Ty.apply
-                            (Ty.path "either::Either")
-                            []
-                            [
-                              Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
-                              Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
-                            ])
+                        Ty.path "alloc::alloc::Global"
                       ],
-                    [],
-                    [],
-                    "collect",
-                    [],
-                    [
-                      Ty.apply
-                        (Ty.path "alloc::vec::Vec")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "either::Either")
-                            []
-                            [
-                              Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
-                              Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
-                            ];
-                          Ty.path "alloc::alloc::Global"
-                        ]
-                    ]
-                  |),
-                  [
-                    M.call_closure (|
+                    M.get_trait_method (|
+                      "core::iter::traits::iterator::Iterator",
                       Ty.apply
                         (Ty.path "core::iter::adapters::map::Map")
                         []
@@ -6356,40 +6432,51 @@ Module tx.
                                 Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
                               ])
                         ],
-                      M.get_trait_method (|
-                        "core::iter::traits::iterator::Iterator",
+                      [],
+                      [],
+                      "collect",
+                      [],
+                      [
                         Ty.apply
-                          (Ty.path "alloc::vec::into_iter::IntoIter")
+                          (Ty.path "alloc::vec::Vec")
                           []
                           [
-                            Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
-                            Ty.path "alloc::alloc::Global"
-                          ],
-                        [],
-                        [],
-                        "map",
-                        [],
-                        [
-                          Ty.apply
-                            (Ty.path "either::Either")
-                            []
-                            [
-                              Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
-                              Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
-                            ];
-                          Ty.function
-                            [ Ty.path "alloy_eip7702::auth_list::SignedAuthorization" ]
-                            (Ty.apply
+                            Ty.apply
                               (Ty.path "either::Either")
                               []
                               [
                                 Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
                                 Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
-                              ])
-                        ]
-                      |),
-                      [
-                        M.call_closure (|
+                              ];
+                            Ty.path "alloc::alloc::Global"
+                          ]
+                      ]
+                    |),
+                    [
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::iter::adapters::map::Map")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::vec::into_iter::IntoIter")
+                              []
+                              [
+                                Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
+                                Ty.path "alloc::alloc::Global"
+                              ];
+                            Ty.function
+                              [ Ty.path "alloy_eip7702::auth_list::SignedAuthorization" ]
+                              (Ty.apply
+                                (Ty.path "either::Either")
+                                []
+                                [
+                                  Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
+                                  Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
+                                ])
+                          ],
+                        M.get_trait_method (|
+                          "core::iter::traits::iterator::Iterator",
                           Ty.apply
                             (Ty.path "alloc::vec::into_iter::IntoIter")
                             []
@@ -6397,34 +6484,76 @@ Module tx.
                               Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
                               Ty.path "alloc::alloc::Global"
                             ],
-                          M.get_trait_method (|
-                            "core::iter::traits::collect::IntoIterator",
+                          [],
+                          [],
+                          "map",
+                          [],
+                          [
                             Ty.apply
-                              (Ty.path "alloc::vec::Vec")
+                              (Ty.path "either::Either")
+                              []
+                              [
+                                Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
+                                Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
+                              ];
+                            Ty.function
+                              [ Ty.path "alloy_eip7702::auth_list::SignedAuthorization" ]
+                              (Ty.apply
+                                (Ty.path "either::Either")
+                                []
+                                [
+                                  Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
+                                  Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
+                                ])
+                          ]
+                        |),
+                        [
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "alloc::vec::into_iter::IntoIter")
                               []
                               [
                                 Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
                                 Ty.path "alloc::alloc::Global"
                               ],
-                            [],
-                            [],
-                            "into_iter",
-                            [],
+                            M.get_trait_method (|
+                              "core::iter::traits::collect::IntoIterator",
+                              Ty.apply
+                                (Ty.path "alloc::vec::Vec")
+                                []
+                                [
+                                  Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
+                                  Ty.path "alloc::alloc::Global"
+                                ],
+                              [],
+                              [],
+                              "into_iter",
+                              [],
+                              []
+                            |),
+                            [ M.read (| auth |) ]
+                          |);
+                          M.constructor_as_closure
+                            "either::Either::Left"
                             []
-                          |),
-                          [ M.read (| auth |) ]
-                        |);
-                        M.constructor_as_closure
-                          "either::Either::Left"
-                          []
-                          [
-                            Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
-                            Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
-                          ]
-                      ]
-                    |)
-                  ]
-                |)
+                            [
+                              Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
+                              Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
+                            ]
+                        ]
+                      |)
+                    ]
+                  |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        self,
+                        "revm_context::tx::TxEnvBuilder",
+                        "authorization_list"
+                      |),
+                      rhs'
+                    |)))
               |) in
             self
           |)))
@@ -6465,71 +6594,24 @@ Module tx.
             |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  self,
-                  "revm_context::tx::TxEnvBuilder",
-                  "authorization_list"
-                |),
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "alloc::vec::Vec")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "either::Either")
-                        []
-                        [
-                          Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
-                          Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
-                        ];
-                      Ty.path "alloc::alloc::Global"
-                    ],
-                  M.get_trait_method (|
-                    "core::iter::traits::iterator::Iterator",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply
-                      (Ty.path "core::iter::adapters::map::Map")
+                      (Ty.path "alloc::vec::Vec")
                       []
                       [
                         Ty.apply
-                          (Ty.path "alloc::vec::into_iter::IntoIter")
+                          (Ty.path "either::Either")
                           []
                           [
-                            Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization";
-                            Ty.path "alloc::alloc::Global"
+                            Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
+                            Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
                           ];
-                        Ty.function
-                          [ Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization" ]
-                          (Ty.apply
-                            (Ty.path "either::Either")
-                            []
-                            [
-                              Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
-                              Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
-                            ])
+                        Ty.path "alloc::alloc::Global"
                       ],
-                    [],
-                    [],
-                    "collect",
-                    [],
-                    [
-                      Ty.apply
-                        (Ty.path "alloc::vec::Vec")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "either::Either")
-                            []
-                            [
-                              Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
-                              Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
-                            ];
-                          Ty.path "alloc::alloc::Global"
-                        ]
-                    ]
-                  |),
-                  [
-                    M.call_closure (|
+                    M.get_trait_method (|
+                      "core::iter::traits::iterator::Iterator",
                       Ty.apply
                         (Ty.path "core::iter::adapters::map::Map")
                         []
@@ -6551,40 +6633,51 @@ Module tx.
                                 Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
                               ])
                         ],
-                      M.get_trait_method (|
-                        "core::iter::traits::iterator::Iterator",
+                      [],
+                      [],
+                      "collect",
+                      [],
+                      [
                         Ty.apply
-                          (Ty.path "alloc::vec::into_iter::IntoIter")
+                          (Ty.path "alloc::vec::Vec")
                           []
                           [
-                            Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization";
-                            Ty.path "alloc::alloc::Global"
-                          ],
-                        [],
-                        [],
-                        "map",
-                        [],
-                        [
-                          Ty.apply
-                            (Ty.path "either::Either")
-                            []
-                            [
-                              Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
-                              Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
-                            ];
-                          Ty.function
-                            [ Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization" ]
-                            (Ty.apply
+                            Ty.apply
                               (Ty.path "either::Either")
                               []
                               [
                                 Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
                                 Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
-                              ])
-                        ]
-                      |),
-                      [
-                        M.call_closure (|
+                              ];
+                            Ty.path "alloc::alloc::Global"
+                          ]
+                      ]
+                    |),
+                    [
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::iter::adapters::map::Map")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::vec::into_iter::IntoIter")
+                              []
+                              [
+                                Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization";
+                                Ty.path "alloc::alloc::Global"
+                              ];
+                            Ty.function
+                              [ Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization" ]
+                              (Ty.apply
+                                (Ty.path "either::Either")
+                                []
+                                [
+                                  Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
+                                  Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
+                                ])
+                          ],
+                        M.get_trait_method (|
+                          "core::iter::traits::iterator::Iterator",
                           Ty.apply
                             (Ty.path "alloc::vec::into_iter::IntoIter")
                             []
@@ -6592,34 +6685,76 @@ Module tx.
                               Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization";
                               Ty.path "alloc::alloc::Global"
                             ],
-                          M.get_trait_method (|
-                            "core::iter::traits::collect::IntoIterator",
+                          [],
+                          [],
+                          "map",
+                          [],
+                          [
                             Ty.apply
-                              (Ty.path "alloc::vec::Vec")
+                              (Ty.path "either::Either")
+                              []
+                              [
+                                Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
+                                Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
+                              ];
+                            Ty.function
+                              [ Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization" ]
+                              (Ty.apply
+                                (Ty.path "either::Either")
+                                []
+                                [
+                                  Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
+                                  Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
+                                ])
+                          ]
+                        |),
+                        [
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "alloc::vec::into_iter::IntoIter")
                               []
                               [
                                 Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization";
                                 Ty.path "alloc::alloc::Global"
                               ],
-                            [],
-                            [],
-                            "into_iter",
-                            [],
+                            M.get_trait_method (|
+                              "core::iter::traits::collect::IntoIterator",
+                              Ty.apply
+                                (Ty.path "alloc::vec::Vec")
+                                []
+                                [
+                                  Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization";
+                                  Ty.path "alloc::alloc::Global"
+                                ],
+                              [],
+                              [],
+                              "into_iter",
+                              [],
+                              []
+                            |),
+                            [ M.read (| auth |) ]
+                          |);
+                          M.constructor_as_closure
+                            "either::Either::Right"
                             []
-                          |),
-                          [ M.read (| auth |) ]
-                        |);
-                        M.constructor_as_closure
-                          "either::Either::Right"
-                          []
-                          [
-                            Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
-                            Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
-                          ]
-                      ]
-                    |)
-                  ]
-                |)
+                            [
+                              Ty.path "alloy_eip7702::auth_list::SignedAuthorization";
+                              Ty.path "alloy_eip7702::auth_list::RecoveredAuthorization"
+                            ]
+                        ]
+                      |)
+                    ]
+                  |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        self,
+                        "revm_context::tx::TxEnvBuilder",
+                        "authorization_list"
+                      |),
+                      rhs'
+                    |)))
               |) in
             self
           |)))
@@ -6841,17 +6976,23 @@ Module tx.
                                         |) in
                                       M.read (|
                                         let~ _ : Ty.tuple [] :=
-                                          M.write (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              self,
-                                              "revm_context::tx::TxEnvBuilder",
-                                              "gas_priority_fee"
-                                            |),
-                                            Value.StructTuple
-                                              "core::option::Option::Some"
-                                              []
-                                              [ Ty.path "u128" ]
-                                              [ Value.Integer IntegerKind.U128 0 ]
+                                          M.let_ (|
+                                            ltac:(M.monadic
+                                              (Value.StructTuple
+                                                "core::option::Option::Some"
+                                                []
+                                                [ Ty.path "u128" ]
+                                                [ Value.Integer IntegerKind.U128 0 ])),
+                                            fun rhs' =>
+                                              ltac:(M.monadic
+                                                (M.write (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    self,
+                                                    "revm_context::tx::TxEnvBuilder",
+                                                    "gas_priority_fee"
+                                                  |),
+                                                  rhs'
+                                                |)))
                                           |) in
                                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                       |)));
@@ -6906,17 +7047,23 @@ Module tx.
                                             |) in
                                           M.read (|
                                             let~ _ : Ty.tuple [] :=
-                                              M.write (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  self,
-                                                  "revm_context::tx::TxEnvBuilder",
-                                                  "gas_priority_fee"
-                                                |),
-                                                Value.StructTuple
-                                                  "core::option::Option::Some"
-                                                  []
-                                                  [ Ty.path "u128" ]
-                                                  [ Value.Integer IntegerKind.U128 0 ]
+                                              M.let_ (|
+                                                ltac:(M.monadic
+                                                  (Value.StructTuple
+                                                    "core::option::Option::Some"
+                                                    []
+                                                    [ Ty.path "u128" ]
+                                                    [ Value.Integer IntegerKind.U128 0 ])),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (M.write (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        self,
+                                                        "revm_context::tx::TxEnvBuilder",
+                                                        "gas_priority_fee"
+                                                      |),
+                                                      rhs'
+                                                    |)))
                                               |) in
                                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                           |)));
@@ -6970,81 +7117,38 @@ Module tx.
                                             |) in
                                           M.read (|
                                             let~ _ : Ty.tuple [] :=
-                                              M.write (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  self,
-                                                  "revm_context::tx::TxEnvBuilder",
-                                                  "blob_hashes"
-                                                |),
-                                                M.call_closure (|
-                                                  Ty.apply
-                                                    (Ty.path "alloc::vec::Vec")
-                                                    []
-                                                    [
-                                                      Ty.apply
-                                                        (Ty.path
-                                                          "alloy_primitives::bits::fixed::FixedBytes")
-                                                        [ Value.Integer IntegerKind.Usize 32 ]
-                                                        [];
-                                                      Ty.path "alloc::alloc::Global"
-                                                    ],
-                                                  M.get_associated_function (|
+                                              M.let_ (|
+                                                ltac:(M.monadic
+                                                  (M.call_closure (|
                                                     Ty.apply
-                                                      (Ty.path "slice")
+                                                      (Ty.path "alloc::vec::Vec")
                                                       []
                                                       [
                                                         Ty.apply
                                                           (Ty.path
                                                             "alloy_primitives::bits::fixed::FixedBytes")
                                                           [ Value.Integer IntegerKind.Usize 32 ]
-                                                          []
+                                                          [];
+                                                        Ty.path "alloc::alloc::Global"
                                                       ],
-                                                    "into_vec",
-                                                    [],
-                                                    [ Ty.path "alloc::alloc::Global" ]
-                                                  |),
-                                                  [
-                                                    M.call_closure (|
+                                                    M.get_associated_function (|
                                                       Ty.apply
-                                                        (Ty.path "alloc::boxed::Box")
+                                                        (Ty.path "slice")
                                                         []
                                                         [
                                                           Ty.apply
-                                                            (Ty.path "slice")
+                                                            (Ty.path
+                                                              "alloy_primitives::bits::fixed::FixedBytes")
+                                                            [ Value.Integer IntegerKind.Usize 32 ]
                                                             []
-                                                            [
-                                                              Ty.apply
-                                                                (Ty.path
-                                                                  "alloy_primitives::bits::fixed::FixedBytes")
-                                                                [ Value.Integer IntegerKind.Usize 32
-                                                                ]
-                                                                []
-                                                            ];
-                                                          Ty.path "alloc::alloc::Global"
                                                         ],
-                                                      M.pointer_coercion
-                                                        M.PointerCoercion.Unsize
-                                                        (Ty.apply
-                                                          (Ty.path "alloc::boxed::Box")
-                                                          []
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path "array")
-                                                              [ Value.Integer IntegerKind.Usize 1 ]
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path
-                                                                    "alloy_primitives::bits::fixed::FixedBytes")
-                                                                  [
-                                                                    Value.Integer
-                                                                      IntegerKind.Usize
-                                                                      32
-                                                                  ]
-                                                                  []
-                                                              ];
-                                                            Ty.path "alloc::alloc::Global"
-                                                          ])
-                                                        (Ty.apply
+                                                      "into_vec",
+                                                      [],
+                                                      [ Ty.path "alloc::alloc::Global" ]
+                                                    |),
+                                                    [
+                                                      M.call_closure (|
+                                                        Ty.apply
                                                           (Ty.path "alloc::boxed::Box")
                                                           []
                                                           [
@@ -7063,35 +7167,53 @@ Module tx.
                                                                   []
                                                               ];
                                                             Ty.path "alloc::alloc::Global"
-                                                          ]),
-                                                      [
-                                                        M.read (|
-                                                          M.call_closure (|
-                                                            Ty.apply
-                                                              (Ty.path "alloc::boxed::Box")
-                                                              []
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path "array")
-                                                                  [
-                                                                    Value.Integer
-                                                                      IntegerKind.Usize
-                                                                      1
-                                                                  ]
-                                                                  [
-                                                                    Ty.apply
-                                                                      (Ty.path
-                                                                        "alloy_primitives::bits::fixed::FixedBytes")
-                                                                      [
-                                                                        Value.Integer
-                                                                          IntegerKind.Usize
-                                                                          32
-                                                                      ]
-                                                                      []
-                                                                  ];
-                                                                Ty.path "alloc::alloc::Global"
-                                                              ],
-                                                            M.get_associated_function (|
+                                                          ],
+                                                        M.pointer_coercion
+                                                          M.PointerCoercion.Unsize
+                                                          (Ty.apply
+                                                            (Ty.path "alloc::boxed::Box")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "array")
+                                                                [ Value.Integer IntegerKind.Usize 1
+                                                                ]
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path
+                                                                      "alloy_primitives::bits::fixed::FixedBytes")
+                                                                    [
+                                                                      Value.Integer
+                                                                        IntegerKind.Usize
+                                                                        32
+                                                                    ]
+                                                                    []
+                                                                ];
+                                                              Ty.path "alloc::alloc::Global"
+                                                            ])
+                                                          (Ty.apply
+                                                            (Ty.path "alloc::boxed::Box")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "slice")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path
+                                                                      "alloy_primitives::bits::fixed::FixedBytes")
+                                                                    [
+                                                                      Value.Integer
+                                                                        IntegerKind.Usize
+                                                                        32
+                                                                    ]
+                                                                    []
+                                                                ];
+                                                              Ty.path "alloc::alloc::Global"
+                                                            ]),
+                                                        [
+                                                          M.read (|
+                                                            M.call_closure (|
                                                               Ty.apply
                                                                 (Ty.path "alloc::boxed::Box")
                                                                 []
@@ -7116,33 +7238,45 @@ Module tx.
                                                                     ];
                                                                   Ty.path "alloc::alloc::Global"
                                                                 ],
-                                                              "new",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [
-                                                              M.alloc (|
+                                                              M.get_associated_function (|
                                                                 Ty.apply
-                                                                  (Ty.path "array")
-                                                                  [
-                                                                    Value.Integer
-                                                                      IntegerKind.Usize
-                                                                      1
-                                                                  ]
+                                                                  (Ty.path "alloc::boxed::Box")
+                                                                  []
                                                                   [
                                                                     Ty.apply
-                                                                      (Ty.path
-                                                                        "alloy_primitives::bits::fixed::FixedBytes")
+                                                                      (Ty.path "array")
                                                                       [
                                                                         Value.Integer
                                                                           IntegerKind.Usize
-                                                                          32
+                                                                          1
                                                                       ]
-                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path
+                                                                            "alloy_primitives::bits::fixed::FixedBytes")
+                                                                          [
+                                                                            Value.Integer
+                                                                              IntegerKind.Usize
+                                                                              32
+                                                                          ]
+                                                                          []
+                                                                      ];
+                                                                    Ty.path "alloc::alloc::Global"
                                                                   ],
-                                                                Value.Array
-                                                                  [
-                                                                    M.call_closure (|
+                                                                "new",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.alloc (|
+                                                                  Ty.apply
+                                                                    (Ty.path "array")
+                                                                    [
+                                                                      Value.Integer
+                                                                        IntegerKind.Usize
+                                                                        1
+                                                                    ]
+                                                                    [
                                                                       Ty.apply
                                                                         (Ty.path
                                                                           "alloy_primitives::bits::fixed::FixedBytes")
@@ -7151,9 +7285,11 @@ Module tx.
                                                                             IntegerKind.Usize
                                                                             32
                                                                         ]
-                                                                        [],
-                                                                      M.get_trait_method (|
-                                                                        "core::default::Default",
+                                                                        []
+                                                                    ],
+                                                                  Value.Array
+                                                                    [
+                                                                      M.call_closure (|
                                                                         Ty.apply
                                                                           (Ty.path
                                                                             "alloy_primitives::bits::fixed::FixedBytes")
@@ -7163,23 +7299,44 @@ Module tx.
                                                                               32
                                                                           ]
                                                                           [],
-                                                                        [],
-                                                                        [],
-                                                                        "default",
-                                                                        [],
+                                                                        M.get_trait_method (|
+                                                                          "core::default::Default",
+                                                                          Ty.apply
+                                                                            (Ty.path
+                                                                              "alloy_primitives::bits::fixed::FixedBytes")
+                                                                            [
+                                                                              Value.Integer
+                                                                                IntegerKind.Usize
+                                                                                32
+                                                                            ]
+                                                                            [],
+                                                                          [],
+                                                                          [],
+                                                                          "default",
+                                                                          [],
+                                                                          []
+                                                                        |),
                                                                         []
-                                                                      |),
-                                                                      []
-                                                                    |)
-                                                                  ]
-                                                              |)
-                                                            ]
+                                                                      |)
+                                                                    ]
+                                                                |)
+                                                              ]
+                                                            |)
                                                           |)
-                                                        |)
-                                                      ]
-                                                    |)
-                                                  ]
-                                                |)
+                                                        ]
+                                                      |)
+                                                    ]
+                                                  |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (M.write (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        self,
+                                                        "revm_context::tx::TxEnvBuilder",
+                                                        "blob_hashes"
+                                                      |),
+                                                      rhs'
+                                                    |)))
                                               |) in
                                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                           |)));
@@ -7230,33 +7387,39 @@ Module tx.
                                             |) in
                                           M.read (|
                                             let~ _ : Ty.tuple [] :=
-                                              M.write (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  self,
-                                                  "revm_context::tx::TxEnvBuilder",
-                                                  "kind"
-                                                |),
-                                                Value.StructTuple
-                                                  "alloy_primitives::common::TxKind::Call"
-                                                  []
-                                                  []
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.path
-                                                        "alloy_primitives::bits::address::Address",
-                                                      M.get_trait_method (|
-                                                        "core::default::Default",
+                                              M.let_ (|
+                                                ltac:(M.monadic
+                                                  (Value.StructTuple
+                                                    "alloy_primitives::common::TxKind::Call"
+                                                    []
+                                                    []
+                                                    [
+                                                      M.call_closure (|
                                                         Ty.path
                                                           "alloy_primitives::bits::address::Address",
-                                                        [],
-                                                        [],
-                                                        "default",
-                                                        [],
+                                                        M.get_trait_method (|
+                                                          "core::default::Default",
+                                                          Ty.path
+                                                            "alloy_primitives::bits::address::Address",
+                                                          [],
+                                                          [],
+                                                          "default",
+                                                          [],
+                                                          []
+                                                        |),
                                                         []
+                                                      |)
+                                                    ])),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (M.write (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        self,
+                                                        "revm_context::tx::TxEnvBuilder",
+                                                        "kind"
                                                       |),
-                                                      []
-                                                    |)
-                                                  ]
+                                                      rhs'
+                                                    |)))
                                               |) in
                                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                           |)));
@@ -7313,17 +7476,23 @@ Module tx.
                                             |) in
                                           M.read (|
                                             let~ _ : Ty.tuple [] :=
-                                              M.write (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  self,
-                                                  "revm_context::tx::TxEnvBuilder",
-                                                  "gas_priority_fee"
-                                                |),
-                                                Value.StructTuple
-                                                  "core::option::Option::Some"
-                                                  []
-                                                  [ Ty.path "u128" ]
-                                                  [ Value.Integer IntegerKind.U128 0 ]
+                                              M.let_ (|
+                                                ltac:(M.monadic
+                                                  (Value.StructTuple
+                                                    "core::option::Option::Some"
+                                                    []
+                                                    [ Ty.path "u128" ]
+                                                    [ Value.Integer IntegerKind.U128 0 ])),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (M.write (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        self,
+                                                        "revm_context::tx::TxEnvBuilder",
+                                                        "gas_priority_fee"
+                                                      |),
+                                                      rhs'
+                                                    |)))
                                               |) in
                                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                           |)));
@@ -7381,31 +7550,11 @@ Module tx.
                                             |) in
                                           M.read (|
                                             let~ _ : Ty.tuple [] :=
-                                              M.write (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  self,
-                                                  "revm_context::tx::TxEnvBuilder",
-                                                  "authorization_list"
-                                                |),
-                                                M.call_closure (|
-                                                  Ty.apply
-                                                    (Ty.path "alloc::vec::Vec")
-                                                    []
-                                                    [
-                                                      Ty.apply
-                                                        (Ty.path "either::Either")
-                                                        []
-                                                        [
-                                                          Ty.path
-                                                            "alloy_eip7702::auth_list::SignedAuthorization";
-                                                          Ty.path
-                                                            "alloy_eip7702::auth_list::RecoveredAuthorization"
-                                                        ];
-                                                      Ty.path "alloc::alloc::Global"
-                                                    ],
-                                                  M.get_associated_function (|
+                                              M.let_ (|
+                                                ltac:(M.monadic
+                                                  (M.call_closure (|
                                                     Ty.apply
-                                                      (Ty.path "slice")
+                                                      (Ty.path "alloc::vec::Vec")
                                                       []
                                                       [
                                                         Ty.apply
@@ -7416,57 +7565,31 @@ Module tx.
                                                               "alloy_eip7702::auth_list::SignedAuthorization";
                                                             Ty.path
                                                               "alloy_eip7702::auth_list::RecoveredAuthorization"
-                                                          ]
+                                                          ];
+                                                        Ty.path "alloc::alloc::Global"
                                                       ],
-                                                    "into_vec",
-                                                    [],
-                                                    [ Ty.path "alloc::alloc::Global" ]
-                                                  |),
-                                                  [
-                                                    M.call_closure (|
+                                                    M.get_associated_function (|
                                                       Ty.apply
-                                                        (Ty.path "alloc::boxed::Box")
+                                                        (Ty.path "slice")
                                                         []
                                                         [
                                                           Ty.apply
-                                                            (Ty.path "slice")
+                                                            (Ty.path "either::Either")
                                                             []
                                                             [
-                                                              Ty.apply
-                                                                (Ty.path "either::Either")
-                                                                []
-                                                                [
-                                                                  Ty.path
-                                                                    "alloy_eip7702::auth_list::SignedAuthorization";
-                                                                  Ty.path
-                                                                    "alloy_eip7702::auth_list::RecoveredAuthorization"
-                                                                ]
-                                                            ];
-                                                          Ty.path "alloc::alloc::Global"
+                                                              Ty.path
+                                                                "alloy_eip7702::auth_list::SignedAuthorization";
+                                                              Ty.path
+                                                                "alloy_eip7702::auth_list::RecoveredAuthorization"
+                                                            ]
                                                         ],
-                                                      M.pointer_coercion
-                                                        M.PointerCoercion.Unsize
-                                                        (Ty.apply
-                                                          (Ty.path "alloc::boxed::Box")
-                                                          []
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path "array")
-                                                              [ Value.Integer IntegerKind.Usize 1 ]
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path "either::Either")
-                                                                  []
-                                                                  [
-                                                                    Ty.path
-                                                                      "alloy_eip7702::auth_list::SignedAuthorization";
-                                                                    Ty.path
-                                                                      "alloy_eip7702::auth_list::RecoveredAuthorization"
-                                                                  ]
-                                                              ];
-                                                            Ty.path "alloc::alloc::Global"
-                                                          ])
-                                                        (Ty.apply
+                                                      "into_vec",
+                                                      [],
+                                                      [ Ty.path "alloc::alloc::Global" ]
+                                                    |),
+                                                    [
+                                                      M.call_closure (|
+                                                        Ty.apply
                                                           (Ty.path "alloc::boxed::Box")
                                                           []
                                                           [
@@ -7485,35 +7608,53 @@ Module tx.
                                                                   ]
                                                               ];
                                                             Ty.path "alloc::alloc::Global"
-                                                          ]),
-                                                      [
-                                                        M.read (|
-                                                          M.call_closure (|
-                                                            Ty.apply
-                                                              (Ty.path "alloc::boxed::Box")
-                                                              []
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path "array")
-                                                                  [
-                                                                    Value.Integer
-                                                                      IntegerKind.Usize
-                                                                      1
-                                                                  ]
-                                                                  [
-                                                                    Ty.apply
-                                                                      (Ty.path "either::Either")
-                                                                      []
-                                                                      [
-                                                                        Ty.path
-                                                                          "alloy_eip7702::auth_list::SignedAuthorization";
-                                                                        Ty.path
-                                                                          "alloy_eip7702::auth_list::RecoveredAuthorization"
-                                                                      ]
-                                                                  ];
-                                                                Ty.path "alloc::alloc::Global"
-                                                              ],
-                                                            M.get_associated_function (|
+                                                          ],
+                                                        M.pointer_coercion
+                                                          M.PointerCoercion.Unsize
+                                                          (Ty.apply
+                                                            (Ty.path "alloc::boxed::Box")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "array")
+                                                                [ Value.Integer IntegerKind.Usize 1
+                                                                ]
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "either::Either")
+                                                                    []
+                                                                    [
+                                                                      Ty.path
+                                                                        "alloy_eip7702::auth_list::SignedAuthorization";
+                                                                      Ty.path
+                                                                        "alloy_eip7702::auth_list::RecoveredAuthorization"
+                                                                    ]
+                                                                ];
+                                                              Ty.path "alloc::alloc::Global"
+                                                            ])
+                                                          (Ty.apply
+                                                            (Ty.path "alloc::boxed::Box")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "slice")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "either::Either")
+                                                                    []
+                                                                    [
+                                                                      Ty.path
+                                                                        "alloy_eip7702::auth_list::SignedAuthorization";
+                                                                      Ty.path
+                                                                        "alloy_eip7702::auth_list::RecoveredAuthorization"
+                                                                    ]
+                                                                ];
+                                                              Ty.path "alloc::alloc::Global"
+                                                            ]),
+                                                        [
+                                                          M.read (|
+                                                            M.call_closure (|
                                                               Ty.apply
                                                                 (Ty.path "alloc::boxed::Box")
                                                                 []
@@ -7538,73 +7679,85 @@ Module tx.
                                                                     ];
                                                                   Ty.path "alloc::alloc::Global"
                                                                 ],
-                                                              "new",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [
-                                                              M.alloc (|
+                                                              M.get_associated_function (|
                                                                 Ty.apply
-                                                                  (Ty.path "array")
-                                                                  [
-                                                                    Value.Integer
-                                                                      IntegerKind.Usize
-                                                                      1
-                                                                  ]
+                                                                  (Ty.path "alloc::boxed::Box")
+                                                                  []
                                                                   [
                                                                     Ty.apply
-                                                                      (Ty.path "either::Either")
-                                                                      []
+                                                                      (Ty.path "array")
                                                                       [
-                                                                        Ty.path
-                                                                          "alloy_eip7702::auth_list::SignedAuthorization";
-                                                                        Ty.path
-                                                                          "alloy_eip7702::auth_list::RecoveredAuthorization"
+                                                                        Value.Integer
+                                                                          IntegerKind.Usize
+                                                                          1
                                                                       ]
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "either::Either")
+                                                                          []
+                                                                          [
+                                                                            Ty.path
+                                                                              "alloy_eip7702::auth_list::SignedAuthorization";
+                                                                            Ty.path
+                                                                              "alloy_eip7702::auth_list::RecoveredAuthorization"
+                                                                          ]
+                                                                      ];
+                                                                    Ty.path "alloc::alloc::Global"
                                                                   ],
-                                                                Value.Array
-                                                                  [
-                                                                    Value.StructTuple
-                                                                      "either::Either::Right"
-                                                                      []
-                                                                      [
-                                                                        Ty.path
-                                                                          "alloy_eip7702::auth_list::SignedAuthorization";
-                                                                        Ty.path
-                                                                          "alloy_eip7702::auth_list::RecoveredAuthorization"
-                                                                      ]
-                                                                      [
-                                                                        M.call_closure (|
+                                                                "new",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.alloc (|
+                                                                  Ty.apply
+                                                                    (Ty.path "array")
+                                                                    [
+                                                                      Value.Integer
+                                                                        IntegerKind.Usize
+                                                                        1
+                                                                    ]
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "either::Either")
+                                                                        []
+                                                                        [
                                                                           Ty.path
-                                                                            "alloy_eip7702::auth_list::RecoveredAuthorization",
-                                                                          M.get_associated_function (|
+                                                                            "alloy_eip7702::auth_list::SignedAuthorization";
+                                                                          Ty.path
+                                                                            "alloy_eip7702::auth_list::RecoveredAuthorization"
+                                                                        ]
+                                                                    ],
+                                                                  Value.Array
+                                                                    [
+                                                                      Value.StructTuple
+                                                                        "either::Either::Right"
+                                                                        []
+                                                                        [
+                                                                          Ty.path
+                                                                            "alloy_eip7702::auth_list::SignedAuthorization";
+                                                                          Ty.path
+                                                                            "alloy_eip7702::auth_list::RecoveredAuthorization"
+                                                                        ]
+                                                                        [
+                                                                          M.call_closure (|
                                                                             Ty.path
                                                                               "alloy_eip7702::auth_list::RecoveredAuthorization",
-                                                                            "new_unchecked",
-                                                                            [],
-                                                                            []
-                                                                          |),
-                                                                          [
-                                                                            Value.mkStructRecord
-                                                                              "alloy_eip7702::auth_list::Authorization"
+                                                                            M.get_associated_function (|
+                                                                              Ty.path
+                                                                                "alloy_eip7702::auth_list::RecoveredAuthorization",
+                                                                              "new_unchecked",
+                                                                              [],
                                                                               []
-                                                                              []
-                                                                              [
-                                                                                ("chain_id",
-                                                                                  M.call_closure (|
-                                                                                    Ty.apply
-                                                                                      (Ty.path
-                                                                                        "ruint::Uint")
-                                                                                      [
-                                                                                        Value.Integer
-                                                                                          IntegerKind.Usize
-                                                                                          256;
-                                                                                        Value.Integer
-                                                                                          IntegerKind.Usize
-                                                                                          4
-                                                                                      ]
-                                                                                      [],
-                                                                                    M.get_associated_function (|
+                                                                            |),
+                                                                            [
+                                                                              Value.mkStructRecord
+                                                                                "alloy_eip7702::auth_list::Authorization"
+                                                                                []
+                                                                                []
+                                                                                [
+                                                                                  ("chain_id",
+                                                                                    M.call_closure (|
                                                                                       Ty.apply
                                                                                         (Ty.path
                                                                                           "ruint::Uint")
@@ -7617,79 +7770,102 @@ Module tx.
                                                                                             4
                                                                                         ]
                                                                                         [],
-                                                                                      "from",
-                                                                                      [],
-                                                                                      [
-                                                                                        Ty.path
-                                                                                          "u64"
-                                                                                      ]
-                                                                                    |),
-                                                                                    [
-                                                                                      M.call_closure (|
-                                                                                        Ty.path
-                                                                                          "u64",
-                                                                                        M.get_associated_function (|
-                                                                                          Ty.apply
-                                                                                            (Ty.path
-                                                                                              "core::option::Option")
-                                                                                            []
-                                                                                            [
-                                                                                              Ty.path
-                                                                                                "u64"
-                                                                                            ],
-                                                                                          "unwrap_or",
+                                                                                      M.get_associated_function (|
+                                                                                        Ty.apply
+                                                                                          (Ty.path
+                                                                                            "ruint::Uint")
+                                                                                          [
+                                                                                            Value.Integer
+                                                                                              IntegerKind.Usize
+                                                                                              256;
+                                                                                            Value.Integer
+                                                                                              IntegerKind.Usize
+                                                                                              4
+                                                                                          ]
                                                                                           [],
-                                                                                          []
-                                                                                        |),
+                                                                                        "from",
+                                                                                        [],
                                                                                         [
-                                                                                          M.read (|
-                                                                                            M.SubPointer.get_struct_record_field (|
-                                                                                              self,
-                                                                                              "revm_context::tx::TxEnvBuilder",
-                                                                                              "chain_id"
-                                                                                            |)
-                                                                                          |);
-                                                                                          Value.Integer
-                                                                                            IntegerKind.U64
-                                                                                            1
+                                                                                          Ty.path
+                                                                                            "u64"
                                                                                         ]
+                                                                                      |),
+                                                                                      [
+                                                                                        M.call_closure (|
+                                                                                          Ty.path
+                                                                                            "u64",
+                                                                                          M.get_associated_function (|
+                                                                                            Ty.apply
+                                                                                              (Ty.path
+                                                                                                "core::option::Option")
+                                                                                              []
+                                                                                              [
+                                                                                                Ty.path
+                                                                                                  "u64"
+                                                                                              ],
+                                                                                            "unwrap_or",
+                                                                                            [],
+                                                                                            []
+                                                                                          |),
+                                                                                          [
+                                                                                            M.read (|
+                                                                                              M.SubPointer.get_struct_record_field (|
+                                                                                                self,
+                                                                                                "revm_context::tx::TxEnvBuilder",
+                                                                                                "chain_id"
+                                                                                              |)
+                                                                                            |);
+                                                                                            Value.Integer
+                                                                                              IntegerKind.U64
+                                                                                              1
+                                                                                          ]
+                                                                                        |)
+                                                                                      ]
+                                                                                    |));
+                                                                                  ("address",
+                                                                                    M.read (|
+                                                                                      M.SubPointer.get_struct_record_field (|
+                                                                                        self,
+                                                                                        "revm_context::tx::TxEnvBuilder",
+                                                                                        "caller"
                                                                                       |)
-                                                                                    ]
-                                                                                  |));
-                                                                                ("address",
-                                                                                  M.read (|
-                                                                                    M.SubPointer.get_struct_record_field (|
-                                                                                      self,
-                                                                                      "revm_context::tx::TxEnvBuilder",
-                                                                                      "caller"
-                                                                                    |)
-                                                                                  |));
-                                                                                ("nonce",
-                                                                                  M.read (|
-                                                                                    M.SubPointer.get_struct_record_field (|
-                                                                                      self,
-                                                                                      "revm_context::tx::TxEnvBuilder",
-                                                                                      "nonce"
-                                                                                    |)
-                                                                                  |))
-                                                                              ];
-                                                                            Value.StructTuple
-                                                                              "alloy_eip7702::auth_list::RecoveredAuthority::Invalid"
-                                                                              []
-                                                                              []
-                                                                              []
-                                                                          ]
-                                                                        |)
-                                                                      ]
-                                                                  ]
-                                                              |)
-                                                            ]
+                                                                                    |));
+                                                                                  ("nonce",
+                                                                                    M.read (|
+                                                                                      M.SubPointer.get_struct_record_field (|
+                                                                                        self,
+                                                                                        "revm_context::tx::TxEnvBuilder",
+                                                                                        "nonce"
+                                                                                      |)
+                                                                                    |))
+                                                                                ];
+                                                                              Value.StructTuple
+                                                                                "alloy_eip7702::auth_list::RecoveredAuthority::Invalid"
+                                                                                []
+                                                                                []
+                                                                                []
+                                                                            ]
+                                                                          |)
+                                                                        ]
+                                                                    ]
+                                                                |)
+                                                              ]
+                                                            |)
                                                           |)
-                                                        |)
-                                                      ]
-                                                    |)
-                                                  ]
-                                                |)
+                                                        ]
+                                                      |)
+                                                    ]
+                                                  |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (M.write (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        self,
+                                                        "revm_context::tx::TxEnvBuilder",
+                                                        "authorization_list"
+                                                      |),
+                                                      rhs'
+                                                    |)))
                                               |) in
                                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                           |)));
@@ -7740,33 +7916,39 @@ Module tx.
                                             |) in
                                           M.read (|
                                             let~ _ : Ty.tuple [] :=
-                                              M.write (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  self,
-                                                  "revm_context::tx::TxEnvBuilder",
-                                                  "kind"
-                                                |),
-                                                Value.StructTuple
-                                                  "alloy_primitives::common::TxKind::Call"
-                                                  []
-                                                  []
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.path
-                                                        "alloy_primitives::bits::address::Address",
-                                                      M.get_trait_method (|
-                                                        "core::default::Default",
+                                              M.let_ (|
+                                                ltac:(M.monadic
+                                                  (Value.StructTuple
+                                                    "alloy_primitives::common::TxKind::Call"
+                                                    []
+                                                    []
+                                                    [
+                                                      M.call_closure (|
                                                         Ty.path
                                                           "alloy_primitives::bits::address::Address",
-                                                        [],
-                                                        [],
-                                                        "default",
-                                                        [],
+                                                        M.get_trait_method (|
+                                                          "core::default::Default",
+                                                          Ty.path
+                                                            "alloy_primitives::bits::address::Address",
+                                                          [],
+                                                          [],
+                                                          "default",
+                                                          [],
+                                                          []
+                                                        |),
                                                         []
+                                                      |)
+                                                    ])),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (M.write (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        self,
+                                                        "revm_context::tx::TxEnvBuilder",
+                                                        "kind"
                                                       |),
-                                                      []
-                                                    |)
-                                                  ]
+                                                      rhs'
+                                                    |)))
                                               |) in
                                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                           |)));
@@ -7996,31 +8178,37 @@ Module tx.
                                 |) in
                               M.read (|
                                 let~ _ : Ty.tuple [] :=
-                                  M.write (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      tx,
-                                      "revm_context::tx::TxEnv",
-                                      "kind"
-                                    |),
-                                    Value.StructTuple
-                                      "alloy_primitives::common::TxKind::Call"
-                                      []
-                                      []
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "alloy_primitives::bits::address::Address",
-                                          M.get_trait_method (|
-                                            "core::default::Default",
+                                  M.let_ (|
+                                    ltac:(M.monadic
+                                      (Value.StructTuple
+                                        "alloy_primitives::common::TxKind::Call"
+                                        []
+                                        []
+                                        [
+                                          M.call_closure (|
                                             Ty.path "alloy_primitives::bits::address::Address",
-                                            [],
-                                            [],
-                                            "default",
-                                            [],
+                                            M.get_trait_method (|
+                                              "core::default::Default",
+                                              Ty.path "alloy_primitives::bits::address::Address",
+                                              [],
+                                              [],
+                                              "default",
+                                              [],
+                                              []
+                                            |),
                                             []
+                                          |)
+                                        ])),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (M.write (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            tx,
+                                            "revm_context::tx::TxEnv",
+                                            "kind"
                                           |),
-                                          []
-                                        |)
-                                      ]
+                                          rhs'
+                                        |)))
                                   |) in
                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
                               |)));
@@ -8039,31 +8227,37 @@ Module tx.
                                 |) in
                               M.read (|
                                 let~ _ : Ty.tuple [] :=
-                                  M.write (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      tx,
-                                      "revm_context::tx::TxEnv",
-                                      "kind"
-                                    |),
-                                    Value.StructTuple
-                                      "alloy_primitives::common::TxKind::Call"
-                                      []
-                                      []
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "alloy_primitives::bits::address::Address",
-                                          M.get_trait_method (|
-                                            "core::default::Default",
+                                  M.let_ (|
+                                    ltac:(M.monadic
+                                      (Value.StructTuple
+                                        "alloy_primitives::common::TxKind::Call"
+                                        []
+                                        []
+                                        [
+                                          M.call_closure (|
                                             Ty.path "alloy_primitives::bits::address::Address",
-                                            [],
-                                            [],
-                                            "default",
-                                            [],
+                                            M.get_trait_method (|
+                                              "core::default::Default",
+                                              Ty.path "alloy_primitives::bits::address::Address",
+                                              [],
+                                              [],
+                                              "default",
+                                              [],
+                                              []
+                                            |),
                                             []
+                                          |)
+                                        ])),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (M.write (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            tx,
+                                            "revm_context::tx::TxEnv",
+                                            "kind"
                                           |),
-                                          []
-                                        |)
-                                      ]
+                                          rhs'
+                                        |)))
                                   |) in
                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
                               |)));
@@ -8082,31 +8276,37 @@ Module tx.
                                 |) in
                               M.read (|
                                 let~ _ : Ty.tuple [] :=
-                                  M.write (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      tx,
-                                      "revm_context::tx::TxEnv",
-                                      "kind"
-                                    |),
-                                    Value.StructTuple
-                                      "alloy_primitives::common::TxKind::Call"
-                                      []
-                                      []
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "alloy_primitives::bits::address::Address",
-                                          M.get_trait_method (|
-                                            "core::default::Default",
+                                  M.let_ (|
+                                    ltac:(M.monadic
+                                      (Value.StructTuple
+                                        "alloy_primitives::common::TxKind::Call"
+                                        []
+                                        []
+                                        [
+                                          M.call_closure (|
                                             Ty.path "alloy_primitives::bits::address::Address",
-                                            [],
-                                            [],
-                                            "default",
-                                            [],
+                                            M.get_trait_method (|
+                                              "core::default::Default",
+                                              Ty.path "alloy_primitives::bits::address::Address",
+                                              [],
+                                              [],
+                                              "default",
+                                              [],
+                                              []
+                                            |),
                                             []
+                                          |)
+                                        ])),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (M.write (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            tx,
+                                            "revm_context::tx::TxEnv",
+                                            "kind"
                                           |),
-                                          []
-                                        |)
-                                      ]
+                                          rhs'
+                                        |)))
                                   |) in
                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
                               |)))

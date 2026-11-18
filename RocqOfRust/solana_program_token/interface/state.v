@@ -1855,37 +1855,51 @@ Module state.
                                     ]
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  M.write (|
-                                    M.deref (| M.read (| supply_dst |) |),
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 8 ]
-                                        [ Ty.path "u8" ],
-                                      M.get_associated_function (|
-                                        Ty.path "u64",
-                                        "to_le_bytes",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.read (| supply |) ]
-                                    |)
+                                  M.let_ (|
+                                    ltac:(M.monadic
+                                      (M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 8 ]
+                                          [ Ty.path "u8" ],
+                                        M.get_associated_function (|
+                                          Ty.path "u64",
+                                          "to_le_bytes",
+                                          [],
+                                          []
+                                        |),
+                                        [ M.read (| supply |) ]
+                                      |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (M.write (| M.deref (| M.read (| supply_dst |) |), rhs' |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  M.write (|
-                                    M.SubPointer.get_array_field (|
-                                      M.deref (| M.read (| decimals_dst |) |),
-                                      Value.Integer IntegerKind.Usize 0
-                                    |),
-                                    M.read (| decimals |)
+                                  M.let_ (|
+                                    ltac:(M.monadic (M.read (| decimals |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (M.write (|
+                                          M.SubPointer.get_array_field (|
+                                            M.deref (| M.read (| decimals_dst |) |),
+                                            Value.Integer IntegerKind.Usize 0
+                                          |),
+                                          rhs'
+                                        |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  M.write (|
-                                    M.SubPointer.get_array_field (|
-                                      M.deref (| M.read (| is_initialized_dst |) |),
-                                      Value.Integer IntegerKind.Usize 0
-                                    |),
-                                    M.cast (Ty.path "u8") (M.read (| is_initialized |))
+                                  M.let_ (|
+                                    ltac:(M.monadic
+                                      (M.cast (Ty.path "u8") (M.read (| is_initialized |)))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (M.write (|
+                                          M.SubPointer.get_array_field (|
+                                            M.deref (| M.read (| is_initialized_dst |) |),
+                                            Value.Integer IntegerKind.Usize 0
+                                          |),
+                                          rhs'
+                                        |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
                                   M.call_closure (|
@@ -5103,21 +5117,24 @@ Module state.
                                     ]
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  M.write (|
-                                    M.deref (| M.read (| amount_dst |) |),
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 8 ]
-                                        [ Ty.path "u8" ],
-                                      M.get_associated_function (|
-                                        Ty.path "u64",
-                                        "to_le_bytes",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.read (| amount |) ]
-                                    |)
+                                  M.let_ (|
+                                    ltac:(M.monadic
+                                      (M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 8 ]
+                                          [ Ty.path "u8" ],
+                                        M.get_associated_function (|
+                                          Ty.path "u64",
+                                          "to_le_bytes",
+                                          [],
+                                          []
+                                        |),
+                                        [ M.read (| amount |) ]
+                                      |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (M.write (| M.deref (| M.read (| amount_dst |) |), rhs' |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
                                   M.call_closure (|
@@ -5139,12 +5156,17 @@ Module state.
                                     ]
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  M.write (|
-                                    M.SubPointer.get_array_field (|
-                                      M.deref (| M.read (| state_dst |) |),
-                                      Value.Integer IntegerKind.Usize 0
-                                    |),
-                                    M.cast (Ty.path "u8") (M.read (| state |))
+                                  M.let_ (|
+                                    ltac:(M.monadic (M.cast (Ty.path "u8") (M.read (| state |)))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (M.write (|
+                                          M.SubPointer.get_array_field (|
+                                            M.deref (| M.read (| state_dst |) |),
+                                            Value.Integer IntegerKind.Usize 0
+                                          |),
+                                          rhs'
+                                        |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
                                   M.call_closure (|
@@ -5166,21 +5188,27 @@ Module state.
                                     ]
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  M.write (|
-                                    M.deref (| M.read (| delegated_amount_dst |) |),
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 8 ]
-                                        [ Ty.path "u8" ],
-                                      M.get_associated_function (|
-                                        Ty.path "u64",
-                                        "to_le_bytes",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.read (| delegated_amount |) ]
-                                    |)
+                                  M.let_ (|
+                                    ltac:(M.monadic
+                                      (M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 8 ]
+                                          [ Ty.path "u8" ],
+                                        M.get_associated_function (|
+                                          Ty.path "u64",
+                                          "to_le_bytes",
+                                          [],
+                                          []
+                                        |),
+                                        [ M.read (| delegated_amount |) ]
+                                      |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (M.write (|
+                                          M.deref (| M.read (| delegated_amount_dst |) |),
+                                          rhs'
+                                        |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
                                   M.call_closure (|
@@ -7000,31 +7028,12 @@ Module state.
                                                               |) in
                                                             M.read (|
                                                               let~ _ : Ty.tuple [] :=
-                                                                M.write (|
-                                                                  M.deref (| M.read (| dst |) |),
-                                                                  M.match_operator (|
-                                                                    Ty.path
-                                                                      "solana_address::Address",
-                                                                    M.alloc (|
-                                                                      Ty.apply
-                                                                        (Ty.path
-                                                                          "core::ops::control_flow::ControlFlow")
-                                                                        []
-                                                                        [
-                                                                          Ty.apply
-                                                                            (Ty.path
-                                                                              "core::result::Result")
-                                                                            []
-                                                                            [
-                                                                              Ty.path
-                                                                                "core::convert::Infallible";
-                                                                              Ty.path
-                                                                                "solana_program_error::ProgramError"
-                                                                            ];
-                                                                          Ty.path
-                                                                            "solana_address::Address"
-                                                                        ],
-                                                                      M.call_closure (|
+                                                                M.let_ (|
+                                                                  ltac:(M.monadic
+                                                                    (M.match_operator (|
+                                                                      Ty.path
+                                                                        "solana_address::Address",
+                                                                      M.alloc (|
                                                                         Ty.apply
                                                                           (Ty.path
                                                                             "core::ops::control_flow::ControlFlow")
@@ -7043,26 +7052,27 @@ Module state.
                                                                             Ty.path
                                                                               "solana_address::Address"
                                                                           ],
-                                                                        M.get_trait_method (|
-                                                                          "core::ops::try_trait::Try",
+                                                                        M.call_closure (|
                                                                           Ty.apply
                                                                             (Ty.path
-                                                                              "core::result::Result")
+                                                                              "core::ops::control_flow::ControlFlow")
                                                                             []
                                                                             [
+                                                                              Ty.apply
+                                                                                (Ty.path
+                                                                                  "core::result::Result")
+                                                                                []
+                                                                                [
+                                                                                  Ty.path
+                                                                                    "core::convert::Infallible";
+                                                                                  Ty.path
+                                                                                    "solana_program_error::ProgramError"
+                                                                                ];
                                                                               Ty.path
-                                                                                "solana_address::Address";
-                                                                              Ty.path
-                                                                                "solana_program_error::ProgramError"
+                                                                                "solana_address::Address"
                                                                             ],
-                                                                          [],
-                                                                          [],
-                                                                          "branch",
-                                                                          [],
-                                                                          []
-                                                                        |),
-                                                                        [
-                                                                          M.call_closure (|
+                                                                          M.get_trait_method (|
+                                                                            "core::ops::try_trait::Try",
                                                                             Ty.apply
                                                                               (Ty.path
                                                                                 "core::result::Result")
@@ -7073,7 +7083,14 @@ Module state.
                                                                                 Ty.path
                                                                                   "solana_program_error::ProgramError"
                                                                               ],
-                                                                            M.get_associated_function (|
+                                                                            [],
+                                                                            [],
+                                                                            "branch",
+                                                                            [],
+                                                                            []
+                                                                          |),
+                                                                          [
+                                                                            M.call_closure (|
                                                                               Ty.apply
                                                                                 (Ty.path
                                                                                   "core::result::Result")
@@ -7082,24 +7099,9 @@ Module state.
                                                                                   Ty.path
                                                                                     "solana_address::Address";
                                                                                   Ty.path
-                                                                                    "core::array::TryFromSliceError"
+                                                                                    "solana_program_error::ProgramError"
                                                                                 ],
-                                                                              "map_err",
-                                                                              [],
-                                                                              [
-                                                                                Ty.path
-                                                                                  "solana_program_error::ProgramError";
-                                                                                Ty.function
-                                                                                  [
-                                                                                    Ty.path
-                                                                                      "core::array::TryFromSliceError"
-                                                                                  ]
-                                                                                  (Ty.path
-                                                                                    "solana_program_error::ProgramError")
-                                                                              ]
-                                                                            |),
-                                                                            [
-                                                                              M.call_closure (|
+                                                                              M.get_associated_function (|
                                                                                 Ty.apply
                                                                                   (Ty.path
                                                                                     "core::result::Result")
@@ -7110,91 +7112,21 @@ Module state.
                                                                                     Ty.path
                                                                                       "core::array::TryFromSliceError"
                                                                                   ],
-                                                                                M.get_trait_method (|
-                                                                                  "core::convert::TryFrom",
-                                                                                  Ty.path
-                                                                                    "solana_address::Address",
-                                                                                  [],
-                                                                                  [
-                                                                                    Ty.apply
-                                                                                      (Ty.path "&")
-                                                                                      []
-                                                                                      [
-                                                                                        Ty.apply
-                                                                                          (Ty.path
-                                                                                            "slice")
-                                                                                          []
-                                                                                          [
-                                                                                            Ty.path
-                                                                                              "u8"
-                                                                                          ]
-                                                                                      ]
-                                                                                  ],
-                                                                                  "try_from",
-                                                                                  [],
-                                                                                  []
-                                                                                |),
-                                                                                [ M.read (| src |) ]
-                                                                              |);
-                                                                              M.closure
-                                                                                (fun γ =>
-                                                                                  ltac:(M.monadic
-                                                                                    match γ with
-                                                                                    | [ α0 ] =>
-                                                                                      ltac:(M.monadic
-                                                                                        (M.match_operator (|
-                                                                                          Ty.path
-                                                                                            "solana_program_error::ProgramError",
-                                                                                          M.alloc (|
-                                                                                            Ty.path
-                                                                                              "core::array::TryFromSliceError",
-                                                                                            α0
-                                                                                          |),
-                                                                                          [
-                                                                                            fun γ =>
-                                                                                              ltac:(M.monadic
-                                                                                                (Value.StructTuple
-                                                                                                  "solana_program_error::ProgramError::InvalidAccountData"
-                                                                                                  []
-                                                                                                  []
-                                                                                                  []))
-                                                                                          ]
-                                                                                        |)))
-                                                                                    | _ =>
-                                                                                      M.impossible
-                                                                                        "wrong number of arguments"
-                                                                                    end))
-                                                                            ]
-                                                                          |)
-                                                                        ]
-                                                                      |)
-                                                                    |),
-                                                                    [
-                                                                      fun γ =>
-                                                                        ltac:(M.monadic
-                                                                          (let γ0_0 :=
-                                                                            M.SubPointer.get_struct_tuple_field (|
-                                                                              γ,
-                                                                              "core::ops::control_flow::ControlFlow::Break",
-                                                                              0
-                                                                            |) in
-                                                                          let residual :=
-                                                                            M.copy (|
-                                                                              Ty.apply
-                                                                                (Ty.path
-                                                                                  "core::result::Result")
-                                                                                []
+                                                                                "map_err",
+                                                                                [],
                                                                                 [
                                                                                   Ty.path
-                                                                                    "core::convert::Infallible";
-                                                                                  Ty.path
-                                                                                    "solana_program_error::ProgramError"
-                                                                                ],
-                                                                              γ0_0
-                                                                            |) in
-                                                                          M.never_to_any (|
-                                                                            M.read (|
-                                                                              M.return_ (|
+                                                                                    "solana_program_error::ProgramError";
+                                                                                  Ty.function
+                                                                                    [
+                                                                                      Ty.path
+                                                                                        "core::array::TryFromSliceError"
+                                                                                    ]
+                                                                                    (Ty.path
+                                                                                      "solana_program_error::ProgramError")
+                                                                                ]
+                                                                              |),
+                                                                              [
                                                                                 M.call_closure (|
                                                                                   Ty.apply
                                                                                     (Ty.path
@@ -7202,12 +7134,99 @@ Module state.
                                                                                     []
                                                                                     [
                                                                                       Ty.path
-                                                                                        "spl_token_interface::state::Multisig";
+                                                                                        "solana_address::Address";
                                                                                       Ty.path
-                                                                                        "solana_program_error::ProgramError"
+                                                                                        "core::array::TryFromSliceError"
                                                                                     ],
                                                                                   M.get_trait_method (|
-                                                                                    "core::ops::try_trait::FromResidual",
+                                                                                    "core::convert::TryFrom",
+                                                                                    Ty.path
+                                                                                      "solana_address::Address",
+                                                                                    [],
+                                                                                    [
+                                                                                      Ty.apply
+                                                                                        (Ty.path
+                                                                                          "&")
+                                                                                        []
+                                                                                        [
+                                                                                          Ty.apply
+                                                                                            (Ty.path
+                                                                                              "slice")
+                                                                                            []
+                                                                                            [
+                                                                                              Ty.path
+                                                                                                "u8"
+                                                                                            ]
+                                                                                        ]
+                                                                                    ],
+                                                                                    "try_from",
+                                                                                    [],
+                                                                                    []
+                                                                                  |),
+                                                                                  [ M.read (| src |)
+                                                                                  ]
+                                                                                |);
+                                                                                M.closure
+                                                                                  (fun γ =>
+                                                                                    ltac:(M.monadic
+                                                                                      match γ with
+                                                                                      | [ α0 ] =>
+                                                                                        ltac:(M.monadic
+                                                                                          (M.match_operator (|
+                                                                                            Ty.path
+                                                                                              "solana_program_error::ProgramError",
+                                                                                            M.alloc (|
+                                                                                              Ty.path
+                                                                                                "core::array::TryFromSliceError",
+                                                                                              α0
+                                                                                            |),
+                                                                                            [
+                                                                                              fun
+                                                                                                  γ =>
+                                                                                                ltac:(M.monadic
+                                                                                                  (Value.StructTuple
+                                                                                                    "solana_program_error::ProgramError::InvalidAccountData"
+                                                                                                    []
+                                                                                                    []
+                                                                                                    []))
+                                                                                            ]
+                                                                                          |)))
+                                                                                      | _ =>
+                                                                                        M.impossible
+                                                                                          "wrong number of arguments"
+                                                                                      end))
+                                                                              ]
+                                                                            |)
+                                                                          ]
+                                                                        |)
+                                                                      |),
+                                                                      [
+                                                                        fun γ =>
+                                                                          ltac:(M.monadic
+                                                                            (let γ0_0 :=
+                                                                              M.SubPointer.get_struct_tuple_field (|
+                                                                                γ,
+                                                                                "core::ops::control_flow::ControlFlow::Break",
+                                                                                0
+                                                                              |) in
+                                                                            let residual :=
+                                                                              M.copy (|
+                                                                                Ty.apply
+                                                                                  (Ty.path
+                                                                                    "core::result::Result")
+                                                                                  []
+                                                                                  [
+                                                                                    Ty.path
+                                                                                      "core::convert::Infallible";
+                                                                                    Ty.path
+                                                                                      "solana_program_error::ProgramError"
+                                                                                  ],
+                                                                                γ0_0
+                                                                              |) in
+                                                                            M.never_to_any (|
+                                                                              M.read (|
+                                                                                M.return_ (|
+                                                                                  M.call_closure (|
                                                                                     Ty.apply
                                                                                       (Ty.path
                                                                                         "core::result::Result")
@@ -7218,49 +7237,69 @@ Module state.
                                                                                         Ty.path
                                                                                           "solana_program_error::ProgramError"
                                                                                       ],
-                                                                                    [],
-                                                                                    [
+                                                                                    M.get_trait_method (|
+                                                                                      "core::ops::try_trait::FromResidual",
                                                                                       Ty.apply
                                                                                         (Ty.path
                                                                                           "core::result::Result")
                                                                                         []
                                                                                         [
                                                                                           Ty.path
-                                                                                            "core::convert::Infallible";
+                                                                                            "spl_token_interface::state::Multisig";
                                                                                           Ty.path
                                                                                             "solana_program_error::ProgramError"
-                                                                                        ]
-                                                                                    ],
-                                                                                    "from_residual",
-                                                                                    [],
-                                                                                    []
-                                                                                  |),
-                                                                                  [
-                                                                                    M.read (|
-                                                                                      residual
-                                                                                    |)
-                                                                                  ]
+                                                                                        ],
+                                                                                      [],
+                                                                                      [
+                                                                                        Ty.apply
+                                                                                          (Ty.path
+                                                                                            "core::result::Result")
+                                                                                          []
+                                                                                          [
+                                                                                            Ty.path
+                                                                                              "core::convert::Infallible";
+                                                                                            Ty.path
+                                                                                              "solana_program_error::ProgramError"
+                                                                                          ]
+                                                                                      ],
+                                                                                      "from_residual",
+                                                                                      [],
+                                                                                      []
+                                                                                    |),
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        residual
+                                                                                      |)
+                                                                                    ]
+                                                                                  |)
                                                                                 |)
                                                                               |)
-                                                                            |)
-                                                                          |)));
-                                                                      fun γ =>
-                                                                        ltac:(M.monadic
-                                                                          (let γ0_0 :=
-                                                                            M.SubPointer.get_struct_tuple_field (|
-                                                                              γ,
-                                                                              "core::ops::control_flow::ControlFlow::Continue",
-                                                                              0
-                                                                            |) in
-                                                                          let val :=
-                                                                            M.copy (|
-                                                                              Ty.path
-                                                                                "solana_address::Address",
-                                                                              γ0_0
-                                                                            |) in
-                                                                          M.read (| val |)))
-                                                                    ]
-                                                                  |)
+                                                                            |)));
+                                                                        fun γ =>
+                                                                          ltac:(M.monadic
+                                                                            (let γ0_0 :=
+                                                                              M.SubPointer.get_struct_tuple_field (|
+                                                                                γ,
+                                                                                "core::ops::control_flow::ControlFlow::Continue",
+                                                                                0
+                                                                              |) in
+                                                                            let val :=
+                                                                              M.copy (|
+                                                                                Ty.path
+                                                                                  "solana_address::Address",
+                                                                                γ0_0
+                                                                              |) in
+                                                                            M.read (| val |)))
+                                                                      ]
+                                                                    |))),
+                                                                  fun rhs' =>
+                                                                    ltac:(M.monadic
+                                                                      (M.write (|
+                                                                        M.deref (|
+                                                                          M.read (| dst |)
+                                                                        |),
+                                                                        rhs'
+                                                                      |)))
                                                                 |) in
                                                               M.alloc (|
                                                                 Ty.tuple [],
@@ -7603,48 +7642,55 @@ Module state.
                         |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
-                          M.write (|
-                            M.deref (| M.read (| m |) |),
-                            Value.Array
-                              [
-                                M.read (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "spl_token_interface::state::Multisig",
-                                    "m"
-                                  |)
-                                |)
-                              ]
-                          |) in
-                        let~ _ : Ty.tuple [] :=
-                          M.write (|
-                            M.deref (| M.read (| n |) |),
-                            Value.Array
-                              [
-                                M.read (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "spl_token_interface::state::Multisig",
-                                    "n"
-                                  |)
-                                |)
-                              ]
-                          |) in
-                        let~ _ : Ty.tuple [] :=
-                          M.write (|
-                            M.deref (| M.read (| is_initialized |) |),
-                            Value.Array
-                              [
-                                M.cast
-                                  (Ty.path "u8")
-                                  (M.read (|
+                          M.let_ (|
+                            ltac:(M.monadic
+                              (Value.Array
+                                [
+                                  M.read (|
                                     M.SubPointer.get_struct_record_field (|
                                       M.deref (| M.read (| self |) |),
                                       "spl_token_interface::state::Multisig",
-                                      "is_initialized"
+                                      "m"
                                     |)
-                                  |))
-                              ]
+                                  |)
+                                ])),
+                            fun rhs' =>
+                              ltac:(M.monadic (M.write (| M.deref (| M.read (| m |) |), rhs' |)))
+                          |) in
+                        let~ _ : Ty.tuple [] :=
+                          M.let_ (|
+                            ltac:(M.monadic
+                              (Value.Array
+                                [
+                                  M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "spl_token_interface::state::Multisig",
+                                      "n"
+                                    |)
+                                  |)
+                                ])),
+                            fun rhs' =>
+                              ltac:(M.monadic (M.write (| M.deref (| M.read (| n |) |), rhs' |)))
+                          |) in
+                        let~ _ : Ty.tuple [] :=
+                          M.let_ (|
+                            ltac:(M.monadic
+                              (Value.Array
+                                [
+                                  M.cast
+                                    (Ty.path "u8")
+                                    (M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "spl_token_interface::state::Multisig",
+                                        "is_initialized"
+                                      |)
+                                    |))
+                                ])),
+                            fun rhs' =>
+                              ltac:(M.monadic
+                                (M.write (| M.deref (| M.read (| is_initialized |) |), rhs' |)))
                           |) in
                         M.use
                           (M.alloc (|
@@ -8325,15 +8371,18 @@ Module state.
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.deref (| M.read (| tag |) |),
-                              Value.Array
-                                [
-                                  Value.Integer IntegerKind.U8 1;
-                                  Value.Integer IntegerKind.U8 0;
-                                  Value.Integer IntegerKind.U8 0;
-                                  Value.Integer IntegerKind.U8 0
-                                ]
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (Value.Array
+                                  [
+                                    Value.Integer IntegerKind.U8 1;
+                                    Value.Integer IntegerKind.U8 0;
+                                    Value.Integer IntegerKind.U8 0;
+                                    Value.Integer IntegerKind.U8 0
+                                  ])),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (| M.deref (| M.read (| tag |) |), rhs' |)))
                             |) in
                           let~ _ : Ty.tuple [] :=
                             M.call_closure (|
@@ -8409,12 +8458,15 @@ Module state.
                           M.is_struct_tuple (| γ, "solana_program_option::COption::None" |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.deref (| M.read (| tag |) |),
-                              lib.repeat (|
-                                Value.Integer IntegerKind.U8 0,
-                                Value.Integer IntegerKind.Usize 4
-                              |)
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (lib.repeat (|
+                                  Value.Integer IntegerKind.U8 0,
+                                  Value.Integer IntegerKind.Usize 4
+                                |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (| M.deref (| M.read (| tag |) |), rhs' |)))
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                         |)))
@@ -8841,32 +8893,38 @@ Module state.
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.deref (| M.read (| tag |) |),
-                              Value.Array
-                                [
-                                  Value.Integer IntegerKind.U8 1;
-                                  Value.Integer IntegerKind.U8 0;
-                                  Value.Integer IntegerKind.U8 0;
-                                  Value.Integer IntegerKind.U8 0
-                                ]
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (Value.Array
+                                  [
+                                    Value.Integer IntegerKind.U8 1;
+                                    Value.Integer IntegerKind.U8 0;
+                                    Value.Integer IntegerKind.U8 0;
+                                    Value.Integer IntegerKind.U8 0
+                                  ])),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (| M.deref (| M.read (| tag |) |), rhs' |)))
                             |) in
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.deref (| M.read (| body |) |),
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 8 ]
-                                  [ Ty.path "u8" ],
-                                M.get_associated_function (|
-                                  Ty.path "u64",
-                                  "to_le_bytes",
-                                  [],
-                                  []
-                                |),
-                                [ M.read (| M.deref (| M.read (| amount |) |) |) ]
-                              |)
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 8 ]
+                                    [ Ty.path "u8" ],
+                                  M.get_associated_function (|
+                                    Ty.path "u64",
+                                    "to_le_bytes",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.read (| M.deref (| M.read (| amount |) |) |) ]
+                                |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (| M.deref (| M.read (| body |) |), rhs' |)))
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                         |)));
@@ -8877,12 +8935,15 @@ Module state.
                           M.is_struct_tuple (| γ, "solana_program_option::COption::None" |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.deref (| M.read (| tag |) |),
-                              lib.repeat (|
-                                Value.Integer IntegerKind.U8 0,
-                                Value.Integer IntegerKind.Usize 4
-                              |)
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (lib.repeat (|
+                                  Value.Integer IntegerKind.U8 0,
+                                  Value.Integer IntegerKind.Usize 4
+                                |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (| M.deref (| M.read (| tag |) |), rhs' |)))
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                         |)))

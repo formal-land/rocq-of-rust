@@ -9293,15 +9293,22 @@ Module net.
                                                                                                       _ :
                                                                                                     Ty.tuple
                                                                                                       [] :=
-                                                                                                  M.write (|
-                                                                                                    M.SubPointer.get_struct_record_field (|
-                                                                                                      current,
-                                                                                                      "core::net::ip_addr::fmt::Span",
-                                                                                                      "start"
-                                                                                                    |),
-                                                                                                    M.read (|
-                                                                                                      i
-                                                                                                    |)
+                                                                                                  M.let_ (|
+                                                                                                    ltac:(M.monadic
+                                                                                                      (M.read (|
+                                                                                                        i
+                                                                                                      |))),
+                                                                                                    fun
+                                                                                                        rhs' =>
+                                                                                                      ltac:(M.monadic
+                                                                                                        (M.write (|
+                                                                                                          M.SubPointer.get_struct_record_field (|
+                                                                                                            current,
+                                                                                                            "core::net::ip_addr::fmt::Span",
+                                                                                                            "start"
+                                                                                                          |),
+                                                                                                          rhs'
+                                                                                                        |)))
                                                                                                   |) in
                                                                                                 M.alloc (|
                                                                                                   Ty.tuple
@@ -11116,20 +11123,27 @@ Module net.
                                   |) in
                                 M.read (|
                                   let~ _ : Ty.tuple [] :=
-                                    M.write (|
-                                      M.SubPointer.get_array_field (|
-                                        M.SubPointer.get_struct_record_field (|
-                                          self,
-                                          "core::net::ip_addr::Ipv4Addr",
-                                          "octets"
-                                        |),
-                                        M.read (| idx |)
-                                      |),
-                                      M.call_closure (|
-                                        Ty.path "u8",
-                                        UnOp.not,
-                                        [
-                                          M.read (|
+                                    M.let_ (|
+                                      ltac:(M.monadic
+                                        (M.call_closure (|
+                                          Ty.path "u8",
+                                          UnOp.not,
+                                          [
+                                            M.read (|
+                                              M.SubPointer.get_array_field (|
+                                                M.SubPointer.get_struct_record_field (|
+                                                  self,
+                                                  "core::net::ip_addr::Ipv4Addr",
+                                                  "octets"
+                                                |),
+                                                M.read (| idx |)
+                                              |)
+                                            |)
+                                          ]
+                                        |))),
+                                      fun rhs' =>
+                                        ltac:(M.monadic
+                                          (M.write (|
                                             M.SubPointer.get_array_field (|
                                               M.SubPointer.get_struct_record_field (|
                                                 self,
@@ -11137,10 +11151,9 @@ Module net.
                                                 "octets"
                                               |),
                                               M.read (| idx |)
-                                            |)
-                                          |)
-                                        ]
-                                      |)
+                                            |),
+                                            rhs'
+                                          |)))
                                     |) in
                                   let~ _ : Ty.tuple [] :=
                                     let β := idx in
@@ -11282,20 +11295,27 @@ Module net.
                                   |) in
                                 M.read (|
                                   let~ _ : Ty.tuple [] :=
-                                    M.write (|
-                                      M.SubPointer.get_array_field (|
-                                        M.SubPointer.get_struct_record_field (|
-                                          self,
-                                          "core::net::ip_addr::Ipv6Addr",
-                                          "octets"
-                                        |),
-                                        M.read (| idx |)
-                                      |),
-                                      M.call_closure (|
-                                        Ty.path "u8",
-                                        UnOp.not,
-                                        [
-                                          M.read (|
+                                    M.let_ (|
+                                      ltac:(M.monadic
+                                        (M.call_closure (|
+                                          Ty.path "u8",
+                                          UnOp.not,
+                                          [
+                                            M.read (|
+                                              M.SubPointer.get_array_field (|
+                                                M.SubPointer.get_struct_record_field (|
+                                                  self,
+                                                  "core::net::ip_addr::Ipv6Addr",
+                                                  "octets"
+                                                |),
+                                                M.read (| idx |)
+                                              |)
+                                            |)
+                                          ]
+                                        |))),
+                                      fun rhs' =>
+                                        ltac:(M.monadic
+                                          (M.write (|
                                             M.SubPointer.get_array_field (|
                                               M.SubPointer.get_struct_record_field (|
                                                 self,
@@ -11303,10 +11323,9 @@ Module net.
                                                 "octets"
                                               |),
                                               M.read (| idx |)
-                                            |)
-                                          |)
-                                        ]
-                                      |)
+                                            |),
+                                            rhs'
+                                          |)))
                                     |) in
                                   let~ _ : Ty.tuple [] :=
                                     let β := idx in

@@ -3112,13 +3112,19 @@ Module iter.
                         ]
                       |) in
                     let~ _ : Ty.tuple [] :=
-                      M.write (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::iter::adapters::flatten::FlattenCompat",
-                          "frontiter"
-                        |),
-                        Value.StructTuple "core::option::Option::None" [] [ U ] []
+                      M.let_ (|
+                        ltac:(M.monadic
+                          (Value.StructTuple "core::option::Option::None" [] [ U ] [])),
+                        fun rhs' =>
+                          ltac:(M.monadic
+                            (M.write (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::iter::adapters::flatten::FlattenCompat",
+                                "frontiter"
+                              |),
+                              rhs'
+                            |)))
                       |) in
                     let~ _ : Ty.tuple [] :=
                       M.write (|
@@ -3274,13 +3280,19 @@ Module iter.
                         |)
                       |) in
                     let~ _ : Ty.tuple [] :=
-                      M.write (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::iter::adapters::flatten::FlattenCompat",
-                          "frontiter"
-                        |),
-                        Value.StructTuple "core::option::Option::None" [] [ U ] []
+                      M.let_ (|
+                        ltac:(M.monadic
+                          (Value.StructTuple "core::option::Option::None" [] [ U ] [])),
+                        fun rhs' =>
+                          ltac:(M.monadic
+                            (M.write (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::iter::adapters::flatten::FlattenCompat",
+                                "frontiter"
+                              |),
+                              rhs'
+                            |)))
                       |) in
                     let~ _ : Ty.tuple [] :=
                       M.match_operator (|
@@ -3452,13 +3464,19 @@ Module iter.
                         ]
                       |) in
                     let~ _ : Ty.tuple [] :=
-                      M.write (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::iter::adapters::flatten::FlattenCompat",
-                          "backiter"
-                        |),
-                        Value.StructTuple "core::option::Option::None" [] [ U ] []
+                      M.let_ (|
+                        ltac:(M.monadic
+                          (Value.StructTuple "core::option::Option::None" [] [ U ] [])),
+                        fun rhs' =>
+                          ltac:(M.monadic
+                            (M.write (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::iter::adapters::flatten::FlattenCompat",
+                                "backiter"
+                              |),
+                              rhs'
+                            |)))
                       |) in
                     M.alloc (|
                       R,
@@ -3894,13 +3912,19 @@ Module iter.
                         ]
                       |) in
                     let~ _ : Ty.tuple [] :=
-                      M.write (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::iter::adapters::flatten::FlattenCompat",
-                          "backiter"
-                        |),
-                        Value.StructTuple "core::option::Option::None" [] [ U ] []
+                      M.let_ (|
+                        ltac:(M.monadic
+                          (Value.StructTuple "core::option::Option::None" [] [ U ] [])),
+                        fun rhs' =>
+                          ltac:(M.monadic
+                            (M.write (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::iter::adapters::flatten::FlattenCompat",
+                                "backiter"
+                              |),
+                              rhs'
+                            |)))
                       |) in
                     let~ _ : Ty.tuple [] :=
                       M.write (|
@@ -4056,13 +4080,19 @@ Module iter.
                         |)
                       |) in
                     let~ _ : Ty.tuple [] :=
-                      M.write (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::iter::adapters::flatten::FlattenCompat",
-                          "backiter"
-                        |),
-                        Value.StructTuple "core::option::Option::None" [] [ U ] []
+                      M.let_ (|
+                        ltac:(M.monadic
+                          (Value.StructTuple "core::option::Option::None" [] [ U ] [])),
+                        fun rhs' =>
+                          ltac:(M.monadic
+                            (M.write (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::iter::adapters::flatten::FlattenCompat",
+                                "backiter"
+                              |),
+                              rhs'
+                            |)))
                       |) in
                     let~ _ : Ty.tuple [] :=
                       M.match_operator (|
@@ -4234,13 +4264,19 @@ Module iter.
                         ]
                       |) in
                     let~ _ : Ty.tuple [] :=
-                      M.write (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::iter::adapters::flatten::FlattenCompat",
-                          "frontiter"
-                        |),
-                        Value.StructTuple "core::option::Option::None" [] [ U ] []
+                      M.let_ (|
+                        ltac:(M.monadic
+                          (Value.StructTuple "core::option::Option::None" [] [ U ] [])),
+                        fun rhs' =>
+                          ltac:(M.monadic
+                            (M.write (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::iter::adapters::flatten::FlattenCompat",
+                                "frontiter"
+                              |),
+                              rhs'
+                            |)))
                       |) in
                     M.alloc (|
                       R,
@@ -4572,36 +4608,42 @@ Module iter.
                                           "Item",
                                         γ0_0
                                       |) in
-                                    M.write (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "core::iter::adapters::flatten::FlattenCompat",
-                                        "frontiter"
-                                      |),
-                                      Value.StructTuple
-                                        "core::option::Option::Some"
-                                        []
-                                        [ U ]
-                                        [
-                                          M.call_closure (|
-                                            U,
-                                            M.get_trait_method (|
-                                              "core::iter::traits::collect::IntoIterator",
-                                              Ty.associated_in_trait
-                                                "core::iter::traits::iterator::Iterator"
+                                    M.let_ (|
+                                      ltac:(M.monadic
+                                        (Value.StructTuple
+                                          "core::option::Option::Some"
+                                          []
+                                          [ U ]
+                                          [
+                                            M.call_closure (|
+                                              U,
+                                              M.get_trait_method (|
+                                                "core::iter::traits::collect::IntoIterator",
+                                                Ty.associated_in_trait
+                                                  "core::iter::traits::iterator::Iterator"
+                                                  []
+                                                  []
+                                                  I
+                                                  "Item",
+                                                [],
+                                                [],
+                                                "into_iter",
+                                                [],
                                                 []
-                                                []
-                                                I
-                                                "Item",
-                                              [],
-                                              [],
-                                              "into_iter",
-                                              [],
-                                              []
+                                              |),
+                                              [ M.read (| inner |) ]
+                                            |)
+                                          ])),
+                                      fun rhs' =>
+                                        ltac:(M.monadic
+                                          (M.write (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "core::iter::adapters::flatten::FlattenCompat",
+                                              "frontiter"
                                             |),
-                                            [ M.read (| inner |) ]
-                                          |)
-                                        ]
+                                            rhs'
+                                          |)))
                                     |)))
                               ]
                             |)
@@ -6736,36 +6778,42 @@ Module iter.
                                           "Item",
                                         γ0_0
                                       |) in
-                                    M.write (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "core::iter::adapters::flatten::FlattenCompat",
-                                        "backiter"
-                                      |),
-                                      Value.StructTuple
-                                        "core::option::Option::Some"
-                                        []
-                                        [ U ]
-                                        [
-                                          M.call_closure (|
-                                            U,
-                                            M.get_trait_method (|
-                                              "core::iter::traits::collect::IntoIterator",
-                                              Ty.associated_in_trait
-                                                "core::iter::traits::iterator::Iterator"
+                                    M.let_ (|
+                                      ltac:(M.monadic
+                                        (Value.StructTuple
+                                          "core::option::Option::Some"
+                                          []
+                                          [ U ]
+                                          [
+                                            M.call_closure (|
+                                              U,
+                                              M.get_trait_method (|
+                                                "core::iter::traits::collect::IntoIterator",
+                                                Ty.associated_in_trait
+                                                  "core::iter::traits::iterator::Iterator"
+                                                  []
+                                                  []
+                                                  I
+                                                  "Item",
+                                                [],
+                                                [],
+                                                "into_iter",
+                                                [],
                                                 []
-                                                []
-                                                I
-                                                "Item",
-                                              [],
-                                              [],
-                                              "into_iter",
-                                              [],
-                                              []
+                                              |),
+                                              [ M.read (| inner |) ]
+                                            |)
+                                          ])),
+                                      fun rhs' =>
+                                        ltac:(M.monadic
+                                          (M.write (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "core::iter::adapters::flatten::FlattenCompat",
+                                              "backiter"
                                             |),
-                                            [ M.read (| inner |) ]
-                                          |)
-                                        ]
+                                            rhs'
+                                          |)))
                                     |)))
                               ]
                             |)
@@ -7495,9 +7543,12 @@ Module iter.
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.deref (| M.read (| opt |) |),
-                                  Value.StructTuple "core::option::Option::None" [] [ T ] []
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (Value.StructTuple "core::option::Option::None" [] [ T ] [])),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (| M.deref (| M.read (| opt |) |), rhs' |)))
                                 |) in
                               M.alloc (| Ty.tuple [], Value.Tuple [] |)
                             |)));

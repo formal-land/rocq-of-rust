@@ -768,14 +768,19 @@ Module slice.
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.read (|
                                 let~ _ : Ty.tuple [] :=
-                                  let β := i in
-                                  M.write (|
-                                    β,
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      BinOp.Wrap.sub,
-                                      [ M.read (| β |); M.read (| left |) ]
-                                    |)
+                                  M.let_ (|
+                                    ltac:(M.monadic (M.read (| left |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (let β := i in
+                                        M.write (|
+                                          β,
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            BinOp.Wrap.sub,
+                                            [ M.read (| β |); rhs' ]
+                                          |)
+                                        |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
                                   M.match_operator (|
@@ -854,14 +859,19 @@ Module slice.
                             ltac:(M.monadic
                               (M.read (|
                                 let~ _ : Ty.tuple [] :=
-                                  let β := i in
-                                  M.write (|
-                                    β,
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      BinOp.Wrap.add,
-                                      [ M.read (| β |); M.read (| right |) ]
-                                    |)
+                                  M.let_ (|
+                                    ltac:(M.monadic (M.read (| right |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (let β := i in
+                                        M.write (|
+                                          β,
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            BinOp.Wrap.add,
+                                            [ M.read (| β |); rhs' ]
+                                          |)
+                                        |)))
                                   |) in
                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
                               |)))
@@ -983,14 +993,19 @@ Module slice.
                                                 |) in
                                               M.read (|
                                                 let~ _ : Ty.tuple [] :=
-                                                  let β := i in
-                                                  M.write (|
-                                                    β,
-                                                    M.call_closure (|
-                                                      Ty.path "usize",
-                                                      BinOp.Wrap.sub,
-                                                      [ M.read (| β |); M.read (| left |) ]
-                                                    |)
+                                                  M.let_ (|
+                                                    ltac:(M.monadic (M.read (| left |))),
+                                                    fun rhs' =>
+                                                      ltac:(M.monadic
+                                                        (let β := i in
+                                                        M.write (|
+                                                          β,
+                                                          M.call_closure (|
+                                                            Ty.path "usize",
+                                                            BinOp.Wrap.sub,
+                                                            [ M.read (| β |); rhs' ]
+                                                          |)
+                                                        |)))
                                                   |) in
                                                 M.alloc (|
                                                   Ty.tuple [],
@@ -1064,14 +1079,19 @@ Module slice.
                                             ltac:(M.monadic
                                               (M.read (|
                                                 let~ _ : Ty.tuple [] :=
-                                                  let β := i in
-                                                  M.write (|
-                                                    β,
-                                                    M.call_closure (|
-                                                      Ty.path "usize",
-                                                      BinOp.Wrap.add,
-                                                      [ M.read (| β |); M.read (| right |) ]
-                                                    |)
+                                                  M.let_ (|
+                                                    ltac:(M.monadic (M.read (| right |))),
+                                                    fun rhs' =>
+                                                      ltac:(M.monadic
+                                                        (let β := i in
+                                                        M.write (|
+                                                          β,
+                                                          M.call_closure (|
+                                                            Ty.path "usize",
+                                                            BinOp.Wrap.add,
+                                                            [ M.read (| β |); rhs' ]
+                                                          |)
+                                                        |)))
                                                   |) in
                                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                               |)))
@@ -1241,14 +1261,19 @@ Module slice.
                                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                         |) in
                                       let~ _ : Ty.tuple [] :=
-                                        let β := left in
-                                        M.write (|
-                                          β,
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            BinOp.Wrap.sub,
-                                            [ M.read (| β |); M.read (| right |) ]
-                                          |)
+                                        M.let_ (|
+                                          ltac:(M.monadic (M.read (| right |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (let β := left in
+                                              M.write (|
+                                                β,
+                                                M.call_closure (|
+                                                  Ty.path "usize",
+                                                  BinOp.Wrap.sub,
+                                                  [ M.read (| β |); rhs' ]
+                                                |)
+                                              |)))
                                         |) in
                                       M.alloc (|
                                         Ty.tuple [],
@@ -1327,14 +1352,19 @@ Module slice.
                                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                         |) in
                                       let~ _ : Ty.tuple [] :=
-                                        let β := right in
-                                        M.write (|
-                                          β,
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            BinOp.Wrap.sub,
-                                            [ M.read (| β |); M.read (| left |) ]
-                                          |)
+                                        M.let_ (|
+                                          ltac:(M.monadic (M.read (| left |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (let β := right in
+                                              M.write (|
+                                                β,
+                                                M.call_closure (|
+                                                  Ty.path "usize",
+                                                  BinOp.Wrap.sub,
+                                                  [ M.read (| β |); rhs' ]
+                                                |)
+                                              |)))
                                         |) in
                                       M.alloc (|
                                         Ty.tuple [],

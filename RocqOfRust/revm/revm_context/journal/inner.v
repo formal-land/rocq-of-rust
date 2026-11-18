@@ -3045,13 +3045,18 @@ Module journal.
             let spec := M.alloc (| Ty.path "revm_primitives::hardfork::SpecId", spec |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "revm_context::journal::inner::JournalInner",
-                    "spec"
-                  |),
-                  M.read (| spec |)
+                M.let_ (|
+                  ltac:(M.monadic (M.read (| spec |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_context::journal::inner::JournalInner",
+                          "spec"
+                        |),
+                        rhs'
+                      |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -3553,34 +3558,45 @@ Module journal.
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| account |) |),
-                      "revm_state::Account",
-                      "info"
-                    |),
-                    "revm_state::account_info::AccountInfo",
-                    "code_hash"
-                  |),
-                  M.read (| hash |)
+                M.let_ (|
+                  ltac:(M.monadic (M.read (| hash |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| account |) |),
+                            "revm_state::Account",
+                            "info"
+                          |),
+                          "revm_state::account_info::AccountInfo",
+                          "code_hash"
+                        |),
+                        rhs'
+                      |)))
                 |) in
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| account |) |),
-                      "revm_state::Account",
-                      "info"
-                    |),
-                    "revm_state::account_info::AccountInfo",
-                    "code"
-                  |),
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "revm_bytecode::bytecode::Bytecode" ]
-                    [ M.read (| code |) ]
+                M.let_ (|
+                  ltac:(M.monadic
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      []
+                      [ Ty.path "revm_bytecode::bytecode::Bytecode" ]
+                      [ M.read (| code |) ])),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| account |) |),
+                            "revm_state::Account",
+                            "info"
+                          |),
+                          "revm_state::account_info::AccountInfo",
+                          "code"
+                        |),
+                        rhs'
+                      |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -5093,9 +5109,11 @@ Module journal.
                               |) in
                             M.read (|
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.deref (| M.read (| from_balance |) |),
-                                  M.read (| from_balance_decr |)
+                                M.let_ (|
+                                  ltac:(M.monadic (M.read (| from_balance_decr |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (| M.deref (| M.read (| from_balance |) |), rhs' |)))
                                 |) in
                               let~ to_account :
                                   Ty.apply (Ty.path "&mut") [] [ Ty.path "revm_state::Account" ] :=
@@ -5294,9 +5312,14 @@ Module journal.
                                           |) in
                                         M.read (|
                                           let~ _ : Ty.tuple [] :=
-                                            M.write (|
-                                              M.deref (| M.read (| to_balance |) |),
-                                              M.read (| to_balance_incr |)
+                                            M.let_ (|
+                                              ltac:(M.monadic (M.read (| to_balance_incr |))),
+                                              fun rhs' =>
+                                                ltac:(M.monadic
+                                                  (M.write (|
+                                                    M.deref (| M.read (| to_balance |) |),
+                                                    rhs'
+                                                  |)))
                                             |) in
                                           let~ _ : Ty.tuple [] :=
                                             M.call_closure (|
@@ -6312,21 +6335,27 @@ Module journal.
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| target_acc |) |),
-                          "revm_state::Account",
-                          "info"
-                        |),
-                        "revm_state::account_info::AccountInfo",
-                        "code"
-                      |),
-                      Value.StructTuple
-                        "core::option::Option::None"
-                        []
-                        [ Ty.path "revm_bytecode::bytecode::Bytecode" ]
-                        []
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (Value.StructTuple
+                          "core::option::Option::None"
+                          []
+                          [ Ty.path "revm_bytecode::bytecode::Bytecode" ]
+                          [])),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| target_acc |) |),
+                                "revm_state::Account",
+                                "info"
+                              |),
+                              "revm_state::account_info::AccountInfo",
+                              "code"
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
                     M.match_operator (|
@@ -6487,17 +6516,22 @@ Module journal.
                               |) in
                             M.read (|
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| target_acc |) |),
-                                      "revm_state::Account",
-                                      "info"
-                                    |),
-                                    "revm_state::account_info::AccountInfo",
-                                    "balance"
-                                  |),
-                                  M.read (| new_balance |)
+                                M.let_ (|
+                                  ltac:(M.monadic (M.read (| new_balance |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| target_acc |) |),
+                                            "revm_state::Account",
+                                            "info"
+                                          |),
+                                          "revm_state::account_info::AccountInfo",
+                                          "balance"
+                                        |),
+                                        rhs'
+                                      |)))
                                 |) in
                               let~ _ : Ty.tuple [] :=
                                 M.call_closure (|
@@ -6865,26 +6899,32 @@ Module journal.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "revm_context::journal::inner::JournalInner",
-                    "depth"
-                  |),
-                  M.call_closure (|
-                    Ty.path "usize",
-                    M.get_associated_function (| Ty.path "usize", "saturating_sub", [], [] |),
-                    [
-                      M.read (|
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
+                      Ty.path "usize",
+                      M.get_associated_function (| Ty.path "usize", "saturating_sub", [], [] |),
+                      [
+                        M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_context::journal::inner::JournalInner",
+                            "depth"
+                          |)
+                        |);
+                        Value.Integer IntegerKind.Usize 1
+                      ]
+                    |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
                         M.SubPointer.get_struct_record_field (|
                           M.deref (| M.read (| self |) |),
                           "revm_context::journal::inner::JournalInner",
                           "depth"
-                        |)
-                      |);
-                      Value.Integer IntegerKind.Usize 1
-                    ]
-                  |)
+                        |),
+                        rhs'
+                      |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -7020,26 +7060,32 @@ Module journal.
                   |)
                 |) in
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "revm_context::journal::inner::JournalInner",
-                    "depth"
-                  |),
-                  M.call_closure (|
-                    Ty.path "usize",
-                    M.get_associated_function (| Ty.path "usize", "saturating_sub", [], [] |),
-                    [
-                      M.read (|
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
+                      Ty.path "usize",
+                      M.get_associated_function (| Ty.path "usize", "saturating_sub", [], [] |),
+                      [
+                        M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_context::journal::inner::JournalInner",
+                            "depth"
+                          |)
+                        |);
+                        Value.Integer IntegerKind.Usize 1
+                      ]
+                    |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
                         M.SubPointer.get_struct_record_field (|
                           M.deref (| M.read (| self |) |),
                           "revm_context::journal::inner::JournalInner",
                           "depth"
-                        |)
-                      |);
-                      Value.Integer IntegerKind.Usize 1
-                    ]
-                  |)
+                        |),
+                        rhs'
+                      |)))
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.call_closure (|
@@ -8255,35 +8301,41 @@ Module journal.
                                   ]
                                 |) in
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| acc |) |),
-                                      "revm_state::Account",
-                                      "info"
-                                    |),
-                                    "revm_state::account_info::AccountInfo",
-                                    "balance"
-                                  |),
-                                  M.read (|
-                                    get_associated_constant (|
-                                      Ty.apply
-                                        (Ty.path "ruint::Uint")
-                                        [
-                                          Value.Integer IntegerKind.Usize 256;
-                                          Value.Integer IntegerKind.Usize 4
-                                        ]
-                                        [],
-                                      "ZERO",
-                                      Ty.apply
-                                        (Ty.path "ruint::Uint")
-                                        [
-                                          Value.Integer IntegerKind.Usize 256;
-                                          Value.Integer IntegerKind.Usize 4
-                                        ]
-                                        []
-                                    |)
-                                  |)
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (M.read (|
+                                      get_associated_constant (|
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          [],
+                                        "ZERO",
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      |)
+                                    |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| acc |) |),
+                                            "revm_state::Account",
+                                            "info"
+                                          |),
+                                          "revm_state::account_info::AccountInfo",
+                                          "balance"
+                                        |),
+                                        rhs'
+                                      |)))
                                 |) in
                               M.alloc (|
                                 Ty.apply (Ty.path "core::option::Option") [] [ ENTRY ],
@@ -8348,35 +8400,41 @@ Module journal.
                                       |) in
                                     M.read (|
                                       let~ _ : Ty.tuple [] :=
-                                        M.write (|
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| acc |) |),
-                                              "revm_state::Account",
-                                              "info"
-                                            |),
-                                            "revm_state::account_info::AccountInfo",
-                                            "balance"
-                                          |),
-                                          M.read (|
-                                            get_associated_constant (|
-                                              Ty.apply
-                                                (Ty.path "ruint::Uint")
-                                                [
-                                                  Value.Integer IntegerKind.Usize 256;
-                                                  Value.Integer IntegerKind.Usize 4
-                                                ]
-                                                [],
-                                              "ZERO",
-                                              Ty.apply
-                                                (Ty.path "ruint::Uint")
-                                                [
-                                                  Value.Integer IntegerKind.Usize 256;
-                                                  Value.Integer IntegerKind.Usize 4
-                                                ]
-                                                []
-                                            |)
-                                          |)
+                                        M.let_ (|
+                                          ltac:(M.monadic
+                                            (M.read (|
+                                              get_associated_constant (|
+                                                Ty.apply
+                                                  (Ty.path "ruint::Uint")
+                                                  [
+                                                    Value.Integer IntegerKind.Usize 256;
+                                                    Value.Integer IntegerKind.Usize 4
+                                                  ]
+                                                  [],
+                                                "ZERO",
+                                                Ty.apply
+                                                  (Ty.path "ruint::Uint")
+                                                  [
+                                                    Value.Integer IntegerKind.Usize 256;
+                                                    Value.Integer IntegerKind.Usize 4
+                                                  ]
+                                                  []
+                                              |)
+                                            |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (M.write (|
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| acc |) |),
+                                                    "revm_state::Account",
+                                                    "info"
+                                                  |),
+                                                  "revm_state::account_info::AccountInfo",
+                                                  "balance"
+                                                |),
+                                                rhs'
+                                              |)))
                                         |) in
                                       M.alloc (|
                                         Ty.apply (Ty.path "core::option::Option") [] [ ENTRY ],
@@ -9709,29 +9767,35 @@ Module journal.
                                   ]
                                 |) in
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      account_load,
-                                      "revm_context_interface::journaled_state::StateLoad",
-                                      "data"
-                                    |),
-                                    "revm_context_interface::journaled_state::AccountLoad",
-                                    "is_delegate_account_cold"
-                                  |),
-                                  Value.StructTuple
-                                    "core::option::Option::Some"
-                                    []
-                                    [ Ty.path "bool" ]
-                                    [
-                                      M.read (|
-                                        M.SubPointer.get_struct_record_field (|
-                                          delegate_account,
-                                          "revm_context_interface::journaled_state::StateLoad",
-                                          "is_cold"
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (Value.StructTuple
+                                      "core::option::Option::Some"
+                                      []
+                                      [ Ty.path "bool" ]
+                                      [
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            delegate_account,
+                                            "revm_context_interface::journaled_state::StateLoad",
+                                            "is_cold"
+                                          |)
                                         |)
-                                      |)
-                                    ]
+                                      ])),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            account_load,
+                                            "revm_context_interface::journaled_state::StateLoad",
+                                            "data"
+                                          |),
+                                          "revm_context_interface::journaled_state::AccountLoad",
+                                          "is_delegate_account_cold"
+                                        |),
+                                        rhs'
+                                      |)))
                                 |) in
                               M.alloc (| Ty.tuple [], Value.Tuple [] |)
                             |)));
@@ -11955,17 +12019,23 @@ Module journal.
                                   ]
                                 |) in
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| info |) |),
-                                    "revm_state::account_info::AccountInfo",
-                                    "code"
-                                  |),
-                                  Value.StructTuple
-                                    "core::option::Option::Some"
-                                    []
-                                    [ Ty.path "revm_bytecode::bytecode::Bytecode" ]
-                                    [ M.read (| code |) ]
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (Value.StructTuple
+                                      "core::option::Option::Some"
+                                      []
+                                      [ Ty.path "revm_bytecode::bytecode::Bytecode" ]
+                                      [ M.read (| code |) ])),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| info |) |),
+                                          "revm_state::account_info::AccountInfo",
+                                          "code"
+                                        |),
+                                        rhs'
+                                      |)))
                                 |) in
                               M.alloc (| Ty.tuple [], Value.Tuple [] |)
                             |)));
@@ -14079,13 +14149,18 @@ Module journal.
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| slot |) |),
-                        "revm_state::EvmStorageSlot",
-                        "present_value"
-                      |),
-                      M.read (| new |)
+                    M.let_ (|
+                      ltac:(M.monadic (M.read (| new |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| slot |) |),
+                              "revm_state::EvmStorageSlot",
+                              "present_value"
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   M.alloc (|
                     Ty.apply

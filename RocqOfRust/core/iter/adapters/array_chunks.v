@@ -1025,29 +1025,35 @@ Module iter.
                         ]
                       |) in
                     let~ _ : Ty.tuple [] :=
-                      M.write (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::iter::adapters::array_chunks::ArrayChunks",
-                          "remainder"
-                        |),
-                        Value.StructTuple
-                          "core::option::Option::Some"
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "core::array::iter::IntoIter")
-                              [ N ]
-                              [
-                                Ty.associated_in_trait
-                                  "core::iter::traits::iterator::Iterator"
-                                  []
-                                  []
-                                  I
-                                  "Item"
-                              ]
-                          ]
-                          [ M.read (| remainder |) ]
+                      M.let_ (|
+                        ltac:(M.monadic
+                          (Value.StructTuple
+                            "core::option::Option::Some"
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::array::iter::IntoIter")
+                                [ N ]
+                                [
+                                  Ty.associated_in_trait
+                                    "core::iter::traits::iterator::Iterator"
+                                    []
+                                    []
+                                    I
+                                    "Item"
+                                ]
+                            ]
+                            [ M.read (| remainder |) ])),
+                        fun rhs' =>
+                          ltac:(M.monadic
+                            (M.write (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::iter::adapters::array_chunks::ArrayChunks",
+                                "remainder"
+                              |),
+                              rhs'
+                            |)))
                       |) in
                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
                   |)))

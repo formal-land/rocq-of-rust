@@ -3664,38 +3664,41 @@ Module slice.
                                                         |) in
                                                       M.read (|
                                                         let~ _ : Ty.tuple [] :=
-                                                          let β := count in
-                                                          M.write (|
-                                                            β,
-                                                            M.call_closure (|
-                                                              Ty.path "u8",
-                                                              BinOp.Wrap.add,
-                                                              [
-                                                                M.read (| β |);
-                                                                M.cast
-                                                                  (Ty.path "u8")
-                                                                  (M.call_closure (|
-                                                                    Ty.path "bool",
-                                                                    M.get_associated_function (|
-                                                                      Ty.path "u8",
-                                                                      "is_ascii",
-                                                                      [],
-                                                                      []
-                                                                    |),
-                                                                    [
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        M.SubPointer.get_array_field (|
-                                                                          M.deref (|
-                                                                            M.read (| bytes |)
-                                                                          |),
-                                                                          M.read (| i |)
-                                                                        |)
+                                                          M.let_ (|
+                                                            ltac:(M.monadic
+                                                              (M.cast
+                                                                (Ty.path "u8")
+                                                                (M.call_closure (|
+                                                                  Ty.path "bool",
+                                                                  M.get_associated_function (|
+                                                                    Ty.path "u8",
+                                                                    "is_ascii",
+                                                                    [],
+                                                                    []
+                                                                  |),
+                                                                  [
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.SubPointer.get_array_field (|
+                                                                        M.deref (|
+                                                                          M.read (| bytes |)
+                                                                        |),
+                                                                        M.read (| i |)
                                                                       |)
-                                                                    ]
-                                                                  |))
-                                                              ]
-                                                            |)
+                                                                    |)
+                                                                  ]
+                                                                |)))),
+                                                            fun rhs' =>
+                                                              ltac:(M.monadic
+                                                                (let β := count in
+                                                                M.write (|
+                                                                  β,
+                                                                  M.call_closure (|
+                                                                    Ty.path "u8",
+                                                                    BinOp.Wrap.add,
+                                                                    [ M.read (| β |); rhs' ]
+                                                                  |)
+                                                                |)))
                                                           |) in
                                                         let~ _ : Ty.tuple [] :=
                                                           let β := i in
@@ -3829,34 +3832,37 @@ Module slice.
                                     |) in
                                   M.read (|
                                     let~ _ : Ty.tuple [] :=
-                                      let β := is_ascii in
-                                      M.write (|
-                                        β,
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.Wrap.bit_and,
-                                          [
-                                            M.read (| β |);
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              M.get_associated_function (|
-                                                Ty.path "u8",
-                                                "is_ascii",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.SubPointer.get_array_field (|
-                                                    M.deref (| M.read (| bytes |) |),
-                                                    M.read (| i |)
-                                                  |)
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (M.call_closure (|
+                                            Ty.path "bool",
+                                            M.get_associated_function (|
+                                              Ty.path "u8",
+                                              "is_ascii",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.SubPointer.get_array_field (|
+                                                  M.deref (| M.read (| bytes |) |),
+                                                  M.read (| i |)
                                                 |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
+                                              |)
+                                            ]
+                                          |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (let β := is_ascii in
+                                            M.write (|
+                                              β,
+                                              M.call_closure (|
+                                                Ty.path "bool",
+                                                BinOp.Wrap.bit_and,
+                                                [ M.read (| β |); rhs' ]
+                                              |)
+                                            |)))
                                       |) in
                                     let~ _ : Ty.tuple [] :=
                                       let β := i in

@@ -430,26 +430,29 @@ Module iter.
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
-                          let β :=
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::iter::adapters::take::Take",
-                              "n"
-                            |) in
-                          M.write (|
-                            β,
-                            M.call_closure (|
-                              Ty.path "usize",
-                              BinOp.Wrap.sub,
-                              [
-                                M.read (| β |);
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  BinOp.Wrap.add,
-                                  [ M.read (| n |); Value.Integer IntegerKind.Usize 1 ]
-                                |)
-                              ]
-                            |)
+                          M.let_ (|
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "usize",
+                                BinOp.Wrap.add,
+                                [ M.read (| n |); Value.Integer IntegerKind.Usize 1 ]
+                              |))),
+                            fun rhs' =>
+                              ltac:(M.monadic
+                                (let β :=
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "core::iter::adapters::take::Take",
+                                    "n"
+                                  |) in
+                                M.write (|
+                                  β,
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    BinOp.Wrap.sub,
+                                    [ M.read (| β |); rhs' ]
+                                  |)
+                                |)))
                           |) in
                         M.alloc (|
                           Ty.apply
@@ -1255,19 +1258,24 @@ Module iter.
                     [ M.read (| min |); M.read (| rem |) ]
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  let β :=
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::iter::adapters::take::Take",
-                      "n"
-                    |) in
-                  M.write (|
-                    β,
-                    M.call_closure (|
-                      Ty.path "usize",
-                      BinOp.Wrap.sub,
-                      [ M.read (| β |); M.read (| advanced |) ]
-                    |)
+                  M.let_ (|
+                    ltac:(M.monadic (M.read (| advanced |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (let β :=
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::iter::adapters::take::Take",
+                            "n"
+                          |) in
+                        M.write (|
+                          β,
+                          M.call_closure (|
+                            Ty.path "usize",
+                            BinOp.Wrap.sub,
+                            [ M.read (| β |); rhs' ]
+                          |)
+                        |)))
                   |) in
                 M.alloc (|
                   Ty.apply
@@ -1838,26 +1846,29 @@ Module iter.
                                 ]
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              let β :=
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::iter::adapters::take::Take",
-                                  "n"
-                                |) in
-                              M.write (|
-                                β,
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  BinOp.Wrap.sub,
-                                  [
-                                    M.read (| β |);
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      BinOp.Wrap.add,
-                                      [ M.read (| n |); Value.Integer IntegerKind.Usize 1 ]
-                                    |)
-                                  ]
-                                |)
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
+                                    Ty.path "usize",
+                                    BinOp.Wrap.add,
+                                    [ M.read (| n |); Value.Integer IntegerKind.Usize 1 ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (let β :=
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::iter::adapters::take::Take",
+                                        "n"
+                                      |) in
+                                    M.write (|
+                                      β,
+                                      M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.sub,
+                                        [ M.read (| β |); rhs' ]
+                                      |)
+                                    |)))
                               |) in
                             M.alloc (|
                               Ty.apply
@@ -2721,19 +2732,24 @@ Module iter.
                     [ M.read (| advanced_by_inner |); M.read (| trim_inner |) ]
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  let β :=
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::iter::adapters::take::Take",
-                      "n"
-                    |) in
-                  M.write (|
-                    β,
-                    M.call_closure (|
-                      Ty.path "usize",
-                      BinOp.Wrap.sub,
-                      [ M.read (| β |); M.read (| advanced_by |) ]
-                    |)
+                  M.let_ (|
+                    ltac:(M.monadic (M.read (| advanced_by |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (let β :=
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::iter::adapters::take::Take",
+                            "n"
+                          |) in
+                        M.write (|
+                          β,
+                          M.call_closure (|
+                            Ty.path "usize",
+                            BinOp.Wrap.sub,
+                            [ M.read (| β |); rhs' ]
+                          |)
+                        |)))
                   |) in
                 M.alloc (|
                   Ty.apply

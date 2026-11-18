@@ -10083,28 +10083,34 @@ Module str.
                                                                 |) in
                                                               M.read (|
                                                                 let~ _ : Ty.tuple [] :=
-                                                                  M.write (|
-                                                                    M.SubPointer.get_array_field (|
-                                                                      is_ascii,
-                                                                      M.read (| j |)
-                                                                    |),
-                                                                    M.call_closure (|
-                                                                      Ty.path "bool",
-                                                                      BinOp.le,
-                                                                      [
-                                                                        M.read (|
+                                                                  M.let_ (|
+                                                                    ltac:(M.monadic
+                                                                      (M.call_closure (|
+                                                                        Ty.path "bool",
+                                                                        BinOp.le,
+                                                                        [
+                                                                          M.read (|
+                                                                            M.SubPointer.get_array_field (|
+                                                                              M.deref (|
+                                                                                M.read (| chunk |)
+                                                                              |),
+                                                                              M.read (| j |)
+                                                                            |)
+                                                                          |);
+                                                                          Value.Integer
+                                                                            IntegerKind.U8
+                                                                            127
+                                                                        ]
+                                                                      |))),
+                                                                    fun rhs' =>
+                                                                      ltac:(M.monadic
+                                                                        (M.write (|
                                                                           M.SubPointer.get_array_field (|
-                                                                            M.deref (|
-                                                                              M.read (| chunk |)
-                                                                            |),
+                                                                            is_ascii,
                                                                             M.read (| j |)
-                                                                          |)
-                                                                        |);
-                                                                        Value.Integer
-                                                                          IntegerKind.U8
-                                                                          127
-                                                                      ]
-                                                                    |)
+                                                                          |),
+                                                                          rhs'
+                                                                        |)))
                                                                   |) in
                                                                 M.alloc (|
                                                                   Ty.tuple [],
@@ -10449,54 +10455,60 @@ Module str.
                                                                 |) in
                                                               M.read (|
                                                                 let~ _ : Ty.tuple [] :=
-                                                                  M.write (|
-                                                                    M.SubPointer.get_array_field (|
-                                                                      M.deref (|
-                                                                        M.read (| out_chunk |)
-                                                                      |),
-                                                                      M.read (| j |)
-                                                                    |),
-                                                                    M.call_closure (|
-                                                                      Ty.apply
-                                                                        (Ty.path
-                                                                          "core::mem::maybe_uninit::MaybeUninit")
-                                                                        []
-                                                                        [ Ty.path "u8" ],
-                                                                      M.get_associated_function (|
+                                                                  M.let_ (|
+                                                                    ltac:(M.monadic
+                                                                      (M.call_closure (|
                                                                         Ty.apply
                                                                           (Ty.path
                                                                             "core::mem::maybe_uninit::MaybeUninit")
                                                                           []
                                                                           [ Ty.path "u8" ],
-                                                                        "new",
-                                                                        [],
-                                                                        []
-                                                                      |),
-                                                                      [
-                                                                        M.call_closure (|
-                                                                          Ty.path "u8",
-                                                                          M.read (| convert |),
-                                                                          [
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.Ref,
-                                                                              M.deref (|
-                                                                                M.borrow (|
-                                                                                  Pointer.Kind.Ref,
-                                                                                  M.SubPointer.get_array_field (|
-                                                                                    M.deref (|
-                                                                                      M.read (|
-                                                                                        chunk
-                                                                                      |)
-                                                                                    |),
-                                                                                    M.read (| j |)
+                                                                        M.get_associated_function (|
+                                                                          Ty.apply
+                                                                            (Ty.path
+                                                                              "core::mem::maybe_uninit::MaybeUninit")
+                                                                            []
+                                                                            [ Ty.path "u8" ],
+                                                                          "new",
+                                                                          [],
+                                                                          []
+                                                                        |),
+                                                                        [
+                                                                          M.call_closure (|
+                                                                            Ty.path "u8",
+                                                                            M.read (| convert |),
+                                                                            [
+                                                                              M.borrow (|
+                                                                                Pointer.Kind.Ref,
+                                                                                M.deref (|
+                                                                                  M.borrow (|
+                                                                                    Pointer.Kind.Ref,
+                                                                                    M.SubPointer.get_array_field (|
+                                                                                      M.deref (|
+                                                                                        M.read (|
+                                                                                          chunk
+                                                                                        |)
+                                                                                      |),
+                                                                                      M.read (| j |)
+                                                                                    |)
                                                                                   |)
                                                                                 |)
                                                                               |)
-                                                                            |)
-                                                                          ]
-                                                                        |)
-                                                                      ]
-                                                                    |)
+                                                                            ]
+                                                                          |)
+                                                                        ]
+                                                                      |))),
+                                                                    fun rhs' =>
+                                                                      ltac:(M.monadic
+                                                                        (M.write (|
+                                                                          M.SubPointer.get_array_field (|
+                                                                            M.deref (|
+                                                                              M.read (| out_chunk |)
+                                                                            |),
+                                                                            M.read (| j |)
+                                                                          |),
+                                                                          rhs'
+                                                                        |)))
                                                                   |) in
                                                                 M.alloc (|
                                                                   Ty.tuple [],
@@ -10513,22 +10525,25 @@ Module str.
                                     |))
                                 |) in
                               let~ _ : Ty.tuple [] :=
-                                let β := ascii_prefix_len in
-                                M.write (|
-                                  β,
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    BinOp.Wrap.add,
-                                    [
-                                      M.read (| β |);
-                                      M.read (|
-                                        get_constant (|
-                                          "alloc::str::convert_while_ascii::N",
-                                          Ty.path "usize"
-                                        |)
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (M.read (|
+                                      get_constant (|
+                                        "alloc::str::convert_while_ascii::N",
+                                        Ty.path "usize"
                                       |)
-                                    ]
-                                  |)
+                                    |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (let β := ascii_prefix_len in
+                                      M.write (|
+                                        β,
+                                        M.call_closure (|
+                                          Ty.path "usize",
+                                          BinOp.Wrap.add,
+                                          [ M.read (| β |); rhs' ]
+                                        |)
+                                      |)))
                                 |) in
                               let~ _ : Ty.tuple [] :=
                                 M.write (|
@@ -10738,68 +10753,78 @@ Module str.
                               let~ _ : Ty.tuple [] :=
                                 M.read (|
                                   let~ _ : Ty.tuple [] :=
-                                    M.write (|
-                                      M.deref (|
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "&mut")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                                []
-                                                [ Ty.path "u8" ]
-                                            ],
-                                          M.get_associated_function (|
-                                            Ty.apply
-                                              (Ty.path "slice")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                                  []
-                                                  [ Ty.path "u8" ]
-                                              ],
-                                            "get_unchecked_mut",
-                                            [],
-                                            [ Ty.path "usize" ]
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (| M.read (| out_slice |) |)
-                                            |);
-                                            Value.Integer IntegerKind.Usize 0
-                                          ]
-                                        |)
-                                      |),
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                          []
-                                          [ Ty.path "u8" ],
-                                        M.get_associated_function (|
+                                    M.let_ (|
+                                      ltac:(M.monadic
+                                        (M.call_closure (|
                                           Ty.apply
                                             (Ty.path "core::mem::maybe_uninit::MaybeUninit")
                                             []
                                             [ Ty.path "u8" ],
-                                          "new",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "u8",
-                                            M.read (| convert |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.borrow (| Pointer.Kind.Ref, byte |) |)
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                              []
+                                              [ Ty.path "u8" ],
+                                            "new",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "u8",
+                                              M.read (| convert |),
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.borrow (| Pointer.Kind.Ref, byte |)
+                                                  |)
+                                                |)
+                                              ]
+                                            |)
+                                          ]
+                                        |))),
+                                      fun rhs' =>
+                                        ltac:(M.monadic
+                                          (M.write (|
+                                            M.deref (|
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path
+                                                        "core::mem::maybe_uninit::MaybeUninit")
+                                                      []
+                                                      [ Ty.path "u8" ]
+                                                  ],
+                                                M.get_associated_function (|
+                                                  Ty.apply
+                                                    (Ty.path "slice")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "core::mem::maybe_uninit::MaybeUninit")
+                                                        []
+                                                        [ Ty.path "u8" ]
+                                                    ],
+                                                  "get_unchecked_mut",
+                                                  [],
+                                                  [ Ty.path "usize" ]
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (| M.read (| out_slice |) |)
+                                                  |);
+                                                  Value.Integer IntegerKind.Usize 0
+                                                ]
                                               |)
-                                            ]
-                                          |)
-                                        ]
-                                      |)
+                                            |),
+                                            rhs'
+                                          |)))
                                     |) in
                                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                 |) in

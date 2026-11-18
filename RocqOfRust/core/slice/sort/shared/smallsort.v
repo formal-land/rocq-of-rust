@@ -4873,13 +4873,18 @@ Module slice.
                             ]
                           |) in
                         let~ _ : Ty.tuple [] :=
-                          M.write (|
-                            M.SubPointer.get_struct_record_field (|
-                              gap_guard,
-                              "core::slice::sort::shared::smallsort::CopyOnDrop",
-                              "dst"
-                            |),
-                            M.read (| sift |)
+                          M.let_ (|
+                            ltac:(M.monadic (M.read (| sift |))),
+                            fun rhs' =>
+                              ltac:(M.monadic
+                                (M.write (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    gap_guard,
+                                    "core::slice::sort::shared::smallsort::CopyOnDrop",
+                                    "dst"
+                                  |),
+                                  rhs'
+                                |)))
                           |) in
                         let~ _ : Ty.tuple [] :=
                           M.match_operator (|

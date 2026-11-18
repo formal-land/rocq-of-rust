@@ -607,17 +607,26 @@ Module iter.
                           fun γ =>
                             ltac:(M.monadic
                               (let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
-                              M.write (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::iter::adapters::map_windows::MapWindowsInner",
-                                  "buffer"
-                                |),
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "core::option::Option")
-                                    []
-                                    [
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "core::option::Option")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::iter::adapters::map_windows::Buffer")
+                                          [ N ]
+                                          [
+                                            Ty.associated_in_trait
+                                              "core::iter::traits::iterator::Iterator"
+                                              []
+                                              []
+                                              I
+                                              "Item"
+                                          ]
+                                      ],
+                                    M.get_associated_function (|
                                       Ty.apply
                                         (Ty.path "core::iter::adapters::map_windows::Buffer")
                                         [ N ]
@@ -628,31 +637,28 @@ Module iter.
                                             []
                                             I
                                             "Item"
-                                        ]
-                                    ],
-                                  M.get_associated_function (|
-                                    Ty.apply
-                                      (Ty.path "core::iter::adapters::map_windows::Buffer")
-                                      [ N ]
-                                      [
-                                        Ty.associated_in_trait
-                                          "core::iter::traits::iterator::Iterator"
-                                          []
-                                          []
-                                          I
-                                          "Item"
-                                      ],
-                                    "try_from_iter",
-                                    [],
-                                    [ I ]
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.deref (| M.read (| iter |) |)
-                                    |)
-                                  ]
-                                |)
+                                        ],
+                                      "try_from_iter",
+                                      [],
+                                      [ I ]
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (| M.read (| iter |) |)
+                                      |)
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::iter::adapters::map_windows::MapWindowsInner",
+                                        "buffer"
+                                      |),
+                                      rhs'
+                                    |)))
                               |)));
                           fun γ =>
                             ltac:(M.monadic

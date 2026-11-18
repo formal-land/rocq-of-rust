@@ -849,18 +849,26 @@ Module algorithms.
                                                               ]
                                                             |) in
                                                           let~ _ : Ty.tuple [] :=
-                                                            M.write (|
-                                                              M.SubPointer.get_array_field (|
-                                                                M.deref (|
-                                                                  M.read (| numerator |)
-                                                                |),
-                                                                M.call_closure (|
-                                                                  Ty.path "usize",
-                                                                  BinOp.Wrap.add,
-                                                                  [ M.read (| j |); M.read (| n |) ]
-                                                                |)
-                                                              |),
-                                                              M.read (| q |)
+                                                            M.let_ (|
+                                                              ltac:(M.monadic (M.read (| q |))),
+                                                              fun rhs' =>
+                                                                ltac:(M.monadic
+                                                                  (M.write (|
+                                                                    M.SubPointer.get_array_field (|
+                                                                      M.deref (|
+                                                                        M.read (| numerator |)
+                                                                      |),
+                                                                      M.call_closure (|
+                                                                        Ty.path "usize",
+                                                                        BinOp.Wrap.add,
+                                                                        [
+                                                                          M.read (| j |);
+                                                                          M.read (| n |)
+                                                                        ]
+                                                                      |)
+                                                                    |),
+                                                                    rhs'
+                                                                  |)))
                                                             |) in
                                                           M.continue (||)
                                                         |)
@@ -1113,80 +1121,106 @@ Module algorithms.
                                                                     |) in
                                                                   M.read (|
                                                                     let~ _ : Ty.tuple [] :=
-                                                                      M.write (|
-                                                                        M.SubPointer.get_array_field (|
-                                                                          M.deref (|
-                                                                            M.read (| numerator |)
-                                                                          |),
-                                                                          M.call_closure (|
-                                                                            Ty.path "usize",
-                                                                            BinOp.Wrap.sub,
-                                                                            [
-                                                                              M.call_closure (|
-                                                                                Ty.path "usize",
-                                                                                BinOp.Wrap.add,
-                                                                                [
-                                                                                  M.read (| j |);
-                                                                                  M.read (| n |)
-                                                                                ]
-                                                                              |);
-                                                                              Value.Integer
-                                                                                IntegerKind.Usize
-                                                                                2
-                                                                            ]
-                                                                          |)
-                                                                        |),
-                                                                        M.call_closure (|
-                                                                          Ty.path "u64",
-                                                                          M.get_trait_method (|
-                                                                            "ruint::algorithms::DoubleWord",
-                                                                            Ty.path "u128",
-                                                                            [],
-                                                                            [ Ty.path "u64" ],
-                                                                            "low",
-                                                                            [],
-                                                                            []
-                                                                          |),
-                                                                          [ M.read (| r |) ]
-                                                                        |)
+                                                                      M.let_ (|
+                                                                        ltac:(M.monadic
+                                                                          (M.call_closure (|
+                                                                            Ty.path "u64",
+                                                                            M.get_trait_method (|
+                                                                              "ruint::algorithms::DoubleWord",
+                                                                              Ty.path "u128",
+                                                                              [],
+                                                                              [ Ty.path "u64" ],
+                                                                              "low",
+                                                                              [],
+                                                                              []
+                                                                            |),
+                                                                            [ M.read (| r |) ]
+                                                                          |))),
+                                                                        fun rhs' =>
+                                                                          ltac:(M.monadic
+                                                                            (M.write (|
+                                                                              M.SubPointer.get_array_field (|
+                                                                                M.deref (|
+                                                                                  M.read (|
+                                                                                    numerator
+                                                                                  |)
+                                                                                |),
+                                                                                M.call_closure (|
+                                                                                  Ty.path "usize",
+                                                                                  BinOp.Wrap.sub,
+                                                                                  [
+                                                                                    M.call_closure (|
+                                                                                      Ty.path
+                                                                                        "usize",
+                                                                                      BinOp.Wrap.add,
+                                                                                      [
+                                                                                        M.read (|
+                                                                                          j
+                                                                                        |);
+                                                                                        M.read (|
+                                                                                          n
+                                                                                        |)
+                                                                                      ]
+                                                                                    |);
+                                                                                    Value.Integer
+                                                                                      IntegerKind.Usize
+                                                                                      2
+                                                                                  ]
+                                                                                |)
+                                                                              |),
+                                                                              rhs'
+                                                                            |)))
                                                                       |) in
                                                                     let~ _ : Ty.tuple [] :=
-                                                                      M.write (|
-                                                                        M.SubPointer.get_array_field (|
-                                                                          M.deref (|
-                                                                            M.read (| numerator |)
-                                                                          |),
-                                                                          M.call_closure (|
-                                                                            Ty.path "usize",
-                                                                            BinOp.Wrap.sub,
-                                                                            [
-                                                                              M.call_closure (|
-                                                                                Ty.path "usize",
-                                                                                BinOp.Wrap.add,
-                                                                                [
-                                                                                  M.read (| j |);
-                                                                                  M.read (| n |)
-                                                                                ]
-                                                                              |);
-                                                                              Value.Integer
-                                                                                IntegerKind.Usize
-                                                                                1
-                                                                            ]
-                                                                          |)
-                                                                        |),
-                                                                        M.call_closure (|
-                                                                          Ty.path "u64",
-                                                                          M.get_trait_method (|
-                                                                            "ruint::algorithms::DoubleWord",
-                                                                            Ty.path "u128",
-                                                                            [],
-                                                                            [ Ty.path "u64" ],
-                                                                            "high",
-                                                                            [],
-                                                                            []
-                                                                          |),
-                                                                          [ M.read (| r |) ]
-                                                                        |)
+                                                                      M.let_ (|
+                                                                        ltac:(M.monadic
+                                                                          (M.call_closure (|
+                                                                            Ty.path "u64",
+                                                                            M.get_trait_method (|
+                                                                              "ruint::algorithms::DoubleWord",
+                                                                              Ty.path "u128",
+                                                                              [],
+                                                                              [ Ty.path "u64" ],
+                                                                              "high",
+                                                                              [],
+                                                                              []
+                                                                            |),
+                                                                            [ M.read (| r |) ]
+                                                                          |))),
+                                                                        fun rhs' =>
+                                                                          ltac:(M.monadic
+                                                                            (M.write (|
+                                                                              M.SubPointer.get_array_field (|
+                                                                                M.deref (|
+                                                                                  M.read (|
+                                                                                    numerator
+                                                                                  |)
+                                                                                |),
+                                                                                M.call_closure (|
+                                                                                  Ty.path "usize",
+                                                                                  BinOp.Wrap.sub,
+                                                                                  [
+                                                                                    M.call_closure (|
+                                                                                      Ty.path
+                                                                                        "usize",
+                                                                                      BinOp.Wrap.add,
+                                                                                      [
+                                                                                        M.read (|
+                                                                                          j
+                                                                                        |);
+                                                                                        M.read (|
+                                                                                          n
+                                                                                        |)
+                                                                                      ]
+                                                                                    |);
+                                                                                    Value.Integer
+                                                                                      IntegerKind.Usize
+                                                                                      1
+                                                                                  ]
+                                                                                |)
+                                                                              |),
+                                                                              rhs'
+                                                                            |)))
                                                                       |) in
                                                                     let~ _ : Ty.tuple [] :=
                                                                       M.match_operator (|
@@ -1696,21 +1730,29 @@ Module algorithms.
                                                                         ]
                                                                       |) in
                                                                     let~ _ : Ty.tuple [] :=
-                                                                      M.write (|
-                                                                        M.SubPointer.get_array_field (|
-                                                                          M.deref (|
-                                                                            M.read (| numerator |)
-                                                                          |),
-                                                                          M.call_closure (|
-                                                                            Ty.path "usize",
-                                                                            BinOp.Wrap.add,
-                                                                            [
-                                                                              M.read (| j |);
-                                                                              M.read (| n |)
-                                                                            ]
-                                                                          |)
-                                                                        |),
-                                                                        M.read (| q |)
+                                                                      M.let_ (|
+                                                                        ltac:(M.monadic
+                                                                          (M.read (| q |))),
+                                                                        fun rhs' =>
+                                                                          ltac:(M.monadic
+                                                                            (M.write (|
+                                                                              M.SubPointer.get_array_field (|
+                                                                                M.deref (|
+                                                                                  M.read (|
+                                                                                    numerator
+                                                                                  |)
+                                                                                |),
+                                                                                M.call_closure (|
+                                                                                  Ty.path "usize",
+                                                                                  BinOp.Wrap.add,
+                                                                                  [
+                                                                                    M.read (| j |);
+                                                                                    M.read (| n |)
+                                                                                  ]
+                                                                                |)
+                                                                              |),
+                                                                              rhs'
+                                                                            |)))
                                                                       |) in
                                                                     M.alloc (|
                                                                       Ty.tuple [],
@@ -3472,117 +3514,131 @@ Module algorithms.
                                                                                                                                   _ :
                                                                                                                                 Ty.tuple
                                                                                                                                   [] :=
-                                                                                                                              M.write (|
-                                                                                                                                M.SubPointer.get_array_field (|
-                                                                                                                                  M.deref (|
-                                                                                                                                    M.read (|
-                                                                                                                                      numerator
-                                                                                                                                    |)
-                                                                                                                                  |),
-                                                                                                                                  M.call_closure (|
+                                                                                                                              M.let_ (|
+                                                                                                                                ltac:(M.monadic
+                                                                                                                                  (M.call_closure (|
                                                                                                                                     Ty.path
-                                                                                                                                      "usize",
-                                                                                                                                    BinOp.Wrap.sub,
-                                                                                                                                    [
-                                                                                                                                      M.call_closure (|
-                                                                                                                                        Ty.path
-                                                                                                                                          "usize",
-                                                                                                                                        BinOp.Wrap.add,
-                                                                                                                                        [
-                                                                                                                                          M.read (|
-                                                                                                                                            j
-                                                                                                                                          |);
-                                                                                                                                          M.read (|
-                                                                                                                                            n
-                                                                                                                                          |)
-                                                                                                                                        ]
-                                                                                                                                      |);
-                                                                                                                                      Value.Integer
-                                                                                                                                        IntegerKind.Usize
-                                                                                                                                        2
-                                                                                                                                    ]
-                                                                                                                                  |)
-                                                                                                                                |),
-                                                                                                                                M.call_closure (|
-                                                                                                                                  Ty.path
-                                                                                                                                    "u64",
-                                                                                                                                  M.get_trait_method (|
-                                                                                                                                    "ruint::algorithms::DoubleWord",
-                                                                                                                                    Ty.path
-                                                                                                                                      "u128",
-                                                                                                                                    [],
-                                                                                                                                    [
+                                                                                                                                      "u64",
+                                                                                                                                    M.get_trait_method (|
+                                                                                                                                      "ruint::algorithms::DoubleWord",
                                                                                                                                       Ty.path
-                                                                                                                                        "u64"
-                                                                                                                                    ],
-                                                                                                                                    "low",
-                                                                                                                                    [],
-                                                                                                                                    []
-                                                                                                                                  |),
-                                                                                                                                  [
-                                                                                                                                    M.read (|
-                                                                                                                                      r
-                                                                                                                                    |)
-                                                                                                                                  ]
-                                                                                                                                |)
+                                                                                                                                        "u128",
+                                                                                                                                      [],
+                                                                                                                                      [
+                                                                                                                                        Ty.path
+                                                                                                                                          "u64"
+                                                                                                                                      ],
+                                                                                                                                      "low",
+                                                                                                                                      [],
+                                                                                                                                      []
+                                                                                                                                    |),
+                                                                                                                                    [
+                                                                                                                                      M.read (|
+                                                                                                                                        r
+                                                                                                                                      |)
+                                                                                                                                    ]
+                                                                                                                                  |))),
+                                                                                                                                fun
+                                                                                                                                    rhs' =>
+                                                                                                                                  ltac:(M.monadic
+                                                                                                                                    (M.write (|
+                                                                                                                                      M.SubPointer.get_array_field (|
+                                                                                                                                        M.deref (|
+                                                                                                                                          M.read (|
+                                                                                                                                            numerator
+                                                                                                                                          |)
+                                                                                                                                        |),
+                                                                                                                                        M.call_closure (|
+                                                                                                                                          Ty.path
+                                                                                                                                            "usize",
+                                                                                                                                          BinOp.Wrap.sub,
+                                                                                                                                          [
+                                                                                                                                            M.call_closure (|
+                                                                                                                                              Ty.path
+                                                                                                                                                "usize",
+                                                                                                                                              BinOp.Wrap.add,
+                                                                                                                                              [
+                                                                                                                                                M.read (|
+                                                                                                                                                  j
+                                                                                                                                                |);
+                                                                                                                                                M.read (|
+                                                                                                                                                  n
+                                                                                                                                                |)
+                                                                                                                                              ]
+                                                                                                                                            |);
+                                                                                                                                            Value.Integer
+                                                                                                                                              IntegerKind.Usize
+                                                                                                                                              2
+                                                                                                                                          ]
+                                                                                                                                        |)
+                                                                                                                                      |),
+                                                                                                                                      rhs'
+                                                                                                                                    |)))
                                                                                                                               |) in
                                                                                                                             let~
                                                                                                                                   _ :
                                                                                                                                 Ty.tuple
                                                                                                                                   [] :=
-                                                                                                                              M.write (|
-                                                                                                                                M.SubPointer.get_array_field (|
-                                                                                                                                  M.deref (|
-                                                                                                                                    M.read (|
-                                                                                                                                      numerator
-                                                                                                                                    |)
-                                                                                                                                  |),
-                                                                                                                                  M.call_closure (|
+                                                                                                                              M.let_ (|
+                                                                                                                                ltac:(M.monadic
+                                                                                                                                  (M.call_closure (|
                                                                                                                                     Ty.path
-                                                                                                                                      "usize",
-                                                                                                                                    BinOp.Wrap.sub,
-                                                                                                                                    [
-                                                                                                                                      M.call_closure (|
-                                                                                                                                        Ty.path
-                                                                                                                                          "usize",
-                                                                                                                                        BinOp.Wrap.add,
-                                                                                                                                        [
-                                                                                                                                          M.read (|
-                                                                                                                                            j
-                                                                                                                                          |);
-                                                                                                                                          M.read (|
-                                                                                                                                            n
-                                                                                                                                          |)
-                                                                                                                                        ]
-                                                                                                                                      |);
-                                                                                                                                      Value.Integer
-                                                                                                                                        IntegerKind.Usize
-                                                                                                                                        1
-                                                                                                                                    ]
-                                                                                                                                  |)
-                                                                                                                                |),
-                                                                                                                                M.call_closure (|
-                                                                                                                                  Ty.path
-                                                                                                                                    "u64",
-                                                                                                                                  M.get_trait_method (|
-                                                                                                                                    "ruint::algorithms::DoubleWord",
-                                                                                                                                    Ty.path
-                                                                                                                                      "u128",
-                                                                                                                                    [],
-                                                                                                                                    [
+                                                                                                                                      "u64",
+                                                                                                                                    M.get_trait_method (|
+                                                                                                                                      "ruint::algorithms::DoubleWord",
                                                                                                                                       Ty.path
-                                                                                                                                        "u64"
-                                                                                                                                    ],
-                                                                                                                                    "high",
-                                                                                                                                    [],
-                                                                                                                                    []
-                                                                                                                                  |),
-                                                                                                                                  [
-                                                                                                                                    M.read (|
-                                                                                                                                      r
-                                                                                                                                    |)
-                                                                                                                                  ]
-                                                                                                                                |)
+                                                                                                                                        "u128",
+                                                                                                                                      [],
+                                                                                                                                      [
+                                                                                                                                        Ty.path
+                                                                                                                                          "u64"
+                                                                                                                                      ],
+                                                                                                                                      "high",
+                                                                                                                                      [],
+                                                                                                                                      []
+                                                                                                                                    |),
+                                                                                                                                    [
+                                                                                                                                      M.read (|
+                                                                                                                                        r
+                                                                                                                                      |)
+                                                                                                                                    ]
+                                                                                                                                  |))),
+                                                                                                                                fun
+                                                                                                                                    rhs' =>
+                                                                                                                                  ltac:(M.monadic
+                                                                                                                                    (M.write (|
+                                                                                                                                      M.SubPointer.get_array_field (|
+                                                                                                                                        M.deref (|
+                                                                                                                                          M.read (|
+                                                                                                                                            numerator
+                                                                                                                                          |)
+                                                                                                                                        |),
+                                                                                                                                        M.call_closure (|
+                                                                                                                                          Ty.path
+                                                                                                                                            "usize",
+                                                                                                                                          BinOp.Wrap.sub,
+                                                                                                                                          [
+                                                                                                                                            M.call_closure (|
+                                                                                                                                              Ty.path
+                                                                                                                                                "usize",
+                                                                                                                                              BinOp.Wrap.add,
+                                                                                                                                              [
+                                                                                                                                                M.read (|
+                                                                                                                                                  j
+                                                                                                                                                |);
+                                                                                                                                                M.read (|
+                                                                                                                                                  n
+                                                                                                                                                |)
+                                                                                                                                              ]
+                                                                                                                                            |);
+                                                                                                                                            Value.Integer
+                                                                                                                                              IntegerKind.Usize
+                                                                                                                                              1
+                                                                                                                                          ]
+                                                                                                                                        |)
+                                                                                                                                      |),
+                                                                                                                                      rhs'
+                                                                                                                                    |)))
                                                                                                                               |) in
                                                                                                                             borrow
                                                                                                                           |)))
@@ -4584,28 +4640,36 @@ Module algorithms.
                                                                               M.read (|
                                                                                 let~ _ :
                                                                                     Ty.tuple [] :=
-                                                                                  M.write (|
-                                                                                    M.SubPointer.get_array_field (|
-                                                                                      M.deref (|
-                                                                                        M.read (|
-                                                                                          numerator
-                                                                                        |)
-                                                                                      |),
-                                                                                      M.call_closure (|
-                                                                                        Ty.path
-                                                                                          "usize",
-                                                                                        BinOp.Wrap.add,
-                                                                                        [
-                                                                                          M.read (|
-                                                                                            j
-                                                                                          |);
-                                                                                          M.read (|
-                                                                                            n
-                                                                                          |)
-                                                                                        ]
-                                                                                      |)
-                                                                                    |),
-                                                                                    M.read (| q |)
+                                                                                  M.let_ (|
+                                                                                    ltac:(M.monadic
+                                                                                      (M.read (|
+                                                                                        q
+                                                                                      |))),
+                                                                                    fun rhs' =>
+                                                                                      ltac:(M.monadic
+                                                                                        (M.write (|
+                                                                                          M.SubPointer.get_array_field (|
+                                                                                            M.deref (|
+                                                                                              M.read (|
+                                                                                                numerator
+                                                                                              |)
+                                                                                            |),
+                                                                                            M.call_closure (|
+                                                                                              Ty.path
+                                                                                                "usize",
+                                                                                              BinOp.Wrap.add,
+                                                                                              [
+                                                                                                M.read (|
+                                                                                                  j
+                                                                                                |);
+                                                                                                M.read (|
+                                                                                                  n
+                                                                                                |)
+                                                                                              ]
+                                                                                            |)
+                                                                                          |),
+                                                                                          rhs'
+                                                                                        |)))
                                                                                   |) in
                                                                                 M.alloc (|
                                                                                   Ty.tuple [],
@@ -4726,12 +4790,17 @@ Module algorithms.
                               ]
                             |) in
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_array_field (|
-                                M.deref (| M.read (| numerator |) |),
-                                M.read (| m |)
-                              |),
-                              M.read (| q_high |)
+                            M.let_ (|
+                              ltac:(M.monadic (M.read (| q_high |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
+                                    M.SubPointer.get_array_field (|
+                                      M.deref (| M.read (| numerator |) |),
+                                      M.read (| m |)
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           let~ _ : Ty.tuple [] :=
                             M.call_closure (|

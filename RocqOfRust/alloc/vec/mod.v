@@ -2029,13 +2029,18 @@ Module vec.
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "alloc::vec::Vec",
-                      "len"
-                    |),
-                    M.read (| len |)
+                  M.let_ (|
+                    ltac:(M.monadic (M.read (| len |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "alloc::vec::Vec",
+                            "len"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.call_closure (|
@@ -2471,13 +2476,18 @@ Module vec.
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "alloc::vec::Vec",
-                  "len"
-                |),
-                M.read (| new_len |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| new_len |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "alloc::vec::Vec",
+                        "len"
+                      |),
+                      rhs'
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -4891,17 +4901,23 @@ Module vec.
                             [ M.read (| end_ |); M.read (| value |) ]
                           |) in
                         let~ _ : Ty.tuple [] :=
-                          M.write (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "alloc::vec::Vec",
-                              "len"
-                            |),
-                            M.call_closure (|
-                              Ty.path "usize",
-                              BinOp.Wrap.add,
-                              [ M.read (| len |); Value.Integer IntegerKind.Usize 1 ]
-                            |)
+                          M.let_ (|
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "usize",
+                                BinOp.Wrap.add,
+                                [ M.read (| len |); Value.Integer IntegerKind.Usize 1 ]
+                              |))),
+                            fun rhs' =>
+                              ltac:(M.monadic
+                                (M.write (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "alloc::vec::Vec",
+                                    "len"
+                                  |),
+                                  rhs'
+                                |)))
                           |) in
                         M.alloc (|
                           Ty.apply (Ty.path "&mut") [] [ T ],
@@ -5533,19 +5549,20 @@ Module vec.
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
-              let β :=
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "alloc::vec::Vec",
-                  "len"
-                |) in
-              M.write (|
-                β,
-                M.call_closure (|
-                  Ty.path "usize",
-                  BinOp.Wrap.add,
-                  [ M.read (| β |); M.read (| count |) ]
-                |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| count |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (let β :=
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "alloc::vec::Vec",
+                        "len"
+                      |) in
+                    M.write (|
+                      β,
+                      M.call_closure (| Ty.path "usize", BinOp.Wrap.add, [ M.read (| β |); rhs' ] |)
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -10216,19 +10233,20 @@ Module vec.
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
-              let β :=
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "alloc::vec::Vec",
-                  "len"
-                |) in
-              M.write (|
-                β,
-                M.call_closure (|
-                  Ty.path "usize",
-                  BinOp.Wrap.add,
-                  [ M.read (| β |); M.read (| count |) ]
-                |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| count |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (let β :=
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "alloc::vec::Vec",
+                        "len"
+                      |) in
+                    M.write (|
+                      β,
+                      M.call_closure (| Ty.path "usize", BinOp.Wrap.add, [ M.read (| β |); rhs' ] |)
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))

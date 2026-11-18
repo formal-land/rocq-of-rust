@@ -222,29 +222,32 @@ Module bits.
                                     |) in
                                   M.read (|
                                     let~ _ : Ty.tuple [] :=
-                                      let β :=
-                                        M.SubPointer.get_array_field (|
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "ruint::Uint",
-                                            "limbs"
-                                          |),
-                                          M.read (| limbs |)
-                                        |) in
-                                      M.write (|
-                                        β,
-                                        M.call_closure (|
-                                          Ty.path "u64",
-                                          BinOp.Wrap.bit_or,
-                                          [
-                                            M.read (| β |);
-                                            M.call_closure (|
-                                              Ty.path "u64",
-                                              BinOp.Wrap.shl,
-                                              [ Value.Integer IntegerKind.U64 1; M.read (| bits |) ]
-                                            |)
-                                          ]
-                                        |)
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (M.call_closure (|
+                                            Ty.path "u64",
+                                            BinOp.Wrap.shl,
+                                            [ Value.Integer IntegerKind.U64 1; M.read (| bits |) ]
+                                          |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (let β :=
+                                              M.SubPointer.get_array_field (|
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| self |) |),
+                                                  "ruint::Uint",
+                                                  "limbs"
+                                                |),
+                                                M.read (| limbs |)
+                                              |) in
+                                            M.write (|
+                                              β,
+                                              M.call_closure (|
+                                                Ty.path "u64",
+                                                BinOp.Wrap.bit_or,
+                                                [ M.read (| β |); rhs' ]
+                                              |)
+                                            |)))
                                       |) in
                                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                   |)));
@@ -252,38 +255,39 @@ Module bits.
                                 ltac:(M.monadic
                                   (M.read (|
                                     let~ _ : Ty.tuple [] :=
-                                      let β :=
-                                        M.SubPointer.get_array_field (|
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "ruint::Uint",
-                                            "limbs"
-                                          |),
-                                          M.read (| limbs |)
-                                        |) in
-                                      M.write (|
-                                        β,
-                                        M.call_closure (|
-                                          Ty.path "u64",
-                                          BinOp.Wrap.bit_and,
-                                          [
-                                            M.read (| β |);
-                                            M.call_closure (|
-                                              Ty.path "u64",
-                                              UnOp.not,
-                                              [
-                                                M.call_closure (|
-                                                  Ty.path "u64",
-                                                  BinOp.Wrap.shl,
-                                                  [
-                                                    Value.Integer IntegerKind.U64 1;
-                                                    M.read (| bits |)
-                                                  ]
-                                                |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (M.call_closure (|
+                                            Ty.path "u64",
+                                            UnOp.not,
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "u64",
+                                                BinOp.Wrap.shl,
+                                                [ Value.Integer IntegerKind.U64 1; M.read (| bits |)
+                                                ]
+                                              |)
+                                            ]
+                                          |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (let β :=
+                                              M.SubPointer.get_array_field (|
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| self |) |),
+                                                  "ruint::Uint",
+                                                  "limbs"
+                                                |),
+                                                M.read (| limbs |)
+                                              |) in
+                                            M.write (|
+                                              β,
+                                              M.call_closure (|
+                                                Ty.path "u64",
+                                                BinOp.Wrap.bit_and,
+                                                [ M.read (| β |); rhs' ]
+                                              |)
+                                            |)))
                                       |) in
                                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                   |)))
@@ -524,18 +528,25 @@ Module bits.
                                               |) in
                                             M.read (|
                                               let~ _ : Ty.tuple [] :=
-                                                M.write (|
-                                                  M.deref (| M.read (| limb |) |),
-                                                  M.call_closure (|
-                                                    Ty.path "u64",
-                                                    M.get_associated_function (|
+                                                M.let_ (|
+                                                  ltac:(M.monadic
+                                                    (M.call_closure (|
                                                       Ty.path "u64",
-                                                      "reverse_bits",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [ M.read (| M.deref (| M.read (| limb |) |) |) ]
-                                                  |)
+                                                      M.get_associated_function (|
+                                                        Ty.path "u64",
+                                                        "reverse_bits",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [ M.read (| M.deref (| M.read (| limb |) |) |)
+                                                      ]
+                                                    |))),
+                                                  fun rhs' =>
+                                                    ltac:(M.monadic
+                                                      (M.write (|
+                                                        M.deref (| M.read (| limb |) |),
+                                                        rhs'
+                                                      |)))
                                                 |) in
                                               M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                             |)))
@@ -2567,37 +2578,44 @@ Module bits.
                                                                         |) in
                                                                       M.read (|
                                                                         let~ _ : Ty.tuple [] :=
-                                                                          let β := overflow in
-                                                                          M.write (|
-                                                                            β,
-                                                                            M.call_closure (|
-                                                                              Ty.path "bool",
-                                                                              BinOp.Wrap.bit_or,
-                                                                              [
-                                                                                M.read (| β |);
-                                                                                M.call_closure (|
-                                                                                  Ty.path "bool",
-                                                                                  BinOp.ne,
-                                                                                  [
-                                                                                    M.read (|
-                                                                                      M.SubPointer.get_array_field (|
-                                                                                        M.SubPointer.get_struct_record_field (|
-                                                                                          self,
-                                                                                          "ruint::Uint",
-                                                                                          "limbs"
-                                                                                        |),
-                                                                                        M.read (|
-                                                                                          i
-                                                                                        |)
-                                                                                      |)
-                                                                                    |);
-                                                                                    Value.Integer
-                                                                                      IntegerKind.U64
-                                                                                      0
-                                                                                  ]
-                                                                                |)
-                                                                              ]
-                                                                            |)
+                                                                          M.let_ (|
+                                                                            ltac:(M.monadic
+                                                                              (M.call_closure (|
+                                                                                Ty.path "bool",
+                                                                                BinOp.ne,
+                                                                                [
+                                                                                  M.read (|
+                                                                                    M.SubPointer.get_array_field (|
+                                                                                      M.SubPointer.get_struct_record_field (|
+                                                                                        self,
+                                                                                        "ruint::Uint",
+                                                                                        "limbs"
+                                                                                      |),
+                                                                                      M.read (| i |)
+                                                                                    |)
+                                                                                  |);
+                                                                                  Value.Integer
+                                                                                    IntegerKind.U64
+                                                                                    0
+                                                                                ]
+                                                                              |))),
+                                                                            fun rhs' =>
+                                                                              ltac:(M.monadic
+                                                                                (let β :=
+                                                                                  overflow in
+                                                                                M.write (|
+                                                                                  β,
+                                                                                  M.call_closure (|
+                                                                                    Ty.path "bool",
+                                                                                    BinOp.Wrap.bit_or,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        β
+                                                                                      |);
+                                                                                      rhs'
+                                                                                    ]
+                                                                                  |)
+                                                                                |)))
                                                                           |) in
                                                                         M.alloc (|
                                                                           Ty.tuple [],
@@ -3021,34 +3039,42 @@ Module bits.
                                                                             ]
                                                                           |) in
                                                                         let~ _ : Ty.tuple [] :=
-                                                                          M.write (|
-                                                                            M.SubPointer.get_array_field (|
-                                                                              M.SubPointer.get_struct_record_field (|
-                                                                                self,
-                                                                                "ruint::Uint",
-                                                                                "limbs"
-                                                                              |),
-                                                                              M.read (| i |)
-                                                                            |),
-                                                                            M.read (|
-                                                                              M.SubPointer.get_array_field (|
-                                                                                M.SubPointer.get_struct_record_field (|
-                                                                                  self,
-                                                                                  "ruint::Uint",
-                                                                                  "limbs"
-                                                                                |),
-                                                                                M.call_closure (|
-                                                                                  Ty.path "usize",
-                                                                                  BinOp.Wrap.sub,
-                                                                                  [
-                                                                                    M.read (| i |);
-                                                                                    M.read (|
-                                                                                      limbs
-                                                                                    |)
-                                                                                  ]
+                                                                          M.let_ (|
+                                                                            ltac:(M.monadic
+                                                                              (M.read (|
+                                                                                M.SubPointer.get_array_field (|
+                                                                                  M.SubPointer.get_struct_record_field (|
+                                                                                    self,
+                                                                                    "ruint::Uint",
+                                                                                    "limbs"
+                                                                                  |),
+                                                                                  M.call_closure (|
+                                                                                    Ty.path "usize",
+                                                                                    BinOp.Wrap.sub,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        i
+                                                                                      |);
+                                                                                      M.read (|
+                                                                                        limbs
+                                                                                      |)
+                                                                                    ]
+                                                                                  |)
                                                                                 |)
-                                                                              |)
-                                                                            |)
+                                                                              |))),
+                                                                            fun rhs' =>
+                                                                              ltac:(M.monadic
+                                                                                (M.write (|
+                                                                                  M.SubPointer.get_array_field (|
+                                                                                    M.SubPointer.get_struct_record_field (|
+                                                                                      self,
+                                                                                      "ruint::Uint",
+                                                                                      "limbs"
+                                                                                    |),
+                                                                                    M.read (| i |)
+                                                                                  |),
+                                                                                  rhs'
+                                                                                |)))
                                                                           |) in
                                                                         M.alloc (|
                                                                           Ty.tuple [],
@@ -3129,38 +3155,38 @@ Module bits.
                                           ]
                                         |) in
                                       let~ _ : Ty.tuple [] :=
-                                        let β :=
-                                          M.SubPointer.get_array_field (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              self,
-                                              "ruint::Uint",
-                                              "limbs"
-                                            |),
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              BinOp.Wrap.sub,
-                                              [ LIMBS; Value.Integer IntegerKind.Usize 1 ]
-                                            |)
-                                          |) in
-                                        M.write (|
-                                          β,
-                                          M.call_closure (|
-                                            Ty.path "u64",
-                                            BinOp.Wrap.bit_and,
-                                            [
-                                              M.read (| β |);
-                                              M.read (|
-                                                get_associated_constant (|
-                                                  Ty.apply
-                                                    (Ty.path "ruint::Uint")
-                                                    [ BITS; LIMBS ]
-                                                    [],
-                                                  "MASK",
-                                                  Ty.path "u64"
-                                                |)
+                                        M.let_ (|
+                                          ltac:(M.monadic
+                                            (M.read (|
+                                              get_associated_constant (|
+                                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                                "MASK",
+                                                Ty.path "u64"
                                               |)
-                                            ]
-                                          |)
+                                            |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (let β :=
+                                                M.SubPointer.get_array_field (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    self,
+                                                    "ruint::Uint",
+                                                    "limbs"
+                                                  |),
+                                                  M.call_closure (|
+                                                    Ty.path "usize",
+                                                    BinOp.Wrap.sub,
+                                                    [ LIMBS; Value.Integer IntegerKind.Usize 1 ]
+                                                  |)
+                                                |) in
+                                              M.write (|
+                                                β,
+                                                M.call_closure (|
+                                                  Ty.path "u64",
+                                                  BinOp.Wrap.bit_and,
+                                                  [ M.read (| β |); rhs' ]
+                                                |)
+                                              |)))
                                         |) in
                                       M.return_ (|
                                         Value.Tuple [ M.read (| self |); M.read (| overflow |) ]
@@ -3288,35 +3314,36 @@ Module bits.
                                                           M.copy (| Ty.path "usize", γ0_0 |) in
                                                         M.read (|
                                                           let~ _ : Ty.tuple [] :=
-                                                            let β := overflow in
-                                                            M.write (|
-                                                              β,
-                                                              M.call_closure (|
-                                                                Ty.path "bool",
-                                                                BinOp.Wrap.bit_or,
-                                                                [
-                                                                  M.read (| β |);
-                                                                  M.call_closure (|
-                                                                    Ty.path "bool",
-                                                                    BinOp.ne,
-                                                                    [
-                                                                      M.read (|
-                                                                        M.SubPointer.get_array_field (|
-                                                                          M.SubPointer.get_struct_record_field (|
-                                                                            self,
-                                                                            "ruint::Uint",
-                                                                            "limbs"
-                                                                          |),
-                                                                          M.read (| i |)
-                                                                        |)
-                                                                      |);
-                                                                      Value.Integer
-                                                                        IntegerKind.U64
-                                                                        0
-                                                                    ]
-                                                                  |)
-                                                                ]
-                                                              |)
+                                                            M.let_ (|
+                                                              ltac:(M.monadic
+                                                                (M.call_closure (|
+                                                                  Ty.path "bool",
+                                                                  BinOp.ne,
+                                                                  [
+                                                                    M.read (|
+                                                                      M.SubPointer.get_array_field (|
+                                                                        M.SubPointer.get_struct_record_field (|
+                                                                          self,
+                                                                          "ruint::Uint",
+                                                                          "limbs"
+                                                                        |),
+                                                                        M.read (| i |)
+                                                                      |)
+                                                                    |);
+                                                                    Value.Integer IntegerKind.U64 0
+                                                                  ]
+                                                                |))),
+                                                              fun rhs' =>
+                                                                ltac:(M.monadic
+                                                                  (let β := overflow in
+                                                                  M.write (|
+                                                                    β,
+                                                                    M.call_closure (|
+                                                                      Ty.path "bool",
+                                                                      BinOp.Wrap.bit_or,
+                                                                      [ M.read (| β |); rhs' ]
+                                                                    |)
+                                                                  |)))
                                                             |) in
                                                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                                         |)))
@@ -3801,101 +3828,110 @@ Module bits.
                                                               ]
                                                             |) in
                                                           let~ _ : Ty.tuple [] :=
-                                                            M.write (|
-                                                              M.SubPointer.get_array_field (|
-                                                                M.SubPointer.get_struct_record_field (|
-                                                                  self,
-                                                                  "ruint::Uint",
-                                                                  "limbs"
-                                                                |),
-                                                                M.read (| i |)
-                                                              |),
-                                                              M.call_closure (|
-                                                                Ty.path "u64",
-                                                                BinOp.Wrap.shl,
-                                                                [
-                                                                  M.read (|
+                                                            M.let_ (|
+                                                              ltac:(M.monadic
+                                                                (M.call_closure (|
+                                                                  Ty.path "u64",
+                                                                  BinOp.Wrap.shl,
+                                                                  [
+                                                                    M.read (|
+                                                                      M.SubPointer.get_array_field (|
+                                                                        M.SubPointer.get_struct_record_field (|
+                                                                          self,
+                                                                          "ruint::Uint",
+                                                                          "limbs"
+                                                                        |),
+                                                                        M.call_closure (|
+                                                                          Ty.path "usize",
+                                                                          BinOp.Wrap.sub,
+                                                                          [
+                                                                            M.read (| i |);
+                                                                            M.read (| limbs |)
+                                                                          ]
+                                                                        |)
+                                                                      |)
+                                                                    |);
+                                                                    M.read (| bits |)
+                                                                  ]
+                                                                |))),
+                                                              fun rhs' =>
+                                                                ltac:(M.monadic
+                                                                  (M.write (|
                                                                     M.SubPointer.get_array_field (|
                                                                       M.SubPointer.get_struct_record_field (|
                                                                         self,
                                                                         "ruint::Uint",
                                                                         "limbs"
                                                                       |),
-                                                                      M.call_closure (|
-                                                                        Ty.path "usize",
-                                                                        BinOp.Wrap.sub,
-                                                                        [
-                                                                          M.read (| i |);
-                                                                          M.read (| limbs |)
-                                                                        ]
-                                                                      |)
-                                                                    |)
-                                                                  |);
-                                                                  M.read (| bits |)
-                                                                ]
-                                                              |)
+                                                                      M.read (| i |)
+                                                                    |),
+                                                                    rhs'
+                                                                  |)))
                                                             |) in
                                                           let~ _ : Ty.tuple [] :=
-                                                            let β :=
-                                                              M.SubPointer.get_array_field (|
-                                                                M.SubPointer.get_struct_record_field (|
-                                                                  self,
-                                                                  "ruint::Uint",
-                                                                  "limbs"
-                                                                |),
-                                                                M.read (| i |)
-                                                              |) in
-                                                            M.write (|
-                                                              β,
-                                                              M.call_closure (|
-                                                                Ty.path "u64",
-                                                                BinOp.Wrap.bit_or,
-                                                                [
-                                                                  M.read (| β |);
-                                                                  M.call_closure (|
-                                                                    Ty.path "u64",
-                                                                    BinOp.Wrap.shr,
-                                                                    [
-                                                                      M.read (|
-                                                                        M.SubPointer.get_array_field (|
-                                                                          M.SubPointer.get_struct_record_field (|
-                                                                            self,
-                                                                            "ruint::Uint",
-                                                                            "limbs"
-                                                                          |),
-                                                                          M.call_closure (|
-                                                                            Ty.path "usize",
-                                                                            BinOp.Wrap.sub,
-                                                                            [
-                                                                              M.call_closure (|
-                                                                                Ty.path "usize",
-                                                                                BinOp.Wrap.sub,
-                                                                                [
-                                                                                  M.read (| i |);
-                                                                                  M.read (| limbs |)
-                                                                                ]
-                                                                              |);
-                                                                              Value.Integer
-                                                                                IntegerKind.Usize
-                                                                                1
-                                                                            ]
-                                                                          |)
+                                                            M.let_ (|
+                                                              ltac:(M.monadic
+                                                                (M.call_closure (|
+                                                                  Ty.path "u64",
+                                                                  BinOp.Wrap.shr,
+                                                                  [
+                                                                    M.read (|
+                                                                      M.SubPointer.get_array_field (|
+                                                                        M.SubPointer.get_struct_record_field (|
+                                                                          self,
+                                                                          "ruint::Uint",
+                                                                          "limbs"
+                                                                        |),
+                                                                        M.call_closure (|
+                                                                          Ty.path "usize",
+                                                                          BinOp.Wrap.sub,
+                                                                          [
+                                                                            M.call_closure (|
+                                                                              Ty.path "usize",
+                                                                              BinOp.Wrap.sub,
+                                                                              [
+                                                                                M.read (| i |);
+                                                                                M.read (| limbs |)
+                                                                              ]
+                                                                            |);
+                                                                            Value.Integer
+                                                                              IntegerKind.Usize
+                                                                              1
+                                                                          ]
                                                                         |)
-                                                                      |);
-                                                                      M.call_closure (|
-                                                                        Ty.path "usize",
-                                                                        BinOp.Wrap.sub,
-                                                                        [
-                                                                          Value.Integer
-                                                                            IntegerKind.Usize
-                                                                            64;
-                                                                          M.read (| bits |)
-                                                                        ]
                                                                       |)
-                                                                    ]
-                                                                  |)
-                                                                ]
-                                                              |)
+                                                                    |);
+                                                                    M.call_closure (|
+                                                                      Ty.path "usize",
+                                                                      BinOp.Wrap.sub,
+                                                                      [
+                                                                        Value.Integer
+                                                                          IntegerKind.Usize
+                                                                          64;
+                                                                        M.read (| bits |)
+                                                                      ]
+                                                                    |)
+                                                                  ]
+                                                                |))),
+                                                              fun rhs' =>
+                                                                ltac:(M.monadic
+                                                                  (let β :=
+                                                                    M.SubPointer.get_array_field (|
+                                                                      M.SubPointer.get_struct_record_field (|
+                                                                        self,
+                                                                        "ruint::Uint",
+                                                                        "limbs"
+                                                                      |),
+                                                                      M.read (| i |)
+                                                                    |) in
+                                                                  M.write (|
+                                                                    β,
+                                                                    M.call_closure (|
+                                                                      Ty.path "u64",
+                                                                      BinOp.Wrap.bit_or,
+                                                                      [ M.read (| β |); rhs' ]
+                                                                    |)
+                                                                  |)))
                                                             |) in
                                                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                                         |)))
@@ -3909,32 +3945,38 @@ Module bits.
                               |))
                           |) in
                         let~ _ : Ty.tuple [] :=
-                          M.write (|
-                            M.SubPointer.get_array_field (|
-                              M.SubPointer.get_struct_record_field (|
-                                self,
-                                "ruint::Uint",
-                                "limbs"
-                              |),
-                              M.read (| limbs |)
-                            |),
-                            M.call_closure (|
-                              Ty.path "u64",
-                              BinOp.Wrap.shl,
-                              [
-                                M.read (|
+                          M.let_ (|
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "u64",
+                                BinOp.Wrap.shl,
+                                [
+                                  M.read (|
+                                    M.SubPointer.get_array_field (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        self,
+                                        "ruint::Uint",
+                                        "limbs"
+                                      |),
+                                      Value.Integer IntegerKind.Usize 0
+                                    |)
+                                  |);
+                                  M.read (| bits |)
+                                ]
+                              |))),
+                            fun rhs' =>
+                              ltac:(M.monadic
+                                (M.write (|
                                   M.SubPointer.get_array_field (|
                                     M.SubPointer.get_struct_record_field (|
                                       self,
                                       "ruint::Uint",
                                       "limbs"
                                     |),
-                                    Value.Integer IntegerKind.Usize 0
-                                  |)
-                                |);
-                                M.read (| bits |)
-                              ]
-                            |)
+                                    M.read (| limbs |)
+                                  |),
+                                  rhs'
+                                |)))
                           |) in
                         let~ _ : Ty.tuple [] :=
                           M.call_closure (|
@@ -3990,35 +4032,38 @@ Module bits.
                             ]
                           |) in
                         let~ _ : Ty.tuple [] :=
-                          let β :=
-                            M.SubPointer.get_array_field (|
-                              M.SubPointer.get_struct_record_field (|
-                                self,
-                                "ruint::Uint",
-                                "limbs"
-                              |),
-                              M.call_closure (|
-                                Ty.path "usize",
-                                BinOp.Wrap.sub,
-                                [ LIMBS; Value.Integer IntegerKind.Usize 1 ]
-                              |)
-                            |) in
-                          M.write (|
-                            β,
-                            M.call_closure (|
-                              Ty.path "u64",
-                              BinOp.Wrap.bit_and,
-                              [
-                                M.read (| β |);
-                                M.read (|
-                                  get_associated_constant (|
-                                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                    "MASK",
-                                    Ty.path "u64"
-                                  |)
+                          M.let_ (|
+                            ltac:(M.monadic
+                              (M.read (|
+                                get_associated_constant (|
+                                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                  "MASK",
+                                  Ty.path "u64"
                                 |)
-                              ]
-                            |)
+                              |))),
+                            fun rhs' =>
+                              ltac:(M.monadic
+                                (let β :=
+                                  M.SubPointer.get_array_field (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      self,
+                                      "ruint::Uint",
+                                      "limbs"
+                                    |),
+                                    M.call_closure (|
+                                      Ty.path "usize",
+                                      BinOp.Wrap.sub,
+                                      [ LIMBS; Value.Integer IntegerKind.Usize 1 ]
+                                    |)
+                                  |) in
+                                M.write (|
+                                  β,
+                                  M.call_closure (|
+                                    Ty.path "u64",
+                                    BinOp.Wrap.bit_and,
+                                    [ M.read (| β |); rhs' ]
+                                  |)
+                                |)))
                           |) in
                         M.alloc (|
                           Ty.tuple
@@ -4449,37 +4494,44 @@ Module bits.
                                                                         |) in
                                                                       M.read (|
                                                                         let~ _ : Ty.tuple [] :=
-                                                                          let β := overflow in
-                                                                          M.write (|
-                                                                            β,
-                                                                            M.call_closure (|
-                                                                              Ty.path "bool",
-                                                                              BinOp.Wrap.bit_or,
-                                                                              [
-                                                                                M.read (| β |);
-                                                                                M.call_closure (|
-                                                                                  Ty.path "bool",
-                                                                                  BinOp.ne,
-                                                                                  [
-                                                                                    M.read (|
-                                                                                      M.SubPointer.get_array_field (|
-                                                                                        M.SubPointer.get_struct_record_field (|
-                                                                                          self,
-                                                                                          "ruint::Uint",
-                                                                                          "limbs"
-                                                                                        |),
-                                                                                        M.read (|
-                                                                                          i
-                                                                                        |)
-                                                                                      |)
-                                                                                    |);
-                                                                                    Value.Integer
-                                                                                      IntegerKind.U64
-                                                                                      0
-                                                                                  ]
-                                                                                |)
-                                                                              ]
-                                                                            |)
+                                                                          M.let_ (|
+                                                                            ltac:(M.monadic
+                                                                              (M.call_closure (|
+                                                                                Ty.path "bool",
+                                                                                BinOp.ne,
+                                                                                [
+                                                                                  M.read (|
+                                                                                    M.SubPointer.get_array_field (|
+                                                                                      M.SubPointer.get_struct_record_field (|
+                                                                                        self,
+                                                                                        "ruint::Uint",
+                                                                                        "limbs"
+                                                                                      |),
+                                                                                      M.read (| i |)
+                                                                                    |)
+                                                                                  |);
+                                                                                  Value.Integer
+                                                                                    IntegerKind.U64
+                                                                                    0
+                                                                                ]
+                                                                              |))),
+                                                                            fun rhs' =>
+                                                                              ltac:(M.monadic
+                                                                                (let β :=
+                                                                                  overflow in
+                                                                                M.write (|
+                                                                                  β,
+                                                                                  M.call_closure (|
+                                                                                    Ty.path "bool",
+                                                                                    BinOp.Wrap.bit_or,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        β
+                                                                                      |);
+                                                                                      rhs'
+                                                                                    ]
+                                                                                  |)
+                                                                                |)))
                                                                           |) in
                                                                         M.alloc (|
                                                                           Ty.tuple [],
@@ -4624,34 +4676,42 @@ Module bits.
                                                                         |) in
                                                                       M.read (|
                                                                         let~ _ : Ty.tuple [] :=
-                                                                          M.write (|
-                                                                            M.SubPointer.get_array_field (|
-                                                                              M.SubPointer.get_struct_record_field (|
-                                                                                self,
-                                                                                "ruint::Uint",
-                                                                                "limbs"
-                                                                              |),
-                                                                              M.read (| i |)
-                                                                            |),
-                                                                            M.read (|
-                                                                              M.SubPointer.get_array_field (|
-                                                                                M.SubPointer.get_struct_record_field (|
-                                                                                  self,
-                                                                                  "ruint::Uint",
-                                                                                  "limbs"
-                                                                                |),
-                                                                                M.call_closure (|
-                                                                                  Ty.path "usize",
-                                                                                  BinOp.Wrap.add,
-                                                                                  [
-                                                                                    M.read (| i |);
-                                                                                    M.read (|
-                                                                                      limbs
-                                                                                    |)
-                                                                                  ]
+                                                                          M.let_ (|
+                                                                            ltac:(M.monadic
+                                                                              (M.read (|
+                                                                                M.SubPointer.get_array_field (|
+                                                                                  M.SubPointer.get_struct_record_field (|
+                                                                                    self,
+                                                                                    "ruint::Uint",
+                                                                                    "limbs"
+                                                                                  |),
+                                                                                  M.call_closure (|
+                                                                                    Ty.path "usize",
+                                                                                    BinOp.Wrap.add,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        i
+                                                                                      |);
+                                                                                      M.read (|
+                                                                                        limbs
+                                                                                      |)
+                                                                                    ]
+                                                                                  |)
                                                                                 |)
-                                                                              |)
-                                                                            |)
+                                                                              |))),
+                                                                            fun rhs' =>
+                                                                              ltac:(M.monadic
+                                                                                (M.write (|
+                                                                                  M.SubPointer.get_array_field (|
+                                                                                    M.SubPointer.get_struct_record_field (|
+                                                                                      self,
+                                                                                      "ruint::Uint",
+                                                                                      "limbs"
+                                                                                    |),
+                                                                                    M.read (| i |)
+                                                                                  |),
+                                                                                  rhs'
+                                                                                |)))
                                                                           |) in
                                                                         M.alloc (|
                                                                           Ty.tuple [],
@@ -5088,101 +5148,110 @@ Module bits.
                                                               ]
                                                             |) in
                                                           let~ _ : Ty.tuple [] :=
-                                                            M.write (|
-                                                              M.SubPointer.get_array_field (|
-                                                                M.SubPointer.get_struct_record_field (|
-                                                                  self,
-                                                                  "ruint::Uint",
-                                                                  "limbs"
-                                                                |),
-                                                                M.read (| i |)
-                                                              |),
-                                                              M.call_closure (|
-                                                                Ty.path "u64",
-                                                                BinOp.Wrap.shr,
-                                                                [
-                                                                  M.read (|
+                                                            M.let_ (|
+                                                              ltac:(M.monadic
+                                                                (M.call_closure (|
+                                                                  Ty.path "u64",
+                                                                  BinOp.Wrap.shr,
+                                                                  [
+                                                                    M.read (|
+                                                                      M.SubPointer.get_array_field (|
+                                                                        M.SubPointer.get_struct_record_field (|
+                                                                          self,
+                                                                          "ruint::Uint",
+                                                                          "limbs"
+                                                                        |),
+                                                                        M.call_closure (|
+                                                                          Ty.path "usize",
+                                                                          BinOp.Wrap.add,
+                                                                          [
+                                                                            M.read (| i |);
+                                                                            M.read (| limbs |)
+                                                                          ]
+                                                                        |)
+                                                                      |)
+                                                                    |);
+                                                                    M.read (| bits |)
+                                                                  ]
+                                                                |))),
+                                                              fun rhs' =>
+                                                                ltac:(M.monadic
+                                                                  (M.write (|
                                                                     M.SubPointer.get_array_field (|
                                                                       M.SubPointer.get_struct_record_field (|
                                                                         self,
                                                                         "ruint::Uint",
                                                                         "limbs"
                                                                       |),
-                                                                      M.call_closure (|
-                                                                        Ty.path "usize",
-                                                                        BinOp.Wrap.add,
-                                                                        [
-                                                                          M.read (| i |);
-                                                                          M.read (| limbs |)
-                                                                        ]
-                                                                      |)
-                                                                    |)
-                                                                  |);
-                                                                  M.read (| bits |)
-                                                                ]
-                                                              |)
+                                                                      M.read (| i |)
+                                                                    |),
+                                                                    rhs'
+                                                                  |)))
                                                             |) in
                                                           let~ _ : Ty.tuple [] :=
-                                                            let β :=
-                                                              M.SubPointer.get_array_field (|
-                                                                M.SubPointer.get_struct_record_field (|
-                                                                  self,
-                                                                  "ruint::Uint",
-                                                                  "limbs"
-                                                                |),
-                                                                M.read (| i |)
-                                                              |) in
-                                                            M.write (|
-                                                              β,
-                                                              M.call_closure (|
-                                                                Ty.path "u64",
-                                                                BinOp.Wrap.bit_or,
-                                                                [
-                                                                  M.read (| β |);
-                                                                  M.call_closure (|
-                                                                    Ty.path "u64",
-                                                                    BinOp.Wrap.shl,
-                                                                    [
-                                                                      M.read (|
-                                                                        M.SubPointer.get_array_field (|
-                                                                          M.SubPointer.get_struct_record_field (|
-                                                                            self,
-                                                                            "ruint::Uint",
-                                                                            "limbs"
-                                                                          |),
-                                                                          M.call_closure (|
-                                                                            Ty.path "usize",
-                                                                            BinOp.Wrap.add,
-                                                                            [
-                                                                              M.call_closure (|
-                                                                                Ty.path "usize",
-                                                                                BinOp.Wrap.add,
-                                                                                [
-                                                                                  M.read (| i |);
-                                                                                  M.read (| limbs |)
-                                                                                ]
-                                                                              |);
-                                                                              Value.Integer
-                                                                                IntegerKind.Usize
-                                                                                1
-                                                                            ]
-                                                                          |)
+                                                            M.let_ (|
+                                                              ltac:(M.monadic
+                                                                (M.call_closure (|
+                                                                  Ty.path "u64",
+                                                                  BinOp.Wrap.shl,
+                                                                  [
+                                                                    M.read (|
+                                                                      M.SubPointer.get_array_field (|
+                                                                        M.SubPointer.get_struct_record_field (|
+                                                                          self,
+                                                                          "ruint::Uint",
+                                                                          "limbs"
+                                                                        |),
+                                                                        M.call_closure (|
+                                                                          Ty.path "usize",
+                                                                          BinOp.Wrap.add,
+                                                                          [
+                                                                            M.call_closure (|
+                                                                              Ty.path "usize",
+                                                                              BinOp.Wrap.add,
+                                                                              [
+                                                                                M.read (| i |);
+                                                                                M.read (| limbs |)
+                                                                              ]
+                                                                            |);
+                                                                            Value.Integer
+                                                                              IntegerKind.Usize
+                                                                              1
+                                                                          ]
                                                                         |)
-                                                                      |);
-                                                                      M.call_closure (|
-                                                                        Ty.path "usize",
-                                                                        BinOp.Wrap.sub,
-                                                                        [
-                                                                          Value.Integer
-                                                                            IntegerKind.Usize
-                                                                            64;
-                                                                          M.read (| bits |)
-                                                                        ]
                                                                       |)
-                                                                    ]
-                                                                  |)
-                                                                ]
-                                                              |)
+                                                                    |);
+                                                                    M.call_closure (|
+                                                                      Ty.path "usize",
+                                                                      BinOp.Wrap.sub,
+                                                                      [
+                                                                        Value.Integer
+                                                                          IntegerKind.Usize
+                                                                          64;
+                                                                        M.read (| bits |)
+                                                                      ]
+                                                                    |)
+                                                                  ]
+                                                                |))),
+                                                              fun rhs' =>
+                                                                ltac:(M.monadic
+                                                                  (let β :=
+                                                                    M.SubPointer.get_array_field (|
+                                                                      M.SubPointer.get_struct_record_field (|
+                                                                        self,
+                                                                        "ruint::Uint",
+                                                                        "limbs"
+                                                                      |),
+                                                                      M.read (| i |)
+                                                                    |) in
+                                                                  M.write (|
+                                                                    β,
+                                                                    M.call_closure (|
+                                                                      Ty.path "u64",
+                                                                      BinOp.Wrap.bit_or,
+                                                                      [ M.read (| β |); rhs' ]
+                                                                    |)
+                                                                  |)))
                                                             |) in
                                                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                                         |)))
@@ -5196,31 +5265,32 @@ Module bits.
                               |))
                           |) in
                         let~ _ : Ty.tuple [] :=
-                          M.write (|
-                            M.SubPointer.get_array_field (|
-                              M.SubPointer.get_struct_record_field (|
-                                self,
-                                "ruint::Uint",
-                                "limbs"
-                              |),
-                              M.call_closure (|
-                                Ty.path "usize",
-                                BinOp.Wrap.sub,
+                          M.let_ (|
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "u64",
+                                BinOp.Wrap.shr,
                                 [
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    BinOp.Wrap.sub,
-                                    [ LIMBS; M.read (| limbs |) ]
+                                  M.read (|
+                                    M.SubPointer.get_array_field (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        self,
+                                        "ruint::Uint",
+                                        "limbs"
+                                      |),
+                                      M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.sub,
+                                        [ LIMBS; Value.Integer IntegerKind.Usize 1 ]
+                                      |)
+                                    |)
                                   |);
-                                  Value.Integer IntegerKind.Usize 1
+                                  M.read (| bits |)
                                 ]
-                              |)
-                            |),
-                            M.call_closure (|
-                              Ty.path "u64",
-                              BinOp.Wrap.shr,
-                              [
-                                M.read (|
+                              |))),
+                            fun rhs' =>
+                              ltac:(M.monadic
+                                (M.write (|
                                   M.SubPointer.get_array_field (|
                                     M.SubPointer.get_struct_record_field (|
                                       self,
@@ -5230,13 +5300,18 @@ Module bits.
                                     M.call_closure (|
                                       Ty.path "usize",
                                       BinOp.Wrap.sub,
-                                      [ LIMBS; Value.Integer IntegerKind.Usize 1 ]
+                                      [
+                                        M.call_closure (|
+                                          Ty.path "usize",
+                                          BinOp.Wrap.sub,
+                                          [ LIMBS; M.read (| limbs |) ]
+                                        |);
+                                        Value.Integer IntegerKind.Usize 1
+                                      ]
                                     |)
-                                  |)
-                                |);
-                                M.read (| bits |)
-                              ]
-                            |)
+                                  |),
+                                  rhs'
+                                |)))
                           |) in
                         let~ _ : Ty.tuple [] :=
                           M.call_closure (|
@@ -5936,25 +6011,31 @@ Module bits.
                                                   |) in
                                                 M.read (|
                                                   let~ _ : Ty.tuple [] :=
-                                                    M.write (|
-                                                      M.deref (| M.read (| limb |) |),
-                                                      M.call_closure (|
-                                                        Ty.path "u64",
-                                                        M.get_trait_method (|
-                                                          "core::ops::bit::Not",
+                                                    M.let_ (|
+                                                      ltac:(M.monadic
+                                                        (M.call_closure (|
                                                           Ty.path "u64",
-                                                          [],
-                                                          [],
-                                                          "not",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [
-                                                          M.read (|
-                                                            M.deref (| M.read (| limb |) |)
-                                                          |)
-                                                        ]
-                                                      |)
+                                                          M.get_trait_method (|
+                                                            "core::ops::bit::Not",
+                                                            Ty.path "u64",
+                                                            [],
+                                                            [],
+                                                            "not",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.read (|
+                                                              M.deref (| M.read (| limb |) |)
+                                                            |)
+                                                          ]
+                                                        |))),
+                                                      fun rhs' =>
+                                                        ltac:(M.monadic
+                                                          (M.write (|
+                                                            M.deref (| M.read (| limb |) |),
+                                                            rhs'
+                                                          |)))
                                                     |) in
                                                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                                 |)))
@@ -5968,31 +6049,34 @@ Module bits.
                       |))
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  let β :=
-                    M.SubPointer.get_array_field (|
-                      M.SubPointer.get_struct_record_field (| self, "ruint::Uint", "limbs" |),
-                      M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.sub,
-                        [ LIMBS; Value.Integer IntegerKind.Usize 1 ]
-                      |)
-                    |) in
-                  M.write (|
-                    β,
-                    M.call_closure (|
-                      Ty.path "u64",
-                      BinOp.Wrap.bit_and,
-                      [
-                        M.read (| β |);
-                        M.read (|
-                          get_associated_constant (|
-                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                            "MASK",
-                            Ty.path "u64"
-                          |)
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.read (|
+                        get_associated_constant (|
+                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                          "MASK",
+                          Ty.path "u64"
                         |)
-                      ]
-                    |)
+                      |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (let β :=
+                          M.SubPointer.get_array_field (|
+                            M.SubPointer.get_struct_record_field (| self, "ruint::Uint", "limbs" |),
+                            M.call_closure (|
+                              Ty.path "usize",
+                              BinOp.Wrap.sub,
+                              [ LIMBS; Value.Integer IntegerKind.Usize 1 ]
+                            |)
+                          |) in
+                        M.write (|
+                          β,
+                          M.call_closure (|
+                            Ty.path "u64",
+                            BinOp.Wrap.bit_and,
+                            [ M.read (| β |); rhs' ]
+                          |)
+                        |)))
                   |) in
                 self
               |)))
@@ -8034,21 +8118,22 @@ Module bits.
           let rhs := M.alloc (| Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [], rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shl",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                    "shl",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shl",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                      "shl",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -8096,26 +8181,27 @@ Module bits.
             |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shl",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                    ],
-                    "shl",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shl",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
+                      ],
+                      "shl",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -8160,21 +8246,22 @@ Module bits.
           let rhs := M.alloc (| Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [], rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shr",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                    "shr",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shr",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                      "shr",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -8222,26 +8309,27 @@ Module bits.
             |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shr",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                    ],
-                    "shr",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shr",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
+                      ],
+                      "shr",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -8500,21 +8588,22 @@ Module bits.
           let rhs := M.alloc (| Ty.path "usize", rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shl",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.path "usize" ],
-                    "shl",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shl",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.path "usize" ],
+                      "shl",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -8558,21 +8647,22 @@ Module bits.
           let rhs := M.alloc (| Ty.path "usize", rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shr",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.path "usize" ],
-                    "shr",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shr",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.path "usize" ],
+                      "shr",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -8616,21 +8706,22 @@ Module bits.
           let rhs := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shl",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ],
-                    "shl",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shl",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ],
+                      "shl",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -8674,21 +8765,22 @@ Module bits.
           let rhs := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shr",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ],
-                    "shr",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shr",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ],
+                      "shr",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -8946,21 +9038,22 @@ Module bits.
           let rhs := M.alloc (| Ty.path "u8", rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shl",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.path "u8" ],
-                    "shl",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shl",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.path "u8" ],
+                      "shl",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -9004,21 +9097,22 @@ Module bits.
           let rhs := M.alloc (| Ty.path "u8", rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shr",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.path "u8" ],
-                    "shr",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shr",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.path "u8" ],
+                      "shr",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -9062,21 +9156,22 @@ Module bits.
           let rhs := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shl",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ],
-                    "shl",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shl",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ],
+                      "shl",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -9120,21 +9215,22 @@ Module bits.
           let rhs := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shr",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ],
-                    "shr",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shr",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ],
+                      "shr",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -9392,21 +9488,22 @@ Module bits.
           let rhs := M.alloc (| Ty.path "u16", rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shl",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.path "u16" ],
-                    "shl",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shl",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.path "u16" ],
+                      "shl",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -9450,21 +9547,22 @@ Module bits.
           let rhs := M.alloc (| Ty.path "u16", rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shr",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.path "u16" ],
-                    "shr",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shr",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.path "u16" ],
+                      "shr",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -9508,21 +9606,22 @@ Module bits.
           let rhs := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shl",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "u16" ] ],
-                    "shl",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shl",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "u16" ] ],
+                      "shl",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -9566,21 +9665,22 @@ Module bits.
           let rhs := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shr",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "u16" ] ],
-                    "shr",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shr",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "u16" ] ],
+                      "shr",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -9838,21 +9938,22 @@ Module bits.
           let rhs := M.alloc (| Ty.path "u32", rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shl",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.path "u32" ],
-                    "shl",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shl",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.path "u32" ],
+                      "shl",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -9896,21 +9997,22 @@ Module bits.
           let rhs := M.alloc (| Ty.path "u32", rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shr",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.path "u32" ],
-                    "shr",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shr",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.path "u32" ],
+                      "shr",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -9954,21 +10056,22 @@ Module bits.
           let rhs := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shl",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ],
-                    "shl",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shl",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ],
+                      "shl",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -10012,21 +10115,22 @@ Module bits.
           let rhs := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shr",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ],
-                    "shr",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shr",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ],
+                      "shr",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -10284,21 +10388,22 @@ Module bits.
           let rhs := M.alloc (| Ty.path "isize", rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shl",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.path "isize" ],
-                    "shl",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shl",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.path "isize" ],
+                      "shl",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -10342,21 +10447,22 @@ Module bits.
           let rhs := M.alloc (| Ty.path "isize", rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shr",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.path "isize" ],
-                    "shr",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shr",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.path "isize" ],
+                      "shr",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -10400,21 +10506,22 @@ Module bits.
           let rhs := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "isize" ], rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shl",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "isize" ] ],
-                    "shl",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shl",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "isize" ] ],
+                      "shl",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -10458,21 +10565,22 @@ Module bits.
           let rhs := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "isize" ], rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shr",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "isize" ] ],
-                    "shr",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shr",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "isize" ] ],
+                      "shr",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -10730,21 +10838,22 @@ Module bits.
           let rhs := M.alloc (| Ty.path "i8", rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shl",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.path "i8" ],
-                    "shl",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shl",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.path "i8" ],
+                      "shl",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -10788,21 +10897,22 @@ Module bits.
           let rhs := M.alloc (| Ty.path "i8", rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shr",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.path "i8" ],
-                    "shr",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shr",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.path "i8" ],
+                      "shr",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -10846,21 +10956,22 @@ Module bits.
           let rhs := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i8" ], rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shl",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "i8" ] ],
-                    "shl",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shl",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "i8" ] ],
+                      "shl",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -10904,21 +11015,22 @@ Module bits.
           let rhs := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i8" ], rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shr",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "i8" ] ],
-                    "shr",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shr",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "i8" ] ],
+                      "shr",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -11176,21 +11288,22 @@ Module bits.
           let rhs := M.alloc (| Ty.path "i16", rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shl",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.path "i16" ],
-                    "shl",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shl",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.path "i16" ],
+                      "shl",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -11234,21 +11347,22 @@ Module bits.
           let rhs := M.alloc (| Ty.path "i16", rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shr",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.path "i16" ],
-                    "shr",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shr",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.path "i16" ],
+                      "shr",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -11292,21 +11406,22 @@ Module bits.
           let rhs := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i16" ], rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shl",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "i16" ] ],
-                    "shl",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shl",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "i16" ] ],
+                      "shl",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -11350,21 +11465,22 @@ Module bits.
           let rhs := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i16" ], rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shr",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "i16" ] ],
-                    "shr",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shr",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "i16" ] ],
+                      "shr",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -11622,21 +11738,22 @@ Module bits.
           let rhs := M.alloc (| Ty.path "i32", rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shl",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.path "i32" ],
-                    "shl",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shl",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.path "i32" ],
+                      "shl",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -11680,21 +11797,22 @@ Module bits.
           let rhs := M.alloc (| Ty.path "i32", rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shr",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.path "i32" ],
-                    "shr",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shr",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.path "i32" ],
+                      "shr",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -11738,21 +11856,22 @@ Module bits.
           let rhs := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i32" ], rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shl",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ],
-                    "shl",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shl",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ],
+                      "shl",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -11796,21 +11915,22 @@ Module bits.
           let rhs := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i32" ], rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shr",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ],
-                    "shr",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shr",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ],
+                      "shr",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -12068,21 +12188,22 @@ Module bits.
           let rhs := M.alloc (| Ty.path "u64", rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shl",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.path "u64" ],
-                    "shl",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shl",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.path "u64" ],
+                      "shl",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -12126,21 +12247,22 @@ Module bits.
           let rhs := M.alloc (| Ty.path "u64", rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shr",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.path "u64" ],
-                    "shr",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shr",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.path "u64" ],
+                      "shr",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -12184,21 +12306,22 @@ Module bits.
           let rhs := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shl",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ],
-                    "shl",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shl",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ],
+                      "shl",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -12242,21 +12365,22 @@ Module bits.
           let rhs := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shr",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ],
-                    "shr",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shr",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ],
+                      "shr",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -12514,21 +12638,22 @@ Module bits.
           let rhs := M.alloc (| Ty.path "i64", rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shl",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.path "i64" ],
-                    "shl",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shl",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.path "i64" ],
+                      "shl",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -12572,21 +12697,22 @@ Module bits.
           let rhs := M.alloc (| Ty.path "i64", rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shr",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.path "i64" ],
-                    "shr",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shr",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.path "i64" ],
+                      "shr",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -12630,21 +12756,22 @@ Module bits.
           let rhs := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i64" ], rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shl",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "i64" ] ],
-                    "shl",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shl",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "i64" ] ],
+                      "shl",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -12688,21 +12815,22 @@ Module bits.
           let rhs := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i64" ], rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_trait_method (|
-                    "core::ops::bit::Shr",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    [],
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "i64" ] ],
-                    "shr",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::Shr",
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      [],
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "i64" ] ],
+                      "shr",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))

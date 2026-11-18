@@ -2748,21 +2748,23 @@ Module task.
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
-                        M.write (|
-                          M.deref (| M.read (| self |) |),
-                          M.call_closure (|
-                            Ty.path "core::task::wake::Waker",
-                            M.get_trait_method (|
-                              "core::clone::Clone",
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.call_closure (|
                               Ty.path "core::task::wake::Waker",
-                              [],
-                              [],
-                              "clone",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| source |) |) |) ]
-                          |)
+                              M.get_trait_method (|
+                                "core::clone::Clone",
+                                Ty.path "core::task::wake::Waker",
+                                [],
+                                [],
+                                "clone",
+                                [],
+                                []
+                              |),
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| source |) |) |) ]
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                     |)));
@@ -3740,21 +3742,23 @@ Module task.
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
-                        M.write (|
-                          M.deref (| M.read (| self |) |),
-                          M.call_closure (|
-                            Ty.path "core::task::wake::LocalWaker",
-                            M.get_trait_method (|
-                              "core::clone::Clone",
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.call_closure (|
                               Ty.path "core::task::wake::LocalWaker",
-                              [],
-                              [],
-                              "clone",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| source |) |) |) ]
-                          |)
+                              M.get_trait_method (|
+                                "core::clone::Clone",
+                                Ty.path "core::task::wake::LocalWaker",
+                                [],
+                                [],
+                                "clone",
+                                [],
+                                []
+                              |),
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| source |) |) |) ]
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                     |)));

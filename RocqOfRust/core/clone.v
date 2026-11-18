@@ -10,13 +10,14 @@ Module clone.
         ltac:(M.monadic
           (let self := M.alloc (| Ty.apply (Ty.path "&mut") [] [ Self ], self |) in
           let source := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], source |) in
-          M.write (|
-            M.deref (| M.read (| self |) |),
-            M.call_closure (|
-              Self,
-              M.get_trait_method (| "core::clone::Clone", Self, [], [], "clone", [], [] |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| source |) |) |) ]
-            |)
+          M.let_ (|
+            ltac:(M.monadic
+              (M.call_closure (|
+                Self,
+                M.get_trait_method (| "core::clone::Clone", Self, [], [], "clone", [], [] |),
+                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| source |) |) |) ]
+              |))),
+            fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.

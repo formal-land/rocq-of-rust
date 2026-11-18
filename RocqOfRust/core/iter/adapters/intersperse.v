@@ -733,13 +733,18 @@ Module iter.
                                             |) in
                                           M.read (|
                                             let~ _ : Ty.tuple [] :=
-                                              M.write (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::iter::adapters::intersperse::Intersperse",
-                                                  "next_item"
-                                                |),
-                                                M.read (| next_item |)
+                                              M.let_ (|
+                                                ltac:(M.monadic (M.read (| next_item |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (M.write (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| self |) |),
+                                                        "core::iter::adapters::intersperse::Intersperse",
+                                                        "next_item"
+                                                      |),
+                                                      rhs'
+                                                    |)))
                                               |) in
                                             M.alloc (|
                                               Ty.apply
@@ -1939,13 +1944,18 @@ Module iter.
                                             |) in
                                           M.read (|
                                             let~ _ : Ty.tuple [] :=
-                                              M.write (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::iter::adapters::intersperse::IntersperseWith",
-                                                  "next_item"
-                                                |),
-                                                M.read (| next_item |)
+                                              M.let_ (|
+                                                ltac:(M.monadic (M.read (| next_item |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (M.write (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| self |) |),
+                                                        "core::iter::adapters::intersperse::IntersperseWith",
+                                                        "next_item"
+                                                      |),
+                                                      rhs'
+                                                    |)))
                                               |) in
                                             M.alloc (|
                                               Ty.apply

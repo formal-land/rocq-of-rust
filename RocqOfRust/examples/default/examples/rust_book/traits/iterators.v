@@ -43,41 +43,53 @@ Module Impl_core_iter_traits_iterator_Iterator_for_iterators_Fibonacci.
               |)
             |) in
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_struct_record_field (|
-                M.deref (| M.read (| self |) |),
-                "iterators::Fibonacci",
-                "curr"
-              |),
-              M.read (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "iterators::Fibonacci",
-                  "next"
-                |)
-              |)
+            M.let_ (|
+              ltac:(M.monadic
+                (M.read (|
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "iterators::Fibonacci",
+                    "next"
+                  |)
+                |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "iterators::Fibonacci",
+                      "curr"
+                    |),
+                    rhs'
+                  |)))
             |) in
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_struct_record_field (|
-                M.deref (| M.read (| self |) |),
-                "iterators::Fibonacci",
-                "next"
-              |),
-              M.call_closure (|
-                Ty.path "u32",
-                BinOp.Wrap.add,
-                [
-                  M.read (| current |);
-                  M.read (|
+            M.let_ (|
+              ltac:(M.monadic
+                (M.call_closure (|
+                  Ty.path "u32",
+                  BinOp.Wrap.add,
+                  [
+                    M.read (| current |);
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "iterators::Fibonacci",
+                        "next"
+                      |)
+                    |)
+                  ]
+                |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
                     M.SubPointer.get_struct_record_field (|
                       M.deref (| M.read (| self |) |),
                       "iterators::Fibonacci",
                       "next"
-                    |)
-                  |)
-                ]
-              |)
+                    |),
+                    rhs'
+                  |)))
             |) in
           M.alloc (|
             Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ],

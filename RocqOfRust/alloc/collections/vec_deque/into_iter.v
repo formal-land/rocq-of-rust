@@ -1752,40 +1752,46 @@ Module collections.
                                                   ]
                                                 |) in
                                               let~ _ : Ty.tuple [] :=
-                                                M.write (|
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "alloc::collections::vec_deque::into_iter::IntoIter",
-                                                      "inner"
-                                                    |),
-                                                    "alloc::collections::vec_deque::VecDeque",
-                                                    "head"
-                                                  |),
-                                                  M.call_closure (|
-                                                    Ty.path "usize",
-                                                    M.get_associated_function (|
-                                                      Ty.apply
-                                                        (Ty.path
-                                                          "alloc::collections::vec_deque::VecDeque")
+                                                M.let_ (|
+                                                  ltac:(M.monadic
+                                                    (M.call_closure (|
+                                                      Ty.path "usize",
+                                                      M.get_associated_function (|
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "alloc::collections::vec_deque::VecDeque")
+                                                          []
+                                                          [ T; A ],
+                                                        "to_physical_idx",
+                                                        [],
                                                         []
-                                                        [ T; A ],
-                                                      "to_physical_idx",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
+                                                      |),
+                                                      [
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            M.deref (| M.read (| self |) |),
+                                                            "alloc::collections::vec_deque::into_iter::IntoIter",
+                                                            "inner"
+                                                          |)
+                                                        |);
+                                                        N
+                                                      ]
+                                                    |))),
+                                                  fun rhs' =>
+                                                    ltac:(M.monadic
+                                                      (M.write (|
                                                         M.SubPointer.get_struct_record_field (|
-                                                          M.deref (| M.read (| self |) |),
-                                                          "alloc::collections::vec_deque::into_iter::IntoIter",
-                                                          "inner"
-                                                        |)
-                                                      |);
-                                                      N
-                                                    ]
-                                                  |)
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            M.deref (| M.read (| self |) |),
+                                                            "alloc::collections::vec_deque::into_iter::IntoIter",
+                                                            "inner"
+                                                          |),
+                                                          "alloc::collections::vec_deque::VecDeque",
+                                                          "head"
+                                                        |),
+                                                        rhs'
+                                                      |)))
                                                 |) in
                                               let~ _ : Ty.tuple [] :=
                                                 let β :=
@@ -2037,40 +2043,46 @@ Module collections.
                                                 ]
                                               |) in
                                             let~ _ : Ty.tuple [] :=
-                                              M.write (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| self |) |),
-                                                    "alloc::collections::vec_deque::into_iter::IntoIter",
-                                                    "inner"
-                                                  |),
-                                                  "alloc::collections::vec_deque::VecDeque",
-                                                  "head"
-                                                |),
-                                                M.call_closure (|
-                                                  Ty.path "usize",
-                                                  M.get_associated_function (|
-                                                    Ty.apply
-                                                      (Ty.path
-                                                        "alloc::collections::vec_deque::VecDeque")
+                                              M.let_ (|
+                                                ltac:(M.monadic
+                                                  (M.call_closure (|
+                                                    Ty.path "usize",
+                                                    M.get_associated_function (|
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "alloc::collections::vec_deque::VecDeque")
+                                                        []
+                                                        [ T; A ],
+                                                      "to_physical_idx",
+                                                      [],
                                                       []
-                                                      [ T; A ],
-                                                    "to_physical_idx",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
+                                                    |),
+                                                    [
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          M.deref (| M.read (| self |) |),
+                                                          "alloc::collections::vec_deque::into_iter::IntoIter",
+                                                          "inner"
+                                                        |)
+                                                      |);
+                                                      N
+                                                    ]
+                                                  |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (M.write (|
                                                       M.SubPointer.get_struct_record_field (|
-                                                        M.deref (| M.read (| self |) |),
-                                                        "alloc::collections::vec_deque::into_iter::IntoIter",
-                                                        "inner"
-                                                      |)
-                                                    |);
-                                                    N
-                                                  ]
-                                                |)
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          M.deref (| M.read (| self |) |),
+                                                          "alloc::collections::vec_deque::into_iter::IntoIter",
+                                                          "inner"
+                                                        |),
+                                                        "alloc::collections::vec_deque::VecDeque",
+                                                        "head"
+                                                      |),
+                                                      rhs'
+                                                    |)))
                                               |) in
                                             let~ _ : Ty.tuple [] :=
                                               let β :=

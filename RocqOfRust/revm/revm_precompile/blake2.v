@@ -556,39 +556,23 @@ Module blake2.
                                         |) in
                                       M.read (|
                                         let~ _ : Ty.tuple [] :=
-                                          M.write (|
-                                            M.SubPointer.get_array_field (| h, M.read (| i |) |),
-                                            M.call_closure (|
-                                              Ty.path "u64",
-                                              M.get_associated_function (|
+                                          M.let_ (|
+                                            ltac:(M.monadic
+                                              (M.call_closure (|
                                                 Ty.path "u64",
-                                                "from_le_bytes",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.call_closure (|
-                                                  Ty.apply
-                                                    (Ty.path "array")
-                                                    [ Value.Integer IntegerKind.Usize 8 ]
-                                                    [ Ty.path "u8" ],
-                                                  M.get_associated_function (|
+                                                M.get_associated_function (|
+                                                  Ty.path "u64",
+                                                  "from_le_bytes",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.call_closure (|
                                                     Ty.apply
-                                                      (Ty.path "core::result::Result")
-                                                      []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path "array")
-                                                          [ Value.Integer IntegerKind.Usize 8 ]
-                                                          [ Ty.path "u8" ];
-                                                        Ty.path "core::array::TryFromSliceError"
-                                                      ],
-                                                    "unwrap",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.call_closure (|
+                                                      (Ty.path "array")
+                                                      [ Value.Integer IntegerKind.Usize 8 ]
+                                                      [ Ty.path "u8" ],
+                                                    M.get_associated_function (|
                                                       Ty.apply
                                                         (Ty.path "core::result::Result")
                                                         []
@@ -599,39 +583,64 @@ Module blake2.
                                                             [ Ty.path "u8" ];
                                                           Ty.path "core::array::TryFromSliceError"
                                                         ],
-                                                      M.get_trait_method (|
-                                                        "core::convert::TryInto",
+                                                      "unwrap",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.call_closure (|
                                                         Ty.apply
-                                                          (Ty.path "&")
+                                                          (Ty.path "core::result::Result")
                                                           []
                                                           [
                                                             Ty.apply
-                                                              (Ty.path "slice")
-                                                              []
+                                                              (Ty.path "array")
+                                                              [ Value.Integer IntegerKind.Usize 8 ]
+                                                              [ Ty.path "u8" ];
+                                                            Ty.path "core::array::TryFromSliceError"
+                                                          ],
+                                                        M.get_trait_method (|
+                                                          "core::convert::TryInto",
+                                                          Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "slice")
+                                                                []
+                                                                [ Ty.path "u8" ]
+                                                            ],
+                                                          [],
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "array")
+                                                              [ Value.Integer IntegerKind.Usize 8 ]
                                                               [ Ty.path "u8" ]
                                                           ],
-                                                        [],
+                                                          "try_into",
+                                                          [],
+                                                          []
+                                                        |),
                                                         [
-                                                          Ty.apply
-                                                            (Ty.path "array")
-                                                            [ Value.Integer IntegerKind.Usize 8 ]
-                                                            [ Ty.path "u8" ]
-                                                        ],
-                                                        "try_into",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (| M.read (| chunk |) |)
-                                                        |)
-                                                      ]
-                                                    |)
-                                                  ]
-                                                |)
-                                              ]
-                                            |)
+                                                          M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.deref (| M.read (| chunk |) |)
+                                                          |)
+                                                        ]
+                                                      |)
+                                                    ]
+                                                  |)
+                                                ]
+                                              |))),
+                                            fun rhs' =>
+                                              ltac:(M.monadic
+                                                (M.write (|
+                                                  M.SubPointer.get_array_field (|
+                                                    h,
+                                                    M.read (| i |)
+                                                  |),
+                                                  rhs'
+                                                |)))
                                           |) in
                                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                       |)))
@@ -782,39 +791,23 @@ Module blake2.
                                         |) in
                                       M.read (|
                                         let~ _ : Ty.tuple [] :=
-                                          M.write (|
-                                            M.SubPointer.get_array_field (| m, M.read (| i |) |),
-                                            M.call_closure (|
-                                              Ty.path "u64",
-                                              M.get_associated_function (|
+                                          M.let_ (|
+                                            ltac:(M.monadic
+                                              (M.call_closure (|
                                                 Ty.path "u64",
-                                                "from_le_bytes",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.call_closure (|
-                                                  Ty.apply
-                                                    (Ty.path "array")
-                                                    [ Value.Integer IntegerKind.Usize 8 ]
-                                                    [ Ty.path "u8" ],
-                                                  M.get_associated_function (|
+                                                M.get_associated_function (|
+                                                  Ty.path "u64",
+                                                  "from_le_bytes",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.call_closure (|
                                                     Ty.apply
-                                                      (Ty.path "core::result::Result")
-                                                      []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path "array")
-                                                          [ Value.Integer IntegerKind.Usize 8 ]
-                                                          [ Ty.path "u8" ];
-                                                        Ty.path "core::array::TryFromSliceError"
-                                                      ],
-                                                    "unwrap",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.call_closure (|
+                                                      (Ty.path "array")
+                                                      [ Value.Integer IntegerKind.Usize 8 ]
+                                                      [ Ty.path "u8" ],
+                                                    M.get_associated_function (|
                                                       Ty.apply
                                                         (Ty.path "core::result::Result")
                                                         []
@@ -825,39 +818,64 @@ Module blake2.
                                                             [ Ty.path "u8" ];
                                                           Ty.path "core::array::TryFromSliceError"
                                                         ],
-                                                      M.get_trait_method (|
-                                                        "core::convert::TryInto",
+                                                      "unwrap",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.call_closure (|
                                                         Ty.apply
-                                                          (Ty.path "&")
+                                                          (Ty.path "core::result::Result")
                                                           []
                                                           [
                                                             Ty.apply
-                                                              (Ty.path "slice")
-                                                              []
+                                                              (Ty.path "array")
+                                                              [ Value.Integer IntegerKind.Usize 8 ]
+                                                              [ Ty.path "u8" ];
+                                                            Ty.path "core::array::TryFromSliceError"
+                                                          ],
+                                                        M.get_trait_method (|
+                                                          "core::convert::TryInto",
+                                                          Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "slice")
+                                                                []
+                                                                [ Ty.path "u8" ]
+                                                            ],
+                                                          [],
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "array")
+                                                              [ Value.Integer IntegerKind.Usize 8 ]
                                                               [ Ty.path "u8" ]
                                                           ],
-                                                        [],
+                                                          "try_into",
+                                                          [],
+                                                          []
+                                                        |),
                                                         [
-                                                          Ty.apply
-                                                            (Ty.path "array")
-                                                            [ Value.Integer IntegerKind.Usize 8 ]
-                                                            [ Ty.path "u8" ]
-                                                        ],
-                                                        "try_into",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (| M.read (| chunk |) |)
-                                                        |)
-                                                      ]
-                                                    |)
-                                                  ]
-                                                |)
-                                              ]
-                                            |)
+                                                          M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.deref (| M.read (| chunk |) |)
+                                                          |)
+                                                        ]
+                                                      |)
+                                                    ]
+                                                  |)
+                                                ]
+                                              |))),
+                                            fun rhs' =>
+                                              ltac:(M.monadic
+                                                (M.write (|
+                                                  M.SubPointer.get_array_field (|
+                                                    m,
+                                                    M.read (| i |)
+                                                  |),
+                                                  rhs'
+                                                |)))
                                           |) in
                                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                       |)))
@@ -2034,24 +2052,56 @@ Module blake2.
                 |)
               |) in
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_array_field (| M.deref (| M.read (| v |) |), M.read (| a |) |),
-                M.read (| va |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| va |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_array_field (|
+                        M.deref (| M.read (| v |) |),
+                        M.read (| a |)
+                      |),
+                      rhs'
+                    |)))
               |) in
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_array_field (| M.deref (| M.read (| v |) |), M.read (| b |) |),
-                M.read (| vb |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| vb |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_array_field (|
+                        M.deref (| M.read (| v |) |),
+                        M.read (| b |)
+                      |),
+                      rhs'
+                    |)))
               |) in
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_array_field (| M.deref (| M.read (| v |) |), M.read (| c |) |),
-                M.read (| vc |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| vc |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_array_field (|
+                        M.deref (| M.read (| v |) |),
+                        M.read (| c |)
+                      |),
+                      rhs'
+                    |)))
               |) in
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_array_field (| M.deref (| M.read (| v |) |), M.read (| d |) |),
-                M.read (| vd |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| vd |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_array_field (|
+                        M.deref (| M.read (| v |) |),
+                        M.read (| d |)
+                      |),
+                      rhs'
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -2362,34 +2412,42 @@ Module blake2.
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
-              let β := M.SubPointer.get_array_field (| v, Value.Integer IntegerKind.Usize 12 |) in
-              M.write (|
-                β,
-                M.call_closure (|
-                  Ty.path "u64",
-                  BinOp.Wrap.bit_xor,
-                  [
-                    M.read (| β |);
-                    M.read (|
-                      M.SubPointer.get_array_field (| t, Value.Integer IntegerKind.Usize 0 |)
-                    |)
-                  ]
-                |)
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.read (|
+                    M.SubPointer.get_array_field (| t, Value.Integer IntegerKind.Usize 0 |)
+                  |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (let β :=
+                      M.SubPointer.get_array_field (| v, Value.Integer IntegerKind.Usize 12 |) in
+                    M.write (|
+                      β,
+                      M.call_closure (|
+                        Ty.path "u64",
+                        BinOp.Wrap.bit_xor,
+                        [ M.read (| β |); rhs' ]
+                      |)
+                    |)))
               |) in
             let~ _ : Ty.tuple [] :=
-              let β := M.SubPointer.get_array_field (| v, Value.Integer IntegerKind.Usize 13 |) in
-              M.write (|
-                β,
-                M.call_closure (|
-                  Ty.path "u64",
-                  BinOp.Wrap.bit_xor,
-                  [
-                    M.read (| β |);
-                    M.read (|
-                      M.SubPointer.get_array_field (| t, Value.Integer IntegerKind.Usize 1 |)
-                    |)
-                  ]
-                |)
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.read (|
+                    M.SubPointer.get_array_field (| t, Value.Integer IntegerKind.Usize 1 |)
+                  |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (let β :=
+                      M.SubPointer.get_array_field (| v, Value.Integer IntegerKind.Usize 13 |) in
+                    M.write (|
+                      β,
+                      M.call_closure (|
+                        Ty.path "u64",
+                        BinOp.Wrap.bit_xor,
+                        [ M.read (| β |); rhs' ]
+                      |)
+                    |)))
               |) in
             let~ _ : Ty.tuple [] :=
               M.match_operator (|
@@ -2400,20 +2458,29 @@ Module blake2.
                     ltac:(M.monadic
                       (let γ := f in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                      M.write (|
-                        M.SubPointer.get_array_field (| v, Value.Integer IntegerKind.Usize 14 |),
-                        M.call_closure (|
-                          Ty.path "u64",
-                          UnOp.not,
-                          [
-                            M.read (|
+                      M.let_ (|
+                        ltac:(M.monadic
+                          (M.call_closure (|
+                            Ty.path "u64",
+                            UnOp.not,
+                            [
+                              M.read (|
+                                M.SubPointer.get_array_field (|
+                                  v,
+                                  Value.Integer IntegerKind.Usize 14
+                                |)
+                              |)
+                            ]
+                          |))),
+                        fun rhs' =>
+                          ltac:(M.monadic
+                            (M.write (|
                               M.SubPointer.get_array_field (|
                                 v,
                                 Value.Integer IntegerKind.Usize 14
-                              |)
-                            |)
-                          ]
-                        |)
+                              |),
+                              rhs'
+                            |)))
                       |)));
                   fun γ => ltac:(M.monadic (Value.Tuple []))
                 ]
@@ -2640,45 +2707,48 @@ Module blake2.
                                         let i := M.copy (| Ty.path "usize", γ0_0 |) in
                                         M.read (|
                                           let~ _ : Ty.tuple [] :=
-                                            let β :=
-                                              M.SubPointer.get_array_field (|
-                                                M.deref (| M.read (| h |) |),
-                                                M.read (| i |)
-                                              |) in
-                                            M.write (|
-                                              β,
-                                              M.call_closure (|
-                                                Ty.path "u64",
-                                                BinOp.Wrap.bit_xor,
-                                                [
-                                                  M.read (| β |);
-                                                  M.call_closure (|
-                                                    Ty.path "u64",
-                                                    BinOp.Wrap.bit_xor,
-                                                    [
-                                                      M.read (|
-                                                        M.SubPointer.get_array_field (|
-                                                          v,
-                                                          M.read (| i |)
-                                                        |)
-                                                      |);
-                                                      M.read (|
-                                                        M.SubPointer.get_array_field (|
-                                                          v,
-                                                          M.call_closure (|
-                                                            Ty.path "usize",
-                                                            BinOp.Wrap.add,
-                                                            [
-                                                              M.read (| i |);
-                                                              Value.Integer IntegerKind.Usize 8
-                                                            ]
-                                                          |)
+                                            M.let_ (|
+                                              ltac:(M.monadic
+                                                (M.call_closure (|
+                                                  Ty.path "u64",
+                                                  BinOp.Wrap.bit_xor,
+                                                  [
+                                                    M.read (|
+                                                      M.SubPointer.get_array_field (|
+                                                        v,
+                                                        M.read (| i |)
+                                                      |)
+                                                    |);
+                                                    M.read (|
+                                                      M.SubPointer.get_array_field (|
+                                                        v,
+                                                        M.call_closure (|
+                                                          Ty.path "usize",
+                                                          BinOp.Wrap.add,
+                                                          [
+                                                            M.read (| i |);
+                                                            Value.Integer IntegerKind.Usize 8
+                                                          ]
                                                         |)
                                                       |)
-                                                    ]
-                                                  |)
-                                                ]
-                                              |)
+                                                    |)
+                                                  ]
+                                                |))),
+                                              fun rhs' =>
+                                                ltac:(M.monadic
+                                                  (let β :=
+                                                    M.SubPointer.get_array_field (|
+                                                      M.deref (| M.read (| h |) |),
+                                                      M.read (| i |)
+                                                    |) in
+                                                  M.write (|
+                                                    β,
+                                                    M.call_closure (|
+                                                      Ty.path "u64",
+                                                      BinOp.Wrap.bit_xor,
+                                                      [ M.read (| β |); rhs' ]
+                                                    |)
+                                                  |)))
                                             |) in
                                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                         |)))

@@ -340,64 +340,84 @@ Module Impl_associated_functions_and_methods_Rectangle.
         let y := M.alloc (| Ty.path "f64", y |) in
         M.read (|
           let~ _ : Ty.tuple [] :=
-            let β :=
-              M.SubPointer.get_struct_record_field (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "associated_functions_and_methods::Rectangle",
-                  "p1"
-                |),
-                "associated_functions_and_methods::Point",
-                "x"
-              |) in
-            M.write (|
-              β,
-              M.call_closure (| Ty.path "f64", BinOp.Wrap.add, [ M.read (| β |); M.read (| x |) ] |)
+            M.let_ (|
+              ltac:(M.monadic (M.read (| x |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (let β :=
+                    M.SubPointer.get_struct_record_field (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "associated_functions_and_methods::Rectangle",
+                        "p1"
+                      |),
+                      "associated_functions_and_methods::Point",
+                      "x"
+                    |) in
+                  M.write (|
+                    β,
+                    M.call_closure (| Ty.path "f64", BinOp.Wrap.add, [ M.read (| β |); rhs' ] |)
+                  |)))
             |) in
           let~ _ : Ty.tuple [] :=
-            let β :=
-              M.SubPointer.get_struct_record_field (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "associated_functions_and_methods::Rectangle",
-                  "p2"
-                |),
-                "associated_functions_and_methods::Point",
-                "x"
-              |) in
-            M.write (|
-              β,
-              M.call_closure (| Ty.path "f64", BinOp.Wrap.add, [ M.read (| β |); M.read (| x |) ] |)
+            M.let_ (|
+              ltac:(M.monadic (M.read (| x |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (let β :=
+                    M.SubPointer.get_struct_record_field (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "associated_functions_and_methods::Rectangle",
+                        "p2"
+                      |),
+                      "associated_functions_and_methods::Point",
+                      "x"
+                    |) in
+                  M.write (|
+                    β,
+                    M.call_closure (| Ty.path "f64", BinOp.Wrap.add, [ M.read (| β |); rhs' ] |)
+                  |)))
             |) in
           let~ _ : Ty.tuple [] :=
-            let β :=
-              M.SubPointer.get_struct_record_field (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "associated_functions_and_methods::Rectangle",
-                  "p1"
-                |),
-                "associated_functions_and_methods::Point",
-                "y"
-              |) in
-            M.write (|
-              β,
-              M.call_closure (| Ty.path "f64", BinOp.Wrap.add, [ M.read (| β |); M.read (| y |) ] |)
+            M.let_ (|
+              ltac:(M.monadic (M.read (| y |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (let β :=
+                    M.SubPointer.get_struct_record_field (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "associated_functions_and_methods::Rectangle",
+                        "p1"
+                      |),
+                      "associated_functions_and_methods::Point",
+                      "y"
+                    |) in
+                  M.write (|
+                    β,
+                    M.call_closure (| Ty.path "f64", BinOp.Wrap.add, [ M.read (| β |); rhs' ] |)
+                  |)))
             |) in
           let~ _ : Ty.tuple [] :=
-            let β :=
-              M.SubPointer.get_struct_record_field (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "associated_functions_and_methods::Rectangle",
-                  "p2"
-                |),
-                "associated_functions_and_methods::Point",
-                "y"
-              |) in
-            M.write (|
-              β,
-              M.call_closure (| Ty.path "f64", BinOp.Wrap.add, [ M.read (| β |); M.read (| y |) ] |)
+            M.let_ (|
+              ltac:(M.monadic (M.read (| y |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (let β :=
+                    M.SubPointer.get_struct_record_field (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "associated_functions_and_methods::Rectangle",
+                        "p2"
+                      |),
+                      "associated_functions_and_methods::Point",
+                      "y"
+                    |) in
+                  M.write (|
+                    β,
+                    M.call_closure (| Ty.path "f64", BinOp.Wrap.add, [ M.read (| β |); rhs' ] |)
+                  |)))
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
         |)))

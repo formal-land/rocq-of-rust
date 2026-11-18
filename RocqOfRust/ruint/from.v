@@ -4136,28 +4136,34 @@ Module from.
                                                       |) in
                                                     M.read (|
                                                       let~ _ : Ty.tuple [] :=
-                                                        M.write (|
-                                                          M.SubPointer.get_array_field (|
-                                                            limbs,
-                                                            Value.Integer IntegerKind.Usize 0
-                                                          |),
-                                                          M.call_closure (|
-                                                            Ty.path "u64",
-                                                            BinOp.Wrap.bit_and,
-                                                            [
-                                                              M.read (| value |);
-                                                              M.read (|
-                                                                get_associated_constant (|
-                                                                  Ty.apply
-                                                                    (Ty.path "ruint::Uint")
-                                                                    [ BITS; LIMBS ]
-                                                                    [],
-                                                                  "MASK",
-                                                                  Ty.path "u64"
+                                                        M.let_ (|
+                                                          ltac:(M.monadic
+                                                            (M.call_closure (|
+                                                              Ty.path "u64",
+                                                              BinOp.Wrap.bit_and,
+                                                              [
+                                                                M.read (| value |);
+                                                                M.read (|
+                                                                  get_associated_constant (|
+                                                                    Ty.apply
+                                                                      (Ty.path "ruint::Uint")
+                                                                      [ BITS; LIMBS ]
+                                                                      [],
+                                                                    "MASK",
+                                                                    Ty.path "u64"
+                                                                  |)
                                                                 |)
-                                                              |)
-                                                            ]
-                                                          |)
+                                                              ]
+                                                            |))),
+                                                          fun rhs' =>
+                                                            ltac:(M.monadic
+                                                              (M.write (|
+                                                                M.SubPointer.get_array_field (|
+                                                                  limbs,
+                                                                  Value.Integer IntegerKind.Usize 0
+                                                                |),
+                                                                rhs'
+                                                              |)))
                                                         |) in
                                                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                                     |)));
@@ -4285,9 +4291,17 @@ Module from.
                 let~ limbs : Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ] :=
                   lib.repeat (| Value.Integer IntegerKind.U64 0, LIMBS |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_array_field (| limbs, Value.Integer IntegerKind.Usize 0 |),
-                    M.read (| value |)
+                  M.let_ (|
+                    ltac:(M.monadic (M.read (| value |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_array_field (|
+                            limbs,
+                            Value.Integer IntegerKind.Usize 0
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 M.alloc (|
                   Ty.apply
@@ -4641,20 +4655,37 @@ Module from.
                 let~ limbs : Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ] :=
                   lib.repeat (| Value.Integer IntegerKind.U64 0, LIMBS |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_array_field (| limbs, Value.Integer IntegerKind.Usize 0 |),
-                    M.cast (Ty.path "u64") (M.read (| value |))
+                  M.let_ (|
+                    ltac:(M.monadic (M.cast (Ty.path "u64") (M.read (| value |)))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_array_field (|
+                            limbs,
+                            Value.Integer IntegerKind.Usize 0
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_array_field (| limbs, Value.Integer IntegerKind.Usize 1 |),
-                    M.cast
-                      (Ty.path "u64")
-                      (M.call_closure (|
-                        Ty.path "u128",
-                        BinOp.Wrap.shr,
-                        [ M.read (| value |); Value.Integer IntegerKind.I32 64 ]
-                      |))
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.cast
+                        (Ty.path "u64")
+                        (M.call_closure (|
+                          Ty.path "u128",
+                          BinOp.Wrap.shr,
+                          [ M.read (| value |); Value.Integer IntegerKind.I32 64 ]
+                        |)))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_array_field (|
+                            limbs,
+                            Value.Integer IntegerKind.Usize 1
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 M.alloc (|
                   Ty.apply
@@ -4729,27 +4760,30 @@ Module from.
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
-                              let β :=
-                                M.SubPointer.get_array_field (|
-                                  limbs,
-                                  Value.Integer IntegerKind.Usize 1
-                                |) in
-                              M.write (|
-                                β,
-                                M.call_closure (|
-                                  Ty.path "u64",
-                                  BinOp.Wrap.rem,
-                                  [
-                                    M.read (| β |);
-                                    M.read (|
-                                      get_associated_constant (|
-                                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                        "MASK",
-                                        Ty.path "u64"
-                                      |)
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.read (|
+                                    get_associated_constant (|
+                                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                      "MASK",
+                                      Ty.path "u64"
                                     |)
-                                  ]
-                                |)
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (let β :=
+                                      M.SubPointer.get_array_field (|
+                                        limbs,
+                                        Value.Integer IntegerKind.Usize 1
+                                      |) in
+                                    M.write (|
+                                      β,
+                                      M.call_closure (|
+                                        Ty.path "u64",
+                                        BinOp.Wrap.rem,
+                                        [ M.read (| β |); rhs' ]
+                                      |)
+                                    |)))
                               |) in
                             M.alloc (|
                               Ty.apply
@@ -11349,35 +11383,38 @@ Module from.
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  let β := result in
-                  M.write (|
-                    β,
-                    M.call_closure (|
-                      Ty.path "i128",
-                      BinOp.Wrap.bit_or,
-                      [
-                        M.read (| β |);
-                        M.call_closure (|
-                          Ty.path "i128",
-                          BinOp.Wrap.shl,
-                          [
-                            M.cast
-                              (Ty.path "i128")
-                              (M.read (|
-                                M.SubPointer.get_array_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| value |) |),
-                                    "ruint::Uint",
-                                    "limbs"
-                                  |),
-                                  Value.Integer IntegerKind.Usize 1
-                                |)
-                              |));
-                            Value.Integer IntegerKind.I32 64
-                          ]
-                        |)
-                      ]
-                    |)
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.call_closure (|
+                        Ty.path "i128",
+                        BinOp.Wrap.shl,
+                        [
+                          M.cast
+                            (Ty.path "i128")
+                            (M.read (|
+                              M.SubPointer.get_array_field (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| value |) |),
+                                  "ruint::Uint",
+                                  "limbs"
+                                |),
+                                Value.Integer IntegerKind.Usize 1
+                              |)
+                            |));
+                          Value.Integer IntegerKind.I32 64
+                        ]
+                      |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (let β := result in
+                        M.write (|
+                          β,
+                          M.call_closure (|
+                            Ty.path "i128",
+                            BinOp.Wrap.bit_or,
+                            [ M.read (| β |); rhs' ]
+                          |)
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.match_operator (|
@@ -11694,35 +11731,38 @@ Module from.
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  let β := result in
-                  M.write (|
-                    β,
-                    M.call_closure (|
-                      Ty.path "u128",
-                      BinOp.Wrap.bit_or,
-                      [
-                        M.read (| β |);
-                        M.call_closure (|
-                          Ty.path "u128",
-                          BinOp.Wrap.shl,
-                          [
-                            M.cast
-                              (Ty.path "u128")
-                              (M.read (|
-                                M.SubPointer.get_array_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| value |) |),
-                                    "ruint::Uint",
-                                    "limbs"
-                                  |),
-                                  Value.Integer IntegerKind.Usize 1
-                                |)
-                              |));
-                            Value.Integer IntegerKind.I32 64
-                          ]
-                        |)
-                      ]
-                    |)
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.call_closure (|
+                        Ty.path "u128",
+                        BinOp.Wrap.shl,
+                        [
+                          M.cast
+                            (Ty.path "u128")
+                            (M.read (|
+                              M.SubPointer.get_array_field (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| value |) |),
+                                  "ruint::Uint",
+                                  "limbs"
+                                |),
+                                Value.Integer IntegerKind.Usize 1
+                              |)
+                            |));
+                          Value.Integer IntegerKind.I32 64
+                        ]
+                      |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (let β := result in
+                        M.write (|
+                          β,
+                          M.call_closure (|
+                            Ty.path "u128",
+                            BinOp.Wrap.bit_or,
+                            [ M.read (| β |); rhs' ]
+                          |)
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.match_operator (|

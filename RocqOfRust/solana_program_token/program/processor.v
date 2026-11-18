@@ -1193,26 +1193,37 @@ Module processor.
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (|
-                      mint,
-                      "spl_token_interface::state::Mint",
-                      "mint_authority"
-                    |),
-                    Value.StructTuple
-                      "solana_program_option::COption::Some"
-                      []
-                      [ Ty.path "solana_address::Address" ]
-                      [ M.read (| mint_authority |) ]
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (Value.StructTuple
+                        "solana_program_option::COption::Some"
+                        []
+                        [ Ty.path "solana_address::Address" ]
+                        [ M.read (| mint_authority |) ])),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            mint,
+                            "spl_token_interface::state::Mint",
+                            "mint_authority"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (|
-                      mint,
-                      "spl_token_interface::state::Mint",
-                      "decimals"
-                    |),
-                    M.read (| decimals |)
+                  M.let_ (|
+                    ltac:(M.monadic (M.read (| decimals |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            mint,
+                            "spl_token_interface::state::Mint",
+                            "decimals"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.write (|
@@ -1224,13 +1235,18 @@ Module processor.
                     Value.Bool true
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (|
-                      mint,
-                      "spl_token_interface::state::Mint",
-                      "freeze_authority"
-                    |),
-                    M.read (| freeze_authority |)
+                  M.let_ (|
+                    ltac:(M.monadic (M.read (| freeze_authority |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            mint,
+                            "spl_token_interface::state::Mint",
+                            "freeze_authority"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.match_operator (|
@@ -3884,58 +3900,81 @@ Module processor.
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (|
-                      account,
-                      "spl_token_interface::state::Account",
-                      "mint"
-                    |),
-                    M.read (|
-                      M.deref (|
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| mint_info |) |),
-                            "solana_account_info::AccountInfo",
-                            "key"
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.read (|
+                        M.deref (|
+                          M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| mint_info |) |),
+                              "solana_account_info::AccountInfo",
+                              "key"
+                            |)
                           |)
                         |)
-                      |)
-                    |)
+                      |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            account,
+                            "spl_token_interface::state::Account",
+                            "mint"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (|
-                      account,
-                      "spl_token_interface::state::Account",
-                      "owner"
-                    |),
-                    M.read (| M.deref (| M.read (| owner |) |) |)
+                  M.let_ (|
+                    ltac:(M.monadic (M.read (| M.deref (| M.read (| owner |) |) |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            account,
+                            "spl_token_interface::state::Account",
+                            "owner"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (|
-                      account,
-                      "spl_token_interface::state::Account",
-                      "close_authority"
-                    |),
-                    Value.StructTuple
-                      "solana_program_option::COption::None"
-                      []
-                      [ Ty.path "solana_address::Address" ]
-                      []
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (Value.StructTuple
+                        "solana_program_option::COption::None"
+                        []
+                        [ Ty.path "solana_address::Address" ]
+                        [])),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            account,
+                            "spl_token_interface::state::Account",
+                            "close_authority"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (|
-                      account,
-                      "spl_token_interface::state::Account",
-                      "delegate"
-                    |),
-                    Value.StructTuple
-                      "solana_program_option::COption::None"
-                      []
-                      [ Ty.path "solana_address::Address" ]
-                      []
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (Value.StructTuple
+                        "solana_program_option::COption::None"
+                        []
+                        [ Ty.path "solana_address::Address" ]
+                        [])),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            account,
+                            "spl_token_interface::state::Account",
+                            "delegate"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.write (|
@@ -3947,17 +3986,23 @@ Module processor.
                     Value.Integer IntegerKind.U64 0
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (|
-                      account,
-                      "spl_token_interface::state::Account",
-                      "state"
-                    |),
-                    Value.StructTuple
-                      "spl_token_interface::state::AccountState::Initialized"
-                      []
-                      []
-                      []
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (Value.StructTuple
+                        "spl_token_interface::state::AccountState::Initialized"
+                        []
+                        []
+                        [])),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            account,
+                            "spl_token_interface::state::Account",
+                            "state"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.match_operator (|
@@ -3985,42 +4030,30 @@ Module processor.
                                 ]
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_struct_record_field (|
-                                  account,
-                                  "spl_token_interface::state::Account",
-                                  "is_native"
-                                |),
-                                Value.StructTuple
-                                  "solana_program_option::COption::Some"
-                                  []
-                                  [ Ty.path "u64" ]
-                                  [ M.read (| rent_exempt_reserve |) ]
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (Value.StructTuple
+                                    "solana_program_option::COption::Some"
+                                    []
+                                    [ Ty.path "u64" ]
+                                    [ M.read (| rent_exempt_reserve |) ])),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        account,
+                                        "spl_token_interface::state::Account",
+                                        "is_native"
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_struct_record_field (|
-                                  account,
-                                  "spl_token_interface::state::Account",
-                                  "amount"
-                                |),
-                                M.match_operator (|
-                                  Ty.path "u64",
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "spl_token_interface::error::TokenError"
-                                          ];
-                                        Ty.path "u64"
-                                      ],
-                                    M.call_closure (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "u64",
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "core::ops::control_flow::ControlFlow")
                                         []
@@ -4034,23 +4067,22 @@ Module processor.
                                             ];
                                           Ty.path "u64"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::result::Result")
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
                                           []
                                           [
-                                            Ty.path "u64";
-                                            Ty.path "spl_token_interface::error::TokenError"
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [
+                                                Ty.path "core::convert::Infallible";
+                                                Ty.path "spl_token_interface::error::TokenError"
+                                              ];
+                                            Ty.path "u64"
                                           ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
                                           Ty.apply
                                             (Ty.path "core::result::Result")
                                             []
@@ -4058,89 +4090,95 @@ Module processor.
                                               Ty.path "u64";
                                               Ty.path "spl_token_interface::error::TokenError"
                                             ],
-                                          M.get_associated_function (|
-                                            Ty.apply
-                                              (Ty.path "core::option::Option")
-                                              []
-                                              [ Ty.path "u64" ],
-                                            "ok_or",
-                                            [],
-                                            [ Ty.path "spl_token_interface::error::TokenError" ]
-                                          |),
-                                          [
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::option::Option")
-                                                []
-                                                [ Ty.path "u64" ],
-                                              M.get_associated_function (|
-                                                Ty.path "u64",
-                                                "checked_sub",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.call_closure (|
-                                                  Ty.path "u64",
-                                                  M.get_associated_function (|
-                                                    Ty.path "solana_account_info::AccountInfo",
-                                                    "lamports",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (| M.read (| new_account_info |) |)
-                                                    |)
-                                                  ]
-                                                |);
-                                                M.read (| rent_exempt_reserve |)
-                                              ]
-                                            |);
-                                            Value.StructTuple
-                                              "spl_token_interface::error::TokenError::Overflow"
-                                              []
-                                              []
-                                              []
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
-                                                Ty.path "core::convert::Infallible";
+                                                Ty.path "u64";
                                                 Ty.path "spl_token_interface::error::TokenError"
                                               ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
+                                            M.get_associated_function (|
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "u64" ],
+                                              "ok_or",
+                                              [],
+                                              [ Ty.path "spl_token_interface::error::TokenError" ]
+                                            |),
+                                            [
                                               M.call_closure (|
                                                 Ty.apply
-                                                  (Ty.path "core::result::Result")
+                                                  (Ty.path "core::option::Option")
                                                   []
-                                                  [
-                                                    Ty.tuple [];
-                                                    Ty.path "solana_program_error::ProgramError"
-                                                  ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                                  [ Ty.path "u64" ],
+                                                M.get_associated_function (|
+                                                  Ty.path "u64",
+                                                  "checked_sub",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.path "u64",
+                                                    M.get_associated_function (|
+                                                      Ty.path "solana_account_info::AccountInfo",
+                                                      "lamports",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (| M.read (| new_account_info |) |)
+                                                      |)
+                                                    ]
+                                                  |);
+                                                  M.read (| rent_exempt_reserve |)
+                                                ]
+                                              |);
+                                              Value.StructTuple
+                                                "spl_token_interface::error::TokenError::Overflow"
+                                                []
+                                                []
+                                                []
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "spl_token_interface::error::TokenError"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
@@ -4148,38 +4186,57 @@ Module processor.
                                                       Ty.tuple [];
                                                       Ty.path "solana_program_error::ProgramError"
                                                     ],
-                                                  [],
-                                                  [
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
                                                       [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path
-                                                          "spl_token_interface::error::TokenError"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
+                                                        Ty.tuple [];
+                                                        Ty.path "solana_program_error::ProgramError"
+                                                      ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path
+                                                            "spl_token_interface::error::TokenError"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.read (| residual |) ]
+                                                |)
                                               |)
                                             |)
-                                          |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.path "u64", γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val := M.copy (| Ty.path "u64", γ0_0 |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        account,
+                                        "spl_token_interface::state::Account",
+                                        "amount"
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)));
@@ -4187,17 +4244,23 @@ Module processor.
                         ltac:(M.monadic
                           (M.read (|
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_struct_record_field (|
-                                  account,
-                                  "spl_token_interface::state::Account",
-                                  "is_native"
-                                |),
-                                Value.StructTuple
-                                  "solana_program_option::COption::None"
-                                  []
-                                  [ Ty.path "u64" ]
-                                  []
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (Value.StructTuple
+                                    "solana_program_option::COption::None"
+                                    []
+                                    [ Ty.path "u64" ]
+                                    [])),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        account,
+                                        "spl_token_interface::state::Account",
+                                        "is_native"
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
                               M.write (|
@@ -5930,36 +5993,48 @@ Module processor.
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (|
-                      multisig,
-                      "spl_token_interface::state::Multisig",
-                      "m"
-                    |),
-                    M.read (| m |)
+                  M.let_ (|
+                    ltac:(M.monadic (M.read (| m |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            multisig,
+                            "spl_token_interface::state::Multisig",
+                            "m"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (|
-                      multisig,
-                      "spl_token_interface::state::Multisig",
-                      "n"
-                    |),
-                    M.cast
-                      (Ty.path "u8")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        M.get_associated_function (|
-                          Ty.apply
-                            (Ty.path "slice")
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.cast
+                        (Ty.path "u8")
+                        (M.call_closure (|
+                          Ty.path "usize",
+                          M.get_associated_function (|
+                            Ty.apply
+                              (Ty.path "slice")
+                              []
+                              [ Ty.path "solana_account_info::AccountInfo" ],
+                            "len",
+                            [],
                             []
-                            [ Ty.path "solana_account_info::AccountInfo" ],
-                          "len",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| signer_infos |) |) |) ]
-                      |))
+                          |),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| signer_infos |) |) |)
+                          ]
+                        |)))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            multisig,
+                            "spl_token_interface::state::Multisig",
+                            "n"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.match_operator (|
@@ -6310,28 +6385,34 @@ Module processor.
                                                   |) in
                                                 M.read (|
                                                   let~ _ : Ty.tuple [] :=
-                                                    M.write (|
-                                                      M.SubPointer.get_array_field (|
-                                                        M.SubPointer.get_struct_record_field (|
-                                                          multisig,
-                                                          "spl_token_interface::state::Multisig",
-                                                          "signers"
-                                                        |),
-                                                        M.read (| i |)
-                                                      |),
-                                                      M.read (|
-                                                        M.deref (|
-                                                          M.read (|
-                                                            M.SubPointer.get_struct_record_field (|
-                                                              M.deref (|
-                                                                M.read (| signer_info |)
-                                                              |),
-                                                              "solana_account_info::AccountInfo",
-                                                              "key"
+                                                    M.let_ (|
+                                                      ltac:(M.monadic
+                                                        (M.read (|
+                                                          M.deref (|
+                                                            M.read (|
+                                                              M.SubPointer.get_struct_record_field (|
+                                                                M.deref (|
+                                                                  M.read (| signer_info |)
+                                                                |),
+                                                                "solana_account_info::AccountInfo",
+                                                                "key"
+                                                              |)
                                                             |)
                                                           |)
-                                                        |)
-                                                      |)
+                                                        |))),
+                                                      fun rhs' =>
+                                                        ltac:(M.monadic
+                                                          (M.write (|
+                                                            M.SubPointer.get_array_field (|
+                                                              M.SubPointer.get_struct_record_field (|
+                                                                multisig,
+                                                                "spl_token_interface::state::Multisig",
+                                                                "signers"
+                                                              |),
+                                                              M.read (| i |)
+                                                            |),
+                                                            rhs'
+                                                          |)))
                                                     |) in
                                                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                                 |)))
@@ -9379,30 +9460,11 @@ Module processor.
                                         |) in
                                       M.read (|
                                         let~ _ : Ty.tuple [] :=
-                                          M.write (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              source_account,
-                                              "spl_token_interface::state::Account",
-                                              "delegated_amount"
-                                            |),
-                                            M.match_operator (|
-                                              Ty.path "u64",
-                                              M.alloc (|
-                                                Ty.apply
-                                                  (Ty.path "core::ops::control_flow::ControlFlow")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "core::result::Result")
-                                                      []
-                                                      [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path
-                                                          "spl_token_interface::error::TokenError"
-                                                      ];
-                                                    Ty.path "u64"
-                                                  ],
-                                                M.call_closure (|
+                                          M.let_ (|
+                                            ltac:(M.monadic
+                                              (M.match_operator (|
+                                                Ty.path "u64",
+                                                M.alloc (|
                                                   Ty.apply
                                                     (Ty.path "core::ops::control_flow::ControlFlow")
                                                     []
@@ -9417,24 +9479,24 @@ Module processor.
                                                         ];
                                                       Ty.path "u64"
                                                     ],
-                                                  M.get_trait_method (|
-                                                    "core::ops::try_trait::Try",
+                                                  M.call_closure (|
                                                     Ty.apply
-                                                      (Ty.path "core::result::Result")
+                                                      (Ty.path
+                                                        "core::ops::control_flow::ControlFlow")
                                                       []
                                                       [
-                                                        Ty.path "u64";
-                                                        Ty.path
-                                                          "spl_token_interface::error::TokenError"
+                                                        Ty.apply
+                                                          (Ty.path "core::result::Result")
+                                                          []
+                                                          [
+                                                            Ty.path "core::convert::Infallible";
+                                                            Ty.path
+                                                              "spl_token_interface::error::TokenError"
+                                                          ];
+                                                        Ty.path "u64"
                                                       ],
-                                                    [],
-                                                    [],
-                                                    "branch",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.call_closure (|
+                                                    M.get_trait_method (|
+                                                      "core::ops::try_trait::Try",
                                                       Ty.apply
                                                         (Ty.path "core::result::Result")
                                                         []
@@ -9443,86 +9505,92 @@ Module processor.
                                                           Ty.path
                                                             "spl_token_interface::error::TokenError"
                                                         ],
-                                                      M.get_associated_function (|
-                                                        Ty.apply
-                                                          (Ty.path "core::option::Option")
-                                                          []
-                                                          [ Ty.path "u64" ],
-                                                        "ok_or",
-                                                        [],
-                                                        [
-                                                          Ty.path
-                                                            "spl_token_interface::error::TokenError"
-                                                        ]
-                                                      |),
-                                                      [
-                                                        M.call_closure (|
-                                                          Ty.apply
-                                                            (Ty.path "core::option::Option")
-                                                            []
-                                                            [ Ty.path "u64" ],
-                                                          M.get_associated_function (|
-                                                            Ty.path "u64",
-                                                            "checked_sub",
-                                                            [],
-                                                            []
-                                                          |),
-                                                          [
-                                                            M.read (|
-                                                              M.SubPointer.get_struct_record_field (|
-                                                                source_account,
-                                                                "spl_token_interface::state::Account",
-                                                                "delegated_amount"
-                                                              |)
-                                                            |);
-                                                            M.read (| amount |)
-                                                          ]
-                                                        |);
-                                                        Value.StructTuple
-                                                          "spl_token_interface::error::TokenError::Overflow"
-                                                          []
-                                                          []
-                                                          []
-                                                      ]
-                                                    |)
-                                                  ]
-                                                |)
-                                              |),
-                                              [
-                                                fun γ =>
-                                                  ltac:(M.monadic
-                                                    (let γ0_0 :=
-                                                      M.SubPointer.get_struct_tuple_field (|
-                                                        γ,
-                                                        "core::ops::control_flow::ControlFlow::Break",
-                                                        0
-                                                      |) in
-                                                    let residual :=
-                                                      M.copy (|
+                                                      [],
+                                                      [],
+                                                      "branch",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.call_closure (|
                                                         Ty.apply
                                                           (Ty.path "core::result::Result")
                                                           []
                                                           [
-                                                            Ty.path "core::convert::Infallible";
+                                                            Ty.path "u64";
                                                             Ty.path
                                                               "spl_token_interface::error::TokenError"
                                                           ],
-                                                        γ0_0
-                                                      |) in
-                                                    M.never_to_any (|
-                                                      M.read (|
-                                                        M.return_ (|
+                                                        M.get_associated_function (|
+                                                          Ty.apply
+                                                            (Ty.path "core::option::Option")
+                                                            []
+                                                            [ Ty.path "u64" ],
+                                                          "ok_or",
+                                                          [],
+                                                          [
+                                                            Ty.path
+                                                              "spl_token_interface::error::TokenError"
+                                                          ]
+                                                        |),
+                                                        [
                                                           M.call_closure (|
                                                             Ty.apply
-                                                              (Ty.path "core::result::Result")
+                                                              (Ty.path "core::option::Option")
                                                               []
-                                                              [
-                                                                Ty.tuple [];
-                                                                Ty.path
-                                                                  "solana_program_error::ProgramError"
-                                                              ],
-                                                            M.get_trait_method (|
-                                                              "core::ops::try_trait::FromResidual",
+                                                              [ Ty.path "u64" ],
+                                                            M.get_associated_function (|
+                                                              Ty.path "u64",
+                                                              "checked_sub",
+                                                              [],
+                                                              []
+                                                            |),
+                                                            [
+                                                              M.read (|
+                                                                M.SubPointer.get_struct_record_field (|
+                                                                  source_account,
+                                                                  "spl_token_interface::state::Account",
+                                                                  "delegated_amount"
+                                                                |)
+                                                              |);
+                                                              M.read (| amount |)
+                                                            ]
+                                                          |);
+                                                          Value.StructTuple
+                                                            "spl_token_interface::error::TokenError::Overflow"
+                                                            []
+                                                            []
+                                                            []
+                                                        ]
+                                                      |)
+                                                    ]
+                                                  |)
+                                                |),
+                                                [
+                                                  fun γ =>
+                                                    ltac:(M.monadic
+                                                      (let γ0_0 :=
+                                                        M.SubPointer.get_struct_tuple_field (|
+                                                          γ,
+                                                          "core::ops::control_flow::ControlFlow::Break",
+                                                          0
+                                                        |) in
+                                                      let residual :=
+                                                        M.copy (|
+                                                          Ty.apply
+                                                            (Ty.path "core::result::Result")
+                                                            []
+                                                            [
+                                                              Ty.path "core::convert::Infallible";
+                                                              Ty.path
+                                                                "spl_token_interface::error::TokenError"
+                                                            ],
+                                                          γ0_0
+                                                        |) in
+                                                      M.never_to_any (|
+                                                        M.read (|
+                                                          M.return_ (|
+                                                            M.call_closure (|
                                                               Ty.apply
                                                                 (Ty.path "core::result::Result")
                                                                 []
@@ -9531,39 +9599,59 @@ Module processor.
                                                                   Ty.path
                                                                     "solana_program_error::ProgramError"
                                                                 ],
-                                                              [],
-                                                              [
+                                                              M.get_trait_method (|
+                                                                "core::ops::try_trait::FromResidual",
                                                                 Ty.apply
                                                                   (Ty.path "core::result::Result")
                                                                   []
                                                                   [
+                                                                    Ty.tuple [];
                                                                     Ty.path
-                                                                      "core::convert::Infallible";
-                                                                    Ty.path
-                                                                      "spl_token_interface::error::TokenError"
-                                                                  ]
-                                                              ],
-                                                              "from_residual",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [ M.read (| residual |) ]
+                                                                      "solana_program_error::ProgramError"
+                                                                  ],
+                                                                [],
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "core::result::Result")
+                                                                    []
+                                                                    [
+                                                                      Ty.path
+                                                                        "core::convert::Infallible";
+                                                                      Ty.path
+                                                                        "spl_token_interface::error::TokenError"
+                                                                    ]
+                                                                ],
+                                                                "from_residual",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [ M.read (| residual |) ]
+                                                            |)
                                                           |)
                                                         |)
-                                                      |)
-                                                    |)));
-                                                fun γ =>
-                                                  ltac:(M.monadic
-                                                    (let γ0_0 :=
-                                                      M.SubPointer.get_struct_tuple_field (|
-                                                        γ,
-                                                        "core::ops::control_flow::ControlFlow::Continue",
-                                                        0
-                                                      |) in
-                                                    let val := M.copy (| Ty.path "u64", γ0_0 |) in
-                                                    M.read (| val |)))
-                                              ]
-                                            |)
+                                                      |)));
+                                                  fun γ =>
+                                                    ltac:(M.monadic
+                                                      (let γ0_0 :=
+                                                        M.SubPointer.get_struct_tuple_field (|
+                                                          γ,
+                                                          "core::ops::control_flow::ControlFlow::Continue",
+                                                          0
+                                                        |) in
+                                                      let val := M.copy (| Ty.path "u64", γ0_0 |) in
+                                                      M.read (| val |)))
+                                                ]
+                                              |))),
+                                            fun rhs' =>
+                                              ltac:(M.monadic
+                                                (M.write (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    source_account,
+                                                    "spl_token_interface::state::Account",
+                                                    "delegated_amount"
+                                                  |),
+                                                  rhs'
+                                                |)))
                                           |) in
                                         M.alloc (|
                                           Ty.tuple [],
@@ -9598,17 +9686,23 @@ Module processor.
                                                     |) in
                                                   M.read (|
                                                     let~ _ : Ty.tuple [] :=
-                                                      M.write (|
-                                                        M.SubPointer.get_struct_record_field (|
-                                                          source_account,
-                                                          "spl_token_interface::state::Account",
-                                                          "delegate"
-                                                        |),
-                                                        Value.StructTuple
-                                                          "solana_program_option::COption::None"
-                                                          []
-                                                          [ Ty.path "solana_address::Address" ]
-                                                          []
+                                                      M.let_ (|
+                                                        ltac:(M.monadic
+                                                          (Value.StructTuple
+                                                            "solana_program_option::COption::None"
+                                                            []
+                                                            [ Ty.path "solana_address::Address" ]
+                                                            [])),
+                                                        fun rhs' =>
+                                                          ltac:(M.monadic
+                                                            (M.write (|
+                                                              M.SubPointer.get_struct_record_field (|
+                                                                source_account,
+                                                                "spl_token_interface::state::Account",
+                                                                "delegate"
+                                                              |),
+                                                              rhs'
+                                                            |)))
                                                       |) in
                                                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                                   |)));
@@ -10150,29 +10244,11 @@ Module processor.
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (|
-                      source_account,
-                      "spl_token_interface::state::Account",
-                      "amount"
-                    |),
-                    M.match_operator (|
-                      Ty.path "u64",
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "core::ops::control_flow::ControlFlow")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "core::result::Result")
-                              []
-                              [
-                                Ty.path "core::convert::Infallible";
-                                Ty.path "spl_token_interface::error::TokenError"
-                              ];
-                            Ty.path "u64"
-                          ],
-                        M.call_closure (|
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.match_operator (|
+                        Ty.path "u64",
+                        M.alloc (|
                           Ty.apply
                             (Ty.path "core::ops::control_flow::ControlFlow")
                             []
@@ -10186,151 +10262,161 @@ Module processor.
                                 ];
                               Ty.path "u64"
                             ],
-                          M.get_trait_method (|
-                            "core::ops::try_trait::Try",
+                          M.call_closure (|
                             Ty.apply
-                              (Ty.path "core::result::Result")
+                              (Ty.path "core::ops::control_flow::ControlFlow")
                               []
-                              [ Ty.path "u64"; Ty.path "spl_token_interface::error::TokenError" ],
-                            [],
-                            [],
-                            "branch",
-                            [],
-                            []
-                          |),
-                          [
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "core::result::Result")
-                                []
-                                [ Ty.path "u64"; Ty.path "spl_token_interface::error::TokenError" ],
-                              M.get_associated_function (|
-                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
-                                "ok_or",
-                                [],
-                                [ Ty.path "spl_token_interface::error::TokenError" ]
-                              |),
                               [
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
-                                  M.get_associated_function (|
-                                    Ty.path "u64",
-                                    "checked_sub",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.read (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        source_account,
-                                        "spl_token_interface::state::Account",
-                                        "amount"
-                                      |)
-                                    |);
-                                    M.read (| amount |)
-                                  ]
-                                |);
-                                Value.StructTuple
-                                  "spl_token_interface::error::TokenError::Overflow"
-                                  []
-                                  []
-                                  []
-                              ]
-                            |)
-                          ]
-                        |)
-                      |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::ops::control_flow::ControlFlow::Break",
-                                0
-                              |) in
-                            let residual :=
-                              M.copy (|
                                 Ty.apply
                                   (Ty.path "core::result::Result")
                                   []
                                   [
                                     Ty.path "core::convert::Infallible";
                                     Ty.path "spl_token_interface::error::TokenError"
+                                  ];
+                                Ty.path "u64"
+                              ],
+                            M.get_trait_method (|
+                              "core::ops::try_trait::Try",
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.path "u64"; Ty.path "spl_token_interface::error::TokenError" ],
+                              [],
+                              [],
+                              "branch",
+                              [],
+                              []
+                            |),
+                            [
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.path "u64"; Ty.path "spl_token_interface::error::TokenError"
                                   ],
-                                γ0_0
-                              |) in
-                            M.never_to_any (|
-                              M.read (|
-                                M.return_ (|
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+                                  "ok_or",
+                                  [],
+                                  [ Ty.path "spl_token_interface::error::TokenError" ]
+                                |),
+                                [
                                   M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "core::result::Result")
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+                                    M.get_associated_function (|
+                                      Ty.path "u64",
+                                      "checked_sub",
+                                      [],
                                       []
-                                      [ Ty.tuple []; Ty.path "solana_program_error::ProgramError" ],
-                                    M.get_trait_method (|
-                                      "core::ops::try_trait::FromResidual",
+                                    |),
+                                    [
+                                      M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          source_account,
+                                          "spl_token_interface::state::Account",
+                                          "amount"
+                                        |)
+                                      |);
+                                      M.read (| amount |)
+                                    ]
+                                  |);
+                                  Value.StructTuple
+                                    "spl_token_interface::error::TokenError::Overflow"
+                                    []
+                                    []
+                                    []
+                                ]
+                              |)
+                            ]
+                          |)
+                        |),
+                        [
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let γ0_0 :=
+                                M.SubPointer.get_struct_tuple_field (|
+                                  γ,
+                                  "core::ops::control_flow::ControlFlow::Break",
+                                  0
+                                |) in
+                              let residual :=
+                                M.copy (|
+                                  Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "core::convert::Infallible";
+                                      Ty.path "spl_token_interface::error::TokenError"
+                                    ],
+                                  γ0_0
+                                |) in
+                              M.never_to_any (|
+                                M.read (|
+                                  M.return_ (|
+                                    M.call_closure (|
                                       Ty.apply
                                         (Ty.path "core::result::Result")
                                         []
                                         [ Ty.tuple []; Ty.path "solana_program_error::ProgramError"
                                         ],
-                                      [],
-                                      [
+                                      M.get_trait_method (|
+                                        "core::ops::try_trait::FromResidual",
                                         Ty.apply
                                           (Ty.path "core::result::Result")
                                           []
                                           [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "spl_token_interface::error::TokenError"
-                                          ]
-                                      ],
-                                      "from_residual",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| residual |) ]
+                                            Ty.tuple [];
+                                            Ty.path "solana_program_error::ProgramError"
+                                          ],
+                                        [],
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.path "core::convert::Infallible";
+                                              Ty.path "spl_token_interface::error::TokenError"
+                                            ]
+                                        ],
+                                        "from_residual",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| residual |) ]
+                                    |)
                                   |)
                                 |)
-                              |)
-                            |)));
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::ops::control_flow::ControlFlow::Continue",
-                                0
-                              |) in
-                            let val := M.copy (| Ty.path "u64", γ0_0 |) in
-                            M.read (| val |)))
-                      ]
-                    |)
+                              |)));
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let γ0_0 :=
+                                M.SubPointer.get_struct_tuple_field (|
+                                  γ,
+                                  "core::ops::control_flow::ControlFlow::Continue",
+                                  0
+                                |) in
+                              let val := M.copy (| Ty.path "u64", γ0_0 |) in
+                              M.read (| val |)))
+                        ]
+                      |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            source_account,
+                            "spl_token_interface::state::Account",
+                            "amount"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (|
-                      destination_account,
-                      "spl_token_interface::state::Account",
-                      "amount"
-                    |),
-                    M.match_operator (|
-                      Ty.path "u64",
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "core::ops::control_flow::ControlFlow")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "core::result::Result")
-                              []
-                              [
-                                Ty.path "core::convert::Infallible";
-                                Ty.path "spl_token_interface::error::TokenError"
-                              ];
-                            Ty.path "u64"
-                          ],
-                        M.call_closure (|
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.match_operator (|
+                        Ty.path "u64",
+                        M.alloc (|
                           Ty.apply
                             (Ty.path "core::ops::control_flow::ControlFlow")
                             []
@@ -10344,126 +10430,154 @@ Module processor.
                                 ];
                               Ty.path "u64"
                             ],
-                          M.get_trait_method (|
-                            "core::ops::try_trait::Try",
+                          M.call_closure (|
                             Ty.apply
-                              (Ty.path "core::result::Result")
+                              (Ty.path "core::ops::control_flow::ControlFlow")
                               []
-                              [ Ty.path "u64"; Ty.path "spl_token_interface::error::TokenError" ],
-                            [],
-                            [],
-                            "branch",
-                            [],
-                            []
-                          |),
-                          [
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "core::result::Result")
-                                []
-                                [ Ty.path "u64"; Ty.path "spl_token_interface::error::TokenError" ],
-                              M.get_associated_function (|
-                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
-                                "ok_or",
-                                [],
-                                [ Ty.path "spl_token_interface::error::TokenError" ]
-                              |),
                               [
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
-                                  M.get_associated_function (|
-                                    Ty.path "u64",
-                                    "checked_add",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.read (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        destination_account,
-                                        "spl_token_interface::state::Account",
-                                        "amount"
-                                      |)
-                                    |);
-                                    M.read (| amount |)
-                                  ]
-                                |);
-                                Value.StructTuple
-                                  "spl_token_interface::error::TokenError::Overflow"
-                                  []
-                                  []
-                                  []
-                              ]
-                            |)
-                          ]
-                        |)
-                      |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::ops::control_flow::ControlFlow::Break",
-                                0
-                              |) in
-                            let residual :=
-                              M.copy (|
                                 Ty.apply
                                   (Ty.path "core::result::Result")
                                   []
                                   [
                                     Ty.path "core::convert::Infallible";
                                     Ty.path "spl_token_interface::error::TokenError"
+                                  ];
+                                Ty.path "u64"
+                              ],
+                            M.get_trait_method (|
+                              "core::ops::try_trait::Try",
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.path "u64"; Ty.path "spl_token_interface::error::TokenError" ],
+                              [],
+                              [],
+                              "branch",
+                              [],
+                              []
+                            |),
+                            [
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.path "u64"; Ty.path "spl_token_interface::error::TokenError"
                                   ],
-                                γ0_0
-                              |) in
-                            M.never_to_any (|
-                              M.read (|
-                                M.return_ (|
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+                                  "ok_or",
+                                  [],
+                                  [ Ty.path "spl_token_interface::error::TokenError" ]
+                                |),
+                                [
                                   M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "core::result::Result")
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+                                    M.get_associated_function (|
+                                      Ty.path "u64",
+                                      "checked_add",
+                                      [],
                                       []
-                                      [ Ty.tuple []; Ty.path "solana_program_error::ProgramError" ],
-                                    M.get_trait_method (|
-                                      "core::ops::try_trait::FromResidual",
+                                    |),
+                                    [
+                                      M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          destination_account,
+                                          "spl_token_interface::state::Account",
+                                          "amount"
+                                        |)
+                                      |);
+                                      M.read (| amount |)
+                                    ]
+                                  |);
+                                  Value.StructTuple
+                                    "spl_token_interface::error::TokenError::Overflow"
+                                    []
+                                    []
+                                    []
+                                ]
+                              |)
+                            ]
+                          |)
+                        |),
+                        [
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let γ0_0 :=
+                                M.SubPointer.get_struct_tuple_field (|
+                                  γ,
+                                  "core::ops::control_flow::ControlFlow::Break",
+                                  0
+                                |) in
+                              let residual :=
+                                M.copy (|
+                                  Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "core::convert::Infallible";
+                                      Ty.path "spl_token_interface::error::TokenError"
+                                    ],
+                                  γ0_0
+                                |) in
+                              M.never_to_any (|
+                                M.read (|
+                                  M.return_ (|
+                                    M.call_closure (|
                                       Ty.apply
                                         (Ty.path "core::result::Result")
                                         []
                                         [ Ty.tuple []; Ty.path "solana_program_error::ProgramError"
                                         ],
-                                      [],
-                                      [
+                                      M.get_trait_method (|
+                                        "core::ops::try_trait::FromResidual",
                                         Ty.apply
                                           (Ty.path "core::result::Result")
                                           []
                                           [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "spl_token_interface::error::TokenError"
-                                          ]
-                                      ],
-                                      "from_residual",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| residual |) ]
+                                            Ty.tuple [];
+                                            Ty.path "solana_program_error::ProgramError"
+                                          ],
+                                        [],
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.path "core::convert::Infallible";
+                                              Ty.path "spl_token_interface::error::TokenError"
+                                            ]
+                                        ],
+                                        "from_residual",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| residual |) ]
+                                    |)
                                   |)
                                 |)
-                              |)
-                            |)));
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::ops::control_flow::ControlFlow::Continue",
-                                0
-                              |) in
-                            let val := M.copy (| Ty.path "u64", γ0_0 |) in
-                            M.read (| val |)))
-                      ]
-                    |)
+                              |)));
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let γ0_0 :=
+                                M.SubPointer.get_struct_tuple_field (|
+                                  γ,
+                                  "core::ops::control_flow::ControlFlow::Continue",
+                                  0
+                                |) in
+                              let val := M.copy (| Ty.path "u64", γ0_0 |) in
+                              M.read (| val |)))
+                        ]
+                      |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            destination_account,
+                            "spl_token_interface::state::Account",
+                            "amount"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.match_operator (|
@@ -10506,134 +10620,11 @@ Module processor.
                                 ]
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.deref (|
-                                  M.read (|
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&mut")
-                                          []
-                                          [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
-                                        M.get_trait_method (|
-                                          "core::ops::deref::DerefMut",
-                                          Ty.apply
-                                            (Ty.path "core::cell::RefMut")
-                                            []
-                                            [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
-                                          [],
-                                          [],
-                                          "deref_mut",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.alloc (|
-                                              Ty.apply
-                                                (Ty.path "core::cell::RefMut")
-                                                []
-                                                [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::cell::RefMut")
-                                                  []
-                                                  [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ]
-                                                  ],
-                                                M.get_associated_function (|
-                                                  Ty.apply
-                                                    (Ty.path "core::cell::RefCell")
-                                                    []
-                                                    [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ]
-                                                    ],
-                                                  "borrow_mut",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (|
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "&")
-                                                          []
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path "core::cell::RefCell")
-                                                              []
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path "&mut")
-                                                                  []
-                                                                  [ Ty.path "u64" ]
-                                                              ]
-                                                          ],
-                                                        M.get_trait_method (|
-                                                          "core::ops::deref::Deref",
-                                                          Ty.apply
-                                                            (Ty.path "alloc::rc::Rc")
-                                                            []
-                                                            [
-                                                              Ty.apply
-                                                                (Ty.path "core::cell::RefCell")
-                                                                []
-                                                                [
-                                                                  Ty.apply
-                                                                    (Ty.path "&mut")
-                                                                    []
-                                                                    [ Ty.path "u64" ]
-                                                                ];
-                                                              Ty.path "alloc::alloc::Global"
-                                                            ],
-                                                          [],
-                                                          [],
-                                                          "deref",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.SubPointer.get_struct_record_field (|
-                                                              M.deref (|
-                                                                M.read (| source_account_info |)
-                                                              |),
-                                                              "solana_account_info::AccountInfo",
-                                                              "lamports"
-                                                            |)
-                                                          |)
-                                                        ]
-                                                      |)
-                                                    |)
-                                                  |)
-                                                ]
-                                              |)
-                                            |)
-                                          |)
-                                        ]
-                                      |)
-                                    |)
-                                  |)
-                                |),
-                                M.match_operator (|
-                                  Ty.path "u64",
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "spl_token_interface::error::TokenError"
-                                          ];
-                                        Ty.path "u64"
-                                      ],
-                                    M.call_closure (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "u64",
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "core::ops::control_flow::ControlFlow")
                                         []
@@ -10647,23 +10638,22 @@ Module processor.
                                             ];
                                           Ty.path "u64"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::result::Result")
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
                                           []
                                           [
-                                            Ty.path "u64";
-                                            Ty.path "spl_token_interface::error::TokenError"
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [
+                                                Ty.path "core::convert::Infallible";
+                                                Ty.path "spl_token_interface::error::TokenError"
+                                              ];
+                                            Ty.path "u64"
                                           ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
                                           Ty.apply
                                             (Ty.path "core::result::Result")
                                             []
@@ -10671,75 +10661,81 @@ Module processor.
                                               Ty.path "u64";
                                               Ty.path "spl_token_interface::error::TokenError"
                                             ],
-                                          M.get_associated_function (|
-                                            Ty.apply
-                                              (Ty.path "core::option::Option")
-                                              []
-                                              [ Ty.path "u64" ],
-                                            "ok_or",
-                                            [],
-                                            [ Ty.path "spl_token_interface::error::TokenError" ]
-                                          |),
-                                          [
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::option::Option")
-                                                []
-                                                [ Ty.path "u64" ],
-                                              M.get_associated_function (|
-                                                Ty.path "u64",
-                                                "checked_sub",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.read (| source_starting_lamports |);
-                                                M.read (| amount |)
-                                              ]
-                                            |);
-                                            Value.StructTuple
-                                              "spl_token_interface::error::TokenError::Overflow"
-                                              []
-                                              []
-                                              []
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
-                                                Ty.path "core::convert::Infallible";
+                                                Ty.path "u64";
                                                 Ty.path "spl_token_interface::error::TokenError"
                                               ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
+                                            M.get_associated_function (|
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "u64" ],
+                                              "ok_or",
+                                              [],
+                                              [ Ty.path "spl_token_interface::error::TokenError" ]
+                                            |),
+                                            [
                                               M.call_closure (|
                                                 Ty.apply
-                                                  (Ty.path "core::result::Result")
+                                                  (Ty.path "core::option::Option")
                                                   []
-                                                  [
-                                                    Ty.tuple [];
-                                                    Ty.path "solana_program_error::ProgramError"
-                                                  ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                                  [ Ty.path "u64" ],
+                                                M.get_associated_function (|
+                                                  Ty.path "u64",
+                                                  "checked_sub",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.read (| source_starting_lamports |);
+                                                  M.read (| amount |)
+                                                ]
+                                              |);
+                                              Value.StructTuple
+                                                "spl_token_interface::error::TokenError::Overflow"
+                                                []
+                                                []
+                                                []
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "spl_token_interface::error::TokenError"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
@@ -10747,38 +10743,179 @@ Module processor.
                                                       Ty.tuple [];
                                                       Ty.path "solana_program_error::ProgramError"
                                                     ],
-                                                  [],
-                                                  [
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
                                                       [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path
-                                                          "spl_token_interface::error::TokenError"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
+                                                        Ty.tuple [];
+                                                        Ty.path "solana_program_error::ProgramError"
+                                                      ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path
+                                                            "spl_token_interface::error::TokenError"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.read (| residual |) ]
+                                                |)
                                               |)
                                             |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val := M.copy (| Ty.path "u64", γ0_0 |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.deref (|
+                                        M.read (|
+                                          M.deref (|
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
+                                              M.get_trait_method (|
+                                                "core::ops::deref::DerefMut",
+                                                Ty.apply
+                                                  (Ty.path "core::cell::RefMut")
+                                                  []
+                                                  [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ]
+                                                  ],
+                                                [],
+                                                [],
+                                                "deref_mut",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.alloc (|
+                                                    Ty.apply
+                                                      (Ty.path "core::cell::RefMut")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "&mut")
+                                                          []
+                                                          [ Ty.path "u64" ]
+                                                      ],
+                                                    M.call_closure (|
+                                                      Ty.apply
+                                                        (Ty.path "core::cell::RefMut")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "&mut")
+                                                            []
+                                                            [ Ty.path "u64" ]
+                                                        ],
+                                                      M.get_associated_function (|
+                                                        Ty.apply
+                                                          (Ty.path "core::cell::RefCell")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "&mut")
+                                                              []
+                                                              [ Ty.path "u64" ]
+                                                          ],
+                                                        "borrow_mut",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (|
+                                                            M.call_closure (|
+                                                              Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "core::cell::RefCell")
+                                                                    []
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "&mut")
+                                                                        []
+                                                                        [ Ty.path "u64" ]
+                                                                    ]
+                                                                ],
+                                                              M.get_trait_method (|
+                                                                "core::ops::deref::Deref",
+                                                                Ty.apply
+                                                                  (Ty.path "alloc::rc::Rc")
+                                                                  []
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path
+                                                                        "core::cell::RefCell")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "&mut")
+                                                                          []
+                                                                          [ Ty.path "u64" ]
+                                                                      ];
+                                                                    Ty.path "alloc::alloc::Global"
+                                                                  ],
+                                                                [],
+                                                                [],
+                                                                "deref",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.SubPointer.get_struct_record_field (|
+                                                                    M.deref (|
+                                                                      M.read (|
+                                                                        source_account_info
+                                                                      |)
+                                                                    |),
+                                                                    "solana_account_info::AccountInfo",
+                                                                    "lamports"
+                                                                  |)
+                                                                |)
+                                                              ]
+                                                            |)
+                                                          |)
+                                                        |)
+                                                      ]
+                                                    |)
+                                                  |)
+                                                |)
+                                              ]
+                                            |)
                                           |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.path "u64", γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
+                                        |)
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ destination_starting_lamports : Ty.path "u64" :=
                               M.call_closure (|
@@ -10797,136 +10934,11 @@ Module processor.
                                 ]
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.deref (|
-                                  M.read (|
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&mut")
-                                          []
-                                          [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
-                                        M.get_trait_method (|
-                                          "core::ops::deref::DerefMut",
-                                          Ty.apply
-                                            (Ty.path "core::cell::RefMut")
-                                            []
-                                            [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
-                                          [],
-                                          [],
-                                          "deref_mut",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.alloc (|
-                                              Ty.apply
-                                                (Ty.path "core::cell::RefMut")
-                                                []
-                                                [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::cell::RefMut")
-                                                  []
-                                                  [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ]
-                                                  ],
-                                                M.get_associated_function (|
-                                                  Ty.apply
-                                                    (Ty.path "core::cell::RefCell")
-                                                    []
-                                                    [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ]
-                                                    ],
-                                                  "borrow_mut",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (|
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "&")
-                                                          []
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path "core::cell::RefCell")
-                                                              []
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path "&mut")
-                                                                  []
-                                                                  [ Ty.path "u64" ]
-                                                              ]
-                                                          ],
-                                                        M.get_trait_method (|
-                                                          "core::ops::deref::Deref",
-                                                          Ty.apply
-                                                            (Ty.path "alloc::rc::Rc")
-                                                            []
-                                                            [
-                                                              Ty.apply
-                                                                (Ty.path "core::cell::RefCell")
-                                                                []
-                                                                [
-                                                                  Ty.apply
-                                                                    (Ty.path "&mut")
-                                                                    []
-                                                                    [ Ty.path "u64" ]
-                                                                ];
-                                                              Ty.path "alloc::alloc::Global"
-                                                            ],
-                                                          [],
-                                                          [],
-                                                          "deref",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.SubPointer.get_struct_record_field (|
-                                                              M.deref (|
-                                                                M.read (|
-                                                                  destination_account_info
-                                                                |)
-                                                              |),
-                                                              "solana_account_info::AccountInfo",
-                                                              "lamports"
-                                                            |)
-                                                          |)
-                                                        ]
-                                                      |)
-                                                    |)
-                                                  |)
-                                                ]
-                                              |)
-                                            |)
-                                          |)
-                                        ]
-                                      |)
-                                    |)
-                                  |)
-                                |),
-                                M.match_operator (|
-                                  Ty.path "u64",
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "spl_token_interface::error::TokenError"
-                                          ];
-                                        Ty.path "u64"
-                                      ],
-                                    M.call_closure (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "u64",
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "core::ops::control_flow::ControlFlow")
                                         []
@@ -10940,23 +10952,22 @@ Module processor.
                                             ];
                                           Ty.path "u64"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::result::Result")
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
                                           []
                                           [
-                                            Ty.path "u64";
-                                            Ty.path "spl_token_interface::error::TokenError"
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [
+                                                Ty.path "core::convert::Infallible";
+                                                Ty.path "spl_token_interface::error::TokenError"
+                                              ];
+                                            Ty.path "u64"
                                           ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
                                           Ty.apply
                                             (Ty.path "core::result::Result")
                                             []
@@ -10964,75 +10975,81 @@ Module processor.
                                               Ty.path "u64";
                                               Ty.path "spl_token_interface::error::TokenError"
                                             ],
-                                          M.get_associated_function (|
-                                            Ty.apply
-                                              (Ty.path "core::option::Option")
-                                              []
-                                              [ Ty.path "u64" ],
-                                            "ok_or",
-                                            [],
-                                            [ Ty.path "spl_token_interface::error::TokenError" ]
-                                          |),
-                                          [
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::option::Option")
-                                                []
-                                                [ Ty.path "u64" ],
-                                              M.get_associated_function (|
-                                                Ty.path "u64",
-                                                "checked_add",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.read (| destination_starting_lamports |);
-                                                M.read (| amount |)
-                                              ]
-                                            |);
-                                            Value.StructTuple
-                                              "spl_token_interface::error::TokenError::Overflow"
-                                              []
-                                              []
-                                              []
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
-                                                Ty.path "core::convert::Infallible";
+                                                Ty.path "u64";
                                                 Ty.path "spl_token_interface::error::TokenError"
                                               ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
+                                            M.get_associated_function (|
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "u64" ],
+                                              "ok_or",
+                                              [],
+                                              [ Ty.path "spl_token_interface::error::TokenError" ]
+                                            |),
+                                            [
                                               M.call_closure (|
                                                 Ty.apply
-                                                  (Ty.path "core::result::Result")
+                                                  (Ty.path "core::option::Option")
                                                   []
-                                                  [
-                                                    Ty.tuple [];
-                                                    Ty.path "solana_program_error::ProgramError"
-                                                  ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                                  [ Ty.path "u64" ],
+                                                M.get_associated_function (|
+                                                  Ty.path "u64",
+                                                  "checked_add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.read (| destination_starting_lamports |);
+                                                  M.read (| amount |)
+                                                ]
+                                              |);
+                                              Value.StructTuple
+                                                "spl_token_interface::error::TokenError::Overflow"
+                                                []
+                                                []
+                                                []
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "spl_token_interface::error::TokenError"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
@@ -11040,38 +11057,179 @@ Module processor.
                                                       Ty.tuple [];
                                                       Ty.path "solana_program_error::ProgramError"
                                                     ],
-                                                  [],
-                                                  [
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
                                                       [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path
-                                                          "spl_token_interface::error::TokenError"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
+                                                        Ty.tuple [];
+                                                        Ty.path "solana_program_error::ProgramError"
+                                                      ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path
+                                                            "spl_token_interface::error::TokenError"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.read (| residual |) ]
+                                                |)
                                               |)
                                             |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val := M.copy (| Ty.path "u64", γ0_0 |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.deref (|
+                                        M.read (|
+                                          M.deref (|
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
+                                              M.get_trait_method (|
+                                                "core::ops::deref::DerefMut",
+                                                Ty.apply
+                                                  (Ty.path "core::cell::RefMut")
+                                                  []
+                                                  [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ]
+                                                  ],
+                                                [],
+                                                [],
+                                                "deref_mut",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.alloc (|
+                                                    Ty.apply
+                                                      (Ty.path "core::cell::RefMut")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "&mut")
+                                                          []
+                                                          [ Ty.path "u64" ]
+                                                      ],
+                                                    M.call_closure (|
+                                                      Ty.apply
+                                                        (Ty.path "core::cell::RefMut")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "&mut")
+                                                            []
+                                                            [ Ty.path "u64" ]
+                                                        ],
+                                                      M.get_associated_function (|
+                                                        Ty.apply
+                                                          (Ty.path "core::cell::RefCell")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "&mut")
+                                                              []
+                                                              [ Ty.path "u64" ]
+                                                          ],
+                                                        "borrow_mut",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (|
+                                                            M.call_closure (|
+                                                              Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "core::cell::RefCell")
+                                                                    []
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "&mut")
+                                                                        []
+                                                                        [ Ty.path "u64" ]
+                                                                    ]
+                                                                ],
+                                                              M.get_trait_method (|
+                                                                "core::ops::deref::Deref",
+                                                                Ty.apply
+                                                                  (Ty.path "alloc::rc::Rc")
+                                                                  []
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path
+                                                                        "core::cell::RefCell")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "&mut")
+                                                                          []
+                                                                          [ Ty.path "u64" ]
+                                                                      ];
+                                                                    Ty.path "alloc::alloc::Global"
+                                                                  ],
+                                                                [],
+                                                                [],
+                                                                "deref",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.SubPointer.get_struct_record_field (|
+                                                                    M.deref (|
+                                                                      M.read (|
+                                                                        destination_account_info
+                                                                      |)
+                                                                    |),
+                                                                    "solana_account_info::AccountInfo",
+                                                                    "lamports"
+                                                                  |)
+                                                                |)
+                                                              ]
+                                                            |)
+                                                          |)
+                                                        |)
+                                                      ]
+                                                    |)
+                                                  |)
+                                                |)
+                                              ]
+                                            |)
                                           |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.path "u64", γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
+                                        |)
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)));
@@ -13586,38 +13744,49 @@ Module processor.
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (|
-                      source_account,
-                      "spl_token_interface::state::Account",
-                      "delegate"
-                    |),
-                    Value.StructTuple
-                      "solana_program_option::COption::Some"
-                      []
-                      [ Ty.path "solana_address::Address" ]
-                      [
-                        M.read (|
-                          M.deref (|
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| delegate_info |) |),
-                                "solana_account_info::AccountInfo",
-                                "key"
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (Value.StructTuple
+                        "solana_program_option::COption::Some"
+                        []
+                        [ Ty.path "solana_address::Address" ]
+                        [
+                          M.read (|
+                            M.deref (|
+                              M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| delegate_info |) |),
+                                  "solana_account_info::AccountInfo",
+                                  "key"
+                                |)
                               |)
                             |)
                           |)
-                        |)
-                      ]
+                        ])),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            source_account,
+                            "spl_token_interface::state::Account",
+                            "delegate"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (|
-                      source_account,
-                      "spl_token_interface::state::Account",
-                      "delegated_amount"
-                    |),
-                    M.read (| amount |)
+                  M.let_ (|
+                    ltac:(M.monadic (M.read (| amount |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            source_account,
+                            "spl_token_interface::state::Account",
+                            "delegated_amount"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.match_operator (|
@@ -14870,17 +15039,23 @@ Module processor.
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (|
-                      source_account,
-                      "spl_token_interface::state::Account",
-                      "delegate"
-                    |),
-                    Value.StructTuple
-                      "solana_program_option::COption::None"
-                      []
-                      [ Ty.path "solana_address::Address" ]
-                      []
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (Value.StructTuple
+                        "solana_program_option::COption::None"
+                        []
+                        [ Ty.path "solana_address::Address" ]
+                        [])),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            source_account,
+                            "spl_token_interface::state::Account",
+                            "delegate"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.write (|
@@ -16370,13 +16545,18 @@ Module processor.
                                                     |) in
                                                   M.read (|
                                                     let~ _ : Ty.tuple [] :=
-                                                      M.write (|
-                                                        M.SubPointer.get_struct_record_field (|
-                                                          account,
-                                                          "spl_token_interface::state::Account",
-                                                          "owner"
-                                                        |),
-                                                        M.read (| authority |)
+                                                      M.let_ (|
+                                                        ltac:(M.monadic (M.read (| authority |))),
+                                                        fun rhs' =>
+                                                          ltac:(M.monadic
+                                                            (M.write (|
+                                                              M.SubPointer.get_struct_record_field (|
+                                                                account,
+                                                                "spl_token_interface::state::Account",
+                                                                "owner"
+                                                              |),
+                                                              rhs'
+                                                            |)))
                                                       |) in
                                                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                                   |)));
@@ -16425,17 +16605,23 @@ Module processor.
                                             ]
                                           |) in
                                         let~ _ : Ty.tuple [] :=
-                                          M.write (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              account,
-                                              "spl_token_interface::state::Account",
-                                              "delegate"
-                                            |),
-                                            Value.StructTuple
-                                              "solana_program_option::COption::None"
-                                              []
-                                              [ Ty.path "solana_address::Address" ]
-                                              []
+                                          M.let_ (|
+                                            ltac:(M.monadic
+                                              (Value.StructTuple
+                                                "solana_program_option::COption::None"
+                                                []
+                                                [ Ty.path "solana_address::Address" ]
+                                                [])),
+                                            fun rhs' =>
+                                              ltac:(M.monadic
+                                                (M.write (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    account,
+                                                    "spl_token_interface::state::Account",
+                                                    "delegate"
+                                                  |),
+                                                  rhs'
+                                                |)))
                                           |) in
                                         let~ _ : Ty.tuple [] :=
                                           M.write (|
@@ -16476,17 +16662,23 @@ Module processor.
                                                     |) in
                                                   M.read (|
                                                     let~ _ : Ty.tuple [] :=
-                                                      M.write (|
-                                                        M.SubPointer.get_struct_record_field (|
-                                                          account,
-                                                          "spl_token_interface::state::Account",
-                                                          "close_authority"
-                                                        |),
-                                                        Value.StructTuple
-                                                          "solana_program_option::COption::None"
-                                                          []
-                                                          [ Ty.path "solana_address::Address" ]
-                                                          []
+                                                      M.let_ (|
+                                                        ltac:(M.monadic
+                                                          (Value.StructTuple
+                                                            "solana_program_option::COption::None"
+                                                            []
+                                                            [ Ty.path "solana_address::Address" ]
+                                                            [])),
+                                                        fun rhs' =>
+                                                          ltac:(M.monadic
+                                                            (M.write (|
+                                                              M.SubPointer.get_struct_record_field (|
+                                                                account,
+                                                                "spl_token_interface::state::Account",
+                                                                "close_authority"
+                                                              |),
+                                                              rhs'
+                                                            |)))
                                                       |) in
                                                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                                   |)));
@@ -16729,13 +16921,18 @@ Module processor.
                                             ]
                                           |) in
                                         let~ _ : Ty.tuple [] :=
-                                          M.write (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              account,
-                                              "spl_token_interface::state::Account",
-                                              "close_authority"
-                                            |),
-                                            M.read (| new_authority |)
+                                          M.let_ (|
+                                            ltac:(M.monadic (M.read (| new_authority |))),
+                                            fun rhs' =>
+                                              ltac:(M.monadic
+                                                (M.write (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    account,
+                                                    "spl_token_interface::state::Account",
+                                                    "close_authority"
+                                                  |),
+                                                  rhs'
+                                                |)))
                                           |) in
                                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                       |)));
@@ -17931,13 +18128,18 @@ Module processor.
                                                     ]
                                                   |) in
                                                 let~ _ : Ty.tuple [] :=
-                                                  M.write (|
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      mint,
-                                                      "spl_token_interface::state::Mint",
-                                                      "mint_authority"
-                                                    |),
-                                                    M.read (| new_authority |)
+                                                  M.let_ (|
+                                                    ltac:(M.monadic (M.read (| new_authority |))),
+                                                    fun rhs' =>
+                                                      ltac:(M.monadic
+                                                        (M.write (|
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            mint,
+                                                            "spl_token_interface::state::Mint",
+                                                            "mint_authority"
+                                                          |),
+                                                          rhs'
+                                                        |)))
                                                   |) in
                                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                               |)));
@@ -18363,13 +18565,18 @@ Module processor.
                                                     ]
                                                   |) in
                                                 let~ _ : Ty.tuple [] :=
-                                                  M.write (|
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      mint,
-                                                      "spl_token_interface::state::Mint",
-                                                      "freeze_authority"
-                                                    |),
-                                                    M.read (| new_authority |)
+                                                  M.let_ (|
+                                                    ltac:(M.monadic (M.read (| new_authority |))),
+                                                    fun rhs' =>
+                                                      ltac:(M.monadic
+                                                        (M.write (|
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            mint,
+                                                            "spl_token_interface::state::Mint",
+                                                            "freeze_authority"
+                                                          |),
+                                                          rhs'
+                                                        |)))
                                                   |) in
                                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                               |)));
@@ -20837,29 +21044,11 @@ Module processor.
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (|
-                      destination_account,
-                      "spl_token_interface::state::Account",
-                      "amount"
-                    |),
-                    M.match_operator (|
-                      Ty.path "u64",
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "core::ops::control_flow::ControlFlow")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "core::result::Result")
-                              []
-                              [
-                                Ty.path "core::convert::Infallible";
-                                Ty.path "spl_token_interface::error::TokenError"
-                              ];
-                            Ty.path "u64"
-                          ],
-                        M.call_closure (|
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.match_operator (|
+                        Ty.path "u64",
+                        M.alloc (|
                           Ty.apply
                             (Ty.path "core::ops::control_flow::ControlFlow")
                             []
@@ -20873,151 +21062,161 @@ Module processor.
                                 ];
                               Ty.path "u64"
                             ],
-                          M.get_trait_method (|
-                            "core::ops::try_trait::Try",
+                          M.call_closure (|
                             Ty.apply
-                              (Ty.path "core::result::Result")
+                              (Ty.path "core::ops::control_flow::ControlFlow")
                               []
-                              [ Ty.path "u64"; Ty.path "spl_token_interface::error::TokenError" ],
-                            [],
-                            [],
-                            "branch",
-                            [],
-                            []
-                          |),
-                          [
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "core::result::Result")
-                                []
-                                [ Ty.path "u64"; Ty.path "spl_token_interface::error::TokenError" ],
-                              M.get_associated_function (|
-                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
-                                "ok_or",
-                                [],
-                                [ Ty.path "spl_token_interface::error::TokenError" ]
-                              |),
                               [
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
-                                  M.get_associated_function (|
-                                    Ty.path "u64",
-                                    "checked_add",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.read (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        destination_account,
-                                        "spl_token_interface::state::Account",
-                                        "amount"
-                                      |)
-                                    |);
-                                    M.read (| amount |)
-                                  ]
-                                |);
-                                Value.StructTuple
-                                  "spl_token_interface::error::TokenError::Overflow"
-                                  []
-                                  []
-                                  []
-                              ]
-                            |)
-                          ]
-                        |)
-                      |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::ops::control_flow::ControlFlow::Break",
-                                0
-                              |) in
-                            let residual :=
-                              M.copy (|
                                 Ty.apply
                                   (Ty.path "core::result::Result")
                                   []
                                   [
                                     Ty.path "core::convert::Infallible";
                                     Ty.path "spl_token_interface::error::TokenError"
+                                  ];
+                                Ty.path "u64"
+                              ],
+                            M.get_trait_method (|
+                              "core::ops::try_trait::Try",
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.path "u64"; Ty.path "spl_token_interface::error::TokenError" ],
+                              [],
+                              [],
+                              "branch",
+                              [],
+                              []
+                            |),
+                            [
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.path "u64"; Ty.path "spl_token_interface::error::TokenError"
                                   ],
-                                γ0_0
-                              |) in
-                            M.never_to_any (|
-                              M.read (|
-                                M.return_ (|
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+                                  "ok_or",
+                                  [],
+                                  [ Ty.path "spl_token_interface::error::TokenError" ]
+                                |),
+                                [
                                   M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "core::result::Result")
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+                                    M.get_associated_function (|
+                                      Ty.path "u64",
+                                      "checked_add",
+                                      [],
                                       []
-                                      [ Ty.tuple []; Ty.path "solana_program_error::ProgramError" ],
-                                    M.get_trait_method (|
-                                      "core::ops::try_trait::FromResidual",
+                                    |),
+                                    [
+                                      M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          destination_account,
+                                          "spl_token_interface::state::Account",
+                                          "amount"
+                                        |)
+                                      |);
+                                      M.read (| amount |)
+                                    ]
+                                  |);
+                                  Value.StructTuple
+                                    "spl_token_interface::error::TokenError::Overflow"
+                                    []
+                                    []
+                                    []
+                                ]
+                              |)
+                            ]
+                          |)
+                        |),
+                        [
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let γ0_0 :=
+                                M.SubPointer.get_struct_tuple_field (|
+                                  γ,
+                                  "core::ops::control_flow::ControlFlow::Break",
+                                  0
+                                |) in
+                              let residual :=
+                                M.copy (|
+                                  Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "core::convert::Infallible";
+                                      Ty.path "spl_token_interface::error::TokenError"
+                                    ],
+                                  γ0_0
+                                |) in
+                              M.never_to_any (|
+                                M.read (|
+                                  M.return_ (|
+                                    M.call_closure (|
                                       Ty.apply
                                         (Ty.path "core::result::Result")
                                         []
                                         [ Ty.tuple []; Ty.path "solana_program_error::ProgramError"
                                         ],
-                                      [],
-                                      [
+                                      M.get_trait_method (|
+                                        "core::ops::try_trait::FromResidual",
                                         Ty.apply
                                           (Ty.path "core::result::Result")
                                           []
                                           [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "spl_token_interface::error::TokenError"
-                                          ]
-                                      ],
-                                      "from_residual",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| residual |) ]
+                                            Ty.tuple [];
+                                            Ty.path "solana_program_error::ProgramError"
+                                          ],
+                                        [],
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.path "core::convert::Infallible";
+                                              Ty.path "spl_token_interface::error::TokenError"
+                                            ]
+                                        ],
+                                        "from_residual",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| residual |) ]
+                                    |)
                                   |)
                                 |)
-                              |)
-                            |)));
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::ops::control_flow::ControlFlow::Continue",
-                                0
-                              |) in
-                            let val := M.copy (| Ty.path "u64", γ0_0 |) in
-                            M.read (| val |)))
-                      ]
-                    |)
+                              |)));
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let γ0_0 :=
+                                M.SubPointer.get_struct_tuple_field (|
+                                  γ,
+                                  "core::ops::control_flow::ControlFlow::Continue",
+                                  0
+                                |) in
+                              let val := M.copy (| Ty.path "u64", γ0_0 |) in
+                              M.read (| val |)))
+                        ]
+                      |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            destination_account,
+                            "spl_token_interface::state::Account",
+                            "amount"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (|
-                      mint,
-                      "spl_token_interface::state::Mint",
-                      "supply"
-                    |),
-                    M.match_operator (|
-                      Ty.path "u64",
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "core::ops::control_flow::ControlFlow")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "core::result::Result")
-                              []
-                              [
-                                Ty.path "core::convert::Infallible";
-                                Ty.path "spl_token_interface::error::TokenError"
-                              ];
-                            Ty.path "u64"
-                          ],
-                        M.call_closure (|
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.match_operator (|
+                        Ty.path "u64",
+                        M.alloc (|
                           Ty.apply
                             (Ty.path "core::ops::control_flow::ControlFlow")
                             []
@@ -21031,126 +21230,154 @@ Module processor.
                                 ];
                               Ty.path "u64"
                             ],
-                          M.get_trait_method (|
-                            "core::ops::try_trait::Try",
+                          M.call_closure (|
                             Ty.apply
-                              (Ty.path "core::result::Result")
+                              (Ty.path "core::ops::control_flow::ControlFlow")
                               []
-                              [ Ty.path "u64"; Ty.path "spl_token_interface::error::TokenError" ],
-                            [],
-                            [],
-                            "branch",
-                            [],
-                            []
-                          |),
-                          [
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "core::result::Result")
-                                []
-                                [ Ty.path "u64"; Ty.path "spl_token_interface::error::TokenError" ],
-                              M.get_associated_function (|
-                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
-                                "ok_or",
-                                [],
-                                [ Ty.path "spl_token_interface::error::TokenError" ]
-                              |),
                               [
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
-                                  M.get_associated_function (|
-                                    Ty.path "u64",
-                                    "checked_add",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.read (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        mint,
-                                        "spl_token_interface::state::Mint",
-                                        "supply"
-                                      |)
-                                    |);
-                                    M.read (| amount |)
-                                  ]
-                                |);
-                                Value.StructTuple
-                                  "spl_token_interface::error::TokenError::Overflow"
-                                  []
-                                  []
-                                  []
-                              ]
-                            |)
-                          ]
-                        |)
-                      |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::ops::control_flow::ControlFlow::Break",
-                                0
-                              |) in
-                            let residual :=
-                              M.copy (|
                                 Ty.apply
                                   (Ty.path "core::result::Result")
                                   []
                                   [
                                     Ty.path "core::convert::Infallible";
                                     Ty.path "spl_token_interface::error::TokenError"
+                                  ];
+                                Ty.path "u64"
+                              ],
+                            M.get_trait_method (|
+                              "core::ops::try_trait::Try",
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.path "u64"; Ty.path "spl_token_interface::error::TokenError" ],
+                              [],
+                              [],
+                              "branch",
+                              [],
+                              []
+                            |),
+                            [
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.path "u64"; Ty.path "spl_token_interface::error::TokenError"
                                   ],
-                                γ0_0
-                              |) in
-                            M.never_to_any (|
-                              M.read (|
-                                M.return_ (|
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+                                  "ok_or",
+                                  [],
+                                  [ Ty.path "spl_token_interface::error::TokenError" ]
+                                |),
+                                [
                                   M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "core::result::Result")
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+                                    M.get_associated_function (|
+                                      Ty.path "u64",
+                                      "checked_add",
+                                      [],
                                       []
-                                      [ Ty.tuple []; Ty.path "solana_program_error::ProgramError" ],
-                                    M.get_trait_method (|
-                                      "core::ops::try_trait::FromResidual",
+                                    |),
+                                    [
+                                      M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          mint,
+                                          "spl_token_interface::state::Mint",
+                                          "supply"
+                                        |)
+                                      |);
+                                      M.read (| amount |)
+                                    ]
+                                  |);
+                                  Value.StructTuple
+                                    "spl_token_interface::error::TokenError::Overflow"
+                                    []
+                                    []
+                                    []
+                                ]
+                              |)
+                            ]
+                          |)
+                        |),
+                        [
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let γ0_0 :=
+                                M.SubPointer.get_struct_tuple_field (|
+                                  γ,
+                                  "core::ops::control_flow::ControlFlow::Break",
+                                  0
+                                |) in
+                              let residual :=
+                                M.copy (|
+                                  Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "core::convert::Infallible";
+                                      Ty.path "spl_token_interface::error::TokenError"
+                                    ],
+                                  γ0_0
+                                |) in
+                              M.never_to_any (|
+                                M.read (|
+                                  M.return_ (|
+                                    M.call_closure (|
                                       Ty.apply
                                         (Ty.path "core::result::Result")
                                         []
                                         [ Ty.tuple []; Ty.path "solana_program_error::ProgramError"
                                         ],
-                                      [],
-                                      [
+                                      M.get_trait_method (|
+                                        "core::ops::try_trait::FromResidual",
                                         Ty.apply
                                           (Ty.path "core::result::Result")
                                           []
                                           [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "spl_token_interface::error::TokenError"
-                                          ]
-                                      ],
-                                      "from_residual",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| residual |) ]
+                                            Ty.tuple [];
+                                            Ty.path "solana_program_error::ProgramError"
+                                          ],
+                                        [],
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.path "core::convert::Infallible";
+                                              Ty.path "spl_token_interface::error::TokenError"
+                                            ]
+                                        ],
+                                        "from_residual",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| residual |) ]
+                                    |)
                                   |)
                                 |)
-                              |)
-                            |)));
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::ops::control_flow::ControlFlow::Continue",
-                                0
-                              |) in
-                            let val := M.copy (| Ty.path "u64", γ0_0 |) in
-                            M.read (| val |)))
-                      ]
-                    |)
+                              |)));
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let γ0_0 :=
+                                M.SubPointer.get_struct_tuple_field (|
+                                  γ,
+                                  "core::ops::control_flow::ControlFlow::Continue",
+                                  0
+                                |) in
+                              let val := M.copy (| Ty.path "u64", γ0_0 |) in
+                              M.read (| val |)))
+                        ]
+                      |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            mint,
+                            "spl_token_interface::state::Mint",
+                            "supply"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.match_operator (|
@@ -23688,29 +23915,11 @@ Module processor.
                                         ]
                                       |) in
                                     let~ _ : Ty.tuple [] :=
-                                      M.write (|
-                                        M.SubPointer.get_struct_record_field (|
-                                          source_account,
-                                          "spl_token_interface::state::Account",
-                                          "delegated_amount"
-                                        |),
-                                        M.match_operator (|
-                                          Ty.path "u64",
-                                          M.alloc (|
-                                            Ty.apply
-                                              (Ty.path "core::ops::control_flow::ControlFlow")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
-                                                  []
-                                                  [
-                                                    Ty.path "core::convert::Infallible";
-                                                    Ty.path "spl_token_interface::error::TokenError"
-                                                  ];
-                                                Ty.path "u64"
-                                              ],
-                                            M.call_closure (|
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (M.match_operator (|
+                                            Ty.path "u64",
+                                            M.alloc (|
                                               Ty.apply
                                                 (Ty.path "core::ops::control_flow::ControlFlow")
                                                 []
@@ -23725,23 +23934,23 @@ Module processor.
                                                     ];
                                                   Ty.path "u64"
                                                 ],
-                                              M.get_trait_method (|
-                                                "core::ops::try_trait::Try",
+                                              M.call_closure (|
                                                 Ty.apply
-                                                  (Ty.path "core::result::Result")
+                                                  (Ty.path "core::ops::control_flow::ControlFlow")
                                                   []
                                                   [
-                                                    Ty.path "u64";
-                                                    Ty.path "spl_token_interface::error::TokenError"
+                                                    Ty.apply
+                                                      (Ty.path "core::result::Result")
+                                                      []
+                                                      [
+                                                        Ty.path "core::convert::Infallible";
+                                                        Ty.path
+                                                          "spl_token_interface::error::TokenError"
+                                                      ];
+                                                    Ty.path "u64"
                                                   ],
-                                                [],
-                                                [],
-                                                "branch",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.call_closure (|
+                                                M.get_trait_method (|
+                                                  "core::ops::try_trait::Try",
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
@@ -23750,86 +23959,92 @@ Module processor.
                                                       Ty.path
                                                         "spl_token_interface::error::TokenError"
                                                     ],
-                                                  M.get_associated_function (|
-                                                    Ty.apply
-                                                      (Ty.path "core::option::Option")
-                                                      []
-                                                      [ Ty.path "u64" ],
-                                                    "ok_or",
-                                                    [],
-                                                    [
-                                                      Ty.path
-                                                        "spl_token_interface::error::TokenError"
-                                                    ]
-                                                  |),
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.apply
-                                                        (Ty.path "core::option::Option")
-                                                        []
-                                                        [ Ty.path "u64" ],
-                                                      M.get_associated_function (|
-                                                        Ty.path "u64",
-                                                        "checked_sub",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.read (|
-                                                          M.SubPointer.get_struct_record_field (|
-                                                            source_account,
-                                                            "spl_token_interface::state::Account",
-                                                            "delegated_amount"
-                                                          |)
-                                                        |);
-                                                        M.read (| amount |)
-                                                      ]
-                                                    |);
-                                                    Value.StructTuple
-                                                      "spl_token_interface::error::TokenError::Overflow"
-                                                      []
-                                                      []
-                                                      []
-                                                  ]
-                                                |)
-                                              ]
-                                            |)
-                                          |),
-                                          [
-                                            fun γ =>
-                                              ltac:(M.monadic
-                                                (let γ0_0 :=
-                                                  M.SubPointer.get_struct_tuple_field (|
-                                                    γ,
-                                                    "core::ops::control_flow::ControlFlow::Break",
-                                                    0
-                                                  |) in
-                                                let residual :=
-                                                  M.copy (|
+                                                  [],
+                                                  [],
+                                                  "branch",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.call_closure (|
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
                                                       [
-                                                        Ty.path "core::convert::Infallible";
+                                                        Ty.path "u64";
                                                         Ty.path
                                                           "spl_token_interface::error::TokenError"
                                                       ],
-                                                    γ0_0
-                                                  |) in
-                                                M.never_to_any (|
-                                                  M.read (|
-                                                    M.return_ (|
+                                                    M.get_associated_function (|
+                                                      Ty.apply
+                                                        (Ty.path "core::option::Option")
+                                                        []
+                                                        [ Ty.path "u64" ],
+                                                      "ok_or",
+                                                      [],
+                                                      [
+                                                        Ty.path
+                                                          "spl_token_interface::error::TokenError"
+                                                      ]
+                                                    |),
+                                                    [
                                                       M.call_closure (|
                                                         Ty.apply
-                                                          (Ty.path "core::result::Result")
+                                                          (Ty.path "core::option::Option")
                                                           []
-                                                          [
-                                                            Ty.tuple [];
-                                                            Ty.path
-                                                              "solana_program_error::ProgramError"
-                                                          ],
-                                                        M.get_trait_method (|
-                                                          "core::ops::try_trait::FromResidual",
+                                                          [ Ty.path "u64" ],
+                                                        M.get_associated_function (|
+                                                          Ty.path "u64",
+                                                          "checked_sub",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.read (|
+                                                            M.SubPointer.get_struct_record_field (|
+                                                              source_account,
+                                                              "spl_token_interface::state::Account",
+                                                              "delegated_amount"
+                                                            |)
+                                                          |);
+                                                          M.read (| amount |)
+                                                        ]
+                                                      |);
+                                                      Value.StructTuple
+                                                        "spl_token_interface::error::TokenError::Overflow"
+                                                        []
+                                                        []
+                                                        []
+                                                    ]
+                                                  |)
+                                                ]
+                                              |)
+                                            |),
+                                            [
+                                              fun γ =>
+                                                ltac:(M.monadic
+                                                  (let γ0_0 :=
+                                                    M.SubPointer.get_struct_tuple_field (|
+                                                      γ,
+                                                      "core::ops::control_flow::ControlFlow::Break",
+                                                      0
+                                                    |) in
+                                                  let residual :=
+                                                    M.copy (|
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path
+                                                            "spl_token_interface::error::TokenError"
+                                                        ],
+                                                      γ0_0
+                                                    |) in
+                                                  M.never_to_any (|
+                                                    M.read (|
+                                                      M.return_ (|
+                                                        M.call_closure (|
                                                           Ty.apply
                                                             (Ty.path "core::result::Result")
                                                             []
@@ -23838,38 +24053,59 @@ Module processor.
                                                               Ty.path
                                                                 "solana_program_error::ProgramError"
                                                             ],
-                                                          [],
-                                                          [
+                                                          M.get_trait_method (|
+                                                            "core::ops::try_trait::FromResidual",
                                                             Ty.apply
                                                               (Ty.path "core::result::Result")
                                                               []
                                                               [
-                                                                Ty.path "core::convert::Infallible";
+                                                                Ty.tuple [];
                                                                 Ty.path
-                                                                  "spl_token_interface::error::TokenError"
-                                                              ]
-                                                          ],
-                                                          "from_residual",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [ M.read (| residual |) ]
+                                                                  "solana_program_error::ProgramError"
+                                                              ],
+                                                            [],
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "core::result::Result")
+                                                                []
+                                                                [
+                                                                  Ty.path
+                                                                    "core::convert::Infallible";
+                                                                  Ty.path
+                                                                    "spl_token_interface::error::TokenError"
+                                                                ]
+                                                            ],
+                                                            "from_residual",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [ M.read (| residual |) ]
+                                                        |)
                                                       |)
                                                     |)
-                                                  |)
-                                                |)));
-                                            fun γ =>
-                                              ltac:(M.monadic
-                                                (let γ0_0 :=
-                                                  M.SubPointer.get_struct_tuple_field (|
-                                                    γ,
-                                                    "core::ops::control_flow::ControlFlow::Continue",
-                                                    0
-                                                  |) in
-                                                let val := M.copy (| Ty.path "u64", γ0_0 |) in
-                                                M.read (| val |)))
-                                          ]
-                                        |)
+                                                  |)));
+                                              fun γ =>
+                                                ltac:(M.monadic
+                                                  (let γ0_0 :=
+                                                    M.SubPointer.get_struct_tuple_field (|
+                                                      γ,
+                                                      "core::ops::control_flow::ControlFlow::Continue",
+                                                      0
+                                                    |) in
+                                                  let val := M.copy (| Ty.path "u64", γ0_0 |) in
+                                                  M.read (| val |)))
+                                            ]
+                                          |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (M.write (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                source_account,
+                                                "spl_token_interface::state::Account",
+                                                "delegated_amount"
+                                              |),
+                                              rhs'
+                                            |)))
                                       |) in
                                     M.alloc (|
                                       Ty.tuple [],
@@ -23904,17 +24140,23 @@ Module processor.
                                                 |) in
                                               M.read (|
                                                 let~ _ : Ty.tuple [] :=
-                                                  M.write (|
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      source_account,
-                                                      "spl_token_interface::state::Account",
-                                                      "delegate"
-                                                    |),
-                                                    Value.StructTuple
-                                                      "solana_program_option::COption::None"
-                                                      []
-                                                      [ Ty.path "solana_address::Address" ]
-                                                      []
+                                                  M.let_ (|
+                                                    ltac:(M.monadic
+                                                      (Value.StructTuple
+                                                        "solana_program_option::COption::None"
+                                                        []
+                                                        [ Ty.path "solana_address::Address" ]
+                                                        [])),
+                                                    fun rhs' =>
+                                                      ltac:(M.monadic
+                                                        (M.write (|
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            source_account,
+                                                            "spl_token_interface::state::Account",
+                                                            "delegate"
+                                                          |),
+                                                          rhs'
+                                                        |)))
                                                   |) in
                                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                               |)));
@@ -24437,29 +24679,11 @@ Module processor.
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (|
-                      source_account,
-                      "spl_token_interface::state::Account",
-                      "amount"
-                    |),
-                    M.match_operator (|
-                      Ty.path "u64",
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "core::ops::control_flow::ControlFlow")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "core::result::Result")
-                              []
-                              [
-                                Ty.path "core::convert::Infallible";
-                                Ty.path "spl_token_interface::error::TokenError"
-                              ];
-                            Ty.path "u64"
-                          ],
-                        M.call_closure (|
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.match_operator (|
+                        Ty.path "u64",
+                        M.alloc (|
                           Ty.apply
                             (Ty.path "core::ops::control_flow::ControlFlow")
                             []
@@ -24473,151 +24697,161 @@ Module processor.
                                 ];
                               Ty.path "u64"
                             ],
-                          M.get_trait_method (|
-                            "core::ops::try_trait::Try",
+                          M.call_closure (|
                             Ty.apply
-                              (Ty.path "core::result::Result")
+                              (Ty.path "core::ops::control_flow::ControlFlow")
                               []
-                              [ Ty.path "u64"; Ty.path "spl_token_interface::error::TokenError" ],
-                            [],
-                            [],
-                            "branch",
-                            [],
-                            []
-                          |),
-                          [
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "core::result::Result")
-                                []
-                                [ Ty.path "u64"; Ty.path "spl_token_interface::error::TokenError" ],
-                              M.get_associated_function (|
-                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
-                                "ok_or",
-                                [],
-                                [ Ty.path "spl_token_interface::error::TokenError" ]
-                              |),
                               [
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
-                                  M.get_associated_function (|
-                                    Ty.path "u64",
-                                    "checked_sub",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.read (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        source_account,
-                                        "spl_token_interface::state::Account",
-                                        "amount"
-                                      |)
-                                    |);
-                                    M.read (| amount |)
-                                  ]
-                                |);
-                                Value.StructTuple
-                                  "spl_token_interface::error::TokenError::Overflow"
-                                  []
-                                  []
-                                  []
-                              ]
-                            |)
-                          ]
-                        |)
-                      |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::ops::control_flow::ControlFlow::Break",
-                                0
-                              |) in
-                            let residual :=
-                              M.copy (|
                                 Ty.apply
                                   (Ty.path "core::result::Result")
                                   []
                                   [
                                     Ty.path "core::convert::Infallible";
                                     Ty.path "spl_token_interface::error::TokenError"
+                                  ];
+                                Ty.path "u64"
+                              ],
+                            M.get_trait_method (|
+                              "core::ops::try_trait::Try",
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.path "u64"; Ty.path "spl_token_interface::error::TokenError" ],
+                              [],
+                              [],
+                              "branch",
+                              [],
+                              []
+                            |),
+                            [
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.path "u64"; Ty.path "spl_token_interface::error::TokenError"
                                   ],
-                                γ0_0
-                              |) in
-                            M.never_to_any (|
-                              M.read (|
-                                M.return_ (|
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+                                  "ok_or",
+                                  [],
+                                  [ Ty.path "spl_token_interface::error::TokenError" ]
+                                |),
+                                [
                                   M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "core::result::Result")
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+                                    M.get_associated_function (|
+                                      Ty.path "u64",
+                                      "checked_sub",
+                                      [],
                                       []
-                                      [ Ty.tuple []; Ty.path "solana_program_error::ProgramError" ],
-                                    M.get_trait_method (|
-                                      "core::ops::try_trait::FromResidual",
+                                    |),
+                                    [
+                                      M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          source_account,
+                                          "spl_token_interface::state::Account",
+                                          "amount"
+                                        |)
+                                      |);
+                                      M.read (| amount |)
+                                    ]
+                                  |);
+                                  Value.StructTuple
+                                    "spl_token_interface::error::TokenError::Overflow"
+                                    []
+                                    []
+                                    []
+                                ]
+                              |)
+                            ]
+                          |)
+                        |),
+                        [
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let γ0_0 :=
+                                M.SubPointer.get_struct_tuple_field (|
+                                  γ,
+                                  "core::ops::control_flow::ControlFlow::Break",
+                                  0
+                                |) in
+                              let residual :=
+                                M.copy (|
+                                  Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "core::convert::Infallible";
+                                      Ty.path "spl_token_interface::error::TokenError"
+                                    ],
+                                  γ0_0
+                                |) in
+                              M.never_to_any (|
+                                M.read (|
+                                  M.return_ (|
+                                    M.call_closure (|
                                       Ty.apply
                                         (Ty.path "core::result::Result")
                                         []
                                         [ Ty.tuple []; Ty.path "solana_program_error::ProgramError"
                                         ],
-                                      [],
-                                      [
+                                      M.get_trait_method (|
+                                        "core::ops::try_trait::FromResidual",
                                         Ty.apply
                                           (Ty.path "core::result::Result")
                                           []
                                           [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "spl_token_interface::error::TokenError"
-                                          ]
-                                      ],
-                                      "from_residual",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| residual |) ]
+                                            Ty.tuple [];
+                                            Ty.path "solana_program_error::ProgramError"
+                                          ],
+                                        [],
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.path "core::convert::Infallible";
+                                              Ty.path "spl_token_interface::error::TokenError"
+                                            ]
+                                        ],
+                                        "from_residual",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| residual |) ]
+                                    |)
                                   |)
                                 |)
-                              |)
-                            |)));
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::ops::control_flow::ControlFlow::Continue",
-                                0
-                              |) in
-                            let val := M.copy (| Ty.path "u64", γ0_0 |) in
-                            M.read (| val |)))
-                      ]
-                    |)
+                              |)));
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let γ0_0 :=
+                                M.SubPointer.get_struct_tuple_field (|
+                                  γ,
+                                  "core::ops::control_flow::ControlFlow::Continue",
+                                  0
+                                |) in
+                              let val := M.copy (| Ty.path "u64", γ0_0 |) in
+                              M.read (| val |)))
+                        ]
+                      |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            source_account,
+                            "spl_token_interface::state::Account",
+                            "amount"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (|
-                      mint,
-                      "spl_token_interface::state::Mint",
-                      "supply"
-                    |),
-                    M.match_operator (|
-                      Ty.path "u64",
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "core::ops::control_flow::ControlFlow")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "core::result::Result")
-                              []
-                              [
-                                Ty.path "core::convert::Infallible";
-                                Ty.path "spl_token_interface::error::TokenError"
-                              ];
-                            Ty.path "u64"
-                          ],
-                        M.call_closure (|
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.match_operator (|
+                        Ty.path "u64",
+                        M.alloc (|
                           Ty.apply
                             (Ty.path "core::ops::control_flow::ControlFlow")
                             []
@@ -24631,126 +24865,154 @@ Module processor.
                                 ];
                               Ty.path "u64"
                             ],
-                          M.get_trait_method (|
-                            "core::ops::try_trait::Try",
+                          M.call_closure (|
                             Ty.apply
-                              (Ty.path "core::result::Result")
+                              (Ty.path "core::ops::control_flow::ControlFlow")
                               []
-                              [ Ty.path "u64"; Ty.path "spl_token_interface::error::TokenError" ],
-                            [],
-                            [],
-                            "branch",
-                            [],
-                            []
-                          |),
-                          [
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "core::result::Result")
-                                []
-                                [ Ty.path "u64"; Ty.path "spl_token_interface::error::TokenError" ],
-                              M.get_associated_function (|
-                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
-                                "ok_or",
-                                [],
-                                [ Ty.path "spl_token_interface::error::TokenError" ]
-                              |),
                               [
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
-                                  M.get_associated_function (|
-                                    Ty.path "u64",
-                                    "checked_sub",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.read (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        mint,
-                                        "spl_token_interface::state::Mint",
-                                        "supply"
-                                      |)
-                                    |);
-                                    M.read (| amount |)
-                                  ]
-                                |);
-                                Value.StructTuple
-                                  "spl_token_interface::error::TokenError::Overflow"
-                                  []
-                                  []
-                                  []
-                              ]
-                            |)
-                          ]
-                        |)
-                      |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::ops::control_flow::ControlFlow::Break",
-                                0
-                              |) in
-                            let residual :=
-                              M.copy (|
                                 Ty.apply
                                   (Ty.path "core::result::Result")
                                   []
                                   [
                                     Ty.path "core::convert::Infallible";
                                     Ty.path "spl_token_interface::error::TokenError"
+                                  ];
+                                Ty.path "u64"
+                              ],
+                            M.get_trait_method (|
+                              "core::ops::try_trait::Try",
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.path "u64"; Ty.path "spl_token_interface::error::TokenError" ],
+                              [],
+                              [],
+                              "branch",
+                              [],
+                              []
+                            |),
+                            [
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.path "u64"; Ty.path "spl_token_interface::error::TokenError"
                                   ],
-                                γ0_0
-                              |) in
-                            M.never_to_any (|
-                              M.read (|
-                                M.return_ (|
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+                                  "ok_or",
+                                  [],
+                                  [ Ty.path "spl_token_interface::error::TokenError" ]
+                                |),
+                                [
                                   M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "core::result::Result")
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+                                    M.get_associated_function (|
+                                      Ty.path "u64",
+                                      "checked_sub",
+                                      [],
                                       []
-                                      [ Ty.tuple []; Ty.path "solana_program_error::ProgramError" ],
-                                    M.get_trait_method (|
-                                      "core::ops::try_trait::FromResidual",
+                                    |),
+                                    [
+                                      M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          mint,
+                                          "spl_token_interface::state::Mint",
+                                          "supply"
+                                        |)
+                                      |);
+                                      M.read (| amount |)
+                                    ]
+                                  |);
+                                  Value.StructTuple
+                                    "spl_token_interface::error::TokenError::Overflow"
+                                    []
+                                    []
+                                    []
+                                ]
+                              |)
+                            ]
+                          |)
+                        |),
+                        [
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let γ0_0 :=
+                                M.SubPointer.get_struct_tuple_field (|
+                                  γ,
+                                  "core::ops::control_flow::ControlFlow::Break",
+                                  0
+                                |) in
+                              let residual :=
+                                M.copy (|
+                                  Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "core::convert::Infallible";
+                                      Ty.path "spl_token_interface::error::TokenError"
+                                    ],
+                                  γ0_0
+                                |) in
+                              M.never_to_any (|
+                                M.read (|
+                                  M.return_ (|
+                                    M.call_closure (|
                                       Ty.apply
                                         (Ty.path "core::result::Result")
                                         []
                                         [ Ty.tuple []; Ty.path "solana_program_error::ProgramError"
                                         ],
-                                      [],
-                                      [
+                                      M.get_trait_method (|
+                                        "core::ops::try_trait::FromResidual",
                                         Ty.apply
                                           (Ty.path "core::result::Result")
                                           []
                                           [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "spl_token_interface::error::TokenError"
-                                          ]
-                                      ],
-                                      "from_residual",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| residual |) ]
+                                            Ty.tuple [];
+                                            Ty.path "solana_program_error::ProgramError"
+                                          ],
+                                        [],
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.path "core::convert::Infallible";
+                                              Ty.path "spl_token_interface::error::TokenError"
+                                            ]
+                                        ],
+                                        "from_residual",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| residual |) ]
+                                    |)
                                   |)
                                 |)
-                              |)
-                            |)));
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::ops::control_flow::ControlFlow::Continue",
-                                0
-                              |) in
-                            let val := M.copy (| Ty.path "u64", γ0_0 |) in
-                            M.read (| val |)))
-                      ]
-                    |)
+                              |)));
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let γ0_0 :=
+                                M.SubPointer.get_struct_tuple_field (|
+                                  γ,
+                                  "core::ops::control_flow::ControlFlow::Continue",
+                                  0
+                                |) in
+                              let val := M.copy (| Ty.path "u64", γ0_0 |) in
+                              M.read (| val |)))
+                        ]
+                      |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            mint,
+                            "spl_token_interface::state::Mint",
+                            "supply"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.match_operator (|
@@ -26710,123 +26972,11 @@ Module processor.
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.deref (|
-                      M.read (|
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&mut")
-                              []
-                              [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
-                            M.get_trait_method (|
-                              "core::ops::deref::DerefMut",
-                              Ty.apply
-                                (Ty.path "core::cell::RefMut")
-                                []
-                                [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
-                              [],
-                              [],
-                              "deref_mut",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "core::cell::RefMut")
-                                    []
-                                    [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "core::cell::RefMut")
-                                      []
-                                      [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "core::cell::RefCell")
-                                        []
-                                        [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
-                                      "borrow_mut",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "core::cell::RefCell")
-                                                  []
-                                                  [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ]
-                                              ],
-                                            M.get_trait_method (|
-                                              "core::ops::deref::Deref",
-                                              Ty.apply
-                                                (Ty.path "alloc::rc::Rc")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "core::cell::RefCell")
-                                                    []
-                                                    [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ]
-                                                    ];
-                                                  Ty.path "alloc::alloc::Global"
-                                                ],
-                                              [],
-                                              [],
-                                              "deref",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (|
-                                                    M.read (| destination_account_info |)
-                                                  |),
-                                                  "solana_account_info::AccountInfo",
-                                                  "lamports"
-                                                |)
-                                              |)
-                                            ]
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
-                        |)
-                      |)
-                    |),
-                    M.match_operator (|
-                      Ty.path "u64",
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "core::ops::control_flow::ControlFlow")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "core::result::Result")
-                              []
-                              [
-                                Ty.path "core::convert::Infallible";
-                                Ty.path "spl_token_interface::error::TokenError"
-                              ];
-                            Ty.path "u64"
-                          ],
-                        M.call_closure (|
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.match_operator (|
+                        Ty.path "u64",
+                        M.alloc (|
                           Ty.apply
                             (Ty.path "core::ops::control_flow::ControlFlow")
                             []
@@ -26840,134 +26990,265 @@ Module processor.
                                 ];
                               Ty.path "u64"
                             ],
-                          M.get_trait_method (|
-                            "core::ops::try_trait::Try",
+                          M.call_closure (|
                             Ty.apply
-                              (Ty.path "core::result::Result")
+                              (Ty.path "core::ops::control_flow::ControlFlow")
                               []
-                              [ Ty.path "u64"; Ty.path "spl_token_interface::error::TokenError" ],
-                            [],
-                            [],
-                            "branch",
-                            [],
-                            []
-                          |),
-                          [
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "core::result::Result")
-                                []
-                                [ Ty.path "u64"; Ty.path "spl_token_interface::error::TokenError" ],
-                              M.get_associated_function (|
-                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
-                                "ok_or",
-                                [],
-                                [ Ty.path "spl_token_interface::error::TokenError" ]
-                              |),
                               [
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
-                                  M.get_associated_function (|
-                                    Ty.path "u64",
-                                    "checked_add",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.read (| destination_starting_lamports |);
-                                    M.call_closure (|
-                                      Ty.path "u64",
-                                      M.get_associated_function (|
-                                        Ty.path "solana_account_info::AccountInfo",
-                                        "lamports",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| source_account_info |) |)
-                                        |)
-                                      ]
-                                    |)
-                                  ]
-                                |);
-                                Value.StructTuple
-                                  "spl_token_interface::error::TokenError::Overflow"
-                                  []
-                                  []
-                                  []
-                              ]
-                            |)
-                          ]
-                        |)
-                      |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::ops::control_flow::ControlFlow::Break",
-                                0
-                              |) in
-                            let residual :=
-                              M.copy (|
                                 Ty.apply
                                   (Ty.path "core::result::Result")
                                   []
                                   [
                                     Ty.path "core::convert::Infallible";
                                     Ty.path "spl_token_interface::error::TokenError"
+                                  ];
+                                Ty.path "u64"
+                              ],
+                            M.get_trait_method (|
+                              "core::ops::try_trait::Try",
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.path "u64"; Ty.path "spl_token_interface::error::TokenError" ],
+                              [],
+                              [],
+                              "branch",
+                              [],
+                              []
+                            |),
+                            [
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.path "u64"; Ty.path "spl_token_interface::error::TokenError"
                                   ],
-                                γ0_0
-                              |) in
-                            M.never_to_any (|
-                              M.read (|
-                                M.return_ (|
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+                                  "ok_or",
+                                  [],
+                                  [ Ty.path "spl_token_interface::error::TokenError" ]
+                                |),
+                                [
                                   M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "core::result::Result")
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+                                    M.get_associated_function (|
+                                      Ty.path "u64",
+                                      "checked_add",
+                                      [],
                                       []
-                                      [ Ty.tuple []; Ty.path "solana_program_error::ProgramError" ],
-                                    M.get_trait_method (|
-                                      "core::ops::try_trait::FromResidual",
+                                    |),
+                                    [
+                                      M.read (| destination_starting_lamports |);
+                                      M.call_closure (|
+                                        Ty.path "u64",
+                                        M.get_associated_function (|
+                                          Ty.path "solana_account_info::AccountInfo",
+                                          "lamports",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| source_account_info |) |)
+                                          |)
+                                        ]
+                                      |)
+                                    ]
+                                  |);
+                                  Value.StructTuple
+                                    "spl_token_interface::error::TokenError::Overflow"
+                                    []
+                                    []
+                                    []
+                                ]
+                              |)
+                            ]
+                          |)
+                        |),
+                        [
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let γ0_0 :=
+                                M.SubPointer.get_struct_tuple_field (|
+                                  γ,
+                                  "core::ops::control_flow::ControlFlow::Break",
+                                  0
+                                |) in
+                              let residual :=
+                                M.copy (|
+                                  Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "core::convert::Infallible";
+                                      Ty.path "spl_token_interface::error::TokenError"
+                                    ],
+                                  γ0_0
+                                |) in
+                              M.never_to_any (|
+                                M.read (|
+                                  M.return_ (|
+                                    M.call_closure (|
                                       Ty.apply
                                         (Ty.path "core::result::Result")
                                         []
                                         [ Ty.tuple []; Ty.path "solana_program_error::ProgramError"
                                         ],
-                                      [],
-                                      [
+                                      M.get_trait_method (|
+                                        "core::ops::try_trait::FromResidual",
                                         Ty.apply
                                           (Ty.path "core::result::Result")
                                           []
                                           [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "spl_token_interface::error::TokenError"
-                                          ]
-                                      ],
-                                      "from_residual",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| residual |) ]
+                                            Ty.tuple [];
+                                            Ty.path "solana_program_error::ProgramError"
+                                          ],
+                                        [],
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.path "core::convert::Infallible";
+                                              Ty.path "spl_token_interface::error::TokenError"
+                                            ]
+                                        ],
+                                        "from_residual",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| residual |) ]
+                                    |)
                                   |)
                                 |)
+                              |)));
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let γ0_0 :=
+                                M.SubPointer.get_struct_tuple_field (|
+                                  γ,
+                                  "core::ops::control_flow::ControlFlow::Continue",
+                                  0
+                                |) in
+                              let val := M.copy (| Ty.path "u64", γ0_0 |) in
+                              M.read (| val |)))
+                        ]
+                      |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.deref (|
+                            M.read (|
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
+                                  M.get_trait_method (|
+                                    "core::ops::deref::DerefMut",
+                                    Ty.apply
+                                      (Ty.path "core::cell::RefMut")
+                                      []
+                                      [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
+                                    [],
+                                    [],
+                                    "deref_mut",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "core::cell::RefMut")
+                                          []
+                                          [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "core::cell::RefMut")
+                                            []
+                                            [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "core::cell::RefCell")
+                                              []
+                                              [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
+                                            "borrow_mut",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.call_closure (|
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::cell::RefCell")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "&mut")
+                                                            []
+                                                            [ Ty.path "u64" ]
+                                                        ]
+                                                    ],
+                                                  M.get_trait_method (|
+                                                    "core::ops::deref::Deref",
+                                                    Ty.apply
+                                                      (Ty.path "alloc::rc::Rc")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::cell::RefCell")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "&mut")
+                                                              []
+                                                              [ Ty.path "u64" ]
+                                                          ];
+                                                        Ty.path "alloc::alloc::Global"
+                                                      ],
+                                                    [],
+                                                    [],
+                                                    "deref",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (|
+                                                          M.read (| destination_account_info |)
+                                                        |),
+                                                        "solana_account_info::AccountInfo",
+                                                        "lamports"
+                                                      |)
+                                                    |)
+                                                  ]
+                                                |)
+                                              |)
+                                            |)
+                                          ]
+                                        |)
+                                      |)
+                                    |)
+                                  ]
+                                |)
                               |)
-                            |)));
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::ops::control_flow::ControlFlow::Continue",
-                                0
-                              |) in
-                            let val := M.copy (| Ty.path "u64", γ0_0 |) in
-                            M.read (| val |)))
-                      ]
-                    |)
+                            |)
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.write (|
@@ -28850,35 +29131,41 @@ Module processor.
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (|
-                      source_account,
-                      "spl_token_interface::state::Account",
-                      "state"
-                    |),
-                    M.match_operator (|
-                      Ty.path "spl_token_interface::state::AccountState",
-                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ := freeze in
-                            let _ :=
-                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                            Value.StructTuple
-                              "spl_token_interface::state::AccountState::Frozen"
-                              []
-                              []
-                              []));
-                        fun γ =>
-                          ltac:(M.monadic
-                            (Value.StructTuple
-                              "spl_token_interface::state::AccountState::Initialized"
-                              []
-                              []
-                              []))
-                      ]
-                    |)
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.match_operator (|
+                        Ty.path "spl_token_interface::state::AccountState",
+                        M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                        [
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let γ := freeze in
+                              let _ :=
+                                is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                              Value.StructTuple
+                                "spl_token_interface::state::AccountState::Frozen"
+                                []
+                                []
+                                []));
+                          fun γ =>
+                            ltac:(M.monadic
+                              (Value.StructTuple
+                                "spl_token_interface::state::AccountState::Initialized"
+                                []
+                                []
+                                []))
+                        ]
+                      |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            source_account,
+                            "spl_token_interface::state::Account",
+                            "state"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.match_operator (|
@@ -30140,13 +30427,18 @@ Module processor.
                                 ]
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_struct_record_field (|
-                                  native_account,
-                                  "spl_token_interface::state::Account",
-                                  "amount"
-                                |),
-                                M.read (| new_amount |)
+                              M.let_ (|
+                                ltac:(M.monadic (M.read (| new_amount |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        native_account,
+                                        "spl_token_interface::state::Account",
+                                        "amount"
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)));

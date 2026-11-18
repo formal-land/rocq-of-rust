@@ -5800,17 +5800,20 @@ Module bits.
                                           Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
                                           γ0_1
                                         |) in
-                                      let β := M.deref (| M.read (| a |) |) in
-                                      M.write (|
-                                        β,
-                                        M.call_closure (|
-                                          Ty.path "u8",
-                                          BinOp.Wrap.bit_and,
-                                          [
-                                            M.read (| β |);
-                                            M.read (| M.deref (| M.read (| b |) |) |)
-                                          ]
-                                        |)
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (M.read (| M.deref (| M.read (| b |) |) |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (let β := M.deref (| M.read (| a |) |) in
+                                            M.write (|
+                                              β,
+                                              M.call_closure (|
+                                                Ty.path "u8",
+                                                BinOp.Wrap.bit_and,
+                                                [ M.read (| β |); rhs' ]
+                                              |)
+                                            |)))
                                       |)))
                                 ]
                               |)))
@@ -6023,17 +6026,20 @@ Module bits.
                                           Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
                                           γ0_1
                                         |) in
-                                      let β := M.deref (| M.read (| a |) |) in
-                                      M.write (|
-                                        β,
-                                        M.call_closure (|
-                                          Ty.path "u8",
-                                          BinOp.Wrap.bit_or,
-                                          [
-                                            M.read (| β |);
-                                            M.read (| M.deref (| M.read (| b |) |) |)
-                                          ]
-                                        |)
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (M.read (| M.deref (| M.read (| b |) |) |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (let β := M.deref (| M.read (| a |) |) in
+                                            M.write (|
+                                              β,
+                                              M.call_closure (|
+                                                Ty.path "u8",
+                                                BinOp.Wrap.bit_or,
+                                                [ M.read (| β |); rhs' ]
+                                              |)
+                                            |)))
                                       |)))
                                 ]
                               |)))
@@ -6246,17 +6252,20 @@ Module bits.
                                           Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
                                           γ0_1
                                         |) in
-                                      let β := M.deref (| M.read (| a |) |) in
-                                      M.write (|
-                                        β,
-                                        M.call_closure (|
-                                          Ty.path "u8",
-                                          BinOp.Wrap.bit_xor,
-                                          [
-                                            M.read (| β |);
-                                            M.read (| M.deref (| M.read (| b |) |) |)
-                                          ]
-                                        |)
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (M.read (| M.deref (| M.read (| b |) |) |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (let β := M.deref (| M.read (| a |) |) in
+                                            M.write (|
+                                              β,
+                                              M.call_closure (|
+                                                Ty.path "u8",
+                                                BinOp.Wrap.bit_xor,
+                                                [ M.read (| β |); rhs' ]
+                                              |)
+                                            |)))
                                       |)))
                                 ]
                               |)))
@@ -6388,13 +6397,16 @@ Module bits.
                                           Ty.apply (Ty.path "&mut") [] [ Ty.path "u8" ],
                                           γ
                                         |) in
-                                      M.write (|
-                                        M.deref (| M.read (| byte |) |),
-                                        M.call_closure (|
-                                          Ty.path "u8",
-                                          UnOp.not,
-                                          [ M.read (| M.deref (| M.read (| byte |) |) |) ]
-                                        |)
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (M.call_closure (|
+                                            Ty.path "u8",
+                                            UnOp.not,
+                                            [ M.read (| M.deref (| M.read (| byte |) |) |) ]
+                                          |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (M.write (| M.deref (| M.read (| byte |) |), rhs' |)))
                                       |)))
                                 ]
                               |)))
@@ -6567,16 +6579,21 @@ Module bits.
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_array_field (|
-                                bytes,
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  BinOp.Wrap.sub,
-                                  [ N; Value.Integer IntegerKind.Usize 1 ]
-                                |)
-                              |),
-                              M.read (| x |)
+                            M.let_ (|
+                              ltac:(M.monadic (M.read (| x |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
+                                    M.SubPointer.get_array_field (|
+                                      bytes,
+                                      M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.sub,
+                                        [ N; Value.Integer IntegerKind.Usize 1 ]
+                                      |)
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                         |)));
@@ -6777,56 +6794,65 @@ Module bits.
                                   |) in
                                 M.read (|
                                   let~ _ : Ty.tuple [] :=
-                                    M.write (|
-                                      M.SubPointer.get_array_field (| result, M.read (| i |) |),
-                                      M.match_operator (|
-                                        Ty.path "u8",
-                                        M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                        [
-                                          fun γ =>
-                                            ltac:(M.monadic
-                                              (let γ :=
-                                                M.alloc (|
-                                                  Ty.path "bool",
-                                                  M.call_closure (|
+                                    M.let_ (|
+                                      ltac:(M.monadic
+                                        (M.match_operator (|
+                                          Ty.path "u8",
+                                          M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                          [
+                                            fun γ =>
+                                              ltac:(M.monadic
+                                                (let γ :=
+                                                  M.alloc (|
                                                     Ty.path "bool",
-                                                    BinOp.ge,
-                                                    [ M.read (| i |); N ]
+                                                    M.call_closure (|
+                                                      Ty.path "bool",
+                                                      BinOp.ge,
+                                                      [ M.read (| i |); N ]
+                                                    |)
+                                                  |) in
+                                                let _ :=
+                                                  is_constant_or_break_match (|
+                                                    M.read (| γ |),
+                                                    Value.Bool true
+                                                  |) in
+                                                M.read (|
+                                                  M.SubPointer.get_array_field (|
+                                                    M.SubPointer.get_struct_tuple_field (|
+                                                      other,
+                                                      "alloy_primitives::bits::fixed::FixedBytes",
+                                                      0
+                                                    |),
+                                                    M.call_closure (|
+                                                      Ty.path "usize",
+                                                      BinOp.Wrap.sub,
+                                                      [ M.read (| i |); N ]
+                                                    |)
                                                   |)
-                                                |) in
-                                              let _ :=
-                                                is_constant_or_break_match (|
-                                                  M.read (| γ |),
-                                                  Value.Bool true
-                                                |) in
-                                              M.read (|
-                                                M.SubPointer.get_array_field (|
-                                                  M.SubPointer.get_struct_tuple_field (|
-                                                    other,
-                                                    "alloy_primitives::bits::fixed::FixedBytes",
-                                                    0
-                                                  |),
-                                                  M.call_closure (|
-                                                    Ty.path "usize",
-                                                    BinOp.Wrap.sub,
-                                                    [ M.read (| i |); N ]
+                                                |)));
+                                            fun γ =>
+                                              ltac:(M.monadic
+                                                (M.read (|
+                                                  M.SubPointer.get_array_field (|
+                                                    M.SubPointer.get_struct_tuple_field (|
+                                                      self,
+                                                      "alloy_primitives::bits::fixed::FixedBytes",
+                                                      0
+                                                    |),
+                                                    M.read (| i |)
                                                   |)
-                                                |)
-                                              |)));
-                                          fun γ =>
-                                            ltac:(M.monadic
-                                              (M.read (|
-                                                M.SubPointer.get_array_field (|
-                                                  M.SubPointer.get_struct_tuple_field (|
-                                                    self,
-                                                    "alloy_primitives::bits::fixed::FixedBytes",
-                                                    0
-                                                  |),
-                                                  M.read (| i |)
-                                                |)
-                                              |)))
-                                        ]
-                                      |)
+                                                |)))
+                                          ]
+                                        |))),
+                                      fun rhs' =>
+                                        ltac:(M.monadic
+                                          (M.write (|
+                                            M.SubPointer.get_array_field (|
+                                              result,
+                                              M.read (| i |)
+                                            |),
+                                            rhs'
+                                          |)))
                                     |) in
                                   let~ _ : Ty.tuple [] :=
                                     let β := i in
@@ -8263,41 +8289,47 @@ Module bits.
                                   |) in
                                 M.read (|
                                   let~ _ : Ty.tuple [] :=
-                                    M.write (|
-                                      M.SubPointer.get_array_field (|
-                                        M.SubPointer.get_struct_tuple_field (|
-                                          ret,
-                                          "alloy_primitives::bits::fixed::FixedBytes",
-                                          0
-                                        |),
-                                        M.read (| i |)
-                                      |),
-                                      M.call_closure (|
-                                        Ty.path "u8",
-                                        BinOp.Wrap.bit_and,
-                                        [
-                                          M.read (|
+                                    M.let_ (|
+                                      ltac:(M.monadic
+                                        (M.call_closure (|
+                                          Ty.path "u8",
+                                          BinOp.Wrap.bit_and,
+                                          [
+                                            M.read (|
+                                              M.SubPointer.get_array_field (|
+                                                M.SubPointer.get_struct_tuple_field (|
+                                                  self,
+                                                  "alloy_primitives::bits::fixed::FixedBytes",
+                                                  0
+                                                |),
+                                                M.read (| i |)
+                                              |)
+                                            |);
+                                            M.read (|
+                                              M.SubPointer.get_array_field (|
+                                                M.SubPointer.get_struct_tuple_field (|
+                                                  rhs,
+                                                  "alloy_primitives::bits::fixed::FixedBytes",
+                                                  0
+                                                |),
+                                                M.read (| i |)
+                                              |)
+                                            |)
+                                          ]
+                                        |))),
+                                      fun rhs' =>
+                                        ltac:(M.monadic
+                                          (M.write (|
                                             M.SubPointer.get_array_field (|
                                               M.SubPointer.get_struct_tuple_field (|
-                                                self,
+                                                ret,
                                                 "alloy_primitives::bits::fixed::FixedBytes",
                                                 0
                                               |),
                                               M.read (| i |)
-                                            |)
-                                          |);
-                                          M.read (|
-                                            M.SubPointer.get_array_field (|
-                                              M.SubPointer.get_struct_tuple_field (|
-                                                rhs,
-                                                "alloy_primitives::bits::fixed::FixedBytes",
-                                                0
-                                              |),
-                                              M.read (| i |)
-                                            |)
-                                          |)
-                                        ]
-                                      |)
+                                            |),
+                                            rhs'
+                                          |)))
                                     |) in
                                   let~ _ : Ty.tuple [] :=
                                     let β := i in
@@ -8402,41 +8434,47 @@ Module bits.
                                   |) in
                                 M.read (|
                                   let~ _ : Ty.tuple [] :=
-                                    M.write (|
-                                      M.SubPointer.get_array_field (|
-                                        M.SubPointer.get_struct_tuple_field (|
-                                          ret,
-                                          "alloy_primitives::bits::fixed::FixedBytes",
-                                          0
-                                        |),
-                                        M.read (| i |)
-                                      |),
-                                      M.call_closure (|
-                                        Ty.path "u8",
-                                        BinOp.Wrap.bit_or,
-                                        [
-                                          M.read (|
+                                    M.let_ (|
+                                      ltac:(M.monadic
+                                        (M.call_closure (|
+                                          Ty.path "u8",
+                                          BinOp.Wrap.bit_or,
+                                          [
+                                            M.read (|
+                                              M.SubPointer.get_array_field (|
+                                                M.SubPointer.get_struct_tuple_field (|
+                                                  self,
+                                                  "alloy_primitives::bits::fixed::FixedBytes",
+                                                  0
+                                                |),
+                                                M.read (| i |)
+                                              |)
+                                            |);
+                                            M.read (|
+                                              M.SubPointer.get_array_field (|
+                                                M.SubPointer.get_struct_tuple_field (|
+                                                  rhs,
+                                                  "alloy_primitives::bits::fixed::FixedBytes",
+                                                  0
+                                                |),
+                                                M.read (| i |)
+                                              |)
+                                            |)
+                                          ]
+                                        |))),
+                                      fun rhs' =>
+                                        ltac:(M.monadic
+                                          (M.write (|
                                             M.SubPointer.get_array_field (|
                                               M.SubPointer.get_struct_tuple_field (|
-                                                self,
+                                                ret,
                                                 "alloy_primitives::bits::fixed::FixedBytes",
                                                 0
                                               |),
                                               M.read (| i |)
-                                            |)
-                                          |);
-                                          M.read (|
-                                            M.SubPointer.get_array_field (|
-                                              M.SubPointer.get_struct_tuple_field (|
-                                                rhs,
-                                                "alloy_primitives::bits::fixed::FixedBytes",
-                                                0
-                                              |),
-                                              M.read (| i |)
-                                            |)
-                                          |)
-                                        ]
-                                      |)
+                                            |),
+                                            rhs'
+                                          |)))
                                     |) in
                                   let~ _ : Ty.tuple [] :=
                                     let β := i in
@@ -8541,41 +8579,47 @@ Module bits.
                                   |) in
                                 M.read (|
                                   let~ _ : Ty.tuple [] :=
-                                    M.write (|
-                                      M.SubPointer.get_array_field (|
-                                        M.SubPointer.get_struct_tuple_field (|
-                                          ret,
-                                          "alloy_primitives::bits::fixed::FixedBytes",
-                                          0
-                                        |),
-                                        M.read (| i |)
-                                      |),
-                                      M.call_closure (|
-                                        Ty.path "u8",
-                                        BinOp.Wrap.bit_xor,
-                                        [
-                                          M.read (|
+                                    M.let_ (|
+                                      ltac:(M.monadic
+                                        (M.call_closure (|
+                                          Ty.path "u8",
+                                          BinOp.Wrap.bit_xor,
+                                          [
+                                            M.read (|
+                                              M.SubPointer.get_array_field (|
+                                                M.SubPointer.get_struct_tuple_field (|
+                                                  self,
+                                                  "alloy_primitives::bits::fixed::FixedBytes",
+                                                  0
+                                                |),
+                                                M.read (| i |)
+                                              |)
+                                            |);
+                                            M.read (|
+                                              M.SubPointer.get_array_field (|
+                                                M.SubPointer.get_struct_tuple_field (|
+                                                  rhs,
+                                                  "alloy_primitives::bits::fixed::FixedBytes",
+                                                  0
+                                                |),
+                                                M.read (| i |)
+                                              |)
+                                            |)
+                                          ]
+                                        |))),
+                                      fun rhs' =>
+                                        ltac:(M.monadic
+                                          (M.write (|
                                             M.SubPointer.get_array_field (|
                                               M.SubPointer.get_struct_tuple_field (|
-                                                self,
+                                                ret,
                                                 "alloy_primitives::bits::fixed::FixedBytes",
                                                 0
                                               |),
                                               M.read (| i |)
-                                            |)
-                                          |);
-                                          M.read (|
-                                            M.SubPointer.get_array_field (|
-                                              M.SubPointer.get_struct_tuple_field (|
-                                                rhs,
-                                                "alloy_primitives::bits::fixed::FixedBytes",
-                                                0
-                                              |),
-                                              M.read (| i |)
-                                            |)
-                                          |)
-                                        ]
-                                      |)
+                                            |),
+                                            rhs'
+                                          |)))
                                     |) in
                                   let~ _ : Ty.tuple [] :=
                                     let β := i in

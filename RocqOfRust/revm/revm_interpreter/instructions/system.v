@@ -1246,38 +1246,41 @@ Module instructions.
                                 ]
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.deref (| M.read (| top |) |),
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    [],
-                                  M.get_trait_method (|
-                                    "core::convert::Into",
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.apply
-                                      (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                                      [ Value.Integer IntegerKind.Usize 32 ]
+                                      (Ty.path "ruint::Uint")
+                                      [
+                                        Value.Integer IntegerKind.Usize 256;
+                                        Value.Integer IntegerKind.Usize 4
+                                      ]
                                       [],
-                                    [],
-                                    [
+                                    M.get_trait_method (|
+                                      "core::convert::Into",
                                       Ty.apply
-                                        (Ty.path "ruint::Uint")
-                                        [
-                                          Value.Integer IntegerKind.Usize 256;
-                                          Value.Integer IntegerKind.Usize 4
-                                        ]
-                                        []
-                                    ],
-                                    "into",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| hash |) ]
-                                |)
+                                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                        [ Value.Integer IntegerKind.Usize 32 ]
+                                        [],
+                                      [],
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ],
+                                      "into",
+                                      [],
+                                      []
+                                    |),
+                                    [ M.read (| hash |) ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (| M.deref (| M.read (| top |) |), rhs' |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)))
@@ -3879,38 +3882,41 @@ Module instructions.
                                 ]
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.deref (| M.read (| offset_ptr |) |),
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    [],
-                                  M.get_trait_method (|
-                                    "core::convert::Into",
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.apply
-                                      (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                                      [ Value.Integer IntegerKind.Usize 32 ]
+                                      (Ty.path "ruint::Uint")
+                                      [
+                                        Value.Integer IntegerKind.Usize 256;
+                                        Value.Integer IntegerKind.Usize 4
+                                      ]
                                       [],
-                                    [],
-                                    [
+                                    M.get_trait_method (|
+                                      "core::convert::Into",
                                       Ty.apply
-                                        (Ty.path "ruint::Uint")
-                                        [
-                                          Value.Integer IntegerKind.Usize 256;
-                                          Value.Integer IntegerKind.Usize 4
-                                        ]
-                                        []
-                                    ],
-                                    "into",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| word |) ]
-                                |)
+                                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                        [ Value.Integer IntegerKind.Usize 32 ]
+                                        [],
+                                      [],
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ],
+                                      "into",
+                                      [],
+                                      []
+                                    |),
+                                    [ M.read (| word |) ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (| M.deref (| M.read (| offset_ptr |) |), rhs' |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)))

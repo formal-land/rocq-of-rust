@@ -813,21 +813,34 @@ Module Impl_revm_state_Account.
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
-                        M.write (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "revm_state::Account",
-                              "info"
-                            |),
-                            "revm_state::account_info::AccountInfo",
-                            "nonce"
-                          |),
-                          M.call_closure (|
-                            Ty.path "u64",
-                            M.get_associated_function (| Ty.path "u64", "saturating_add", [], [] |),
-                            [
-                              M.read (|
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.call_closure (|
+                              Ty.path "u64",
+                              M.get_associated_function (|
+                                Ty.path "u64",
+                                "saturating_add",
+                                [],
+                                []
+                              |),
+                              [
+                                M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "revm_state::Account",
+                                      "info"
+                                    |),
+                                    "revm_state::account_info::AccountInfo",
+                                    "nonce"
+                                  |)
+                                |);
+                                Value.Integer IntegerKind.U64 1
+                              ]
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (M.write (|
                                 M.SubPointer.get_struct_record_field (|
                                   M.SubPointer.get_struct_record_field (|
                                     M.deref (| M.read (| self |) |),
@@ -836,11 +849,9 @@ Module Impl_revm_state_Account.
                                   |),
                                   "revm_state::account_info::AccountInfo",
                                   "nonce"
-                                |)
-                              |);
-                              Value.Integer IntegerKind.U64 1
-                            ]
-                          |)
+                                |),
+                                rhs'
+                              |)))
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                     |)));
@@ -1553,13 +1564,18 @@ Module Impl_revm_state_Account.
               ]
             |) in
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_struct_record_field (|
-                M.deref (| M.read (| self |) |),
-                "revm_state::Account",
-                "transaction_id"
-              |),
-              M.read (| transaction_id |)
+            M.let_ (|
+              ltac:(M.monadic (M.read (| transaction_id |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "revm_state::Account",
+                      "transaction_id"
+                    |),
+                    rhs'
+                  |)))
             |) in
           is_cold
         |)))
@@ -1698,25 +1714,31 @@ Module Impl_revm_state_Account.
               ]
             |) in
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_struct_record_field (|
-                M.deref (| M.read (| self |) |),
-                "revm_state::Account",
-                "info"
-              |),
-              M.call_closure (|
-                Ty.path "revm_state::account_info::AccountInfo",
-                M.get_trait_method (|
-                  "core::default::Default",
+            M.let_ (|
+              ltac:(M.monadic
+                (M.call_closure (|
                   Ty.path "revm_state::account_info::AccountInfo",
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.path "revm_state::account_info::AccountInfo",
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |)
+                |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "revm_state::Account",
+                      "info"
+                    |),
+                    rhs'
+                  |)))
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
         |)))
@@ -2488,9 +2510,14 @@ Module Impl_revm_state_Account.
         let info := M.alloc (| Ty.path "revm_state::account_info::AccountInfo", info |) in
         M.read (|
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_struct_record_field (| self, "revm_state::Account", "info" |),
-              M.read (| info |)
+            M.let_ (|
+              ltac:(M.monadic (M.read (| info |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.SubPointer.get_struct_record_field (| self, "revm_state::Account", "info" |),
+                    rhs'
+                  |)))
             |) in
           self
         |)))
@@ -4550,13 +4577,18 @@ Module Impl_revm_state_EvmStorageSlot.
               ]
             |) in
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_struct_record_field (|
-                M.deref (| M.read (| self |) |),
-                "revm_state::EvmStorageSlot",
-                "transaction_id"
-              |),
-              M.read (| transaction_id |)
+            M.let_ (|
+              ltac:(M.monadic (M.read (| transaction_id |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "revm_state::EvmStorageSlot",
+                      "transaction_id"
+                    |),
+                    rhs'
+                  |)))
             |) in
           let~ _ : Ty.tuple [] :=
             M.write (|

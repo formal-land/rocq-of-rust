@@ -204,9 +204,15 @@ Definition duplicate (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : 
       let c := M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ], c |) in
       M.read (|
         let~ _ : Ty.tuple [] :=
-          M.write (| M.deref (| M.read (| b |) |), M.read (| M.deref (| M.read (| a |) |) |) |) in
+          M.let_ (|
+            ltac:(M.monadic (M.read (| M.deref (| M.read (| a |) |) |))),
+            fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| b |) |), rhs' |)))
+          |) in
         let~ _ : Ty.tuple [] :=
-          M.write (| M.deref (| M.read (| c |) |), M.read (| M.deref (| M.read (| a |) |) |) |) in
+          M.let_ (|
+            ltac:(M.monadic (M.read (| M.deref (| M.read (| a |) |) |))),
+            fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| c |) |), rhs' |)))
+          |) in
         M.alloc (| Ty.tuple [], Value.Tuple [] |)
       |)))
   | _, _, _ => M.impossible "wrong number of arguments"
@@ -416,10 +422,15 @@ Definition incr (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       let y := M.alloc (| Ty.path "u64", y |) in
       M.read (|
         let~ _ : Ty.tuple [] :=
-          let β := x in
-          M.write (|
-            β,
-            M.call_closure (| Ty.path "u64", BinOp.Wrap.add, [ M.read (| β |); M.read (| y |) ] |)
+          M.let_ (|
+            ltac:(M.monadic (M.read (| y |))),
+            fun rhs' =>
+              ltac:(M.monadic
+                (let β := x in
+                M.write (|
+                  β,
+                  M.call_closure (| Ty.path "u64", BinOp.Wrap.add, [ M.read (| β |); rhs' ] |)
+                |)))
           |) in
         x
       |)))

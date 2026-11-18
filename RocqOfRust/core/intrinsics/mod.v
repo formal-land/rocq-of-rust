@@ -9305,29 +9305,32 @@ Module slice.
                                           |)
                                         |) in
                                       let~ _ : Ty.tuple [] :=
-                                        let β := offset in
-                                        M.write (|
-                                          β,
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            BinOp.Wrap.add,
-                                            [
-                                              M.read (| β |);
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                BinOp.Wrap.mul,
-                                                [
-                                                  M.read (|
-                                                    get_constant (|
-                                                      "core::slice::memchr::USIZE_BYTES",
-                                                      Ty.path "usize"
-                                                    |)
-                                                  |);
-                                                  Value.Integer IntegerKind.Usize 2
-                                                ]
-                                              |)
-                                            ]
-                                          |)
+                                        M.let_ (|
+                                          ltac:(M.monadic
+                                            (M.call_closure (|
+                                              Ty.path "usize",
+                                              BinOp.Wrap.mul,
+                                              [
+                                                M.read (|
+                                                  get_constant (|
+                                                    "core::slice::memchr::USIZE_BYTES",
+                                                    Ty.path "usize"
+                                                  |)
+                                                |);
+                                                Value.Integer IntegerKind.Usize 2
+                                              ]
+                                            |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (let β := offset in
+                                              M.write (|
+                                                β,
+                                                M.call_closure (|
+                                                  Ty.path "usize",
+                                                  BinOp.Wrap.add,
+                                                  [ M.read (| β |); rhs' ]
+                                                |)
+                                              |)))
                                         |) in
                                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                     |)));

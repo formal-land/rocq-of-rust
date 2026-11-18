@@ -734,45 +734,26 @@ Module iter.
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
-                          M.write (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "revm_bytecode::iter::BytecodeIterator",
-                              "bytes"
-                            |),
-                            M.call_closure (|
-                              Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u8" ],
-                              M.get_associated_function (|
-                                Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                "iter",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                      M.get_associated_function (|
+                          M.let_ (|
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u8" ],
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                  "iter",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::option::Option")
+                                          (Ty.path "&")
                                           []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
-                                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                                          ],
-                                        "unwrap_or_default",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                        M.get_associated_function (|
                                           Ty.apply
                                             (Ty.path "core::option::Option")
                                             []
@@ -782,62 +763,91 @@ Module iter.
                                                 []
                                                 [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
                                             ],
-                                          M.get_associated_function (|
-                                            Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                            "get",
-                                            [],
+                                          "unwrap_or_default",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                              ],
+                                            M.get_associated_function (|
+                                              Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                              "get",
+                                              [],
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::ops::range::RangeFrom")
+                                                  []
+                                                  [ Ty.path "usize" ]
+                                              ]
+                                            |),
                                             [
-                                              Ty.apply
-                                                (Ty.path "core::ops::range::RangeFrom")
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "slice")
+                                                          []
+                                                          [ Ty.path "u8" ]
+                                                      ],
+                                                    M.get_associated_function (|
+                                                      Ty.apply
+                                                        (Ty.path "core::slice::iter::Iter")
+                                                        []
+                                                        [ Ty.path "u8" ],
+                                                      "as_slice",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          M.deref (| M.read (| self |) |),
+                                                          "revm_bytecode::iter::BytecodeIterator",
+                                                          "bytes"
+                                                        |)
+                                                      |)
+                                                    ]
+                                                  |)
+                                                |)
+                                              |);
+                                              Value.mkStructRecord
+                                                "core::ops::range::RangeFrom"
                                                 []
                                                 [ Ty.path "usize" ]
+                                                [ ("start", M.read (| immediate_size |)) ]
                                             ]
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.call_closure (|
-                                                  Ty.apply
-                                                    (Ty.path "&")
-                                                    []
-                                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]
-                                                    ],
-                                                  M.get_associated_function (|
-                                                    Ty.apply
-                                                      (Ty.path "core::slice::iter::Iter")
-                                                      []
-                                                      [ Ty.path "u8" ],
-                                                    "as_slice",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.SubPointer.get_struct_record_field (|
-                                                        M.deref (| M.read (| self |) |),
-                                                        "revm_bytecode::iter::BytecodeIterator",
-                                                        "bytes"
-                                                      |)
-                                                    |)
-                                                  ]
-                                                |)
-                                              |)
-                                            |);
-                                            Value.mkStructRecord
-                                              "core::ops::range::RangeFrom"
-                                              []
-                                              [ Ty.path "usize" ]
-                                              [ ("start", M.read (| immediate_size |)) ]
-                                          ]
-                                        |)
-                                      ]
+                                          |)
+                                        ]
+                                      |)
                                     |)
                                   |)
-                                |)
-                              ]
-                            |)
+                                ]
+                              |))),
+                            fun rhs' =>
+                              ltac:(M.monadic
+                                (M.write (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "revm_bytecode::iter::BytecodeIterator",
+                                    "bytes"
+                                  |),
+                                  rhs'
+                                |)))
                           |) in
                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
                       |)));

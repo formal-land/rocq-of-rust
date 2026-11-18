@@ -27,13 +27,7 @@ Module file_format_common.
     Global Typeclasses Opaque value_MOVE_MAGIC_SIZE.
     
     (*     pub const MOVE_MAGIC: [u8; BinaryConstants::MOVE_MAGIC_SIZE] = [0xA1, 0x1C, 0xEB, 0x0B]; *)
-    (* Ty.apply
-      (Ty.path "array")
-      [
-        M.unevaluated_const
-          (mk_str (| "move_binary_format_file_format_common_MOVE_MAGIC_discriminant" |))
-      ]
-      [ Ty.path "u8" ] *)
+    (* Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 4 ] [ Ty.path "u8" ] *)
     Definition value_MOVE_MAGIC (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       ltac:(M.monadic
         (M.alloc (|
@@ -5621,21 +5615,24 @@ Module file_format_common.
                                         ]
                                       |) in
                                     let~ _ : Ty.tuple [] :=
-                                      let β := value in
-                                      M.write (|
-                                        β,
-                                        M.call_closure (|
-                                          Ty.path "u64",
-                                          BinOp.Wrap.bit_or,
-                                          [
-                                            M.read (| β |);
-                                            M.call_closure (|
-                                              Ty.path "u64",
-                                              BinOp.Wrap.shl,
-                                              [ M.read (| cur |); M.read (| shift |) ]
-                                            |)
-                                          ]
-                                        |)
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (M.call_closure (|
+                                            Ty.path "u64",
+                                            BinOp.Wrap.shl,
+                                            [ M.read (| cur |); M.read (| shift |) ]
+                                          |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (let β := value in
+                                            M.write (|
+                                              β,
+                                              M.call_closure (|
+                                                Ty.path "u64",
+                                                BinOp.Wrap.bit_or,
+                                                [ M.read (| β |); rhs' ]
+                                              |)
+                                            |)))
                                       |) in
                                     let~ _ : Ty.tuple [] :=
                                       M.match_operator (|

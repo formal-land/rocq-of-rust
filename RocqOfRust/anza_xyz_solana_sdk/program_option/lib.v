@@ -2063,27 +2063,29 @@ Module Impl_solana_program_option_COption_T.
                         (let γ := M.deref (| M.read (| self |) |) in
                         let _ :=
                           M.is_struct_tuple (| γ, "solana_program_option::COption::None" |) in
-                        M.write (|
-                          M.deref (| M.read (| self |) |),
-                          Value.StructTuple
-                            "solana_program_option::COption::Some"
-                            []
-                            [ T ]
-                            [
-                              M.call_closure (|
-                                T,
-                                M.get_trait_method (|
-                                  "core::ops::function::FnOnce",
-                                  F,
-                                  [],
-                                  [ Ty.tuple [] ],
-                                  "call_once",
-                                  [],
-                                  []
-                                |),
-                                [ M.read (| f |); Value.Tuple [] ]
-                              |)
-                            ]
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "solana_program_option::COption::Some"
+                              []
+                              [ T ]
+                              [
+                                M.call_closure (|
+                                  T,
+                                  M.get_trait_method (|
+                                    "core::ops::function::FnOnce",
+                                    F,
+                                    [],
+                                    [ Ty.tuple [] ],
+                                    "call_once",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.read (| f |); Value.Tuple [] ]
+                                |)
+                              ])),
+                          fun rhs' =>
+                            ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                         |)));
                     fun γ => ltac:(M.monadic (Value.Tuple []))
                   ]

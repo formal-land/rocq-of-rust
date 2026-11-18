@@ -2828,24 +2828,27 @@ Module slice.
                                                     |)
                                                   |) in
                                                 let~ _ : Ty.tuple [] :=
-                                                  let β := k in
-                                                  M.write (|
-                                                    β,
-                                                    M.call_closure (|
-                                                      Ty.path "usize",
-                                                      BinOp.Wrap.sub,
-                                                      [
-                                                        M.read (| β |);
-                                                        M.call_closure (|
-                                                          Ty.path "usize",
-                                                          BinOp.Wrap.add,
-                                                          [
-                                                            M.read (| p |);
-                                                            Value.Integer IntegerKind.Usize 1
-                                                          ]
-                                                        |)
-                                                      ]
-                                                    |)
+                                                  M.let_ (|
+                                                    ltac:(M.monadic
+                                                      (M.call_closure (|
+                                                        Ty.path "usize",
+                                                        BinOp.Wrap.add,
+                                                        [
+                                                          M.read (| p |);
+                                                          Value.Integer IntegerKind.Usize 1
+                                                        ]
+                                                      |))),
+                                                    fun rhs' =>
+                                                      ltac:(M.monadic
+                                                        (let β := k in
+                                                        M.write (|
+                                                          β,
+                                                          M.call_closure (|
+                                                            Ty.path "usize",
+                                                            BinOp.Wrap.sub,
+                                                            [ M.read (| β |); rhs' ]
+                                                          |)
+                                                        |)))
                                                   |) in
                                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                               |)))

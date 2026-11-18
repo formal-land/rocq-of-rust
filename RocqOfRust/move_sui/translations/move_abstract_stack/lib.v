@@ -1100,13 +1100,18 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                         let new_len := M.copy (| Ty.path "u64", γ0_0 |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "move_abstract_stack::AbstractStack",
-                                "len"
-                              |),
-                              M.read (| new_len |)
+                            M.let_ (|
+                              ltac:(M.monadic (M.read (| new_len |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "move_abstract_stack::AbstractStack",
+                                      "len"
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           let~ _ : Ty.tuple [] :=
                             M.match_operator (|
@@ -1306,14 +1311,19 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                                         |) in
                                       M.alloc (|
                                         Ty.tuple [],
-                                        let β := M.deref (| M.read (| count |) |) in
-                                        M.write (|
-                                          β,
-                                          M.call_closure (|
-                                            Ty.path "u64",
-                                            BinOp.Wrap.add,
-                                            [ M.read (| β |); M.read (| n |) ]
-                                          |)
+                                        M.let_ (|
+                                          ltac:(M.monadic (M.read (| n |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (let β := M.deref (| M.read (| count |) |) in
+                                              M.write (|
+                                                β,
+                                                M.call_closure (|
+                                                  Ty.path "u64",
+                                                  BinOp.Wrap.add,
+                                                  [ M.read (| β |); rhs' ]
+                                                |)
+                                              |)))
                                         |)
                                       |)
                                     |)));
@@ -1858,14 +1868,19 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                                       M.is_struct_tuple (| γ, "core::cmp::Ordering::Greater" |) in
                                     M.read (|
                                       let~ _ : Ty.tuple [] :=
-                                        let β := M.deref (| M.read (| count |) |) in
-                                        M.write (|
-                                          β,
-                                          M.call_closure (|
-                                            Ty.path "u64",
-                                            BinOp.Wrap.sub,
-                                            [ M.read (| β |); M.read (| n |) ]
-                                          |)
+                                        M.let_ (|
+                                          ltac:(M.monadic (M.read (| n |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (let β := M.deref (| M.read (| count |) |) in
+                                              M.write (|
+                                                β,
+                                                M.call_closure (|
+                                                  Ty.path "u64",
+                                                  BinOp.Wrap.sub,
+                                                  [ M.read (| β |); rhs' ]
+                                                |)
+                                              |)))
                                         |) in
                                       M.alloc (|
                                         T,
@@ -1892,19 +1907,24 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                               ]
                             |) in
                           let~ _ : Ty.tuple [] :=
-                            let β :=
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "move_abstract_stack::AbstractStack",
-                                "len"
-                              |) in
-                            M.write (|
-                              β,
-                              M.call_closure (|
-                                Ty.path "u64",
-                                BinOp.Wrap.sub,
-                                [ M.read (| β |); M.read (| n |) ]
-                              |)
+                            M.let_ (|
+                              ltac:(M.monadic (M.read (| n |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (let β :=
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "move_abstract_stack::AbstractStack",
+                                      "len"
+                                    |) in
+                                  M.write (|
+                                    β,
+                                    M.call_closure (|
+                                      Ty.path "u64",
+                                      BinOp.Wrap.sub,
+                                      [ M.read (| β |); rhs' ]
+                                    |)
+                                  |)))
                             |) in
                           M.alloc (|
                             Ty.apply
@@ -2326,21 +2346,24 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                                                             ltac:(M.monadic
                                                               (M.read (|
                                                                 let~ _ : Ty.tuple [] :=
-                                                                  let β := rem in
-                                                                  M.write (|
-                                                                    β,
-                                                                    M.call_closure (|
-                                                                      Ty.path "u64",
-                                                                      BinOp.Wrap.sub,
-                                                                      [
-                                                                        M.read (| β |);
-                                                                        M.read (|
-                                                                          M.deref (|
-                                                                            M.read (| count |)
-                                                                          |)
+                                                                  M.let_ (|
+                                                                    ltac:(M.monadic
+                                                                      (M.read (|
+                                                                        M.deref (|
+                                                                          M.read (| count |)
                                                                         |)
-                                                                      ]
-                                                                    |)
+                                                                      |))),
+                                                                    fun rhs' =>
+                                                                      ltac:(M.monadic
+                                                                        (let β := rem in
+                                                                        M.write (|
+                                                                          β,
+                                                                          M.call_closure (|
+                                                                            Ty.path "u64",
+                                                                            BinOp.Wrap.sub,
+                                                                            [ M.read (| β |); rhs' ]
+                                                                          |)
+                                                                        |)))
                                                                   |) in
                                                                 let~ _ :
                                                                     Ty.tuple [ Ty.path "u64"; T ] :=
@@ -2419,15 +2442,22 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                                                     M.never_to_any (|
                                                       M.read (|
                                                         let~ _ : Ty.tuple [] :=
-                                                          let β :=
-                                                            M.deref (| M.read (| count |) |) in
-                                                          M.write (|
-                                                            β,
-                                                            M.call_closure (|
-                                                              Ty.path "u64",
-                                                              BinOp.Wrap.sub,
-                                                              [ M.read (| β |); M.read (| rem |) ]
-                                                            |)
+                                                          M.let_ (|
+                                                            ltac:(M.monadic (M.read (| rem |))),
+                                                            fun rhs' =>
+                                                              ltac:(M.monadic
+                                                                (let β :=
+                                                                  M.deref (|
+                                                                    M.read (| count |)
+                                                                  |) in
+                                                                M.write (|
+                                                                  β,
+                                                                  M.call_closure (|
+                                                                    Ty.path "u64",
+                                                                    BinOp.Wrap.sub,
+                                                                    [ M.read (| β |); rhs' ]
+                                                                  |)
+                                                                |)))
                                                           |) in
                                                         M.break (||)
                                                       |)
@@ -2453,19 +2483,20 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                   |)
                 |) in
               let~ _ : Ty.tuple [] :=
-                let β :=
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "move_abstract_stack::AbstractStack",
-                    "len"
-                  |) in
-                M.write (|
-                  β,
-                  M.call_closure (|
-                    Ty.path "u64",
-                    BinOp.Wrap.sub,
-                    [ M.read (| β |); M.read (| n |) ]
-                  |)
+                M.let_ (|
+                  ltac:(M.monadic (M.read (| n |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (let β :=
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "move_abstract_stack::AbstractStack",
+                          "len"
+                        |) in
+                      M.write (|
+                        β,
+                        M.call_closure (| Ty.path "u64", BinOp.Wrap.sub, [ M.read (| β |); rhs' ] |)
+                      |)))
                 |) in
               M.alloc (|
                 Ty.apply

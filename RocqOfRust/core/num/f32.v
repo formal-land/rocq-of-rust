@@ -1915,60 +1915,66 @@ Module f32.
                   [ M.read (| M.deref (| M.read (| other |) |) |) ]
                 |)) in
             let~ _ : Ty.tuple [] :=
-              let β := left in
-              M.write (|
-                β,
-                M.call_closure (|
-                  Ty.path "i32",
-                  BinOp.Wrap.bit_xor,
-                  [
-                    M.read (| β |);
-                    M.cast
-                      (Ty.path "i32")
-                      (M.call_closure (|
-                        Ty.path "u32",
-                        BinOp.Wrap.shr,
-                        [
-                          M.cast
-                            (Ty.path "u32")
-                            (M.call_closure (|
-                              Ty.path "i32",
-                              BinOp.Wrap.shr,
-                              [ M.read (| left |); Value.Integer IntegerKind.I32 31 ]
-                            |));
-                          Value.Integer IntegerKind.I32 1
-                        ]
-                      |))
-                  ]
-                |)
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.cast
+                    (Ty.path "i32")
+                    (M.call_closure (|
+                      Ty.path "u32",
+                      BinOp.Wrap.shr,
+                      [
+                        M.cast
+                          (Ty.path "u32")
+                          (M.call_closure (|
+                            Ty.path "i32",
+                            BinOp.Wrap.shr,
+                            [ M.read (| left |); Value.Integer IntegerKind.I32 31 ]
+                          |));
+                        Value.Integer IntegerKind.I32 1
+                      ]
+                    |)))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (let β := left in
+                    M.write (|
+                      β,
+                      M.call_closure (|
+                        Ty.path "i32",
+                        BinOp.Wrap.bit_xor,
+                        [ M.read (| β |); rhs' ]
+                      |)
+                    |)))
               |) in
             let~ _ : Ty.tuple [] :=
-              let β := right in
-              M.write (|
-                β,
-                M.call_closure (|
-                  Ty.path "i32",
-                  BinOp.Wrap.bit_xor,
-                  [
-                    M.read (| β |);
-                    M.cast
-                      (Ty.path "i32")
-                      (M.call_closure (|
-                        Ty.path "u32",
-                        BinOp.Wrap.shr,
-                        [
-                          M.cast
-                            (Ty.path "u32")
-                            (M.call_closure (|
-                              Ty.path "i32",
-                              BinOp.Wrap.shr,
-                              [ M.read (| right |); Value.Integer IntegerKind.I32 31 ]
-                            |));
-                          Value.Integer IntegerKind.I32 1
-                        ]
-                      |))
-                  ]
-                |)
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.cast
+                    (Ty.path "i32")
+                    (M.call_closure (|
+                      Ty.path "u32",
+                      BinOp.Wrap.shr,
+                      [
+                        M.cast
+                          (Ty.path "u32")
+                          (M.call_closure (|
+                            Ty.path "i32",
+                            BinOp.Wrap.shr,
+                            [ M.read (| right |); Value.Integer IntegerKind.I32 31 ]
+                          |));
+                        Value.Integer IntegerKind.I32 1
+                      ]
+                    |)))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (let β := right in
+                    M.write (|
+                      β,
+                      M.call_closure (|
+                        Ty.path "i32",
+                        BinOp.Wrap.bit_xor,
+                        [ M.read (| β |); rhs' ]
+                      |)
+                    |)))
               |) in
             M.alloc (|
               Ty.path "core::cmp::Ordering",

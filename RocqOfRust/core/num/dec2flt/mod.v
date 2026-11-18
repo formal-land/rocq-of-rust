@@ -754,37 +754,40 @@ Module num.
                 |)
               |) in
             let~ _ : Ty.tuple [] :=
-              let β := word in
-              M.write (|
-                β,
-                M.call_closure (|
-                  Ty.path "u64",
-                  BinOp.Wrap.bit_or,
-                  [
-                    M.read (| β |);
-                    M.call_closure (|
-                      Ty.path "u64",
-                      BinOp.Wrap.shl,
-                      [
-                        M.cast
-                          (Ty.path "u64")
-                          (M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              x,
-                              "core::num::dec2flt::common::BiasedFp",
-                              "p_biased"
-                            |)
-                          |));
-                        M.read (|
-                          get_constant (|
-                            "core::num::dec2flt::float::RawFloat::SIG_BITS",
-                            Ty.path "u32"
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
+                    Ty.path "u64",
+                    BinOp.Wrap.shl,
+                    [
+                      M.cast
+                        (Ty.path "u64")
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            x,
+                            "core::num::dec2flt::common::BiasedFp",
+                            "p_biased"
                           |)
+                        |));
+                      M.read (|
+                        get_constant (|
+                          "core::num::dec2flt::float::RawFloat::SIG_BITS",
+                          Ty.path "u32"
                         |)
-                      ]
-                    |)
-                  ]
-                |)
+                      |)
+                    ]
+                  |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (let β := word in
+                    M.write (|
+                      β,
+                      M.call_closure (|
+                        Ty.path "u64",
+                        BinOp.Wrap.bit_or,
+                        [ M.read (| β |); rhs' ]
+                      |)
+                    |)))
               |) in
             M.alloc (|
               F,
@@ -1163,13 +1166,18 @@ Module num.
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (|
-                      num,
-                      "core::num::dec2flt::decimal::Decimal",
-                      "negative"
-                    |),
-                    M.read (| negative |)
+                  M.let_ (|
+                    ltac:(M.monadic (M.read (| negative |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            num,
+                            "core::num::dec2flt::decimal::Decimal",
+                            "negative"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.match_operator (|

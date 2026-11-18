@@ -2024,43 +2024,52 @@ Module iter.
                     [ M.read (| skip_and_advance |); M.read (| remainder |) ]
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  let β := n in
-                  M.write (|
-                    β,
-                    M.call_closure (|
-                      Ty.path "usize",
-                      BinOp.Wrap.sub,
-                      [
-                        M.read (| β |);
-                        M.call_closure (|
-                          Ty.path "usize",
-                          M.get_associated_function (| Ty.path "usize", "saturating_sub", [], [] |),
-                          [ M.read (| advanced_inner |); M.read (| skip_inner |) ]
-                        |)
-                      ]
-                    |)
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.call_closure (|
+                        Ty.path "usize",
+                        M.get_associated_function (| Ty.path "usize", "saturating_sub", [], [] |),
+                        [ M.read (| advanced_inner |); M.read (| skip_inner |) ]
+                      |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (let β := n in
+                        M.write (|
+                          β,
+                          M.call_closure (|
+                            Ty.path "usize",
+                            BinOp.Wrap.sub,
+                            [ M.read (| β |); rhs' ]
+                          |)
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::iter::adapters::skip::Skip",
-                      "n"
-                    |),
-                    M.call_closure (|
-                      Ty.path "usize",
-                      M.get_associated_function (| Ty.path "usize", "saturating_sub", [], [] |),
-                      [
-                        M.read (|
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.call_closure (|
+                        Ty.path "usize",
+                        M.get_associated_function (| Ty.path "usize", "saturating_sub", [], [] |),
+                        [
+                          M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::iter::adapters::skip::Skip",
+                              "n"
+                            |)
+                          |);
+                          M.read (| advanced_inner |)
+                        ]
+                      |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
                           M.SubPointer.get_struct_record_field (|
                             M.deref (| M.read (| self |) |),
                             "core::iter::adapters::skip::Skip",
                             "n"
-                          |)
-                        |);
-                        M.read (| advanced_inner |)
-                      ]
-                    |)
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.match_operator (|

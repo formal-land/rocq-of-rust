@@ -355,18 +355,20 @@ Module mem.
               M.deref (|
                 M.read (|
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.deref (| M.read (| self |) |),
-                      M.call_closure (|
-                        Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
-                        M.get_associated_function (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
                           Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
-                          "new",
-                          [],
-                          []
-                        |),
-                        [ M.read (| val |) ]
-                      |)
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
+                            "new",
+                            [],
+                            []
+                          |),
+                          [ M.read (| val |) ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                     |) in
                   M.alloc (|
                     Ty.apply (Ty.path "&mut") [] [ T ],

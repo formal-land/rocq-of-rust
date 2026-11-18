@@ -7825,14 +7825,19 @@ Module string.
                                                   ]
                                                 |) in
                                               let~ _ : Ty.tuple [] :=
-                                                let β := len in
-                                                M.write (|
-                                                  β,
-                                                  M.call_closure (|
-                                                    Ty.path "usize",
-                                                    BinOp.Wrap.add,
-                                                    [ M.read (| β |); M.read (| count |) ]
-                                                  |)
+                                                M.let_ (|
+                                                  ltac:(M.monadic (M.read (| count |))),
+                                                  fun rhs' =>
+                                                    ltac:(M.monadic
+                                                      (let β := len in
+                                                      M.write (|
+                                                        β,
+                                                        M.call_closure (|
+                                                          Ty.path "usize",
+                                                          BinOp.Wrap.add,
+                                                          [ M.read (| β |); rhs' ]
+                                                        |)
+                                                      |)))
                                                 |) in
                                               M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                             |)))
@@ -8162,19 +8167,24 @@ Module string.
                                             |) in
                                           M.read (|
                                             let~ _ : Ty.tuple [] :=
-                                              let β :=
-                                                M.SubPointer.get_struct_record_field (|
-                                                  guard,
-                                                  "alloc::string::retain::SetLenOnDrop",
-                                                  "del_bytes"
-                                                |) in
-                                              M.write (|
-                                                β,
-                                                M.call_closure (|
-                                                  Ty.path "usize",
-                                                  BinOp.Wrap.add,
-                                                  [ M.read (| β |); M.read (| ch_len |) ]
-                                                |)
+                                              M.let_ (|
+                                                ltac:(M.monadic (M.read (| ch_len |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (let β :=
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        guard,
+                                                        "alloc::string::retain::SetLenOnDrop",
+                                                        "del_bytes"
+                                                      |) in
+                                                    M.write (|
+                                                      β,
+                                                      M.call_closure (|
+                                                        Ty.path "usize",
+                                                        BinOp.Wrap.add,
+                                                        [ M.read (| β |); rhs' ]
+                                                      |)
+                                                    |)))
                                               |) in
                                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                           |)));
@@ -8366,19 +8376,24 @@ Module string.
                                     ]
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  let β :=
-                                    M.SubPointer.get_struct_record_field (|
-                                      guard,
-                                      "alloc::string::retain::SetLenOnDrop",
-                                      "idx"
-                                    |) in
-                                  M.write (|
-                                    β,
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      BinOp.Wrap.add,
-                                      [ M.read (| β |); M.read (| ch_len |) ]
-                                    |)
+                                  M.let_ (|
+                                    ltac:(M.monadic (M.read (| ch_len |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (let β :=
+                                          M.SubPointer.get_struct_record_field (|
+                                            guard,
+                                            "alloc::string::retain::SetLenOnDrop",
+                                            "idx"
+                                          |) in
+                                        M.write (|
+                                          β,
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            BinOp.Wrap.add,
+                                            [ M.read (| β |); rhs' ]
+                                          |)
+                                        |)))
                                   |) in
                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
                               |)));

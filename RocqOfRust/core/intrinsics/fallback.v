@@ -1343,14 +1343,19 @@ Module intrinsics.
                             let carry := M.copy (| Ty.path "bool", γ0_1 |) in
                             M.read (|
                               let~ _ : Ty.tuple [] :=
-                                let β := high in
-                                M.write (|
-                                  β,
-                                  M.call_closure (|
-                                    Ty.path "u128",
-                                    BinOp.Wrap.add,
-                                    [ M.read (| β |); M.cast (Ty.path "u128") (M.read (| carry |)) ]
-                                  |)
+                                M.let_ (|
+                                  ltac:(M.monadic (M.cast (Ty.path "u128") (M.read (| carry |)))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (let β := high in
+                                      M.write (|
+                                        β,
+                                        M.call_closure (|
+                                          Ty.path "u128",
+                                          BinOp.Wrap.add,
+                                          [ M.read (| β |); rhs' ]
+                                        |)
+                                      |)))
                                 |) in
                               M.alloc (|
                                 Ty.tuple [ Ty.path "u128"; Ty.path "u128" ],
@@ -1378,17 +1383,20 @@ Module intrinsics.
                                         let carry := M.copy (| Ty.path "bool", γ0_1 |) in
                                         M.read (|
                                           let~ _ : Ty.tuple [] :=
-                                            let β := high in
-                                            M.write (|
-                                              β,
-                                              M.call_closure (|
-                                                Ty.path "u128",
-                                                BinOp.Wrap.add,
-                                                [
-                                                  M.read (| β |);
-                                                  M.cast (Ty.path "u128") (M.read (| carry |))
-                                                ]
-                                              |)
+                                            M.let_ (|
+                                              ltac:(M.monadic
+                                                (M.cast (Ty.path "u128") (M.read (| carry |)))),
+                                              fun rhs' =>
+                                                ltac:(M.monadic
+                                                  (let β := high in
+                                                  M.write (|
+                                                    β,
+                                                    M.call_closure (|
+                                                      Ty.path "u128",
+                                                      BinOp.Wrap.add,
+                                                      [ M.read (| β |); rhs' ]
+                                                    |)
+                                                  |)))
                                             |) in
                                           M.alloc (|
                                             Ty.tuple [ Ty.path "u128"; Ty.path "u128" ],

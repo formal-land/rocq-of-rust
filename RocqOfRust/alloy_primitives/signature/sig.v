@@ -2805,57 +2805,63 @@ Module signature.
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_array_field (| sig, Value.Integer IntegerKind.Usize 64 |),
-                  M.call_closure (|
-                    Ty.path "u8",
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
-                      "unwrap_or",
-                      [],
-                      []
-                    |),
-                    [
-                      M.call_closure (|
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
+                      Ty.path "u8",
+                      M.get_associated_function (|
                         Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
-                        M.get_associated_function (|
-                          Ty.path "alloy_primitives::signature::parity::Parity",
-                          "y_parity_byte_non_eip155",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "alloy_primitives::signature::sig::Signature",
-                              "v"
+                        "unwrap_or",
+                        [],
+                        []
+                      |),
+                      [
+                        M.call_closure (|
+                          Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
+                          M.get_associated_function (|
+                            Ty.path "alloy_primitives::signature::parity::Parity",
+                            "y_parity_byte_non_eip155",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloy_primitives::signature::sig::Signature",
+                                "v"
+                              |)
                             |)
-                          |)
-                        ]
-                      |);
-                      M.call_closure (|
-                        Ty.path "u8",
-                        M.get_associated_function (|
-                          Ty.path "alloy_primitives::signature::parity::Parity",
-                          "y_parity_byte",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "alloy_primitives::signature::sig::Signature",
-                              "v"
+                          ]
+                        |);
+                        M.call_closure (|
+                          Ty.path "u8",
+                          M.get_associated_function (|
+                            Ty.path "alloy_primitives::signature::parity::Parity",
+                            "y_parity_byte",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloy_primitives::signature::sig::Signature",
+                                "v"
+                              |)
                             |)
-                          |)
-                        ]
-                      |)
-                    ]
-                  |)
+                          ]
+                        |)
+                      ]
+                    |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_array_field (| sig, Value.Integer IntegerKind.Usize 64 |),
+                        rhs'
+                      |)))
                 |) in
               sig
             |)))

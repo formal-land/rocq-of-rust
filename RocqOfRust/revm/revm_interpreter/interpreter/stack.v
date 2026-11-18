@@ -6891,67 +6891,72 @@ Module interpreter.
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
-                        M.write (|
-                          M.deref (|
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    []
-                                ],
-                              M.get_trait_method (|
-                                "core::ops::index::IndexMut",
-                                Ty.apply
-                                  (Ty.path "alloc::vec::Vec")
-                                  []
-                                  [
+                        M.let_ (|
+                          ltac:(M.monadic (M.read (| val |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (M.write (|
+                                M.deref (|
+                                  M.call_closure (|
                                     Ty.apply
-                                      (Ty.path "ruint::Uint")
+                                      (Ty.path "&mut")
+                                      []
                                       [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      [];
-                                    Ty.path "alloc::alloc::Global"
-                                  ],
-                                [],
-                                [ Ty.path "usize" ],
-                                "index_mut",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.MutRef,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "revm_interpreter::interpreter::stack::Stack",
-                                    "data"
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ],
+                                    M.get_trait_method (|
+                                      "core::ops::index::IndexMut",
+                                      Ty.apply
+                                        (Ty.path "alloc::vec::Vec")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "ruint::Uint")
+                                            [
+                                              Value.Integer IntegerKind.Usize 256;
+                                              Value.Integer IntegerKind.Usize 4
+                                            ]
+                                            [];
+                                          Ty.path "alloc::alloc::Global"
+                                        ],
+                                      [],
+                                      [ Ty.path "usize" ],
+                                      "index_mut",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "revm_interpreter::interpreter::stack::Stack",
+                                          "data"
+                                        |)
+                                      |);
+                                      M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.sub,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            BinOp.Wrap.sub,
+                                            [ M.read (| len |); M.read (| no_from_top |) ]
+                                          |);
+                                          Value.Integer IntegerKind.Usize 1
+                                        ]
+                                      |)
+                                    ]
                                   |)
-                                |);
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  BinOp.Wrap.sub,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      BinOp.Wrap.sub,
-                                      [ M.read (| len |); M.read (| no_from_top |) ]
-                                    |);
-                                    Value.Integer IntegerKind.Usize 1
-                                  ]
-                                |)
-                              ]
-                            |)
-                          |),
-                          M.read (| val |)
+                                |),
+                                rhs'
+                              |)))
                         |) in
                       M.alloc (|
                         Ty.apply

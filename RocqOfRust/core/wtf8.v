@@ -6708,18 +6708,24 @@ Module wtf8.
                                                       |) in
                                                     M.read (|
                                                       let~ _ : Ty.tuple [] :=
-                                                        M.write (|
-                                                          M.SubPointer.get_struct_record_field (|
-                                                            M.deref (| M.read (| self |) |),
-                                                            "core::wtf8::EncodeWide",
-                                                            "extra"
-                                                          |),
-                                                          M.read (|
-                                                            M.SubPointer.get_array_field (|
-                                                              buf,
-                                                              Value.Integer IntegerKind.Usize 1
-                                                            |)
-                                                          |)
+                                                        M.let_ (|
+                                                          ltac:(M.monadic
+                                                            (M.read (|
+                                                              M.SubPointer.get_array_field (|
+                                                                buf,
+                                                                Value.Integer IntegerKind.Usize 1
+                                                              |)
+                                                            |))),
+                                                          fun rhs' =>
+                                                            ltac:(M.monadic
+                                                              (M.write (|
+                                                                M.SubPointer.get_struct_record_field (|
+                                                                  M.deref (| M.read (| self |) |),
+                                                                  "core::wtf8::EncodeWide",
+                                                                  "extra"
+                                                                |),
+                                                                rhs'
+                                                              |)))
                                                         |) in
                                                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                                     |)));

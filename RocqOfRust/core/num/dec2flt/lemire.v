@@ -230,14 +230,19 @@ Module num.
                       [ M.read (| w |) ]
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β := w in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.shl,
-                        [ M.read (| β |); M.read (| lz |) ]
-                      |)
+                    M.let_ (|
+                      ltac:(M.monadic (M.read (| lz |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β := w in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.shl,
+                              [ M.read (| β |); rhs' ]
+                            |)
+                          |)))
                     |) in
                   M.alloc (|
                     Ty.path "core::num::dec2flt::common::BiasedFp",
@@ -515,48 +520,54 @@ Module num.
                                                 ]
                                               |) in
                                             let~ _ : Ty.tuple [] :=
-                                              let β := mantissa in
-                                              M.write (|
-                                                β,
-                                                M.call_closure (|
-                                                  Ty.path "u64",
-                                                  BinOp.Wrap.shr,
-                                                  [
-                                                    M.read (| β |);
-                                                    M.call_closure (|
-                                                      Ty.path "i32",
-                                                      BinOp.Wrap.add,
-                                                      [
-                                                        M.call_closure (|
-                                                          Ty.path "i32",
-                                                          UnOp.neg,
-                                                          [ M.read (| power2 |) ]
-                                                        |);
-                                                        Value.Integer IntegerKind.I32 1
-                                                      ]
-                                                    |)
-                                                  ]
-                                                |)
+                                              M.let_ (|
+                                                ltac:(M.monadic
+                                                  (M.call_closure (|
+                                                    Ty.path "i32",
+                                                    BinOp.Wrap.add,
+                                                    [
+                                                      M.call_closure (|
+                                                        Ty.path "i32",
+                                                        UnOp.neg,
+                                                        [ M.read (| power2 |) ]
+                                                      |);
+                                                      Value.Integer IntegerKind.I32 1
+                                                    ]
+                                                  |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (let β := mantissa in
+                                                    M.write (|
+                                                      β,
+                                                      M.call_closure (|
+                                                        Ty.path "u64",
+                                                        BinOp.Wrap.shr,
+                                                        [ M.read (| β |); rhs' ]
+                                                      |)
+                                                    |)))
                                               |) in
                                             let~ _ : Ty.tuple [] :=
-                                              let β := mantissa in
-                                              M.write (|
-                                                β,
-                                                M.call_closure (|
-                                                  Ty.path "u64",
-                                                  BinOp.Wrap.add,
-                                                  [
-                                                    M.read (| β |);
-                                                    M.call_closure (|
-                                                      Ty.path "u64",
-                                                      BinOp.Wrap.bit_and,
-                                                      [
-                                                        M.read (| mantissa |);
-                                                        Value.Integer IntegerKind.U64 1
-                                                      ]
-                                                    |)
-                                                  ]
-                                                |)
+                                              M.let_ (|
+                                                ltac:(M.monadic
+                                                  (M.call_closure (|
+                                                    Ty.path "u64",
+                                                    BinOp.Wrap.bit_and,
+                                                    [
+                                                      M.read (| mantissa |);
+                                                      Value.Integer IntegerKind.U64 1
+                                                    ]
+                                                  |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (let β := mantissa in
+                                                    M.write (|
+                                                      β,
+                                                      M.call_closure (|
+                                                        Ty.path "u64",
+                                                        BinOp.Wrap.add,
+                                                        [ M.read (| β |); rhs' ]
+                                                      |)
+                                                    |)))
                                               |) in
                                             let~ _ : Ty.tuple [] :=
                                               let β := mantissa in
@@ -757,21 +768,24 @@ Module num.
                                           |) in
                                         M.read (|
                                           let~ _ : Ty.tuple [] :=
-                                            let β := mantissa in
-                                            M.write (|
-                                              β,
-                                              M.call_closure (|
-                                                Ty.path "u64",
-                                                BinOp.Wrap.bit_and,
-                                                [
-                                                  M.read (| β |);
-                                                  M.call_closure (|
-                                                    Ty.path "u64",
-                                                    UnOp.not,
-                                                    [ Value.Integer IntegerKind.U64 1 ]
-                                                  |)
-                                                ]
-                                              |)
+                                            M.let_ (|
+                                              ltac:(M.monadic
+                                                (M.call_closure (|
+                                                  Ty.path "u64",
+                                                  UnOp.not,
+                                                  [ Value.Integer IntegerKind.U64 1 ]
+                                                |))),
+                                              fun rhs' =>
+                                                ltac:(M.monadic
+                                                  (let β := mantissa in
+                                                  M.write (|
+                                                    β,
+                                                    M.call_closure (|
+                                                      Ty.path "u64",
+                                                      BinOp.Wrap.bit_and,
+                                                      [ M.read (| β |); rhs' ]
+                                                    |)
+                                                  |)))
                                             |) in
                                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                         |)));
@@ -779,21 +793,24 @@ Module num.
                                   ]
                                 |) in
                               let~ _ : Ty.tuple [] :=
-                                let β := mantissa in
-                                M.write (|
-                                  β,
-                                  M.call_closure (|
-                                    Ty.path "u64",
-                                    BinOp.Wrap.add,
-                                    [
-                                      M.read (| β |);
-                                      M.call_closure (|
-                                        Ty.path "u64",
-                                        BinOp.Wrap.bit_and,
-                                        [ M.read (| mantissa |); Value.Integer IntegerKind.U64 1 ]
-                                      |)
-                                    ]
-                                  |)
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (M.call_closure (|
+                                      Ty.path "u64",
+                                      BinOp.Wrap.bit_and,
+                                      [ M.read (| mantissa |); Value.Integer IntegerKind.U64 1 ]
+                                    |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (let β := mantissa in
+                                      M.write (|
+                                        β,
+                                        M.call_closure (|
+                                          Ty.path "u64",
+                                          BinOp.Wrap.add,
+                                          [ M.read (| β |); rhs' ]
+                                        |)
+                                      |)))
                                 |) in
                               let~ _ : Ty.tuple [] :=
                                 let β := mantissa in
@@ -875,35 +892,38 @@ Module num.
                                   ]
                                 |) in
                               let~ _ : Ty.tuple [] :=
-                                let β := mantissa in
-                                M.write (|
-                                  β,
-                                  M.call_closure (|
-                                    Ty.path "u64",
-                                    BinOp.Wrap.bit_and,
-                                    [
-                                      M.read (| β |);
-                                      M.call_closure (|
-                                        Ty.path "u64",
-                                        UnOp.not,
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "u64",
-                                            BinOp.Wrap.shl,
-                                            [
-                                              Value.Integer IntegerKind.U64 1;
-                                              M.read (|
-                                                get_constant (|
-                                                  "core::num::dec2flt::float::RawFloat::SIG_BITS",
-                                                  Ty.path "u32"
-                                                |)
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (M.call_closure (|
+                                      Ty.path "u64",
+                                      UnOp.not,
+                                      [
+                                        M.call_closure (|
+                                          Ty.path "u64",
+                                          BinOp.Wrap.shl,
+                                          [
+                                            Value.Integer IntegerKind.U64 1;
+                                            M.read (|
+                                              get_constant (|
+                                                "core::num::dec2flt::float::RawFloat::SIG_BITS",
+                                                Ty.path "u32"
                                               |)
-                                            ]
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                  |)
+                                            |)
+                                          ]
+                                        |)
+                                      ]
+                                    |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (let β := mantissa in
+                                      M.write (|
+                                        β,
+                                        M.call_closure (|
+                                          Ty.path "u64",
+                                          BinOp.Wrap.bit_and,
+                                          [ M.read (| β |); rhs' ]
+                                        |)
+                                      |)))
                                 |) in
                               let~ _ : Ty.tuple [] :=
                                 M.match_operator (|

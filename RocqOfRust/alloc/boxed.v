@@ -8031,27 +8031,29 @@ Module boxed.
                 ltac:(M.monadic
                   (M.read (|
                     let~ _ : Ty.tuple [] :=
-                      M.write (|
-                        M.deref (| M.read (| self |) |),
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "alloc::boxed::Box")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ T ]; A ],
-                          M.get_trait_method (|
-                            "core::clone::Clone",
+                      M.let_ (|
+                        ltac:(M.monadic
+                          (M.call_closure (|
                             Ty.apply
                               (Ty.path "alloc::boxed::Box")
                               []
                               [ Ty.apply (Ty.path "slice") [] [ T ]; A ],
-                            [],
-                            [],
-                            "clone",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| source |) |) |) ]
-                        |)
+                            M.get_trait_method (|
+                              "core::clone::Clone",
+                              Ty.apply
+                                (Ty.path "alloc::boxed::Box")
+                                []
+                                [ Ty.apply (Ty.path "slice") [] [ T ]; A ],
+                              [],
+                              [],
+                              "clone",
+                              [],
+                              []
+                            |),
+                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| source |) |) |) ]
+                          |))),
+                        fun rhs' =>
+                          ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                       |) in
                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
                   |)))

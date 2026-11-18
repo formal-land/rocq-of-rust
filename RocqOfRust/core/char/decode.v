@@ -1001,17 +1001,23 @@ Module char.
                                                 M.never_to_any (|
                                                   M.read (|
                                                     let~ _ : Ty.tuple [] :=
-                                                      M.write (|
-                                                        M.SubPointer.get_struct_record_field (|
-                                                          M.deref (| M.read (| self |) |),
-                                                          "core::char::decode::DecodeUtf16",
-                                                          "buf"
-                                                        |),
-                                                        Value.StructTuple
-                                                          "core::option::Option::Some"
-                                                          []
-                                                          [ Ty.path "u16" ]
-                                                          [ M.read (| u2 |) ]
+                                                      M.let_ (|
+                                                        ltac:(M.monadic
+                                                          (Value.StructTuple
+                                                            "core::option::Option::Some"
+                                                            []
+                                                            [ Ty.path "u16" ]
+                                                            [ M.read (| u2 |) ])),
+                                                        fun rhs' =>
+                                                          ltac:(M.monadic
+                                                            (M.write (|
+                                                              M.SubPointer.get_struct_record_field (|
+                                                                M.deref (| M.read (| self |) |),
+                                                                "core::char::decode::DecodeUtf16",
+                                                                "buf"
+                                                              |),
+                                                              rhs'
+                                                            |)))
                                                       |) in
                                                     M.return_ (|
                                                       Value.StructTuple

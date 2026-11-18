@@ -6519,15 +6519,21 @@ Module array.
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.read (|
                                 let~ _ : Ty.tuple [] :=
-                                  M.write (|
-                                    M.SubPointer.get_array_field (| buf, M.read (| i |) |),
-                                    M.borrow (|
-                                      Pointer.Kind.ConstPointer,
-                                      M.SubPointer.get_array_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        M.read (| i |)
-                                      |)
-                                    |)
+                                  M.let_ (|
+                                    ltac:(M.monadic
+                                      (M.borrow (|
+                                        Pointer.Kind.ConstPointer,
+                                        M.SubPointer.get_array_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          M.read (| i |)
+                                        |)
+                                      |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (M.write (|
+                                          M.SubPointer.get_array_field (| buf, M.read (| i |) |),
+                                          rhs'
+                                        |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
                                   let β := i in
@@ -6650,15 +6656,21 @@ Module array.
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.read (|
                                 let~ _ : Ty.tuple [] :=
-                                  M.write (|
-                                    M.SubPointer.get_array_field (| buf, M.read (| i |) |),
-                                    M.borrow (|
-                                      Pointer.Kind.MutPointer,
-                                      M.SubPointer.get_array_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        M.read (| i |)
-                                      |)
-                                    |)
+                                  M.let_ (|
+                                    ltac:(M.monadic
+                                      (M.borrow (|
+                                        Pointer.Kind.MutPointer,
+                                        M.SubPointer.get_array_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          M.read (| i |)
+                                        |)
+                                      |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (M.write (|
+                                          M.SubPointer.get_array_field (| buf, M.read (| i |) |),
+                                          rhs'
+                                        |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
                                   let β := i in
@@ -7889,26 +7901,32 @@ Module array.
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::array::Guard",
-                  "initialized"
-                |),
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_associated_function (| Ty.path "usize", "unchecked_add", [], [] |),
-                  [
-                    M.read (|
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
+                    Ty.path "usize",
+                    M.get_associated_function (| Ty.path "usize", "unchecked_add", [], [] |),
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::array::Guard",
+                          "initialized"
+                        |)
+                      |);
+                      Value.Integer IntegerKind.Usize 1
+                    ]
+                  |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
                       M.SubPointer.get_struct_record_field (|
                         M.deref (| M.read (| self |) |),
                         "core::array::Guard",
                         "initialized"
-                      |)
-                    |);
-                    Value.Integer IntegerKind.Usize 1
-                  ]
-                |)
+                      |),
+                      rhs'
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))

@@ -1092,48 +1092,62 @@ Module slice.
                                                                     |)
                                                                   |) in
                                                                 let~ _ : Ty.tuple [] :=
-                                                                  M.write (|
-                                                                    M.SubPointer.get_tuple_field (|
-                                                                      M.deref (|
-                                                                        M.call_closure (|
-                                                                          Ty.apply
-                                                                            (Ty.path "&mut")
-                                                                            []
-                                                                            [
-                                                                              Ty.tuple
-                                                                                [ K; Ty.path "u32" ]
-                                                                            ],
-                                                                          M.get_trait_method (|
-                                                                            "core::ops::index::IndexMut",
-                                                                            Ty.apply
-                                                                              (Ty.path
-                                                                                "alloc::vec::Vec")
-                                                                              []
-                                                                              [
-                                                                                Ty.tuple
-                                                                                  [ K; Ty.path "u32"
-                                                                                  ];
-                                                                                Ty.path
-                                                                                  "alloc::alloc::Global"
-                                                                              ],
-                                                                            [],
-                                                                            [ Ty.path "usize" ],
-                                                                            "index_mut",
-                                                                            [],
-                                                                            []
+                                                                  M.let_ (|
+                                                                    ltac:(M.monadic
+                                                                      (M.read (| index |))),
+                                                                    fun rhs' =>
+                                                                      ltac:(M.monadic
+                                                                        (M.write (|
+                                                                          M.SubPointer.get_tuple_field (|
+                                                                            M.deref (|
+                                                                              M.call_closure (|
+                                                                                Ty.apply
+                                                                                  (Ty.path "&mut")
+                                                                                  []
+                                                                                  [
+                                                                                    Ty.tuple
+                                                                                      [
+                                                                                        K;
+                                                                                        Ty.path
+                                                                                          "u32"
+                                                                                      ]
+                                                                                  ],
+                                                                                M.get_trait_method (|
+                                                                                  "core::ops::index::IndexMut",
+                                                                                  Ty.apply
+                                                                                    (Ty.path
+                                                                                      "alloc::vec::Vec")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.tuple
+                                                                                        [
+                                                                                          K;
+                                                                                          Ty.path
+                                                                                            "u32"
+                                                                                        ];
+                                                                                      Ty.path
+                                                                                        "alloc::alloc::Global"
+                                                                                    ],
+                                                                                  [],
+                                                                                  [ Ty.path "usize"
+                                                                                  ],
+                                                                                  "index_mut",
+                                                                                  [],
+                                                                                  []
+                                                                                |),
+                                                                                [
+                                                                                  M.borrow (|
+                                                                                    Pointer.Kind.MutRef,
+                                                                                    indices
+                                                                                  |);
+                                                                                  M.read (| i |)
+                                                                                ]
+                                                                              |)
+                                                                            |),
+                                                                            1
                                                                           |),
-                                                                          [
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.MutRef,
-                                                                              indices
-                                                                            |);
-                                                                            M.read (| i |)
-                                                                          ]
-                                                                        |)
-                                                                      |),
-                                                                      1
-                                                                    |),
-                                                                    M.read (| index |)
+                                                                          rhs'
+                                                                        |)))
                                                                   |) in
                                                                 let~ _ : Ty.tuple [] :=
                                                                   M.call_closure (|
@@ -1635,41 +1649,46 @@ Module slice.
                                                   |)
                                                 |) in
                                               let~ _ : Ty.tuple [] :=
-                                                M.write (|
-                                                  M.SubPointer.get_tuple_field (|
-                                                    M.deref (|
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "&mut")
-                                                          []
-                                                          [ Ty.tuple [ K; Ty.path "usize" ] ],
-                                                        M.get_trait_method (|
-                                                          "core::ops::index::IndexMut",
-                                                          Ty.apply
-                                                            (Ty.path "alloc::vec::Vec")
-                                                            []
-                                                            [
-                                                              Ty.tuple [ K; Ty.path "usize" ];
-                                                              Ty.path "alloc::alloc::Global"
-                                                            ],
-                                                          [],
-                                                          [ Ty.path "usize" ],
-                                                          "index_mut",
-                                                          [],
-                                                          []
+                                                M.let_ (|
+                                                  ltac:(M.monadic (M.read (| index |))),
+                                                  fun rhs' =>
+                                                    ltac:(M.monadic
+                                                      (M.write (|
+                                                        M.SubPointer.get_tuple_field (|
+                                                          M.deref (|
+                                                            M.call_closure (|
+                                                              Ty.apply
+                                                                (Ty.path "&mut")
+                                                                []
+                                                                [ Ty.tuple [ K; Ty.path "usize" ] ],
+                                                              M.get_trait_method (|
+                                                                "core::ops::index::IndexMut",
+                                                                Ty.apply
+                                                                  (Ty.path "alloc::vec::Vec")
+                                                                  []
+                                                                  [
+                                                                    Ty.tuple [ K; Ty.path "usize" ];
+                                                                    Ty.path "alloc::alloc::Global"
+                                                                  ],
+                                                                [],
+                                                                [ Ty.path "usize" ],
+                                                                "index_mut",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.borrow (|
+                                                                  Pointer.Kind.MutRef,
+                                                                  indices
+                                                                |);
+                                                                M.read (| i |)
+                                                              ]
+                                                            |)
+                                                          |),
+                                                          1
                                                         |),
-                                                        [
-                                                          M.borrow (|
-                                                            Pointer.Kind.MutRef,
-                                                            indices
-                                                          |);
-                                                          M.read (| i |)
-                                                        ]
-                                                      |)
-                                                    |),
-                                                    1
-                                                  |),
-                                                  M.read (| index |)
+                                                        rhs'
+                                                      |)))
                                                 |) in
                                               let~ _ : Ty.tuple [] :=
                                                 M.call_closure (|

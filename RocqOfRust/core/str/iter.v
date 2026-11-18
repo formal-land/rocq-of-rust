@@ -518,22 +518,25 @@ Module str.
                                               |) in
                                             M.read (|
                                               let~ _ : Ty.tuple [] :=
-                                                let β := bytes_skipped in
-                                                M.write (|
-                                                  β,
-                                                  M.call_closure (|
-                                                    Ty.path "usize",
-                                                    BinOp.Wrap.add,
-                                                    [
-                                                      M.read (| β |);
-                                                      M.read (|
-                                                        get_constant (|
-                                                          "core::str::iter::advance_by::CHUNK_SIZE",
-                                                          Ty.path "usize"
-                                                        |)
+                                                M.let_ (|
+                                                  ltac:(M.monadic
+                                                    (M.read (|
+                                                      get_constant (|
+                                                        "core::str::iter::advance_by::CHUNK_SIZE",
+                                                        Ty.path "usize"
                                                       |)
-                                                    ]
-                                                  |)
+                                                    |))),
+                                                  fun rhs' =>
+                                                    ltac:(M.monadic
+                                                      (let β := bytes_skipped in
+                                                      M.write (|
+                                                        β,
+                                                        M.call_closure (|
+                                                          Ty.path "usize",
+                                                          BinOp.Wrap.add,
+                                                          [ M.read (| β |); rhs' ]
+                                                        |)
+                                                      |)))
                                                 |) in
                                               let~ start_bytes :
                                                   Ty.apply
@@ -678,41 +681,49 @@ Module str.
                                                                               M.read (|
                                                                                 let~ _ :
                                                                                     Ty.tuple [] :=
-                                                                                  M.write (|
-                                                                                    M.SubPointer.get_array_field (|
-                                                                                      start_bytes,
-                                                                                      M.read (| i |)
-                                                                                    |),
-                                                                                    M.call_closure (|
-                                                                                      Ty.path
-                                                                                        "bool",
-                                                                                      UnOp.not,
-                                                                                      [
-                                                                                        M.call_closure (|
-                                                                                          Ty.path
-                                                                                            "bool",
-                                                                                          M.get_function (|
-                                                                                            "core::str::validations::utf8_is_cont_byte",
-                                                                                            [],
-                                                                                            []
-                                                                                          |),
-                                                                                          [
-                                                                                            M.read (|
-                                                                                              M.SubPointer.get_array_field (|
-                                                                                                M.deref (|
+                                                                                  M.let_ (|
+                                                                                    ltac:(M.monadic
+                                                                                      (M.call_closure (|
+                                                                                        Ty.path
+                                                                                          "bool",
+                                                                                        UnOp.not,
+                                                                                        [
+                                                                                          M.call_closure (|
+                                                                                            Ty.path
+                                                                                              "bool",
+                                                                                            M.get_function (|
+                                                                                              "core::str::validations::utf8_is_cont_byte",
+                                                                                              [],
+                                                                                              []
+                                                                                            |),
+                                                                                            [
+                                                                                              M.read (|
+                                                                                                M.SubPointer.get_array_field (|
+                                                                                                  M.deref (|
+                                                                                                    M.read (|
+                                                                                                      chunk
+                                                                                                    |)
+                                                                                                  |),
                                                                                                   M.read (|
-                                                                                                    chunk
+                                                                                                    i
                                                                                                   |)
-                                                                                                |),
-                                                                                                M.read (|
-                                                                                                  i
                                                                                                 |)
                                                                                               |)
+                                                                                            ]
+                                                                                          |)
+                                                                                        ]
+                                                                                      |))),
+                                                                                    fun rhs' =>
+                                                                                      ltac:(M.monadic
+                                                                                        (M.write (|
+                                                                                          M.SubPointer.get_array_field (|
+                                                                                            start_bytes,
+                                                                                            M.read (|
+                                                                                              i
                                                                                             |)
-                                                                                          ]
-                                                                                        |)
-                                                                                      ]
-                                                                                    |)
+                                                                                          |),
+                                                                                          rhs'
+                                                                                        |)))
                                                                                   |) in
                                                                                 M.alloc (|
                                                                                   Ty.tuple [],
@@ -732,20 +743,37 @@ Module str.
                                                     |))
                                                 |) in
                                               let~ _ : Ty.tuple [] :=
-                                                let β := remainder in
-                                                M.write (|
-                                                  β,
-                                                  M.call_closure (|
-                                                    Ty.path "usize",
-                                                    BinOp.Wrap.sub,
-                                                    [
-                                                      M.read (| β |);
-                                                      M.cast
-                                                        (Ty.path "usize")
-                                                        (M.call_closure (|
-                                                          Ty.path "u8",
-                                                          M.get_trait_method (|
-                                                            "core::iter::traits::iterator::Iterator",
+                                                M.let_ (|
+                                                  ltac:(M.monadic
+                                                    (M.cast
+                                                      (Ty.path "usize")
+                                                      (M.call_closure (|
+                                                        Ty.path "u8",
+                                                        M.get_trait_method (|
+                                                          "core::iter::traits::iterator::Iterator",
+                                                          Ty.apply
+                                                            (Ty.path
+                                                              "core::iter::adapters::map::Map")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path
+                                                                  "core::array::iter::IntoIter")
+                                                                [ Value.Integer IntegerKind.Usize 32
+                                                                ]
+                                                                [ Ty.path "bool" ];
+                                                              Ty.function
+                                                                [ Ty.path "bool" ]
+                                                                (Ty.path "u8")
+                                                            ],
+                                                          [],
+                                                          [],
+                                                          "sum",
+                                                          [],
+                                                          [ Ty.path "u8" ]
+                                                        |),
+                                                        [
+                                                          M.call_closure (|
                                                             Ty.apply
                                                               (Ty.path
                                                                 "core::iter::adapters::map::Map")
@@ -764,34 +792,27 @@ Module str.
                                                                   [ Ty.path "bool" ]
                                                                   (Ty.path "u8")
                                                               ],
-                                                            [],
-                                                            [],
-                                                            "sum",
-                                                            [],
-                                                            [ Ty.path "u8" ]
-                                                          |),
-                                                          [
-                                                            M.call_closure (|
+                                                            M.get_trait_method (|
+                                                              "core::iter::traits::iterator::Iterator",
                                                               Ty.apply
                                                                 (Ty.path
-                                                                  "core::iter::adapters::map::Map")
-                                                                []
-                                                                [
-                                                                  Ty.apply
-                                                                    (Ty.path
-                                                                      "core::array::iter::IntoIter")
-                                                                    [
-                                                                      Value.Integer
-                                                                        IntegerKind.Usize
-                                                                        32
-                                                                    ]
-                                                                    [ Ty.path "bool" ];
-                                                                  Ty.function
-                                                                    [ Ty.path "bool" ]
-                                                                    (Ty.path "u8")
-                                                                ],
-                                                              M.get_trait_method (|
-                                                                "core::iter::traits::iterator::Iterator",
+                                                                  "core::array::iter::IntoIter")
+                                                                [ Value.Integer IntegerKind.Usize 32
+                                                                ]
+                                                                [ Ty.path "bool" ],
+                                                              [],
+                                                              [],
+                                                              "map",
+                                                              [],
+                                                              [
+                                                                Ty.path "u8";
+                                                                Ty.function
+                                                                  [ Ty.path "bool" ]
+                                                                  (Ty.path "u8")
+                                                              ]
+                                                            |),
+                                                            [
+                                                              M.call_closure (|
                                                                 Ty.apply
                                                                   (Ty.path
                                                                     "core::array::iter::IntoIter")
@@ -801,84 +822,68 @@ Module str.
                                                                       32
                                                                   ]
                                                                   [ Ty.path "bool" ],
-                                                                [],
-                                                                [],
-                                                                "map",
-                                                                [],
-                                                                [
-                                                                  Ty.path "u8";
-                                                                  Ty.function
-                                                                    [ Ty.path "bool" ]
-                                                                    (Ty.path "u8")
-                                                                ]
-                                                              |),
-                                                              [
-                                                                M.call_closure (|
+                                                                M.get_trait_method (|
+                                                                  "core::iter::traits::collect::IntoIterator",
                                                                   Ty.apply
-                                                                    (Ty.path
-                                                                      "core::array::iter::IntoIter")
+                                                                    (Ty.path "array")
                                                                     [
                                                                       Value.Integer
                                                                         IntegerKind.Usize
                                                                         32
                                                                     ]
                                                                     [ Ty.path "bool" ],
-                                                                  M.get_trait_method (|
-                                                                    "core::iter::traits::collect::IntoIterator",
-                                                                    Ty.apply
-                                                                      (Ty.path "array")
-                                                                      [
-                                                                        Value.Integer
-                                                                          IntegerKind.Usize
-                                                                          32
-                                                                      ]
-                                                                      [ Ty.path "bool" ],
-                                                                    [],
-                                                                    [],
-                                                                    "into_iter",
-                                                                    [],
-                                                                    []
-                                                                  |),
-                                                                  [ M.read (| start_bytes |) ]
-                                                                |);
-                                                                M.closure
-                                                                  (fun γ =>
-                                                                    ltac:(M.monadic
-                                                                      match γ with
-                                                                      | [ α0 ] =>
-                                                                        ltac:(M.monadic
-                                                                          (M.match_operator (|
-                                                                            Ty.path "u8",
-                                                                            M.alloc (|
-                                                                              Ty.path "bool",
-                                                                              α0
-                                                                            |),
-                                                                            [
-                                                                              fun γ =>
-                                                                                ltac:(M.monadic
-                                                                                  (let i :=
-                                                                                    M.copy (|
-                                                                                      Ty.path
-                                                                                        "bool",
-                                                                                      γ
-                                                                                    |) in
-                                                                                  M.cast
-                                                                                    (Ty.path "u8")
-                                                                                    (M.read (|
-                                                                                      i
-                                                                                    |))))
-                                                                            ]
-                                                                          |)))
-                                                                      | _ =>
-                                                                        M.impossible
-                                                                          "wrong number of arguments"
-                                                                      end))
-                                                              ]
-                                                            |)
-                                                          ]
-                                                        |))
-                                                    ]
-                                                  |)
+                                                                  [],
+                                                                  [],
+                                                                  "into_iter",
+                                                                  [],
+                                                                  []
+                                                                |),
+                                                                [ M.read (| start_bytes |) ]
+                                                              |);
+                                                              M.closure
+                                                                (fun γ =>
+                                                                  ltac:(M.monadic
+                                                                    match γ with
+                                                                    | [ α0 ] =>
+                                                                      ltac:(M.monadic
+                                                                        (M.match_operator (|
+                                                                          Ty.path "u8",
+                                                                          M.alloc (|
+                                                                            Ty.path "bool",
+                                                                            α0
+                                                                          |),
+                                                                          [
+                                                                            fun γ =>
+                                                                              ltac:(M.monadic
+                                                                                (let i :=
+                                                                                  M.copy (|
+                                                                                    Ty.path "bool",
+                                                                                    γ
+                                                                                  |) in
+                                                                                M.cast
+                                                                                  (Ty.path "u8")
+                                                                                  (M.read (| i |))))
+                                                                          ]
+                                                                        |)))
+                                                                    | _ =>
+                                                                      M.impossible
+                                                                        "wrong number of arguments"
+                                                                    end))
+                                                            ]
+                                                          |)
+                                                        ]
+                                                      |)))),
+                                                  fun rhs' =>
+                                                    ltac:(M.monadic
+                                                      (let β := remainder in
+                                                      M.write (|
+                                                        β,
+                                                        M.call_closure (|
+                                                          Ty.path "usize",
+                                                          BinOp.Wrap.sub,
+                                                          [ M.read (| β |); rhs' ]
+                                                        |)
+                                                      |)))
                                                 |) in
                                               M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                             |)));
@@ -2525,26 +2530,29 @@ Module str.
                               ]
                             |) in
                           let~ _ : Ty.tuple [] :=
-                            let β :=
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::str::iter::CharIndices",
-                                "front_offset"
-                              |) in
-                            M.write (|
-                              β,
-                              M.call_closure (|
-                                Ty.path "usize",
-                                BinOp.Wrap.add,
-                                [
-                                  M.read (| β |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    BinOp.Wrap.sub,
-                                    [ M.read (| pre_len |); M.read (| len |) ]
-                                  |)
-                                ]
-                              |)
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.call_closure (|
+                                  Ty.path "usize",
+                                  BinOp.Wrap.sub,
+                                  [ M.read (| pre_len |); M.read (| len |) ]
+                                |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (let β :=
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::str::iter::CharIndices",
+                                      "front_offset"
+                                    |) in
+                                  M.write (|
+                                    β,
+                                    M.call_closure (|
+                                      Ty.path "usize",
+                                      BinOp.Wrap.add,
+                                      [ M.read (| β |); rhs' ]
+                                    |)
+                                  |)))
                             |) in
                           M.alloc (|
                             Ty.apply
@@ -4758,13 +4766,18 @@ Module str.
                                   ]
                                 |) in
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::str::iter::SplitInternal",
-                                    "start"
-                                  |),
-                                  M.read (| b |)
+                                M.let_ (|
+                                  ltac:(M.monadic (M.read (| b |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::str::iter::SplitInternal",
+                                          "start"
+                                        |),
+                                        rhs'
+                                      |)))
                                 |) in
                               M.alloc (|
                                 Ty.apply
@@ -4999,13 +5012,18 @@ Module str.
                                   ]
                                 |) in
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::str::iter::SplitInternal",
-                                    "start"
-                                  |),
-                                  M.read (| b |)
+                                M.let_ (|
+                                  ltac:(M.monadic (M.read (| b |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::str::iter::SplitInternal",
+                                          "start"
+                                        |),
+                                        rhs'
+                                      |)))
                                 |) in
                               M.alloc (|
                                 Ty.apply
@@ -5425,13 +5443,18 @@ Module str.
                                   ]
                                 |) in
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::str::iter::SplitInternal",
-                                    "end"
-                                  |),
-                                  M.read (| a |)
+                                M.let_ (|
+                                  ltac:(M.monadic (M.read (| a |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::str::iter::SplitInternal",
+                                          "end"
+                                        |),
+                                        rhs'
+                                      |)))
                                 |) in
                               M.alloc (|
                                 Ty.apply
@@ -5917,13 +5940,18 @@ Module str.
                                   ]
                                 |) in
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::str::iter::SplitInternal",
-                                    "end"
-                                  |),
-                                  M.read (| b |)
+                                M.let_ (|
+                                  ltac:(M.monadic (M.read (| b |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::str::iter::SplitInternal",
+                                          "end"
+                                        |),
+                                        rhs'
+                                      |)))
                                 |) in
                               M.alloc (|
                                 Ty.apply
@@ -13891,18 +13919,24 @@ Module str.
                                                         |) in
                                                       M.read (|
                                                         let~ _ : Ty.tuple [] :=
-                                                          M.write (|
-                                                            M.SubPointer.get_struct_record_field (|
-                                                              M.deref (| M.read (| self |) |),
-                                                              "core::str::iter::EncodeUtf16",
-                                                              "extra"
-                                                            |),
-                                                            M.read (|
-                                                              M.SubPointer.get_array_field (|
-                                                                buf,
-                                                                Value.Integer IntegerKind.Usize 1
-                                                              |)
-                                                            |)
+                                                          M.let_ (|
+                                                            ltac:(M.monadic
+                                                              (M.read (|
+                                                                M.SubPointer.get_array_field (|
+                                                                  buf,
+                                                                  Value.Integer IntegerKind.Usize 1
+                                                                |)
+                                                              |))),
+                                                            fun rhs' =>
+                                                              ltac:(M.monadic
+                                                                (M.write (|
+                                                                  M.SubPointer.get_struct_record_field (|
+                                                                    M.deref (| M.read (| self |) |),
+                                                                    "core::str::iter::EncodeUtf16",
+                                                                    "extra"
+                                                                  |),
+                                                                  rhs'
+                                                                |)))
                                                           |) in
                                                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                                       |)));

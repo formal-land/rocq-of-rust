@@ -323,20 +323,23 @@ Module slice.
                                 |) in
                               M.alloc (|
                                 Ty.tuple [],
-                                M.write (|
-                                  M.deref (| M.read (| len |) |),
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_function (|
-                                      "core::intrinsics::unchecked_sub",
-                                      [],
-                                      [ Ty.path "usize" ]
-                                    |),
-                                    [
-                                      M.read (| M.deref (| M.read (| len |) |) |);
-                                      M.read (| offset |)
-                                    ]
-                                  |)
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (M.call_closure (|
+                                      Ty.path "usize",
+                                      M.get_function (|
+                                        "core::intrinsics::unchecked_sub",
+                                        [],
+                                        [ Ty.path "usize" ]
+                                      |),
+                                      [
+                                        M.read (| M.deref (| M.read (| len |) |) |);
+                                        M.read (| offset |)
+                                      ]
+                                    |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (| M.deref (| M.read (| len |) |), rhs' |)))
                                 |)
                               |)
                             |)));
@@ -396,31 +399,37 @@ Module slice.
                                 |) in
                               M.alloc (|
                                 Ty.tuple [],
-                                M.write (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::slice::iter::Iter",
-                                    "ptr"
-                                  |),
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                                    M.get_associated_function (|
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (M.call_closure (|
                                       Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                                      "add",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.read (|
+                                      M.get_associated_function (|
+                                        Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                                        "add",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "core::slice::iter::Iter",
+                                            "ptr"
+                                          |)
+                                        |);
+                                        M.read (| offset |)
+                                      ]
+                                    |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (|
                                         M.SubPointer.get_struct_record_field (|
                                           M.deref (| M.read (| self |) |),
                                           "core::slice::iter::Iter",
                                           "ptr"
-                                        |)
-                                      |);
-                                      M.read (| offset |)
-                                    ]
-                                  |)
+                                        |),
+                                        rhs'
+                                      |)))
                                 |)
                               |)
                             |)))
@@ -518,17 +527,19 @@ Module slice.
                           |)
                         |) in
                       let~ _ : Ty.tuple [] :=
-                        M.write (|
-                          M.deref (| M.read (| len |) |),
-                          M.call_closure (|
-                            Ty.path "usize",
-                            M.get_function (|
-                              "core::intrinsics::unchecked_sub",
-                              [],
-                              [ Ty.path "usize" ]
-                            |),
-                            [ M.read (| M.deref (| M.read (| len |) |) |); M.read (| offset |) ]
-                          |)
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.call_closure (|
+                              Ty.path "usize",
+                              M.get_function (|
+                                "core::intrinsics::unchecked_sub",
+                                [],
+                                [ Ty.path "usize" ]
+                              |),
+                              [ M.read (| M.deref (| M.read (| len |) |) |); M.read (| offset |) ]
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic (M.write (| M.deref (| M.read (| len |) |), rhs' |)))
                         |) in
                       M.SubPointer.get_struct_record_field (|
                         M.deref (| M.read (| self |) |),
@@ -580,18 +591,20 @@ Module slice.
                           |)
                         |) in
                       let~ _ : Ty.tuple [] :=
-                        M.write (|
-                          M.deref (| M.read (| end_ |) |),
-                          M.call_closure (|
-                            Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                            M.get_associated_function (|
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.call_closure (|
                               Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                              "sub",
-                              [],
-                              []
-                            |),
-                            [ M.read (| M.deref (| M.read (| end_ |) |) |); M.read (| offset |) ]
-                          |)
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                                "sub",
+                                [],
+                                []
+                              |),
+                              [ M.read (| M.deref (| M.read (| end_ |) |) |); M.read (| offset |) ]
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic (M.write (| M.deref (| M.read (| end_ |) |), rhs' |)))
                         |) in
                       M.deref (| M.read (| end_ |) |)
                     |)))
@@ -970,41 +983,48 @@ Module slice.
                                   ]
                                 |) in
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::slice::iter::Iter",
-                                    "end_or_len"
-                                  |),
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "*const") [] [ T ],
-                                    M.pointer_coercion
-                                      M.PointerCoercion.MutToConstPointer
-                                      (Ty.apply (Ty.path "*mut") [] [ T ])
-                                      (Ty.apply (Ty.path "*const") [] [ T ]),
-                                    [
-                                      M.call_closure (|
-                                        Ty.apply (Ty.path "*mut") [] [ T ],
-                                        M.get_function (|
-                                          "core::ptr::without_provenance_mut",
-                                          [],
-                                          [ T ]
-                                        |),
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            M.get_associated_function (|
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (M.call_closure (|
+                                      Ty.apply (Ty.path "*const") [] [ T ],
+                                      M.pointer_coercion
+                                        M.PointerCoercion.MutToConstPointer
+                                        (Ty.apply (Ty.path "*mut") [] [ T ])
+                                        (Ty.apply (Ty.path "*const") [] [ T ]),
+                                      [
+                                        M.call_closure (|
+                                          Ty.apply (Ty.path "*mut") [] [ T ],
+                                          M.get_function (|
+                                            "core::ptr::without_provenance_mut",
+                                            [],
+                                            [ T ]
+                                          |),
+                                          [
+                                            M.call_closure (|
                                               Ty.path "usize",
-                                              "unchecked_sub",
-                                              [],
-                                              []
-                                            |),
-                                            [ M.read (| len |); Value.Integer IntegerKind.Usize 1 ]
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                  |)
+                                              M.get_associated_function (|
+                                                Ty.path "usize",
+                                                "unchecked_sub",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| len |); Value.Integer IntegerKind.Usize 1
+                                              ]
+                                            |)
+                                          ]
+                                        |)
+                                      ]
+                                    |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::slice::iter::Iter",
+                                          "end_or_len"
+                                        |),
+                                        rhs'
+                                      |)))
                                 |) in
                               M.alloc (| Ty.tuple [], Value.Tuple [] |)
                             |)));
@@ -1092,22 +1112,28 @@ Module slice.
                                   ]
                                 |) in
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::slice::iter::Iter",
-                                    "ptr"
-                                  |),
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                                    M.get_associated_function (|
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (M.call_closure (|
                                       Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                                      "add",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| ptr |); Value.Integer IntegerKind.Usize 1 ]
-                                  |)
+                                      M.get_associated_function (|
+                                        Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                                        "add",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| ptr |); Value.Integer IntegerKind.Usize 1 ]
+                                    |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::slice::iter::Iter",
+                                          "ptr"
+                                        |),
+                                        rhs'
+                                      |)))
                                 |) in
                               M.alloc (| Ty.tuple [], Value.Tuple [] |)
                             |)))
@@ -2498,13 +2524,19 @@ Module slice.
                                               |) in
                                             M.alloc (|
                                               Ty.tuple [],
-                                              M.write (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::slice::iter::Iter",
-                                                  "ptr"
-                                                |),
-                                                M.read (| M.deref (| M.read (| end_ |) |) |)
+                                              M.let_ (|
+                                                ltac:(M.monadic
+                                                  (M.read (| M.deref (| M.read (| end_ |) |) |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (M.write (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| self |) |),
+                                                        "core::slice::iter::Iter",
+                                                        "ptr"
+                                                      |),
+                                                      rhs'
+                                                    |)))
                                               |)
                                             |)
                                           |)))
@@ -5234,15 +5266,21 @@ Module slice.
                                               |) in
                                             M.alloc (|
                                               Ty.tuple [],
-                                              M.write (|
-                                                M.deref (| M.read (| end_ |) |),
-                                                M.read (|
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| self |) |),
-                                                    "core::slice::iter::Iter",
-                                                    "ptr"
-                                                  |)
-                                                |)
+                                              M.let_ (|
+                                                ltac:(M.monadic
+                                                  (M.read (|
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      M.deref (| M.read (| self |) |),
+                                                      "core::slice::iter::Iter",
+                                                      "ptr"
+                                                    |)
+                                                  |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (M.write (|
+                                                      M.deref (| M.read (| end_ |) |),
+                                                      rhs'
+                                                    |)))
                                               |)
                                             |)
                                           |)))
@@ -6044,20 +6082,23 @@ Module slice.
                                 |) in
                               M.alloc (|
                                 Ty.tuple [],
-                                M.write (|
-                                  M.deref (| M.read (| len |) |),
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_function (|
-                                      "core::intrinsics::unchecked_sub",
-                                      [],
-                                      [ Ty.path "usize" ]
-                                    |),
-                                    [
-                                      M.read (| M.deref (| M.read (| len |) |) |);
-                                      M.read (| offset |)
-                                    ]
-                                  |)
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (M.call_closure (|
+                                      Ty.path "usize",
+                                      M.get_function (|
+                                        "core::intrinsics::unchecked_sub",
+                                        [],
+                                        [ Ty.path "usize" ]
+                                      |),
+                                      [
+                                        M.read (| M.deref (| M.read (| len |) |) |);
+                                        M.read (| offset |)
+                                      ]
+                                    |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (| M.deref (| M.read (| len |) |), rhs' |)))
                                 |)
                               |)
                             |)));
@@ -6117,31 +6158,37 @@ Module slice.
                                 |) in
                               M.alloc (|
                                 Ty.tuple [],
-                                M.write (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::slice::iter::IterMut",
-                                    "ptr"
-                                  |),
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                                    M.get_associated_function (|
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (M.call_closure (|
                                       Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                                      "add",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.read (|
+                                      M.get_associated_function (|
+                                        Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                                        "add",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "core::slice::iter::IterMut",
+                                            "ptr"
+                                          |)
+                                        |);
+                                        M.read (| offset |)
+                                      ]
+                                    |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (|
                                         M.SubPointer.get_struct_record_field (|
                                           M.deref (| M.read (| self |) |),
                                           "core::slice::iter::IterMut",
                                           "ptr"
-                                        |)
-                                      |);
-                                      M.read (| offset |)
-                                    ]
-                                  |)
+                                        |),
+                                        rhs'
+                                      |)))
                                 |)
                               |)
                             |)))
@@ -6239,17 +6286,19 @@ Module slice.
                           |)
                         |) in
                       let~ _ : Ty.tuple [] :=
-                        M.write (|
-                          M.deref (| M.read (| len |) |),
-                          M.call_closure (|
-                            Ty.path "usize",
-                            M.get_function (|
-                              "core::intrinsics::unchecked_sub",
-                              [],
-                              [ Ty.path "usize" ]
-                            |),
-                            [ M.read (| M.deref (| M.read (| len |) |) |); M.read (| offset |) ]
-                          |)
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.call_closure (|
+                              Ty.path "usize",
+                              M.get_function (|
+                                "core::intrinsics::unchecked_sub",
+                                [],
+                                [ Ty.path "usize" ]
+                              |),
+                              [ M.read (| M.deref (| M.read (| len |) |) |); M.read (| offset |) ]
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic (M.write (| M.deref (| M.read (| len |) |), rhs' |)))
                         |) in
                       M.SubPointer.get_struct_record_field (|
                         M.deref (| M.read (| self |) |),
@@ -6301,18 +6350,20 @@ Module slice.
                           |)
                         |) in
                       let~ _ : Ty.tuple [] :=
-                        M.write (|
-                          M.deref (| M.read (| end_ |) |),
-                          M.call_closure (|
-                            Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                            M.get_associated_function (|
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.call_closure (|
                               Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                              "sub",
-                              [],
-                              []
-                            |),
-                            [ M.read (| M.deref (| M.read (| end_ |) |) |); M.read (| offset |) ]
-                          |)
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                                "sub",
+                                [],
+                                []
+                              |),
+                              [ M.read (| M.deref (| M.read (| end_ |) |) |); M.read (| offset |) ]
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic (M.write (| M.deref (| M.read (| end_ |) |), rhs' |)))
                         |) in
                       M.deref (| M.read (| end_ |) |)
                     |)))
@@ -6718,32 +6769,38 @@ Module slice.
                                   ]
                                 |) in
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::slice::iter::IterMut",
-                                    "end_or_len"
-                                  |),
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "*mut") [] [ T ],
-                                    M.get_function (|
-                                      "core::ptr::without_provenance_mut",
-                                      [],
-                                      [ T ]
-                                    |),
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        M.get_associated_function (|
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (M.call_closure (|
+                                      Ty.apply (Ty.path "*mut") [] [ T ],
+                                      M.get_function (|
+                                        "core::ptr::without_provenance_mut",
+                                        [],
+                                        [ T ]
+                                      |),
+                                      [
+                                        M.call_closure (|
                                           Ty.path "usize",
-                                          "unchecked_sub",
-                                          [],
-                                          []
+                                          M.get_associated_function (|
+                                            Ty.path "usize",
+                                            "unchecked_sub",
+                                            [],
+                                            []
+                                          |),
+                                          [ M.read (| len |); Value.Integer IntegerKind.Usize 1 ]
+                                        |)
+                                      ]
+                                    |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::slice::iter::IterMut",
+                                          "end_or_len"
                                         |),
-                                        [ M.read (| len |); Value.Integer IntegerKind.Usize 1 ]
-                                      |)
-                                    ]
-                                  |)
+                                        rhs'
+                                      |)))
                                 |) in
                               M.alloc (| Ty.tuple [], Value.Tuple [] |)
                             |)));
@@ -6831,22 +6888,28 @@ Module slice.
                                   ]
                                 |) in
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::slice::iter::IterMut",
-                                    "ptr"
-                                  |),
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                                    M.get_associated_function (|
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (M.call_closure (|
                                       Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                                      "add",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| ptr |); Value.Integer IntegerKind.Usize 1 ]
-                                  |)
+                                      M.get_associated_function (|
+                                        Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                                        "add",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| ptr |); Value.Integer IntegerKind.Usize 1 ]
+                                    |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::slice::iter::IterMut",
+                                          "ptr"
+                                        |),
+                                        rhs'
+                                      |)))
                                 |) in
                               M.alloc (| Ty.tuple [], Value.Tuple [] |)
                             |)))
@@ -8283,13 +8346,19 @@ Module slice.
                                               |) in
                                             M.alloc (|
                                               Ty.tuple [],
-                                              M.write (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::slice::iter::IterMut",
-                                                  "ptr"
-                                                |),
-                                                M.read (| M.deref (| M.read (| end_ |) |) |)
+                                              M.let_ (|
+                                                ltac:(M.monadic
+                                                  (M.read (| M.deref (| M.read (| end_ |) |) |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (M.write (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| self |) |),
+                                                        "core::slice::iter::IterMut",
+                                                        "ptr"
+                                                      |),
+                                                      rhs'
+                                                    |)))
                                               |)
                                             |)
                                           |)))
@@ -11004,15 +11073,21 @@ Module slice.
                                               |) in
                                             M.alloc (|
                                               Ty.tuple [],
-                                              M.write (|
-                                                M.deref (| M.read (| end_ |) |),
-                                                M.read (|
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| self |) |),
-                                                    "core::slice::iter::IterMut",
-                                                    "ptr"
-                                                  |)
-                                                |)
+                                              M.let_ (|
+                                                ltac:(M.monadic
+                                                  (M.read (|
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      M.deref (| M.read (| self |) |),
+                                                      "core::slice::iter::IterMut",
+                                                      "ptr"
+                                                    |)
+                                                  |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (M.write (|
+                                                      M.deref (| M.read (| end_ |) |),
+                                                      rhs'
+                                                    |)))
                                               |)
                                             |)
                                           |)))

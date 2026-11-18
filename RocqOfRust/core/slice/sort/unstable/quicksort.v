@@ -1922,13 +1922,18 @@ Module slice.
                                 ]
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| gap |) |),
-                                  "core::slice::sort::unstable::quicksort::GapGuard",
-                                  "pos"
-                                |),
-                                M.read (| right |)
+                              M.let_ (|
+                                ltac:(M.monadic (M.read (| right |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| gap |) |),
+                                        "core::slice::sort::unstable::quicksort::GapGuard",
+                                        "pos"
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
                               M.call_closure (|
@@ -2349,70 +2354,85 @@ Module slice.
                                               ]
                                             |) in
                                           let~ _ : Ty.tuple [] :=
-                                            M.write (|
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| state |) |),
-                                                  "core::slice::sort::unstable::quicksort::PartitionState",
-                                                  "gap"
-                                                |),
-                                                "core::slice::sort::unstable::quicksort::GapGuardRaw",
-                                                "pos"
-                                              |),
-                                              M.read (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| state |) |),
-                                                  "core::slice::sort::unstable::quicksort::PartitionState",
-                                                  "right"
-                                                |)
-                                              |)
+                                            M.let_ (|
+                                              ltac:(M.monadic
+                                                (M.read (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| state |) |),
+                                                    "core::slice::sort::unstable::quicksort::PartitionState",
+                                                    "right"
+                                                  |)
+                                                |))),
+                                              fun rhs' =>
+                                                ltac:(M.monadic
+                                                  (M.write (|
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| state |) |),
+                                                        "core::slice::sort::unstable::quicksort::PartitionState",
+                                                        "gap"
+                                                      |),
+                                                      "core::slice::sort::unstable::quicksort::GapGuardRaw",
+                                                      "pos"
+                                                    |),
+                                                    rhs'
+                                                  |)))
                                             |) in
                                           let~ _ : Ty.tuple [] :=
-                                            let β :=
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (| M.read (| state |) |),
-                                                "core::slice::sort::unstable::quicksort::PartitionState",
-                                                "num_lt"
-                                              |) in
-                                            M.write (|
-                                              β,
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                BinOp.Wrap.add,
-                                                [
-                                                  M.read (| β |);
-                                                  M.cast
-                                                    (Ty.path "usize")
-                                                    (M.read (| right_is_lt |))
-                                                ]
-                                              |)
+                                            M.let_ (|
+                                              ltac:(M.monadic
+                                                (M.cast
+                                                  (Ty.path "usize")
+                                                  (M.read (| right_is_lt |)))),
+                                              fun rhs' =>
+                                                ltac:(M.monadic
+                                                  (let β :=
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      M.deref (| M.read (| state |) |),
+                                                      "core::slice::sort::unstable::quicksort::PartitionState",
+                                                      "num_lt"
+                                                    |) in
+                                                  M.write (|
+                                                    β,
+                                                    M.call_closure (|
+                                                      Ty.path "usize",
+                                                      BinOp.Wrap.add,
+                                                      [ M.read (| β |); rhs' ]
+                                                    |)
+                                                  |)))
                                             |) in
                                           let~ _ : Ty.tuple [] :=
-                                            M.write (|
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (| M.read (| state |) |),
-                                                "core::slice::sort::unstable::quicksort::PartitionState",
-                                                "right"
-                                              |),
-                                              M.call_closure (|
-                                                Ty.apply (Ty.path "*mut") [] [ T ],
-                                                M.get_associated_function (|
+                                            M.let_ (|
+                                              ltac:(M.monadic
+                                                (M.call_closure (|
                                                   Ty.apply (Ty.path "*mut") [] [ T ],
-                                                  "add",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.read (|
+                                                  M.get_associated_function (|
+                                                    Ty.apply (Ty.path "*mut") [] [ T ],
+                                                    "add",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.read (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| state |) |),
+                                                        "core::slice::sort::unstable::quicksort::PartitionState",
+                                                        "right"
+                                                      |)
+                                                    |);
+                                                    Value.Integer IntegerKind.Usize 1
+                                                  ]
+                                                |))),
+                                              fun rhs' =>
+                                                ltac:(M.monadic
+                                                  (M.write (|
                                                     M.SubPointer.get_struct_record_field (|
                                                       M.deref (| M.read (| state |) |),
                                                       "core::slice::sort::unstable::quicksort::PartitionState",
                                                       "right"
-                                                    |)
-                                                  |);
-                                                  Value.Integer IntegerKind.Usize 1
-                                                ]
-                                              |)
+                                                    |),
+                                                    rhs'
+                                                  |)))
                                             |) in
                                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                         |)))
@@ -2817,46 +2837,52 @@ Module slice.
                                 ]
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_struct_record_field (|
-                                  state,
-                                  "core::slice::sort::unstable::quicksort::PartitionState",
-                                  "right"
-                                |),
-                                M.match_operator (|
-                                  Ty.apply (Ty.path "*mut") [] [ T ],
-                                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ := is_done in
-                                        let _ :=
-                                          is_constant_or_break_match (|
-                                            M.read (| γ |),
-                                            Value.Bool true
-                                          |) in
-                                        M.read (|
-                                          M.SubPointer.get_struct_record_field (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.apply (Ty.path "*mut") [] [ T ],
+                                    M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ := is_done in
+                                          let _ :=
+                                            is_constant_or_break_match (|
+                                              M.read (| γ |),
+                                              Value.Bool true
+                                            |) in
+                                          M.read (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                state,
+                                                "core::slice::sort::unstable::quicksort::PartitionState",
+                                                "gap"
+                                              |),
+                                              "core::slice::sort::unstable::quicksort::GapGuardRaw",
+                                              "value"
+                                            |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (M.read (|
                                             M.SubPointer.get_struct_record_field (|
                                               state,
                                               "core::slice::sort::unstable::quicksort::PartitionState",
-                                              "gap"
-                                            |),
-                                            "core::slice::sort::unstable::quicksort::GapGuardRaw",
-                                            "value"
-                                          |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (M.read (|
-                                          M.SubPointer.get_struct_record_field (|
-                                            state,
-                                            "core::slice::sort::unstable::quicksort::PartitionState",
-                                            "right"
-                                          |)
-                                        |)))
-                                  ]
-                                |)
+                                              "right"
+                                            |)
+                                          |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        state,
+                                        "core::slice::sort::unstable::quicksort::PartitionState",
+                                        "right"
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
                               M.call_closure (|

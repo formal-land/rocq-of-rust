@@ -763,14 +763,19 @@ Module unicode.
                                         ]
                                       |) in
                                     let~ _ : Ty.tuple [] :=
-                                      let β := x in
-                                      M.write (|
-                                        β,
-                                        M.call_closure (|
-                                          Ty.path "i32",
-                                          BinOp.Wrap.sub,
-                                          [ M.read (| β |); M.read (| len |) ]
-                                        |)
+                                      M.let_ (|
+                                        ltac:(M.monadic (M.read (| len |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (let β := x in
+                                            M.write (|
+                                              β,
+                                              M.call_closure (|
+                                                Ty.path "i32",
+                                                BinOp.Wrap.sub,
+                                                [ M.read (| β |); rhs' ]
+                                              |)
+                                            |)))
                                       |) in
                                     let~ _ : Ty.tuple [] :=
                                       M.match_operator (|

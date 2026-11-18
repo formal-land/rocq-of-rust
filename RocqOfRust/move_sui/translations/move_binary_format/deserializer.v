@@ -38292,24 +38292,27 @@ Module deserializer.
                                           |) in
                                         M.read (|
                                           let~ _ : Ty.tuple [] :=
-                                            let β := flags in
-                                            M.write (|
-                                              β,
-                                              M.call_closure (|
-                                                Ty.path "u8",
-                                                BinOp.Wrap.bit_xor,
-                                                [
-                                                  M.read (| β |);
-                                                  M.read (|
-                                                    get_associated_constant (|
-                                                      Ty.path
-                                                        "move_binary_format::file_format::FunctionDefinition",
-                                                      "DEPRECATED_PUBLIC_BIT",
-                                                      Ty.path "u8"
-                                                    |)
+                                            M.let_ (|
+                                              ltac:(M.monadic
+                                                (M.read (|
+                                                  get_associated_constant (|
+                                                    Ty.path
+                                                      "move_binary_format::file_format::FunctionDefinition",
+                                                    "DEPRECATED_PUBLIC_BIT",
+                                                    Ty.path "u8"
                                                   |)
-                                                ]
-                                              |)
+                                                |))),
+                                              fun rhs' =>
+                                                ltac:(M.monadic
+                                                  (let β := flags in
+                                                  M.write (|
+                                                    β,
+                                                    M.call_closure (|
+                                                      Ty.path "u8",
+                                                      BinOp.Wrap.bit_xor,
+                                                      [ M.read (| β |); rhs' ]
+                                                    |)
+                                                  |)))
                                             |) in
                                           M.alloc (|
                                             Ty.path "move_binary_format::file_format::Visibility",
@@ -39600,24 +39603,27 @@ Module deserializer.
                                                   |) in
                                                 M.read (|
                                                   let~ _ : Ty.tuple [] :=
-                                                    let β := extra_flags in
-                                                    M.write (|
-                                                      β,
-                                                      M.call_closure (|
-                                                        Ty.path "u8",
-                                                        BinOp.Wrap.bit_xor,
-                                                        [
-                                                          M.read (| β |);
-                                                          M.read (|
-                                                            get_associated_constant (|
-                                                              Ty.path
-                                                                "move_binary_format::file_format::FunctionDefinition",
-                                                              "ENTRY",
-                                                              Ty.path "u8"
-                                                            |)
+                                                    M.let_ (|
+                                                      ltac:(M.monadic
+                                                        (M.read (|
+                                                          get_associated_constant (|
+                                                            Ty.path
+                                                              "move_binary_format::file_format::FunctionDefinition",
+                                                            "ENTRY",
+                                                            Ty.path "u8"
                                                           |)
-                                                        ]
-                                                      |)
+                                                        |))),
+                                                      fun rhs' =>
+                                                        ltac:(M.monadic
+                                                          (let β := extra_flags in
+                                                          M.write (|
+                                                            β,
+                                                            M.call_closure (|
+                                                              Ty.path "u8",
+                                                              BinOp.Wrap.bit_xor,
+                                                              [ M.read (| β |); rhs' ]
+                                                            |)
+                                                          |)))
                                                     |) in
                                                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                                 |)));
@@ -39902,24 +39908,27 @@ Module deserializer.
                                       |) in
                                     M.read (|
                                       let~ _ : Ty.tuple [] :=
-                                        let β := extra_flags in
-                                        M.write (|
-                                          β,
-                                          M.call_closure (|
-                                            Ty.path "u8",
-                                            BinOp.Wrap.bit_xor,
-                                            [
-                                              M.read (| β |);
-                                              M.read (|
-                                                get_associated_constant (|
-                                                  Ty.path
-                                                    "move_binary_format::file_format::FunctionDefinition",
-                                                  "NATIVE",
-                                                  Ty.path "u8"
-                                                |)
+                                        M.let_ (|
+                                          ltac:(M.monadic
+                                            (M.read (|
+                                              get_associated_constant (|
+                                                Ty.path
+                                                  "move_binary_format::file_format::FunctionDefinition",
+                                                "NATIVE",
+                                                Ty.path "u8"
                                               |)
-                                            ]
-                                          |)
+                                            |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (let β := extra_flags in
+                                              M.write (|
+                                                β,
+                                                M.call_closure (|
+                                                  Ty.path "u8",
+                                                  BinOp.Wrap.bit_xor,
+                                                  [ M.read (| β |); rhs' ]
+                                                |)
+                                              |)))
                                         |) in
                                       M.alloc (|
                                         Ty.apply

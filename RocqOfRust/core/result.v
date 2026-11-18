@@ -3742,21 +3742,22 @@ Module result.
                         [ Ty.apply (Ty.path "core::result::Result") [] [ T; E ] ],
                       γ0_1
                     |) in
-                  M.write (|
-                    M.deref (| M.read (| to |) |),
-                    M.call_closure (|
-                      Ty.apply (Ty.path "core::result::Result") [] [ T; E ],
-                      M.get_trait_method (|
-                        "core::clone::Clone",
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.call_closure (|
                         Ty.apply (Ty.path "core::result::Result") [] [ T; E ],
-                        [],
-                        [],
-                        "clone",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| from |) |) |) ]
-                    |)
+                        M.get_trait_method (|
+                          "core::clone::Clone",
+                          Ty.apply (Ty.path "core::result::Result") [] [ T; E ],
+                          [],
+                          [],
+                          "clone",
+                          [],
+                          []
+                        |),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| from |) |) |) ]
+                      |))),
+                    fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| to |) |), rhs' |)))
                   |)))
             ]
           |)))

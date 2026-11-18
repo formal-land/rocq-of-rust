@@ -3671,25 +3671,31 @@ Module errors.
             |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (|
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        M.deref (| M.read (| self |) |),
-                        "move_binary_format::errors::VMError",
-                        0
-                      |)
-                    |)
-                  |),
-                  "move_binary_format::errors::VMError_",
-                  "exec_state"
-                |),
-                Value.StructTuple
-                  "core::option::Option::None"
-                  []
-                  [ Ty.path "move_binary_format::errors::ExecutionState" ]
-                  []
+              M.let_ (|
+                ltac:(M.monadic
+                  (Value.StructTuple
+                    "core::option::Option::None"
+                    []
+                    [ Ty.path "move_binary_format::errors::ExecutionState" ]
+                    [])),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (|
+                          M.read (|
+                            M.SubPointer.get_struct_tuple_field (|
+                              M.deref (| M.read (| self |) |),
+                              "move_binary_format::errors::VMError",
+                              0
+                            |)
+                          |)
+                        |),
+                        "move_binary_format::errors::VMError_",
+                        "exec_state"
+                      |),
+                      rhs'
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -5992,25 +5998,31 @@ Module errors.
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (|
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "move_binary_format::errors::PartialVMError",
-                        0
-                      |)
-                    |)
-                  |),
-                  "move_binary_format::errors::PartialVMError_",
-                  "sub_status"
-                |),
-                Value.StructTuple
-                  "core::option::Option::Some"
-                  []
-                  [ Ty.path "u64" ]
-                  [ M.read (| sub_status |) ]
+              M.let_ (|
+                ltac:(M.monadic
+                  (Value.StructTuple
+                    "core::option::Option::Some"
+                    []
+                    [ Ty.path "u64" ]
+                    [ M.read (| sub_status |) ])),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (|
+                          M.read (|
+                            M.SubPointer.get_struct_tuple_field (|
+                              self,
+                              "move_binary_format::errors::PartialVMError",
+                              0
+                            |)
+                          |)
+                        |),
+                        "move_binary_format::errors::PartialVMError_",
+                        "sub_status"
+                      |),
+                      rhs'
+                    |)))
               |) in
             self
           |)))
@@ -6115,25 +6127,31 @@ Module errors.
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (|
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "move_binary_format::errors::PartialVMError",
-                        0
-                      |)
-                    |)
-                  |),
-                  "move_binary_format::errors::PartialVMError_",
-                  "message"
-                |),
-                Value.StructTuple
-                  "core::option::Option::Some"
-                  []
-                  [ Ty.path "alloc::string::String" ]
-                  [ M.read (| message |) ]
+              M.let_ (|
+                ltac:(M.monadic
+                  (Value.StructTuple
+                    "core::option::Option::Some"
+                    []
+                    [ Ty.path "alloc::string::String" ]
+                    [ M.read (| message |) ])),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (|
+                          M.read (|
+                            M.SubPointer.get_struct_tuple_field (|
+                              self,
+                              "move_binary_format::errors::PartialVMError",
+                              0
+                            |)
+                          |)
+                        |),
+                        "move_binary_format::errors::PartialVMError_",
+                        "message"
+                      |),
+                      rhs'
+                    |)))
               |) in
             self
           |)))
@@ -6243,25 +6261,31 @@ Module errors.
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (|
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "move_binary_format::errors::PartialVMError",
-                        0
-                      |)
-                    |)
-                  |),
-                  "move_binary_format::errors::PartialVMError_",
-                  "exec_state"
-                |),
-                Value.StructTuple
-                  "core::option::Option::Some"
-                  []
-                  [ Ty.path "move_binary_format::errors::ExecutionState" ]
-                  [ M.read (| exec_state |) ]
+              M.let_ (|
+                ltac:(M.monadic
+                  (Value.StructTuple
+                    "core::option::Option::Some"
+                    []
+                    [ Ty.path "move_binary_format::errors::ExecutionState" ]
+                    [ M.read (| exec_state |) ])),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (|
+                          M.read (|
+                            M.SubPointer.get_struct_tuple_field (|
+                              self,
+                              "move_binary_format::errors::PartialVMError",
+                              0
+                            |)
+                          |)
+                        |),
+                        "move_binary_format::errors::PartialVMError_",
+                        "exec_state"
+                      |),
+                      rhs'
+                    |)))
               |) in
             self
           |)))
@@ -6773,25 +6797,31 @@ Module errors.
                   fun γ =>
                     ltac:(M.monadic
                       (let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
-                      M.write (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (|
-                            M.read (|
-                              M.SubPointer.get_struct_tuple_field (|
-                                self,
-                                "move_binary_format::errors::PartialVMError",
-                                0
-                              |)
-                            |)
-                          |),
-                          "move_binary_format::errors::PartialVMError_",
-                          "message"
-                        |),
-                        Value.StructTuple
-                          "core::option::Option::Some"
-                          []
-                          [ Ty.path "alloc::string::String" ]
-                          [ M.read (| additional_message |) ]
+                      M.let_ (|
+                        ltac:(M.monadic
+                          (Value.StructTuple
+                            "core::option::Option::Some"
+                            []
+                            [ Ty.path "alloc::string::String" ]
+                            [ M.read (| additional_message |) ])),
+                        fun rhs' =>
+                          ltac:(M.monadic
+                            (M.write (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (|
+                                  M.read (|
+                                    M.SubPointer.get_struct_tuple_field (|
+                                      self,
+                                      "move_binary_format::errors::PartialVMError",
+                                      0
+                                    |)
+                                  |)
+                                |),
+                                "move_binary_format::errors::PartialVMError_",
+                                "message"
+                              |),
+                              rhs'
+                            |)))
                       |)))
                 ]
               |) in

@@ -1205,35 +1205,42 @@ Module str.
                                                                                                                                             _ :
                                                                                                                                           Ty.tuple
                                                                                                                                             [] :=
-                                                                                                                                        let
-                                                                                                                                              β :=
-                                                                                                                                          counts in
-                                                                                                                                        M.write (|
-                                                                                                                                          β,
-                                                                                                                                          M.call_closure (|
-                                                                                                                                            Ty.path
-                                                                                                                                              "usize",
-                                                                                                                                            BinOp.Wrap.add,
-                                                                                                                                            [
-                                                                                                                                              M.read (|
-                                                                                                                                                β
-                                                                                                                                              |);
-                                                                                                                                              M.call_closure (|
-                                                                                                                                                Ty.path
-                                                                                                                                                  "usize",
-                                                                                                                                                M.get_function (|
-                                                                                                                                                  "core::str::count::contains_non_continuation_byte",
-                                                                                                                                                  [],
-                                                                                                                                                  []
-                                                                                                                                                |),
-                                                                                                                                                [
-                                                                                                                                                  M.read (|
-                                                                                                                                                    word
-                                                                                                                                                  |)
-                                                                                                                                                ]
-                                                                                                                                              |)
-                                                                                                                                            ]
-                                                                                                                                          |)
+                                                                                                                                        M.let_ (|
+                                                                                                                                          ltac:(M.monadic
+                                                                                                                                            (M.call_closure (|
+                                                                                                                                              Ty.path
+                                                                                                                                                "usize",
+                                                                                                                                              M.get_function (|
+                                                                                                                                                "core::str::count::contains_non_continuation_byte",
+                                                                                                                                                [],
+                                                                                                                                                []
+                                                                                                                                              |),
+                                                                                                                                              [
+                                                                                                                                                M.read (|
+                                                                                                                                                  word
+                                                                                                                                                |)
+                                                                                                                                              ]
+                                                                                                                                            |))),
+                                                                                                                                          fun
+                                                                                                                                              rhs' =>
+                                                                                                                                            ltac:(M.monadic
+                                                                                                                                              (let
+                                                                                                                                                    β :=
+                                                                                                                                                counts in
+                                                                                                                                              M.write (|
+                                                                                                                                                β,
+                                                                                                                                                M.call_closure (|
+                                                                                                                                                  Ty.path
+                                                                                                                                                    "usize",
+                                                                                                                                                  BinOp.Wrap.add,
+                                                                                                                                                  [
+                                                                                                                                                    M.read (|
+                                                                                                                                                      β
+                                                                                                                                                    |);
+                                                                                                                                                    rhs'
+                                                                                                                                                  ]
+                                                                                                                                                |)
+                                                                                                                                              |)))
                                                                                                                                         |) in
                                                                                                                                       M.alloc (|
                                                                                                                                         Ty.tuple
@@ -1271,29 +1278,32 @@ Module str.
                                                                             |))
                                                                         |) in
                                                                       let~ _ : Ty.tuple [] :=
-                                                                        let β := total in
-                                                                        M.write (|
-                                                                          β,
-                                                                          M.call_closure (|
-                                                                            Ty.path "usize",
-                                                                            BinOp.Wrap.add,
-                                                                            [
-                                                                              M.read (| β |);
-                                                                              M.call_closure (|
-                                                                                Ty.path "usize",
-                                                                                M.get_function (|
-                                                                                  "core::str::count::sum_bytes_in_usize",
-                                                                                  [],
-                                                                                  []
-                                                                                |),
-                                                                                [
-                                                                                  M.read (|
-                                                                                    counts
-                                                                                  |)
-                                                                                ]
-                                                                              |)
-                                                                            ]
-                                                                          |)
+                                                                        M.let_ (|
+                                                                          ltac:(M.monadic
+                                                                            (M.call_closure (|
+                                                                              Ty.path "usize",
+                                                                              M.get_function (|
+                                                                                "core::str::count::sum_bytes_in_usize",
+                                                                                [],
+                                                                                []
+                                                                              |),
+                                                                              [ M.read (| counts |)
+                                                                              ]
+                                                                            |))),
+                                                                          fun rhs' =>
+                                                                            ltac:(M.monadic
+                                                                              (let β := total in
+                                                                              M.write (|
+                                                                                β,
+                                                                                M.call_closure (|
+                                                                                  Ty.path "usize",
+                                                                                  BinOp.Wrap.add,
+                                                                                  [
+                                                                                    M.read (| β |);
+                                                                                    rhs'
+                                                                                  ]
+                                                                                |)
+                                                                              |)))
                                                                         |) in
                                                                       M.alloc (|
                                                                         Ty.tuple [],
@@ -1547,35 +1557,42 @@ Module str.
                                                                                                                             _ :
                                                                                                                           Ty.tuple
                                                                                                                             [] :=
-                                                                                                                        let
-                                                                                                                              β :=
-                                                                                                                          counts in
-                                                                                                                        M.write (|
-                                                                                                                          β,
-                                                                                                                          M.call_closure (|
-                                                                                                                            Ty.path
-                                                                                                                              "usize",
-                                                                                                                            BinOp.Wrap.add,
-                                                                                                                            [
-                                                                                                                              M.read (|
-                                                                                                                                β
-                                                                                                                              |);
-                                                                                                                              M.call_closure (|
-                                                                                                                                Ty.path
-                                                                                                                                  "usize",
-                                                                                                                                M.get_function (|
-                                                                                                                                  "core::str::count::contains_non_continuation_byte",
-                                                                                                                                  [],
-                                                                                                                                  []
-                                                                                                                                |),
-                                                                                                                                [
-                                                                                                                                  M.read (|
-                                                                                                                                    word
-                                                                                                                                  |)
-                                                                                                                                ]
-                                                                                                                              |)
-                                                                                                                            ]
-                                                                                                                          |)
+                                                                                                                        M.let_ (|
+                                                                                                                          ltac:(M.monadic
+                                                                                                                            (M.call_closure (|
+                                                                                                                              Ty.path
+                                                                                                                                "usize",
+                                                                                                                              M.get_function (|
+                                                                                                                                "core::str::count::contains_non_continuation_byte",
+                                                                                                                                [],
+                                                                                                                                []
+                                                                                                                              |),
+                                                                                                                              [
+                                                                                                                                M.read (|
+                                                                                                                                  word
+                                                                                                                                |)
+                                                                                                                              ]
+                                                                                                                            |))),
+                                                                                                                          fun
+                                                                                                                              rhs' =>
+                                                                                                                            ltac:(M.monadic
+                                                                                                                              (let
+                                                                                                                                    β :=
+                                                                                                                                counts in
+                                                                                                                              M.write (|
+                                                                                                                                β,
+                                                                                                                                M.call_closure (|
+                                                                                                                                  Ty.path
+                                                                                                                                    "usize",
+                                                                                                                                  BinOp.Wrap.add,
+                                                                                                                                  [
+                                                                                                                                    M.read (|
+                                                                                                                                      β
+                                                                                                                                    |);
+                                                                                                                                    rhs'
+                                                                                                                                  ]
+                                                                                                                                |)
+                                                                                                                              |)))
                                                                                                                         |) in
                                                                                                                       M.alloc (|
                                                                                                                         Ty.tuple
@@ -1601,34 +1618,41 @@ Module str.
                                                                                     let~ _ :
                                                                                         Ty.tuple
                                                                                           [] :=
-                                                                                      let β :=
-                                                                                        total in
-                                                                                      M.write (|
-                                                                                        β,
-                                                                                        M.call_closure (|
-                                                                                          Ty.path
-                                                                                            "usize",
-                                                                                          BinOp.Wrap.add,
-                                                                                          [
-                                                                                            M.read (|
-                                                                                              β
-                                                                                            |);
-                                                                                            M.call_closure (|
-                                                                                              Ty.path
-                                                                                                "usize",
-                                                                                              M.get_function (|
-                                                                                                "core::str::count::sum_bytes_in_usize",
-                                                                                                [],
-                                                                                                []
-                                                                                              |),
-                                                                                              [
-                                                                                                M.read (|
-                                                                                                  counts
-                                                                                                |)
-                                                                                              ]
-                                                                                            |)
-                                                                                          ]
-                                                                                        |)
+                                                                                      M.let_ (|
+                                                                                        ltac:(M.monadic
+                                                                                          (M.call_closure (|
+                                                                                            Ty.path
+                                                                                              "usize",
+                                                                                            M.get_function (|
+                                                                                              "core::str::count::sum_bytes_in_usize",
+                                                                                              [],
+                                                                                              []
+                                                                                            |),
+                                                                                            [
+                                                                                              M.read (|
+                                                                                                counts
+                                                                                              |)
+                                                                                            ]
+                                                                                          |))),
+                                                                                        fun rhs' =>
+                                                                                          ltac:(M.monadic
+                                                                                            (let
+                                                                                                  β :=
+                                                                                              total in
+                                                                                            M.write (|
+                                                                                              β,
+                                                                                              M.call_closure (|
+                                                                                                Ty.path
+                                                                                                  "usize",
+                                                                                                BinOp.Wrap.add,
+                                                                                                [
+                                                                                                  M.read (|
+                                                                                                    β
+                                                                                                  |);
+                                                                                                  rhs'
+                                                                                                ]
+                                                                                              |)
+                                                                                            |)))
                                                                                       |) in
                                                                                     M.break (||)
                                                                                   |)

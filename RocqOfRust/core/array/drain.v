@@ -378,33 +378,41 @@ Module array.
                                   |)
                                 |) in
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |),
-                                    "core::array::drain::Drain",
-                                    "ptr"
-                                  |),
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                                    M.get_associated_function (|
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (M.call_closure (|
                                       Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                                      "add",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.read (|
+                                      M.get_associated_function (|
+                                        Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                                        "add",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (|
+                                              M.read (| M.deref (| M.read (| self |) |) |)
+                                            |),
+                                            "core::array::drain::Drain",
+                                            "ptr"
+                                          |)
+                                        |);
+                                        Value.Integer IntegerKind.Usize 1
+                                      ]
+                                    |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (|
                                         M.SubPointer.get_struct_record_field (|
                                           M.deref (|
                                             M.read (| M.deref (| M.read (| self |) |) |)
                                           |),
                                           "core::array::drain::Drain",
                                           "ptr"
-                                        |)
-                                      |);
-                                      Value.Integer IntegerKind.Usize 1
-                                    ]
-                                  |)
+                                        |),
+                                        rhs'
+                                      |)))
                                 |) in
                               M.alloc (|
                                 U,

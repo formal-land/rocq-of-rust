@@ -3328,19 +3328,29 @@ Module str.
                                                                                 |)
                                                                               |) in
                                                                             let~ _ : Ty.tuple [] :=
-                                                                              let β := index in
-                                                                              M.write (|
-                                                                                β,
-                                                                                M.call_closure (|
-                                                                                  Ty.path "usize",
-                                                                                  BinOp.Wrap.add,
-                                                                                  [
-                                                                                    M.read (| β |);
-                                                                                    M.read (|
-                                                                                      ascii_block_size
-                                                                                    |)
-                                                                                  ]
-                                                                                |)
+                                                                              M.let_ (|
+                                                                                ltac:(M.monadic
+                                                                                  (M.read (|
+                                                                                    ascii_block_size
+                                                                                  |))),
+                                                                                fun rhs' =>
+                                                                                  ltac:(M.monadic
+                                                                                    (let β :=
+                                                                                      index in
+                                                                                    M.write (|
+                                                                                      β,
+                                                                                      M.call_closure (|
+                                                                                        Ty.path
+                                                                                          "usize",
+                                                                                        BinOp.Wrap.add,
+                                                                                        [
+                                                                                          M.read (|
+                                                                                            β
+                                                                                          |);
+                                                                                          rhs'
+                                                                                        ]
+                                                                                      |)
+                                                                                    |)))
                                                                               |) in
                                                                             M.alloc (|
                                                                               Ty.tuple [],

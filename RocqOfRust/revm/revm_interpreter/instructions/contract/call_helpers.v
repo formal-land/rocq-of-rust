@@ -2967,22 +2967,25 @@ Module instructions.
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
                               let~ _ : Ty.tuple [] :=
-                                let β := cost in
-                                M.write (|
-                                  β,
-                                  M.call_closure (|
-                                    Ty.path "u64",
-                                    BinOp.Wrap.add,
-                                    [
-                                      M.read (| β |);
-                                      M.read (|
-                                        get_constant (|
-                                          "revm_interpreter::gas::constants::COLD_ACCOUNT_ACCESS_COST_ADDITIONAL",
-                                          Ty.path "u64"
-                                        |)
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (M.read (|
+                                      get_constant (|
+                                        "revm_interpreter::gas::constants::COLD_ACCOUNT_ACCESS_COST_ADDITIONAL",
+                                        Ty.path "u64"
                                       |)
-                                    ]
-                                  |)
+                                    |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (let β := cost in
+                                      M.write (|
+                                        β,
+                                        M.call_closure (|
+                                          Ty.path "u64",
+                                          BinOp.Wrap.add,
+                                          [ M.read (| β |); rhs' ]
+                                        |)
+                                      |)))
                                 |) in
                               M.alloc (| Ty.tuple [], Value.Tuple [] |)
                             |)));
@@ -3111,28 +3114,31 @@ Module instructions.
                             M.never_to_any (|
                               M.read (|
                                 let~ _ : Ty.tuple [] :=
-                                  let β := cost in
-                                  M.write (|
-                                    β,
-                                    M.call_closure (|
-                                      Ty.path "u64",
-                                      BinOp.Wrap.add,
-                                      [
-                                        M.read (| β |);
-                                        M.call_closure (|
-                                          Ty.path "u64",
-                                          M.get_function (|
-                                            "revm_interpreter::instructions::contract::call_helpers::new_account_cost",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.read (| is_spurious_dragon |);
-                                            M.read (| transfers_value |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
+                                  M.let_ (|
+                                    ltac:(M.monadic
+                                      (M.call_closure (|
+                                        Ty.path "u64",
+                                        M.get_function (|
+                                          "revm_interpreter::instructions::contract::call_helpers::new_account_cost",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.read (| is_spurious_dragon |);
+                                          M.read (| transfers_value |)
+                                        ]
+                                      |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (let β := cost in
+                                        M.write (|
+                                          β,
+                                          M.call_closure (|
+                                            Ty.path "u64",
+                                            BinOp.Wrap.add,
+                                            [ M.read (| β |); rhs' ]
+                                          |)
+                                        |)))
                                   |) in
                                 M.return_ (|
                                   Value.StructTuple
@@ -3233,22 +3239,25 @@ Module instructions.
                               |) in
                             M.read (|
                               let~ _ : Ty.tuple [] :=
-                                let β := cost in
-                                M.write (|
-                                  β,
-                                  M.call_closure (|
-                                    Ty.path "u64",
-                                    BinOp.Wrap.add,
-                                    [
-                                      M.read (| β |);
-                                      M.read (|
-                                        get_constant (|
-                                          "revm_interpreter::gas::constants::WARM_STORAGE_READ_COST",
-                                          Ty.path "u64"
-                                        |)
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (M.read (|
+                                      get_constant (|
+                                        "revm_interpreter::gas::constants::WARM_STORAGE_READ_COST",
+                                        Ty.path "u64"
                                       |)
-                                    ]
-                                  |)
+                                    |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (let β := cost in
+                                      M.write (|
+                                        β,
+                                        M.call_closure (|
+                                          Ty.path "u64",
+                                          BinOp.Wrap.add,
+                                          [ M.read (| β |); rhs' ]
+                                        |)
+                                      |)))
                                 |) in
                               let~ _ : Ty.tuple [] :=
                                 M.match_operator (|
@@ -3538,22 +3547,25 @@ Module instructions.
                                           |) in
                                         M.read (|
                                           let~ _ : Ty.tuple [] :=
-                                            let β := cost in
-                                            M.write (|
-                                              β,
-                                              M.call_closure (|
-                                                Ty.path "u64",
-                                                BinOp.Wrap.add,
-                                                [
-                                                  M.read (| β |);
-                                                  M.read (|
-                                                    get_constant (|
-                                                      "revm_interpreter::gas::constants::COLD_ACCOUNT_ACCESS_COST_ADDITIONAL",
-                                                      Ty.path "u64"
-                                                    |)
+                                            M.let_ (|
+                                              ltac:(M.monadic
+                                                (M.read (|
+                                                  get_constant (|
+                                                    "revm_interpreter::gas::constants::COLD_ACCOUNT_ACCESS_COST_ADDITIONAL",
+                                                    Ty.path "u64"
                                                   |)
-                                                ]
-                                              |)
+                                                |))),
+                                              fun rhs' =>
+                                                ltac:(M.monadic
+                                                  (let β := cost in
+                                                  M.write (|
+                                                    β,
+                                                    M.call_closure (|
+                                                      Ty.path "u64",
+                                                      BinOp.Wrap.add,
+                                                      [ M.read (| β |); rhs' ]
+                                                    |)
+                                                  |)))
                                             |) in
                                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                         |)));

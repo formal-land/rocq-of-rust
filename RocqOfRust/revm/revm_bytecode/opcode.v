@@ -6903,13 +6903,18 @@ Module opcode.
         let n := M.alloc (| Ty.path "u8", n |) in
         M.read (|
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_struct_record_field (|
-                op,
-                "revm_bytecode::opcode::OpCodeInfo",
-                "immediate_size"
-              |),
-              M.read (| n |)
+            M.let_ (|
+              ltac:(M.monadic (M.read (| n |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.SubPointer.get_struct_record_field (|
+                      op,
+                      "revm_bytecode::opcode::OpCodeInfo",
+                      "immediate_size"
+                    |),
+                    rhs'
+                  |)))
             |) in
           op
         |)))
@@ -6970,22 +6975,32 @@ Module opcode.
         let outputs := M.alloc (| Ty.path "u8", outputs |) in
         M.read (|
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_struct_record_field (|
-                op,
-                "revm_bytecode::opcode::OpCodeInfo",
-                "inputs"
-              |),
-              M.read (| inputs |)
+            M.let_ (|
+              ltac:(M.monadic (M.read (| inputs |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.SubPointer.get_struct_record_field (|
+                      op,
+                      "revm_bytecode::opcode::OpCodeInfo",
+                      "inputs"
+                    |),
+                    rhs'
+                  |)))
             |) in
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_struct_record_field (|
-                op,
-                "revm_bytecode::opcode::OpCodeInfo",
-                "outputs"
-              |),
-              M.read (| outputs |)
+            M.let_ (|
+              ltac:(M.monadic (M.read (| outputs |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.SubPointer.get_struct_record_field (|
+                      op,
+                      "revm_bytecode::opcode::OpCodeInfo",
+                      "outputs"
+                    |),
+                    rhs'
+                  |)))
             |) in
           op
         |)))
@@ -8467,13 +8482,19 @@ Module opcode.
             [ M.read (| info |) ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 0 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 0 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 1 in
         let~ _ : Ty.tuple [] :=
@@ -8547,13 +8568,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 1 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 1 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 2 in
         let~ _ : Ty.tuple [] :=
@@ -8627,13 +8654,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 2 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 2 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 3 in
         let~ _ : Ty.tuple [] :=
@@ -8707,13 +8740,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 3 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 3 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 4 in
         let~ _ : Ty.tuple [] :=
@@ -8787,13 +8826,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 4 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 4 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 5 in
         let~ _ : Ty.tuple [] :=
@@ -8867,13 +8912,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 5 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 5 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 6 in
         let~ _ : Ty.tuple [] :=
@@ -8947,13 +8998,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 6 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 6 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 7 in
         let~ _ : Ty.tuple [] :=
@@ -9027,13 +9084,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 7 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 7 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 8 in
         let~ _ : Ty.tuple [] :=
@@ -9107,13 +9170,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 3; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 8 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 8 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 9 in
         let~ _ : Ty.tuple [] :=
@@ -9187,13 +9256,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 3; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 9 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 9 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 10 in
         let~ _ : Ty.tuple [] :=
@@ -9267,13 +9342,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 10 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 10 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 11 in
         let~ _ : Ty.tuple [] :=
@@ -9347,13 +9428,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 11 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 11 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 16 in
         let~ _ : Ty.tuple [] :=
@@ -9427,13 +9514,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 16 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 16 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 17 in
         let~ _ : Ty.tuple [] :=
@@ -9507,13 +9600,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 17 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 17 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 18 in
         let~ _ : Ty.tuple [] :=
@@ -9587,13 +9686,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 18 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 18 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 19 in
         let~ _ : Ty.tuple [] :=
@@ -9667,13 +9772,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 19 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 19 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 20 in
         let~ _ : Ty.tuple [] :=
@@ -9747,13 +9858,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 20 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 20 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 21 in
         let~ _ : Ty.tuple [] :=
@@ -9827,13 +9944,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 1; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 21 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 21 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 22 in
         let~ _ : Ty.tuple [] :=
@@ -9907,13 +10030,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 22 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 22 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 23 in
         let~ _ : Ty.tuple [] :=
@@ -9987,13 +10116,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 23 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 23 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 24 in
         let~ _ : Ty.tuple [] :=
@@ -10067,13 +10202,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 24 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 24 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 25 in
         let~ _ : Ty.tuple [] :=
@@ -10147,13 +10288,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 1; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 25 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 25 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 26 in
         let~ _ : Ty.tuple [] :=
@@ -10227,13 +10374,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 26 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 26 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 27 in
         let~ _ : Ty.tuple [] :=
@@ -10307,13 +10460,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 27 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 27 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 28 in
         let~ _ : Ty.tuple [] :=
@@ -10387,13 +10546,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 28 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 28 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 29 in
         let~ _ : Ty.tuple [] :=
@@ -10467,13 +10632,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 29 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 29 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 30 in
         let~ _ : Ty.tuple [] :=
@@ -10547,13 +10718,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 1; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 30 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 30 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 32 in
         let~ _ : Ty.tuple [] :=
@@ -10627,13 +10804,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 32 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 32 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 48 in
         let~ _ : Ty.tuple [] :=
@@ -10707,13 +10890,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 48 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 48 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 49 in
         let~ _ : Ty.tuple [] :=
@@ -10787,13 +10976,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 1; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 49 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 49 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 50 in
         let~ _ : Ty.tuple [] :=
@@ -10867,13 +11062,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 50 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 50 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 51 in
         let~ _ : Ty.tuple [] :=
@@ -10947,13 +11148,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 51 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 51 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 52 in
         let~ _ : Ty.tuple [] :=
@@ -11027,13 +11234,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 52 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 52 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 53 in
         let~ _ : Ty.tuple [] :=
@@ -11107,13 +11320,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 1; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 53 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 53 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 54 in
         let~ _ : Ty.tuple [] :=
@@ -11187,13 +11406,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 54 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 54 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 55 in
         let~ _ : Ty.tuple [] :=
@@ -11267,13 +11492,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 3; Value.Integer IntegerKind.U8 0 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 55 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 55 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 56 in
         let~ _ : Ty.tuple [] :=
@@ -11347,13 +11578,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 56 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 56 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 57 in
         let~ _ : Ty.tuple [] :=
@@ -11427,13 +11664,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 3; Value.Integer IntegerKind.U8 0 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 57 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 57 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 58 in
         let~ _ : Ty.tuple [] :=
@@ -11507,13 +11750,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 58 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 58 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 59 in
         let~ _ : Ty.tuple [] :=
@@ -11587,13 +11836,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 1; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 59 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 59 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 60 in
         let~ _ : Ty.tuple [] :=
@@ -11667,13 +11922,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 4; Value.Integer IntegerKind.U8 0 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 60 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 60 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 61 in
         let~ _ : Ty.tuple [] :=
@@ -11747,13 +12008,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 61 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 61 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 62 in
         let~ _ : Ty.tuple [] :=
@@ -11827,13 +12094,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 3; Value.Integer IntegerKind.U8 0 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 62 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 62 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 63 in
         let~ _ : Ty.tuple [] :=
@@ -11907,13 +12180,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 1; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 63 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 63 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 64 in
         let~ _ : Ty.tuple [] :=
@@ -11987,13 +12266,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 1; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 64 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 64 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 65 in
         let~ _ : Ty.tuple [] :=
@@ -12067,13 +12352,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 65 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 65 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 66 in
         let~ _ : Ty.tuple [] :=
@@ -12147,13 +12438,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 66 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 66 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 67 in
         let~ _ : Ty.tuple [] :=
@@ -12227,13 +12524,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 67 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 67 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 68 in
         let~ _ : Ty.tuple [] :=
@@ -12307,13 +12610,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 68 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 68 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 69 in
         let~ _ : Ty.tuple [] :=
@@ -12387,13 +12696,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 69 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 69 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 70 in
         let~ _ : Ty.tuple [] :=
@@ -12467,13 +12782,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 70 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 70 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 71 in
         let~ _ : Ty.tuple [] :=
@@ -12547,13 +12868,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 71 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 71 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 72 in
         let~ _ : Ty.tuple [] :=
@@ -12627,13 +12954,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 72 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 72 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 73 in
         let~ _ : Ty.tuple [] :=
@@ -12707,13 +13040,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 1; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 73 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 73 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 74 in
         let~ _ : Ty.tuple [] :=
@@ -12787,13 +13126,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 74 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 74 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 80 in
         let~ _ : Ty.tuple [] :=
@@ -12867,13 +13212,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 1; Value.Integer IntegerKind.U8 0 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 80 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 80 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 81 in
         let~ _ : Ty.tuple [] :=
@@ -12947,13 +13298,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 1; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 81 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 81 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 82 in
         let~ _ : Ty.tuple [] :=
@@ -13027,13 +13384,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 0 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 82 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 82 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 83 in
         let~ _ : Ty.tuple [] :=
@@ -13107,13 +13470,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 0 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 83 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 83 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 84 in
         let~ _ : Ty.tuple [] :=
@@ -13187,13 +13556,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 1; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 84 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 84 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 85 in
         let~ _ : Ty.tuple [] :=
@@ -13267,13 +13642,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 0 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 85 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 85 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 86 in
         let~ _ : Ty.tuple [] :=
@@ -13347,13 +13728,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 1; Value.Integer IntegerKind.U8 0 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 86 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 86 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 87 in
         let~ _ : Ty.tuple [] :=
@@ -13427,13 +13814,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 0 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 87 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 87 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 88 in
         let~ _ : Ty.tuple [] :=
@@ -13507,13 +13900,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 88 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 88 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 89 in
         let~ _ : Ty.tuple [] :=
@@ -13587,13 +13986,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 89 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 89 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 90 in
         let~ _ : Ty.tuple [] :=
@@ -13667,13 +14072,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 90 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 90 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 91 in
         let~ _ : Ty.tuple [] :=
@@ -13747,13 +14158,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 0 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 91 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 91 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 92 in
         let~ _ : Ty.tuple [] :=
@@ -13827,13 +14244,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 1; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 92 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 92 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 93 in
         let~ _ : Ty.tuple [] :=
@@ -13907,13 +14330,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 0 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 93 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 93 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 94 in
         let~ _ : Ty.tuple [] :=
@@ -13987,13 +14416,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 3; Value.Integer IntegerKind.U8 0 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 94 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 94 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 95 in
         let~ _ : Ty.tuple [] :=
@@ -14067,13 +14502,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 95 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 95 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 96 in
         let~ _ : Ty.tuple [] :=
@@ -14153,13 +14594,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 96 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 96 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 97 in
         let~ _ : Ty.tuple [] :=
@@ -14239,13 +14686,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 2 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 97 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 97 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 98 in
         let~ _ : Ty.tuple [] :=
@@ -14325,13 +14778,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 3 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 98 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 98 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 99 in
         let~ _ : Ty.tuple [] :=
@@ -14411,13 +14870,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 4 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 99 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 99 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 100 in
         let~ _ : Ty.tuple [] :=
@@ -14497,13 +14962,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 5 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 100 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 100 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 101 in
         let~ _ : Ty.tuple [] :=
@@ -14583,13 +15054,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 6 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 101 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 101 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 102 in
         let~ _ : Ty.tuple [] :=
@@ -14669,13 +15146,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 7 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 102 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 102 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 103 in
         let~ _ : Ty.tuple [] :=
@@ -14755,13 +15238,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 8 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 103 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 103 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 104 in
         let~ _ : Ty.tuple [] :=
@@ -14841,13 +15330,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 9 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 104 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 104 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 105 in
         let~ _ : Ty.tuple [] :=
@@ -14927,13 +15422,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 10 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 105 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 105 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 106 in
         let~ _ : Ty.tuple [] :=
@@ -15013,13 +15514,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 11 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 106 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 106 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 107 in
         let~ _ : Ty.tuple [] :=
@@ -15099,13 +15606,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 12 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 107 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 107 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 108 in
         let~ _ : Ty.tuple [] :=
@@ -15185,13 +15698,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 13 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 108 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 108 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 109 in
         let~ _ : Ty.tuple [] :=
@@ -15271,13 +15790,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 14 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 109 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 109 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 110 in
         let~ _ : Ty.tuple [] :=
@@ -15357,13 +15882,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 15 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 110 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 110 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 111 in
         let~ _ : Ty.tuple [] :=
@@ -15443,13 +15974,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 16 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 111 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 111 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 112 in
         let~ _ : Ty.tuple [] :=
@@ -15529,13 +16066,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 17 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 112 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 112 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 113 in
         let~ _ : Ty.tuple [] :=
@@ -15615,13 +16158,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 18 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 113 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 113 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 114 in
         let~ _ : Ty.tuple [] :=
@@ -15701,13 +16250,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 19 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 114 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 114 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 115 in
         let~ _ : Ty.tuple [] :=
@@ -15787,13 +16342,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 20 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 115 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 115 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 116 in
         let~ _ : Ty.tuple [] :=
@@ -15873,13 +16434,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 21 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 116 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 116 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 117 in
         let~ _ : Ty.tuple [] :=
@@ -15959,13 +16526,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 22 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 117 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 117 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 118 in
         let~ _ : Ty.tuple [] :=
@@ -16045,13 +16618,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 23 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 118 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 118 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 119 in
         let~ _ : Ty.tuple [] :=
@@ -16131,13 +16710,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 24 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 119 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 119 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 120 in
         let~ _ : Ty.tuple [] :=
@@ -16217,13 +16802,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 25 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 120 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 120 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 121 in
         let~ _ : Ty.tuple [] :=
@@ -16303,13 +16894,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 26 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 121 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 121 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 122 in
         let~ _ : Ty.tuple [] :=
@@ -16389,13 +16986,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 27 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 122 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 122 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 123 in
         let~ _ : Ty.tuple [] :=
@@ -16475,13 +17078,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 28 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 123 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 123 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 124 in
         let~ _ : Ty.tuple [] :=
@@ -16561,13 +17170,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 29 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 124 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 124 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 125 in
         let~ _ : Ty.tuple [] :=
@@ -16647,13 +17262,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 30 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 125 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 125 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 126 in
         let~ _ : Ty.tuple [] :=
@@ -16733,13 +17354,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 31 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 126 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 126 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 127 in
         let~ _ : Ty.tuple [] :=
@@ -16819,13 +17446,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 32 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 127 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 127 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 128 in
         let~ _ : Ty.tuple [] :=
@@ -16899,13 +17532,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 1; Value.Integer IntegerKind.U8 2 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 128 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 128 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 129 in
         let~ _ : Ty.tuple [] :=
@@ -16979,13 +17618,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 3 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 129 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 129 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 130 in
         let~ _ : Ty.tuple [] :=
@@ -17059,13 +17704,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 3; Value.Integer IntegerKind.U8 4 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 130 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 130 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 131 in
         let~ _ : Ty.tuple [] :=
@@ -17139,13 +17790,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 4; Value.Integer IntegerKind.U8 5 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 131 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 131 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 132 in
         let~ _ : Ty.tuple [] :=
@@ -17219,13 +17876,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 5; Value.Integer IntegerKind.U8 6 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 132 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 132 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 133 in
         let~ _ : Ty.tuple [] :=
@@ -17299,13 +17962,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 6; Value.Integer IntegerKind.U8 7 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 133 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 133 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 134 in
         let~ _ : Ty.tuple [] :=
@@ -17379,13 +18048,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 7; Value.Integer IntegerKind.U8 8 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 134 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 134 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 135 in
         let~ _ : Ty.tuple [] :=
@@ -17459,13 +18134,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 8; Value.Integer IntegerKind.U8 9 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 135 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 135 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 136 in
         let~ _ : Ty.tuple [] :=
@@ -17539,13 +18220,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 9; Value.Integer IntegerKind.U8 10 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 136 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 136 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 137 in
         let~ _ : Ty.tuple [] :=
@@ -17619,13 +18306,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 10; Value.Integer IntegerKind.U8 11 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 137 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 137 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 138 in
         let~ _ : Ty.tuple [] :=
@@ -17699,13 +18392,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 11; Value.Integer IntegerKind.U8 12 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 138 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 138 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 139 in
         let~ _ : Ty.tuple [] :=
@@ -17779,13 +18478,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 12; Value.Integer IntegerKind.U8 13 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 139 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 139 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 140 in
         let~ _ : Ty.tuple [] :=
@@ -17859,13 +18564,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 13; Value.Integer IntegerKind.U8 14 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 140 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 140 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 141 in
         let~ _ : Ty.tuple [] :=
@@ -17939,13 +18650,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 14; Value.Integer IntegerKind.U8 15 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 141 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 141 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 142 in
         let~ _ : Ty.tuple [] :=
@@ -18019,13 +18736,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 15; Value.Integer IntegerKind.U8 16 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 142 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 142 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 143 in
         let~ _ : Ty.tuple [] :=
@@ -18099,13 +18822,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 16; Value.Integer IntegerKind.U8 17 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 143 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 143 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 144 in
         let~ _ : Ty.tuple [] :=
@@ -18179,13 +18908,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 2 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 144 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 144 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 145 in
         let~ _ : Ty.tuple [] :=
@@ -18259,13 +18994,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 3; Value.Integer IntegerKind.U8 3 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 145 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 145 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 146 in
         let~ _ : Ty.tuple [] :=
@@ -18339,13 +19080,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 4; Value.Integer IntegerKind.U8 4 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 146 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 146 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 147 in
         let~ _ : Ty.tuple [] :=
@@ -18419,13 +19166,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 5; Value.Integer IntegerKind.U8 5 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 147 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 147 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 148 in
         let~ _ : Ty.tuple [] :=
@@ -18499,13 +19252,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 6; Value.Integer IntegerKind.U8 6 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 148 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 148 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 149 in
         let~ _ : Ty.tuple [] :=
@@ -18579,13 +19338,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 7; Value.Integer IntegerKind.U8 7 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 149 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 149 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 150 in
         let~ _ : Ty.tuple [] :=
@@ -18659,13 +19424,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 8; Value.Integer IntegerKind.U8 8 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 150 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 150 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 151 in
         let~ _ : Ty.tuple [] :=
@@ -18739,13 +19510,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 9; Value.Integer IntegerKind.U8 9 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 151 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 151 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 152 in
         let~ _ : Ty.tuple [] :=
@@ -18819,13 +19596,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 10; Value.Integer IntegerKind.U8 10 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 152 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 152 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 153 in
         let~ _ : Ty.tuple [] :=
@@ -18899,13 +19682,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 11; Value.Integer IntegerKind.U8 11 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 153 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 153 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 154 in
         let~ _ : Ty.tuple [] :=
@@ -18979,13 +19768,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 12; Value.Integer IntegerKind.U8 12 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 154 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 154 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 155 in
         let~ _ : Ty.tuple [] :=
@@ -19059,13 +19854,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 13; Value.Integer IntegerKind.U8 13 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 155 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 155 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 156 in
         let~ _ : Ty.tuple [] :=
@@ -19139,13 +19940,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 14; Value.Integer IntegerKind.U8 14 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 156 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 156 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 157 in
         let~ _ : Ty.tuple [] :=
@@ -19219,13 +20026,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 15; Value.Integer IntegerKind.U8 15 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 157 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 157 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 158 in
         let~ _ : Ty.tuple [] :=
@@ -19299,13 +20112,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 16; Value.Integer IntegerKind.U8 16 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 158 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 158 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 159 in
         let~ _ : Ty.tuple [] :=
@@ -19379,13 +20198,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 17; Value.Integer IntegerKind.U8 17 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 159 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 159 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 160 in
         let~ _ : Ty.tuple [] :=
@@ -19459,13 +20284,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 0 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 160 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 160 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 161 in
         let~ _ : Ty.tuple [] :=
@@ -19539,13 +20370,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 3; Value.Integer IntegerKind.U8 0 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 161 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 161 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 162 in
         let~ _ : Ty.tuple [] :=
@@ -19619,13 +20456,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 4; Value.Integer IntegerKind.U8 0 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 162 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 162 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 163 in
         let~ _ : Ty.tuple [] :=
@@ -19699,13 +20542,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 5; Value.Integer IntegerKind.U8 0 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 163 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 163 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 164 in
         let~ _ : Ty.tuple [] :=
@@ -19779,13 +20628,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 6; Value.Integer IntegerKind.U8 0 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 164 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 164 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 240 in
         let~ _ : Ty.tuple [] :=
@@ -19859,13 +20714,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 3; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 240 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 240 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 241 in
         let~ _ : Ty.tuple [] :=
@@ -19939,13 +20800,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 7; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 241 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 241 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 242 in
         let~ _ : Ty.tuple [] :=
@@ -20019,13 +20886,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 7; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 242 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 242 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 243 in
         let~ _ : Ty.tuple [] :=
@@ -20105,13 +20978,19 @@ Module opcode.
             [ M.read (| info |) ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 243 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 243 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 244 in
         let~ _ : Ty.tuple [] :=
@@ -20185,13 +21064,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 6; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 244 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 244 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 245 in
         let~ _ : Ty.tuple [] :=
@@ -20265,13 +21150,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 4; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 245 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 245 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 250 in
         let~ _ : Ty.tuple [] :=
@@ -20345,13 +21236,19 @@ Module opcode.
             [ M.read (| info |); Value.Integer IntegerKind.U8 6; Value.Integer IntegerKind.U8 1 ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 250 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 250 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 253 in
         let~ _ : Ty.tuple [] :=
@@ -20431,13 +21328,19 @@ Module opcode.
             [ M.read (| info |) ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 253 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 253 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 254 in
         let~ _ : Ty.tuple [] :=
@@ -20517,13 +21420,19 @@ Module opcode.
             [ M.read (| info |) ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 254 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 254 |),
+                  rhs'
+                |)))
           |) in
         let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 255 in
         let~ _ : Ty.tuple [] :=
@@ -20603,13 +21512,19 @@ Module opcode.
             [ M.read (| info |) ]
           |) in
         let~ _ : Ty.tuple [] :=
-          M.write (|
-            M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 255 |),
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-              [ M.read (| info |) ]
+          M.let_ (|
+            ltac:(M.monadic
+              (Value.StructTuple
+                "core::option::Option::Some"
+                []
+                [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
+                [ M.read (| info |) ])),
+            fun rhs' =>
+              ltac:(M.monadic
+                (M.write (|
+                  M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 255 |),
+                  rhs'
+                |)))
           |) in
         M.alloc (|
           Ty.apply

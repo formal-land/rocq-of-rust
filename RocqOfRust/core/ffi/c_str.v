@@ -3344,37 +3344,43 @@ Module ffi.
                       ltac:(M.monadic
                         (M.read (|
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::ffi::c_str::Bytes",
-                                "ptr"
-                              |),
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "core::ptr::non_null::NonNull")
-                                  []
-                                  [ Ty.path "u8" ],
-                                M.get_associated_function (|
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.call_closure (|
                                   Ty.apply
                                     (Ty.path "core::ptr::non_null::NonNull")
                                     []
                                     [ Ty.path "u8" ],
-                                  "add",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.read (|
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "core::ptr::non_null::NonNull")
+                                      []
+                                      [ Ty.path "u8" ],
+                                    "add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::ffi::c_str::Bytes",
+                                        "ptr"
+                                      |)
+                                    |);
+                                    Value.Integer IntegerKind.Usize 1
+                                  ]
+                                |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
                                     M.SubPointer.get_struct_record_field (|
                                       M.deref (| M.read (| self |) |),
                                       "core::ffi::c_str::Bytes",
                                       "ptr"
-                                    |)
-                                  |);
-                                  Value.Integer IntegerKind.Usize 1
-                                ]
-                              |)
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           M.alloc (|
                             Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],

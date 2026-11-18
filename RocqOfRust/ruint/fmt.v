@@ -3718,26 +3718,29 @@ Module fmt.
                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  let β :=
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "ruint::fmt::DisplayBuffer",
-                      "len"
-                    |) in
-                  M.write (|
-                    β,
-                    M.call_closure (|
-                      Ty.path "usize",
-                      BinOp.Wrap.add,
-                      [
-                        M.read (| β |);
-                        M.call_closure (|
-                          Ty.path "usize",
-                          M.get_associated_function (| Ty.path "str", "len", [], [] |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
-                        |)
-                      ]
-                    |)
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.call_closure (|
+                        Ty.path "usize",
+                        M.get_associated_function (| Ty.path "str", "len", [], [] |),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
+                      |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (let β :=
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "ruint::fmt::DisplayBuffer",
+                            "len"
+                          |) in
+                        M.write (|
+                          β,
+                          M.call_closure (|
+                            Ty.path "usize",
+                            BinOp.Wrap.add,
+                            [ M.read (| β |); rhs' ]
+                          |)
+                        |)))
                   |) in
                 M.alloc (|
                   Ty.apply

@@ -1278,13 +1278,18 @@ Module context.
             |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_context::context::Context",
-                  "tx"
-                |),
-                M.read (| tx |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| tx |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_context::context::Context",
+                        "tx"
+                      |),
+                      rhs'
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -1334,13 +1339,18 @@ Module context.
             |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_context::context::Context",
-                  "block"
-                |),
-                M.read (| block |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| block |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_context::context::Context",
+                        "block"
+                      |),
+                      rhs'
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -5532,18 +5542,50 @@ Module context.
                                       |) in
                                     M.read (|
                                       let~ _ : Ty.tuple [] :=
-                                        M.write (|
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&mut")
-                                                []
-                                                [
+                                        M.let_ (|
+                                          ltac:(M.monadic
+                                            (Value.StructTuple
+                                              "core::result::Result::Err"
+                                              []
+                                              [
+                                                Ty.tuple [];
+                                                Ty.apply
+                                                  (Ty.path
+                                                    "revm_context_interface::context::ContextError")
+                                                  []
+                                                  [
+                                                    Ty.associated_in_trait
+                                                      "revm_database_interface::Database"
+                                                      []
+                                                      []
+                                                      DB
+                                                      "Error"
+                                                  ]
+                                              ]
+                                              [
+                                                M.call_closure (|
                                                   Ty.apply
-                                                    (Ty.path "core::result::Result")
+                                                    (Ty.path
+                                                      "revm_context_interface::context::ContextError")
                                                     []
                                                     [
-                                                      Ty.tuple [];
+                                                      Ty.associated_in_trait
+                                                        "revm_database_interface::Database"
+                                                        []
+                                                        []
+                                                        DB
+                                                        "Error"
+                                                    ],
+                                                  M.get_trait_method (|
+                                                    "core::convert::Into",
+                                                    Ty.associated_in_trait
+                                                      "revm_database_interface::Database"
+                                                      []
+                                                      []
+                                                      DB
+                                                      "Error",
+                                                    [],
+                                                    [
                                                       Ty.apply
                                                         (Ty.path
                                                           "revm_context_interface::context::ContextError")
@@ -5556,90 +5598,65 @@ Module context.
                                                             DB
                                                             "Error"
                                                         ]
-                                                    ]
-                                                ],
-                                              M.get_trait_method (|
-                                                "revm_context_interface::context::ContextTr",
-                                                Ty.apply
-                                                  (Ty.path "revm_context::context::Context")
-                                                  []
-                                                  [ BLOCK; TX; CFG; DB; JOURNAL; CHAIN; LOCAL ],
-                                                [],
-                                                [],
-                                                "error",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.deref (| M.read (| self |) |)
+                                                    ],
+                                                    "into",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.read (| e |) ]
                                                 |)
-                                              ]
-                                            |)
-                                          |),
-                                          Value.StructTuple
-                                            "core::result::Result::Err"
-                                            []
-                                            [
-                                              Ty.tuple [];
-                                              Ty.apply
-                                                (Ty.path
-                                                  "revm_context_interface::context::ContextError")
-                                                []
-                                                [
-                                                  Ty.associated_in_trait
-                                                    "revm_database_interface::Database"
-                                                    []
-                                                    []
-                                                    DB
-                                                    "Error"
-                                                ]
-                                            ]
-                                            [
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path
-                                                    "revm_context_interface::context::ContextError")
-                                                  []
-                                                  [
-                                                    Ty.associated_in_trait
-                                                      "revm_database_interface::Database"
-                                                      []
-                                                      []
-                                                      DB
-                                                      "Error"
-                                                  ],
-                                                M.get_trait_method (|
-                                                  "core::convert::Into",
-                                                  Ty.associated_in_trait
-                                                    "revm_database_interface::Database"
-                                                    []
-                                                    []
-                                                    DB
-                                                    "Error",
-                                                  [],
-                                                  [
+                                              ])),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (M.write (|
+                                                M.deref (|
+                                                  M.call_closure (|
                                                     Ty.apply
-                                                      (Ty.path
-                                                        "revm_context_interface::context::ContextError")
+                                                      (Ty.path "&mut")
                                                       []
                                                       [
-                                                        Ty.associated_in_trait
-                                                          "revm_database_interface::Database"
+                                                        Ty.apply
+                                                          (Ty.path "core::result::Result")
                                                           []
-                                                          []
-                                                          DB
-                                                          "Error"
-                                                      ]
-                                                  ],
-                                                  "into",
-                                                  [],
-                                                  []
+                                                          [
+                                                            Ty.tuple [];
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "revm_context_interface::context::ContextError")
+                                                              []
+                                                              [
+                                                                Ty.associated_in_trait
+                                                                  "revm_database_interface::Database"
+                                                                  []
+                                                                  []
+                                                                  DB
+                                                                  "Error"
+                                                              ]
+                                                          ]
+                                                      ],
+                                                    M.get_trait_method (|
+                                                      "revm_context_interface::context::ContextTr",
+                                                      Ty.apply
+                                                        (Ty.path "revm_context::context::Context")
+                                                        []
+                                                        [ BLOCK; TX; CFG; DB; JOURNAL; CHAIN; LOCAL
+                                                        ],
+                                                      [],
+                                                      [],
+                                                      "error",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.borrow (|
+                                                        Pointer.Kind.MutRef,
+                                                        M.deref (| M.read (| self |) |)
+                                                      |)
+                                                    ]
+                                                  |)
                                                 |),
-                                                [ M.read (| e |) ]
-                                              |)
-                                            ]
+                                                rhs'
+                                              |)))
                                         |) in
                                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                     |)))
@@ -6185,18 +6202,50 @@ Module context.
                                                       |) in
                                                     M.read (|
                                                       let~ _ : Ty.tuple [] :=
-                                                        M.write (|
-                                                          M.deref (|
-                                                            M.call_closure (|
-                                                              Ty.apply
-                                                                (Ty.path "&mut")
-                                                                []
-                                                                [
+                                                        M.let_ (|
+                                                          ltac:(M.monadic
+                                                            (Value.StructTuple
+                                                              "core::result::Result::Err"
+                                                              []
+                                                              [
+                                                                Ty.tuple [];
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "revm_context_interface::context::ContextError")
+                                                                  []
+                                                                  [
+                                                                    Ty.associated_in_trait
+                                                                      "revm_database_interface::Database"
+                                                                      []
+                                                                      []
+                                                                      DB
+                                                                      "Error"
+                                                                  ]
+                                                              ]
+                                                              [
+                                                                M.call_closure (|
                                                                   Ty.apply
-                                                                    (Ty.path "core::result::Result")
+                                                                    (Ty.path
+                                                                      "revm_context_interface::context::ContextError")
                                                                     []
                                                                     [
-                                                                      Ty.tuple [];
+                                                                      Ty.associated_in_trait
+                                                                        "revm_database_interface::Database"
+                                                                        []
+                                                                        []
+                                                                        DB
+                                                                        "Error"
+                                                                    ],
+                                                                  M.get_trait_method (|
+                                                                    "core::convert::Into",
+                                                                    Ty.associated_in_trait
+                                                                      "revm_database_interface::Database"
+                                                                      []
+                                                                      []
+                                                                      DB
+                                                                      "Error",
+                                                                    [],
+                                                                    [
                                                                       Ty.apply
                                                                         (Ty.path
                                                                           "revm_context_interface::context::ContextError")
@@ -6209,99 +6258,76 @@ Module context.
                                                                             DB
                                                                             "Error"
                                                                         ]
-                                                                    ]
-                                                                ],
-                                                              M.get_trait_method (|
-                                                                "revm_context_interface::context::ContextTr",
-                                                                Ty.apply
-                                                                  (Ty.path
-                                                                    "revm_context::context::Context")
-                                                                  []
-                                                                  [
-                                                                    BLOCK;
-                                                                    TX;
-                                                                    CFG;
-                                                                    DB;
-                                                                    JOURNAL;
-                                                                    CHAIN;
-                                                                    LOCAL
-                                                                  ],
-                                                                [],
-                                                                [],
-                                                                "error",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.MutRef,
-                                                                  M.deref (| M.read (| self |) |)
+                                                                    ],
+                                                                    "into",
+                                                                    [],
+                                                                    []
+                                                                  |),
+                                                                  [ M.read (| err |) ]
                                                                 |)
-                                                              ]
-                                                            |)
-                                                          |),
-                                                          Value.StructTuple
-                                                            "core::result::Result::Err"
-                                                            []
-                                                            [
-                                                              Ty.tuple [];
-                                                              Ty.apply
-                                                                (Ty.path
-                                                                  "revm_context_interface::context::ContextError")
-                                                                []
-                                                                [
-                                                                  Ty.associated_in_trait
-                                                                    "revm_database_interface::Database"
-                                                                    []
-                                                                    []
-                                                                    DB
-                                                                    "Error"
-                                                                ]
-                                                            ]
-                                                            [
-                                                              M.call_closure (|
-                                                                Ty.apply
-                                                                  (Ty.path
-                                                                    "revm_context_interface::context::ContextError")
-                                                                  []
-                                                                  [
-                                                                    Ty.associated_in_trait
-                                                                      "revm_database_interface::Database"
-                                                                      []
-                                                                      []
-                                                                      DB
-                                                                      "Error"
-                                                                  ],
-                                                                M.get_trait_method (|
-                                                                  "core::convert::Into",
-                                                                  Ty.associated_in_trait
-                                                                    "revm_database_interface::Database"
-                                                                    []
-                                                                    []
-                                                                    DB
-                                                                    "Error",
-                                                                  [],
-                                                                  [
+                                                              ])),
+                                                          fun rhs' =>
+                                                            ltac:(M.monadic
+                                                              (M.write (|
+                                                                M.deref (|
+                                                                  M.call_closure (|
                                                                     Ty.apply
-                                                                      (Ty.path
-                                                                        "revm_context_interface::context::ContextError")
+                                                                      (Ty.path "&mut")
                                                                       []
                                                                       [
-                                                                        Ty.associated_in_trait
-                                                                          "revm_database_interface::Database"
+                                                                        Ty.apply
+                                                                          (Ty.path
+                                                                            "core::result::Result")
                                                                           []
-                                                                          []
-                                                                          DB
-                                                                          "Error"
-                                                                      ]
-                                                                  ],
-                                                                  "into",
-                                                                  [],
-                                                                  []
+                                                                          [
+                                                                            Ty.tuple [];
+                                                                            Ty.apply
+                                                                              (Ty.path
+                                                                                "revm_context_interface::context::ContextError")
+                                                                              []
+                                                                              [
+                                                                                Ty.associated_in_trait
+                                                                                  "revm_database_interface::Database"
+                                                                                  []
+                                                                                  []
+                                                                                  DB
+                                                                                  "Error"
+                                                                              ]
+                                                                          ]
+                                                                      ],
+                                                                    M.get_trait_method (|
+                                                                      "revm_context_interface::context::ContextTr",
+                                                                      Ty.apply
+                                                                        (Ty.path
+                                                                          "revm_context::context::Context")
+                                                                        []
+                                                                        [
+                                                                          BLOCK;
+                                                                          TX;
+                                                                          CFG;
+                                                                          DB;
+                                                                          JOURNAL;
+                                                                          CHAIN;
+                                                                          LOCAL
+                                                                        ],
+                                                                      [],
+                                                                      [],
+                                                                      "error",
+                                                                      [],
+                                                                      []
+                                                                    |),
+                                                                    [
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.MutRef,
+                                                                        M.deref (|
+                                                                          M.read (| self |)
+                                                                        |)
+                                                                      |)
+                                                                    ]
+                                                                  |)
                                                                 |),
-                                                                [ M.read (| err |) ]
-                                                              |)
-                                                            ]
+                                                                rhs'
+                                                              |)))
                                                         |) in
                                                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                                     |)));
@@ -6622,18 +6648,50 @@ Module context.
                                                       |) in
                                                     M.read (|
                                                       let~ _ : Ty.tuple [] :=
-                                                        M.write (|
-                                                          M.deref (|
-                                                            M.call_closure (|
-                                                              Ty.apply
-                                                                (Ty.path "&mut")
-                                                                []
-                                                                [
+                                                        M.let_ (|
+                                                          ltac:(M.monadic
+                                                            (Value.StructTuple
+                                                              "core::result::Result::Err"
+                                                              []
+                                                              [
+                                                                Ty.tuple [];
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "revm_context_interface::context::ContextError")
+                                                                  []
+                                                                  [
+                                                                    Ty.associated_in_trait
+                                                                      "revm_database_interface::Database"
+                                                                      []
+                                                                      []
+                                                                      DB
+                                                                      "Error"
+                                                                  ]
+                                                              ]
+                                                              [
+                                                                M.call_closure (|
                                                                   Ty.apply
-                                                                    (Ty.path "core::result::Result")
+                                                                    (Ty.path
+                                                                      "revm_context_interface::context::ContextError")
                                                                     []
                                                                     [
-                                                                      Ty.tuple [];
+                                                                      Ty.associated_in_trait
+                                                                        "revm_database_interface::Database"
+                                                                        []
+                                                                        []
+                                                                        DB
+                                                                        "Error"
+                                                                    ],
+                                                                  M.get_trait_method (|
+                                                                    "core::convert::Into",
+                                                                    Ty.associated_in_trait
+                                                                      "revm_database_interface::Database"
+                                                                      []
+                                                                      []
+                                                                      DB
+                                                                      "Error",
+                                                                    [],
+                                                                    [
                                                                       Ty.apply
                                                                         (Ty.path
                                                                           "revm_context_interface::context::ContextError")
@@ -6646,99 +6704,76 @@ Module context.
                                                                             DB
                                                                             "Error"
                                                                         ]
-                                                                    ]
-                                                                ],
-                                                              M.get_trait_method (|
-                                                                "revm_context_interface::context::ContextTr",
-                                                                Ty.apply
-                                                                  (Ty.path
-                                                                    "revm_context::context::Context")
-                                                                  []
-                                                                  [
-                                                                    BLOCK;
-                                                                    TX;
-                                                                    CFG;
-                                                                    DB;
-                                                                    JOURNAL;
-                                                                    CHAIN;
-                                                                    LOCAL
-                                                                  ],
-                                                                [],
-                                                                [],
-                                                                "error",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.MutRef,
-                                                                  M.deref (| M.read (| self |) |)
+                                                                    ],
+                                                                    "into",
+                                                                    [],
+                                                                    []
+                                                                  |),
+                                                                  [ M.read (| err |) ]
                                                                 |)
-                                                              ]
-                                                            |)
-                                                          |),
-                                                          Value.StructTuple
-                                                            "core::result::Result::Err"
-                                                            []
-                                                            [
-                                                              Ty.tuple [];
-                                                              Ty.apply
-                                                                (Ty.path
-                                                                  "revm_context_interface::context::ContextError")
-                                                                []
-                                                                [
-                                                                  Ty.associated_in_trait
-                                                                    "revm_database_interface::Database"
-                                                                    []
-                                                                    []
-                                                                    DB
-                                                                    "Error"
-                                                                ]
-                                                            ]
-                                                            [
-                                                              M.call_closure (|
-                                                                Ty.apply
-                                                                  (Ty.path
-                                                                    "revm_context_interface::context::ContextError")
-                                                                  []
-                                                                  [
-                                                                    Ty.associated_in_trait
-                                                                      "revm_database_interface::Database"
-                                                                      []
-                                                                      []
-                                                                      DB
-                                                                      "Error"
-                                                                  ],
-                                                                M.get_trait_method (|
-                                                                  "core::convert::Into",
-                                                                  Ty.associated_in_trait
-                                                                    "revm_database_interface::Database"
-                                                                    []
-                                                                    []
-                                                                    DB
-                                                                    "Error",
-                                                                  [],
-                                                                  [
+                                                              ])),
+                                                          fun rhs' =>
+                                                            ltac:(M.monadic
+                                                              (M.write (|
+                                                                M.deref (|
+                                                                  M.call_closure (|
                                                                     Ty.apply
-                                                                      (Ty.path
-                                                                        "revm_context_interface::context::ContextError")
+                                                                      (Ty.path "&mut")
                                                                       []
                                                                       [
-                                                                        Ty.associated_in_trait
-                                                                          "revm_database_interface::Database"
+                                                                        Ty.apply
+                                                                          (Ty.path
+                                                                            "core::result::Result")
                                                                           []
-                                                                          []
-                                                                          DB
-                                                                          "Error"
-                                                                      ]
-                                                                  ],
-                                                                  "into",
-                                                                  [],
-                                                                  []
+                                                                          [
+                                                                            Ty.tuple [];
+                                                                            Ty.apply
+                                                                              (Ty.path
+                                                                                "revm_context_interface::context::ContextError")
+                                                                              []
+                                                                              [
+                                                                                Ty.associated_in_trait
+                                                                                  "revm_database_interface::Database"
+                                                                                  []
+                                                                                  []
+                                                                                  DB
+                                                                                  "Error"
+                                                                              ]
+                                                                          ]
+                                                                      ],
+                                                                    M.get_trait_method (|
+                                                                      "revm_context_interface::context::ContextTr",
+                                                                      Ty.apply
+                                                                        (Ty.path
+                                                                          "revm_context::context::Context")
+                                                                        []
+                                                                        [
+                                                                          BLOCK;
+                                                                          TX;
+                                                                          CFG;
+                                                                          DB;
+                                                                          JOURNAL;
+                                                                          CHAIN;
+                                                                          LOCAL
+                                                                        ],
+                                                                      [],
+                                                                      [],
+                                                                      "error",
+                                                                      [],
+                                                                      []
+                                                                    |),
+                                                                    [
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.MutRef,
+                                                                        M.deref (|
+                                                                          M.read (| self |)
+                                                                        |)
+                                                                      |)
+                                                                    ]
+                                                                  |)
                                                                 |),
-                                                                [ M.read (| err |) ]
-                                                              |)
-                                                            ]
+                                                                rhs'
+                                                              |)))
                                                         |) in
                                                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                                     |)));
@@ -7064,18 +7099,50 @@ Module context.
                                                       |) in
                                                     M.read (|
                                                       let~ _ : Ty.tuple [] :=
-                                                        M.write (|
-                                                          M.deref (|
-                                                            M.call_closure (|
-                                                              Ty.apply
-                                                                (Ty.path "&mut")
-                                                                []
-                                                                [
+                                                        M.let_ (|
+                                                          ltac:(M.monadic
+                                                            (Value.StructTuple
+                                                              "core::result::Result::Err"
+                                                              []
+                                                              [
+                                                                Ty.tuple [];
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "revm_context_interface::context::ContextError")
+                                                                  []
+                                                                  [
+                                                                    Ty.associated_in_trait
+                                                                      "revm_database_interface::Database"
+                                                                      []
+                                                                      []
+                                                                      DB
+                                                                      "Error"
+                                                                  ]
+                                                              ]
+                                                              [
+                                                                M.call_closure (|
                                                                   Ty.apply
-                                                                    (Ty.path "core::result::Result")
+                                                                    (Ty.path
+                                                                      "revm_context_interface::context::ContextError")
                                                                     []
                                                                     [
-                                                                      Ty.tuple [];
+                                                                      Ty.associated_in_trait
+                                                                        "revm_database_interface::Database"
+                                                                        []
+                                                                        []
+                                                                        DB
+                                                                        "Error"
+                                                                    ],
+                                                                  M.get_trait_method (|
+                                                                    "core::convert::Into",
+                                                                    Ty.associated_in_trait
+                                                                      "revm_database_interface::Database"
+                                                                      []
+                                                                      []
+                                                                      DB
+                                                                      "Error",
+                                                                    [],
+                                                                    [
                                                                       Ty.apply
                                                                         (Ty.path
                                                                           "revm_context_interface::context::ContextError")
@@ -7088,99 +7155,76 @@ Module context.
                                                                             DB
                                                                             "Error"
                                                                         ]
-                                                                    ]
-                                                                ],
-                                                              M.get_trait_method (|
-                                                                "revm_context_interface::context::ContextTr",
-                                                                Ty.apply
-                                                                  (Ty.path
-                                                                    "revm_context::context::Context")
-                                                                  []
-                                                                  [
-                                                                    BLOCK;
-                                                                    TX;
-                                                                    CFG;
-                                                                    DB;
-                                                                    JOURNAL;
-                                                                    CHAIN;
-                                                                    LOCAL
-                                                                  ],
-                                                                [],
-                                                                [],
-                                                                "error",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.MutRef,
-                                                                  M.deref (| M.read (| self |) |)
+                                                                    ],
+                                                                    "into",
+                                                                    [],
+                                                                    []
+                                                                  |),
+                                                                  [ M.read (| err |) ]
                                                                 |)
-                                                              ]
-                                                            |)
-                                                          |),
-                                                          Value.StructTuple
-                                                            "core::result::Result::Err"
-                                                            []
-                                                            [
-                                                              Ty.tuple [];
-                                                              Ty.apply
-                                                                (Ty.path
-                                                                  "revm_context_interface::context::ContextError")
-                                                                []
-                                                                [
-                                                                  Ty.associated_in_trait
-                                                                    "revm_database_interface::Database"
-                                                                    []
-                                                                    []
-                                                                    DB
-                                                                    "Error"
-                                                                ]
-                                                            ]
-                                                            [
-                                                              M.call_closure (|
-                                                                Ty.apply
-                                                                  (Ty.path
-                                                                    "revm_context_interface::context::ContextError")
-                                                                  []
-                                                                  [
-                                                                    Ty.associated_in_trait
-                                                                      "revm_database_interface::Database"
-                                                                      []
-                                                                      []
-                                                                      DB
-                                                                      "Error"
-                                                                  ],
-                                                                M.get_trait_method (|
-                                                                  "core::convert::Into",
-                                                                  Ty.associated_in_trait
-                                                                    "revm_database_interface::Database"
-                                                                    []
-                                                                    []
-                                                                    DB
-                                                                    "Error",
-                                                                  [],
-                                                                  [
+                                                              ])),
+                                                          fun rhs' =>
+                                                            ltac:(M.monadic
+                                                              (M.write (|
+                                                                M.deref (|
+                                                                  M.call_closure (|
                                                                     Ty.apply
-                                                                      (Ty.path
-                                                                        "revm_context_interface::context::ContextError")
+                                                                      (Ty.path "&mut")
                                                                       []
                                                                       [
-                                                                        Ty.associated_in_trait
-                                                                          "revm_database_interface::Database"
+                                                                        Ty.apply
+                                                                          (Ty.path
+                                                                            "core::result::Result")
                                                                           []
-                                                                          []
-                                                                          DB
-                                                                          "Error"
-                                                                      ]
-                                                                  ],
-                                                                  "into",
-                                                                  [],
-                                                                  []
+                                                                          [
+                                                                            Ty.tuple [];
+                                                                            Ty.apply
+                                                                              (Ty.path
+                                                                                "revm_context_interface::context::ContextError")
+                                                                              []
+                                                                              [
+                                                                                Ty.associated_in_trait
+                                                                                  "revm_database_interface::Database"
+                                                                                  []
+                                                                                  []
+                                                                                  DB
+                                                                                  "Error"
+                                                                              ]
+                                                                          ]
+                                                                      ],
+                                                                    M.get_trait_method (|
+                                                                      "revm_context_interface::context::ContextTr",
+                                                                      Ty.apply
+                                                                        (Ty.path
+                                                                          "revm_context::context::Context")
+                                                                        []
+                                                                        [
+                                                                          BLOCK;
+                                                                          TX;
+                                                                          CFG;
+                                                                          DB;
+                                                                          JOURNAL;
+                                                                          CHAIN;
+                                                                          LOCAL
+                                                                        ],
+                                                                      [],
+                                                                      [],
+                                                                      "error",
+                                                                      [],
+                                                                      []
+                                                                    |),
+                                                                    [
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.MutRef,
+                                                                        M.deref (|
+                                                                          M.read (| self |)
+                                                                        |)
+                                                                      |)
+                                                                    ]
+                                                                  |)
                                                                 |),
-                                                                [ M.read (| err |) ]
-                                                              |)
-                                                            ]
+                                                                rhs'
+                                                              |)))
                                                         |) in
                                                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                                     |)));
@@ -7515,28 +7559,13 @@ Module context.
                                             |) in
                                           M.read (|
                                             let~ _ : Ty.tuple [] :=
-                                              M.write (|
-                                                M.deref (| M.read (| error |) |),
-                                                Value.StructTuple
-                                                  "core::result::Result::Err"
-                                                  []
-                                                  [
-                                                    Ty.tuple [];
-                                                    Ty.apply
-                                                      (Ty.path
-                                                        "revm_context_interface::context::ContextError")
-                                                      []
-                                                      [
-                                                        Ty.associated_in_trait
-                                                          "revm_database_interface::Database"
-                                                          []
-                                                          []
-                                                          DB
-                                                          "Error"
-                                                      ]
-                                                  ]
-                                                  [
-                                                    M.call_closure (|
+                                              M.let_ (|
+                                                ltac:(M.monadic
+                                                  (Value.StructTuple
+                                                    "core::result::Result::Err"
+                                                    []
+                                                    [
+                                                      Ty.tuple [];
                                                       Ty.apply
                                                         (Ty.path
                                                           "revm_context_interface::context::ContextError")
@@ -7548,37 +7577,58 @@ Module context.
                                                             []
                                                             DB
                                                             "Error"
-                                                        ],
-                                                      M.get_trait_method (|
-                                                        "core::convert::Into",
-                                                        Ty.associated_in_trait
-                                                          "revm_database_interface::Database"
+                                                        ]
+                                                    ]
+                                                    [
+                                                      M.call_closure (|
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "revm_context_interface::context::ContextError")
                                                           []
-                                                          []
-                                                          DB
-                                                          "Error",
-                                                        [],
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path
-                                                              "revm_context_interface::context::ContextError")
+                                                          [
+                                                            Ty.associated_in_trait
+                                                              "revm_database_interface::Database"
+                                                              []
+                                                              []
+                                                              DB
+                                                              "Error"
+                                                          ],
+                                                        M.get_trait_method (|
+                                                          "core::convert::Into",
+                                                          Ty.associated_in_trait
+                                                            "revm_database_interface::Database"
                                                             []
-                                                            [
-                                                              Ty.associated_in_trait
-                                                                "revm_database_interface::Database"
-                                                                []
-                                                                []
-                                                                DB
-                                                                "Error"
-                                                            ]
-                                                        ],
-                                                        "into",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [ M.read (| err |) ]
-                                                    |)
-                                                  ]
+                                                            []
+                                                            DB
+                                                            "Error",
+                                                          [],
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "revm_context_interface::context::ContextError")
+                                                              []
+                                                              [
+                                                                Ty.associated_in_trait
+                                                                  "revm_database_interface::Database"
+                                                                  []
+                                                                  []
+                                                                  DB
+                                                                  "Error"
+                                                              ]
+                                                          ],
+                                                          "into",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [ M.read (| err |) ]
+                                                      |)
+                                                    ])),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (M.write (|
+                                                      M.deref (| M.read (| error |) |),
+                                                      rhs'
+                                                    |)))
                                               |) in
                                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                           |)));

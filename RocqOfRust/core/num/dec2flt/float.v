@@ -593,36 +593,39 @@ Module num.
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  let β := exponent in
-                  M.write (|
-                    β,
-                    M.call_closure (|
-                      Ty.path "i16",
-                      BinOp.Wrap.sub,
-                      [
-                        M.read (| β |);
-                        M.cast
-                          (Ty.path "i16")
-                          (M.call_closure (|
-                            Ty.path "u32",
-                            BinOp.Wrap.add,
-                            [
-                              M.read (|
-                                get_constant (|
-                                  "core::num::dec2flt::float::RawFloat::EXP_BIAS",
-                                  Ty.path "u32"
-                                |)
-                              |);
-                              M.read (|
-                                get_constant (|
-                                  "core::num::dec2flt::float::RawFloat::SIG_BITS",
-                                  Ty.path "u32"
-                                |)
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.cast
+                        (Ty.path "i16")
+                        (M.call_closure (|
+                          Ty.path "u32",
+                          BinOp.Wrap.add,
+                          [
+                            M.read (|
+                              get_constant (|
+                                "core::num::dec2flt::float::RawFloat::EXP_BIAS",
+                                Ty.path "u32"
                               |)
-                            ]
-                          |))
-                      ]
-                    |)
+                            |);
+                            M.read (|
+                              get_constant (|
+                                "core::num::dec2flt::float::RawFloat::SIG_BITS",
+                                Ty.path "u32"
+                              |)
+                            |)
+                          ]
+                        |)))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (let β := exponent in
+                        M.write (|
+                          β,
+                          M.call_closure (|
+                            Ty.path "i16",
+                            BinOp.Wrap.sub,
+                            [ M.read (| β |); rhs' ]
+                          |)
+                        |)))
                   |) in
                 M.alloc (|
                   Ty.tuple [ Ty.path "u64"; Ty.path "i16"; Ty.path "i8" ],

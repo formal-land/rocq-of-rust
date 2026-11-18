@@ -29,18 +29,19 @@ Module add.
           let rhs := M.alloc (| Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [], rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_associated_function (|
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    "wrapping_add",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      "wrapping_add",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -88,21 +89,22 @@ Module add.
             |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_associated_function (|
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    "wrapping_add",
-                    [],
-                    []
-                  |),
-                  [
-                    M.read (| M.deref (| M.read (| self |) |) |);
-                    M.read (| M.deref (| M.read (| rhs |) |) |)
-                  ]
-                |)
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      "wrapping_add",
+                      [],
+                      []
+                    |),
+                    [
+                      M.read (| M.deref (| M.read (| self |) |) |);
+                      M.read (| M.deref (| M.read (| rhs |) |) |)
+                    ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -376,18 +378,19 @@ Module add.
           let rhs := M.alloc (| Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [], rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_associated_function (|
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    "wrapping_sub",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      "wrapping_sub",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -435,21 +438,22 @@ Module add.
             |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_associated_function (|
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    "wrapping_sub",
-                    [],
-                    []
-                  |),
-                  [
-                    M.read (| M.deref (| M.read (| self |) |) |);
-                    M.read (| M.deref (| M.read (| rhs |) |) |)
-                  ]
-                |)
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      "wrapping_sub",
+                      [],
+                      []
+                    |),
+                    [
+                      M.read (| M.deref (| M.read (| self |) |) |);
+                      M.read (| M.deref (| M.read (| rhs |) |) |)
+                    ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -725,18 +729,19 @@ Module div.
           let rhs := M.alloc (| Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [], rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_associated_function (|
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    "wrapping_div",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      "wrapping_div",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -784,21 +789,22 @@ Module div.
             |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_associated_function (|
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    "wrapping_div",
-                    [],
-                    []
-                  |),
-                  [
-                    M.read (| M.deref (| M.read (| self |) |) |);
-                    M.read (| M.deref (| M.read (| rhs |) |) |)
-                  ]
-                |)
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      "wrapping_div",
+                      [],
+                      []
+                    |),
+                    [
+                      M.read (| M.deref (| M.read (| self |) |) |);
+                      M.read (| M.deref (| M.read (| rhs |) |) |)
+                    ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -1072,18 +1078,19 @@ Module div.
           let rhs := M.alloc (| Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [], rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_associated_function (|
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    "wrapping_rem",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      "wrapping_rem",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -1131,21 +1138,22 @@ Module div.
             |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_associated_function (|
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    "wrapping_rem",
-                    [],
-                    []
-                  |),
-                  [
-                    M.read (| M.deref (| M.read (| self |) |) |);
-                    M.read (| M.deref (| M.read (| rhs |) |) |)
-                  ]
-                |)
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      "wrapping_rem",
+                      [],
+                      []
+                    |),
+                    [
+                      M.read (| M.deref (| M.read (| self |) |) |);
+                      M.read (| M.deref (| M.read (| rhs |) |) |)
+                    ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -1421,18 +1429,19 @@ Module mul.
           let rhs := M.alloc (| Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [], rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_associated_function (|
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    "wrapping_mul",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      "wrapping_mul",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -1480,21 +1489,22 @@ Module mul.
             |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  M.get_associated_function (|
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    "wrapping_mul",
-                    [],
-                    []
-                  |),
-                  [
-                    M.read (| M.deref (| M.read (| self |) |) |);
-                    M.read (| M.deref (| M.read (| rhs |) |) |)
-                  ]
-                |)
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                      "wrapping_mul",
+                      [],
+                      []
+                    |),
+                    [
+                      M.read (| M.deref (| M.read (| self |) |) |);
+                      M.read (| M.deref (| M.read (| rhs |) |) |)
+                    ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))

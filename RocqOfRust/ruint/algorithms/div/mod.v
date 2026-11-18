@@ -1188,20 +1188,30 @@ Module algorithms.
                                                 ]
                                               |) in
                                             let~ _ : Ty.tuple [] :=
-                                              M.write (|
-                                                M.SubPointer.get_array_field (|
-                                                  M.deref (| M.read (| numerator |) |),
-                                                  Value.Integer IntegerKind.Usize 0
-                                                |),
-                                                M.read (| q |)
+                                              M.let_ (|
+                                                ltac:(M.monadic (M.read (| q |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (M.write (|
+                                                      M.SubPointer.get_array_field (|
+                                                        M.deref (| M.read (| numerator |) |),
+                                                        Value.Integer IntegerKind.Usize 0
+                                                      |),
+                                                      rhs'
+                                                    |)))
                                               |) in
                                             let~ _ : Ty.tuple [] :=
-                                              M.write (|
-                                                M.SubPointer.get_array_field (|
-                                                  M.deref (| M.read (| divisor |) |),
-                                                  Value.Integer IntegerKind.Usize 0
-                                                |),
-                                                M.read (| r |)
+                                              M.let_ (|
+                                                ltac:(M.monadic (M.read (| r |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (M.write (|
+                                                      M.SubPointer.get_array_field (|
+                                                        M.deref (| M.read (| divisor |) |),
+                                                        Value.Integer IntegerKind.Usize 0
+                                                      |),
+                                                      rhs'
+                                                    |)))
                                               |) in
                                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                           |)));
@@ -1209,31 +1219,37 @@ Module algorithms.
                                         ltac:(M.monadic
                                           (M.read (|
                                             let~ _ : Ty.tuple [] :=
-                                              M.write (|
-                                                M.SubPointer.get_array_field (|
-                                                  M.deref (| M.read (| divisor |) |),
-                                                  Value.Integer IntegerKind.Usize 0
-                                                |),
-                                                M.call_closure (|
-                                                  Ty.path "u64",
-                                                  M.get_function (|
-                                                    "ruint::algorithms::div::small::div_nx1",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.borrow (|
-                                                      Pointer.Kind.MutRef,
-                                                      M.deref (| M.read (| numerator |) |)
-                                                    |);
-                                                    M.read (|
+                                              M.let_ (|
+                                                ltac:(M.monadic
+                                                  (M.call_closure (|
+                                                    Ty.path "u64",
+                                                    M.get_function (|
+                                                      "ruint::algorithms::div::small::div_nx1",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.borrow (|
+                                                        Pointer.Kind.MutRef,
+                                                        M.deref (| M.read (| numerator |) |)
+                                                      |);
+                                                      M.read (|
+                                                        M.SubPointer.get_array_field (|
+                                                          M.deref (| M.read (| divisor |) |),
+                                                          Value.Integer IntegerKind.Usize 0
+                                                        |)
+                                                      |)
+                                                    ]
+                                                  |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (M.write (|
                                                       M.SubPointer.get_array_field (|
                                                         M.deref (| M.read (| divisor |) |),
                                                         Value.Integer IntegerKind.Usize 0
-                                                      |)
-                                                    |)
-                                                  ]
-                                                |)
+                                                      |),
+                                                      rhs'
+                                                    |)))
                                               |) in
                                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                           |)))
@@ -1286,44 +1302,56 @@ Module algorithms.
                                         ]
                                       |) in
                                     let~ _ : Ty.tuple [] :=
-                                      M.write (|
-                                        M.SubPointer.get_array_field (|
-                                          M.deref (| M.read (| divisor |) |),
-                                          Value.Integer IntegerKind.Usize 0
-                                        |),
-                                        M.call_closure (|
-                                          Ty.path "u64",
-                                          M.get_trait_method (|
-                                            "ruint::algorithms::DoubleWord",
-                                            Ty.path "u128",
-                                            [],
-                                            [ Ty.path "u64" ],
-                                            "low",
-                                            [],
-                                            []
-                                          |),
-                                          [ M.read (| remainder |) ]
-                                        |)
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (M.call_closure (|
+                                            Ty.path "u64",
+                                            M.get_trait_method (|
+                                              "ruint::algorithms::DoubleWord",
+                                              Ty.path "u128",
+                                              [],
+                                              [ Ty.path "u64" ],
+                                              "low",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.read (| remainder |) ]
+                                          |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (M.write (|
+                                              M.SubPointer.get_array_field (|
+                                                M.deref (| M.read (| divisor |) |),
+                                                Value.Integer IntegerKind.Usize 0
+                                              |),
+                                              rhs'
+                                            |)))
                                       |) in
                                     let~ _ : Ty.tuple [] :=
-                                      M.write (|
-                                        M.SubPointer.get_array_field (|
-                                          M.deref (| M.read (| divisor |) |),
-                                          Value.Integer IntegerKind.Usize 1
-                                        |),
-                                        M.call_closure (|
-                                          Ty.path "u64",
-                                          M.get_trait_method (|
-                                            "ruint::algorithms::DoubleWord",
-                                            Ty.path "u128",
-                                            [],
-                                            [ Ty.path "u64" ],
-                                            "high",
-                                            [],
-                                            []
-                                          |),
-                                          [ M.read (| remainder |) ]
-                                        |)
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (M.call_closure (|
+                                            Ty.path "u64",
+                                            M.get_trait_method (|
+                                              "ruint::algorithms::DoubleWord",
+                                              Ty.path "u128",
+                                              [],
+                                              [ Ty.path "u64" ],
+                                              "high",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.read (| remainder |) ]
+                                          |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (M.write (|
+                                              M.SubPointer.get_array_field (|
+                                                M.deref (| M.read (| divisor |) |),
+                                                Value.Integer IntegerKind.Usize 1
+                                              |),
+                                              rhs'
+                                            |)))
                                       |) in
                                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                   |)))

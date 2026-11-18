@@ -86,19 +86,20 @@ Module Impl_incrementer_Incrementer.
         let by_ := M.alloc (| Ty.path "i32", by_ |) in
         M.read (|
           let~ _ : Ty.tuple [] :=
-            let β :=
-              M.SubPointer.get_struct_record_field (|
-                M.deref (| M.read (| self |) |),
-                "incrementer::Incrementer",
-                "value"
-              |) in
-            M.write (|
-              β,
-              M.call_closure (|
-                Ty.path "i32",
-                BinOp.Wrap.add,
-                [ M.read (| β |); M.read (| by_ |) ]
-              |)
+            M.let_ (|
+              ltac:(M.monadic (M.read (| by_ |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (let β :=
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "incrementer::Incrementer",
+                      "value"
+                    |) in
+                  M.write (|
+                    β,
+                    M.call_closure (| Ty.path "i32", BinOp.Wrap.add, [ M.read (| β |); rhs' ] |)
+                  |)))
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
         |)))

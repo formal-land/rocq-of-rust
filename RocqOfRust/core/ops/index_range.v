@@ -606,17 +606,23 @@ Module ops.
                   |)
                 |) in
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::ops::index_range::IndexRange",
-                    "start"
-                  |),
-                  M.call_closure (|
-                    Ty.path "usize",
-                    M.get_associated_function (| Ty.path "usize", "unchecked_add", [], [] |),
-                    [ M.read (| value |); Value.Integer IntegerKind.Usize 1 ]
-                  |)
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
+                      Ty.path "usize",
+                      M.get_associated_function (| Ty.path "usize", "unchecked_add", [], [] |),
+                      [ M.read (| value |); Value.Integer IntegerKind.Usize 1 ]
+                    |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::ops::index_range::IndexRange",
+                          "start"
+                        |),
+                        rhs'
+                      |)))
                 |) in
               value
             |)))
@@ -732,13 +738,18 @@ Module ops.
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::ops::index_range::IndexRange",
-                    "end"
-                  |),
-                  M.read (| value |)
+                M.let_ (|
+                  ltac:(M.monadic (M.read (| value |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::ops::index_range::IndexRange",
+                          "end"
+                        |),
+                        rhs'
+                      |)))
                 |) in
               value
             |)))
@@ -858,13 +869,18 @@ Module ops.
                     ("end_", M.read (| mid |))
                   ] in
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::ops::index_range::IndexRange",
-                    "start"
-                  |),
-                  M.read (| mid |)
+                M.let_ (|
+                  ltac:(M.monadic (M.read (| mid |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::ops::index_range::IndexRange",
+                          "start"
+                        |),
+                        rhs'
+                      |)))
                 |) in
               prefix
             |)))
@@ -984,13 +1000,18 @@ Module ops.
                       |))
                   ] in
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::ops::index_range::IndexRange",
-                    "end"
-                  |),
-                  M.read (| mid |)
+                M.let_ (|
+                  ltac:(M.monadic (M.read (| mid |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::ops::index_range::IndexRange",
+                          "end"
+                        |),
+                        rhs'
+                      |)))
                 |) in
               suffix
             |)))

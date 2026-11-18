@@ -4205,57 +4205,69 @@ Module raw_vec.
           let cap := M.alloc (| Ty.path "usize", cap |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "alloc::raw_vec::RawVecInner",
-                  "ptr"
-                |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ Ty.path "u8" ],
-                  M.get_trait_method (|
-                    "core::convert::From",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ Ty.path "u8" ],
-                    [],
-                    [ Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ] ],
-                    "from",
-                    [],
-                    []
-                  |),
-                  [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ],
-                      M.get_associated_function (|
-                        Ty.apply
-                          (Ty.path "core::ptr::non_null::NonNull")
-                          []
-                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                        "cast",
-                        [],
-                        [ Ty.path "u8" ]
+                    M.get_trait_method (|
+                      "core::convert::From",
+                      Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ Ty.path "u8" ],
+                      [],
+                      [ Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ] ],
+                      "from",
+                      [],
+                      []
+                    |),
+                    [
+                      M.call_closure (|
+                        Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                          "cast",
+                          [],
+                          [ Ty.path "u8" ]
+                        |),
+                        [ M.read (| ptr |) ]
+                      |)
+                    ]
+                  |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "alloc::raw_vec::RawVecInner",
+                        "ptr"
                       |),
-                      [ M.read (| ptr |) ]
-                    |)
-                  ]
-                |)
+                      rhs'
+                    |)))
               |) in
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "alloc::raw_vec::RawVecInner",
-                  "cap"
-                |),
-                M.call_closure (|
-                  Ty.path "core::num::niche_types::UsizeNoHighBit",
-                  M.get_associated_function (|
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.path "core::num::niche_types::UsizeNoHighBit",
-                    "new_unchecked",
-                    [],
-                    []
-                  |),
-                  [ M.read (| cap |) ]
-                |)
+                    M.get_associated_function (|
+                      Ty.path "core::num::niche_types::UsizeNoHighBit",
+                      "new_unchecked",
+                      [],
+                      []
+                    |),
+                    [ M.read (| cap |) ]
+                  |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "alloc::raw_vec::RawVecInner",
+                        "cap"
+                      |),
+                      rhs'
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -6330,63 +6342,75 @@ Module raw_vec.
                                         ]
                                       |) in
                                     let~ _ : Ty.tuple [] :=
-                                      M.write (|
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "alloc::raw_vec::RawVecInner",
-                                          "ptr"
-                                        |),
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::ptr::unique::Unique")
-                                            []
-                                            [ Ty.path "u8" ],
-                                          M.get_associated_function (|
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (M.call_closure (|
                                             Ty.apply
                                               (Ty.path "core::ptr::unique::Unique")
                                               []
                                               [ Ty.path "u8" ],
-                                            "new_unchecked",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.call_closure (|
-                                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                              M.get_function (|
-                                                "core::ptr::without_provenance_mut",
-                                                [],
-                                                [ Ty.path "u8" ]
+                                            M.get_associated_function (|
+                                              Ty.apply
+                                                (Ty.path "core::ptr::unique::Unique")
+                                                []
+                                                [ Ty.path "u8" ],
+                                              "new_unchecked",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.call_closure (|
+                                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                                M.get_function (|
+                                                  "core::ptr::without_provenance_mut",
+                                                  [],
+                                                  [ Ty.path "u8" ]
+                                                |),
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.path "usize",
+                                                    M.get_associated_function (|
+                                                      Ty.path "core::alloc::layout::Layout",
+                                                      "align",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [ M.borrow (| Pointer.Kind.Ref, elem_layout |) ]
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (M.write (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "alloc::raw_vec::RawVecInner",
+                                                "ptr"
                                               |),
-                                              [
-                                                M.call_closure (|
-                                                  Ty.path "usize",
-                                                  M.get_associated_function (|
-                                                    Ty.path "core::alloc::layout::Layout",
-                                                    "align",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [ M.borrow (| Pointer.Kind.Ref, elem_layout |) ]
-                                                |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
+                                              rhs'
+                                            |)))
                                       |) in
                                     let~ _ : Ty.tuple [] :=
-                                      M.write (|
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "alloc::raw_vec::RawVecInner",
-                                          "cap"
-                                        |),
-                                        M.read (|
-                                          get_constant (|
-                                            "alloc::raw_vec::ZERO_CAP",
-                                            Ty.path "core::num::niche_types::UsizeNoHighBit"
-                                          |)
-                                        |)
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (M.read (|
+                                            get_constant (|
+                                              "alloc::raw_vec::ZERO_CAP",
+                                              Ty.path "core::num::niche_types::UsizeNoHighBit"
+                                            |)
+                                          |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (M.write (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "alloc::raw_vec::RawVecInner",
+                                                "cap"
+                                              |),
+                                              rhs'
+                                            |)))
                                       |) in
                                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                   |)));

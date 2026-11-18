@@ -2300,13 +2300,14 @@ Module char.
             (let self := M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "char" ], self |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.path "char",
-                    M.get_associated_function (| Ty.path "char", "to_ascii_uppercase", [], [] |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                  |)
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
+                      Ty.path "char",
+                      M.get_associated_function (| Ty.path "char", "to_ascii_uppercase", [], [] |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -2331,13 +2332,14 @@ Module char.
             (let self := M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "char" ], self |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.path "char",
-                    M.get_associated_function (| Ty.path "char", "to_ascii_lowercase", [], [] |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                  |)
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
+                      Ty.path "char",
+                      M.get_associated_function (| Ty.path "char", "to_ascii_lowercase", [], [] |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -3602,9 +3604,11 @@ Module char.
                           M.never_to_any (|
                             M.read (|
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.deref (| M.read (| dst |) |),
-                                  M.cast (Ty.path "u8") (M.read (| code |))
+                                M.let_ (|
+                                  ltac:(M.monadic (M.cast (Ty.path "u8") (M.read (| code |)))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (| M.deref (| M.read (| dst |) |), rhs' |)))
                                 |) in
                               M.return_ (| Value.Tuple [] |)
                             |)
@@ -3721,34 +3725,42 @@ Module char.
                           M.never_to_any (|
                             M.read (|
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.deref (| M.read (| dst |) |),
-                                  M.call_closure (|
-                                    Ty.path "u8",
-                                    BinOp.Wrap.bit_or,
-                                    [
-                                      M.read (| last2 |);
-                                      M.read (|
-                                        get_constant (| "core::char::TAG_TWO_B", Ty.path "u8" |)
-                                      |)
-                                    ]
-                                  |)
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (M.call_closure (|
+                                      Ty.path "u8",
+                                      BinOp.Wrap.bit_or,
+                                      [
+                                        M.read (| last2 |);
+                                        M.read (|
+                                          get_constant (| "core::char::TAG_TWO_B", Ty.path "u8" |)
+                                        |)
+                                      ]
+                                    |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (| M.deref (| M.read (| dst |) |), rhs' |)))
                                 |) in
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                      M.get_associated_function (|
-                                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                        "add",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.read (| dst |); Value.Integer IntegerKind.Usize 1 ]
-                                    |)
-                                  |),
-                                  M.read (| last1 |)
+                                M.let_ (|
+                                  ltac:(M.monadic (M.read (| last1 |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (|
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                            M.get_associated_function (|
+                                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                              "add",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.read (| dst |); Value.Integer IntegerKind.Usize 1 ]
+                                          |)
+                                        |),
+                                        rhs'
+                                      |)))
                                 |) in
                               M.return_ (| Value.Tuple [] |)
                             |)
@@ -3777,50 +3789,63 @@ Module char.
                           M.never_to_any (|
                             M.read (|
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.deref (| M.read (| dst |) |),
-                                  M.call_closure (|
-                                    Ty.path "u8",
-                                    BinOp.Wrap.bit_or,
-                                    [
-                                      M.read (| last3 |);
-                                      M.read (|
-                                        get_constant (| "core::char::TAG_THREE_B", Ty.path "u8" |)
-                                      |)
-                                    ]
-                                  |)
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (M.call_closure (|
+                                      Ty.path "u8",
+                                      BinOp.Wrap.bit_or,
+                                      [
+                                        M.read (| last3 |);
+                                        M.read (|
+                                          get_constant (| "core::char::TAG_THREE_B", Ty.path "u8" |)
+                                        |)
+                                      ]
+                                    |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (| M.deref (| M.read (| dst |) |), rhs' |)))
                                 |) in
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                      M.get_associated_function (|
-                                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                        "add",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.read (| dst |); Value.Integer IntegerKind.Usize 1 ]
-                                    |)
-                                  |),
-                                  M.read (| last2 |)
+                                M.let_ (|
+                                  ltac:(M.monadic (M.read (| last2 |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (|
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                            M.get_associated_function (|
+                                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                              "add",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.read (| dst |); Value.Integer IntegerKind.Usize 1 ]
+                                          |)
+                                        |),
+                                        rhs'
+                                      |)))
                                 |) in
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                      M.get_associated_function (|
-                                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                        "add",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.read (| dst |); Value.Integer IntegerKind.Usize 2 ]
-                                    |)
-                                  |),
-                                  M.read (| last1 |)
+                                M.let_ (|
+                                  ltac:(M.monadic (M.read (| last1 |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (|
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                            M.get_associated_function (|
+                                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                              "add",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.read (| dst |); Value.Integer IntegerKind.Usize 2 ]
+                                          |)
+                                        |),
+                                        rhs'
+                                      |)))
                                 |) in
                               M.return_ (| Value.Tuple [] |)
                             |)
@@ -3829,54 +3854,73 @@ Module char.
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (| M.deref (| M.read (| dst |) |), M.read (| last4 |) |) in
-                let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                          "add",
-                          [],
-                          []
-                        |),
-                        [ M.read (| dst |); Value.Integer IntegerKind.Usize 1 ]
-                      |)
-                    |),
-                    M.read (| last3 |)
+                  M.let_ (|
+                    ltac:(M.monadic (M.read (| last4 |))),
+                    fun rhs' =>
+                      ltac:(M.monadic (M.write (| M.deref (| M.read (| dst |) |), rhs' |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                          "add",
-                          [],
-                          []
-                        |),
-                        [ M.read (| dst |); Value.Integer IntegerKind.Usize 2 ]
-                      |)
-                    |),
-                    M.read (| last2 |)
+                  M.let_ (|
+                    ltac:(M.monadic (M.read (| last3 |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                "add",
+                                [],
+                                []
+                              |),
+                              [ M.read (| dst |); Value.Integer IntegerKind.Usize 1 ]
+                            |)
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                          "add",
-                          [],
-                          []
-                        |),
-                        [ M.read (| dst |); Value.Integer IntegerKind.Usize 3 ]
-                      |)
-                    |),
-                    M.read (| last1 |)
+                  M.let_ (|
+                    ltac:(M.monadic (M.read (| last2 |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                "add",
+                                [],
+                                []
+                              |),
+                              [ M.read (| dst |); Value.Integer IntegerKind.Usize 2 ]
+                            |)
+                          |),
+                          rhs'
+                        |)))
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.let_ (|
+                    ltac:(M.monadic (M.read (| last1 |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                "add",
+                                [],
+                                []
+                              |),
+                              [ M.read (| dst |); Value.Integer IntegerKind.Usize 3 ]
+                            |)
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
               |)))
@@ -3975,9 +4019,11 @@ Module char.
                             |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.deref (| M.read (| a |) |),
-                                M.cast (Ty.path "u16") (M.read (| code |))
+                              M.let_ (|
+                                ltac:(M.monadic (M.cast (Ty.path "u16") (M.read (| code |)))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (| M.deref (| M.read (| a |) |), rhs' |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)));
@@ -4018,40 +4064,46 @@ Module char.
                                 |)
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.deref (| M.read (| a |) |),
-                                M.call_closure (|
-                                  Ty.path "u16",
-                                  BinOp.Wrap.bit_or,
-                                  [
-                                    M.cast
-                                      (Ty.path "u16")
-                                      (M.call_closure (|
-                                        Ty.path "u32",
-                                        BinOp.Wrap.shr,
-                                        [ M.read (| code |); Value.Integer IntegerKind.I32 10 ]
-                                      |));
-                                    Value.Integer IntegerKind.U16 55296
-                                  ]
-                                |)
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
+                                    Ty.path "u16",
+                                    BinOp.Wrap.bit_or,
+                                    [
+                                      M.cast
+                                        (Ty.path "u16")
+                                        (M.call_closure (|
+                                          Ty.path "u32",
+                                          BinOp.Wrap.shr,
+                                          [ M.read (| code |); Value.Integer IntegerKind.I32 10 ]
+                                        |));
+                                      Value.Integer IntegerKind.U16 55296
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (| M.deref (| M.read (| a |) |), rhs' |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.deref (| M.read (| b |) |),
-                                M.call_closure (|
-                                  Ty.path "u16",
-                                  BinOp.Wrap.bit_or,
-                                  [
-                                    M.cast
-                                      (Ty.path "u16")
-                                      (M.call_closure (|
-                                        Ty.path "u32",
-                                        BinOp.Wrap.bit_and,
-                                        [ M.read (| code |); Value.Integer IntegerKind.U32 1023 ]
-                                      |));
-                                    Value.Integer IntegerKind.U16 56320
-                                  ]
-                                |)
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
+                                    Ty.path "u16",
+                                    BinOp.Wrap.bit_or,
+                                    [
+                                      M.cast
+                                        (Ty.path "u16")
+                                        (M.call_closure (|
+                                          Ty.path "u32",
+                                          BinOp.Wrap.bit_and,
+                                          [ M.read (| code |); Value.Integer IntegerKind.U32 1023 ]
+                                        |));
+                                      Value.Integer IntegerKind.U16 56320
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (| M.deref (| M.read (| b |) |), rhs' |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)));

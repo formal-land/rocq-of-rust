@@ -194,25 +194,31 @@ Module Impl_integration_flipper_Flipper.
           |) in
         M.read (|
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_struct_record_field (|
-                M.deref (| M.read (| self |) |),
-                "integration_flipper::Flipper",
-                "value"
-              |),
-              M.call_closure (|
-                Ty.path "bool",
-                UnOp.not,
-                [
-                  M.read (|
+            M.let_ (|
+              ltac:(M.monadic
+                (M.call_closure (|
+                  Ty.path "bool",
+                  UnOp.not,
+                  [
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "integration_flipper::Flipper",
+                        "value"
+                      |)
+                    |)
+                  ]
+                |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
                     M.SubPointer.get_struct_record_field (|
                       M.deref (| M.read (| self |) |),
                       "integration_flipper::Flipper",
                       "value"
-                    |)
-                  |)
-                ]
-              |)
+                    |),
+                    rhs'
+                  |)))
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
         |)))

@@ -331,17 +331,9 @@ Module instructions.
                             |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.deref (| M.read (| op2 |) |),
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    [],
-                                  M.get_associated_function (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.apply
                                       (Ty.path "ruint::Uint")
                                       [
@@ -349,12 +341,24 @@ Module instructions.
                                         Value.Integer IntegerKind.Usize 4
                                       ]
                                       [],
-                                    "wrapping_add",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| op1 |); M.read (| M.deref (| M.read (| op2 |) |) |) ]
-                                |)
+                                    M.get_associated_function (|
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        [],
+                                      "wrapping_add",
+                                      [],
+                                      []
+                                    |),
+                                    [ M.read (| op1 |); M.read (| M.deref (| M.read (| op2 |) |) |)
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (| M.deref (| M.read (| op2 |) |), rhs' |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)))
@@ -700,17 +704,9 @@ Module instructions.
                             |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.deref (| M.read (| op2 |) |),
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    [],
-                                  M.get_associated_function (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.apply
                                       (Ty.path "ruint::Uint")
                                       [
@@ -718,12 +714,24 @@ Module instructions.
                                         Value.Integer IntegerKind.Usize 4
                                       ]
                                       [],
-                                    "wrapping_mul",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| op1 |); M.read (| M.deref (| M.read (| op2 |) |) |) ]
-                                |)
+                                    M.get_associated_function (|
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        [],
+                                      "wrapping_mul",
+                                      [],
+                                      []
+                                    |),
+                                    [ M.read (| op1 |); M.read (| M.deref (| M.read (| op2 |) |) |)
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (| M.deref (| M.read (| op2 |) |), rhs' |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)))
@@ -1069,17 +1077,9 @@ Module instructions.
                             |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.deref (| M.read (| op2 |) |),
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    [],
-                                  M.get_associated_function (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.apply
                                       (Ty.path "ruint::Uint")
                                       [
@@ -1087,12 +1087,24 @@ Module instructions.
                                         Value.Integer IntegerKind.Usize 4
                                       ]
                                       [],
-                                    "wrapping_sub",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| op1 |); M.read (| M.deref (| M.read (| op2 |) |) |) ]
-                                |)
+                                    M.get_associated_function (|
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        [],
+                                      "wrapping_sub",
+                                      [],
+                                      []
+                                    |),
+                                    [ M.read (| op1 |); M.read (| M.deref (| M.read (| op2 |) |) |)
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (| M.deref (| M.read (| op2 |) |), rhs' |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)))
@@ -1482,17 +1494,9 @@ Module instructions.
                                     |) in
                                   M.read (|
                                     let~ _ : Ty.tuple [] :=
-                                      M.write (|
-                                        M.deref (| M.read (| op2 |) |),
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "ruint::Uint")
-                                            [
-                                              Value.Integer IntegerKind.Usize 256;
-                                              Value.Integer IntegerKind.Usize 4
-                                            ]
-                                            [],
-                                          M.get_associated_function (|
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (M.call_closure (|
                                             Ty.apply
                                               (Ty.path "ruint::Uint")
                                               [
@@ -1500,15 +1504,26 @@ Module instructions.
                                                 Value.Integer IntegerKind.Usize 4
                                               ]
                                               [],
-                                            "wrapping_div",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.read (| op1 |);
-                                            M.read (| M.deref (| M.read (| op2 |) |) |)
-                                          ]
-                                        |)
+                                            M.get_associated_function (|
+                                              Ty.apply
+                                                (Ty.path "ruint::Uint")
+                                                [
+                                                  Value.Integer IntegerKind.Usize 256;
+                                                  Value.Integer IntegerKind.Usize 4
+                                                ]
+                                                [],
+                                              "wrapping_div",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.read (| op1 |);
+                                              M.read (| M.deref (| M.read (| op2 |) |) |)
+                                            ]
+                                          |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (M.write (| M.deref (| M.read (| op2 |) |), rhs' |)))
                                       |) in
                                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                   |)));
@@ -1857,23 +1872,27 @@ Module instructions.
                             |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.deref (| M.read (| op2 |) |),
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "ruint::Uint")
+                                      [
+                                        Value.Integer IntegerKind.Usize 256;
+                                        Value.Integer IntegerKind.Usize 4
+                                      ]
+                                      [],
+                                    M.get_function (|
+                                      "revm_interpreter::instructions::i256::i256_div",
+                                      [],
+                                      []
+                                    |),
+                                    [ M.read (| op1 |); M.read (| M.deref (| M.read (| op2 |) |) |)
                                     ]
-                                    [],
-                                  M.get_function (|
-                                    "revm_interpreter::instructions::i256::i256_div",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| op1 |); M.read (| M.deref (| M.read (| op2 |) |) |) ]
-                                |)
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (| M.deref (| M.read (| op2 |) |), rhs' |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)))
@@ -2263,17 +2282,9 @@ Module instructions.
                                     |) in
                                   M.read (|
                                     let~ _ : Ty.tuple [] :=
-                                      M.write (|
-                                        M.deref (| M.read (| op2 |) |),
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "ruint::Uint")
-                                            [
-                                              Value.Integer IntegerKind.Usize 256;
-                                              Value.Integer IntegerKind.Usize 4
-                                            ]
-                                            [],
-                                          M.get_associated_function (|
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (M.call_closure (|
                                             Ty.apply
                                               (Ty.path "ruint::Uint")
                                               [
@@ -2281,15 +2292,26 @@ Module instructions.
                                                 Value.Integer IntegerKind.Usize 4
                                               ]
                                               [],
-                                            "wrapping_rem",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.read (| op1 |);
-                                            M.read (| M.deref (| M.read (| op2 |) |) |)
-                                          ]
-                                        |)
+                                            M.get_associated_function (|
+                                              Ty.apply
+                                                (Ty.path "ruint::Uint")
+                                                [
+                                                  Value.Integer IntegerKind.Usize 256;
+                                                  Value.Integer IntegerKind.Usize 4
+                                                ]
+                                                [],
+                                              "wrapping_rem",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.read (| op1 |);
+                                              M.read (| M.deref (| M.read (| op2 |) |) |)
+                                            ]
+                                          |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (M.write (| M.deref (| M.read (| op2 |) |), rhs' |)))
                                       |) in
                                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                   |)));
@@ -2636,23 +2658,25 @@ Module instructions.
                                 ],
                               γ0_1
                             |) in
-                          M.write (|
-                            M.deref (| M.read (| op2 |) |),
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "ruint::Uint")
-                                [
-                                  Value.Integer IntegerKind.Usize 256;
-                                  Value.Integer IntegerKind.Usize 4
-                                ]
-                                [],
-                              M.get_function (|
-                                "revm_interpreter::instructions::i256::i256_mod",
-                                [],
-                                []
-                              |),
-                              [ M.read (| op1 |); M.read (| M.deref (| M.read (| op2 |) |) |) ]
-                            |)
+                          M.let_ (|
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ]
+                                  [],
+                                M.get_function (|
+                                  "revm_interpreter::instructions::i256::i256_mod",
+                                  [],
+                                  []
+                                |),
+                                [ M.read (| op1 |); M.read (| M.deref (| M.read (| op2 |) |) |) ]
+                              |))),
+                            fun rhs' =>
+                              ltac:(M.monadic (M.write (| M.deref (| M.read (| op2 |) |), rhs' |)))
                           |)))
                     ]
                   |)
@@ -3013,17 +3037,9 @@ Module instructions.
                                 ],
                               γ0_1
                             |) in
-                          M.write (|
-                            M.deref (| M.read (| op3 |) |),
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "ruint::Uint")
-                                [
-                                  Value.Integer IntegerKind.Usize 256;
-                                  Value.Integer IntegerKind.Usize 4
-                                ]
-                                [],
-                              M.get_associated_function (|
+                          M.let_ (|
+                            ltac:(M.monadic
+                              (M.call_closure (|
                                 Ty.apply
                                   (Ty.path "ruint::Uint")
                                   [
@@ -3031,16 +3047,26 @@ Module instructions.
                                     Value.Integer IntegerKind.Usize 4
                                   ]
                                   [],
-                                "add_mod",
-                                [],
-                                []
-                              |),
-                              [
-                                M.read (| op1 |);
-                                M.read (| op2 |);
-                                M.read (| M.deref (| M.read (| op3 |) |) |)
-                              ]
-                            |)
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "ruint::Uint")
+                                    [
+                                      Value.Integer IntegerKind.Usize 256;
+                                      Value.Integer IntegerKind.Usize 4
+                                    ]
+                                    [],
+                                  "add_mod",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.read (| op1 |);
+                                  M.read (| op2 |);
+                                  M.read (| M.deref (| M.read (| op3 |) |) |)
+                                ]
+                              |))),
+                            fun rhs' =>
+                              ltac:(M.monadic (M.write (| M.deref (| M.read (| op3 |) |), rhs' |)))
                           |)))
                     ]
                   |)
@@ -3401,17 +3427,9 @@ Module instructions.
                                 ],
                               γ0_1
                             |) in
-                          M.write (|
-                            M.deref (| M.read (| op3 |) |),
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "ruint::Uint")
-                                [
-                                  Value.Integer IntegerKind.Usize 256;
-                                  Value.Integer IntegerKind.Usize 4
-                                ]
-                                [],
-                              M.get_associated_function (|
+                          M.let_ (|
+                            ltac:(M.monadic
+                              (M.call_closure (|
                                 Ty.apply
                                   (Ty.path "ruint::Uint")
                                   [
@@ -3419,16 +3437,26 @@ Module instructions.
                                     Value.Integer IntegerKind.Usize 4
                                   ]
                                   [],
-                                "mul_mod",
-                                [],
-                                []
-                              |),
-                              [
-                                M.read (| op1 |);
-                                M.read (| op2 |);
-                                M.read (| M.deref (| M.read (| op3 |) |) |)
-                              ]
-                            |)
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "ruint::Uint")
+                                    [
+                                      Value.Integer IntegerKind.Usize 256;
+                                      Value.Integer IntegerKind.Usize 4
+                                    ]
+                                    [],
+                                  "mul_mod",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.read (| op1 |);
+                                  M.read (| op2 |);
+                                  M.read (| M.deref (| M.read (| op3 |) |) |)
+                                ]
+                              |))),
+                            fun rhs' =>
+                              ltac:(M.monadic (M.write (| M.deref (| M.read (| op3 |) |), rhs' |)))
                           |)))
                     ]
                   |)
@@ -3961,17 +3989,9 @@ Module instructions.
                                 ]
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.deref (| M.read (| op2 |) |),
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    [],
-                                  M.get_associated_function (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.apply
                                       (Ty.path "ruint::Uint")
                                       [
@@ -3979,12 +3999,24 @@ Module instructions.
                                         Value.Integer IntegerKind.Usize 4
                                       ]
                                       [],
-                                    "pow",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| op1 |); M.read (| M.deref (| M.read (| op2 |) |) |) ]
-                                |)
+                                    M.get_associated_function (|
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        [],
+                                      "pow",
+                                      [],
+                                      []
+                                    |),
+                                    [ M.read (| op1 |); M.read (| M.deref (| M.read (| op2 |) |) |)
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (| M.deref (| M.read (| op2 |) |), rhs' |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)))
@@ -4598,36 +4630,27 @@ Module instructions.
                                         ]
                                       |) in
                                     let~ _ : Ty.tuple [] :=
-                                      M.write (|
-                                        M.deref (| M.read (| x |) |),
-                                        M.match_operator (|
-                                          Ty.apply
-                                            (Ty.path "ruint::Uint")
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (M.match_operator (|
+                                            Ty.apply
+                                              (Ty.path "ruint::Uint")
+                                              [
+                                                Value.Integer IntegerKind.Usize 256;
+                                                Value.Integer IntegerKind.Usize 4
+                                              ]
+                                              [],
+                                            M.alloc (| Ty.tuple [], Value.Tuple [] |),
                                             [
-                                              Value.Integer IntegerKind.Usize 256;
-                                              Value.Integer IntegerKind.Usize 4
-                                            ]
-                                            [],
-                                          M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                          [
-                                            fun γ =>
-                                              ltac:(M.monadic
-                                                (let γ := bit in
-                                                let _ :=
-                                                  is_constant_or_break_match (|
-                                                    M.read (| γ |),
-                                                    Value.Bool true
-                                                  |) in
-                                                M.call_closure (|
-                                                  Ty.apply
-                                                    (Ty.path "ruint::Uint")
-                                                    [
-                                                      Value.Integer IntegerKind.Usize 256;
-                                                      Value.Integer IntegerKind.Usize 4
-                                                    ]
-                                                    [],
-                                                  M.get_trait_method (|
-                                                    "core::ops::bit::BitOr",
+                                              fun γ =>
+                                                ltac:(M.monadic
+                                                  (let γ := bit in
+                                                  let _ :=
+                                                    is_constant_or_break_match (|
+                                                      M.read (| γ |),
+                                                      Value.Bool true
+                                                    |) in
+                                                  M.call_closure (|
                                                     Ty.apply
                                                       (Ty.path "ruint::Uint")
                                                       [
@@ -4635,23 +4658,8 @@ Module instructions.
                                                         Value.Integer IntegerKind.Usize 4
                                                       ]
                                                       [],
-                                                    [],
-                                                    [
-                                                      Ty.apply
-                                                        (Ty.path "ruint::Uint")
-                                                        [
-                                                          Value.Integer IntegerKind.Usize 256;
-                                                          Value.Integer IntegerKind.Usize 4
-                                                        ]
-                                                        []
-                                                    ],
-                                                    "bitor",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.read (| M.deref (| M.read (| x |) |) |);
-                                                    M.call_closure (|
+                                                    M.get_trait_method (|
+                                                      "core::ops::bit::BitOr",
                                                       Ty.apply
                                                         (Ty.path "ruint::Uint")
                                                         [
@@ -4659,8 +4667,23 @@ Module instructions.
                                                           Value.Integer IntegerKind.Usize 4
                                                         ]
                                                         [],
-                                                      M.get_trait_method (|
-                                                        "core::ops::bit::Not",
+                                                      [],
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "ruint::Uint")
+                                                          [
+                                                            Value.Integer IntegerKind.Usize 256;
+                                                            Value.Integer IntegerKind.Usize 4
+                                                          ]
+                                                          []
+                                                      ],
+                                                      "bitor",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.read (| M.deref (| M.read (| x |) |) |);
+                                                      M.call_closure (|
                                                         Ty.apply
                                                           (Ty.path "ruint::Uint")
                                                           [
@@ -4668,28 +4691,28 @@ Module instructions.
                                                             Value.Integer IntegerKind.Usize 4
                                                           ]
                                                           [],
-                                                        [],
-                                                        [],
-                                                        "not",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [ M.read (| mask |) ]
-                                                    |)
-                                                  ]
-                                                |)));
-                                            fun γ =>
-                                              ltac:(M.monadic
-                                                (M.call_closure (|
-                                                  Ty.apply
-                                                    (Ty.path "ruint::Uint")
-                                                    [
-                                                      Value.Integer IntegerKind.Usize 256;
-                                                      Value.Integer IntegerKind.Usize 4
+                                                        M.get_trait_method (|
+                                                          "core::ops::bit::Not",
+                                                          Ty.apply
+                                                            (Ty.path "ruint::Uint")
+                                                            [
+                                                              Value.Integer IntegerKind.Usize 256;
+                                                              Value.Integer IntegerKind.Usize 4
+                                                            ]
+                                                            [],
+                                                          [],
+                                                          [],
+                                                          "not",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [ M.read (| mask |) ]
+                                                      |)
                                                     ]
-                                                    [],
-                                                  M.get_trait_method (|
-                                                    "core::ops::bit::BitAnd",
+                                                  |)));
+                                              fun γ =>
+                                                ltac:(M.monadic
+                                                  (M.call_closure (|
                                                     Ty.apply
                                                       (Ty.path "ruint::Uint")
                                                       [
@@ -4697,27 +4720,39 @@ Module instructions.
                                                         Value.Integer IntegerKind.Usize 4
                                                       ]
                                                       [],
-                                                    [],
-                                                    [
+                                                    M.get_trait_method (|
+                                                      "core::ops::bit::BitAnd",
                                                       Ty.apply
                                                         (Ty.path "ruint::Uint")
                                                         [
                                                           Value.Integer IntegerKind.Usize 256;
                                                           Value.Integer IntegerKind.Usize 4
                                                         ]
-                                                        []
-                                                    ],
-                                                    "bitand",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.read (| M.deref (| M.read (| x |) |) |);
-                                                    M.read (| mask |)
-                                                  ]
-                                                |)))
-                                          ]
-                                        |)
+                                                        [],
+                                                      [],
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "ruint::Uint")
+                                                          [
+                                                            Value.Integer IntegerKind.Usize 256;
+                                                            Value.Integer IntegerKind.Usize 4
+                                                          ]
+                                                          []
+                                                      ],
+                                                      "bitand",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.read (| M.deref (| M.read (| x |) |) |);
+                                                      M.read (| mask |)
+                                                    ]
+                                                  |)))
+                                            ]
+                                          |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (M.write (| M.deref (| M.read (| x |) |), rhs' |)))
                                       |) in
                                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                   |)));

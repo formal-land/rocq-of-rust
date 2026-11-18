@@ -1238,31 +1238,37 @@ Module num.
                                                                     |) in
                                                                   M.read (|
                                                                     let~ _ : Ty.tuple [] :=
-                                                                      M.write (|
-                                                                        M.deref (|
-                                                                          M.read (| c |)
-                                                                        |),
-                                                                        M.call_closure (|
-                                                                          Ty.path "u8",
-                                                                          BinOp.Wrap.add,
-                                                                          [
-                                                                            Value.Integer
-                                                                              IntegerKind.U8
-                                                                              48;
-                                                                            M.cast
-                                                                              (Ty.path "u8")
-                                                                              (M.call_closure (|
-                                                                                Ty.path "u16",
-                                                                                BinOp.Wrap.rem,
-                                                                                [
-                                                                                  M.read (| v |);
-                                                                                  Value.Integer
-                                                                                    IntegerKind.U16
-                                                                                    10
-                                                                                ]
-                                                                              |))
-                                                                          ]
-                                                                        |)
+                                                                      M.let_ (|
+                                                                        ltac:(M.monadic
+                                                                          (M.call_closure (|
+                                                                            Ty.path "u8",
+                                                                            BinOp.Wrap.add,
+                                                                            [
+                                                                              Value.Integer
+                                                                                IntegerKind.U8
+                                                                                48;
+                                                                              M.cast
+                                                                                (Ty.path "u8")
+                                                                                (M.call_closure (|
+                                                                                  Ty.path "u16",
+                                                                                  BinOp.Wrap.rem,
+                                                                                  [
+                                                                                    M.read (| v |);
+                                                                                    Value.Integer
+                                                                                      IntegerKind.U16
+                                                                                      10
+                                                                                  ]
+                                                                                |))
+                                                                            ]
+                                                                          |))),
+                                                                        fun rhs' =>
+                                                                          ltac:(M.monadic
+                                                                            (M.write (|
+                                                                              M.deref (|
+                                                                                M.read (| c |)
+                                                                              |),
+                                                                              rhs'
+                                                                            |)))
                                                                       |) in
                                                                     let~ _ : Ty.tuple [] :=
                                                                       let β := v in
@@ -2302,14 +2308,19 @@ Module num.
                                                         ]
                                                       |) in
                                                     let~ _ : Ty.tuple [] :=
-                                                      let β := written in
-                                                      M.write (|
-                                                        β,
-                                                        M.call_closure (|
-                                                          Ty.path "usize",
-                                                          BinOp.Wrap.add,
-                                                          [ M.read (| β |); M.read (| len |) ]
-                                                        |)
+                                                      M.let_ (|
+                                                        ltac:(M.monadic (M.read (| len |))),
+                                                        fun rhs' =>
+                                                          ltac:(M.monadic
+                                                            (let β := written in
+                                                            M.write (|
+                                                              β,
+                                                              M.call_closure (|
+                                                                Ty.path "usize",
+                                                                BinOp.Wrap.add,
+                                                                [ M.read (| β |); rhs' ]
+                                                              |)
+                                                            |)))
                                                       |) in
                                                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                                   |)))

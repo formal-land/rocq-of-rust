@@ -290,24 +290,27 @@ Module pow.
                                                         let~ _ : Ty.tuple [] :=
                                                           M.write (| result, M.read (| r |) |) in
                                                         let~ _ : Ty.tuple [] :=
-                                                          let β := overflow in
-                                                          M.write (|
-                                                            β,
-                                                            M.call_closure (|
-                                                              Ty.path "bool",
-                                                              BinOp.Wrap.bit_or,
-                                                              [
-                                                                M.read (| β |);
-                                                                M.call_closure (|
-                                                                  Ty.path "bool",
-                                                                  BinOp.Wrap.bit_or,
-                                                                  [
-                                                                    M.read (| o |);
-                                                                    M.read (| base_overflow |)
-                                                                  ]
-                                                                |)
-                                                              ]
-                                                            |)
+                                                          M.let_ (|
+                                                            ltac:(M.monadic
+                                                              (M.call_closure (|
+                                                                Ty.path "bool",
+                                                                BinOp.Wrap.bit_or,
+                                                                [
+                                                                  M.read (| o |);
+                                                                  M.read (| base_overflow |)
+                                                                ]
+                                                              |))),
+                                                            fun rhs' =>
+                                                              ltac:(M.monadic
+                                                                (let β := overflow in
+                                                                M.write (|
+                                                                  β,
+                                                                  M.call_closure (|
+                                                                    Ty.path "bool",
+                                                                    BinOp.Wrap.bit_or,
+                                                                    [ M.read (| β |); rhs' ]
+                                                                  |)
+                                                                |)))
                                                           |) in
                                                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                                       |)))
@@ -360,14 +363,19 @@ Module pow.
                                                 let~ _ : Ty.tuple [] :=
                                                   M.write (| self, M.read (| s |) |) in
                                                 let~ _ : Ty.tuple [] :=
-                                                  let β := base_overflow in
-                                                  M.write (|
-                                                    β,
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.Wrap.bit_or,
-                                                      [ M.read (| β |); M.read (| o |) ]
-                                                    |)
+                                                  M.let_ (|
+                                                    ltac:(M.monadic (M.read (| o |))),
+                                                    fun rhs' =>
+                                                      ltac:(M.monadic
+                                                        (let β := base_overflow in
+                                                        M.write (|
+                                                          β,
+                                                          M.call_closure (|
+                                                            Ty.path "bool",
+                                                            BinOp.Wrap.bit_or,
+                                                            [ M.read (| β |); rhs' ]
+                                                          |)
+                                                        |)))
                                                   |) in
                                                 let~ _ : Ty.tuple [] :=
                                                   M.call_closure (|

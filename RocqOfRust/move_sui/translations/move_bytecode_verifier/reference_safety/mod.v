@@ -41692,25 +41692,28 @@ Module reference_safety.
                               |) in
                             M.alloc (|
                               Ty.tuple [],
-                              M.write (|
-                                M.deref (| M.read (| state |) |),
-                                M.call_closure (|
-                                  Ty.path
-                                    "move_bytecode_verifier::reference_safety::abstract_state::AbstractState",
-                                  M.get_associated_function (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.path
                                       "move_bytecode_verifier::reference_safety::abstract_state::AbstractState",
-                                    "construct_canonical_state",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| state |) |)
-                                    |)
-                                  ]
-                                |)
+                                    M.get_associated_function (|
+                                      Ty.path
+                                        "move_bytecode_verifier::reference_safety::abstract_state::AbstractState",
+                                      "construct_canonical_state",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| state |) |)
+                                      |)
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (| M.deref (| M.read (| state |) |), rhs' |)))
                               |)
                             |)
                           |)));

@@ -2633,31 +2633,37 @@ Module vec.
                                               ]
                                             |) in
                                           let~ _ : Ty.tuple [] :=
-                                            M.write (|
-                                              M.SubPointer.get_struct_record_field (|
-                                                sink,
-                                                "alloc::vec::in_place_drop::InPlaceDrop",
-                                                "dst"
-                                              |),
-                                              M.call_closure (|
-                                                Ty.apply (Ty.path "*mut") [] [ T ],
-                                                M.get_associated_function (|
+                                            M.let_ (|
+                                              ltac:(M.monadic
+                                                (M.call_closure (|
                                                   Ty.apply (Ty.path "*mut") [] [ T ],
-                                                  "add",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.read (|
+                                                  M.get_associated_function (|
+                                                    Ty.apply (Ty.path "*mut") [] [ T ],
+                                                    "add",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.read (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        sink,
+                                                        "alloc::vec::in_place_drop::InPlaceDrop",
+                                                        "dst"
+                                                      |)
+                                                    |);
+                                                    Value.Integer IntegerKind.Usize 1
+                                                  ]
+                                                |))),
+                                              fun rhs' =>
+                                                ltac:(M.monadic
+                                                  (M.write (|
                                                     M.SubPointer.get_struct_record_field (|
                                                       sink,
                                                       "alloc::vec::in_place_drop::InPlaceDrop",
                                                       "dst"
-                                                    |)
-                                                  |);
-                                                  Value.Integer IntegerKind.Usize 1
-                                                ]
-                                              |)
+                                                    |),
+                                                    rhs'
+                                                  |)))
                                             |) in
                                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                         |) in
@@ -3232,25 +3238,31 @@ Module vec.
                                                     ]
                                                   |) in
                                                 let~ _ : Ty.tuple [] :=
-                                                  M.write (|
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      drop_guard,
-                                                      "alloc::vec::in_place_drop::InPlaceDrop",
-                                                      "dst"
-                                                    |),
-                                                    M.call_closure (|
-                                                      Ty.apply (Ty.path "*mut") [] [ T ],
-                                                      M.get_associated_function (|
+                                                  M.let_ (|
+                                                    ltac:(M.monadic
+                                                      (M.call_closure (|
                                                         Ty.apply (Ty.path "*mut") [] [ T ],
-                                                        "add",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.read (| dst |);
-                                                        Value.Integer IntegerKind.Usize 1
-                                                      ]
-                                                    |)
+                                                        M.get_associated_function (|
+                                                          Ty.apply (Ty.path "*mut") [] [ T ],
+                                                          "add",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.read (| dst |);
+                                                          Value.Integer IntegerKind.Usize 1
+                                                        ]
+                                                      |))),
+                                                    fun rhs' =>
+                                                      ltac:(M.monadic
+                                                        (M.write (|
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            drop_guard,
+                                                            "alloc::vec::in_place_drop::InPlaceDrop",
+                                                            "dst"
+                                                          |),
+                                                          rhs'
+                                                        |)))
                                                   |) in
                                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                               |)))

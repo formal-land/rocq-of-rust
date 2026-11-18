@@ -335,14 +335,19 @@ Module main.
                                                 ]
                                               |) in
                                             let~ _ : Ty.tuple [] :=
-                                              let β := acc in
-                                              M.write (|
-                                                β,
-                                                M.call_closure (|
-                                                  Ty.path "u32",
-                                                  BinOp.Wrap.add,
-                                                  [ M.read (| β |); M.read (| addition |) ]
-                                                |)
+                                              M.let_ (|
+                                                ltac:(M.monadic (M.read (| addition |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (let β := acc in
+                                                    M.write (|
+                                                      β,
+                                                      M.call_closure (|
+                                                        Ty.path "u32",
+                                                        BinOp.Wrap.add,
+                                                        [ M.read (| β |); rhs' ]
+                                                      |)
+                                                    |)))
                                               |) in
                                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                           |)))

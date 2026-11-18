@@ -1338,24 +1338,30 @@ Module error.
                           let _ := M.is_struct_tuple (| γ3_0, "core::option::Option::None" |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_struct_tuple_field (|
-                                  M.deref (| M.read (| res |) |),
-                                  "core::error::TaggedOption",
-                                  0
-                                |),
-                                Value.StructTuple
-                                  "core::option::Option::Some"
-                                  []
-                                  [
-                                    Ty.associated_in_trait
-                                      "core::error::tags::Type"
-                                      []
-                                      []
-                                      I
-                                      "Reified"
-                                  ]
-                                  [ M.read (| value |) ]
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (Value.StructTuple
+                                    "core::option::Option::Some"
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "core::error::tags::Type"
+                                        []
+                                        []
+                                        I
+                                        "Reified"
+                                    ]
+                                    [ M.read (| value |) ])),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_struct_tuple_field (|
+                                        M.deref (| M.read (| res |) |),
+                                        "core::error::TaggedOption",
+                                        0
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)));
@@ -1472,43 +1478,49 @@ Module error.
                           let _ := M.is_struct_tuple (| γ3_0, "core::option::Option::None" |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_struct_tuple_field (|
-                                  M.deref (| M.read (| res |) |),
-                                  "core::error::TaggedOption",
-                                  0
-                                |),
-                                Value.StructTuple
-                                  "core::option::Option::Some"
-                                  []
-                                  [
-                                    Ty.associated_in_trait
-                                      "core::error::tags::Type"
-                                      []
-                                      []
-                                      I
-                                      "Reified"
-                                  ]
-                                  [
-                                    M.call_closure (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (Value.StructTuple
+                                    "core::option::Option::Some"
+                                    []
+                                    [
                                       Ty.associated_in_trait
                                         "core::error::tags::Type"
                                         []
                                         []
                                         I
-                                        "Reified",
-                                      M.get_trait_method (|
-                                        "core::ops::function::FnOnce",
-                                        impl_FnOnce___arrow_I_Reified,
-                                        [],
-                                        [ Ty.tuple [] ],
-                                        "call_once",
-                                        [],
-                                        []
+                                        "Reified"
+                                    ]
+                                    [
+                                      M.call_closure (|
+                                        Ty.associated_in_trait
+                                          "core::error::tags::Type"
+                                          []
+                                          []
+                                          I
+                                          "Reified",
+                                        M.get_trait_method (|
+                                          "core::ops::function::FnOnce",
+                                          impl_FnOnce___arrow_I_Reified,
+                                          [],
+                                          [ Ty.tuple [] ],
+                                          "call_once",
+                                          [],
+                                          []
+                                        |),
+                                        [ M.read (| fulfil |); Value.Tuple [] ]
+                                      |)
+                                    ])),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_struct_tuple_field (|
+                                        M.deref (| M.read (| res |) |),
+                                        "core::error::TaggedOption",
+                                        0
                                       |),
-                                      [ M.read (| fulfil |); Value.Tuple [] ]
-                                    |)
-                                  ]
+                                      rhs'
+                                    |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)));
@@ -3037,60 +3049,71 @@ Module error.
                 |)
               |) in
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::error::Source",
-                  "current"
-                |),
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "core::option::Option")
-                    []
-                    [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ] ],
-                  M.get_associated_function (|
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply
                       (Ty.path "core::option::Option")
                       []
                       [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
                       ],
-                    "and_then",
-                    [],
-                    [
-                      Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ];
-                      Ty.function
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
                         [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
-                        ]
-                        (Ty.apply
-                          (Ty.path "core::option::Option")
-                          []
+                        ],
+                      "and_then",
+                      [],
+                      [
+                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ];
+                        Ty.function
                           [
                             Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
-                          ])
+                          ]
+                          (Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
+                            ])
+                      ]
+                    |),
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::error::Source",
+                          "current"
+                        |)
+                      |);
+                      M.get_trait_method (|
+                        "core::error::Error",
+                        Ty.dyn [ ("core::error::Error::Trait", []) ],
+                        [],
+                        [],
+                        "source",
+                        [],
+                        []
+                      |)
                     ]
-                  |),
-                  [
-                    M.read (|
+                  |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
                       M.SubPointer.get_struct_record_field (|
                         M.deref (| M.read (| self |) |),
                         "core::error::Source",
                         "current"
-                      |)
-                    |);
-                    M.get_trait_method (|
-                      "core::error::Error",
-                      Ty.dyn [ ("core::error::Error::Trait", []) ],
-                      [],
-                      [],
-                      "source",
-                      [],
-                      []
-                    |)
-                  ]
-                |)
+                      |),
+                      rhs'
+                    |)))
               |) in
             current
           |)))

@@ -282,41 +282,47 @@ Module iter.
                         ]
                       |) in
                     let~ _ : Ty.tuple [] :=
-                      M.write (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::iter::sources::successors::Successors",
-                          "next"
-                        |),
-                        M.call_closure (|
-                          Ty.apply (Ty.path "core::option::Option") [] [ T ],
-                          M.get_trait_method (|
-                            "core::ops::function::FnMut",
-                            F,
-                            [],
-                            [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ] ],
-                            "call_mut",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
+                      M.let_ (|
+                        ltac:(M.monadic
+                          (M.call_closure (|
+                            Ty.apply (Ty.path "core::option::Option") [] [ T ],
+                            M.get_trait_method (|
+                              "core::ops::function::FnMut",
+                              F,
+                              [],
+                              [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ] ],
+                              "call_mut",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::iter::sources::successors::Successors",
+                                  "succ"
+                                |)
+                              |);
+                              Value.Tuple
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.borrow (| Pointer.Kind.Ref, item |) |)
+                                  |)
+                                ]
+                            ]
+                          |))),
+                        fun rhs' =>
+                          ltac:(M.monadic
+                            (M.write (|
                               M.SubPointer.get_struct_record_field (|
                                 M.deref (| M.read (| self |) |),
                                 "core::iter::sources::successors::Successors",
-                                "succ"
-                              |)
-                            |);
-                            Value.Tuple
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (| M.borrow (| Pointer.Kind.Ref, item |) |)
-                                |)
-                              ]
-                          ]
-                        |)
+                                "next"
+                              |),
+                              rhs'
+                            |)))
                       |) in
                     M.alloc (|
                       Ty.apply (Ty.path "core::option::Option") [] [ T ],

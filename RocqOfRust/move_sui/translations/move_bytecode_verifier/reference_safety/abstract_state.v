@@ -3698,50 +3698,58 @@ Module reference_safety.
                                                           |) in
                                                         M.alloc (|
                                                           Ty.tuple [],
-                                                          M.write (|
-                                                            M.deref (|
-                                                              M.call_closure (|
-                                                                Ty.apply
-                                                                  (Ty.path "&mut")
-                                                                  []
-                                                                  [
-                                                                    Ty.path
-                                                                      "move_bytecode_verifier::reference_safety::abstract_state::AbstractValue"
-                                                                  ],
-                                                                M.get_trait_method (|
-                                                                  "core::ops::index::IndexMut",
-                                                                  Ty.apply
-                                                                    (Ty.path "alloc::vec::Vec")
-                                                                    []
-                                                                    [
-                                                                      Ty.path
-                                                                        "move_bytecode_verifier::reference_safety::abstract_state::AbstractValue";
-                                                                      Ty.path "alloc::alloc::Global"
-                                                                    ],
-                                                                  [],
-                                                                  [ Ty.path "usize" ],
-                                                                  "index_mut",
-                                                                  [],
-                                                                  []
-                                                                |),
-                                                                [
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.MutRef,
-                                                                    M.SubPointer.get_struct_record_field (|
-                                                                      state,
-                                                                      "move_bytecode_verifier::reference_safety::abstract_state::AbstractState",
-                                                                      "locals"
+                                                          M.let_ (|
+                                                            ltac:(M.monadic
+                                                              (Value.StructTuple
+                                                                "move_bytecode_verifier::reference_safety::abstract_state::AbstractValue::Reference"
+                                                                []
+                                                                []
+                                                                [ M.read (| id |) ])),
+                                                            fun rhs' =>
+                                                              ltac:(M.monadic
+                                                                (M.write (|
+                                                                  M.deref (|
+                                                                    M.call_closure (|
+                                                                      Ty.apply
+                                                                        (Ty.path "&mut")
+                                                                        []
+                                                                        [
+                                                                          Ty.path
+                                                                            "move_bytecode_verifier::reference_safety::abstract_state::AbstractValue"
+                                                                        ],
+                                                                      M.get_trait_method (|
+                                                                        "core::ops::index::IndexMut",
+                                                                        Ty.apply
+                                                                          (Ty.path
+                                                                            "alloc::vec::Vec")
+                                                                          []
+                                                                          [
+                                                                            Ty.path
+                                                                              "move_bytecode_verifier::reference_safety::abstract_state::AbstractValue";
+                                                                            Ty.path
+                                                                              "alloc::alloc::Global"
+                                                                          ],
+                                                                        [],
+                                                                        [ Ty.path "usize" ],
+                                                                        "index_mut",
+                                                                        [],
+                                                                        []
+                                                                      |),
+                                                                      [
+                                                                        M.borrow (|
+                                                                          Pointer.Kind.MutRef,
+                                                                          M.SubPointer.get_struct_record_field (|
+                                                                            state,
+                                                                            "move_bytecode_verifier::reference_safety::abstract_state::AbstractState",
+                                                                            "locals"
+                                                                          |)
+                                                                        |);
+                                                                        M.read (| param_idx |)
+                                                                      ]
                                                                     |)
-                                                                  |);
-                                                                  M.read (| param_idx |)
-                                                                ]
-                                                              |)
-                                                            |),
-                                                            Value.StructTuple
-                                                              "move_bytecode_verifier::reference_safety::abstract_state::AbstractValue::Reference"
-                                                              []
-                                                              []
-                                                              [ M.read (| id |) ]
+                                                                  |),
+                                                                  rhs'
+                                                                |)))
                                                           |)
                                                         |)
                                                       |)));
@@ -18274,9 +18282,11 @@ Module reference_safety.
                           ltac:(M.monadic
                             (M.read (|
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.deref (| M.read (| self |) |),
-                                  M.read (| joined |)
+                                M.let_ (|
+                                  ltac:(M.monadic (M.read (| joined |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                                 |) in
                               M.alloc (|
                                 Ty.apply

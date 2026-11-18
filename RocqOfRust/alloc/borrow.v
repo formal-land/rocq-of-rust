@@ -73,21 +73,22 @@ Module borrow.
             |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| target |) |),
-                M.call_closure (|
-                  Ty.associated_in_trait "alloc::borrow::ToOwned" [] [] Self "Owned",
-                  M.get_trait_method (|
-                    "alloc::borrow::ToOwned",
-                    Self,
-                    [],
-                    [],
-                    "to_owned",
-                    [],
-                    []
-                  |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                |)
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
+                    Ty.associated_in_trait "alloc::borrow::ToOwned" [] [] Self "Owned",
+                    M.get_trait_method (|
+                      "alloc::borrow::ToOwned",
+                      Self,
+                      [],
+                      [],
+                      "to_owned",
+                      [],
+                      []
+                    |),
+                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| target |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -413,21 +414,22 @@ Module borrow.
                         [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ B ] ],
                       γ0_1
                     |) in
-                  M.write (|
-                    M.deref (| M.read (| t |) |),
-                    M.call_closure (|
-                      Ty.apply (Ty.path "alloc::borrow::Cow") [] [ B ],
-                      M.get_trait_method (|
-                        "core::clone::Clone",
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.call_closure (|
                         Ty.apply (Ty.path "alloc::borrow::Cow") [] [ B ],
-                        [],
-                        [],
-                        "clone",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
-                    |)
+                        M.get_trait_method (|
+                          "core::clone::Clone",
+                          Ty.apply (Ty.path "alloc::borrow::Cow") [] [ B ],
+                          [],
+                          [],
+                          "clone",
+                          [],
+                          []
+                        |),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
+                      |))),
+                    fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| t |) |), rhs' |)))
                   |)))
             ]
           |)))
@@ -591,37 +593,40 @@ Module borrow.
                             M.deref (|
                               M.read (|
                                 let~ _ : Ty.tuple [] :=
-                                  M.write (|
-                                    M.deref (| M.read (| self |) |),
-                                    Value.StructTuple
-                                      "alloc::borrow::Cow::Owned"
-                                      []
-                                      [ B ]
-                                      [
-                                        M.call_closure (|
-                                          Ty.associated_in_trait
-                                            "alloc::borrow::ToOwned"
-                                            []
-                                            []
-                                            B
-                                            "Owned",
-                                          M.get_trait_method (|
-                                            "alloc::borrow::ToOwned",
-                                            B,
-                                            [],
-                                            [],
-                                            "to_owned",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| borrowed |) |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
+                                  M.let_ (|
+                                    ltac:(M.monadic
+                                      (Value.StructTuple
+                                        "alloc::borrow::Cow::Owned"
+                                        []
+                                        [ B ]
+                                        [
+                                          M.call_closure (|
+                                            Ty.associated_in_trait
+                                              "alloc::borrow::ToOwned"
+                                              []
+                                              []
+                                              B
+                                              "Owned",
+                                            M.get_trait_method (|
+                                              "alloc::borrow::ToOwned",
+                                              B,
+                                              [],
+                                              [],
+                                              "to_owned",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| borrowed |) |)
+                                              |)
+                                            ]
+                                          |)
+                                        ])),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                                   |) in
                                 M.alloc (|
                                   Ty.apply
@@ -1756,13 +1761,15 @@ Module borrow.
                       |)
                     |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  M.write (|
-                    M.deref (| M.read (| self |) |),
-                    Value.StructTuple
-                      "alloc::borrow::Cow::Borrowed"
-                      []
-                      [ Ty.path "str" ]
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| rhs |) |) |) ]
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (Value.StructTuple
+                        "alloc::borrow::Cow::Borrowed"
+                        []
+                        [ Ty.path "str" ]
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| rhs |) |) |) ])),
+                    fun rhs' =>
+                      ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -1886,13 +1893,19 @@ Module borrow.
                                             ]
                                           |) in
                                         let~ _ : Ty.tuple [] :=
-                                          M.write (|
-                                            M.deref (| M.read (| self |) |),
-                                            Value.StructTuple
-                                              "alloc::borrow::Cow::Owned"
-                                              []
-                                              [ Ty.path "str" ]
-                                              [ M.read (| s |) ]
+                                          M.let_ (|
+                                            ltac:(M.monadic
+                                              (Value.StructTuple
+                                                "alloc::borrow::Cow::Owned"
+                                                []
+                                                [ Ty.path "str" ]
+                                                [ M.read (| s |) ])),
+                                            fun rhs' =>
+                                              ltac:(M.monadic
+                                                (M.write (|
+                                                  M.deref (| M.read (| self |) |),
+                                                  rhs'
+                                                |)))
                                           |) in
                                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                       |)));
@@ -2023,7 +2036,11 @@ Module borrow.
                       |)
                     |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  M.write (| M.deref (| M.read (| self |) |), M.read (| rhs |) |)));
+                  M.let_ (|
+                    ltac:(M.monadic (M.read (| rhs |))),
+                    fun rhs' =>
+                      ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
+                  |)));
               fun γ =>
                 ltac:(M.monadic
                   (M.match_operator (|
@@ -2183,13 +2200,19 @@ Module borrow.
                                             ]
                                           |) in
                                         let~ _ : Ty.tuple [] :=
-                                          M.write (|
-                                            M.deref (| M.read (| self |) |),
-                                            Value.StructTuple
-                                              "alloc::borrow::Cow::Owned"
-                                              []
-                                              [ Ty.path "str" ]
-                                              [ M.read (| s |) ]
+                                          M.let_ (|
+                                            ltac:(M.monadic
+                                              (Value.StructTuple
+                                                "alloc::borrow::Cow::Owned"
+                                                []
+                                                [ Ty.path "str" ]
+                                                [ M.read (| s |) ])),
+                                            fun rhs' =>
+                                              ltac:(M.monadic
+                                                (M.write (|
+                                                  M.deref (| M.read (| self |) |),
+                                                  rhs'
+                                                |)))
                                           |) in
                                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                       |)));
