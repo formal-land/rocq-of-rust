@@ -148,6 +148,11 @@ Module Impl_Deref_for_Cow.
 End Impl_Deref_for_Cow.
 Export (hints) Impl_Deref_for_Cow.
 
+Local Ltac run_cow_deref :=
+  eapply Run.CallPrimitiveGetTraitMethod;
+  [ exact (Impl_Deref_for_Cow.method_deref AccountInfo.t).(Deref.deref_is_method).(IsTraitMethod.Make) | ].
+Smpl Add run_cow_deref : run_symbolic.
+
 (*
 pub struct AccountInfoLoad<'a> {
     pub account: Cow<'a, AccountInfo>,
@@ -178,9 +183,6 @@ Module Impl_AccountInfoLoad.
   Proof.
     constructor.
     run_symbolic.
-    eapply Run.CallPrimitiveGetTraitMethod.
-    { exact Run_FnOnce_for_F.(function.FnOnce.method_call_once).(function.FnOnce.call_once_is_method).(IsTraitMethod.Make). }
-    run_symbolic.
   Defined.
   Global Opaque run_into_state_load.
 End Impl_AccountInfoLoad.
@@ -196,9 +198,6 @@ Module Impl_Deref_for_AccountInfoLoad.
       [] [] [ φ self ] ('& AccountInfo.t).
   Proof.
     constructor.
-    run_symbolic.
-    eapply Run.CallPrimitiveGetTraitMethod.
-    { exact (Impl_Deref_for_Cow.method_deref AccountInfo.t).(deref.Deref.deref_is_method).(IsTraitMethod.Make). }
     run_symbolic.
   Defined.
   Global Opaque run_deref.
