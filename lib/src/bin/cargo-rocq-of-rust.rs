@@ -23,7 +23,7 @@ fn main() {
     let mut cmd = Command::new(cargo_path);
     cmd.arg(cargo_cmd)
         .args(args.rust_flags)
-        .env("RUSTC_WRAPPER", rocq_of_rust_rustc_path)
+        .env("RUSTC_WORKSPACE_WRAPPER", rocq_of_rust_rustc_path)
         .env("CARGO_ROCQ_OF_RUST", "1");
 
     cmd.env(

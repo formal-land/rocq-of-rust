@@ -22,7 +22,7 @@ fn change_to_rocq_extension(path: &path::Path) -> PathBuf {
 /// Write the content to a file only if it changed. This optimization is useful
 /// in order not to force the `make` command to rebuild files that did not
 /// change.
-fn write_if_changed<P: AsRef<path::Path>, C: AsRef<[u8]>>(
+pub(crate) fn write_if_changed<P: AsRef<path::Path>, C: AsRef<[u8]>>(
     path: P,
     new_content: C,
 ) -> std::io::Result<()> {
