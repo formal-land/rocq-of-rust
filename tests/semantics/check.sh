@@ -5,7 +5,7 @@ cd "$(dirname "$0")"
 project=$(realpath ../../RocqOfRust)
 export LD_LIBRARY_PATH="$(rustc --print sysroot)/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 export OCAMLPATH="$project/plugin${OCAMLPATH:+:$OCAMLPATH}"
-make -C "$project" -j1 evaluate/RocqOfRust.vo lib/simulate/lib.vo core/char/methods.vo core/slice/simulate/mod.vo alloc/vec/simulate/mod.vo
+make -C "$project" -j1 evaluate/RocqOfRust.vo lib/simulate/lib.vo core/char/methods.vo core/slice/simulate/mod.vo core/simulate/option.vo alloc/vec/simulate/mod.vo
 work=$(mktemp -d)
 trap 'rm -rf "$work"' EXIT
 flags=(-R "$project" RocqOfRust -I "$project/plugin" -impredicative-set -Q "$work" ReleaseTests)
@@ -20,4 +20,6 @@ for source in *.rs; do
 done
 cp core_char.v "$work/"
 coqc "${flags[@]}" "$work/core_char.v"
+cp assumptions.v "$work/"
+coqc "${flags[@]}" "$work/assumptions.v"
 python3 exhaustive_division.py
