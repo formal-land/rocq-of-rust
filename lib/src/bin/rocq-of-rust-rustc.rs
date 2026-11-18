@@ -34,6 +34,7 @@ fn setup_plugin() {
         serde_json::from_str(&std::env::var("ROCQ_OF_RUST_ARGS").unwrap()).unwrap()
     } else {
         let all_args = Args::parse_from(&args);
+        all_args.rocq_of_rust.warn_deprecated();
         args = all_args.rust_flags;
         all_args.rocq_of_rust
     };
@@ -59,7 +60,7 @@ fn setup_plugin() {
 }
 
 fn sysroot_path() -> String {
-    let toolchain: toml::Value = toml::from_str(include_str!("../../../rust-toolchain")).unwrap();
+    let toolchain: toml::Value = toml::from_str(include_str!("../../rust-toolchain")).unwrap();
     let channel = toolchain["toolchain"]["channel"].as_str().unwrap();
 
     let output = Command::new("rustup")

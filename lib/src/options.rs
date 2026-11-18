@@ -9,12 +9,23 @@ pub struct RocqOfRustArgs {
     /// Also generate a JSON output
     #[arg(long)]
     with_json: bool,
-    /// Path to a configuration file
-    #[arg(long, default_value = "rocq-of-rust-config.json")]
-    configuration_file: String,
-    /// Generate the reoder section of configuration file in the stdout
+    /// Deprecated compatibility option (ignored)
+    #[arg(long)]
+    configuration_file: Option<String>,
+    /// Deprecated compatibility option (ignored)
     #[arg(long)]
     generate_reorder: bool,
+}
+
+impl RocqOfRustArgs {
+    pub fn warn_deprecated(&self) {
+        if self.configuration_file.is_some() {
+            eprintln!("warning: --configuration-file is deprecated and ignored");
+        }
+        if self.generate_reorder {
+            eprintln!("warning: --generate-reorder is deprecated and ignored");
+        }
+    }
 }
 
 #[derive(Parser)]

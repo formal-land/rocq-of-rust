@@ -10,6 +10,8 @@ use std::{
 fn main() {
     let args = Args::parse_from(std::env::args().skip(1));
 
+    args.rocq_of_rust.warn_deprecated();
+
     let rocq_of_rust_rustc_path = std::env::current_exe()
         .expect("current executable path invalid")
         .with_file_name("rocq-of-rust-rustc");

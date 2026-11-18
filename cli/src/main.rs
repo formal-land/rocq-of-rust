@@ -9,7 +9,7 @@ use clap::{Parser, Subcommand};
 
 #[derive(Args)]
 struct Translate {
-    /// Sets a path to rust file
+    /// Rust source file or directory with one conventional crate root
     #[arg(short, long, value_name = "PATH", value_parser = is_valid_path)]
     path: PathBuf,
     /// Axiomatize the definitions
