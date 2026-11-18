@@ -5418,27 +5418,12 @@ Module intrinsics.
   Global Typeclasses Opaque aggregate_raw_ptr.
   
   (* pub const fn ptr_metadata<P: ptr::Pointee<Metadata = M> + PointeeSized, M>(ptr: *const P) -> M; *)
-  Definition ptr_metadata (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ P; M_ ], [ ptr ] =>
-      ltac:(M.monadic
-        (let ptr := M.alloc (| Ty.apply (Ty.path "*const") [] [ P ], ptr |) in
-        M.never_to_any (|
-          M.read (|
-            M.loop (|
-              Ty.path "never",
-              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
-            |)
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
+  Parameter ptr_metadata : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance Instance_IsFunction_ptr_metadata :
     M.IsFunction.C "core::intrinsics::ptr_metadata" ptr_metadata.
   Proof.
   Admitted.
-  Global Typeclasses Opaque ptr_metadata.
   
   (* pub const unsafe fn copy_nonoverlapping<T>(src: *const T, dst: *mut T, count: usize); *)
   Definition copy_nonoverlapping (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
