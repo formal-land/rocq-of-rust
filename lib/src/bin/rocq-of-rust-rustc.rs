@@ -39,6 +39,7 @@ fn setup_plugin() {
         all_args.rocq_of_rust
     };
 
+    let version_query = is_wrapper && args[1..] == ["-vV"];
     let sysroot = sysroot_path();
     args.push(format!("--sysroot={sysroot}"));
 
@@ -49,8 +50,15 @@ fn setup_plugin() {
     // or this is a primary package.
     let user_asked_for = !is_wrapper || primary_package;
 
-    if normal_rustc || !user_asked_for {
+    if normal_rustc || version_query {
         rustc_driver::run_compiler(&args, &mut DefaultCallbacks {});
+        if version_query {
+            // Cargo fingerprints the compiler version. Older driver artifacts
+            // have no package-selection dependency in their dep-info.
+            println!("rocq-of-rust: {}", env!("CARGO_PKG_VERSION"));
+        }
+    } else if !user_asked_for {
+        rustc_driver::run_compiler(&args, &mut CargoDependency);
     } else {
         let opts = Options::from_args(rocq_of_rust);
         let mut callbacks = ToRocq::new(opts);

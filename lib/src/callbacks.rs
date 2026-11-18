@@ -7,6 +7,24 @@ use rustc_span::Symbol;
 use std::collections::BTreeMap;
 use std::path::Path;
 
+pub const CARGO_SELECTION: &str = "ROCQ_OF_RUST_SELECTION";
+
+fn track_env(compiler: &Compiler, key: &str) {
+    compiler.sess.psess.env_depinfo.borrow_mut().insert((
+        Symbol::intern(key),
+        std::env::var(key).ok().map(|value| Symbol::intern(&value)),
+    ));
+}
+
+pub struct CargoDependency;
+
+impl Callbacks for CargoDependency {
+    fn after_expansion<'tcx>(&mut self, compiler: &Compiler, _: TyCtxt<'tcx>) -> Compilation {
+        track_env(compiler, CARGO_SELECTION);
+        Compilation::Continue
+    }
+}
+
 pub struct ToRocq {
     opts: Options,
 }
@@ -69,11 +87,8 @@ impl Callbacks for ToRocq {
         write_output(compiler, Path::new(&format!("{crate_name}.v")), &index);
 
         if self.opts.in_cargo {
-            let key = "ROCQ_OF_RUST_ARGS";
-            compiler.sess.psess.env_depinfo.borrow_mut().insert((
-                Symbol::intern(key),
-                std::env::var(key).ok().map(|args| Symbol::intern(&args)),
-            ));
+            track_env(compiler, "ROCQ_OF_RUST_ARGS");
+            track_env(compiler, CARGO_SELECTION);
             let driver = std::env::current_exe().expect("current driver path");
             compiler
                 .sess
