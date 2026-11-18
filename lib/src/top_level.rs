@@ -939,7 +939,15 @@ fn compile_function_body(
     is_axiom: bool,
     ret_ty: Option<Rc<RocqType>>,
 ) -> Option<Rc<Expr>> {
-    if env.axiomatize || is_axiom {
+    // rustc supplies a diverging placeholder for this bodyless intrinsic.
+    // Its slice behaviour is specified at the Rocq intrinsic boundary.
+    let owner = body.value.hir_id.owner.def_id;
+    if env.axiomatize
+        || is_axiom
+        || env
+            .tcx
+            .is_intrinsic(owner.to_def_id(), rustc_span::sym::ptr_metadata)
+    {
         return None;
     }
 

@@ -64,3 +64,28 @@ Instance run_copy_nonoverlapping {T : Set} `{Link T}
 Proof.
 Admitted.
 Global Opaque run_copy_nonoverlapping.
+
+(** The compiler supplies pointer metadata. Only the slice instantiation is
+    specified here. The model represents a readable slice as a list. *)
+Module SliceMetadata.
+  Import (hints) Slice.
+  Axiom metadata_type : forall (T : Ty.t),
+    Ty.associated_in_trait "core::ptr::metadata::Pointee" [] []
+      (Ty.apply (Ty.path "slice") [] [T]) "Metadata" = Ty.path "usize".
+
+  Axiom body : forall {T : Set} `{Link T} (p : '*const (list T)),
+    intrinsics.ptr_metadata [] [Φ (list T); Φ usize] [φ p] =
+    (let* xs := M.read (φ (Ref.cast_to Pointer.Kind.Raw p)) in
+     match xs with
+     | Value.Array values => M.pure (Value.Integer IntegerKind.Usize (Z.of_nat (List.length values)))
+     | _ => M.impossible "expected a slice"
+     end).
+
+  Instance run_intrinsic {T : Set} `{Link T} (p : '*const (list T)) :
+    Run.Trait intrinsics.ptr_metadata [] [Φ (list T); Φ usize] [φ p] usize.
+  Proof.
+    constructor. eapply Run.Rewrite; [apply body |].
+    run_symbolic.
+  Defined.
+End SliceMetadata.
+Export (hints) SliceMetadata.
