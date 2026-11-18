@@ -1,3 +1,5 @@
+Require Import RocqOfRust.simulate.RocqOfRust RocqOfRust.core.links.option.
+Require Import RocqOfRust.core.ops.simulate.function.
 Require Import RocqOfRust.core.simulate.option.
 
 Section Map.
