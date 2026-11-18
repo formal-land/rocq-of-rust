@@ -289,6 +289,10 @@ jobs:
             done
             cd ..
           endGroup
+          startGroup "Compare Rust and Rocq semantics"
+            cargo build --locked --bin rocq-of-rust
+            bash tests/semantics/check.sh target/debug/rocq-of-rust
+          endGroup
           startGroup "Compile Rocq translations"
             cd RocqOfRust
             make -j3
