@@ -66,11 +66,11 @@ Module BinOp.
     Definition rem {kind : IntegerKind.t} (a b : Integer.t kind) : Integer.t kind :=
       make_arithmetic Z.rem a b.
 
-    Definition shl {kind : IntegerKind.t} (a b : Integer.t kind) : Integer.t kind :=
-      make_arithmetic Z.shiftl a b.
+    Definition shl {kind count_kind : IntegerKind.t} (a : Integer.t kind) (b : Integer.t count_kind) : Integer.t kind :=
+      {| Integer.value := Integer.wrapping_shift Z.shiftl kind a.(Integer.value) b.(Integer.value) |}.
 
-    Definition shr {kind : IntegerKind.t} (a b : Integer.t kind) : Integer.t kind :=
-      make_arithmetic Z.shiftr a b.
+    Definition shr {kind count_kind : IntegerKind.t} (a : Integer.t kind) (b : Integer.t count_kind) : Integer.t kind :=
+      {| Integer.value := Integer.wrapping_shift Z.shiftr kind a.(Integer.value) b.(Integer.value) |}.
   End Wrap.
 
   Module Checked.
@@ -101,11 +101,15 @@ Module BinOp.
       if Integer.invalid_division kind a.(Integer.value) b.(Integer.value) then None
       else make_arithmetic Z.rem a b.
 
-    Definition shl {kind : IntegerKind.t} (a b : Integer.t kind) : option (Integer.t kind) :=
-      make_arithmetic Z.shiftl a b.
+    Definition shl {kind count_kind : IntegerKind.t} (a : Integer.t kind) (b : Integer.t count_kind) : option (Integer.t kind) :=
+      if (0 <=? b.(Integer.value)) && (b.(Integer.value) <? Integer.bits kind)
+      then Some (Wrap.shl a b)
+      else None.
 
-    Definition shr {kind : IntegerKind.t} (a b : Integer.t kind) : option (Integer.t kind) :=
-      make_arithmetic Z.shiftr a b.
+    Definition shr {kind count_kind : IntegerKind.t} (a : Integer.t kind) (b : Integer.t count_kind) : option (Integer.t kind) :=
+      if (0 <=? b.(Integer.value)) && (b.(Integer.value) <? Integer.bits kind)
+      then Some (Wrap.shr a b)
+      else None.
   End Checked.
 
   Module Saturating.

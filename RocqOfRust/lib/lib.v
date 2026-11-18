@@ -111,6 +111,18 @@ Module Integer.
     | IntegerKind.Isize => Z.modulo (z + 2^63) (2^64) - 2^63
     end.
 
+  Definition bits (kind : IntegerKind.t) : Z :=
+    match kind with
+    | IntegerKind.I8 | IntegerKind.U8 => 8
+    | IntegerKind.I16 | IntegerKind.U16 => 16
+    | IntegerKind.I32 | IntegerKind.U32 => 32
+    | IntegerKind.I64 | IntegerKind.U64 | IntegerKind.Isize | IntegerKind.Usize => 64
+    | IntegerKind.I128 | IntegerKind.U128 => 128
+    end.
+
+  Definition wrapping_shift (shift : Z -> Z -> Z) (kind : IntegerKind.t) (value count : Z) : Z :=
+    normalize_wrap kind (shift value (count mod bits kind)).
+
   Definition invalid_division (kind : IntegerKind.t) (a b : Z) : bool :=
     (b =? 0) || ((b =? -1) && (a =? min kind) && (min kind <? 0)).
 
@@ -264,11 +276,17 @@ Module BinOp.
 
     Definition rem : Value.t := make_division Z.rem.
 
-    Definition shl : Value.t :=
-      make_arithmetic Z.shiftl.
+    Definition make_shift (shift : Z -> Z -> Z) : Value.t :=
+      M.closure (fun args =>
+        match args with
+        | [Value.Integer kind value; Value.Integer _ count] =>
+          M.pure (Value.Integer kind (Integer.wrapping_shift shift kind value count))
+        | _ => M.impossible "expected two integers for shift"
+        end).
 
-    Definition shr : Value.t :=
-      make_arithmetic Z.shiftr.
+    Definition shl : Value.t := make_shift Z.shiftl.
+
+    Definition shr : Value.t := make_shift Z.shiftr.
 
     Definition make_bool_or_arithmetic
       (bin_op_bool : bool -> bool -> bool)
