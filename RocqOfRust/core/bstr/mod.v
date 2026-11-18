@@ -989,7 +989,41 @@ Module bstr.
                                                                                           |)));
                                                                                       fun γ =>
                                                                                         ltac:(M.monadic
-                                                                                          (M.match_operator (|
+                                                                                          (let _ :=
+                                                                                            is_constant_or_break_match (|
+                                                                                              M.call_closure (|
+                                                                                                Ty.path
+                                                                                                  "bool",
+                                                                                                BinOp.ge,
+                                                                                                [
+                                                                                                  M.read (|
+                                                                                                    γ
+                                                                                                  |);
+                                                                                                  Value.UnicodeChar
+                                                                                                    1
+                                                                                                ]
+                                                                                              |),
+                                                                                              Value.Bool
+                                                                                                true
+                                                                                            |) in
+                                                                                          let _ :=
+                                                                                            is_constant_or_break_match (|
+                                                                                              M.call_closure (|
+                                                                                                Ty.path
+                                                                                                  "bool",
+                                                                                                BinOp.le,
+                                                                                                [
+                                                                                                  M.read (|
+                                                                                                    γ
+                                                                                                  |);
+                                                                                                  Value.UnicodeChar
+                                                                                                    127
+                                                                                                ]
+                                                                                              |),
+                                                                                              Value.Bool
+                                                                                                true
+                                                                                            |) in
+                                                                                          M.match_operator (|
                                                                                             Ty.tuple
                                                                                               [],
                                                                                             M.alloc (|
