@@ -575,6 +575,19 @@ fn compile_pointer_coercion(
     }
 }
 
+/// Bind an effectful right operand before evaluating or reading the destination.
+fn with_assignment_rhs(rhs: Rc<Expr>, write: impl FnOnce(Rc<Expr>) -> Rc<Expr>) -> Rc<Expr> {
+    if matches!(rhs.as_ref(), Expr::Literal(_) | Expr::LocalVar(_)) {
+        return write(rhs);
+    }
+    // Rust identifiers cannot contain an apostrophe.
+    Rc::new(Expr::Bind {
+        name: "rhs'".to_owned(),
+        init: rhs,
+        body: write(Expr::local_var("rhs'")),
+    })
+}
+
 pub(crate) fn compile_expr<'a>(
     env: &Env<'a>,
     generics: &'a rustc_middle::ty::Generics,
@@ -810,17 +823,21 @@ pub(crate) fn compile_expr<'a>(
         }
         thir::ExprKind::Block { block: block_id } => compile_block(env, generics, thir, block_id),
         thir::ExprKind::Assign { lhs, rhs } => {
-            let func = Expr::local_var("M.write");
-            let args = vec![
-                compile_expr(env, generics, thir, lhs),
-                compile_expr(env, generics, thir, rhs).read(),
-            ];
-
-            Rc::new(Expr::Call {
-                func,
-                args,
-                kind: CallKind::Effectful,
-            })
+            let place = compile_expr(env, generics, thir, lhs);
+            let rhs = compile_expr(env, generics, thir, rhs).read();
+            let simple_place = matches!(place.as_ref(), Expr::LocalVar(_));
+            let write = |value| {
+                Rc::new(Expr::Call {
+                    func: Expr::local_var("M.write"),
+                    args: vec![place, value],
+                    kind: CallKind::Effectful,
+                })
+            };
+            if simple_place {
+                write(rhs)
+            } else {
+                with_assignment_rhs(rhs, write)
+            }
             .alloc(ty)
         }
         thir::ExprKind::AssignOp { op, lhs, rhs } => {
@@ -829,24 +846,26 @@ pub(crate) fn compile_expr<'a>(
             let bin_op = BinOp::from(*op);
             let (path, result_ty) = path_and_ty_of_bin_op(&bin_op, ty_lhs);
             let lhs = compile_expr(env, generics, thir, lhs);
-            let rhs = compile_expr(env, generics, thir, rhs);
+            let rhs = compile_expr(env, generics, thir, rhs).read();
 
-            Rc::new(Expr::Let {
-                name: Some("β".to_string()),
-                ty: None,
-                init: lhs,
-                body: Rc::new(Expr::Call {
-                    func: Expr::local_var("M.write"),
-                    args: vec![
-                        Expr::local_var("β"),
-                        Rc::new(Expr::Call {
-                            func: Expr::local_var(path),
-                            args: vec![Expr::local_var("β").read(), rhs.read()],
-                            kind: CallKind::Closure(result_ty),
-                        }),
-                    ],
-                    kind: CallKind::Effectful,
-                }),
+            with_assignment_rhs(rhs, |value| {
+                Rc::new(Expr::Let {
+                    name: Some("β".to_string()),
+                    ty: None,
+                    init: lhs,
+                    body: Rc::new(Expr::Call {
+                        func: Expr::local_var("M.write"),
+                        args: vec![
+                            Expr::local_var("β"),
+                            Rc::new(Expr::Call {
+                                func: Expr::local_var(path),
+                                args: vec![Expr::local_var("β").read(), value],
+                                kind: CallKind::Closure(result_ty),
+                            }),
+                        ],
+                        kind: CallKind::Effectful,
+                    }),
+                })
             })
             .alloc(ty)
         }

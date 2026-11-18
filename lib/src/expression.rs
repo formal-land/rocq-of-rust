@@ -159,6 +159,11 @@ pub(crate) enum Expr {
     Tuple {
         elements: Vec<Rc<Expr>>,
     },
+    Bind {
+        name: String,
+        init: Rc<Expr>,
+        body: Rc<Expr>,
+    },
     Let {
         name: Option<String>,
         ty: Option<Rc<RocqType>>,
@@ -311,7 +316,8 @@ impl Expr {
                 ty: _,
                 init,
                 body,
-            } => init.has_return() || body.has_return(),
+            }
+            | Expr::Bind { init, body, .. } => init.has_return() || body.has_return(),
             Expr::PointerCoercion {
                 coercion: _,
                 source_ty: _,
@@ -770,6 +776,14 @@ impl Expr {
                         .collect_vec(),
                 }))
             }
+            Expr::Bind { name, init, body } => rocq::Expression::just_name("M.let_")
+                .monadic_apply_many(&[
+                    init.to_rocq().monadic(),
+                    Rc::new(rocq::Expression::Function {
+                        parameters: vec![rocq::Expression::just_name(name)],
+                        body: body.to_rocq().monadic(),
+                    }),
+                ]),
             Expr::Let {
                 name,
                 ty,
