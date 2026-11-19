@@ -1,0 +1,42 @@
+warning: [ROR003] floating-point literal in checked::div
+  --> examples/rust_book/std_library_types/result_chaining_with_question_mark.rs:12:17
+   |
+12 |         if y == 0.0 {
+   |                 ^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in checked::sqrt
+  --> examples/rust_book/std_library_types/result_chaining_with_question_mark.rs:20:16
+   |
+20 |         if x < 0.0 {
+   |                ^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in checked::ln
+  --> examples/rust_book/std_library_types/result_chaining_with_question_mark.rs:28:17
+   |
+28 |         if x <= 0.0 {
+   |                 ^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in main
+  --> examples/rust_book/std_library_types/result_chaining_with_question_mark.rs:62:17
+   |
+62 |     checked::op(1.0, 10.0);
+   |                 ^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in main
+  --> examples/rust_book/std_library_types/result_chaining_with_question_mark.rs:62:22
+   |
+62 |     checked::op(1.0, 10.0);
+   |                      ^^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: 5 warnings emitted
+

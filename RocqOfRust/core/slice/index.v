@@ -7717,14 +7717,12 @@ Module slice.
                   let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                   let start :=
                     M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
+                      Ty.apply (Ty.path "core::ops::range::Bound") [] [ Ty.path "usize" ],
                       γ0_0
                     |) in
                   let end_ :=
                     M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
+                      Ty.apply (Ty.path "core::ops::range::Bound") [] [ Ty.path "usize" ],
                       γ0_1
                     |) in
                   M.read (|
@@ -7871,14 +7869,12 @@ Module slice.
                   let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                   let start :=
                     M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
+                      Ty.apply (Ty.path "core::ops::range::Bound") [] [ Ty.path "usize" ],
                       γ0_0
                     |) in
                   let end_ :=
                     M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
+                      Ty.apply (Ty.path "core::ops::range::Bound") [] [ Ty.path "usize" ],
                       γ0_1
                     |) in
                   M.catch_return
@@ -8285,14 +8281,12 @@ Module slice.
                   let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                   let start :=
                     M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
+                      Ty.apply (Ty.path "core::ops::range::Bound") [] [ Ty.path "usize" ],
                       γ0_0
                     |) in
                   let end_ :=
                     M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
+                      Ty.apply (Ty.path "core::ops::range::Bound") [] [ Ty.path "usize" ],
                       γ0_1
                     |) in
                   M.read (|

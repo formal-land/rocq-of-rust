@@ -987,80 +987,86 @@ Module collections.
                                     |) in
                                   M.read (|
                                     let~ _ : Ty.tuple [] :=
-                                      let β :=
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (|
-                                            M.read (|
-                                              M.SubPointer.get_struct_tuple_field (|
-                                                guard,
-                                                "alloc::collections::vec_deque::drain::drop::DropGuard",
-                                                0
-                                              |)
-                                            |)
-                                          |),
-                                          "alloc::collections::vec_deque::drain::Drain",
-                                          "idx"
-                                        |) in
-                                      M.write (|
-                                        β,
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          BinOp.Wrap.add,
-                                          [
-                                            M.read (| β |);
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_associated_function (|
-                                                Ty.apply
-                                                  (Ty.path "*mut")
-                                                  []
-                                                  [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                                "len",
-                                                [],
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_associated_function (|
+                                              Ty.apply
+                                                (Ty.path "*mut")
                                                 []
-                                              |),
-                                              [ M.read (| front |) ]
-                                            |)
-                                          ]
-                                        |)
+                                                [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                              "len",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.read (| front |) ]
+                                          |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (let β :=
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (|
+                                                  M.read (|
+                                                    M.SubPointer.get_struct_tuple_field (|
+                                                      guard,
+                                                      "alloc::collections::vec_deque::drain::drop::DropGuard",
+                                                      0
+                                                    |)
+                                                  |)
+                                                |),
+                                                "alloc::collections::vec_deque::drain::Drain",
+                                                "idx"
+                                              |) in
+                                            M.write (|
+                                              β,
+                                              M.call_closure (|
+                                                Ty.path "usize",
+                                                BinOp.Wrap.add,
+                                                [ M.read (| β |); rhs' ]
+                                              |)
+                                            |)))
                                       |) in
                                     let~ _ : Ty.tuple [] :=
-                                      let β :=
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (|
-                                            M.read (|
-                                              M.SubPointer.get_struct_tuple_field (|
-                                                guard,
-                                                "alloc::collections::vec_deque::drain::drop::DropGuard",
-                                                0
-                                              |)
-                                            |)
-                                          |),
-                                          "alloc::collections::vec_deque::drain::Drain",
-                                          "remaining"
-                                        |) in
-                                      M.write (|
-                                        β,
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          BinOp.Wrap.sub,
-                                          [
-                                            M.read (| β |);
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_associated_function (|
-                                                Ty.apply
-                                                  (Ty.path "*mut")
-                                                  []
-                                                  [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                                "len",
-                                                [],
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_associated_function (|
+                                              Ty.apply
+                                                (Ty.path "*mut")
                                                 []
-                                              |),
-                                              [ M.read (| front |) ]
-                                            |)
-                                          ]
-                                        |)
+                                                [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                              "len",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.read (| front |) ]
+                                          |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (let β :=
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (|
+                                                  M.read (|
+                                                    M.SubPointer.get_struct_tuple_field (|
+                                                      guard,
+                                                      "alloc::collections::vec_deque::drain::drop::DropGuard",
+                                                      0
+                                                    |)
+                                                  |)
+                                                |),
+                                                "alloc::collections::vec_deque::drain::Drain",
+                                                "remaining"
+                                              |) in
+                                            M.write (|
+                                              β,
+                                              M.call_closure (|
+                                                Ty.path "usize",
+                                                BinOp.Wrap.sub,
+                                                [ M.read (| β |); rhs' ]
+                                              |)
+                                            |)))
                                       |) in
                                     let~ _ : Ty.tuple [] :=
                                       M.call_closure (|

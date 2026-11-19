@@ -181,12 +181,19 @@ Module algorithms.
                                                           M.copy (| Ty.path "u64", γ0_1 |) in
                                                         M.read (|
                                                           let~ _ : Ty.tuple [] :=
-                                                            M.write (|
-                                                              M.SubPointer.get_array_field (|
-                                                                M.deref (| M.read (| lhs |) |),
-                                                                M.read (| i |)
-                                                              |),
-                                                              M.read (| lhs |)
+                                                            M.let_ (|
+                                                              ltac:(M.monadic (M.read (| lhs |))),
+                                                              fun rhs' =>
+                                                                ltac:(M.monadic
+                                                                  (M.write (|
+                                                                    M.SubPointer.get_array_field (|
+                                                                      M.deref (|
+                                                                        M.read (| lhs |)
+                                                                      |),
+                                                                      M.read (| i |)
+                                                                    |),
+                                                                    rhs'
+                                                                  |)))
                                                             |) in
                                                           let~ _ : Ty.tuple [] :=
                                                             M.write (| carry, M.read (| lhs |) |) in
@@ -394,12 +401,19 @@ Module algorithms.
                                                           M.copy (| Ty.path "u64", γ0_1 |) in
                                                         M.read (|
                                                           let~ _ : Ty.tuple [] :=
-                                                            M.write (|
-                                                              M.SubPointer.get_array_field (|
-                                                                M.deref (| M.read (| lhs |) |),
-                                                                M.read (| i |)
-                                                              |),
-                                                              M.read (| lhs |)
+                                                            M.let_ (|
+                                                              ltac:(M.monadic (M.read (| lhs |))),
+                                                              fun rhs' =>
+                                                                ltac:(M.monadic
+                                                                  (M.write (|
+                                                                    M.SubPointer.get_array_field (|
+                                                                      M.deref (|
+                                                                        M.read (| lhs |)
+                                                                      |),
+                                                                      M.read (| i |)
+                                                                    |),
+                                                                    rhs'
+                                                                  |)))
                                                             |) in
                                                           let~ _ : Ty.tuple [] :=
                                                             M.write (|

@@ -2599,21 +2599,22 @@ Module u256.
           let rhs := M.alloc (| Ty.path "move_core_types::u256::U256", rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.path "move_core_types::u256::U256",
-                  M.get_trait_method (|
-                    "core::ops::bit::BitAnd",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.path "move_core_types::u256::U256",
-                    [],
-                    [ Ty.path "move_core_types::u256::U256" ],
-                    "bitand",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::bit::BitAnd",
+                      Ty.path "move_core_types::u256::U256",
+                      [],
+                      [ Ty.path "move_core_types::u256::U256" ],
+                      "bitand",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -2688,21 +2689,22 @@ Module u256.
           let rhs := M.alloc (| Ty.path "move_core_types::u256::U256", rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.path "move_core_types::u256::U256",
-                  M.get_trait_method (|
-                    "core::ops::arith::Add",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.path "move_core_types::u256::U256",
-                    [],
-                    [ Ty.path "move_core_types::u256::U256" ],
-                    "add",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::arith::Add",
+                      Ty.path "move_core_types::u256::U256",
+                      [],
+                      [ Ty.path "move_core_types::u256::U256" ],
+                      "add",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -2777,21 +2779,22 @@ Module u256.
           let rhs := M.alloc (| Ty.path "move_core_types::u256::U256", rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.path "move_core_types::u256::U256",
-                  M.get_trait_method (|
-                    "core::ops::arith::Sub",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.path "move_core_types::u256::U256",
-                    [],
-                    [ Ty.path "move_core_types::u256::U256" ],
-                    "sub",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::arith::Sub",
+                      Ty.path "move_core_types::u256::U256",
+                      [],
+                      [ Ty.path "move_core_types::u256::U256" ],
+                      "sub",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -2866,21 +2869,22 @@ Module u256.
           let rhs := M.alloc (| Ty.path "move_core_types::u256::U256", rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.path "move_core_types::u256::U256",
-                  M.get_trait_method (|
-                    "core::ops::arith::Mul",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.path "move_core_types::u256::U256",
-                    [],
-                    [ Ty.path "move_core_types::u256::U256" ],
-                    "mul",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::arith::Mul",
+                      Ty.path "move_core_types::u256::U256",
+                      [],
+                      [ Ty.path "move_core_types::u256::U256" ],
+                      "mul",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -2971,21 +2975,22 @@ Module u256.
           let rhs := M.alloc (| Ty.path "move_core_types::u256::U256", rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.path "move_core_types::u256::U256",
-                  M.get_trait_method (|
-                    "core::ops::arith::Div",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.path "move_core_types::u256::U256",
-                    [],
-                    [ Ty.path "move_core_types::u256::U256" ],
-                    "div",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::arith::Div",
+                      Ty.path "move_core_types::u256::U256",
+                      [],
+                      [ Ty.path "move_core_types::u256::U256" ],
+                      "div",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -3076,42 +3081,43 @@ Module u256.
           let rhs := M.alloc (| Ty.path "move_core_types::u256::U256", rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                Value.StructTuple
-                  "move_core_types::u256::U256"
-                  []
-                  []
-                  [
-                    M.call_closure (|
-                      Ty.path "primitive_types::U256",
-                      M.get_trait_method (|
-                        "core::ops::arith::Rem",
+              M.let_ (|
+                ltac:(M.monadic
+                  (Value.StructTuple
+                    "move_core_types::u256::U256"
+                    []
+                    []
+                    [
+                      M.call_closure (|
                         Ty.path "primitive_types::U256",
-                        [],
-                        [ Ty.path "primitive_types::U256" ],
-                        "rem",
-                        [],
-                        []
-                      |),
-                      [
-                        M.read (|
-                          M.SubPointer.get_struct_tuple_field (|
-                            M.deref (| M.read (| self |) |),
-                            "move_core_types::u256::U256",
-                            0
+                        M.get_trait_method (|
+                          "core::ops::arith::Rem",
+                          Ty.path "primitive_types::U256",
+                          [],
+                          [ Ty.path "primitive_types::U256" ],
+                          "rem",
+                          [],
+                          []
+                        |),
+                        [
+                          M.read (|
+                            M.SubPointer.get_struct_tuple_field (|
+                              M.deref (| M.read (| self |) |),
+                              "move_core_types::u256::U256",
+                              0
+                            |)
+                          |);
+                          M.read (|
+                            M.SubPointer.get_struct_tuple_field (|
+                              rhs,
+                              "move_core_types::u256::U256",
+                              0
+                            |)
                           |)
-                        |);
-                        M.read (|
-                          M.SubPointer.get_struct_tuple_field (|
-                            rhs,
-                            "move_core_types::u256::U256",
-                            0
-                          |)
-                        |)
-                      ]
-                    |)
-                  ]
+                        ]
+                      |)
+                    ])),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -3338,14 +3344,7 @@ Module u256.
               Ty.apply
                 (Ty.path "&")
                 []
-                [
-                  Ty.apply
-                    (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (| "move_core_types_u256_from_le_bytes_discriminant" |))
-                    ]
-                    [ Ty.path "u8" ]
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ]
                 ],
               slice
             |) in

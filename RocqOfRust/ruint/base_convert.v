@@ -2861,91 +2861,104 @@ Module base_convert.
                                                                                     let~ _ :
                                                                                         Ty.tuple
                                                                                           [] :=
-                                                                                      let β :=
-                                                                                        carry in
-                                                                                      M.write (|
-                                                                                        β,
-                                                                                        M.call_closure (|
-                                                                                          Ty.path
-                                                                                            "u128",
-                                                                                          BinOp.Wrap.add,
-                                                                                          [
-                                                                                            M.read (|
-                                                                                              β
-                                                                                            |);
-                                                                                            M.call_closure (|
-                                                                                              Ty.path
-                                                                                                "u128",
-                                                                                              BinOp.Wrap.mul,
-                                                                                              [
-                                                                                                M.call_closure (|
+                                                                                      M.let_ (|
+                                                                                        ltac:(M.monadic
+                                                                                          (M.call_closure (|
+                                                                                            Ty.path
+                                                                                              "u128",
+                                                                                            BinOp.Wrap.mul,
+                                                                                            [
+                                                                                              M.call_closure (|
+                                                                                                Ty.path
+                                                                                                  "u128",
+                                                                                                M.get_trait_method (|
+                                                                                                  "core::convert::From",
                                                                                                   Ty.path
                                                                                                     "u128",
-                                                                                                  M.get_trait_method (|
-                                                                                                    "core::convert::From",
-                                                                                                    Ty.path
-                                                                                                      "u128",
-                                                                                                    [],
-                                                                                                    [
-                                                                                                      Ty.path
-                                                                                                        "u64"
-                                                                                                    ],
-                                                                                                    "from",
-                                                                                                    [],
-                                                                                                    []
-                                                                                                  |),
+                                                                                                  [],
                                                                                                   [
-                                                                                                    M.read (|
-                                                                                                      M.deref (|
-                                                                                                        M.read (|
-                                                                                                          limb
-                                                                                                        |)
+                                                                                                    Ty.path
+                                                                                                      "u64"
+                                                                                                  ],
+                                                                                                  "from",
+                                                                                                  [],
+                                                                                                  []
+                                                                                                |),
+                                                                                                [
+                                                                                                  M.read (|
+                                                                                                    M.deref (|
+                                                                                                      M.read (|
+                                                                                                        limb
                                                                                                       |)
                                                                                                     |)
-                                                                                                  ]
-                                                                                                |);
-                                                                                                M.call_closure (|
+                                                                                                  |)
+                                                                                                ]
+                                                                                              |);
+                                                                                              M.call_closure (|
+                                                                                                Ty.path
+                                                                                                  "u128",
+                                                                                                M.get_trait_method (|
+                                                                                                  "core::convert::From",
                                                                                                   Ty.path
                                                                                                     "u128",
-                                                                                                  M.get_trait_method (|
-                                                                                                    "core::convert::From",
-                                                                                                    Ty.path
-                                                                                                      "u128",
-                                                                                                    [],
-                                                                                                    [
-                                                                                                      Ty.path
-                                                                                                        "u64"
-                                                                                                    ],
-                                                                                                    "from",
-                                                                                                    [],
-                                                                                                    []
-                                                                                                  |),
+                                                                                                  [],
                                                                                                   [
-                                                                                                    M.read (|
-                                                                                                      base
-                                                                                                    |)
-                                                                                                  ]
-                                                                                                |)
-                                                                                              ]
-                                                                                            |)
-                                                                                          ]
-                                                                                        |)
+                                                                                                    Ty.path
+                                                                                                      "u64"
+                                                                                                  ],
+                                                                                                  "from",
+                                                                                                  [],
+                                                                                                  []
+                                                                                                |),
+                                                                                                [
+                                                                                                  M.read (|
+                                                                                                    base
+                                                                                                  |)
+                                                                                                ]
+                                                                                              |)
+                                                                                            ]
+                                                                                          |))),
+                                                                                        fun rhs' =>
+                                                                                          ltac:(M.monadic
+                                                                                            (let
+                                                                                                  β :=
+                                                                                              carry in
+                                                                                            M.write (|
+                                                                                              β,
+                                                                                              M.call_closure (|
+                                                                                                Ty.path
+                                                                                                  "u128",
+                                                                                                BinOp.Wrap.add,
+                                                                                                [
+                                                                                                  M.read (|
+                                                                                                    β
+                                                                                                  |);
+                                                                                                  rhs'
+                                                                                                ]
+                                                                                              |)
+                                                                                            |)))
                                                                                       |) in
                                                                                     let~ _ :
                                                                                         Ty.tuple
                                                                                           [] :=
-                                                                                      M.write (|
-                                                                                        M.deref (|
-                                                                                          M.read (|
-                                                                                            limb
-                                                                                          |)
-                                                                                        |),
-                                                                                        M.cast
-                                                                                          (Ty.path
-                                                                                            "u64")
-                                                                                          (M.read (|
-                                                                                            carry
-                                                                                          |))
+                                                                                      M.let_ (|
+                                                                                        ltac:(M.monadic
+                                                                                          (M.cast
+                                                                                            (Ty.path
+                                                                                              "u64")
+                                                                                            (M.read (|
+                                                                                              carry
+                                                                                            |)))),
+                                                                                        fun rhs' =>
+                                                                                          ltac:(M.monadic
+                                                                                            (M.write (|
+                                                                                              M.deref (|
+                                                                                                M.read (|
+                                                                                                  limb
+                                                                                                |)
+                                                                                              |),
+                                                                                              rhs'
+                                                                                            |)))
                                                                                       |) in
                                                                                     let~ _ :
                                                                                         Ty.tuple
@@ -3365,17 +3378,20 @@ Module base_convert.
                                               |) in
                                             M.read (|
                                               let~ _ : Ty.tuple [] :=
-                                                let β := zero in
-                                                M.write (|
-                                                  β,
-                                                  M.call_closure (|
-                                                    Ty.path "u64",
-                                                    BinOp.Wrap.bit_or,
-                                                    [
-                                                      M.read (| β |);
-                                                      M.read (| M.deref (| M.read (| limb |) |) |)
-                                                    ]
-                                                  |)
+                                                M.let_ (|
+                                                  ltac:(M.monadic
+                                                    (M.read (| M.deref (| M.read (| limb |) |) |))),
+                                                  fun rhs' =>
+                                                    ltac:(M.monadic
+                                                      (let β := zero in
+                                                      M.write (|
+                                                        β,
+                                                        M.call_closure (|
+                                                          Ty.path "u64",
+                                                          BinOp.Wrap.bit_or,
+                                                          [ M.read (| β |); rhs' ]
+                                                        |)
+                                                      |)))
                                                 |) in
                                               let~ _ : Ty.tuple [] :=
                                                 M.write (|
@@ -3413,71 +3429,80 @@ Module base_convert.
                                                   |)
                                                 |) in
                                               let~ _ : Ty.tuple [] :=
-                                                M.write (|
-                                                  M.deref (| M.read (| limb |) |),
-                                                  M.cast
-                                                    (Ty.path "u64")
-                                                    (M.call_closure (|
-                                                      Ty.path "u128",
-                                                      BinOp.Wrap.div,
-                                                      [
-                                                        M.read (| remainder |);
-                                                        M.call_closure (|
-                                                          Ty.path "u128",
-                                                          M.get_trait_method (|
-                                                            "core::convert::From",
-                                                            Ty.path "u128",
-                                                            [],
-                                                            [ Ty.path "u64" ],
-                                                            "from",
-                                                            [],
-                                                            []
-                                                          |),
-                                                          [
-                                                            M.read (|
-                                                              M.SubPointer.get_struct_record_field (|
-                                                                M.deref (| M.read (| self |) |),
-                                                                "ruint::base_convert::SpigotLittle",
-                                                                "base"
-                                                              |)
-                                                            |)
-                                                          ]
-                                                        |)
-                                                      ]
-                                                    |))
-                                                |) in
-                                              let~ _ : Ty.tuple [] :=
-                                                let β := remainder in
-                                                M.write (|
-                                                  β,
-                                                  M.call_closure (|
-                                                    Ty.path "u128",
-                                                    BinOp.Wrap.rem,
-                                                    [
-                                                      M.read (| β |);
-                                                      M.call_closure (|
+                                                M.let_ (|
+                                                  ltac:(M.monadic
+                                                    (M.cast
+                                                      (Ty.path "u64")
+                                                      (M.call_closure (|
                                                         Ty.path "u128",
-                                                        M.get_trait_method (|
-                                                          "core::convert::From",
-                                                          Ty.path "u128",
-                                                          [],
-                                                          [ Ty.path "u64" ],
-                                                          "from",
-                                                          [],
-                                                          []
-                                                        |),
+                                                        BinOp.Wrap.div,
                                                         [
-                                                          M.read (|
-                                                            M.SubPointer.get_struct_record_field (|
-                                                              M.deref (| M.read (| self |) |),
-                                                              "ruint::base_convert::SpigotLittle",
-                                                              "base"
-                                                            |)
+                                                          M.read (| remainder |);
+                                                          M.call_closure (|
+                                                            Ty.path "u128",
+                                                            M.get_trait_method (|
+                                                              "core::convert::From",
+                                                              Ty.path "u128",
+                                                              [],
+                                                              [ Ty.path "u64" ],
+                                                              "from",
+                                                              [],
+                                                              []
+                                                            |),
+                                                            [
+                                                              M.read (|
+                                                                M.SubPointer.get_struct_record_field (|
+                                                                  M.deref (| M.read (| self |) |),
+                                                                  "ruint::base_convert::SpigotLittle",
+                                                                  "base"
+                                                                |)
+                                                              |)
+                                                            ]
                                                           |)
                                                         ]
-                                                      |)
-                                                    ]
-                                                  |)
+                                                      |)))),
+                                                  fun rhs' =>
+                                                    ltac:(M.monadic
+                                                      (M.write (|
+                                                        M.deref (| M.read (| limb |) |),
+                                                        rhs'
+                                                      |)))
+                                                |) in
+                                              let~ _ : Ty.tuple [] :=
+                                                M.let_ (|
+                                                  ltac:(M.monadic
+                                                    (M.call_closure (|
+                                                      Ty.path "u128",
+                                                      M.get_trait_method (|
+                                                        "core::convert::From",
+                                                        Ty.path "u128",
+                                                        [],
+                                                        [ Ty.path "u64" ],
+                                                        "from",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.read (|
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            M.deref (| M.read (| self |) |),
+                                                            "ruint::base_convert::SpigotLittle",
+                                                            "base"
+                                                          |)
+                                                        |)
+                                                      ]
+                                                    |))),
+                                                  fun rhs' =>
+                                                    ltac:(M.monadic
+                                                      (let β := remainder in
+                                                      M.write (|
+                                                        β,
+                                                        M.call_closure (|
+                                                          Ty.path "u128",
+                                                          BinOp.Wrap.rem,
+                                                          [ M.read (| β |); rhs' ]
+                                                        |)
+                                                      |)))
                                                 |) in
                                               M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                             |)))

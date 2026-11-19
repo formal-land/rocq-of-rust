@@ -53,6 +53,13 @@ Definition get_associated_constant (ty : Ty.t) (name : string) (return_ty : Ty.t
   let* constant := call_primitive (Primitive.GetAssociatedFunction ty name [] []) in
   call_closure (Ty.apply (Ty.path "*") [] [return_ty]) constant [].
 
+(** An associated constant is selected by its trait and substituted arguments. *)
+Parameter trait_constant_value : string -> Ty.t -> list Value.t -> list Ty.t -> string -> Value.t.
+
+Definition get_trait_constant (trait : string) (receiver : Ty.t)
+    (consts : list Value.t) (types : list Ty.t) (name : string) (return_ty : Ty.t) : M :=
+  M.alloc return_ty (trait_constant_value trait receiver consts types name).
+
 (** ** Integer types *)
 
 (** A value with an address of type `ref str`. *)
@@ -111,6 +118,21 @@ Module Integer.
     | IntegerKind.Isize => Z.modulo (z + 2^63) (2^64) - 2^63
     end.
 
+  Definition bits (kind : IntegerKind.t) : Z :=
+    match kind with
+    | IntegerKind.I8 | IntegerKind.U8 => 8
+    | IntegerKind.I16 | IntegerKind.U16 => 16
+    | IntegerKind.I32 | IntegerKind.U32 => 32
+    | IntegerKind.I64 | IntegerKind.U64 | IntegerKind.Isize | IntegerKind.Usize => 64
+    | IntegerKind.I128 | IntegerKind.U128 => 128
+    end.
+
+  Definition wrapping_shift (shift : Z -> Z -> Z) (kind : IntegerKind.t) (value count : Z) : Z :=
+    normalize_wrap kind (shift value (count mod bits kind)).
+
+  Definition invalid_division (kind : IntegerKind.t) (a b : Z) : bool :=
+    (b =? 0) || ((b =? -1) && (a =? min kind) && (min kind <? 0)).
+
   Definition normalize_option (kind : IntegerKind.t) (z : Z) : option Z :=
     if z <? min kind then
       None
@@ -163,6 +185,7 @@ Module BinOp.
       match args with
       | [value1; value2] =>
         match value1, value2 with
+        | Value.UnicodeChar a, Value.UnicodeChar b => M.pure (Value.Bool (Z.eqb a b))
         | Value.Bool b1, Value.Bool b2 =>
           M.pure (Value.Bool (Bool.eqb b1 b2))
         | Value.Integer kind1 i1, Value.Integer kind2 i2 =>
@@ -179,27 +202,20 @@ Module BinOp.
   Definition ne : Value.t :=
     M.closure (fun args =>
       match args with
-      | [value1; value2] =>
-        match args with
-        | [value1; value2] =>
-          match value1, value2 with
-          | Value.Bool b1, Value.Bool b2 =>
-            M.pure (Value.Bool (negb (Bool.eqb b1 b2)))
-          | Value.Integer kind1 i1, Value.Integer kind2 i2 =>
-            if negb (IntegerKind.eqb kind1 kind2) then
-              M.impossible "expected the same kind of integers"
-            else
-              M.pure (Value.Bool (negb (Z.eqb i1 i2)))
-          | _, _ => M.impossible "expected two values for ne"
-          end
-        | _ => M.impossible "expected two values for ne"
-        end
+      | [Value.UnicodeChar a; Value.UnicodeChar b] => M.pure (Value.Bool (negb (Z.eqb a b)))
+      | [Value.Bool a; Value.Bool b] => M.pure (Value.Bool (negb (Bool.eqb a b)))
+      | [Value.Integer kind1 a; Value.Integer kind2 b] =>
+        if negb (IntegerKind.eqb kind1 kind2) then
+          M.impossible "expected the same kind of integers"
+        else
+          M.pure (Value.Bool (negb (Z.eqb a b)))
       | _ => M.impossible "expected two values for ne"
       end
     ).
   Definition make_Z_comparison (cmp : Z -> Z -> bool) : Value.t :=
     M.closure (fun args =>
       match args with
+      | [Value.UnicodeChar a; Value.UnicodeChar b] => M.pure (Value.Bool (cmp a b))
       | [Value.Integer kind1 i1; Value.Integer kind2 i2] =>
         if negb (IntegerKind.eqb kind1 kind2) then
           M.impossible "expected the same kind of integers"
@@ -244,17 +260,34 @@ Module BinOp.
     Definition mul : Value.t :=
       make_arithmetic Z.mul.
 
-    Definition div : Value.t :=
-      make_arithmetic Z.div.
+    (* The generated / and % operators panic even in release mode on these inputs.
+       The Rust wrapping methods handle signed overflow before reaching this operator. *)
+    Definition make_division (op : Z -> Z -> Z) : Value.t :=
+      M.closure (fun args =>
+        match args with
+        | [Value.Integer kind a; Value.Integer _ b] =>
+          if Integer.invalid_division kind a b then
+            M.panic (Panic.Make "invalid integer division")
+          else
+            M.pure (Value.Integer kind (Integer.normalize_wrap kind (op a b)))
+        | _ => M.impossible "expected two integers for division"
+        end).
 
-    Definition rem : Value.t :=
-      make_arithmetic Z.modulo.
+    Definition div : Value.t := make_division Z.quot.
 
-    Definition shl : Value.t :=
-      make_arithmetic Z.shiftl.
+    Definition rem : Value.t := make_division Z.rem.
 
-    Definition shr : Value.t :=
-      make_arithmetic Z.shiftr.
+    Definition make_shift (shift : Z -> Z -> Z) : Value.t :=
+      M.closure (fun args =>
+        match args with
+        | [Value.Integer kind value; Value.Integer _ count] =>
+          M.pure (Value.Integer kind (Integer.wrapping_shift shift kind value count))
+        | _ => M.impossible "expected two integers for shift"
+        end).
+
+    Definition shl : Value.t := make_shift Z.shiftl.
+
+    Definition shr : Value.t := make_shift Z.shiftr.
 
     Definition make_bool_or_arithmetic
       (bin_op_bool : bool -> bool -> bool)

@@ -87,6 +87,11 @@ pub(crate) enum PointerCoercion {
 #[derive(Debug, Eq, PartialEq, Serialize)]
 pub(crate) enum Expr {
     LocalVar(String),
+    SymbolicConst {
+        owner: String,
+        consts: Vec<Rc<Expr>>,
+        tys: Vec<Rc<RocqType>>,
+    },
     GetConstant {
         path: Rc<Path>,
         return_ty: Rc<RocqType>,
@@ -158,6 +163,11 @@ pub(crate) enum Expr {
     },
     Tuple {
         elements: Vec<Rc<Expr>>,
+    },
+    Bind {
+        name: String,
+        init: Rc<Expr>,
+        body: Rc<Expr>,
     },
     Let {
         name: Option<String>,
@@ -275,7 +285,7 @@ impl Expr {
 
     pub(crate) fn has_return(&self) -> bool {
         match self {
-            Expr::LocalVar(_) => false,
+            Expr::LocalVar(_) | Expr::SymbolicConst { .. } => false,
             Expr::GetConstant { .. } => false,
             Expr::GetAssociatedConstant { .. } => false,
             Expr::GetFunction { .. } => false,
@@ -311,7 +321,8 @@ impl Expr {
                 ty: _,
                 init,
                 body,
-            } => init.has_return() || body.has_return(),
+            }
+            | Expr::Bind { init, body, .. } => init.has_return() || body.has_return(),
             Expr::PointerCoercion {
                 coercion: _,
                 source_ty: _,
@@ -569,6 +580,17 @@ impl Expr {
     pub(crate) fn to_rocq(&self) -> Rc<rocq::Expression> {
         match self {
             Expr::LocalVar(ref name) => rocq::Expression::just_name(name),
+            Expr::SymbolicConst { owner, consts, tys } => {
+                rocq::Expression::just_name("M.symbolic_const").apply_many(&[
+                    Rc::new(rocq::Expression::String(owner.clone())),
+                    Rc::new(rocq::Expression::List {
+                        exprs: consts.iter().map(|c| c.to_rocq()).collect(),
+                    }),
+                    Rc::new(rocq::Expression::List {
+                        exprs: tys.iter().map(|t| t.to_rocq()).collect(),
+                    }),
+                ])
+            }
             Expr::GetConstant { path, return_ty } => rocq::Expression::just_name("get_constant")
                 .monadic_apply_many(&[
                     Rc::new(rocq::Expression::String(path.to_string())),
@@ -770,6 +792,14 @@ impl Expr {
                         .collect_vec(),
                 }))
             }
+            Expr::Bind { name, init, body } => rocq::Expression::just_name("M.let_")
+                .monadic_apply_many(&[
+                    init.to_rocq().monadic(),
+                    Rc::new(rocq::Expression::Function {
+                        parameters: vec![rocq::Expression::just_name(name)],
+                        body: body.to_rocq().monadic(),
+                    }),
+                ]),
             Expr::Let {
                 name,
                 ty,
@@ -896,6 +926,12 @@ impl Expr {
         match self {
             Expr::LocalVar(name) => name.clone(),
             Expr::Literal(literal) => literal.to_name(),
+            Expr::SymbolicConst { .. } => {
+                use std::hash::{DefaultHasher, Hasher};
+                let mut hash = DefaultHasher::new();
+                hash.write(&serde_json::to_vec(self).expect("serialize symbolic constant"));
+                format!("const_{:016x}", hash.finish())
+            }
             _ => "expr".to_string(),
         }
     }

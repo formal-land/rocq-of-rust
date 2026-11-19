@@ -528,7 +528,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
             []
             [ Ty.path "generics_phantom_type_test_case_unit_clarification::Inch" ]
             [
-              M.read (| UnsupportedLiteral |);
+              M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |);
               Value.StructTuple
                 "core::marker::PhantomData"
                 []
@@ -545,7 +545,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
             []
             [ Ty.path "generics_phantom_type_test_case_unit_clarification::Mm" ]
             [
-              M.read (| UnsupportedLiteral |);
+              M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |);
               Value.StructTuple
                 "core::marker::PhantomData"
                 []

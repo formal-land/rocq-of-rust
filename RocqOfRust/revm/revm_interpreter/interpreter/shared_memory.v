@@ -3033,17 +3033,23 @@ Module interpreter.
                   [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
                 |) in
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "revm_interpreter::interpreter::shared_memory::SharedMemory",
-                    "child_checkpoint"
-                  |),
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "usize" ]
-                    [ M.read (| new_checkpoint |) ]
+                M.let_ (|
+                  ltac:(M.monadic
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      []
+                      [ Ty.path "usize" ]
+                      [ M.read (| new_checkpoint |) ])),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_interpreter::interpreter::shared_memory::SharedMemory",
+                          "child_checkpoint"
+                        |),
+                        rhs'
+                      |)))
                 |) in
               M.alloc (|
                 Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory",

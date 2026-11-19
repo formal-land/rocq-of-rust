@@ -1249,13 +1249,18 @@ Module iter.
                                         ]
                                       |) in
                                     let~ _ : Ty.tuple [] :=
-                                      M.write (|
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| inner |) |),
-                                          "core::iter::sources::repeat_n::RepeatNInner",
-                                          "count"
-                                        |),
-                                        M.read (| decremented |)
+                                      M.let_ (|
+                                        ltac:(M.monadic (M.read (| decremented |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (M.write (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| inner |) |),
+                                                "core::iter::sources::repeat_n::RepeatNInner",
+                                                "count"
+                                              |),
+                                              rhs'
+                                            |)))
                                       |) in
                                     M.return_ (|
                                       Value.StructTuple
@@ -1586,13 +1591,18 @@ Module iter.
                                         M.never_to_any (|
                                           M.read (|
                                             let~ _ : Ty.tuple [] :=
-                                              M.write (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| inner |) |),
-                                                  "core::iter::sources::repeat_n::RepeatNInner",
-                                                  "count"
-                                                |),
-                                                M.read (| new_len |)
+                                              M.let_ (|
+                                                ltac:(M.monadic (M.read (| new_len |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (M.write (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| inner |) |),
+                                                        "core::iter::sources::repeat_n::RepeatNInner",
+                                                        "count"
+                                                      |),
+                                                      rhs'
+                                                    |)))
                                               |) in
                                             M.return_ (|
                                               Value.StructTuple
@@ -1613,22 +1623,28 @@ Module iter.
                                   ]
                                 |) in
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::iter::sources::repeat_n::RepeatN",
-                                    "inner"
-                                  |),
-                                  Value.StructTuple
-                                    "core::option::Option::None"
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "core::iter::sources::repeat_n::RepeatNInner")
-                                        []
-                                        [ A ]
-                                    ]
-                                    []
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (Value.StructTuple
+                                      "core::option::Option::None"
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::iter::sources::repeat_n::RepeatNInner")
+                                          []
+                                          [ A ]
+                                      ]
+                                      [])),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::iter::sources::repeat_n::RepeatN",
+                                          "inner"
+                                        |),
+                                        rhs'
+                                      |)))
                                 |) in
                               M.return_ (|
                                 M.call_closure (|

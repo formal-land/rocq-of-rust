@@ -246,7 +246,7 @@ Module Iterator.
       Set := {
     any : PolymorphicFunction.t;
     any_is_method :: IsTraitMethod.C (trait Self) "any" any;
-    run_any (F : Set) `(Link F) (self : '&mut Self) (f : F) `(FnMut.Run F Item bool) ::
+    run_any (F : Set) `(Link F) (self : '&mut Self) (f : F) `(FnMut.Run F (OneElementTuple.t Item) bool) ::
       Run.Trait any [] [Φ F] [φ self; φ f] bool;
   }.
 

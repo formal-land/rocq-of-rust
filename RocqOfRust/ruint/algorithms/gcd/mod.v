@@ -1140,29 +1140,32 @@ Module algorithms.
                                                     ]
                                                   |) in
                                                 let~ _ : Ty.tuple [] :=
-                                                  let β := even in
-                                                  M.write (|
-                                                    β,
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.Wrap.bit_xor,
-                                                      [
-                                                        M.read (| β |);
-                                                        M.call_closure (|
-                                                          Ty.path "bool",
-                                                          UnOp.not,
-                                                          [
-                                                            M.read (|
-                                                              M.SubPointer.get_struct_tuple_field (|
-                                                                m,
-                                                                "ruint::algorithms::gcd::matrix::Matrix",
-                                                                4
-                                                              |)
+                                                  M.let_ (|
+                                                    ltac:(M.monadic
+                                                      (M.call_closure (|
+                                                        Ty.path "bool",
+                                                        UnOp.not,
+                                                        [
+                                                          M.read (|
+                                                            M.SubPointer.get_struct_tuple_field (|
+                                                              m,
+                                                              "ruint::algorithms::gcd::matrix::Matrix",
+                                                              4
                                                             |)
-                                                          ]
-                                                        |)
-                                                      ]
-                                                    |)
+                                                          |)
+                                                        ]
+                                                      |))),
+                                                    fun rhs' =>
+                                                      ltac:(M.monadic
+                                                        (let β := even in
+                                                        M.write (|
+                                                          β,
+                                                          M.call_closure (|
+                                                            Ty.path "bool",
+                                                            BinOp.Wrap.bit_xor,
+                                                            [ M.read (| β |); rhs' ]
+                                                          |)
+                                                        |)))
                                                   |) in
                                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                               |)))
@@ -2001,29 +2004,32 @@ Module algorithms.
                                                     ]
                                                   |) in
                                                 let~ _ : Ty.tuple [] :=
-                                                  let β := even in
-                                                  M.write (|
-                                                    β,
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.Wrap.bit_xor,
-                                                      [
-                                                        M.read (| β |);
-                                                        M.call_closure (|
-                                                          Ty.path "bool",
-                                                          UnOp.not,
-                                                          [
-                                                            M.read (|
-                                                              M.SubPointer.get_struct_tuple_field (|
-                                                                m,
-                                                                "ruint::algorithms::gcd::matrix::Matrix",
-                                                                4
-                                                              |)
+                                                  M.let_ (|
+                                                    ltac:(M.monadic
+                                                      (M.call_closure (|
+                                                        Ty.path "bool",
+                                                        UnOp.not,
+                                                        [
+                                                          M.read (|
+                                                            M.SubPointer.get_struct_tuple_field (|
+                                                              m,
+                                                              "ruint::algorithms::gcd::matrix::Matrix",
+                                                              4
                                                             |)
-                                                          ]
-                                                        |)
-                                                      ]
-                                                    |)
+                                                          |)
+                                                        ]
+                                                      |))),
+                                                    fun rhs' =>
+                                                      ltac:(M.monadic
+                                                        (let β := even in
+                                                        M.write (|
+                                                          β,
+                                                          M.call_closure (|
+                                                            Ty.path "bool",
+                                                            BinOp.Wrap.bit_xor,
+                                                            [ M.read (| β |); rhs' ]
+                                                          |)
+                                                        |)))
                                                   |) in
                                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                               |)))

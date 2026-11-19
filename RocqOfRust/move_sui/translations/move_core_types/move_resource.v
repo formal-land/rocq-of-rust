@@ -29,8 +29,12 @@ Module move_resource.
                 Pointer.Kind.Ref,
                 M.deref (|
                   M.read (|
-                    get_constant (|
-                      "move_core_types::move_resource::MoveStructType::MODULE_NAME",
+                    get_trait_constant (|
+                      "move_core_types::move_resource::MoveStructType",
+                      Self,
+                      [],
+                      [],
+                      "MODULE_NAME",
                       Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::identifier::IdentStr" ]
                     |)
                   |)
@@ -71,8 +75,12 @@ Module move_resource.
                 Pointer.Kind.Ref,
                 M.deref (|
                   M.read (|
-                    get_constant (|
-                      "move_core_types::move_resource::MoveStructType::STRUCT_NAME",
+                    get_trait_constant (|
+                      "move_core_types::move_resource::MoveStructType",
+                      Self,
+                      [],
+                      [],
+                      "STRUCT_NAME",
                       Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::identifier::IdentStr" ]
                     |)
                   |)
@@ -133,8 +141,12 @@ Module move_resource.
             [
               ("address",
                 M.read (|
-                  get_constant (|
-                    "move_core_types::move_resource::MoveStructType::ADDRESS",
+                  get_trait_constant (|
+                    "move_core_types::move_resource::MoveStructType",
+                    Self,
+                    [],
+                    [],
+                    "ADDRESS",
                     Ty.path "move_core_types::account_address::AccountAddress"
                   |)
                 |));

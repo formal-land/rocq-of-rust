@@ -970,14 +970,19 @@ Module buf.
                                   ]
                                 |) in
                               let~ _ : Ty.tuple [] :=
-                                let β := cnt in
-                                M.write (|
-                                  β,
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    BinOp.Wrap.sub,
-                                    [ M.read (| β |); M.read (| dst_len |) ]
-                                  |)
+                                M.let_ (|
+                                  ltac:(M.monadic (M.read (| dst_len |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (let β := cnt in
+                                      M.write (|
+                                        β,
+                                        M.call_closure (|
+                                          Ty.path "usize",
+                                          BinOp.Wrap.sub,
+                                          [ M.read (| β |); rhs' ]
+                                        |)
+                                      |)))
                                 |) in
                               M.alloc (| Ty.tuple [], Value.Tuple [] |)
                             |)));
@@ -6022,9 +6027,12 @@ Module buf.
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.deref (| M.read (| self |) |),
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| b |) |) |)
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| b |) |) |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                         |)))
@@ -6859,9 +6867,12 @@ Module buf.
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.deref (| M.read (| self |) |),
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| b |) |) |)
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| b |) |) |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                         |)))

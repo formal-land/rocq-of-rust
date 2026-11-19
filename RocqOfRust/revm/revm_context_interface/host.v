@@ -1247,48 +1247,60 @@ Module host.
                                 ]
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    account_load,
-                                    "revm_context_interface::journaled_state::StateLoad",
-                                    "data"
-                                  |),
-                                  "revm_context_interface::journaled_state::AccountLoad",
-                                  "is_delegate_account_cold"
-                                |),
-                                Value.StructTuple
-                                  "core::option::Option::Some"
-                                  []
-                                  [ Ty.path "bool" ]
-                                  [
-                                    M.read (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        delegate_account,
-                                        "revm_context_interface::journaled_state::AccountInfoLoad",
-                                        "is_cold"
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (Value.StructTuple
+                                    "core::option::Option::Some"
+                                    []
+                                    [ Ty.path "bool" ]
+                                    [
+                                      M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          delegate_account,
+                                          "revm_context_interface::journaled_state::AccountInfoLoad",
+                                          "is_cold"
+                                        |)
                                       |)
-                                    |)
-                                  ]
+                                    ])),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          account_load,
+                                          "revm_context_interface::journaled_state::StateLoad",
+                                          "data"
+                                        |),
+                                        "revm_context_interface::journaled_state::AccountLoad",
+                                        "is_delegate_account_cold"
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    account_load,
-                                    "revm_context_interface::journaled_state::StateLoad",
-                                    "data"
-                                  |),
-                                  "revm_context_interface::journaled_state::AccountLoad",
-                                  "is_empty"
-                                |),
-                                M.read (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    delegate_account,
-                                    "revm_context_interface::journaled_state::AccountInfoLoad",
-                                    "is_empty"
-                                  |)
-                                |)
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      delegate_account,
+                                      "revm_context_interface::journaled_state::AccountInfoLoad",
+                                      "is_empty"
+                                    |)
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          account_load,
+                                          "revm_context_interface::journaled_state::StateLoad",
+                                          "data"
+                                        |),
+                                        "revm_context_interface::journaled_state::AccountLoad",
+                                        "is_empty"
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)));

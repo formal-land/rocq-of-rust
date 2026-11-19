@@ -771,6 +771,13 @@ Arguments call_logical_op /.
 Definition impossible {A : Set} (payload : A) : M :=
   LowM.Impossible payload.
 
+(** Rust's assume intrinsic has a defined execution only for true. *)
+Definition assume (condition : Value.t) : M :=
+  match condition with
+  | Value.Bool true => pure (Value.Tuple [])
+  | _ => impossible "false or ill-typed assumption"
+  end.
+
 Module Panic.
   Inductive t : Set :=
   | Make (message : string).
@@ -990,7 +997,8 @@ Definition is_struct_tuple (value : Value.t) (constructor : string) : M :=
   let* value := deref value in
   let* value := read value in
   match value with
-  | Value.StructTuple current_constructor _ _ _ =>
+  | Value.StructTuple current_constructor _ _ _
+  | Value.StructRecord current_constructor _ _ _ =>
     match PrimString.compare current_constructor constructor with
     | Eq => pure (Value.Tuple [])
     | _ => break_match
@@ -1054,6 +1062,9 @@ Definition pointer_coercion (coercion : PointerCoercion.t) (source target : Ty.t
 Arguments pointer_coercion /.
 
 Parameter struct_record_update : Value.t -> list (string * Value.t) -> Value.t.
+
+(** An opaque Rust constant still depending on its generic arguments. *)
+Parameter symbolic_const : string -> list Value.t -> list Ty.t -> Value.t.
 
 Parameter unevaluated_const : Value.t -> Value.t.
 

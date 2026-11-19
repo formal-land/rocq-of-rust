@@ -248,13 +248,18 @@ Module interpreter.
             let bytes := M.alloc (| Ty.path "alloy_primitives::bytes_::Bytes", bytes |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.deref (| M.read (| self |) |),
-                    "revm_interpreter::interpreter::return_data::ReturnDataImpl",
-                    0
-                  |),
-                  M.read (| bytes |)
+                M.let_ (|
+                  ltac:(M.monadic (M.read (| bytes |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_interpreter::interpreter::return_data::ReturnDataImpl",
+                          0
+                        |),
+                        rhs'
+                      |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))

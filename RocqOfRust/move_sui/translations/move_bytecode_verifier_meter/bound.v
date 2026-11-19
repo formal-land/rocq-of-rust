@@ -75,25 +75,31 @@ Module bound.
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| bounds |) |),
-                  "move_bytecode_verifier_meter::bound::Bounds",
-                  "name"
-                |),
-                M.call_closure (|
-                  Ty.path "alloc::string::String",
-                  M.get_trait_method (|
-                    "core::convert::Into",
-                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                    [],
-                    [ Ty.path "alloc::string::String" ],
-                    "into",
-                    [],
-                    []
-                  |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| name |) |) |) ]
-                |)
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
+                    Ty.path "alloc::string::String",
+                    M.get_trait_method (|
+                      "core::convert::Into",
+                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                      [],
+                      [ Ty.path "alloc::string::String" ],
+                      "into",
+                      [],
+                      []
+                    |),
+                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| name |) |) |) ]
+                  |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| bounds |) |),
+                        "move_bytecode_verifier_meter::bound::Bounds",
+                        "name"
+                      |),
+                      rhs'
+                    |)))
               |) in
             let~ _ : Ty.tuple [] :=
               M.write (|
@@ -718,13 +724,18 @@ Module bound.
                                 ]
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "move_bytecode_verifier_meter::bound::Bounds",
-                                  "units"
-                                |),
-                                M.read (| new_units |)
+                              M.let_ (|
+                                ltac:(M.monadic (M.read (| new_units |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "move_bytecode_verifier_meter::bound::Bounds",
+                                        "units"
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)));

@@ -6343,31 +6343,37 @@ Module ffi.
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| target |) |),
-                    "alloc::ffi::c_str::CString",
-                    "inner"
-                  |),
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "alloc::boxed::Box")
-                      []
-                      [
-                        Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ];
-                        Ty.path "alloc::alloc::Global"
-                      ],
-                    M.get_associated_function (|
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply
-                        (Ty.path "alloc::vec::Vec")
+                        (Ty.path "alloc::boxed::Box")
                         []
-                        [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
-                      "into_boxed_slice",
-                      [],
-                      []
-                    |),
-                    [ M.read (| b |) ]
-                  |)
+                        [
+                          Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ];
+                          Ty.path "alloc::alloc::Global"
+                        ],
+                      M.get_associated_function (|
+                        Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
+                        "into_boxed_slice",
+                        [],
+                        []
+                      |),
+                      [ M.read (| b |) ]
+                    |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| target |) |),
+                          "alloc::ffi::c_str::CString",
+                          "inner"
+                        |),
+                        rhs'
+                      |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))

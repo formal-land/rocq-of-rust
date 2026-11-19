@@ -2472,9 +2472,15 @@ Module option.
             M.deref (|
               M.read (|
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.deref (| M.read (| self |) |),
-                    Value.StructTuple "core::option::Option::Some" [] [ T ] [ M.read (| value |) ]
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        []
+                        [ T ]
+                        [ M.read (| value |) ])),
+                    fun rhs' =>
+                      ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                   |) in
                 M.alloc (|
                   Ty.apply (Ty.path "&mut") [] [ T ],
@@ -2706,27 +2712,30 @@ Module option.
                           let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.deref (| M.read (| self |) |),
-                                Value.StructTuple
-                                  "core::option::Option::Some"
-                                  []
-                                  [ T ]
-                                  [
-                                    M.call_closure (|
-                                      T,
-                                      M.get_trait_method (|
-                                        "core::ops::function::FnOnce",
-                                        F,
-                                        [],
-                                        [ Ty.tuple [] ],
-                                        "call_once",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.read (| f |); Value.Tuple [] ]
-                                    |)
-                                  ]
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (Value.StructTuple
+                                    "core::option::Option::Some"
+                                    []
+                                    [ T ]
+                                    [
+                                      M.call_closure (|
+                                        T,
+                                        M.get_trait_method (|
+                                          "core::ops::function::FnOnce",
+                                          F,
+                                          [],
+                                          [ Ty.tuple [] ],
+                                          "call_once",
+                                          [],
+                                          []
+                                        |),
+                                        [ M.read (| f |); Value.Tuple [] ]
+                                      |)
+                                    ])),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)));
@@ -3886,21 +3895,22 @@ Module option.
                         [ Ty.apply (Ty.path "core::option::Option") [] [ T ] ],
                       γ0_1
                     |) in
-                  M.write (|
-                    M.deref (| M.read (| to |) |),
-                    M.call_closure (|
-                      Ty.apply (Ty.path "core::option::Option") [] [ T ],
-                      M.get_trait_method (|
-                        "core::clone::Clone",
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.call_closure (|
                         Ty.apply (Ty.path "core::option::Option") [] [ T ],
-                        [],
-                        [],
-                        "clone",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| from |) |) |) ]
-                    |)
+                        M.get_trait_method (|
+                          "core::clone::Clone",
+                          Ty.apply (Ty.path "core::option::Option") [] [ T ],
+                          [],
+                          [],
+                          "clone",
+                          [],
+                          []
+                        |),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| from |) |) |) ]
+                      |))),
+                    fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| to |) |), rhs' |)))
                   |)))
             ]
           |)))

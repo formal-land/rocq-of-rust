@@ -1008,42 +1008,53 @@ Module precompile_provider.
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "revm_handler::precompile_provider::EthPrecompiles",
-                      "precompiles"
-                    |),
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ Ty.path "revm_precompile::Precompiles" ],
-                      M.get_associated_function (|
-                        Ty.path "revm_precompile::Precompiles",
-                        "new",
-                        [],
-                        []
-                      |),
-                      [
-                        M.call_closure (|
-                          Ty.path "revm_precompile::PrecompileSpecId",
-                          M.get_associated_function (|
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "revm_precompile::Precompiles" ],
+                        M.get_associated_function (|
+                          Ty.path "revm_precompile::Precompiles",
+                          "new",
+                          [],
+                          []
+                        |),
+                        [
+                          M.call_closure (|
                             Ty.path "revm_precompile::PrecompileSpecId",
-                            "from_spec_id",
-                            [],
-                            []
+                            M.get_associated_function (|
+                              Ty.path "revm_precompile::PrecompileSpecId",
+                              "from_spec_id",
+                              [],
+                              []
+                            |),
+                            [ M.read (| spec |) ]
+                          |)
+                        ]
+                      |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_handler::precompile_provider::EthPrecompiles",
+                            "precompiles"
                           |),
-                          [ M.read (| spec |) ]
-                        |)
-                      ]
-                    |)
+                          rhs'
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "revm_handler::precompile_provider::EthPrecompiles",
-                      "spec"
-                    |),
-                    M.read (| spec |)
+                  M.let_ (|
+                    ltac:(M.monadic (M.read (| spec |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_handler::precompile_provider::EthPrecompiles",
+                            "spec"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 M.alloc (| Ty.path "bool", Value.Bool true |)
               |)))
@@ -1839,59 +1850,71 @@ Module precompile_provider.
                                         ]
                                       |) in
                                     let~ _ : Ty.tuple [] :=
-                                      M.write (|
-                                        M.SubPointer.get_struct_record_field (|
-                                          result,
-                                          "revm_interpreter::interpreter::InterpreterResult",
-                                          "result"
-                                        |),
-                                        M.match_operator (|
-                                          Ty.path
-                                            "revm_interpreter::instruction_result::InstructionResult",
-                                          M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                          [
-                                            fun γ =>
-                                              ltac:(M.monadic
-                                                (let γ :=
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    output,
-                                                    "revm_precompile::interface::PrecompileOutput",
-                                                    "reverted"
-                                                  |) in
-                                                let _ :=
-                                                  is_constant_or_break_match (|
-                                                    M.read (| γ |),
-                                                    Value.Bool true
-                                                  |) in
-                                                Value.StructTuple
-                                                  "revm_interpreter::instruction_result::InstructionResult::Revert"
-                                                  []
-                                                  []
-                                                  []));
-                                            fun γ =>
-                                              ltac:(M.monadic
-                                                (Value.StructTuple
-                                                  "revm_interpreter::instruction_result::InstructionResult::Return"
-                                                  []
-                                                  []
-                                                  []))
-                                          ]
-                                        |)
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (M.match_operator (|
+                                            Ty.path
+                                              "revm_interpreter::instruction_result::InstructionResult",
+                                            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                            [
+                                              fun γ =>
+                                                ltac:(M.monadic
+                                                  (let γ :=
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      output,
+                                                      "revm_precompile::interface::PrecompileOutput",
+                                                      "reverted"
+                                                    |) in
+                                                  let _ :=
+                                                    is_constant_or_break_match (|
+                                                      M.read (| γ |),
+                                                      Value.Bool true
+                                                    |) in
+                                                  Value.StructTuple
+                                                    "revm_interpreter::instruction_result::InstructionResult::Revert"
+                                                    []
+                                                    []
+                                                    []));
+                                              fun γ =>
+                                                ltac:(M.monadic
+                                                  (Value.StructTuple
+                                                    "revm_interpreter::instruction_result::InstructionResult::Return"
+                                                    []
+                                                    []
+                                                    []))
+                                            ]
+                                          |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (M.write (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                result,
+                                                "revm_interpreter::interpreter::InterpreterResult",
+                                                "result"
+                                              |),
+                                              rhs'
+                                            |)))
                                       |) in
                                     let~ _ : Ty.tuple [] :=
-                                      M.write (|
-                                        M.SubPointer.get_struct_record_field (|
-                                          result,
-                                          "revm_interpreter::interpreter::InterpreterResult",
-                                          "output"
-                                        |),
-                                        M.read (|
-                                          M.SubPointer.get_struct_record_field (|
-                                            output,
-                                            "revm_precompile::interface::PrecompileOutput",
-                                            "bytes"
-                                          |)
-                                        |)
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (M.read (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              output,
+                                              "revm_precompile::interface::PrecompileOutput",
+                                              "bytes"
+                                            |)
+                                          |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (M.write (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                result,
+                                                "revm_interpreter::interpreter::InterpreterResult",
+                                                "output"
+                                              |),
+                                              rhs'
+                                            |)))
                                       |) in
                                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                   |)));
@@ -1945,53 +1968,59 @@ Module precompile_provider.
                                     |) in
                                   M.read (|
                                     let~ _ : Ty.tuple [] :=
-                                      M.write (|
-                                        M.SubPointer.get_struct_record_field (|
-                                          result,
-                                          "revm_interpreter::interpreter::InterpreterResult",
-                                          "result"
-                                        |),
-                                        M.match_operator (|
-                                          Ty.path
-                                            "revm_interpreter::instruction_result::InstructionResult",
-                                          M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                          [
-                                            fun γ =>
-                                              ltac:(M.monadic
-                                                (let γ :=
-                                                  M.alloc (|
-                                                    Ty.path "bool",
-                                                    M.call_closure (|
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (M.match_operator (|
+                                            Ty.path
+                                              "revm_interpreter::instruction_result::InstructionResult",
+                                            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                            [
+                                              fun γ =>
+                                                ltac:(M.monadic
+                                                  (let γ :=
+                                                    M.alloc (|
                                                       Ty.path "bool",
-                                                      M.get_associated_function (|
-                                                        Ty.path
-                                                          "revm_precompile::interface::PrecompileError",
-                                                        "is_oog",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [ M.borrow (| Pointer.Kind.Ref, e |) ]
-                                                    |)
-                                                  |) in
-                                                let _ :=
-                                                  is_constant_or_break_match (|
-                                                    M.read (| γ |),
-                                                    Value.Bool true
-                                                  |) in
-                                                Value.StructTuple
-                                                  "revm_interpreter::instruction_result::InstructionResult::PrecompileOOG"
-                                                  []
-                                                  []
-                                                  []));
-                                            fun γ =>
-                                              ltac:(M.monadic
-                                                (Value.StructTuple
-                                                  "revm_interpreter::instruction_result::InstructionResult::PrecompileError"
-                                                  []
-                                                  []
-                                                  []))
-                                          ]
-                                        |)
+                                                      M.call_closure (|
+                                                        Ty.path "bool",
+                                                        M.get_associated_function (|
+                                                          Ty.path
+                                                            "revm_precompile::interface::PrecompileError",
+                                                          "is_oog",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [ M.borrow (| Pointer.Kind.Ref, e |) ]
+                                                      |)
+                                                    |) in
+                                                  let _ :=
+                                                    is_constant_or_break_match (|
+                                                      M.read (| γ |),
+                                                      Value.Bool true
+                                                    |) in
+                                                  Value.StructTuple
+                                                    "revm_interpreter::instruction_result::InstructionResult::PrecompileOOG"
+                                                    []
+                                                    []
+                                                    []));
+                                              fun γ =>
+                                                ltac:(M.monadic
+                                                  (Value.StructTuple
+                                                    "revm_interpreter::instruction_result::InstructionResult::PrecompileError"
+                                                    []
+                                                    []
+                                                    []))
+                                            ]
+                                          |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (M.write (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                result,
+                                                "revm_interpreter::interpreter::InterpreterResult",
+                                                "result"
+                                              |),
+                                              rhs'
+                                            |)))
                                       |) in
                                     M.alloc (|
                                       Ty.tuple [],

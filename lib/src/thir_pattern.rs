@@ -41,6 +41,38 @@ fn compile_literal<'a>(
     }
 }
 
+fn compile_adt_fields<'a>(
+    env: &Env<'a>,
+    generics: &'a rustc_middle::ty::Generics,
+    path: Rc<Path>,
+    variant: &rustc_middle::ty::VariantDef,
+    subpatterns: &[rustc_middle::thir::FieldPat<'a>],
+) -> Rc<Pattern> {
+    // A constructor test with no projected fields is shared by both struct forms.
+    if variant.ctor.is_some() || subpatterns.is_empty() {
+        let mut fields = Vec::new();
+        for field in subpatterns {
+            let index = field.field.index();
+            if fields.len() <= index {
+                fields.resize(index + 1, Rc::new(Pattern::Wild));
+            }
+            fields[index] = compile_pattern(env, generics, &field.pattern);
+        }
+        Rc::new(Pattern::StructTuple(path, fields))
+    } else {
+        let fields = subpatterns
+            .iter()
+            .map(|field| {
+                (
+                    variant.fields[field.field].name.to_string(),
+                    compile_pattern(env, generics, &field.pattern),
+                )
+            })
+            .collect();
+        Rc::new(Pattern::StructRecord(path, fields))
+    }
+}
+
 pub(crate) fn compile_pattern<'a>(
     env: &Env<'a>,
     generics: &'a rustc_middle::ty::Generics,
@@ -91,24 +123,7 @@ pub(crate) fn compile_pattern<'a>(
                 compile_def_id(env, adt_def.did()),
                 Path::new(&[variant.name.as_str()]),
             ]);
-            let fields: Vec<_> = subpatterns
-                .iter()
-                .map(|field| {
-                    (
-                        variant.fields.get(field.field).unwrap().name.to_string(),
-                        compile_pattern(env, generics, &field.pattern),
-                    )
-                })
-                .collect();
-            let is_a_tuple = fields
-                .iter()
-                .all(|(name, _)| name.starts_with(|c: char| c.is_ascii_digit()));
-            if is_a_tuple {
-                let fields = fields.into_iter().map(|(_, pattern)| pattern).collect();
-                Rc::new(Pattern::StructTuple(path, fields))
-            } else {
-                Rc::new(Pattern::StructRecord(path, fields))
-            }
+            compile_adt_fields(env, generics, path, variant, subpatterns)
         }
         PatKind::Leaf { subpatterns } => {
             if let TyKind::Tuple(tys) = &pat.ty.kind() {
@@ -127,24 +142,7 @@ pub(crate) fn compile_pattern<'a>(
             let adt_def = pat.ty.ty_adt_def().unwrap();
             let path = compile_def_id(env, adt_def.did());
             let variant = adt_def.non_enum_variant();
-            let fields: Vec<_> = subpatterns
-                .iter()
-                .map(|field| {
-                    (
-                        variant.fields.get(field.field).unwrap().name.to_string(),
-                        compile_pattern(env, generics, &field.pattern),
-                    )
-                })
-                .collect();
-            let is_a_tuple = fields
-                .iter()
-                .all(|(name, _)| name.starts_with(|c: char| c.is_ascii_digit()));
-            if is_a_tuple {
-                let fields = fields.into_iter().map(|(_, pattern)| pattern).collect();
-                Rc::new(Pattern::StructTuple(path, fields))
-            } else {
-                Rc::new(Pattern::StructRecord(path, fields))
-            }
+            compile_adt_fields(env, generics, path, variant, subpatterns)
         }
         PatKind::Deref { subpattern } => {
             Rc::new(Pattern::Deref(compile_pattern(env, generics, subpattern)))
@@ -189,12 +187,14 @@ pub(crate) fn compile_pattern<'a>(
         PatKind::Range(range) => {
             if !matches!(
                 range.ty.kind(),
-                rustc_middle::ty::TyKind::Int(_) | rustc_middle::ty::TyKind::Uint(_)
+                rustc_middle::ty::TyKind::Int(_)
+                    | rustc_middle::ty::TyKind::Uint(_)
+                    | rustc_middle::ty::TyKind::Char
             ) {
                 emit_warning_with_note(
                     env,
                     &pat.span,
-                    "Only integer ranges in patterns are currently supported.",
+                    "Only integer and character ranges in patterns are currently supported.",
                     None,
                 );
 

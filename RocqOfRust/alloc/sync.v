@@ -3512,7 +3512,13 @@ Module sync.
                                             "Residual",
                                           γ0_0
                                         |) in
-                                      M.never_to_any (| M.read (| M.break (||) |) |)));
+                                      M.never_to_any (|
+                                        M.read (|
+                                          M.impossible (|
+                                            "[ROR001] value-carrying break in sync::Arc::<T>::try_map"
+                                          |)
+                                        |)
+                                      |)));
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ0_0 :=
@@ -10636,69 +10642,72 @@ Module sync.
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.deref (| M.read (| this |) |),
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
-                                  M.get_associated_function (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
-                                    "clone_from_ref_in",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply (Ty.path "&") [] [ T ],
-                                              M.get_trait_method (|
-                                                "core::ops::deref::Deref",
-                                                Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
-                                                [],
-                                                [],
-                                                "deref",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| this |) |)
-                                                |)
-                                              ]
+                                    M.get_associated_function (|
+                                      Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
+                                      "clone_from_ref_in",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.call_closure (|
+                                                Ty.apply (Ty.path "&") [] [ T ],
+                                                M.get_trait_method (|
+                                                  "core::ops::deref::Deref",
+                                                  Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
+                                                  [],
+                                                  [],
+                                                  "deref",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| this |) |)
+                                                  |)
+                                                ]
+                                              |)
                                             |)
                                           |)
                                         |)
-                                      |)
-                                    |);
-                                    M.call_closure (|
-                                      A,
-                                      M.get_trait_method (|
-                                        "core::clone::Clone",
+                                      |);
+                                      M.call_closure (|
                                         A,
-                                        [],
-                                        [],
-                                        "clone",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| this |) |),
-                                            "alloc::sync::Arc",
-                                            "alloc"
+                                        M.get_trait_method (|
+                                          "core::clone::Clone",
+                                          A,
+                                          [],
+                                          [],
+                                          "clone",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| this |) |),
+                                              "alloc::sync::Arc",
+                                              "alloc"
+                                            |)
                                           |)
-                                        |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
+                                        ]
+                                      |)
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (| M.deref (| M.read (| this |) |), rhs' |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)));
@@ -26006,7 +26015,13 @@ Module sync.
                                             "Residual",
                                           γ0_0
                                         |) in
-                                      M.never_to_any (| M.read (| M.break (||) |) |)));
+                                      M.never_to_any (|
+                                        M.read (|
+                                          M.impossible (|
+                                            "[ROR001] value-carrying break in sync::UniqueArc::<T>::try_map"
+                                          |)
+                                        |)
+                                      |)));
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ0_0 :=

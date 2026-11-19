@@ -1,0 +1,5 @@
+[ROR001] value-carrying break in value_break
+[ROR002] labeled loop or block exit in labeled
+[ROR002] labeled loop or block exit in labeled_continue
+[ROR003] floating-point literal in float_literal
+[ROR003] floating-point literal in main

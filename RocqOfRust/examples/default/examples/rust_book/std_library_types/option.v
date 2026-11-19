@@ -379,7 +379,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
             "core::option::Option::Some"
             []
             [ Ty.path "f32" ]
-            [ M.read (| UnsupportedLiteral |) ] in
+            [ M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |) ] in
         let~ _ : Ty.tuple [] :=
           M.read (|
             let~ _ : Ty.tuple [] :=

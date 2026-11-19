@@ -1,7 +1,8 @@
 use crate::top_level::*;
-use std::path::PathBuf;
+use std::collections::{BTreeMap, HashMap};
+use std::io;
+use std::path::{Path, PathBuf};
 use std::{fs, path, process, str};
-use walkdir::WalkDir;
 
 /// CLI options
 pub struct CliOptions {
@@ -21,7 +22,7 @@ fn change_to_rocq_extension(path: &path::Path) -> PathBuf {
 /// Write the content to a file only if it changed. This optimization is useful
 /// in order not to force the `make` command to rebuild files that did not
 /// change.
-fn write_if_changed<P: AsRef<path::Path>, C: AsRef<[u8]>>(
+pub(crate) fn write_if_changed<P: AsRef<path::Path>, C: AsRef<[u8]>>(
     path: P,
     new_content: C,
 ) -> std::io::Result<()> {
@@ -37,70 +38,87 @@ fn write_if_changed<P: AsRef<path::Path>, C: AsRef<[u8]>>(
     Ok(())
 }
 
-pub fn run(opts: CliOptions) {
-    let src_path = &opts.path;
-    let src_folder = if src_path.is_file() {
-        src_path.parent().unwrap()
-    } else {
-        src_path
-    };
-    let basic_folder_name = opts.output.to_str().unwrap();
-    let unique_folder_name = format!("{}/{}/", basic_folder_name, src_folder.to_str().unwrap(),);
-    let dst_folder = path::Path::new(&unique_folder_name);
-    if src_path.is_file() {
-        let translation = create_translation_to_rocq(&opts);
-
-        let path_to_write = dst_folder.join(
-            change_to_rocq_extension(src_path)
-                .file_name()
-                .unwrap()
-                .to_str()
-                .unwrap(),
-        );
-        if !path_to_write.exists() {
-            fs::create_dir_all(dst_folder).unwrap();
-        }
-        write_if_changed(path_to_write, translation).unwrap();
-    } else {
-        for entry in WalkDir::new(src_folder) {
-            let entry = entry.unwrap();
-            let src_path = entry.path();
-
-            // calculate the relative path from the source to the destination directory
-            let relative_path = src_path.strip_prefix(src_folder).unwrap();
-            let dst_path = dst_folder.join(relative_path);
-
-            // if the entry is a directory, create it in the destination directory
-            if src_path.is_dir() {
-                fs::create_dir_all(&dst_path).unwrap();
-            } else {
-                // filter out files not ending with .rs
-                if src_path
-                    .extension()
-                    .is_none_or(|extension| extension != "rs")
-                {
-                    continue;
-                }
-                // if the entry is a file, create a Rocq version of it and write it to the destination directory
-                let translation = create_translation_to_rocq(&opts);
-                write_if_changed(
-                    dst_folder.join(change_to_rocq_extension(relative_path)),
-                    translation,
-                )
-                .unwrap();
-            }
-        }
+fn crate_root(input: &Path) -> io::Result<PathBuf> {
+    if input.is_file() {
+        return Ok(input.to_owned());
+    }
+    let roots: Vec<_> = ["src/lib.rs", "src/main.rs", "lib.rs", "main.rs"]
+        .iter()
+        .map(|name| input.join(name))
+        .filter(|path| path.is_file())
+        .collect();
+    match roots.as_slice() {
+        [root] => Ok(root.clone()),
+        _ => Err(io::Error::new(
+            io::ErrorKind::InvalidInput,
+            format!(
+                "{} has {} conventional crate roots; pass an explicit Rust file",
+                input.display(),
+                roots.len()
+            ),
+        )),
     }
 }
 
-fn create_translation_to_rocq(opts: &CliOptions) -> String {
-    let input_file_name: PathBuf = PathBuf::from(&opts.path);
-    let filename = input_file_name.clone();
+pub fn run(opts: CliOptions) -> io::Result<()> {
+    let root = crate_root(&opts.path)?;
+    let modules = create_translation_to_rocq(&root, opts.axiomatize)?;
+    let cwd = std::env::current_dir()?;
+    let root_dir = root.canonicalize()?.parent().unwrap().to_owned();
+    let mut sources = BTreeMap::new();
+    let mut base = if root.is_relative() && root_dir.starts_with(&cwd) {
+        cwd
+    } else {
+        root_dir
+    };
+    for (filename, (contents, _)) in modules {
+        let source = Path::new(&filename).canonicalize().map_err(|err| {
+            io::Error::new(
+                err.kind(),
+                format!("cannot resolve module {filename}: {err}"),
+            )
+        })?;
+        while !source.starts_with(&base) {
+            if !base.pop() {
+                return Err(io::Error::other(format!(
+                    "no common directory for {filename}"
+                )));
+            }
+        }
+        if sources.insert(source, contents).is_some() {
+            return Err(io::Error::other(format!(
+                "duplicate source path for {filename}"
+            )));
+        }
+    }
+    sources
+        .entry(root.canonicalize()?)
+        .or_insert_with(|| crate::header::HEADER.to_owned());
+    for (source, contents) in sources {
+        let path = opts.output.join(change_to_rocq_extension(
+            source.strip_prefix(&base).unwrap(),
+        ));
+        fs::create_dir_all(path.parent().unwrap())?;
+        write_if_changed(&path, contents).map_err(|err| {
+            io::Error::new(
+                err.kind(),
+                format!("cannot write {}: {err}", path.display()),
+            )
+        })?;
+    }
+    Ok(())
+}
+
+fn create_translation_to_rocq(
+    filename: &Path,
+    axiomatize: bool,
+) -> io::Result<HashMap<String, (String, String)>> {
     let out = process::Command::new("rustc")
         .arg("--print=sysroot")
-        .current_dir(".")
-        .output()
-        .unwrap();
+        .output()?;
+    if !out.status.success() {
+        return Err(io::Error::other(String::from_utf8_lossy(&out.stderr)));
+    }
     let sysroot = str::from_utf8(&out.stdout).unwrap().trim();
 
     println!("Starting to translate {filename:?}...");
@@ -129,7 +147,7 @@ fn create_translation_to_rocq(opts: &CliOptions) -> String {
     }
 
     let mut callbacks = TranslateSingleFile {
-        axiomatize: opts.axiomatize,
+        axiomatize,
         translation: None,
     };
     let args = vec![
@@ -140,7 +158,9 @@ fn create_translation_to_rocq(opts: &CliOptions) -> String {
     ];
 
     rustc_driver::run_compiler(&args, &mut callbacks);
-    let translation = callbacks.translation.unwrap_or_default();
+    let translation = callbacks
+        .translation
+        .ok_or_else(|| io::Error::other("rustc returned no translation"))?;
 
     println!(
         "{} ms have passed to translate: {:?}",
@@ -148,12 +168,5 @@ fn create_translation_to_rocq(opts: &CliOptions) -> String {
         filename
     );
 
-    match translation.iter().next() {
-        Some((_, (rocq_translation, _json_translation))) => rocq_translation.clone(),
-        None => {
-            eprintln!("No result from the compiler");
-
-            "".to_string()
-        }
-    }
+    Ok(translation)
 }

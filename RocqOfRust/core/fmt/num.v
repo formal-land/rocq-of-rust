@@ -159,19 +159,22 @@ Module fmt.
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
-                        let β := remain in
-                        M.write (|
-                          β,
-                          M.call_closure (|
-                            Ty.path "usize",
-                            BinOp.Wrap.div,
-                            [
-                              M.read (| β |);
-                              M.read (|
-                                get_constant (| "core::fmt::num::fmt::BASE", Ty.path "usize" |)
-                              |)
-                            ]
-                          |)
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.read (|
+                              get_constant (| "core::fmt::num::fmt::BASE", Ty.path "usize" |)
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (let β := remain in
+                              M.write (|
+                                β,
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  BinOp.Wrap.div,
+                                  [ M.read (| β |); rhs' ]
+                                |)
+                              |)))
                         |) in
                       let~ _ : Ty.tuple [] :=
                         let β := offset in
@@ -633,19 +636,22 @@ Module fmt.
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
-                        let β := remain in
-                        M.write (|
-                          β,
-                          M.call_closure (|
-                            Ty.path "usize",
-                            BinOp.Wrap.div,
-                            [
-                              M.read (| β |);
-                              M.read (|
-                                get_constant (| "core::fmt::num::fmt::BASE", Ty.path "usize" |)
-                              |)
-                            ]
-                          |)
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.read (|
+                              get_constant (| "core::fmt::num::fmt::BASE", Ty.path "usize" |)
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (let β := remain in
+                              M.write (|
+                                β,
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  BinOp.Wrap.div,
+                                  [ M.read (| β |); rhs' ]
+                                |)
+                              |)))
                         |) in
                       let~ _ : Ty.tuple [] :=
                         let β := offset in
@@ -1107,19 +1113,22 @@ Module fmt.
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
-                        let β := remain in
-                        M.write (|
-                          β,
-                          M.call_closure (|
-                            Ty.path "usize",
-                            BinOp.Wrap.div,
-                            [
-                              M.read (| β |);
-                              M.read (|
-                                get_constant (| "core::fmt::num::fmt::BASE", Ty.path "usize" |)
-                              |)
-                            ]
-                          |)
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.read (|
+                              get_constant (| "core::fmt::num::fmt::BASE", Ty.path "usize" |)
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (let β := remain in
+                              M.write (|
+                                β,
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  BinOp.Wrap.div,
+                                  [ M.read (| β |); rhs' ]
+                                |)
+                              |)))
                         |) in
                       let~ _ : Ty.tuple [] :=
                         let β := offset in
@@ -1589,19 +1598,22 @@ Module fmt.
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
-                        let β := remain in
-                        M.write (|
-                          β,
-                          M.call_closure (|
-                            Ty.path "usize",
-                            BinOp.Wrap.div,
-                            [
-                              M.read (| β |);
-                              M.read (|
-                                get_constant (| "core::fmt::num::fmt::BASE", Ty.path "usize" |)
-                              |)
-                            ]
-                          |)
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.read (|
+                              get_constant (| "core::fmt::num::fmt::BASE", Ty.path "usize" |)
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (let β := remain in
+                              M.write (|
+                                β,
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  BinOp.Wrap.div,
+                                  [ M.read (| β |); rhs' ]
+                                |)
+                              |)))
                         |) in
                       let~ _ : Ty.tuple [] :=
                         let β := offset in
@@ -2071,19 +2083,22 @@ Module fmt.
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
-                        let β := remain in
-                        M.write (|
-                          β,
-                          M.call_closure (|
-                            Ty.path "u8",
-                            BinOp.Wrap.div,
-                            [
-                              M.read (| β |);
-                              M.read (|
-                                get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u8" |)
-                              |)
-                            ]
-                          |)
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.read (|
+                              get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u8" |)
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (let β := remain in
+                              M.write (|
+                                β,
+                                M.call_closure (|
+                                  Ty.path "u8",
+                                  BinOp.Wrap.div,
+                                  [ M.read (| β |); rhs' ]
+                                |)
+                              |)))
                         |) in
                       let~ _ : Ty.tuple [] :=
                         let β := offset in
@@ -2545,19 +2560,22 @@ Module fmt.
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
-                        let β := remain in
-                        M.write (|
-                          β,
-                          M.call_closure (|
-                            Ty.path "u8",
-                            BinOp.Wrap.div,
-                            [
-                              M.read (| β |);
-                              M.read (|
-                                get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u8" |)
-                              |)
-                            ]
-                          |)
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.read (|
+                              get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u8" |)
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (let β := remain in
+                              M.write (|
+                                β,
+                                M.call_closure (|
+                                  Ty.path "u8",
+                                  BinOp.Wrap.div,
+                                  [ M.read (| β |); rhs' ]
+                                |)
+                              |)))
                         |) in
                       let~ _ : Ty.tuple [] :=
                         let β := offset in
@@ -3019,19 +3037,22 @@ Module fmt.
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
-                        let β := remain in
-                        M.write (|
-                          β,
-                          M.call_closure (|
-                            Ty.path "u8",
-                            BinOp.Wrap.div,
-                            [
-                              M.read (| β |);
-                              M.read (|
-                                get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u8" |)
-                              |)
-                            ]
-                          |)
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.read (|
+                              get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u8" |)
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (let β := remain in
+                              M.write (|
+                                β,
+                                M.call_closure (|
+                                  Ty.path "u8",
+                                  BinOp.Wrap.div,
+                                  [ M.read (| β |); rhs' ]
+                                |)
+                              |)))
                         |) in
                       let~ _ : Ty.tuple [] :=
                         let β := offset in
@@ -3493,19 +3514,22 @@ Module fmt.
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
-                        let β := remain in
-                        M.write (|
-                          β,
-                          M.call_closure (|
-                            Ty.path "u8",
-                            BinOp.Wrap.div,
-                            [
-                              M.read (| β |);
-                              M.read (|
-                                get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u8" |)
-                              |)
-                            ]
-                          |)
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.read (|
+                              get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u8" |)
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (let β := remain in
+                              M.write (|
+                                β,
+                                M.call_closure (|
+                                  Ty.path "u8",
+                                  BinOp.Wrap.div,
+                                  [ M.read (| β |); rhs' ]
+                                |)
+                              |)))
                         |) in
                       let~ _ : Ty.tuple [] :=
                         let β := offset in
@@ -3967,19 +3991,22 @@ Module fmt.
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
-                        let β := remain in
-                        M.write (|
-                          β,
-                          M.call_closure (|
-                            Ty.path "u16",
-                            BinOp.Wrap.div,
-                            [
-                              M.read (| β |);
-                              M.read (|
-                                get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u16" |)
-                              |)
-                            ]
-                          |)
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.read (|
+                              get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u16" |)
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (let β := remain in
+                              M.write (|
+                                β,
+                                M.call_closure (|
+                                  Ty.path "u16",
+                                  BinOp.Wrap.div,
+                                  [ M.read (| β |); rhs' ]
+                                |)
+                              |)))
                         |) in
                       let~ _ : Ty.tuple [] :=
                         let β := offset in
@@ -4441,19 +4468,22 @@ Module fmt.
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
-                        let β := remain in
-                        M.write (|
-                          β,
-                          M.call_closure (|
-                            Ty.path "u16",
-                            BinOp.Wrap.div,
-                            [
-                              M.read (| β |);
-                              M.read (|
-                                get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u16" |)
-                              |)
-                            ]
-                          |)
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.read (|
+                              get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u16" |)
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (let β := remain in
+                              M.write (|
+                                β,
+                                M.call_closure (|
+                                  Ty.path "u16",
+                                  BinOp.Wrap.div,
+                                  [ M.read (| β |); rhs' ]
+                                |)
+                              |)))
                         |) in
                       let~ _ : Ty.tuple [] :=
                         let β := offset in
@@ -4915,19 +4945,22 @@ Module fmt.
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
-                        let β := remain in
-                        M.write (|
-                          β,
-                          M.call_closure (|
-                            Ty.path "u16",
-                            BinOp.Wrap.div,
-                            [
-                              M.read (| β |);
-                              M.read (|
-                                get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u16" |)
-                              |)
-                            ]
-                          |)
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.read (|
+                              get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u16" |)
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (let β := remain in
+                              M.write (|
+                                β,
+                                M.call_closure (|
+                                  Ty.path "u16",
+                                  BinOp.Wrap.div,
+                                  [ M.read (| β |); rhs' ]
+                                |)
+                              |)))
                         |) in
                       let~ _ : Ty.tuple [] :=
                         let β := offset in
@@ -5389,19 +5422,22 @@ Module fmt.
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
-                        let β := remain in
-                        M.write (|
-                          β,
-                          M.call_closure (|
-                            Ty.path "u16",
-                            BinOp.Wrap.div,
-                            [
-                              M.read (| β |);
-                              M.read (|
-                                get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u16" |)
-                              |)
-                            ]
-                          |)
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.read (|
+                              get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u16" |)
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (let β := remain in
+                              M.write (|
+                                β,
+                                M.call_closure (|
+                                  Ty.path "u16",
+                                  BinOp.Wrap.div,
+                                  [ M.read (| β |); rhs' ]
+                                |)
+                              |)))
                         |) in
                       let~ _ : Ty.tuple [] :=
                         let β := offset in
@@ -5863,19 +5899,22 @@ Module fmt.
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
-                        let β := remain in
-                        M.write (|
-                          β,
-                          M.call_closure (|
-                            Ty.path "u32",
-                            BinOp.Wrap.div,
-                            [
-                              M.read (| β |);
-                              M.read (|
-                                get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u32" |)
-                              |)
-                            ]
-                          |)
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.read (|
+                              get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u32" |)
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (let β := remain in
+                              M.write (|
+                                β,
+                                M.call_closure (|
+                                  Ty.path "u32",
+                                  BinOp.Wrap.div,
+                                  [ M.read (| β |); rhs' ]
+                                |)
+                              |)))
                         |) in
                       let~ _ : Ty.tuple [] :=
                         let β := offset in
@@ -6337,19 +6376,22 @@ Module fmt.
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
-                        let β := remain in
-                        M.write (|
-                          β,
-                          M.call_closure (|
-                            Ty.path "u32",
-                            BinOp.Wrap.div,
-                            [
-                              M.read (| β |);
-                              M.read (|
-                                get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u32" |)
-                              |)
-                            ]
-                          |)
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.read (|
+                              get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u32" |)
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (let β := remain in
+                              M.write (|
+                                β,
+                                M.call_closure (|
+                                  Ty.path "u32",
+                                  BinOp.Wrap.div,
+                                  [ M.read (| β |); rhs' ]
+                                |)
+                              |)))
                         |) in
                       let~ _ : Ty.tuple [] :=
                         let β := offset in
@@ -6811,19 +6853,22 @@ Module fmt.
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
-                        let β := remain in
-                        M.write (|
-                          β,
-                          M.call_closure (|
-                            Ty.path "u32",
-                            BinOp.Wrap.div,
-                            [
-                              M.read (| β |);
-                              M.read (|
-                                get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u32" |)
-                              |)
-                            ]
-                          |)
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.read (|
+                              get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u32" |)
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (let β := remain in
+                              M.write (|
+                                β,
+                                M.call_closure (|
+                                  Ty.path "u32",
+                                  BinOp.Wrap.div,
+                                  [ M.read (| β |); rhs' ]
+                                |)
+                              |)))
                         |) in
                       let~ _ : Ty.tuple [] :=
                         let β := offset in
@@ -7285,19 +7330,22 @@ Module fmt.
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
-                        let β := remain in
-                        M.write (|
-                          β,
-                          M.call_closure (|
-                            Ty.path "u32",
-                            BinOp.Wrap.div,
-                            [
-                              M.read (| β |);
-                              M.read (|
-                                get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u32" |)
-                              |)
-                            ]
-                          |)
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.read (|
+                              get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u32" |)
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (let β := remain in
+                              M.write (|
+                                β,
+                                M.call_closure (|
+                                  Ty.path "u32",
+                                  BinOp.Wrap.div,
+                                  [ M.read (| β |); rhs' ]
+                                |)
+                              |)))
                         |) in
                       let~ _ : Ty.tuple [] :=
                         let β := offset in
@@ -7759,19 +7807,22 @@ Module fmt.
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
-                        let β := remain in
-                        M.write (|
-                          β,
-                          M.call_closure (|
-                            Ty.path "u64",
-                            BinOp.Wrap.div,
-                            [
-                              M.read (| β |);
-                              M.read (|
-                                get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u64" |)
-                              |)
-                            ]
-                          |)
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.read (|
+                              get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u64" |)
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (let β := remain in
+                              M.write (|
+                                β,
+                                M.call_closure (|
+                                  Ty.path "u64",
+                                  BinOp.Wrap.div,
+                                  [ M.read (| β |); rhs' ]
+                                |)
+                              |)))
                         |) in
                       let~ _ : Ty.tuple [] :=
                         let β := offset in
@@ -8233,19 +8284,22 @@ Module fmt.
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
-                        let β := remain in
-                        M.write (|
-                          β,
-                          M.call_closure (|
-                            Ty.path "u64",
-                            BinOp.Wrap.div,
-                            [
-                              M.read (| β |);
-                              M.read (|
-                                get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u64" |)
-                              |)
-                            ]
-                          |)
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.read (|
+                              get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u64" |)
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (let β := remain in
+                              M.write (|
+                                β,
+                                M.call_closure (|
+                                  Ty.path "u64",
+                                  BinOp.Wrap.div,
+                                  [ M.read (| β |); rhs' ]
+                                |)
+                              |)))
                         |) in
                       let~ _ : Ty.tuple [] :=
                         let β := offset in
@@ -8707,19 +8761,22 @@ Module fmt.
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
-                        let β := remain in
-                        M.write (|
-                          β,
-                          M.call_closure (|
-                            Ty.path "u64",
-                            BinOp.Wrap.div,
-                            [
-                              M.read (| β |);
-                              M.read (|
-                                get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u64" |)
-                              |)
-                            ]
-                          |)
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.read (|
+                              get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u64" |)
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (let β := remain in
+                              M.write (|
+                                β,
+                                M.call_closure (|
+                                  Ty.path "u64",
+                                  BinOp.Wrap.div,
+                                  [ M.read (| β |); rhs' ]
+                                |)
+                              |)))
                         |) in
                       let~ _ : Ty.tuple [] :=
                         let β := offset in
@@ -9181,19 +9238,22 @@ Module fmt.
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
-                        let β := remain in
-                        M.write (|
-                          β,
-                          M.call_closure (|
-                            Ty.path "u64",
-                            BinOp.Wrap.div,
-                            [
-                              M.read (| β |);
-                              M.read (|
-                                get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u64" |)
-                              |)
-                            ]
-                          |)
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.read (|
+                              get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u64" |)
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (let β := remain in
+                              M.write (|
+                                β,
+                                M.call_closure (|
+                                  Ty.path "u64",
+                                  BinOp.Wrap.div,
+                                  [ M.read (| β |); rhs' ]
+                                |)
+                              |)))
                         |) in
                       let~ _ : Ty.tuple [] :=
                         let β := offset in
@@ -9655,19 +9715,22 @@ Module fmt.
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
-                        let β := remain in
-                        M.write (|
-                          β,
-                          M.call_closure (|
-                            Ty.path "u128",
-                            BinOp.Wrap.div,
-                            [
-                              M.read (| β |);
-                              M.read (|
-                                get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u128" |)
-                              |)
-                            ]
-                          |)
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.read (|
+                              get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u128" |)
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (let β := remain in
+                              M.write (|
+                                β,
+                                M.call_closure (|
+                                  Ty.path "u128",
+                                  BinOp.Wrap.div,
+                                  [ M.read (| β |); rhs' ]
+                                |)
+                              |)))
                         |) in
                       let~ _ : Ty.tuple [] :=
                         let β := offset in
@@ -10129,19 +10192,22 @@ Module fmt.
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
-                        let β := remain in
-                        M.write (|
-                          β,
-                          M.call_closure (|
-                            Ty.path "u128",
-                            BinOp.Wrap.div,
-                            [
-                              M.read (| β |);
-                              M.read (|
-                                get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u128" |)
-                              |)
-                            ]
-                          |)
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.read (|
+                              get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u128" |)
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (let β := remain in
+                              M.write (|
+                                β,
+                                M.call_closure (|
+                                  Ty.path "u128",
+                                  BinOp.Wrap.div,
+                                  [ M.read (| β |); rhs' ]
+                                |)
+                              |)))
                         |) in
                       let~ _ : Ty.tuple [] :=
                         let β := offset in
@@ -10603,19 +10669,22 @@ Module fmt.
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
-                        let β := remain in
-                        M.write (|
-                          β,
-                          M.call_closure (|
-                            Ty.path "u128",
-                            BinOp.Wrap.div,
-                            [
-                              M.read (| β |);
-                              M.read (|
-                                get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u128" |)
-                              |)
-                            ]
-                          |)
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.read (|
+                              get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u128" |)
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (let β := remain in
+                              M.write (|
+                                β,
+                                M.call_closure (|
+                                  Ty.path "u128",
+                                  BinOp.Wrap.div,
+                                  [ M.read (| β |); rhs' ]
+                                |)
+                              |)))
                         |) in
                       let~ _ : Ty.tuple [] :=
                         let β := offset in
@@ -11077,19 +11146,22 @@ Module fmt.
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
-                        let β := remain in
-                        M.write (|
-                          β,
-                          M.call_closure (|
-                            Ty.path "u128",
-                            BinOp.Wrap.div,
-                            [
-                              M.read (| β |);
-                              M.read (|
-                                get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u128" |)
-                              |)
-                            ]
-                          |)
+                        M.let_ (|
+                          ltac:(M.monadic
+                            (M.read (|
+                              get_constant (| "core::fmt::num::fmt::BASE", Ty.path "u128" |)
+                            |))),
+                          fun rhs' =>
+                            ltac:(M.monadic
+                              (let β := remain in
+                              M.write (|
+                                β,
+                                M.call_closure (|
+                                  Ty.path "u128",
+                                  BinOp.Wrap.div,
+                                  [ M.read (| β |); rhs' ]
+                                |)
+                              |)))
                         |) in
                       let~ _ : Ty.tuple [] :=
                         let β := offset in
@@ -14233,14 +14305,19 @@ Module fmt.
                                         [ M.read (| remain |); M.read (| scale |) ]
                                       |) in
                                     let~ _ : Ty.tuple [] :=
-                                      let β := remain in
-                                      M.write (|
-                                        β,
-                                        M.call_closure (|
-                                          Ty.path "u8",
-                                          BinOp.Wrap.div,
-                                          [ M.read (| β |); M.read (| scale |) ]
-                                        |)
+                                      M.let_ (|
+                                        ltac:(M.monadic (M.read (| scale |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (let β := remain in
+                                            M.write (|
+                                              β,
+                                              M.call_closure (|
+                                                Ty.path "u8",
+                                                BinOp.Wrap.div,
+                                                [ M.read (| β |); rhs' ]
+                                              |)
+                                            |)))
                                       |) in
                                     let~ pair1 : Ty.path "usize" :=
                                       M.cast
@@ -16178,14 +16255,19 @@ Module fmt.
                                         [ M.read (| remain |); M.read (| scale |) ]
                                       |) in
                                     let~ _ : Ty.tuple [] :=
-                                      let β := remain in
-                                      M.write (|
-                                        β,
-                                        M.call_closure (|
-                                          Ty.path "u16",
-                                          BinOp.Wrap.div,
-                                          [ M.read (| β |); M.read (| scale |) ]
-                                        |)
+                                      M.let_ (|
+                                        ltac:(M.monadic (M.read (| scale |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (let β := remain in
+                                            M.write (|
+                                              β,
+                                              M.call_closure (|
+                                                Ty.path "u16",
+                                                BinOp.Wrap.div,
+                                                [ M.read (| β |); rhs' ]
+                                              |)
+                                            |)))
                                       |) in
                                     let~ pair1 : Ty.path "usize" :=
                                       M.cast
@@ -18123,14 +18205,19 @@ Module fmt.
                                         [ M.read (| remain |); M.read (| scale |) ]
                                       |) in
                                     let~ _ : Ty.tuple [] :=
-                                      let β := remain in
-                                      M.write (|
-                                        β,
-                                        M.call_closure (|
-                                          Ty.path "u32",
-                                          BinOp.Wrap.div,
-                                          [ M.read (| β |); M.read (| scale |) ]
-                                        |)
+                                      M.let_ (|
+                                        ltac:(M.monadic (M.read (| scale |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (let β := remain in
+                                            M.write (|
+                                              β,
+                                              M.call_closure (|
+                                                Ty.path "u32",
+                                                BinOp.Wrap.div,
+                                                [ M.read (| β |); rhs' ]
+                                              |)
+                                            |)))
                                       |) in
                                     let~ pair1 : Ty.path "usize" :=
                                       M.cast
@@ -20068,14 +20155,19 @@ Module fmt.
                                         [ M.read (| remain |); M.read (| scale |) ]
                                       |) in
                                     let~ _ : Ty.tuple [] :=
-                                      let β := remain in
-                                      M.write (|
-                                        β,
-                                        M.call_closure (|
-                                          Ty.path "u64",
-                                          BinOp.Wrap.div,
-                                          [ M.read (| β |); M.read (| scale |) ]
-                                        |)
+                                      M.let_ (|
+                                        ltac:(M.monadic (M.read (| scale |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (let β := remain in
+                                            M.write (|
+                                              β,
+                                              M.call_closure (|
+                                                Ty.path "u64",
+                                                BinOp.Wrap.div,
+                                                [ M.read (| β |); rhs' ]
+                                              |)
+                                            |)))
                                       |) in
                                     let~ pair1 : Ty.path "usize" :=
                                       M.cast
@@ -22013,14 +22105,19 @@ Module fmt.
                                         [ M.read (| remain |); M.read (| scale |) ]
                                       |) in
                                     let~ _ : Ty.tuple [] :=
-                                      let β := remain in
-                                      M.write (|
-                                        β,
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          BinOp.Wrap.div,
-                                          [ M.read (| β |); M.read (| scale |) ]
-                                        |)
+                                      M.let_ (|
+                                        ltac:(M.monadic (M.read (| scale |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (let β := remain in
+                                            M.write (|
+                                              β,
+                                              M.call_closure (|
+                                                Ty.path "usize",
+                                                BinOp.Wrap.div,
+                                                [ M.read (| β |); rhs' ]
+                                              |)
+                                            |)))
                                       |) in
                                     let~ pair1 : Ty.path "usize" :=
                                       M.read (|
@@ -32296,14 +32393,19 @@ Module fmt.
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
-                let β := offset in
-                M.write (|
-                  β,
-                  M.call_closure (|
-                    Ty.path "usize",
-                    BinOp.Wrap.add,
-                    [ M.read (| β |); M.read (| diff |) ]
-                  |)
+                M.let_ (|
+                  ltac:(M.monadic (M.read (| diff |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (let β := offset in
+                      M.write (|
+                        β,
+                        M.call_closure (|
+                          Ty.path "usize",
+                          BinOp.Wrap.add,
+                          [ M.read (| β |); rhs' ]
+                        |)
+                      |)))
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.match_operator (|

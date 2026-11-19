@@ -247,8 +247,8 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               Value.Integer IntegerKind.I16 (-2);
               Value.Integer IntegerKind.I32 (-3);
               Value.Integer IntegerKind.I64 (-4);
-              M.read (| UnsupportedLiteral |);
-              M.read (| UnsupportedLiteral |);
+              M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |);
+              M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |);
               Value.UnicodeChar 97;
               Value.Bool true
             ] in
@@ -973,7 +973,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
             [
               Value.Integer IntegerKind.I32 1;
               mk_str (| "hello" |);
-              M.read (| UnsupportedLiteral |);
+              M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |);
               Value.Bool true
             ] in
         M.alloc (|
@@ -1160,10 +1160,10 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                         []
                         []
                         [
-                          M.read (| UnsupportedLiteral |);
-                          M.read (| UnsupportedLiteral |);
-                          M.read (| UnsupportedLiteral |);
-                          M.read (| UnsupportedLiteral |)
+                          M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |);
+                          M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |);
+                          M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |);
+                          M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |)
                         ] in
                     let~ _ : Ty.tuple [] :=
                       M.read (|

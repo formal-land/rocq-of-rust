@@ -99,7 +99,7 @@ Examples of typical specifications are:
 
 ## Installation and User Guide
 
-The [build tutorial](./docs/BUILD.md) provides detailed instructions on building and installing `rocq-of-rust`, while the [user tutorial](./docs/GUIDE.md) provides an introduction to the `rocq-of-rust` command line interface and the list of supported options.
+The [build tutorial](./docs/builds.md) provides detailed instructions on building and installing `rocq-of-rust`, while the [user tutorial](./docs/guide.md) provides an introduction to the `rocq-of-rust` command line interface and the list of supported options.
 
 ## Contact
 For formal verification services (training or application) on your Rust code base, contact us at [&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;](mailto:contact@formal.land). Formal verification can apply to smart contracts, database engines, or any critical Rust project.

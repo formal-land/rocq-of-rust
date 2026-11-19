@@ -3317,53 +3317,56 @@ Module str.
                         let ch := M.copy (| Ty.path "char", γ0_0 |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
-                            let β :=
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::str::pattern::CharSearcher",
-                                "finger"
-                              |) in
-                            M.write (|
-                              β,
-                              M.call_closure (|
-                                Ty.path "usize",
-                                BinOp.Wrap.add,
-                                [
-                                  M.read (| β |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    BinOp.Wrap.sub,
-                                    [
-                                      M.read (| old_len |);
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        M.get_trait_method (|
-                                          "core::iter::traits::exact_size::ExactSizeIterator",
-                                          Ty.apply
-                                            (Ty.path "core::slice::iter::Iter")
-                                            []
-                                            [ Ty.path "u8" ],
-                                          [],
-                                          [],
-                                          "len",
-                                          [],
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.call_closure (|
+                                  Ty.path "usize",
+                                  BinOp.Wrap.sub,
+                                  [
+                                    M.read (| old_len |);
+                                    M.call_closure (|
+                                      Ty.path "usize",
+                                      M.get_trait_method (|
+                                        "core::iter::traits::exact_size::ExactSizeIterator",
+                                        Ty.apply
+                                          (Ty.path "core::slice::iter::Iter")
                                           []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.SubPointer.get_struct_record_field (|
-                                              iter,
-                                              "core::str::iter::Chars",
-                                              "iter"
-                                            |)
+                                          [ Ty.path "u8" ],
+                                        [],
+                                        [],
+                                        "len",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            iter,
+                                            "core::str::iter::Chars",
+                                            "iter"
                                           |)
-                                        ]
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |)
+                                        |)
+                                      ]
+                                    |)
+                                  ]
+                                |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (let β :=
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::str::pattern::CharSearcher",
+                                      "finger"
+                                    |) in
+                                  M.write (|
+                                    β,
+                                    M.call_closure (|
+                                      Ty.path "usize",
+                                      BinOp.Wrap.add,
+                                      [ M.read (| β |); rhs' ]
+                                    |)
+                                  |)))
                             |) in
                           M.alloc (|
                             Ty.path "core::str::pattern::SearchStep",
@@ -3812,29 +3815,30 @@ Module str.
                                   let index := M.copy (| Ty.path "usize", γ0_0 |) in
                                   M.read (|
                                     let~ _ : Ty.tuple [] :=
-                                      let β :=
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "core::str::pattern::CharSearcher",
-                                          "finger"
-                                        |) in
-                                      M.write (|
-                                        β,
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          BinOp.Wrap.add,
-                                          [
-                                            M.read (| β |);
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              BinOp.Wrap.add,
-                                              [
-                                                M.read (| index |);
-                                                Value.Integer IntegerKind.Usize 1
-                                              ]
-                                            |)
-                                          ]
-                                        |)
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (M.call_closure (|
+                                            Ty.path "usize",
+                                            BinOp.Wrap.add,
+                                            [ M.read (| index |); Value.Integer IntegerKind.Usize 1
+                                            ]
+                                          |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (let β :=
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::str::pattern::CharSearcher",
+                                                "finger"
+                                              |) in
+                                            M.write (|
+                                              β,
+                                              M.call_closure (|
+                                                Ty.path "usize",
+                                                BinOp.Wrap.add,
+                                                [ M.read (| β |); rhs' ]
+                                              |)
+                                            |)))
                                       |) in
                                     M.alloc (|
                                       Ty.tuple [],
@@ -4269,19 +4273,25 @@ Module str.
                                   (M.never_to_any (|
                                     M.read (|
                                       let~ _ : Ty.tuple [] :=
-                                        M.write (|
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "core::str::pattern::CharSearcher",
-                                            "finger"
-                                          |),
-                                          M.read (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "core::str::pattern::CharSearcher",
-                                              "finger_back"
-                                            |)
-                                          |)
+                                        M.let_ (|
+                                          ltac:(M.monadic
+                                            (M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::str::pattern::CharSearcher",
+                                                "finger_back"
+                                              |)
+                                            |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (M.write (|
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| self |) |),
+                                                  "core::str::pattern::CharSearcher",
+                                                  "finger"
+                                                |),
+                                                rhs'
+                                              |)))
                                         |) in
                                       M.return_ (|
                                         Value.StructTuple
@@ -4460,53 +4470,56 @@ Module str.
                         let ch := M.copy (| Ty.path "char", γ0_0 |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
-                            let β :=
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::str::pattern::CharSearcher",
-                                "finger_back"
-                              |) in
-                            M.write (|
-                              β,
-                              M.call_closure (|
-                                Ty.path "usize",
-                                BinOp.Wrap.sub,
-                                [
-                                  M.read (| β |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    BinOp.Wrap.sub,
-                                    [
-                                      M.read (| old_len |);
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        M.get_trait_method (|
-                                          "core::iter::traits::exact_size::ExactSizeIterator",
-                                          Ty.apply
-                                            (Ty.path "core::slice::iter::Iter")
-                                            []
-                                            [ Ty.path "u8" ],
-                                          [],
-                                          [],
-                                          "len",
-                                          [],
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.call_closure (|
+                                  Ty.path "usize",
+                                  BinOp.Wrap.sub,
+                                  [
+                                    M.read (| old_len |);
+                                    M.call_closure (|
+                                      Ty.path "usize",
+                                      M.get_trait_method (|
+                                        "core::iter::traits::exact_size::ExactSizeIterator",
+                                        Ty.apply
+                                          (Ty.path "core::slice::iter::Iter")
                                           []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.SubPointer.get_struct_record_field (|
-                                              iter,
-                                              "core::str::iter::Chars",
-                                              "iter"
-                                            |)
+                                          [ Ty.path "u8" ],
+                                        [],
+                                        [],
+                                        "len",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            iter,
+                                            "core::str::iter::Chars",
+                                            "iter"
                                           |)
-                                        ]
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |)
+                                        |)
+                                      ]
+                                    |)
+                                  ]
+                                |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (let β :=
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::str::pattern::CharSearcher",
+                                      "finger_back"
+                                    |) in
+                                  M.write (|
+                                    β,
+                                    M.call_closure (|
+                                      Ty.path "usize",
+                                      BinOp.Wrap.sub,
+                                      [ M.read (| β |); rhs' ]
+                                    |)
+                                  |)))
                             |) in
                           M.alloc (|
                             Ty.path "core::str::pattern::SearchStep",
@@ -5334,17 +5347,25 @@ Module str.
                                                                       M.never_to_any (|
                                                                         M.read (|
                                                                           let~ _ : Ty.tuple [] :=
-                                                                            M.write (|
-                                                                              M.SubPointer.get_struct_record_field (|
-                                                                                M.deref (|
-                                                                                  M.read (| self |)
-                                                                                |),
-                                                                                "core::str::pattern::CharSearcher",
-                                                                                "finger_back"
-                                                                              |),
-                                                                              M.read (|
-                                                                                found_char
-                                                                              |)
+                                                                            M.let_ (|
+                                                                              ltac:(M.monadic
+                                                                                (M.read (|
+                                                                                  found_char
+                                                                                |))),
+                                                                              fun rhs' =>
+                                                                                ltac:(M.monadic
+                                                                                  (M.write (|
+                                                                                    M.SubPointer.get_struct_record_field (|
+                                                                                      M.deref (|
+                                                                                        M.read (|
+                                                                                          self
+                                                                                        |)
+                                                                                      |),
+                                                                                      "core::str::pattern::CharSearcher",
+                                                                                      "finger_back"
+                                                                                    |),
+                                                                                    rhs'
+                                                                                  |)))
                                                                             |) in
                                                                           M.return_ (|
                                                                             Value.StructTuple
@@ -5429,13 +5450,18 @@ Module str.
                                             ]
                                           |) in
                                         let~ _ : Ty.tuple [] :=
-                                          M.write (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "core::str::pattern::CharSearcher",
-                                              "finger_back"
-                                            |),
-                                            M.read (| index |)
+                                          M.let_ (|
+                                            ltac:(M.monadic (M.read (| index |))),
+                                            fun rhs' =>
+                                              ltac:(M.monadic
+                                                (M.write (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "core::str::pattern::CharSearcher",
+                                                    "finger_back"
+                                                  |),
+                                                  rhs'
+                                                |)))
                                           |) in
                                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                       |)));
@@ -5444,19 +5470,25 @@ Module str.
                                       (M.never_to_any (|
                                         M.read (|
                                           let~ _ : Ty.tuple [] :=
-                                            M.write (|
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (| M.read (| self |) |),
-                                                "core::str::pattern::CharSearcher",
-                                                "finger_back"
-                                              |),
-                                              M.read (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::str::pattern::CharSearcher",
-                                                  "finger"
-                                                |)
-                                              |)
+                                            M.let_ (|
+                                              ltac:(M.monadic
+                                                (M.read (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "core::str::pattern::CharSearcher",
+                                                    "finger"
+                                                  |)
+                                                |))),
+                                              fun rhs' =>
+                                                ltac:(M.monadic
+                                                  (M.write (|
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      M.deref (| M.read (| self |) |),
+                                                      "core::str::pattern::CharSearcher",
+                                                      "finger_back"
+                                                    |),
+                                                    rhs'
+                                                  |)))
                                             |) in
                                           M.return_ (|
                                             Value.StructTuple
@@ -13941,25 +13973,31 @@ Module str.
                               |)
                             |) in
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| searcher |) |),
-                                "core::str::pattern::EmptyNeedle",
-                                "is_match_fw"
-                              |),
-                              M.call_closure (|
-                                Ty.path "bool",
-                                UnOp.not,
-                                [
-                                  M.read (|
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.call_closure (|
+                                  Ty.path "bool",
+                                  UnOp.not,
+                                  [
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| searcher |) |),
+                                        "core::str::pattern::EmptyNeedle",
+                                        "is_match_fw"
+                                      |)
+                                    |)
+                                  ]
+                                |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
                                     M.SubPointer.get_struct_record_field (|
                                       M.deref (| M.read (| searcher |) |),
                                       "core::str::pattern::EmptyNeedle",
                                       "is_match_fw"
-                                    |)
-                                  |)
-                                ]
-                              |)
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           let~ pos : Ty.path "usize" :=
                             M.read (|
@@ -14096,31 +14134,34 @@ Module str.
                                     let ch := M.copy (| Ty.path "char", γ0_0 |) in
                                     M.read (|
                                       let~ _ : Ty.tuple [] :=
-                                        let β :=
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| searcher |) |),
-                                            "core::str::pattern::EmptyNeedle",
-                                            "position"
-                                          |) in
-                                        M.write (|
-                                          β,
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            BinOp.Wrap.add,
-                                            [
-                                              M.read (| β |);
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                M.get_associated_function (|
-                                                  Ty.path "char",
-                                                  "len_utf8",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| ch |) ]
-                                              |)
-                                            ]
-                                          |)
+                                        M.let_ (|
+                                          ltac:(M.monadic
+                                            (M.call_closure (|
+                                              Ty.path "usize",
+                                              M.get_associated_function (|
+                                                Ty.path "char",
+                                                "len_utf8",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| ch |) ]
+                                            |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (let β :=
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| searcher |) |),
+                                                  "core::str::pattern::EmptyNeedle",
+                                                  "position"
+                                                |) in
+                                              M.write (|
+                                                β,
+                                                M.call_closure (|
+                                                  Ty.path "usize",
+                                                  BinOp.Wrap.add,
+                                                  [ M.read (| β |); rhs' ]
+                                                |)
+                                              |)))
                                         |) in
                                       M.alloc (|
                                         Ty.path "core::str::pattern::SearchStep",
@@ -14442,30 +14483,36 @@ Module str.
                                           |)
                                         |) in
                                       let~ _ : Ty.tuple [] :=
-                                        M.write (|
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| searcher |) |),
-                                            "core::str::pattern::TwoWaySearcher",
-                                            "position"
-                                          |),
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            M.get_function (|
-                                              "core::cmp::max",
-                                              [],
-                                              [ Ty.path "usize" ]
-                                            |),
-                                            [
-                                              M.read (| b |);
-                                              M.read (|
+                                        M.let_ (|
+                                          ltac:(M.monadic
+                                            (M.call_closure (|
+                                              Ty.path "usize",
+                                              M.get_function (|
+                                                "core::cmp::max",
+                                                [],
+                                                [ Ty.path "usize" ]
+                                              |),
+                                              [
+                                                M.read (| b |);
+                                                M.read (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| searcher |) |),
+                                                    "core::str::pattern::TwoWaySearcher",
+                                                    "position"
+                                                  |)
+                                                |)
+                                              ]
+                                            |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (M.write (|
                                                 M.SubPointer.get_struct_record_field (|
                                                   M.deref (| M.read (| searcher |) |),
                                                   "core::str::pattern::TwoWaySearcher",
                                                   "position"
-                                                |)
-                                              |)
-                                            ]
-                                          |)
+                                                |),
+                                                rhs'
+                                              |)))
                                         |) in
                                       M.alloc (|
                                         Ty.path "core::str::pattern::SearchStep",
@@ -15016,25 +15063,31 @@ Module str.
                               |)
                             |) in
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| searcher |) |),
-                                "core::str::pattern::EmptyNeedle",
-                                "is_match_bw"
-                              |),
-                              M.call_closure (|
-                                Ty.path "bool",
-                                UnOp.not,
-                                [
-                                  M.read (|
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.call_closure (|
+                                  Ty.path "bool",
+                                  UnOp.not,
+                                  [
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| searcher |) |),
+                                        "core::str::pattern::EmptyNeedle",
+                                        "is_match_bw"
+                                      |)
+                                    |)
+                                  ]
+                                |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
                                     M.SubPointer.get_struct_record_field (|
                                       M.deref (| M.read (| searcher |) |),
                                       "core::str::pattern::EmptyNeedle",
                                       "is_match_bw"
-                                    |)
-                                  |)
-                                ]
-                              |)
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           let~ end_ : Ty.path "usize" :=
                             M.read (|
@@ -15171,31 +15224,34 @@ Module str.
                                     let ch := M.copy (| Ty.path "char", γ0_0 |) in
                                     M.read (|
                                       let~ _ : Ty.tuple [] :=
-                                        let β :=
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| searcher |) |),
-                                            "core::str::pattern::EmptyNeedle",
-                                            "end"
-                                          |) in
-                                        M.write (|
-                                          β,
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            BinOp.Wrap.sub,
-                                            [
-                                              M.read (| β |);
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                M.get_associated_function (|
-                                                  Ty.path "char",
-                                                  "len_utf8",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| ch |) ]
-                                              |)
-                                            ]
-                                          |)
+                                        M.let_ (|
+                                          ltac:(M.monadic
+                                            (M.call_closure (|
+                                              Ty.path "usize",
+                                              M.get_associated_function (|
+                                                Ty.path "char",
+                                                "len_utf8",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| ch |) ]
+                                            |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (let β :=
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| searcher |) |),
+                                                  "core::str::pattern::EmptyNeedle",
+                                                  "end"
+                                                |) in
+                                              M.write (|
+                                                β,
+                                                M.call_closure (|
+                                                  Ty.path "usize",
+                                                  BinOp.Wrap.sub,
+                                                  [ M.read (| β |); rhs' ]
+                                                |)
+                                              |)))
                                         |) in
                                       M.alloc (|
                                         Ty.path "core::str::pattern::SearchStep",
@@ -15495,30 +15551,36 @@ Module str.
                                           |)
                                         |) in
                                       let~ _ : Ty.tuple [] :=
-                                        M.write (|
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| searcher |) |),
-                                            "core::str::pattern::TwoWaySearcher",
-                                            "end"
-                                          |),
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            M.get_function (|
-                                              "core::cmp::min",
-                                              [],
-                                              [ Ty.path "usize" ]
-                                            |),
-                                            [
-                                              M.read (| a |);
-                                              M.read (|
+                                        M.let_ (|
+                                          ltac:(M.monadic
+                                            (M.call_closure (|
+                                              Ty.path "usize",
+                                              M.get_function (|
+                                                "core::cmp::min",
+                                                [],
+                                                [ Ty.path "usize" ]
+                                              |),
+                                              [
+                                                M.read (| a |);
+                                                M.read (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| searcher |) |),
+                                                    "core::str::pattern::TwoWaySearcher",
+                                                    "end"
+                                                  |)
+                                                |)
+                                              ]
+                                            |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (M.write (|
                                                 M.SubPointer.get_struct_record_field (|
                                                   M.deref (| M.read (| searcher |) |),
                                                   "core::str::pattern::TwoWaySearcher",
                                                   "end"
-                                                |)
-                                              |)
-                                            ]
-                                          |)
+                                                |),
+                                                rhs'
+                                              |)))
                                         |) in
                                       M.alloc (|
                                         Ty.path "core::str::pattern::SearchStep",
@@ -17573,27 +17635,33 @@ Module str.
                                       M.never_to_any (|
                                         M.read (|
                                           let~ _ : Ty.tuple [] :=
-                                            M.write (|
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (| M.read (| self |) |),
-                                                "core::str::pattern::TwoWaySearcher",
-                                                "position"
-                                              |),
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                M.get_associated_function (|
-                                                  Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                                  "len",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| haystack |) |)
-                                                  |)
-                                                ]
-                                              |)
+                                            M.let_ (|
+                                              ltac:(M.monadic
+                                                (M.call_closure (|
+                                                  Ty.path "usize",
+                                                  M.get_associated_function (|
+                                                    Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                                    "len",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (| M.read (| haystack |) |)
+                                                    |)
+                                                  ]
+                                                |))),
+                                              fun rhs' =>
+                                                ltac:(M.monadic
+                                                  (M.write (|
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      M.deref (| M.read (| self |) |),
+                                                      "core::str::pattern::TwoWaySearcher",
+                                                      "position"
+                                                    |),
+                                                    rhs'
+                                                  |)))
                                             |) in
                                           M.return_ (|
                                             M.call_closure (|
@@ -17757,39 +17825,39 @@ Module str.
                                       M.never_to_any (|
                                         M.read (|
                                           let~ _ : Ty.tuple [] :=
-                                            let β :=
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (| M.read (| self |) |),
-                                                "core::str::pattern::TwoWaySearcher",
-                                                "position"
-                                              |) in
-                                            M.write (|
-                                              β,
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                BinOp.Wrap.add,
-                                                [
-                                                  M.read (| β |);
-                                                  M.call_closure (|
-                                                    Ty.path "usize",
-                                                    M.get_associated_function (|
-                                                      Ty.apply
-                                                        (Ty.path "slice")
-                                                        []
-                                                        [ Ty.path "u8" ],
-                                                      "len",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (| M.read (| needle |) |)
-                                                      |)
-                                                    ]
-                                                  |)
-                                                ]
-                                              |)
+                                            M.let_ (|
+                                              ltac:(M.monadic
+                                                (M.call_closure (|
+                                                  Ty.path "usize",
+                                                  M.get_associated_function (|
+                                                    Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                                    "len",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (| M.read (| needle |) |)
+                                                    |)
+                                                  ]
+                                                |))),
+                                              fun rhs' =>
+                                                ltac:(M.monadic
+                                                  (let β :=
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      M.deref (| M.read (| self |) |),
+                                                      "core::str::pattern::TwoWaySearcher",
+                                                      "position"
+                                                    |) in
+                                                  M.write (|
+                                                    β,
+                                                    M.call_closure (|
+                                                      Ty.path "usize",
+                                                      BinOp.Wrap.add,
+                                                      [ M.read (| β |); rhs' ]
+                                                    |)
+                                                  |)))
                                             |) in
                                           let~ _ : Ty.tuple [] :=
                                             M.match_operator (|
@@ -17827,7 +17895,9 @@ Module str.
                                                 fun γ => ltac:(M.monadic (Value.Tuple []))
                                               ]
                                             |) in
-                                          M.continue (||)
+                                          M.impossible (|
+                                            "[ROR002] labeled loop or block exit in str::pattern::TwoWaySearcher::next"
+                                          |)
                                         |)
                                       |)));
                                   fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -18076,53 +18146,62 @@ Module str.
                                                                     M.never_to_any (|
                                                                       M.read (|
                                                                         let~ _ : Ty.tuple [] :=
-                                                                          let β :=
-                                                                            M.SubPointer.get_struct_record_field (|
-                                                                              M.deref (|
-                                                                                M.read (| self |)
-                                                                              |),
-                                                                              "core::str::pattern::TwoWaySearcher",
-                                                                              "position"
-                                                                            |) in
-                                                                          M.write (|
-                                                                            β,
-                                                                            M.call_closure (|
-                                                                              Ty.path "usize",
-                                                                              BinOp.Wrap.add,
-                                                                              [
-                                                                                M.read (| β |);
-                                                                                M.call_closure (|
-                                                                                  Ty.path "usize",
-                                                                                  BinOp.Wrap.add,
-                                                                                  [
-                                                                                    M.call_closure (|
-                                                                                      Ty.path
-                                                                                        "usize",
-                                                                                      BinOp.Wrap.sub,
-                                                                                      [
-                                                                                        M.read (|
-                                                                                          i
-                                                                                        |);
-                                                                                        M.read (|
-                                                                                          M.SubPointer.get_struct_record_field (|
-                                                                                            M.deref (|
-                                                                                              M.read (|
-                                                                                                self
-                                                                                              |)
-                                                                                            |),
-                                                                                            "core::str::pattern::TwoWaySearcher",
-                                                                                            "crit_pos"
-                                                                                          |)
+                                                                          M.let_ (|
+                                                                            ltac:(M.monadic
+                                                                              (M.call_closure (|
+                                                                                Ty.path "usize",
+                                                                                BinOp.Wrap.add,
+                                                                                [
+                                                                                  M.call_closure (|
+                                                                                    Ty.path "usize",
+                                                                                    BinOp.Wrap.sub,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        i
+                                                                                      |);
+                                                                                      M.read (|
+                                                                                        M.SubPointer.get_struct_record_field (|
+                                                                                          M.deref (|
+                                                                                            M.read (|
+                                                                                              self
+                                                                                            |)
+                                                                                          |),
+                                                                                          "core::str::pattern::TwoWaySearcher",
+                                                                                          "crit_pos"
                                                                                         |)
-                                                                                      ]
-                                                                                    |);
-                                                                                    Value.Integer
-                                                                                      IntegerKind.Usize
-                                                                                      1
-                                                                                  ]
-                                                                                |)
-                                                                              ]
-                                                                            |)
+                                                                                      |)
+                                                                                    ]
+                                                                                  |);
+                                                                                  Value.Integer
+                                                                                    IntegerKind.Usize
+                                                                                    1
+                                                                                ]
+                                                                              |))),
+                                                                            fun rhs' =>
+                                                                              ltac:(M.monadic
+                                                                                (let β :=
+                                                                                  M.SubPointer.get_struct_record_field (|
+                                                                                    M.deref (|
+                                                                                      M.read (|
+                                                                                        self
+                                                                                      |)
+                                                                                    |),
+                                                                                    "core::str::pattern::TwoWaySearcher",
+                                                                                    "position"
+                                                                                  |) in
+                                                                                M.write (|
+                                                                                  β,
+                                                                                  M.call_closure (|
+                                                                                    Ty.path "usize",
+                                                                                    BinOp.Wrap.add,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        β
+                                                                                      |);
+                                                                                      rhs'
+                                                                                    ]
+                                                                                  |)
+                                                                                |)))
                                                                           |) in
                                                                         let~ _ : Ty.tuple [] :=
                                                                           M.match_operator (|
@@ -18185,7 +18264,9 @@ Module str.
                                                                                   (Value.Tuple []))
                                                                             ]
                                                                           |) in
-                                                                        M.continue (||)
+                                                                        M.impossible (|
+                                                                          "[ROR002] labeled loop or block exit in str::pattern::TwoWaySearcher::next"
+                                                                        |)
                                                                       |)
                                                                     |)));
                                                                 fun γ =>
@@ -18462,22 +18543,22 @@ Module str.
                                                                     M.never_to_any (|
                                                                       M.read (|
                                                                         let~ _ : Ty.tuple [] :=
-                                                                          let β :=
-                                                                            M.SubPointer.get_struct_record_field (|
-                                                                              M.deref (|
-                                                                                M.read (| self |)
-                                                                              |),
-                                                                              "core::str::pattern::TwoWaySearcher",
-                                                                              "position"
-                                                                            |) in
-                                                                          M.write (|
-                                                                            β,
-                                                                            M.call_closure (|
-                                                                              Ty.path "usize",
-                                                                              BinOp.Wrap.add,
-                                                                              [
-                                                                                M.read (| β |);
-                                                                                M.read (|
+                                                                          M.let_ (|
+                                                                            ltac:(M.monadic
+                                                                              (M.read (|
+                                                                                M.SubPointer.get_struct_record_field (|
+                                                                                  M.deref (|
+                                                                                    M.read (|
+                                                                                      self
+                                                                                    |)
+                                                                                  |),
+                                                                                  "core::str::pattern::TwoWaySearcher",
+                                                                                  "period"
+                                                                                |)
+                                                                              |))),
+                                                                            fun rhs' =>
+                                                                              ltac:(M.monadic
+                                                                                (let β :=
                                                                                   M.SubPointer.get_struct_record_field (|
                                                                                     M.deref (|
                                                                                       M.read (|
@@ -18485,11 +18566,21 @@ Module str.
                                                                                       |)
                                                                                     |),
                                                                                     "core::str::pattern::TwoWaySearcher",
-                                                                                    "period"
+                                                                                    "position"
+                                                                                  |) in
+                                                                                M.write (|
+                                                                                  β,
+                                                                                  M.call_closure (|
+                                                                                    Ty.path "usize",
+                                                                                    BinOp.Wrap.add,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        β
+                                                                                      |);
+                                                                                      rhs'
+                                                                                    ]
                                                                                   |)
-                                                                                |)
-                                                                              ]
-                                                                            |)
+                                                                                |)))
                                                                           |) in
                                                                         let~ _ : Ty.tuple [] :=
                                                                           M.match_operator (|
@@ -18528,49 +18619,56 @@ Module str.
                                                                                     let~ _ :
                                                                                         Ty.tuple
                                                                                           [] :=
-                                                                                      M.write (|
-                                                                                        M.SubPointer.get_struct_record_field (|
-                                                                                          M.deref (|
-                                                                                            M.read (|
-                                                                                              self
-                                                                                            |)
-                                                                                          |),
-                                                                                          "core::str::pattern::TwoWaySearcher",
-                                                                                          "memory"
-                                                                                        |),
-                                                                                        M.call_closure (|
-                                                                                          Ty.path
-                                                                                            "usize",
-                                                                                          BinOp.Wrap.sub,
-                                                                                          [
-                                                                                            M.call_closure (|
-                                                                                              Ty.path
-                                                                                                "usize",
-                                                                                              M.get_associated_function (|
-                                                                                                Ty.apply
-                                                                                                  (Ty.path
-                                                                                                    "slice")
+                                                                                      M.let_ (|
+                                                                                        ltac:(M.monadic
+                                                                                          (M.call_closure (|
+                                                                                            Ty.path
+                                                                                              "usize",
+                                                                                            BinOp.Wrap.sub,
+                                                                                            [
+                                                                                              M.call_closure (|
+                                                                                                Ty.path
+                                                                                                  "usize",
+                                                                                                M.get_associated_function (|
+                                                                                                  Ty.apply
+                                                                                                    (Ty.path
+                                                                                                      "slice")
+                                                                                                    []
+                                                                                                    [
+                                                                                                      Ty.path
+                                                                                                        "u8"
+                                                                                                    ],
+                                                                                                  "len",
+                                                                                                  [],
                                                                                                   []
-                                                                                                  [
-                                                                                                    Ty.path
-                                                                                                      "u8"
-                                                                                                  ],
-                                                                                                "len",
-                                                                                                [],
-                                                                                                []
-                                                                                              |),
-                                                                                              [
-                                                                                                M.borrow (|
-                                                                                                  Pointer.Kind.Ref,
-                                                                                                  M.deref (|
-                                                                                                    M.read (|
-                                                                                                      needle
+                                                                                                |),
+                                                                                                [
+                                                                                                  M.borrow (|
+                                                                                                    Pointer.Kind.Ref,
+                                                                                                    M.deref (|
+                                                                                                      M.read (|
+                                                                                                        needle
+                                                                                                      |)
                                                                                                     |)
                                                                                                   |)
+                                                                                                ]
+                                                                                              |);
+                                                                                              M.read (|
+                                                                                                M.SubPointer.get_struct_record_field (|
+                                                                                                  M.deref (|
+                                                                                                    M.read (|
+                                                                                                      self
+                                                                                                    |)
+                                                                                                  |),
+                                                                                                  "core::str::pattern::TwoWaySearcher",
+                                                                                                  "period"
                                                                                                 |)
-                                                                                              ]
-                                                                                            |);
-                                                                                            M.read (|
+                                                                                              |)
+                                                                                            ]
+                                                                                          |))),
+                                                                                        fun rhs' =>
+                                                                                          ltac:(M.monadic
+                                                                                            (M.write (|
                                                                                               M.SubPointer.get_struct_record_field (|
                                                                                                 M.deref (|
                                                                                                   M.read (|
@@ -18578,11 +18676,10 @@ Module str.
                                                                                                   |)
                                                                                                 |),
                                                                                                 "core::str::pattern::TwoWaySearcher",
-                                                                                                "period"
-                                                                                              |)
-                                                                                            |)
-                                                                                          ]
-                                                                                        |)
+                                                                                                "memory"
+                                                                                              |),
+                                                                                              rhs'
+                                                                                            |)))
                                                                                       |) in
                                                                                     M.alloc (|
                                                                                       Ty.tuple [],
@@ -18594,7 +18691,9 @@ Module str.
                                                                                   (Value.Tuple []))
                                                                             ]
                                                                           |) in
-                                                                        M.continue (||)
+                                                                        M.impossible (|
+                                                                          "[ROR002] labeled loop or block exit in str::pattern::TwoWaySearcher::next"
+                                                                        |)
                                                                       |)
                                                                     |)));
                                                                 fun γ =>
@@ -18619,36 +18718,39 @@ Module str.
                                 |)
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              let β :=
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::str::pattern::TwoWaySearcher",
-                                  "position"
-                                |) in
-                              M.write (|
-                                β,
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  BinOp.Wrap.add,
-                                  [
-                                    M.read (| β |);
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      M.get_associated_function (|
-                                        Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                        "len",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| needle |) |)
-                                        |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
+                                    Ty.path "usize",
+                                    M.get_associated_function (|
+                                      Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                      "len",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| needle |) |)
+                                      |)
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (let β :=
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::str::pattern::TwoWaySearcher",
+                                        "position"
+                                      |) in
+                                    M.write (|
+                                      β,
+                                      M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.add,
+                                        [ M.read (| β |); rhs' ]
+                                      |)
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
                               M.match_operator (|
@@ -19100,39 +19202,39 @@ Module str.
                                       M.never_to_any (|
                                         M.read (|
                                           let~ _ : Ty.tuple [] :=
-                                            let β :=
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (| M.read (| self |) |),
-                                                "core::str::pattern::TwoWaySearcher",
-                                                "end"
-                                              |) in
-                                            M.write (|
-                                              β,
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                BinOp.Wrap.sub,
-                                                [
-                                                  M.read (| β |);
-                                                  M.call_closure (|
-                                                    Ty.path "usize",
-                                                    M.get_associated_function (|
-                                                      Ty.apply
-                                                        (Ty.path "slice")
-                                                        []
-                                                        [ Ty.path "u8" ],
-                                                      "len",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (| M.read (| needle |) |)
-                                                      |)
-                                                    ]
-                                                  |)
-                                                ]
-                                              |)
+                                            M.let_ (|
+                                              ltac:(M.monadic
+                                                (M.call_closure (|
+                                                  Ty.path "usize",
+                                                  M.get_associated_function (|
+                                                    Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                                    "len",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (| M.read (| needle |) |)
+                                                    |)
+                                                  ]
+                                                |))),
+                                              fun rhs' =>
+                                                ltac:(M.monadic
+                                                  (let β :=
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      M.deref (| M.read (| self |) |),
+                                                      "core::str::pattern::TwoWaySearcher",
+                                                      "end"
+                                                    |) in
+                                                  M.write (|
+                                                    β,
+                                                    M.call_closure (|
+                                                      Ty.path "usize",
+                                                      BinOp.Wrap.sub,
+                                                      [ M.read (| β |); rhs' ]
+                                                    |)
+                                                  |)))
                                             |) in
                                           let~ _ : Ty.tuple [] :=
                                             M.match_operator (|
@@ -19157,37 +19259,45 @@ Module str.
                                                       |) in
                                                     M.read (|
                                                       let~ _ : Ty.tuple [] :=
-                                                        M.write (|
-                                                          M.SubPointer.get_struct_record_field (|
-                                                            M.deref (| M.read (| self |) |),
-                                                            "core::str::pattern::TwoWaySearcher",
-                                                            "memory_back"
-                                                          |),
-                                                          M.call_closure (|
-                                                            Ty.path "usize",
-                                                            M.get_associated_function (|
-                                                              Ty.apply
-                                                                (Ty.path "slice")
+                                                        M.let_ (|
+                                                          ltac:(M.monadic
+                                                            (M.call_closure (|
+                                                              Ty.path "usize",
+                                                              M.get_associated_function (|
+                                                                Ty.apply
+                                                                  (Ty.path "slice")
+                                                                  []
+                                                                  [ Ty.path "u8" ],
+                                                                "len",
+                                                                [],
                                                                 []
-                                                                [ Ty.path "u8" ],
-                                                              "len",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.deref (| M.read (| needle |) |)
-                                                              |)
-                                                            ]
-                                                          |)
+                                                              |),
+                                                              [
+                                                                M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.deref (| M.read (| needle |) |)
+                                                                |)
+                                                              ]
+                                                            |))),
+                                                          fun rhs' =>
+                                                            ltac:(M.monadic
+                                                              (M.write (|
+                                                                M.SubPointer.get_struct_record_field (|
+                                                                  M.deref (| M.read (| self |) |),
+                                                                  "core::str::pattern::TwoWaySearcher",
+                                                                  "memory_back"
+                                                                |),
+                                                                rhs'
+                                                              |)))
                                                         |) in
                                                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                                     |)));
                                                 fun γ => ltac:(M.monadic (Value.Tuple []))
                                               ]
                                             |) in
-                                          M.continue (||)
+                                          M.impossible (|
+                                            "[ROR002] labeled loop or block exit in str::pattern::TwoWaySearcher::next_back"
+                                          |)
                                         |)
                                       |)));
                                   fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -19504,41 +19614,51 @@ Module str.
                                                                     M.never_to_any (|
                                                                       M.read (|
                                                                         let~ _ : Ty.tuple [] :=
-                                                                          let β :=
-                                                                            M.SubPointer.get_struct_record_field (|
-                                                                              M.deref (|
-                                                                                M.read (| self |)
-                                                                              |),
-                                                                              "core::str::pattern::TwoWaySearcher",
-                                                                              "end"
-                                                                            |) in
-                                                                          M.write (|
-                                                                            β,
-                                                                            M.call_closure (|
-                                                                              Ty.path "usize",
-                                                                              BinOp.Wrap.sub,
-                                                                              [
-                                                                                M.read (| β |);
-                                                                                M.call_closure (|
-                                                                                  Ty.path "usize",
-                                                                                  BinOp.Wrap.sub,
-                                                                                  [
-                                                                                    M.read (|
-                                                                                      M.SubPointer.get_struct_record_field (|
-                                                                                        M.deref (|
-                                                                                          M.read (|
-                                                                                            self
-                                                                                          |)
-                                                                                        |),
-                                                                                        "core::str::pattern::TwoWaySearcher",
-                                                                                        "crit_pos_back"
+                                                                          M.let_ (|
+                                                                            ltac:(M.monadic
+                                                                              (M.call_closure (|
+                                                                                Ty.path "usize",
+                                                                                BinOp.Wrap.sub,
+                                                                                [
+                                                                                  M.read (|
+                                                                                    M.SubPointer.get_struct_record_field (|
+                                                                                      M.deref (|
+                                                                                        M.read (|
+                                                                                          self
+                                                                                        |)
+                                                                                      |),
+                                                                                      "core::str::pattern::TwoWaySearcher",
+                                                                                      "crit_pos_back"
+                                                                                    |)
+                                                                                  |);
+                                                                                  M.read (| i |)
+                                                                                ]
+                                                                              |))),
+                                                                            fun rhs' =>
+                                                                              ltac:(M.monadic
+                                                                                (let β :=
+                                                                                  M.SubPointer.get_struct_record_field (|
+                                                                                    M.deref (|
+                                                                                      M.read (|
+                                                                                        self
                                                                                       |)
-                                                                                    |);
-                                                                                    M.read (| i |)
-                                                                                  ]
-                                                                                |)
-                                                                              ]
-                                                                            |)
+                                                                                    |),
+                                                                                    "core::str::pattern::TwoWaySearcher",
+                                                                                    "end"
+                                                                                  |) in
+                                                                                M.write (|
+                                                                                  β,
+                                                                                  M.call_closure (|
+                                                                                    Ty.path "usize",
+                                                                                    BinOp.Wrap.sub,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        β
+                                                                                      |);
+                                                                                      rhs'
+                                                                                    ]
+                                                                                  |)
+                                                                                |)))
                                                                           |) in
                                                                         let~ _ : Ty.tuple [] :=
                                                                           M.match_operator (|
@@ -19577,43 +19697,49 @@ Module str.
                                                                                     let~ _ :
                                                                                         Ty.tuple
                                                                                           [] :=
-                                                                                      M.write (|
-                                                                                        M.SubPointer.get_struct_record_field (|
-                                                                                          M.deref (|
-                                                                                            M.read (|
-                                                                                              self
-                                                                                            |)
-                                                                                          |),
-                                                                                          "core::str::pattern::TwoWaySearcher",
-                                                                                          "memory_back"
-                                                                                        |),
-                                                                                        M.call_closure (|
-                                                                                          Ty.path
-                                                                                            "usize",
-                                                                                          M.get_associated_function (|
-                                                                                            Ty.apply
-                                                                                              (Ty.path
-                                                                                                "slice")
+                                                                                      M.let_ (|
+                                                                                        ltac:(M.monadic
+                                                                                          (M.call_closure (|
+                                                                                            Ty.path
+                                                                                              "usize",
+                                                                                            M.get_associated_function (|
+                                                                                              Ty.apply
+                                                                                                (Ty.path
+                                                                                                  "slice")
+                                                                                                []
+                                                                                                [
+                                                                                                  Ty.path
+                                                                                                    "u8"
+                                                                                                ],
+                                                                                              "len",
+                                                                                              [],
                                                                                               []
-                                                                                              [
-                                                                                                Ty.path
-                                                                                                  "u8"
-                                                                                              ],
-                                                                                            "len",
-                                                                                            [],
-                                                                                            []
-                                                                                          |),
-                                                                                          [
-                                                                                            M.borrow (|
-                                                                                              Pointer.Kind.Ref,
-                                                                                              M.deref (|
-                                                                                                M.read (|
-                                                                                                  needle
+                                                                                            |),
+                                                                                            [
+                                                                                              M.borrow (|
+                                                                                                Pointer.Kind.Ref,
+                                                                                                M.deref (|
+                                                                                                  M.read (|
+                                                                                                    needle
+                                                                                                  |)
                                                                                                 |)
                                                                                               |)
-                                                                                            |)
-                                                                                          ]
-                                                                                        |)
+                                                                                            ]
+                                                                                          |))),
+                                                                                        fun rhs' =>
+                                                                                          ltac:(M.monadic
+                                                                                            (M.write (|
+                                                                                              M.SubPointer.get_struct_record_field (|
+                                                                                                M.deref (|
+                                                                                                  M.read (|
+                                                                                                    self
+                                                                                                  |)
+                                                                                                |),
+                                                                                                "core::str::pattern::TwoWaySearcher",
+                                                                                                "memory_back"
+                                                                                              |),
+                                                                                              rhs'
+                                                                                            |)))
                                                                                       |) in
                                                                                     M.alloc (|
                                                                                       Ty.tuple [],
@@ -19625,7 +19751,9 @@ Module str.
                                                                                   (Value.Tuple []))
                                                                             ]
                                                                           |) in
-                                                                        M.continue (||)
+                                                                        M.impossible (|
+                                                                          "[ROR002] labeled loop or block exit in str::pattern::TwoWaySearcher::next_back"
+                                                                        |)
                                                                       |)
                                                                     |)));
                                                                 fun γ =>
@@ -19898,22 +20026,22 @@ Module str.
                                                                     M.never_to_any (|
                                                                       M.read (|
                                                                         let~ _ : Ty.tuple [] :=
-                                                                          let β :=
-                                                                            M.SubPointer.get_struct_record_field (|
-                                                                              M.deref (|
-                                                                                M.read (| self |)
-                                                                              |),
-                                                                              "core::str::pattern::TwoWaySearcher",
-                                                                              "end"
-                                                                            |) in
-                                                                          M.write (|
-                                                                            β,
-                                                                            M.call_closure (|
-                                                                              Ty.path "usize",
-                                                                              BinOp.Wrap.sub,
-                                                                              [
-                                                                                M.read (| β |);
-                                                                                M.read (|
+                                                                          M.let_ (|
+                                                                            ltac:(M.monadic
+                                                                              (M.read (|
+                                                                                M.SubPointer.get_struct_record_field (|
+                                                                                  M.deref (|
+                                                                                    M.read (|
+                                                                                      self
+                                                                                    |)
+                                                                                  |),
+                                                                                  "core::str::pattern::TwoWaySearcher",
+                                                                                  "period"
+                                                                                |)
+                                                                              |))),
+                                                                            fun rhs' =>
+                                                                              ltac:(M.monadic
+                                                                                (let β :=
                                                                                   M.SubPointer.get_struct_record_field (|
                                                                                     M.deref (|
                                                                                       M.read (|
@@ -19921,11 +20049,21 @@ Module str.
                                                                                       |)
                                                                                     |),
                                                                                     "core::str::pattern::TwoWaySearcher",
-                                                                                    "period"
+                                                                                    "end"
+                                                                                  |) in
+                                                                                M.write (|
+                                                                                  β,
+                                                                                  M.call_closure (|
+                                                                                    Ty.path "usize",
+                                                                                    BinOp.Wrap.sub,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        β
+                                                                                      |);
+                                                                                      rhs'
+                                                                                    ]
                                                                                   |)
-                                                                                |)
-                                                                              ]
-                                                                            |)
+                                                                                |)))
                                                                           |) in
                                                                         let~ _ : Ty.tuple [] :=
                                                                           M.match_operator (|
@@ -19964,27 +20102,33 @@ Module str.
                                                                                     let~ _ :
                                                                                         Ty.tuple
                                                                                           [] :=
-                                                                                      M.write (|
-                                                                                        M.SubPointer.get_struct_record_field (|
-                                                                                          M.deref (|
-                                                                                            M.read (|
-                                                                                              self
+                                                                                      M.let_ (|
+                                                                                        ltac:(M.monadic
+                                                                                          (M.read (|
+                                                                                            M.SubPointer.get_struct_record_field (|
+                                                                                              M.deref (|
+                                                                                                M.read (|
+                                                                                                  self
+                                                                                                |)
+                                                                                              |),
+                                                                                              "core::str::pattern::TwoWaySearcher",
+                                                                                              "period"
                                                                                             |)
-                                                                                          |),
-                                                                                          "core::str::pattern::TwoWaySearcher",
-                                                                                          "memory_back"
-                                                                                        |),
-                                                                                        M.read (|
-                                                                                          M.SubPointer.get_struct_record_field (|
-                                                                                            M.deref (|
-                                                                                              M.read (|
-                                                                                                self
-                                                                                              |)
-                                                                                            |),
-                                                                                            "core::str::pattern::TwoWaySearcher",
-                                                                                            "period"
-                                                                                          |)
-                                                                                        |)
+                                                                                          |))),
+                                                                                        fun rhs' =>
+                                                                                          ltac:(M.monadic
+                                                                                            (M.write (|
+                                                                                              M.SubPointer.get_struct_record_field (|
+                                                                                                M.deref (|
+                                                                                                  M.read (|
+                                                                                                    self
+                                                                                                  |)
+                                                                                                |),
+                                                                                                "core::str::pattern::TwoWaySearcher",
+                                                                                                "memory_back"
+                                                                                              |),
+                                                                                              rhs'
+                                                                                            |)))
                                                                                       |) in
                                                                                     M.alloc (|
                                                                                       Ty.tuple [],
@@ -19996,7 +20140,9 @@ Module str.
                                                                                   (Value.Tuple []))
                                                                             ]
                                                                           |) in
-                                                                        M.continue (||)
+                                                                        M.impossible (|
+                                                                          "[ROR002] labeled loop or block exit in str::pattern::TwoWaySearcher::next_back"
+                                                                        |)
                                                                       |)
                                                                     |)));
                                                                 fun γ =>
@@ -20042,36 +20188,39 @@ Module str.
                                 ]
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              let β :=
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::str::pattern::TwoWaySearcher",
-                                  "end"
-                                |) in
-                              M.write (|
-                                β,
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  BinOp.Wrap.sub,
-                                  [
-                                    M.read (| β |);
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      M.get_associated_function (|
-                                        Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                        "len",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| needle |) |)
-                                        |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
+                                    Ty.path "usize",
+                                    M.get_associated_function (|
+                                      Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                      "len",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| needle |) |)
+                                      |)
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (let β :=
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::str::pattern::TwoWaySearcher",
+                                        "end"
+                                      |) in
+                                    M.write (|
+                                      β,
+                                      M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.sub,
+                                        [ M.read (| β |); rhs' ]
+                                      |)
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
                               M.match_operator (|
@@ -20096,27 +20245,33 @@ Module str.
                                         |) in
                                       M.read (|
                                         let~ _ : Ty.tuple [] :=
-                                          M.write (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "core::str::pattern::TwoWaySearcher",
-                                              "memory_back"
-                                            |),
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_associated_function (|
-                                                Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                                "len",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| needle |) |)
-                                                |)
-                                              ]
-                                            |)
+                                          M.let_ (|
+                                            ltac:(M.monadic
+                                              (M.call_closure (|
+                                                Ty.path "usize",
+                                                M.get_associated_function (|
+                                                  Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                                  "len",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| needle |) |)
+                                                  |)
+                                                ]
+                                              |))),
+                                            fun rhs' =>
+                                              ltac:(M.monadic
+                                                (M.write (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "core::str::pattern::TwoWaySearcher",
+                                                    "memory_back"
+                                                  |),
+                                                  rhs'
+                                                |)))
                                           |) in
                                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                       |)));
@@ -20338,24 +20493,27 @@ Module str.
                                               |) in
                                             M.read (|
                                               let~ _ : Ty.tuple [] :=
-                                                let β := right in
-                                                M.write (|
-                                                  β,
-                                                  M.call_closure (|
-                                                    Ty.path "usize",
-                                                    BinOp.Wrap.add,
-                                                    [
-                                                      M.read (| β |);
-                                                      M.call_closure (|
-                                                        Ty.path "usize",
-                                                        BinOp.Wrap.add,
-                                                        [
-                                                          M.read (| offset |);
-                                                          Value.Integer IntegerKind.Usize 1
-                                                        ]
-                                                      |)
-                                                    ]
-                                                  |)
+                                                M.let_ (|
+                                                  ltac:(M.monadic
+                                                    (M.call_closure (|
+                                                      Ty.path "usize",
+                                                      BinOp.Wrap.add,
+                                                      [
+                                                        M.read (| offset |);
+                                                        Value.Integer IntegerKind.Usize 1
+                                                      ]
+                                                    |))),
+                                                  fun rhs' =>
+                                                    ltac:(M.monadic
+                                                      (let β := right in
+                                                      M.write (|
+                                                        β,
+                                                        M.call_closure (|
+                                                          Ty.path "usize",
+                                                          BinOp.Wrap.add,
+                                                          [ M.read (| β |); rhs' ]
+                                                        |)
+                                                      |)))
                                                 |) in
                                               let~ _ : Ty.tuple [] :=
                                                 M.write (|
@@ -20429,26 +20587,29 @@ Module str.
                                                               |) in
                                                             M.read (|
                                                               let~ _ : Ty.tuple [] :=
-                                                                let β := right in
-                                                                M.write (|
-                                                                  β,
-                                                                  M.call_closure (|
-                                                                    Ty.path "usize",
-                                                                    BinOp.Wrap.add,
-                                                                    [
-                                                                      M.read (| β |);
-                                                                      M.call_closure (|
-                                                                        Ty.path "usize",
-                                                                        BinOp.Wrap.add,
-                                                                        [
-                                                                          M.read (| offset |);
-                                                                          Value.Integer
-                                                                            IntegerKind.Usize
-                                                                            1
-                                                                        ]
-                                                                      |)
-                                                                    ]
-                                                                  |)
+                                                                M.let_ (|
+                                                                  ltac:(M.monadic
+                                                                    (M.call_closure (|
+                                                                      Ty.path "usize",
+                                                                      BinOp.Wrap.add,
+                                                                      [
+                                                                        M.read (| offset |);
+                                                                        Value.Integer
+                                                                          IntegerKind.Usize
+                                                                          1
+                                                                      ]
+                                                                    |))),
+                                                                  fun rhs' =>
+                                                                    ltac:(M.monadic
+                                                                      (let β := right in
+                                                                      M.write (|
+                                                                        β,
+                                                                        M.call_closure (|
+                                                                          Ty.path "usize",
+                                                                          BinOp.Wrap.add,
+                                                                          [ M.read (| β |); rhs' ]
+                                                                        |)
+                                                                      |)))
                                                                 |) in
                                                               let~ _ : Ty.tuple [] :=
                                                                 M.write (|
@@ -20749,24 +20910,27 @@ Module str.
                                               |) in
                                             M.read (|
                                               let~ _ : Ty.tuple [] :=
-                                                let β := right in
-                                                M.write (|
-                                                  β,
-                                                  M.call_closure (|
-                                                    Ty.path "usize",
-                                                    BinOp.Wrap.add,
-                                                    [
-                                                      M.read (| β |);
-                                                      M.call_closure (|
-                                                        Ty.path "usize",
-                                                        BinOp.Wrap.add,
-                                                        [
-                                                          M.read (| offset |);
-                                                          Value.Integer IntegerKind.Usize 1
-                                                        ]
-                                                      |)
-                                                    ]
-                                                  |)
+                                                M.let_ (|
+                                                  ltac:(M.monadic
+                                                    (M.call_closure (|
+                                                      Ty.path "usize",
+                                                      BinOp.Wrap.add,
+                                                      [
+                                                        M.read (| offset |);
+                                                        Value.Integer IntegerKind.Usize 1
+                                                      ]
+                                                    |))),
+                                                  fun rhs' =>
+                                                    ltac:(M.monadic
+                                                      (let β := right in
+                                                      M.write (|
+                                                        β,
+                                                        M.call_closure (|
+                                                          Ty.path "usize",
+                                                          BinOp.Wrap.add,
+                                                          [ M.read (| β |); rhs' ]
+                                                        |)
+                                                      |)))
                                                 |) in
                                               let~ _ : Ty.tuple [] :=
                                                 M.write (|
@@ -20840,26 +21004,29 @@ Module str.
                                                               |) in
                                                             M.read (|
                                                               let~ _ : Ty.tuple [] :=
-                                                                let β := right in
-                                                                M.write (|
-                                                                  β,
-                                                                  M.call_closure (|
-                                                                    Ty.path "usize",
-                                                                    BinOp.Wrap.add,
-                                                                    [
-                                                                      M.read (| β |);
-                                                                      M.call_closure (|
-                                                                        Ty.path "usize",
-                                                                        BinOp.Wrap.add,
-                                                                        [
-                                                                          M.read (| offset |);
-                                                                          Value.Integer
-                                                                            IntegerKind.Usize
-                                                                            1
-                                                                        ]
-                                                                      |)
-                                                                    ]
-                                                                  |)
+                                                                M.let_ (|
+                                                                  ltac:(M.monadic
+                                                                    (M.call_closure (|
+                                                                      Ty.path "usize",
+                                                                      BinOp.Wrap.add,
+                                                                      [
+                                                                        M.read (| offset |);
+                                                                        Value.Integer
+                                                                          IntegerKind.Usize
+                                                                          1
+                                                                      ]
+                                                                    |))),
+                                                                  fun rhs' =>
+                                                                    ltac:(M.monadic
+                                                                      (let β := right in
+                                                                      M.write (|
+                                                                        β,
+                                                                        M.call_closure (|
+                                                                          Ty.path "usize",
+                                                                          BinOp.Wrap.add,
+                                                                          [ M.read (| β |); rhs' ]
+                                                                        |)
+                                                                      |)))
                                                                 |) in
                                                               let~ _ : Ty.tuple [] :=
                                                                 M.write (|
@@ -22275,35 +22442,42 @@ Module str.
                                                                               |)
                                                                             |) in
                                                                           let~ _ : Ty.tuple [] :=
-                                                                            let β := mask in
-                                                                            M.write (|
-                                                                              β,
-                                                                              M.call_closure (|
-                                                                                Ty.path "u16",
-                                                                                BinOp.Wrap.bit_and,
-                                                                                [
-                                                                                  M.read (| β |);
-                                                                                  M.call_closure (|
-                                                                                    Ty.path "u16",
-                                                                                    UnOp.not,
-                                                                                    [
-                                                                                      M.call_closure (|
-                                                                                        Ty.path
-                                                                                          "u16",
-                                                                                        BinOp.Wrap.shl,
-                                                                                        [
-                                                                                          Value.Integer
-                                                                                            IntegerKind.U16
-                                                                                            1;
-                                                                                          M.read (|
-                                                                                            trailing
-                                                                                          |)
-                                                                                        ]
-                                                                                      |)
-                                                                                    ]
-                                                                                  |)
-                                                                                ]
-                                                                              |)
+                                                                            M.let_ (|
+                                                                              ltac:(M.monadic
+                                                                                (M.call_closure (|
+                                                                                  Ty.path "u16",
+                                                                                  UnOp.not,
+                                                                                  [
+                                                                                    M.call_closure (|
+                                                                                      Ty.path "u16",
+                                                                                      BinOp.Wrap.shl,
+                                                                                      [
+                                                                                        Value.Integer
+                                                                                          IntegerKind.U16
+                                                                                          1;
+                                                                                        M.read (|
+                                                                                          trailing
+                                                                                        |)
+                                                                                      ]
+                                                                                    |)
+                                                                                  ]
+                                                                                |))),
+                                                                              fun rhs' =>
+                                                                                ltac:(M.monadic
+                                                                                  (let β := mask in
+                                                                                  M.write (|
+                                                                                    β,
+                                                                                    M.call_closure (|
+                                                                                      Ty.path "u16",
+                                                                                      BinOp.Wrap.bit_and,
+                                                                                      [
+                                                                                        M.read (|
+                                                                                          β
+                                                                                        |);
+                                                                                        rhs'
+                                                                                      ]
+                                                                                    |)
+                                                                                  |)))
                                                                             |) in
                                                                           M.alloc (|
                                                                             Ty.tuple [],
@@ -22869,76 +23043,86 @@ Module str.
                                                                       |) in
                                                                     M.read (|
                                                                       let~ _ : Ty.tuple [] :=
-                                                                        M.write (|
-                                                                          M.SubPointer.get_array_field (|
-                                                                            masks,
-                                                                            M.read (| j |)
-                                                                          |),
-                                                                          M.call_closure (|
-                                                                            Ty.path "u16",
-                                                                            M.get_trait_method (|
-                                                                              "core::ops::function::Fn",
-                                                                              Ty.function
-                                                                                [ Ty.path "usize" ]
-                                                                                (Ty.path "u16"),
-                                                                              [],
-                                                                              [
-                                                                                Ty.tuple
+                                                                        M.let_ (|
+                                                                          ltac:(M.monadic
+                                                                            (M.call_closure (|
+                                                                              Ty.path "u16",
+                                                                              M.get_trait_method (|
+                                                                                "core::ops::function::Fn",
+                                                                                Ty.function
                                                                                   [ Ty.path "usize"
                                                                                   ]
-                                                                              ],
-                                                                              "call",
-                                                                              [],
-                                                                              []
-                                                                            |),
-                                                                            [
-                                                                              M.borrow (|
-                                                                                Pointer.Kind.Ref,
-                                                                                test_chunk
-                                                                              |);
-                                                                              Value.Tuple
+                                                                                  (Ty.path "u16"),
+                                                                                [],
                                                                                 [
-                                                                                  M.call_closure (|
-                                                                                    Ty.path "usize",
-                                                                                    BinOp.Wrap.add,
+                                                                                  Ty.tuple
                                                                                     [
-                                                                                      M.read (|
-                                                                                        i
-                                                                                      |);
-                                                                                      M.call_closure (|
-                                                                                        Ty.path
-                                                                                          "usize",
-                                                                                        BinOp.Wrap.mul,
-                                                                                        [
-                                                                                          M.read (|
-                                                                                            j
-                                                                                          |);
-                                                                                          M.read (|
-                                                                                            get_associated_constant (|
-                                                                                              Ty.apply
-                                                                                                (Ty.path
-                                                                                                  "core::core_simd::vector::Simd")
-                                                                                                [
-                                                                                                  Value.Integer
-                                                                                                    IntegerKind.Usize
-                                                                                                    16
-                                                                                                ]
-                                                                                                [
-                                                                                                  Ty.path
-                                                                                                    "u8"
-                                                                                                ],
-                                                                                              "LEN",
-                                                                                              Ty.path
-                                                                                                "usize"
-                                                                                            |)
-                                                                                          |)
-                                                                                        ]
-                                                                                      |)
+                                                                                      Ty.path
+                                                                                        "usize"
                                                                                     ]
-                                                                                  |)
-                                                                                ]
-                                                                            ]
-                                                                          |)
+                                                                                ],
+                                                                                "call",
+                                                                                [],
+                                                                                []
+                                                                              |),
+                                                                              [
+                                                                                M.borrow (|
+                                                                                  Pointer.Kind.Ref,
+                                                                                  test_chunk
+                                                                                |);
+                                                                                Value.Tuple
+                                                                                  [
+                                                                                    M.call_closure (|
+                                                                                      Ty.path
+                                                                                        "usize",
+                                                                                      BinOp.Wrap.add,
+                                                                                      [
+                                                                                        M.read (|
+                                                                                          i
+                                                                                        |);
+                                                                                        M.call_closure (|
+                                                                                          Ty.path
+                                                                                            "usize",
+                                                                                          BinOp.Wrap.mul,
+                                                                                          [
+                                                                                            M.read (|
+                                                                                              j
+                                                                                            |);
+                                                                                            M.read (|
+                                                                                              get_associated_constant (|
+                                                                                                Ty.apply
+                                                                                                  (Ty.path
+                                                                                                    "core::core_simd::vector::Simd")
+                                                                                                  [
+                                                                                                    Value.Integer
+                                                                                                      IntegerKind.Usize
+                                                                                                      16
+                                                                                                  ]
+                                                                                                  [
+                                                                                                    Ty.path
+                                                                                                      "u8"
+                                                                                                  ],
+                                                                                                "LEN",
+                                                                                                Ty.path
+                                                                                                  "usize"
+                                                                                              |)
+                                                                                            |)
+                                                                                          ]
+                                                                                        |)
+                                                                                      ]
+                                                                                    |)
+                                                                                  ]
+                                                                              ]
+                                                                            |))),
+                                                                          fun rhs' =>
+                                                                            ltac:(M.monadic
+                                                                              (M.write (|
+                                                                                M.SubPointer.get_array_field (|
+                                                                                  masks,
+                                                                                  M.read (| j |)
+                                                                                |),
+                                                                                rhs'
+                                                                              |)))
                                                                         |) in
                                                                       M.alloc (|
                                                                         Ty.tuple [],
@@ -23125,24 +23309,27 @@ Module str.
                                                                                 M.read (|
                                                                                   let~ _ :
                                                                                       Ty.tuple [] :=
-                                                                                    let β :=
-                                                                                      result in
-                                                                                    M.write (|
-                                                                                      β,
-                                                                                      M.call_closure (|
-                                                                                        Ty.path
-                                                                                          "bool",
-                                                                                        BinOp.Wrap.bit_or,
-                                                                                        [
-                                                                                          M.read (|
-                                                                                            β
-                                                                                          |);
-                                                                                          M.call_closure (|
-                                                                                            Ty.path
-                                                                                              "bool",
-                                                                                            M.get_trait_method (|
-                                                                                              "core::ops::function::Fn",
-                                                                                              Ty.function
+                                                                                    M.let_ (|
+                                                                                      ltac:(M.monadic
+                                                                                        (M.call_closure (|
+                                                                                          Ty.path
+                                                                                            "bool",
+                                                                                          M.get_trait_method (|
+                                                                                            "core::ops::function::Fn",
+                                                                                            Ty.function
+                                                                                              [
+                                                                                                Ty.path
+                                                                                                  "usize";
+                                                                                                Ty.path
+                                                                                                  "u16";
+                                                                                                Ty.path
+                                                                                                  "bool"
+                                                                                              ]
+                                                                                              (Ty.path
+                                                                                                "bool"),
+                                                                                            [],
+                                                                                            [
+                                                                                              Ty.tuple
                                                                                                 [
                                                                                                   Ty.path
                                                                                                     "usize";
@@ -23151,81 +23338,84 @@ Module str.
                                                                                                   Ty.path
                                                                                                     "bool"
                                                                                                 ]
-                                                                                                (Ty.path
-                                                                                                  "bool"),
-                                                                                              [],
+                                                                                            ],
+                                                                                            "call",
+                                                                                            [],
+                                                                                            []
+                                                                                          |),
+                                                                                          [
+                                                                                            M.borrow (|
+                                                                                              Pointer.Kind.Ref,
+                                                                                              check_mask
+                                                                                            |);
+                                                                                            Value.Tuple
                                                                                               [
-                                                                                                Ty.tuple
+                                                                                                M.call_closure (|
+                                                                                                  Ty.path
+                                                                                                    "usize",
+                                                                                                  BinOp.Wrap.add,
                                                                                                   [
-                                                                                                    Ty.path
-                                                                                                      "usize";
-                                                                                                    Ty.path
-                                                                                                      "u16";
-                                                                                                    Ty.path
-                                                                                                      "bool"
-                                                                                                  ]
-                                                                                              ],
-                                                                                              "call",
-                                                                                              [],
-                                                                                              []
-                                                                                            |),
-                                                                                            [
-                                                                                              M.borrow (|
-                                                                                                Pointer.Kind.Ref,
-                                                                                                check_mask
-                                                                                              |);
-                                                                                              Value.Tuple
-                                                                                                [
-                                                                                                  M.call_closure (|
-                                                                                                    Ty.path
-                                                                                                      "usize",
-                                                                                                    BinOp.Wrap.add,
-                                                                                                    [
-                                                                                                      M.read (|
-                                                                                                        i
-                                                                                                      |);
-                                                                                                      M.call_closure (|
-                                                                                                        Ty.path
-                                                                                                          "usize",
-                                                                                                        BinOp.Wrap.mul,
-                                                                                                        [
-                                                                                                          M.read (|
-                                                                                                            j
-                                                                                                          |);
-                                                                                                          M.read (|
-                                                                                                            get_associated_constant (|
-                                                                                                              Ty.apply
-                                                                                                                (Ty.path
-                                                                                                                  "core::core_simd::vector::Simd")
-                                                                                                                [
-                                                                                                                  Value.Integer
-                                                                                                                    IntegerKind.Usize
-                                                                                                                    16
-                                                                                                                ]
-                                                                                                                [
-                                                                                                                  Ty.path
-                                                                                                                    "u8"
-                                                                                                                ],
-                                                                                                              "LEN",
-                                                                                                              Ty.path
-                                                                                                                "usize"
-                                                                                                            |)
+                                                                                                    M.read (|
+                                                                                                      i
+                                                                                                    |);
+                                                                                                    M.call_closure (|
+                                                                                                      Ty.path
+                                                                                                        "usize",
+                                                                                                      BinOp.Wrap.mul,
+                                                                                                      [
+                                                                                                        M.read (|
+                                                                                                          j
+                                                                                                        |);
+                                                                                                        M.read (|
+                                                                                                          get_associated_constant (|
+                                                                                                            Ty.apply
+                                                                                                              (Ty.path
+                                                                                                                "core::core_simd::vector::Simd")
+                                                                                                              [
+                                                                                                                Value.Integer
+                                                                                                                  IntegerKind.Usize
+                                                                                                                  16
+                                                                                                              ]
+                                                                                                              [
+                                                                                                                Ty.path
+                                                                                                                  "u8"
+                                                                                                              ],
+                                                                                                            "LEN",
+                                                                                                            Ty.path
+                                                                                                              "usize"
                                                                                                           |)
-                                                                                                        ]
-                                                                                                      |)
-                                                                                                    ]
-                                                                                                  |);
-                                                                                                  M.read (|
-                                                                                                    mask
-                                                                                                  |);
-                                                                                                  M.read (|
-                                                                                                    result
-                                                                                                  |)
-                                                                                                ]
-                                                                                            ]
-                                                                                          |)
-                                                                                        ]
-                                                                                      |)
+                                                                                                        |)
+                                                                                                      ]
+                                                                                                    |)
+                                                                                                  ]
+                                                                                                |);
+                                                                                                M.read (|
+                                                                                                  mask
+                                                                                                |);
+                                                                                                M.read (|
+                                                                                                  result
+                                                                                                |)
+                                                                                              ]
+                                                                                          ]
+                                                                                        |))),
+                                                                                      fun rhs' =>
+                                                                                        ltac:(M.monadic
+                                                                                          (let β :=
+                                                                                            result in
+                                                                                          M.write (|
+                                                                                            β,
+                                                                                            M.call_closure (|
+                                                                                              Ty.path
+                                                                                                "bool",
+                                                                                              BinOp.Wrap.bit_or,
+                                                                                              [
+                                                                                                M.read (|
+                                                                                                  β
+                                                                                                |);
+                                                                                                rhs'
+                                                                                              ]
+                                                                                            |)
+                                                                                          |)))
                                                                                     |) in
                                                                                   M.alloc (|
                                                                                     Ty.tuple [],
@@ -23252,38 +23442,41 @@ Module str.
                                           |))
                                       |) in
                                     let~ _ : Ty.tuple [] :=
-                                      let β := i in
-                                      M.write (|
-                                        β,
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          BinOp.Wrap.add,
-                                          [
-                                            M.read (| β |);
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              BinOp.Wrap.mul,
-                                              [
-                                                M.read (|
-                                                  get_constant (|
-                                                    "core::str::pattern::simd_contains::UNROLL",
-                                                    Ty.path "usize"
-                                                  |)
-                                                |);
-                                                M.read (|
-                                                  get_associated_constant (|
-                                                    Ty.apply
-                                                      (Ty.path "core::core_simd::vector::Simd")
-                                                      [ Value.Integer IntegerKind.Usize 16 ]
-                                                      [ Ty.path "u8" ],
-                                                    "LEN",
-                                                    Ty.path "usize"
-                                                  |)
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (M.call_closure (|
+                                            Ty.path "usize",
+                                            BinOp.Wrap.mul,
+                                            [
+                                              M.read (|
+                                                get_constant (|
+                                                  "core::str::pattern::simd_contains::UNROLL",
+                                                  Ty.path "usize"
                                                 |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
+                                              |);
+                                              M.read (|
+                                                get_associated_constant (|
+                                                  Ty.apply
+                                                    (Ty.path "core::core_simd::vector::Simd")
+                                                    [ Value.Integer IntegerKind.Usize 16 ]
+                                                    [ Ty.path "u8" ],
+                                                  "LEN",
+                                                  Ty.path "usize"
+                                                |)
+                                              |)
+                                            ]
+                                          |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (let β := i in
+                                            M.write (|
+                                              β,
+                                              M.call_closure (|
+                                                Ty.path "usize",
+                                                BinOp.Wrap.add,
+                                                [ M.read (| β |); rhs' ]
+                                              |)
+                                            |)))
                                       |) in
                                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                   |)));
@@ -23423,53 +23616,56 @@ Module str.
                                                 |) in
                                               M.read (|
                                                 let~ _ : Ty.tuple [] :=
-                                                  let β := result in
-                                                  M.write (|
-                                                    β,
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.Wrap.bit_or,
-                                                      [
-                                                        M.read (| β |);
-                                                        M.call_closure (|
-                                                          Ty.path "bool",
-                                                          M.get_trait_method (|
-                                                            "core::ops::function::Fn",
-                                                            Ty.function
+                                                  M.let_ (|
+                                                    ltac:(M.monadic
+                                                      (M.call_closure (|
+                                                        Ty.path "bool",
+                                                        M.get_trait_method (|
+                                                          "core::ops::function::Fn",
+                                                          Ty.function
+                                                            [
+                                                              Ty.path "usize";
+                                                              Ty.path "u16";
+                                                              Ty.path "bool"
+                                                            ]
+                                                            (Ty.path "bool"),
+                                                          [],
+                                                          [
+                                                            Ty.tuple
                                                               [
                                                                 Ty.path "usize";
                                                                 Ty.path "u16";
                                                                 Ty.path "bool"
                                                               ]
-                                                              (Ty.path "bool"),
-                                                            [],
+                                                          ],
+                                                          "call",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            check_mask
+                                                          |);
+                                                          Value.Tuple
                                                             [
-                                                              Ty.tuple
-                                                                [
-                                                                  Ty.path "usize";
-                                                                  Ty.path "u16";
-                                                                  Ty.path "bool"
-                                                                ]
-                                                            ],
-                                                            "call",
-                                                            [],
-                                                            []
-                                                          |),
-                                                          [
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              check_mask
-                                                            |);
-                                                            Value.Tuple
-                                                              [
-                                                                M.read (| i |);
-                                                                M.read (| mask |);
-                                                                M.read (| result |)
-                                                              ]
-                                                          ]
-                                                        |)
-                                                      ]
-                                                    |)
+                                                              M.read (| i |);
+                                                              M.read (| mask |);
+                                                              M.read (| result |)
+                                                            ]
+                                                        ]
+                                                      |))),
+                                                    fun rhs' =>
+                                                      ltac:(M.monadic
+                                                        (let β := result in
+                                                        M.write (|
+                                                          β,
+                                                          M.call_closure (|
+                                                            Ty.path "bool",
+                                                            BinOp.Wrap.bit_or,
+                                                            [ M.read (| β |); rhs' ]
+                                                          |)
+                                                        |)))
                                                   |) in
                                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                               |)));
@@ -23477,26 +23673,29 @@ Module str.
                                         ]
                                       |) in
                                     let~ _ : Ty.tuple [] :=
-                                      let β := i in
-                                      M.write (|
-                                        β,
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          BinOp.Wrap.add,
-                                          [
-                                            M.read (| β |);
-                                            M.read (|
-                                              get_associated_constant (|
-                                                Ty.apply
-                                                  (Ty.path "core::core_simd::vector::Simd")
-                                                  [ Value.Integer IntegerKind.Usize 16 ]
-                                                  [ Ty.path "u8" ],
-                                                "LEN",
-                                                Ty.path "usize"
-                                              |)
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (M.read (|
+                                            get_associated_constant (|
+                                              Ty.apply
+                                                (Ty.path "core::core_simd::vector::Simd")
+                                                [ Value.Integer IntegerKind.Usize 16 ]
+                                                [ Ty.path "u8" ],
+                                              "LEN",
+                                              Ty.path "usize"
                                             |)
-                                          ]
-                                        |)
+                                          |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (let β := i in
+                                            M.write (|
+                                              β,
+                                              M.call_closure (|
+                                                Ty.path "usize",
+                                                BinOp.Wrap.add,
+                                                [ M.read (| β |); rhs' ]
+                                              |)
+                                            |)))
                                       |) in
                                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                   |)));
@@ -23582,38 +23781,39 @@ Module str.
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
-                              let β := result in
-                              M.write (|
-                                β,
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.Wrap.bit_or,
-                                  [
-                                    M.read (| β |);
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_trait_method (|
-                                        "core::ops::function::Fn",
-                                        Ty.function
-                                          [ Ty.path "usize"; Ty.path "u16"; Ty.path "bool" ]
-                                          (Ty.path "bool"),
-                                        [],
-                                        [
-                                          Ty.tuple
-                                            [ Ty.path "usize"; Ty.path "u16"; Ty.path "bool" ]
-                                        ],
-                                        "call",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (| Pointer.Kind.Ref, check_mask |);
-                                        Value.Tuple
-                                          [ M.read (| i |); M.read (| mask |); M.read (| result |) ]
-                                      ]
-                                    |)
-                                  ]
-                                |)
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_trait_method (|
+                                      "core::ops::function::Fn",
+                                      Ty.function
+                                        [ Ty.path "usize"; Ty.path "u16"; Ty.path "bool" ]
+                                        (Ty.path "bool"),
+                                      [],
+                                      [ Ty.tuple [ Ty.path "usize"; Ty.path "u16"; Ty.path "bool" ]
+                                      ],
+                                      "call",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (| Pointer.Kind.Ref, check_mask |);
+                                      Value.Tuple
+                                        [ M.read (| i |); M.read (| mask |); M.read (| result |) ]
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (let β := result in
+                                    M.write (|
+                                      β,
+                                      M.call_closure (|
+                                        Ty.path "bool",
+                                        BinOp.Wrap.bit_or,
+                                        [ M.read (| β |); rhs' ]
+                                      |)
+                                    |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)));

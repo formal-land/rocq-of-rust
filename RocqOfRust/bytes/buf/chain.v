@@ -707,14 +707,19 @@ Module buf.
                                   ]
                                 |) in
                               let~ _ : Ty.tuple [] :=
-                                let β := cnt in
-                                M.write (|
-                                  β,
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    BinOp.Wrap.sub,
-                                    [ M.read (| β |); M.read (| a_rem |) ]
-                                  |)
+                                M.let_ (|
+                                  ltac:(M.monadic (M.read (| a_rem |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (let β := cnt in
+                                      M.write (|
+                                        β,
+                                        M.call_closure (|
+                                          Ty.path "usize",
+                                          BinOp.Wrap.sub,
+                                          [ M.read (| β |); rhs' ]
+                                        |)
+                                      |)))
                                 |) in
                               M.alloc (| Ty.tuple [], Value.Tuple [] |)
                             |)));
@@ -810,80 +815,83 @@ Module buf.
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
-                let β := n in
-                M.write (|
-                  β,
-                  M.call_closure (|
-                    Ty.path "usize",
-                    BinOp.Wrap.add,
-                    [
-                      M.read (| β |);
-                      M.call_closure (|
-                        Ty.path "usize",
-                        M.get_trait_method (|
-                          "bytes::buf::buf_impl::Buf",
-                          U,
-                          [],
-                          [],
-                          "chunks_vectored",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "bytes::buf::chain::Chain",
-                              "b"
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&mut")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "std::io::IoSlice" ]
-                                      ],
-                                    M.get_trait_method (|
-                                      "core::ops::index::IndexMut",
-                                      Ty.apply (Ty.path "slice") [] [ Ty.path "std::io::IoSlice" ],
-                                      [],
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::ops::range::RangeFrom")
-                                          []
-                                          [ Ty.path "usize" ]
-                                      ],
-                                      "index_mut",
-                                      [],
-                                      []
-                                    |),
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
+                      Ty.path "usize",
+                      M.get_trait_method (|
+                        "bytes::buf::buf_impl::Buf",
+                        U,
+                        [],
+                        [],
+                        "chunks_vectored",
+                        [],
+                        []
+                      |),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "bytes::buf::chain::Chain",
+                            "b"
+                          |)
+                        |);
+                        M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "std::io::IoSlice" ]
+                                    ],
+                                  M.get_trait_method (|
+                                    "core::ops::index::IndexMut",
+                                    Ty.apply (Ty.path "slice") [] [ Ty.path "std::io::IoSlice" ],
+                                    [],
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (| M.read (| dst |) |)
-                                      |);
-                                      Value.mkStructRecord
-                                        "core::ops::range::RangeFrom"
+                                      Ty.apply
+                                        (Ty.path "core::ops::range::RangeFrom")
                                         []
                                         [ Ty.path "usize" ]
-                                        [ ("start", M.read (| n |)) ]
-                                    ]
-                                  |)
+                                    ],
+                                    "index_mut",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (| M.read (| dst |) |)
+                                    |);
+                                    Value.mkStructRecord
+                                      "core::ops::range::RangeFrom"
+                                      []
+                                      [ Ty.path "usize" ]
+                                      [ ("start", M.read (| n |)) ]
+                                  ]
                                 |)
                               |)
                             |)
                           |)
-                        ]
-                      |)
-                    ]
-                  |)
+                        |)
+                      ]
+                    |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (let β := n in
+                      M.write (|
+                        β,
+                        M.call_closure (|
+                          Ty.path "usize",
+                          BinOp.Wrap.add,
+                          [ M.read (| β |); rhs' ]
+                        |)
+                      |)))
                 |) in
               n
             |)))
@@ -1625,14 +1633,19 @@ Module buf.
                                   ]
                                 |) in
                               let~ _ : Ty.tuple [] :=
-                                let β := cnt in
-                                M.write (|
-                                  β,
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    BinOp.Wrap.sub,
-                                    [ M.read (| β |); M.read (| a_rem |) ]
-                                  |)
+                                M.let_ (|
+                                  ltac:(M.monadic (M.read (| a_rem |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (let β := cnt in
+                                      M.write (|
+                                        β,
+                                        M.call_closure (|
+                                          Ty.path "usize",
+                                          BinOp.Wrap.sub,
+                                          [ M.read (| β |); rhs' ]
+                                        |)
+                                      |)))
                                 |) in
                               M.alloc (| Ty.tuple [], Value.Tuple [] |)
                             |)));

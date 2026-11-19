@@ -1,0 +1,10 @@
+warning: [ROR003] floating-point literal in main
+  --> examples/rust_book/generics/generics_implementation.rs:24:24
+   |
+24 |     let x = Val { val: 3.0 };
+   |                        ^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: 1 warning emitted
+

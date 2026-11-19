@@ -1025,29 +1025,35 @@ Module iter.
                         ]
                       |) in
                     let~ _ : Ty.tuple [] :=
-                      M.write (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::iter::adapters::array_chunks::ArrayChunks",
-                          "remainder"
-                        |),
-                        Value.StructTuple
-                          "core::option::Option::Some"
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "core::array::iter::IntoIter")
-                              [ N ]
-                              [
-                                Ty.associated_in_trait
-                                  "core::iter::traits::iterator::Iterator"
-                                  []
-                                  []
-                                  I
-                                  "Item"
-                              ]
-                          ]
-                          [ M.read (| remainder |) ]
+                      M.let_ (|
+                        ltac:(M.monadic
+                          (Value.StructTuple
+                            "core::option::Option::Some"
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::array::iter::IntoIter")
+                                [ N ]
+                                [
+                                  Ty.associated_in_trait
+                                    "core::iter::traits::iterator::Iterator"
+                                    []
+                                    []
+                                    I
+                                    "Item"
+                                ]
+                            ]
+                            [ M.read (| remainder |) ])),
+                        fun rhs' =>
+                          ltac:(M.monadic
+                            (M.write (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::iter::adapters::array_chunks::ArrayChunks",
+                                "remainder"
+                              |),
+                              rhs'
+                            |)))
                       |) in
                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
                   |)))
@@ -1813,7 +1819,9 @@ Module iter.
                                             M.read (| remainder |)
                                           ]
                                         |) in
-                                      M.break (||)
+                                      M.impossible (|
+                                        "[ROR001] value-carrying break in <iter::adapters::array_chunks::ArrayChunks<I, N> as iter::traits::iterator::Iterator>::try_fold"
+                                      |)
                                     |)
                                   |)))
                             ]
@@ -3440,8 +3448,12 @@ Module iter.
             : M :=
           let Self : Ty.t := Self N I in
           ltac:(M.monadic
-            (get_constant (|
-              "core::iter::traits::marker::InPlaceIterable::EXPAND_BY",
+            (get_trait_constant (|
+              "core::iter::traits::marker::InPlaceIterable",
+              I,
+              [],
+              [],
+              "EXPAND_BY",
               Ty.apply
                 (Ty.path "core::option::Option")
                 []

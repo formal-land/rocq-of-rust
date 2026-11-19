@@ -180,29 +180,35 @@ Module asserting.
             |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| to |) |),
-                  "core::asserting::Capture",
-                  "elem"
-                |),
-                Value.StructTuple
-                  "core::option::Option::Some"
-                  []
-                  [ E ]
-                  [
-                    M.read (|
-                      M.deref (|
-                        M.read (|
-                          M.SubPointer.get_struct_tuple_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::asserting::Wrapper",
-                            0
+              M.let_ (|
+                ltac:(M.monadic
+                  (Value.StructTuple
+                    "core::option::Option::Some"
+                    []
+                    [ E ]
+                    [
+                      M.read (|
+                        M.deref (|
+                          M.read (|
+                            M.SubPointer.get_struct_tuple_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::asserting::Wrapper",
+                              0
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
+                    ])),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| to |) |),
+                        "core::asserting::Capture",
+                        "elem"
+                      |),
+                      rhs'
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))

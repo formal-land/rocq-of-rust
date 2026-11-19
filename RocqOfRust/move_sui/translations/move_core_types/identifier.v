@@ -26,9 +26,69 @@ Module identifier.
                         (let _ :=
                           is_constant_or_break_match (| M.read (| γ |), Value.UnicodeChar 95 |) in
                         Value.Tuple []));
-                    fun γ => ltac:(M.monadic (Value.Tuple []));
-                    fun γ => ltac:(M.monadic (Value.Tuple []));
-                    fun γ => ltac:(M.monadic (Value.Tuple []))
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let _ :=
+                          is_constant_or_break_match (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.ge,
+                              [ M.read (| γ |); Value.UnicodeChar 97 ]
+                            |),
+                            Value.Bool true
+                          |) in
+                        let _ :=
+                          is_constant_or_break_match (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.le,
+                              [ M.read (| γ |); Value.UnicodeChar 122 ]
+                            |),
+                            Value.Bool true
+                          |) in
+                        Value.Tuple []));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let _ :=
+                          is_constant_or_break_match (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.ge,
+                              [ M.read (| γ |); Value.UnicodeChar 65 ]
+                            |),
+                            Value.Bool true
+                          |) in
+                        let _ :=
+                          is_constant_or_break_match (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.le,
+                              [ M.read (| γ |); Value.UnicodeChar 90 ]
+                            |),
+                            Value.Bool true
+                          |) in
+                        Value.Tuple []));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let _ :=
+                          is_constant_or_break_match (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.ge,
+                              [ M.read (| γ |); Value.UnicodeChar 48 ]
+                            |),
+                            Value.Bool true
+                          |) in
+                        let _ :=
+                          is_constant_or_break_match (|
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.le,
+                              [ M.read (| γ |); Value.UnicodeChar 57 ]
+                            |),
+                            Value.Bool true
+                          |) in
+                        Value.Tuple []))
                   ],
                   fun γ =>
                     ltac:(M.monadic
@@ -2468,16 +2528,50 @@ Module identifier.
                     [
                       mk_str (| "IdentStr" |);
                       M.read (|
-                        get_constant (| "ref_cast::layout::LayoutUnsized::SIZE", Ty.path "usize" |)
+                        get_trait_constant (|
+                          "ref_cast::layout::LayoutUnsized",
+                          Ty.apply
+                            (Ty.path "ref_cast::layout::Layout")
+                            []
+                            [ Ty.path "move_core_types::identifier::IdentStr" ],
+                          [],
+                          [ Ty.path "move_core_types::identifier::IdentStr" ],
+                          "SIZE",
+                          Ty.path "usize"
+                        |)
                       |);
                       M.read (|
-                        get_constant (| "ref_cast::layout::LayoutUnsized::SIZE", Ty.path "usize" |)
+                        get_trait_constant (|
+                          "ref_cast::layout::LayoutUnsized",
+                          Ty.apply (Ty.path "ref_cast::layout::Layout") [] [ Ty.path "str" ],
+                          [],
+                          [ Ty.path "str" ],
+                          "SIZE",
+                          Ty.path "usize"
+                        |)
                       |);
                       M.read (|
-                        get_constant (| "ref_cast::layout::LayoutUnsized::ALIGN", Ty.path "usize" |)
+                        get_trait_constant (|
+                          "ref_cast::layout::LayoutUnsized",
+                          Ty.apply
+                            (Ty.path "ref_cast::layout::Layout")
+                            []
+                            [ Ty.path "move_core_types::identifier::IdentStr" ],
+                          [],
+                          [ Ty.path "move_core_types::identifier::IdentStr" ],
+                          "ALIGN",
+                          Ty.path "usize"
+                        |)
                       |);
                       M.read (|
-                        get_constant (| "ref_cast::layout::LayoutUnsized::ALIGN", Ty.path "usize" |)
+                        get_trait_constant (|
+                          "ref_cast::layout::LayoutUnsized",
+                          Ty.apply (Ty.path "ref_cast::layout::Layout") [] [ Ty.path "str" ],
+                          [],
+                          [ Ty.path "str" ],
+                          "ALIGN",
+                          Ty.path "usize"
+                        |)
                       |)
                     ]
                   |) in
@@ -2552,26 +2646,48 @@ Module identifier.
                         [
                           mk_str (| "IdentStr" |);
                           M.read (|
-                            get_constant (|
-                              "ref_cast::layout::LayoutUnsized::SIZE",
+                            get_trait_constant (|
+                              "ref_cast::layout::LayoutUnsized",
+                              Ty.apply
+                                (Ty.path "ref_cast::layout::Layout")
+                                []
+                                [ Ty.path "move_core_types::identifier::IdentStr" ],
+                              [],
+                              [ Ty.path "move_core_types::identifier::IdentStr" ],
+                              "SIZE",
                               Ty.path "usize"
                             |)
                           |);
                           M.read (|
-                            get_constant (|
-                              "ref_cast::layout::LayoutUnsized::SIZE",
+                            get_trait_constant (|
+                              "ref_cast::layout::LayoutUnsized",
+                              Ty.apply (Ty.path "ref_cast::layout::Layout") [] [ Ty.path "str" ],
+                              [],
+                              [ Ty.path "str" ],
+                              "SIZE",
                               Ty.path "usize"
                             |)
                           |);
                           M.read (|
-                            get_constant (|
-                              "ref_cast::layout::LayoutUnsized::ALIGN",
+                            get_trait_constant (|
+                              "ref_cast::layout::LayoutUnsized",
+                              Ty.apply
+                                (Ty.path "ref_cast::layout::Layout")
+                                []
+                                [ Ty.path "move_core_types::identifier::IdentStr" ],
+                              [],
+                              [ Ty.path "move_core_types::identifier::IdentStr" ],
+                              "ALIGN",
                               Ty.path "usize"
                             |)
                           |);
                           M.read (|
-                            get_constant (|
-                              "ref_cast::layout::LayoutUnsized::ALIGN",
+                            get_trait_constant (|
+                              "ref_cast::layout::LayoutUnsized",
+                              Ty.apply (Ty.path "ref_cast::layout::Layout") [] [ Ty.path "str" ],
+                              [],
+                              [ Ty.path "str" ],
+                              "ALIGN",
                               Ty.path "usize"
                             |)
                           |)

@@ -10,5 +10,5 @@ name = "rocq-of-rust"
 path = "src/main.rs"
 
 [dependencies]
-rocq_of_rust_lib = { path = "../lib" } 
+rocq_of_rust_lib = { version = "0.1.0", path = "../lib" }
 clap = { version = "4.1.4", features = ["derive"] }

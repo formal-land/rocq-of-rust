@@ -2403,13 +2403,7 @@ Module bn254.
               point
             |) in
           M.catch_return
-            (Ty.apply
-              (Ty.path "array")
-              [
-                M.unevaluated_const
-                  (mk_str (| "revm_precompile_bn254_arkworks_encode_g1_point_discriminant" |))
-              ]
-              [ Ty.path "u8" ]) (|
+            (Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 64 ] [ Ty.path "u8" ]) (|
             ltac:(M.monadic
               (M.read (|
                 let~ output :

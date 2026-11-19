@@ -38,20 +38,41 @@ Module fmt.
                     M.call_closure (|
                       Ty.path "bool",
                       BinOp.ne,
-                      [ M.read (| abs |); M.read (| UnsupportedLiteral |) ]
+                      [
+                        M.read (| abs |);
+                        M.read (|
+                          M.impossible (|
+                            "[ROR003] floating-point literal in <f16 as fmt::float::GeneralFormat>::already_rounded_value_should_use_exponential"
+                          |)
+                        |)
+                      ]
                     |),
                     ltac:(M.monadic
                       (M.call_closure (|
                         Ty.path "bool",
                         BinOp.lt,
-                        [ M.read (| abs |); M.read (| UnsupportedLiteral |) ]
+                        [
+                          M.read (| abs |);
+                          M.read (|
+                            M.impossible (|
+                              "[ROR003] floating-point literal in <f16 as fmt::float::GeneralFormat>::already_rounded_value_should_use_exponential"
+                            |)
+                          |)
+                        ]
                       |)))
                   |),
                   ltac:(M.monadic
                     (M.call_closure (|
                       Ty.path "bool",
                       BinOp.ge,
-                      [ M.read (| abs |); M.read (| UnsupportedLiteral |) ]
+                      [
+                        M.read (| abs |);
+                        M.read (|
+                          M.impossible (|
+                            "[ROR003] floating-point literal in <f16 as fmt::float::GeneralFormat>::already_rounded_value_should_use_exponential"
+                          |)
+                        |)
+                      ]
                     |)))
                 |)
               |)
@@ -104,20 +125,41 @@ Module fmt.
                     M.call_closure (|
                       Ty.path "bool",
                       BinOp.ne,
-                      [ M.read (| abs |); M.read (| UnsupportedLiteral |) ]
+                      [
+                        M.read (| abs |);
+                        M.read (|
+                          M.impossible (|
+                            "[ROR003] floating-point literal in <f32 as fmt::float::GeneralFormat>::already_rounded_value_should_use_exponential"
+                          |)
+                        |)
+                      ]
                     |),
                     ltac:(M.monadic
                       (M.call_closure (|
                         Ty.path "bool",
                         BinOp.lt,
-                        [ M.read (| abs |); M.read (| UnsupportedLiteral |) ]
+                        [
+                          M.read (| abs |);
+                          M.read (|
+                            M.impossible (|
+                              "[ROR003] floating-point literal in <f32 as fmt::float::GeneralFormat>::already_rounded_value_should_use_exponential"
+                            |)
+                          |)
+                        ]
                       |)))
                   |),
                   ltac:(M.monadic
                     (M.call_closure (|
                       Ty.path "bool",
                       BinOp.ge,
-                      [ M.read (| abs |); M.read (| UnsupportedLiteral |) ]
+                      [
+                        M.read (| abs |);
+                        M.read (|
+                          M.impossible (|
+                            "[ROR003] floating-point literal in <f32 as fmt::float::GeneralFormat>::already_rounded_value_should_use_exponential"
+                          |)
+                        |)
+                      ]
                     |)))
                 |)
               |)
@@ -170,20 +212,41 @@ Module fmt.
                     M.call_closure (|
                       Ty.path "bool",
                       BinOp.ne,
-                      [ M.read (| abs |); M.read (| UnsupportedLiteral |) ]
+                      [
+                        M.read (| abs |);
+                        M.read (|
+                          M.impossible (|
+                            "[ROR003] floating-point literal in <f64 as fmt::float::GeneralFormat>::already_rounded_value_should_use_exponential"
+                          |)
+                        |)
+                      ]
                     |),
                     ltac:(M.monadic
                       (M.call_closure (|
                         Ty.path "bool",
                         BinOp.lt,
-                        [ M.read (| abs |); M.read (| UnsupportedLiteral |) ]
+                        [
+                          M.read (| abs |);
+                          M.read (|
+                            M.impossible (|
+                              "[ROR003] floating-point literal in <f64 as fmt::float::GeneralFormat>::already_rounded_value_should_use_exponential"
+                            |)
+                          |)
+                        ]
                       |)))
                   |),
                   ltac:(M.monadic
                     (M.call_closure (|
                       Ty.path "bool",
                       BinOp.ge,
-                      [ M.read (| abs |); M.read (| UnsupportedLiteral |) ]
+                      [
+                        M.read (| abs |);
+                        M.read (|
+                          M.impossible (|
+                            "[ROR003] floating-point literal in <f64 as fmt::float::GeneralFormat>::already_rounded_value_should_use_exponential"
+                          |)
+                        |)
+                      ]
                     |)))
                 |)
               |)

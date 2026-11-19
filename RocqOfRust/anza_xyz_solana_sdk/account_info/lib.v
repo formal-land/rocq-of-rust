@@ -3568,74 +3568,85 @@ Module Impl_solana_account_info_AccountInfo.
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.deref (|
-                        M.cast
-                          (Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ])
-                          (M.call_closure (|
-                            Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                              "offset",
-                              [],
-                              []
+                    M.let_ (|
+                      ltac:(M.monadic (M.cast (Ty.path "u64") (M.read (| new_len |)))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.deref (|
+                              M.cast
+                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ])
+                                (M.call_closure (|
+                                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                    "offset",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.read (| data_ptr |); Value.Integer IntegerKind.Isize (-8) ]
+                                |))
                             |),
-                            [ M.read (| data_ptr |); Value.Integer IntegerKind.Isize (-8) ]
-                          |))
-                      |),
-                      M.cast (Ty.path "u64") (M.read (| new_len |))
+                            rhs'
+                          |)))
                     |) in
                   M.alloc (|
                     Ty.tuple [],
-                    M.write (|
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&mut")
-                            []
-                            [
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (|
+                            M.call_closure (|
                               Ty.apply
                                 (Ty.path "&mut")
                                 []
-                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                            ],
-                          M.get_trait_method (|
-                            "core::ops::deref::DerefMut",
-                            Ty.apply
-                              (Ty.path "core::cell::RefMut")
-                              []
-                              [
+                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                              M.get_function (|
+                                "core::slice::raw::from_raw_parts_mut",
+                                [],
+                                [ Ty.path "u8" ]
+                              |),
+                              [ M.read (| data_ptr |); M.read (| new_len |) ]
+                            |)
+                          |)
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.deref (|
+                              M.call_closure (|
                                 Ty.apply
                                   (Ty.path "&mut")
                                   []
-                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                              ],
-                            [],
-                            [],
-                            "deref_mut",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.MutRef, data |) ]
-                        |)
-                      |),
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&mut")
-                              []
-                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                            M.get_function (|
-                              "core::slice::raw::from_raw_parts_mut",
-                              [],
-                              [ Ty.path "u8" ]
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                  ],
+                                M.get_trait_method (|
+                                  "core::ops::deref::DerefMut",
+                                  Ty.apply
+                                    (Ty.path "core::cell::RefMut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                    ],
+                                  [],
+                                  [],
+                                  "deref_mut",
+                                  [],
+                                  []
+                                |),
+                                [ M.borrow (| Pointer.Kind.MutRef, data |) ]
+                              |)
                             |),
-                            [ M.read (| data_ptr |); M.read (| new_len |) ]
-                          |)
-                        |)
-                      |)
+                            rhs'
+                          |)))
                     |)
                   |)
                 |) in
@@ -4826,29 +4837,31 @@ Definition next_account_infos (ε : list Value.t) (τ : list Ty.t) (α : list Va
                         |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
-                          M.write (|
-                            M.deref (| M.read (| iter |) |),
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "core::slice::iter::Iter")
-                                []
-                                [ Ty.path "solana_account_info::AccountInfo" ],
-                              M.get_associated_function (|
+                          M.let_ (|
+                            ltac:(M.monadic
+                              (M.call_closure (|
                                 Ty.apply
-                                  (Ty.path "slice")
+                                  (Ty.path "core::slice::iter::Iter")
                                   []
                                   [ Ty.path "solana_account_info::AccountInfo" ],
-                                "iter",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (| M.read (| remaining |) |)
-                                |)
-                              ]
-                            |)
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [ Ty.path "solana_account_info::AccountInfo" ],
+                                  "iter",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| remaining |) |)
+                                  |)
+                                ]
+                              |))),
+                            fun rhs' =>
+                              ltac:(M.monadic (M.write (| M.deref (| M.read (| iter |) |), rhs' |)))
                           |) in
                         M.alloc (|
                           Ty.apply

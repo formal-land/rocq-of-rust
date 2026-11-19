@@ -1,0 +1,10 @@
+warning: [ROR001] value-carrying break in main
+ --> examples/rust_book/flow_of_control/loop_returning_from_loops.rs:8:13
+  |
+8 |             break counter * 2;
+  |             ^^^^^^^^^^^^^^^^^
+  |
+  = note: Execution of this expression is unsupported
+
+warning: 1 warning emitted
+

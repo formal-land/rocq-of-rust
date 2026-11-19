@@ -2182,21 +2182,22 @@ Module num.
               M.alloc (| Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ T ], rhs |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ T ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitOr",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ T ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ T ] ],
-                      "bitor",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::bit::BitOr",
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ T ],
+                        [],
+                        [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ T ] ],
+                        "bitor",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -2244,21 +2245,22 @@ Module num.
             let rhs := M.alloc (| T, rhs |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ T ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitOr",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ T ],
-                      [],
-                      [ T ],
-                      "bitor",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::bit::BitOr",
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ T ],
+                        [],
+                        [ T ],
+                        "bitor",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -5206,21 +5208,22 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.path "u8",
-                    M.get_trait_method (|
-                      "core::ops::arith::Div",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.path "u8",
-                      [],
-                      [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u8" ] ],
-                      "div",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Div",
+                        Ty.path "u8",
+                        [],
+                        [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u8" ] ],
+                        "div",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -5311,21 +5314,22 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.path "u8",
-                    M.get_trait_method (|
-                      "core::ops::arith::Rem",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.path "u8",
-                      [],
-                      [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u8" ] ],
-                      "rem",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Rem",
+                        Ty.path "u8",
+                        [],
+                        [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u8" ] ],
+                        "rem",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -7765,21 +7769,22 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.path "u16",
-                    M.get_trait_method (|
-                      "core::ops::arith::Div",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.path "u16",
-                      [],
-                      [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u16" ] ],
-                      "div",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Div",
+                        Ty.path "u16",
+                        [],
+                        [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u16" ] ],
+                        "div",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -7870,21 +7875,22 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.path "u16",
-                    M.get_trait_method (|
-                      "core::ops::arith::Rem",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.path "u16",
-                      [],
-                      [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u16" ] ],
-                      "rem",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Rem",
+                        Ty.path "u16",
+                        [],
+                        [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u16" ] ],
+                        "rem",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -10324,21 +10330,22 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.path "u32",
-                    M.get_trait_method (|
-                      "core::ops::arith::Div",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.path "u32",
-                      [],
-                      [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ] ],
-                      "div",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Div",
+                        Ty.path "u32",
+                        [],
+                        [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ] ],
+                        "div",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -10429,21 +10436,22 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.path "u32",
-                    M.get_trait_method (|
-                      "core::ops::arith::Rem",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.path "u32",
-                      [],
-                      [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ] ],
-                      "rem",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Rem",
+                        Ty.path "u32",
+                        [],
+                        [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u32" ] ],
+                        "rem",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -12883,21 +12891,22 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.path "u64",
-                    M.get_trait_method (|
-                      "core::ops::arith::Div",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.path "u64",
-                      [],
-                      [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ] ],
-                      "div",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Div",
+                        Ty.path "u64",
+                        [],
+                        [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ] ],
+                        "div",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -12988,21 +12997,22 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.path "u64",
-                    M.get_trait_method (|
-                      "core::ops::arith::Rem",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.path "u64",
-                      [],
-                      [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ] ],
-                      "rem",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Rem",
+                        Ty.path "u64",
+                        [],
+                        [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ] ],
+                        "rem",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -15443,21 +15453,22 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.path "u128",
-                    M.get_trait_method (|
-                      "core::ops::arith::Div",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.path "u128",
-                      [],
-                      [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u128" ] ],
-                      "div",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Div",
+                        Ty.path "u128",
+                        [],
+                        [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u128" ] ],
+                        "div",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -15548,21 +15559,22 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.path "u128",
-                    M.get_trait_method (|
-                      "core::ops::arith::Rem",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.path "u128",
-                      [],
-                      [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u128" ] ],
-                      "rem",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Rem",
+                        Ty.path "u128",
+                        [],
+                        [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u128" ] ],
+                        "rem",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -18006,21 +18018,22 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.path "usize",
-                    M.get_trait_method (|
-                      "core::ops::arith::Div",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.path "usize",
-                      [],
-                      [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ] ],
-                      "div",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Div",
+                        Ty.path "usize",
+                        [],
+                        [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ] ],
+                        "div",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -18111,21 +18124,22 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.path "usize",
-                    M.get_trait_method (|
-                      "core::ops::arith::Rem",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.path "usize",
-                      [],
-                      [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ] ],
-                      "rem",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Rem",
+                        Ty.path "usize",
+                        [],
+                        [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ] ],
+                        "rem",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))

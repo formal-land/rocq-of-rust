@@ -440,19 +440,22 @@ Module unicode.
                                                 |) in
                                               M.read (|
                                                 let~ _ : Ty.tuple [] :=
-                                                  let β := word in
-                                                  M.write (|
-                                                    β,
-                                                    M.call_closure (|
-                                                      Ty.path "u64",
-                                                      BinOp.Wrap.shr,
-                                                      [
-                                                        M.read (| β |);
-                                                        M.cast
-                                                          (Ty.path "u64")
-                                                          (M.read (| quantity |))
-                                                      ]
-                                                    |)
+                                                  M.let_ (|
+                                                    ltac:(M.monadic
+                                                      (M.cast
+                                                        (Ty.path "u64")
+                                                        (M.read (| quantity |)))),
+                                                    fun rhs' =>
+                                                      ltac:(M.monadic
+                                                        (let β := word in
+                                                        M.write (|
+                                                          β,
+                                                          M.call_closure (|
+                                                            Ty.path "u64",
+                                                            BinOp.Wrap.shr,
+                                                            [ M.read (| β |); rhs' ]
+                                                          |)
+                                                        |)))
                                                   |) in
                                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                               |)));
@@ -1398,17 +1401,20 @@ Module unicode.
                                                   |)
                                                 |) in
                                               let~ _ : Ty.tuple [] :=
-                                                let β := prefix_sum in
-                                                M.write (|
-                                                  β,
-                                                  M.call_closure (|
-                                                    Ty.path "u32",
-                                                    BinOp.Wrap.add,
-                                                    [
-                                                      M.read (| β |);
-                                                      M.cast (Ty.path "u32") (M.read (| offset |))
-                                                    ]
-                                                  |)
+                                                M.let_ (|
+                                                  ltac:(M.monadic
+                                                    (M.cast (Ty.path "u32") (M.read (| offset |)))),
+                                                  fun rhs' =>
+                                                    ltac:(M.monadic
+                                                      (let β := prefix_sum in
+                                                      M.write (|
+                                                        β,
+                                                        M.call_closure (|
+                                                          Ty.path "u32",
+                                                          BinOp.Wrap.add,
+                                                          [ M.read (| β |); rhs' ]
+                                                        |)
+                                                      |)))
                                                 |) in
                                               let~ _ : Ty.tuple [] :=
                                                 M.match_operator (|

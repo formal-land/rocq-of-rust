@@ -970,36 +970,56 @@ Module bytes.
                     [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (| ret, "bytes::bytes::Bytes", "len" |),
-                    M.call_closure (|
-                      Ty.path "usize",
-                      BinOp.Wrap.sub,
-                      [ M.read (| end_ |); M.read (| begin |) ]
-                    |)
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.call_closure (|
+                        Ty.path "usize",
+                        BinOp.Wrap.sub,
+                        [ M.read (| end_ |); M.read (| begin |) ]
+                      |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            ret,
+                            "bytes::bytes::Bytes",
+                            "len"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (| ret, "bytes::bytes::Bytes", "ptr" |),
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                      M.get_associated_function (|
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.call_closure (|
                         Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                        "add",
-                        [],
-                        []
-                      |),
-                      [
-                        M.read (|
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                          "add",
+                          [],
+                          []
+                        |),
+                        [
+                          M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              ret,
+                              "bytes::bytes::Bytes",
+                              "ptr"
+                            |)
+                          |);
+                          M.read (| begin |)
+                        ]
+                      |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
                           M.SubPointer.get_struct_record_field (|
                             ret,
                             "bytes::bytes::Bytes",
                             "ptr"
-                          |)
-                        |);
-                        M.read (| begin |)
-                      ]
-                    |)
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 ret
               |)))
@@ -2127,13 +2147,18 @@ Module bytes.
                     [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "bytes::bytes::Bytes",
-                      "len"
-                    |),
-                    M.read (| at_ |)
+                  M.let_ (|
+                    ltac:(M.monadic (M.read (| at_ |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "bytes::bytes::Bytes",
+                            "len"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.call_closure (|
@@ -2521,9 +2546,18 @@ Module bytes.
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (| ret, "bytes::bytes::Bytes", "len" |),
-                    M.read (| at_ |)
+                  M.let_ (|
+                    ltac:(M.monadic (M.read (| at_ |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            ret,
+                            "bytes::bytes::Bytes",
+                            "len"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 ret
               |)))
@@ -2777,13 +2811,18 @@ Module bytes.
                         ltac:(M.monadic
                           (M.read (|
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "bytes::bytes::Bytes",
-                                  "len"
-                                |),
-                                M.read (| len |)
+                              M.let_ (|
+                                ltac:(M.monadic (M.read (| len |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "bytes::bytes::Bytes",
+                                        "len"
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)))
@@ -3075,46 +3114,53 @@ Module bytes.
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
-              let β :=
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "bytes::bytes::Bytes",
-                  "len"
-                |) in
-              M.write (|
-                β,
-                M.call_closure (|
-                  Ty.path "usize",
-                  BinOp.Wrap.sub,
-                  [ M.read (| β |); M.read (| by_ |) ]
-                |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| by_ |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (let β :=
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "bytes::bytes::Bytes",
+                        "len"
+                      |) in
+                    M.write (|
+                      β,
+                      M.call_closure (| Ty.path "usize", BinOp.Wrap.sub, [ M.read (| β |); rhs' ] |)
+                    |)))
               |) in
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "bytes::bytes::Bytes",
-                  "ptr"
-                |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                  M.get_associated_function (|
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                    "add",
-                    [],
-                    []
-                  |),
-                  [
-                    M.read (|
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                      "add",
+                      [],
+                      []
+                    |),
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "bytes::bytes::Bytes",
+                          "ptr"
+                        |)
+                      |);
+                      M.read (| by_ |)
+                    ]
+                  |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
                       M.SubPointer.get_struct_record_field (|
                         M.deref (| M.read (| self |) |),
                         "bytes::bytes::Bytes",
                         "ptr"
-                      |)
-                    |);
-                    M.read (| by_ |)
-                  ]
-                |)
+                      |),
+                      rhs'
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))

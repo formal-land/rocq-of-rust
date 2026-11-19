@@ -1114,19 +1114,20 @@ Module gas.
           let returned := M.alloc (| Ty.path "u64", returned |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              let β :=
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_interpreter::gas::Gas",
-                  "remaining"
-                |) in
-              M.write (|
-                β,
-                M.call_closure (|
-                  Ty.path "u64",
-                  BinOp.Wrap.add,
-                  [ M.read (| β |); M.read (| returned |) ]
-                |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| returned |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (let β :=
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_interpreter::gas::Gas",
+                        "remaining"
+                      |) in
+                    M.write (|
+                      β,
+                      M.call_closure (| Ty.path "u64", BinOp.Wrap.add, [ M.read (| β |); rhs' ] |)
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -1191,19 +1192,20 @@ Module gas.
           let refund := M.alloc (| Ty.path "i64", refund |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              let β :=
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_interpreter::gas::Gas",
-                  "refunded"
-                |) in
-              M.write (|
-                β,
-                M.call_closure (|
-                  Ty.path "i64",
-                  BinOp.Wrap.add,
-                  [ M.read (| β |); M.read (| refund |) ]
-                |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| refund |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (let β :=
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_interpreter::gas::Gas",
+                        "refunded"
+                      |) in
+                    M.write (|
+                      β,
+                      M.call_closure (| Ty.path "i64", BinOp.Wrap.add, [ M.read (| β |); rhs' ] |)
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -1247,49 +1249,63 @@ Module gas.
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_interpreter::gas::Gas",
-                  "refunded"
-                |),
-                M.cast
-                  (Ty.path "i64")
-                  (M.call_closure (|
-                    Ty.path "u64",
-                    M.get_trait_method (| "core::cmp::Ord", Ty.path "u64", [], [], "min", [], [] |),
-                    [
-                      M.cast
-                        (Ty.path "u64")
-                        (M.call_closure (|
-                          Ty.path "i64",
-                          M.get_associated_function (|
-                            Ty.path "revm_interpreter::gas::Gas",
-                            "refunded",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                        |));
-                      M.call_closure (|
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.cast
+                    (Ty.path "i64")
+                    (M.call_closure (|
+                      Ty.path "u64",
+                      M.get_trait_method (|
+                        "core::cmp::Ord",
                         Ty.path "u64",
-                        BinOp.Wrap.div,
-                        [
-                          M.call_closure (|
-                            Ty.path "u64",
+                        [],
+                        [],
+                        "min",
+                        [],
+                        []
+                      |),
+                      [
+                        M.cast
+                          (Ty.path "u64")
+                          (M.call_closure (|
+                            Ty.path "i64",
                             M.get_associated_function (|
                               Ty.path "revm_interpreter::gas::Gas",
-                              "spent",
+                              "refunded",
                               [],
                               []
                             |),
                             [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                          |);
-                          M.read (| max_refund_quotient |)
-                        ]
-                      |)
-                    ]
-                  |))
+                          |));
+                        M.call_closure (|
+                          Ty.path "u64",
+                          BinOp.Wrap.div,
+                          [
+                            M.call_closure (|
+                              Ty.path "u64",
+                              M.get_associated_function (|
+                                Ty.path "revm_interpreter::gas::Gas",
+                                "spent",
+                                [],
+                                []
+                              |),
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            |);
+                            M.read (| max_refund_quotient |)
+                          ]
+                        |)
+                      ]
+                    |)))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_interpreter::gas::Gas",
+                        "refunded"
+                      |),
+                      rhs'
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -1319,13 +1335,18 @@ Module gas.
           let refund := M.alloc (| Ty.path "i64", refund |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_interpreter::gas::Gas",
-                  "refunded"
-                |),
-                M.read (| refund |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| refund |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_interpreter::gas::Gas",
+                        "refunded"
+                      |),
+                      rhs'
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -1355,26 +1376,32 @@ Module gas.
           let spent := M.alloc (| Ty.path "u64", spent |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_interpreter::gas::Gas",
-                  "remaining"
-                |),
-                M.call_closure (|
-                  Ty.path "u64",
-                  M.get_associated_function (| Ty.path "u64", "saturating_sub", [], [] |),
-                  [
-                    M.read (|
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
+                    Ty.path "u64",
+                    M.get_associated_function (| Ty.path "u64", "saturating_sub", [], [] |),
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_interpreter::gas::Gas",
+                          "limit"
+                        |)
+                      |);
+                      M.read (| spent |)
+                    ]
+                  |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
                       M.SubPointer.get_struct_record_field (|
                         M.deref (| M.read (| self |) |),
                         "revm_interpreter::gas::Gas",
-                        "limit"
-                      |)
-                    |);
-                    M.read (| spent |)
-                  ]
-                |)
+                        "remaining"
+                      |),
+                      rhs'
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -1449,13 +1476,18 @@ Module gas.
                           M.never_to_any (|
                             M.read (|
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "revm_interpreter::gas::Gas",
-                                    "remaining"
-                                  |),
-                                  M.read (| new_remaining |)
+                                M.let_ (|
+                                  ltac:(M.monadic (M.read (| new_remaining |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "revm_interpreter::gas::Gas",
+                                          "remaining"
+                                        |),
+                                        rhs'
+                                      |)))
                                 |) in
                               M.return_ (| Value.Bool true |)
                             |)
@@ -1509,26 +1541,32 @@ Module gas.
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_interpreter::gas::Gas",
-                  "remaining"
-                |),
-                M.call_closure (|
-                  Ty.path "u64",
-                  M.get_associated_function (| Ty.path "u64", "wrapping_sub", [], [] |),
-                  [
-                    M.read (|
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
+                    Ty.path "u64",
+                    M.get_associated_function (| Ty.path "u64", "wrapping_sub", [], [] |),
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_interpreter::gas::Gas",
+                          "remaining"
+                        |)
+                      |);
+                      M.read (| cost |)
+                    ]
+                  |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
                       M.SubPointer.get_struct_record_field (|
                         M.deref (| M.read (| self |) |),
                         "revm_interpreter::gas::Gas",
                         "remaining"
-                      |)
-                    |);
-                    M.read (| cost |)
-                  ]
-                |)
+                      |),
+                      rhs'
+                    |)))
               |) in
             oog
           |)))
@@ -2176,13 +2214,18 @@ Module gas.
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "revm_interpreter::gas::MemoryGas",
-                      "words_num"
-                    |),
-                    M.read (| new_num |)
+                  M.let_ (|
+                    ltac:(M.monadic (M.read (| new_num |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_interpreter::gas::MemoryGas",
+                            "words_num"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 let~ cost : Ty.path "u64" :=
                   M.call_closure (|

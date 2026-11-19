@@ -227,7 +227,11 @@ Module slice.
                         |) in
                       M.alloc (|
                         Ty.tuple [],
-                        M.write (| M.deref (| M.read (| last |) |), M.read (| value |) |)
+                        M.let_ (|
+                          ltac:(M.monadic (M.read (| value |))),
+                          fun rhs' =>
+                            ltac:(M.monadic (M.write (| M.deref (| M.read (| last |) |), rhs' |)))
+                        |)
                       |)
                     |)));
                 fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -362,20 +366,30 @@ Module slice.
                                             M.copy (| Ty.apply (Ty.path "&mut") [] [ T ], γ0_0 |) in
                                           M.read (|
                                             let~ _ : Ty.tuple [] :=
-                                              M.write (|
-                                                M.deref (| M.read (| item |) |),
-                                                M.call_closure (|
-                                                  T,
-                                                  M.get_function (| "core::ptr::read", [], [ T ] |),
-                                                  [
-                                                    M.borrow (|
-                                                      Pointer.Kind.ConstPointer,
-                                                      M.deref (|
-                                                        M.borrow (| Pointer.Kind.Ref, value |)
+                                              M.let_ (|
+                                                ltac:(M.monadic
+                                                  (M.call_closure (|
+                                                    T,
+                                                    M.get_function (|
+                                                      "core::ptr::read",
+                                                      [],
+                                                      [ T ]
+                                                    |),
+                                                    [
+                                                      M.borrow (|
+                                                        Pointer.Kind.ConstPointer,
+                                                        M.deref (|
+                                                          M.borrow (| Pointer.Kind.Ref, value |)
+                                                        |)
                                                       |)
-                                                    |)
-                                                  ]
-                                                |)
+                                                    ]
+                                                  |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (M.write (|
+                                                      M.deref (| M.read (| item |) |),
+                                                      rhs'
+                                                    |)))
                                               |) in
                                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                           |)))
@@ -867,9 +881,14 @@ Module slice.
                                                 |) in
                                               M.read (|
                                                 let~ _ : Ty.tuple [] :=
-                                                  M.write (|
-                                                    M.deref (| M.read (| item |) |),
-                                                    M.read (| value |)
+                                                  M.let_ (|
+                                                    ltac:(M.monadic (M.read (| value |))),
+                                                    fun rhs' =>
+                                                      ltac:(M.monadic
+                                                        (M.write (|
+                                                          M.deref (| M.read (| item |) |),
+                                                          rhs'
+                                                        |)))
                                                   |) in
                                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                               |)))
@@ -1229,9 +1248,14 @@ Module slice.
                                                 |) in
                                               M.read (|
                                                 let~ _ : Ty.tuple [] :=
-                                                  M.write (|
-                                                    M.deref (| M.read (| item |) |),
-                                                    M.read (| value |)
+                                                  M.let_ (|
+                                                    ltac:(M.monadic (M.read (| value |))),
+                                                    fun rhs' =>
+                                                      ltac:(M.monadic
+                                                        (M.write (|
+                                                          M.deref (| M.read (| item |) |),
+                                                          rhs'
+                                                        |)))
                                                   |) in
                                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                               |)))
@@ -1591,9 +1615,14 @@ Module slice.
                                                 |) in
                                               M.read (|
                                                 let~ _ : Ty.tuple [] :=
-                                                  M.write (|
-                                                    M.deref (| M.read (| item |) |),
-                                                    M.read (| value |)
+                                                  M.let_ (|
+                                                    ltac:(M.monadic (M.read (| value |))),
+                                                    fun rhs' =>
+                                                      ltac:(M.monadic
+                                                        (M.write (|
+                                                          M.deref (| M.read (| item |) |),
+                                                          rhs'
+                                                        |)))
                                                   |) in
                                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                               |)))
@@ -1953,9 +1982,14 @@ Module slice.
                                                 |) in
                                               M.read (|
                                                 let~ _ : Ty.tuple [] :=
-                                                  M.write (|
-                                                    M.deref (| M.read (| item |) |),
-                                                    M.read (| value |)
+                                                  M.let_ (|
+                                                    ltac:(M.monadic (M.read (| value |))),
+                                                    fun rhs' =>
+                                                      ltac:(M.monadic
+                                                        (M.write (|
+                                                          M.deref (| M.read (| item |) |),
+                                                          rhs'
+                                                        |)))
                                                   |) in
                                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                               |)))
@@ -2315,9 +2349,14 @@ Module slice.
                                                 |) in
                                               M.read (|
                                                 let~ _ : Ty.tuple [] :=
-                                                  M.write (|
-                                                    M.deref (| M.read (| item |) |),
-                                                    M.read (| value |)
+                                                  M.let_ (|
+                                                    ltac:(M.monadic (M.read (| value |))),
+                                                    fun rhs' =>
+                                                      ltac:(M.monadic
+                                                        (M.write (|
+                                                          M.deref (| M.read (| item |) |),
+                                                          rhs'
+                                                        |)))
                                                   |) in
                                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                               |)))
@@ -2677,9 +2716,14 @@ Module slice.
                                                 |) in
                                               M.read (|
                                                 let~ _ : Ty.tuple [] :=
-                                                  M.write (|
-                                                    M.deref (| M.read (| item |) |),
-                                                    M.read (| value |)
+                                                  M.let_ (|
+                                                    ltac:(M.monadic (M.read (| value |))),
+                                                    fun rhs' =>
+                                                      ltac:(M.monadic
+                                                        (M.write (|
+                                                          M.deref (| M.read (| item |) |),
+                                                          rhs'
+                                                        |)))
                                                   |) in
                                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                               |)))
@@ -3039,9 +3083,14 @@ Module slice.
                                                 |) in
                                               M.read (|
                                                 let~ _ : Ty.tuple [] :=
-                                                  M.write (|
-                                                    M.deref (| M.read (| item |) |),
-                                                    M.read (| value |)
+                                                  M.let_ (|
+                                                    ltac:(M.monadic (M.read (| value |))),
+                                                    fun rhs' =>
+                                                      ltac:(M.monadic
+                                                        (M.write (|
+                                                          M.deref (| M.read (| item |) |),
+                                                          rhs'
+                                                        |)))
                                                   |) in
                                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                               |)))
@@ -3401,9 +3450,14 @@ Module slice.
                                                 |) in
                                               M.read (|
                                                 let~ _ : Ty.tuple [] :=
-                                                  M.write (|
-                                                    M.deref (| M.read (| item |) |),
-                                                    M.read (| value |)
+                                                  M.let_ (|
+                                                    ltac:(M.monadic (M.read (| value |))),
+                                                    fun rhs' =>
+                                                      ltac:(M.monadic
+                                                        (M.write (|
+                                                          M.deref (| M.read (| item |) |),
+                                                          rhs'
+                                                        |)))
                                                   |) in
                                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                               |)))
@@ -3766,9 +3820,14 @@ Module slice.
                                                 |) in
                                               M.read (|
                                                 let~ _ : Ty.tuple [] :=
-                                                  M.write (|
-                                                    M.deref (| M.read (| item |) |),
-                                                    M.read (| value |)
+                                                  M.let_ (|
+                                                    ltac:(M.monadic (M.read (| value |))),
+                                                    fun rhs' =>
+                                                      ltac:(M.monadic
+                                                        (M.write (|
+                                                          M.deref (| M.read (| item |) |),
+                                                          rhs'
+                                                        |)))
                                                   |) in
                                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                               |)))
@@ -4131,9 +4190,14 @@ Module slice.
                                                 |) in
                                               M.read (|
                                                 let~ _ : Ty.tuple [] :=
-                                                  M.write (|
-                                                    M.deref (| M.read (| item |) |),
-                                                    M.read (| value |)
+                                                  M.let_ (|
+                                                    ltac:(M.monadic (M.read (| value |))),
+                                                    fun rhs' =>
+                                                      ltac:(M.monadic
+                                                        (M.write (|
+                                                          M.deref (| M.read (| item |) |),
+                                                          rhs'
+                                                        |)))
                                                   |) in
                                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                               |)))

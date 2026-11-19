@@ -815,34 +815,40 @@ Module iter.
                                               ]
                                             |) in
                                           let~ _ : Ty.tuple [] :=
-                                            M.write (|
-                                              M.SubPointer.get_struct_record_field (|
-                                                guard,
-                                                "core::iter::adapters::filter_map::next_chunk::Guard",
-                                                "initialized"
-                                              |),
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                BinOp.Wrap.add,
-                                                [
-                                                  M.read (| idx |);
-                                                  M.cast
-                                                    (Ty.path "usize")
-                                                    (M.call_closure (|
-                                                      Ty.path "bool",
-                                                      M.get_associated_function (|
-                                                        Ty.apply
-                                                          (Ty.path "core::option::Option")
+                                            M.let_ (|
+                                              ltac:(M.monadic
+                                                (M.call_closure (|
+                                                  Ty.path "usize",
+                                                  BinOp.Wrap.add,
+                                                  [
+                                                    M.read (| idx |);
+                                                    M.cast
+                                                      (Ty.path "usize")
+                                                      (M.call_closure (|
+                                                        Ty.path "bool",
+                                                        M.get_associated_function (|
+                                                          Ty.apply
+                                                            (Ty.path "core::option::Option")
+                                                            []
+                                                            [ B ],
+                                                          "is_some",
+                                                          [],
                                                           []
-                                                          [ B ],
-                                                        "is_some",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [ M.borrow (| Pointer.Kind.Ref, val |) ]
-                                                    |))
-                                                ]
-                                              |)
+                                                        |),
+                                                        [ M.borrow (| Pointer.Kind.Ref, val |) ]
+                                                      |))
+                                                  ]
+                                                |))),
+                                              fun rhs' =>
+                                                ltac:(M.monadic
+                                                  (M.write (|
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      guard,
+                                                      "core::iter::adapters::filter_map::next_chunk::Guard",
+                                                      "initialized"
+                                                    |),
+                                                    rhs'
+                                                  |)))
                                             |) in
                                           let~ _ : Ty.tuple [] :=
                                             M.read (|
@@ -1980,8 +1986,12 @@ Module iter.
             : M :=
           let Self : Ty.t := Self I F in
           ltac:(M.monadic
-            (get_constant (|
-              "core::iter::traits::marker::InPlaceIterable::EXPAND_BY",
+            (get_trait_constant (|
+              "core::iter::traits::marker::InPlaceIterable",
+              I,
+              [],
+              [],
+              "EXPAND_BY",
               Ty.apply
                 (Ty.path "core::option::Option")
                 []
@@ -2001,8 +2011,12 @@ Module iter.
             : M :=
           let Self : Ty.t := Self I F in
           ltac:(M.monadic
-            (get_constant (|
-              "core::iter::traits::marker::InPlaceIterable::MERGE_BY",
+            (get_trait_constant (|
+              "core::iter::traits::marker::InPlaceIterable",
+              I,
+              [],
+              [],
+              "MERGE_BY",
               Ty.apply
                 (Ty.path "core::option::Option")
                 []

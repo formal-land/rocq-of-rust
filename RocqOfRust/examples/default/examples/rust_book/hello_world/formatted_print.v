@@ -812,7 +812,8 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |) in
-        let~ number : Ty.path "f64" := M.read (| UnsupportedLiteral |) in
+        let~ number : Ty.path "f64" :=
+          M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |) in
         let~ width : Ty.path "usize" := Value.Integer IntegerKind.Usize 5 in
         let~ _ : Ty.tuple [] :=
           M.read (|

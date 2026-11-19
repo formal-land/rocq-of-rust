@@ -15242,7 +15242,11 @@ Module iter.
                 |),
                 [
                   M.read (| iter |);
-                  M.read (| UnsupportedLiteral |);
+                  M.read (|
+                    M.impossible (|
+                      "[ROR003] floating-point literal in <f16 as iter::traits::accum::Sum>::sum"
+                    |)
+                  |);
                   M.closure
                     (fun γ =>
                       ltac:(M.monadic
@@ -15318,7 +15322,11 @@ Module iter.
                 |),
                 [
                   M.read (| iter |);
-                  M.read (| UnsupportedLiteral |);
+                  M.read (|
+                    M.impossible (|
+                      "[ROR003] floating-point literal in <f16 as iter::traits::accum::Product>::product"
+                    |)
+                  |);
                   M.closure
                     (fun γ =>
                       ltac:(M.monadic
@@ -15399,7 +15407,11 @@ Module iter.
                 |),
                 [
                   M.read (| iter |);
-                  M.read (| UnsupportedLiteral |);
+                  M.read (|
+                    M.impossible (|
+                      "[ROR003] floating-point literal in <f16 as iter::traits::accum::Sum<&'a f16>>::sum"
+                    |)
+                  |);
                   M.closure
                     (fun γ =>
                       ltac:(M.monadic
@@ -15492,7 +15504,11 @@ Module iter.
                 |),
                 [
                   M.read (| iter |);
-                  M.read (| UnsupportedLiteral |);
+                  M.read (|
+                    M.impossible (|
+                      "[ROR003] floating-point literal in <f16 as iter::traits::accum::Product<&'a f16>>::product"
+                    |)
+                  |);
                   M.closure
                     (fun γ =>
                       ltac:(M.monadic
@@ -15580,7 +15596,11 @@ Module iter.
                 |),
                 [
                   M.read (| iter |);
-                  M.read (| UnsupportedLiteral |);
+                  M.read (|
+                    M.impossible (|
+                      "[ROR003] floating-point literal in <f32 as iter::traits::accum::Sum>::sum"
+                    |)
+                  |);
                   M.closure
                     (fun γ =>
                       ltac:(M.monadic
@@ -15656,7 +15676,11 @@ Module iter.
                 |),
                 [
                   M.read (| iter |);
-                  M.read (| UnsupportedLiteral |);
+                  M.read (|
+                    M.impossible (|
+                      "[ROR003] floating-point literal in <f32 as iter::traits::accum::Product>::product"
+                    |)
+                  |);
                   M.closure
                     (fun γ =>
                       ltac:(M.monadic
@@ -15737,7 +15761,11 @@ Module iter.
                 |),
                 [
                   M.read (| iter |);
-                  M.read (| UnsupportedLiteral |);
+                  M.read (|
+                    M.impossible (|
+                      "[ROR003] floating-point literal in <f32 as iter::traits::accum::Sum<&'a f32>>::sum"
+                    |)
+                  |);
                   M.closure
                     (fun γ =>
                       ltac:(M.monadic
@@ -15830,7 +15858,11 @@ Module iter.
                 |),
                 [
                   M.read (| iter |);
-                  M.read (| UnsupportedLiteral |);
+                  M.read (|
+                    M.impossible (|
+                      "[ROR003] floating-point literal in <f32 as iter::traits::accum::Product<&'a f32>>::product"
+                    |)
+                  |);
                   M.closure
                     (fun γ =>
                       ltac:(M.monadic
@@ -15918,7 +15950,11 @@ Module iter.
                 |),
                 [
                   M.read (| iter |);
-                  M.read (| UnsupportedLiteral |);
+                  M.read (|
+                    M.impossible (|
+                      "[ROR003] floating-point literal in <f64 as iter::traits::accum::Sum>::sum"
+                    |)
+                  |);
                   M.closure
                     (fun γ =>
                       ltac:(M.monadic
@@ -15994,7 +16030,11 @@ Module iter.
                 |),
                 [
                   M.read (| iter |);
-                  M.read (| UnsupportedLiteral |);
+                  M.read (|
+                    M.impossible (|
+                      "[ROR003] floating-point literal in <f64 as iter::traits::accum::Product>::product"
+                    |)
+                  |);
                   M.closure
                     (fun γ =>
                       ltac:(M.monadic
@@ -16075,7 +16115,11 @@ Module iter.
                 |),
                 [
                   M.read (| iter |);
-                  M.read (| UnsupportedLiteral |);
+                  M.read (|
+                    M.impossible (|
+                      "[ROR003] floating-point literal in <f64 as iter::traits::accum::Sum<&'a f64>>::sum"
+                    |)
+                  |);
                   M.closure
                     (fun γ =>
                       ltac:(M.monadic
@@ -16168,7 +16212,11 @@ Module iter.
                 |),
                 [
                   M.read (| iter |);
-                  M.read (| UnsupportedLiteral |);
+                  M.read (|
+                    M.impossible (|
+                      "[ROR003] floating-point literal in <f64 as iter::traits::accum::Product<&'a f64>>::product"
+                    |)
+                  |);
                   M.closure
                     (fun γ =>
                       ltac:(M.monadic
@@ -16257,7 +16305,11 @@ Module iter.
                 |),
                 [
                   M.read (| iter |);
-                  M.read (| UnsupportedLiteral |);
+                  M.read (|
+                    M.impossible (|
+                      "[ROR003] floating-point literal in <f128 as iter::traits::accum::Sum>::sum"
+                    |)
+                  |);
                   M.closure
                     (fun γ =>
                       ltac:(M.monadic
@@ -16334,7 +16386,11 @@ Module iter.
                 |),
                 [
                   M.read (| iter |);
-                  M.read (| UnsupportedLiteral |);
+                  M.read (|
+                    M.impossible (|
+                      "[ROR003] floating-point literal in <f128 as iter::traits::accum::Product>::product"
+                    |)
+                  |);
                   M.closure
                     (fun γ =>
                       ltac:(M.monadic
@@ -16415,7 +16471,11 @@ Module iter.
                 |),
                 [
                   M.read (| iter |);
-                  M.read (| UnsupportedLiteral |);
+                  M.read (|
+                    M.impossible (|
+                      "[ROR003] floating-point literal in <f128 as iter::traits::accum::Sum<&'a f128>>::sum"
+                    |)
+                  |);
                   M.closure
                     (fun γ =>
                       ltac:(M.monadic
@@ -16511,7 +16571,11 @@ Module iter.
                 |),
                 [
                   M.read (| iter |);
-                  M.read (| UnsupportedLiteral |);
+                  M.read (|
+                    M.impossible (|
+                      "[ROR003] floating-point literal in <f128 as iter::traits::accum::Product<&'a f128>>::product"
+                    |)
+                  |);
                   M.closure
                     (fun γ =>
                       ltac:(M.monadic

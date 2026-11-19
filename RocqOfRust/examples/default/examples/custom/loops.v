@@ -291,25 +291,36 @@ Definition reverse_in_place (ε : list Value.t) (τ : list Ty.t) (α : list Valu
                                 |)
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_array_field (|
-                                  M.deref (| M.read (| xs |) |),
-                                  M.read (| l |)
-                                |),
-                                M.read (|
-                                  M.SubPointer.get_array_field (|
-                                    M.deref (| M.read (| xs |) |),
-                                    M.read (| r |)
-                                  |)
-                                |)
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.read (|
+                                    M.SubPointer.get_array_field (|
+                                      M.deref (| M.read (| xs |) |),
+                                      M.read (| r |)
+                                    |)
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_array_field (|
+                                        M.deref (| M.read (| xs |) |),
+                                        M.read (| l |)
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_array_field (|
-                                  M.deref (| M.read (| xs |) |),
-                                  M.read (| r |)
-                                |),
-                                M.read (| tmp |)
+                              M.let_ (|
+                                ltac:(M.monadic (M.read (| tmp |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_array_field (|
+                                        M.deref (| M.read (| xs |) |),
+                                        M.read (| r |)
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
                               let β := l in

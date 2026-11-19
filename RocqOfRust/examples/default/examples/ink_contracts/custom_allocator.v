@@ -185,58 +185,65 @@ Module Impl_custom_allocator_CustomAllocator.
           |) in
         M.read (|
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply (Ty.path "&mut") [] [ Ty.path "bool" ],
-                  M.get_trait_method (|
-                    "core::ops::index::IndexMut",
-                    Ty.apply
-                      (Ty.path "alloc::vec::Vec")
-                      []
-                      [ Ty.path "bool"; Ty.path "alloc::alloc::Global" ],
-                    [],
-                    [ Ty.path "usize" ],
-                    "index_mut",
-                    [],
-                    []
-                  |),
+            M.let_ (|
+              ltac:(M.monadic
+                (M.call_closure (|
+                  Ty.path "bool",
+                  UnOp.not,
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "custom_allocator::CustomAllocator",
-                        "value"
+                    M.read (|
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
+                          M.get_trait_method (|
+                            "core::ops::index::Index",
+                            Ty.apply
+                              (Ty.path "alloc::vec::Vec")
+                              []
+                              [ Ty.path "bool"; Ty.path "alloc::alloc::Global" ],
+                            [],
+                            [ Ty.path "usize" ],
+                            "index",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "custom_allocator::CustomAllocator",
+                                "value"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.Usize 0
+                          ]
+                        |)
                       |)
-                    |);
-                    Value.Integer IntegerKind.Usize 0
+                    |)
                   ]
-                |)
-              |),
-              M.call_closure (|
-                Ty.path "bool",
-                UnOp.not,
-                [
-                  M.read (|
+                |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
                     M.deref (|
                       M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
+                        Ty.apply (Ty.path "&mut") [] [ Ty.path "bool" ],
                         M.get_trait_method (|
-                          "core::ops::index::Index",
+                          "core::ops::index::IndexMut",
                           Ty.apply
                             (Ty.path "alloc::vec::Vec")
                             []
                             [ Ty.path "bool"; Ty.path "alloc::alloc::Global" ],
                           [],
                           [ Ty.path "usize" ],
-                          "index",
+                          "index_mut",
                           [],
                           []
                         |),
                         [
                           M.borrow (|
-                            Pointer.Kind.Ref,
+                            Pointer.Kind.MutRef,
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| self |) |),
                               "custom_allocator::CustomAllocator",
@@ -246,10 +253,9 @@ Module Impl_custom_allocator_CustomAllocator.
                           Value.Integer IntegerKind.Usize 0
                         ]
                       |)
-                    |)
-                  |)
-                ]
-              |)
+                    |),
+                    rhs'
+                  |)))
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
         |)))

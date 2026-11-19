@@ -312,34 +312,40 @@ Module iter.
                       (let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
-                          M.write (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::iter::adapters::cycle::Cycle",
-                              "iter"
-                            |),
-                            M.call_closure (|
-                              I,
-                              M.get_trait_method (|
-                                "core::clone::Clone",
+                          M.let_ (|
+                            ltac:(M.monadic
+                              (M.call_closure (|
                                 I,
-                                [],
-                                [],
-                                "clone",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
+                                M.get_trait_method (|
+                                  "core::clone::Clone",
+                                  I,
+                                  [],
+                                  [],
+                                  "clone",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::iter::adapters::cycle::Cycle",
+                                      "orig"
+                                    |)
+                                  |)
+                                ]
+                              |))),
+                            fun rhs' =>
+                              ltac:(M.monadic
+                                (M.write (|
                                   M.SubPointer.get_struct_record_field (|
                                     M.deref (| M.read (| self |) |),
                                     "core::iter::adapters::cycle::Cycle",
-                                    "orig"
-                                  |)
-                                |)
-                              ]
-                            |)
+                                    "iter"
+                                  |),
+                                  rhs'
+                                |)))
                           |) in
                         M.alloc (|
                           Ty.apply
@@ -706,26 +712,40 @@ Module iter.
                         |)
                       |) in
                     let~ _ : Ty.tuple [] :=
-                      M.write (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::iter::adapters::cycle::Cycle",
-                          "iter"
-                        |),
-                        M.call_closure (|
-                          I,
-                          M.get_trait_method (| "core::clone::Clone", I, [], [], "clone", [], [] |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
+                      M.let_ (|
+                        ltac:(M.monadic
+                          (M.call_closure (|
+                            I,
+                            M.get_trait_method (|
+                              "core::clone::Clone",
+                              I,
+                              [],
+                              [],
+                              "clone",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::iter::adapters::cycle::Cycle",
+                                  "orig"
+                                |)
+                              |)
+                            ]
+                          |))),
+                        fun rhs' =>
+                          ltac:(M.monadic
+                            (M.write (|
                               M.SubPointer.get_struct_record_field (|
                                 M.deref (| M.read (| self |) |),
                                 "core::iter::adapters::cycle::Cycle",
-                                "orig"
-                              |)
-                            |)
-                          ]
-                        |)
+                                "iter"
+                              |),
+                              rhs'
+                            |)))
                       |) in
                     let~ is_empty : Ty.path "bool" := Value.Bool true in
                     let~ _ : Ty.tuple [] :=
@@ -994,34 +1014,40 @@ Module iter.
                             Ty.path "never",
                             ltac:(M.monadic
                               (let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::iter::adapters::cycle::Cycle",
-                                    "iter"
-                                  |),
-                                  M.call_closure (|
-                                    I,
-                                    M.get_trait_method (|
-                                      "core::clone::Clone",
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (M.call_closure (|
                                       I,
-                                      [],
-                                      [],
-                                      "clone",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
+                                      M.get_trait_method (|
+                                        "core::clone::Clone",
+                                        I,
+                                        [],
+                                        [],
+                                        "clone",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "core::iter::adapters::cycle::Cycle",
+                                            "orig"
+                                          |)
+                                        |)
+                                      ]
+                                    |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (|
                                         M.SubPointer.get_struct_record_field (|
                                           M.deref (| M.read (| self |) |),
                                           "core::iter::adapters::cycle::Cycle",
-                                          "orig"
-                                        |)
-                                      |)
-                                    ]
-                                  |)
+                                          "iter"
+                                        |),
+                                        rhs'
+                                      |)))
                                 |) in
                               let~ _ : Ty.tuple [] :=
                                 M.write (|
@@ -1340,34 +1366,40 @@ Module iter.
                                         |) in
                                       M.read (|
                                         let~ _ : Ty.tuple [] :=
-                                          M.write (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "core::iter::adapters::cycle::Cycle",
-                                              "iter"
-                                            |),
-                                            M.call_closure (|
-                                              I,
-                                              M.get_trait_method (|
-                                                "core::clone::Clone",
+                                          M.let_ (|
+                                            ltac:(M.monadic
+                                              (M.call_closure (|
                                                 I,
-                                                [],
-                                                [],
-                                                "clone",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
+                                                M.get_trait_method (|
+                                                  "core::clone::Clone",
+                                                  I,
+                                                  [],
+                                                  [],
+                                                  "clone",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      M.deref (| M.read (| self |) |),
+                                                      "core::iter::adapters::cycle::Cycle",
+                                                      "orig"
+                                                    |)
+                                                  |)
+                                                ]
+                                              |))),
+                                            fun rhs' =>
+                                              ltac:(M.monadic
+                                                (M.write (|
                                                   M.SubPointer.get_struct_record_field (|
                                                     M.deref (| M.read (| self |) |),
                                                     "core::iter::adapters::cycle::Cycle",
-                                                    "orig"
-                                                  |)
-                                                |)
-                                              ]
-                                            |)
+                                                    "iter"
+                                                  |),
+                                                  rhs'
+                                                |)))
                                           |) in
                                         let~ _ : Ty.tuple [] :=
                                           M.write (|

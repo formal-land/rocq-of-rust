@@ -148931,12 +148931,7 @@ Module slice.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                    let byte :=
-                      M.copy (|
-                        Ty.path
-                          "Type for variables in patterns in function parameters is not handled",
-                        γ0_0
-                      |) in
+                    let byte := M.copy (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ0_0 |) in
                     M.call_closure (|
                       Ty.path "core::ascii::EscapeDefault",
                       M.get_function (| "core::ascii::escape_default", [], [] |),
@@ -148984,12 +148979,7 @@ Module slice.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                    let byte :=
-                      M.copy (|
-                        Ty.path
-                          "Type for variables in patterns in function parameters is not handled",
-                        γ0_0
-                      |) in
+                    let byte := M.copy (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ0_0 |) in
                     M.call_closure (|
                       Ty.path "core::ascii::EscapeDefault",
                       M.get_trait_method (|
@@ -149050,12 +149040,7 @@ Module slice.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                    let byte :=
-                      M.copy (|
-                        Ty.path
-                          "Type for variables in patterns in function parameters is not handled",
-                        γ0_0
-                      |) in
+                    let byte := M.copy (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ0_0 |) in
                     M.call_closure (|
                       Ty.path "core::ascii::EscapeDefault",
                       M.get_trait_method (|
@@ -149124,12 +149109,7 @@ Module str.
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                  let line :=
-                    M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
-                      γ0_0
-                    |) in
+                  let line := M.copy (| Ty.apply (Ty.path "&") [] [ Ty.path "str" ], γ0_0 |) in
                   M.catch_return (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]) (|
                     ltac:(M.monadic
                       (M.borrow (|
@@ -149276,12 +149256,7 @@ Module str.
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                  let line :=
-                    M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
-                      γ0_0
-                    |) in
+                  let line := M.copy (| Ty.apply (Ty.path "&") [] [ Ty.path "str" ], γ0_0 |) in
                   M.borrow (|
                     Pointer.Kind.Ref,
                     M.deref (|
@@ -149347,12 +149322,7 @@ Module str.
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                  let line :=
-                    M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
-                      γ0_0
-                    |) in
+                  let line := M.copy (| Ty.apply (Ty.path "&") [] [ Ty.path "str" ], γ0_0 |) in
                   M.borrow (|
                     Pointer.Kind.Ref,
                     M.deref (|
@@ -149426,12 +149396,7 @@ Module str.
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                  let c :=
-                    M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
-                      γ0_0
-                    |) in
+                  let c := M.copy (| Ty.path "char", γ0_0 |) in
                   M.call_closure (|
                     Ty.path "core::char::EscapeDebug",
                     M.get_associated_function (| Ty.path "char", "escape_debug_ext", [], [] |),
@@ -149490,12 +149455,7 @@ Module str.
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                  let c :=
-                    M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
-                      γ0_0
-                    |) in
+                  let c := M.copy (| Ty.path "char", γ0_0 |) in
                   M.call_closure (|
                     Ty.path "core::char::EscapeDebug",
                     M.get_trait_method (|
@@ -149555,12 +149515,7 @@ Module str.
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                  let c :=
-                    M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
-                      γ0_0
-                    |) in
+                  let c := M.copy (| Ty.path "char", γ0_0 |) in
                   M.call_closure (|
                     Ty.path "core::char::EscapeDebug",
                     M.get_trait_method (|
@@ -149628,12 +149583,7 @@ Module str.
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                  let c :=
-                    M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
-                      γ0_0
-                    |) in
+                  let c := M.copy (| Ty.path "char", γ0_0 |) in
                   M.call_closure (|
                     Ty.path "core::char::EscapeUnicode",
                     M.get_associated_function (| Ty.path "char", "escape_unicode", [], [] |),
@@ -149681,12 +149631,7 @@ Module str.
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                  let c :=
-                    M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
-                      γ0_0
-                    |) in
+                  let c := M.copy (| Ty.path "char", γ0_0 |) in
                   M.call_closure (|
                     Ty.path "core::char::EscapeUnicode",
                     M.get_trait_method (|
@@ -149746,12 +149691,7 @@ Module str.
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                  let c :=
-                    M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
-                      γ0_0
-                    |) in
+                  let c := M.copy (| Ty.path "char", γ0_0 |) in
                   M.call_closure (|
                     Ty.path "core::char::EscapeUnicode",
                     M.get_trait_method (|
@@ -149819,12 +149759,7 @@ Module str.
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                  let c :=
-                    M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
-                      γ0_0
-                    |) in
+                  let c := M.copy (| Ty.path "char", γ0_0 |) in
                   M.call_closure (|
                     Ty.path "core::char::EscapeDefault",
                     M.get_associated_function (| Ty.path "char", "escape_default", [], [] |),
@@ -149872,12 +149807,7 @@ Module str.
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                  let c :=
-                    M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
-                      γ0_0
-                    |) in
+                  let c := M.copy (| Ty.path "char", γ0_0 |) in
                   M.call_closure (|
                     Ty.path "core::char::EscapeDefault",
                     M.get_trait_method (|
@@ -149937,12 +149867,7 @@ Module str.
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                  let c :=
-                    M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
-                      γ0_0
-                    |) in
+                  let c := M.copy (| Ty.path "char", γ0_0 |) in
                   M.call_closure (|
                     Ty.path "core::char::EscapeDefault",
                     M.get_trait_method (|
@@ -150007,12 +149932,7 @@ Module str.
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                  let c :=
-                    M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
-                      γ0_0
-                    |) in
+                  let c := M.copy (| Ty.path "char", γ0_0 |) in
                   M.call_closure (|
                     Ty.path "bool",
                     M.get_associated_function (| Ty.path "char", "is_whitespace", [], [] |),
@@ -150060,12 +149980,7 @@ Module str.
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                  let c :=
-                    M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
-                      γ0_0
-                    |) in
+                  let c := M.copy (| Ty.path "char", γ0_0 |) in
                   M.call_closure (|
                     Ty.path "bool",
                     M.get_trait_method (|
@@ -150125,12 +150040,7 @@ Module str.
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                  let c :=
-                    M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
-                      γ0_0
-                    |) in
+                  let c := M.copy (| Ty.path "char", γ0_0 |) in
                   M.call_closure (|
                     Ty.path "bool",
                     M.get_trait_method (|
@@ -150198,12 +150108,7 @@ Module str.
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                  let byte :=
-                    M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
-                      γ0_0
-                    |) in
+                  let byte := M.copy (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ0_0 |) in
                   M.call_closure (|
                     Ty.path "bool",
                     M.get_associated_function (| Ty.path "u8", "is_ascii_whitespace", [], [] |),
@@ -150251,12 +150156,7 @@ Module str.
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                  let byte :=
-                    M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
-                      γ0_0
-                    |) in
+                  let byte := M.copy (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ0_0 |) in
                   M.call_closure (|
                     Ty.path "bool",
                     M.get_trait_method (|
@@ -150317,12 +150217,7 @@ Module str.
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                  let byte :=
-                    M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
-                      γ0_0
-                    |) in
+                  let byte := M.copy (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ0_0 |) in
                   M.call_closure (|
                     Ty.path "bool",
                     M.get_trait_method (|
@@ -150395,8 +150290,7 @@ Module str.
                   (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                   let s :=
                     M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
+                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
                       γ0_0
                     |) in
                   M.call_closure (|
@@ -150462,8 +150356,7 @@ Module str.
                   (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                   let s :=
                     M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
+                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
                       γ0_0
                     |) in
                   M.call_closure (|
@@ -150541,8 +150434,7 @@ Module str.
                   (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                   let s :=
                     M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
+                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
                       γ0_0
                     |) in
                   M.call_closure (|
@@ -150633,8 +150525,15 @@ Module str.
                   (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                   let s :=
                     M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                        ],
                       γ0_0
                     |) in
                   M.call_closure (|
@@ -150721,8 +150620,15 @@ Module str.
                   (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                   let s :=
                     M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                        ],
                       γ0_0
                     |) in
                   M.call_closure (|
@@ -150818,8 +150724,15 @@ Module str.
                   (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                   let s :=
                     M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                        ],
                       γ0_0
                     |) in
                   M.call_closure (|
@@ -150918,8 +150831,7 @@ Module str.
                   (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                   let bytes :=
                     M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
+                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
                       γ0_0
                     |) in
                   M.borrow (|
@@ -150983,8 +150895,7 @@ Module str.
                   (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                   let bytes :=
                     M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
+                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
                       γ0_0
                     |) in
                   M.borrow (|
@@ -151069,8 +150980,7 @@ Module str.
                   (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                   let bytes :=
                     M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
+                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
                       γ0_0
                     |) in
                   M.borrow (|

@@ -107,7 +107,10 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                       "data"
                     |)
                   |);
-                  M.borrow (| Pointer.Kind.Ref, UnsupportedLiteral |)
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.impossible (| "[ROR003] floating-point literal in main" |)
+                  |)
                 ]
             |),
             [

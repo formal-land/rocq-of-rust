@@ -33,6 +33,15 @@ Module FnOnce.
 End FnOnce.
 Export (hints) FnOnce.
 
+(** Resolve [call_once] from a dictionary supplied by the current theorem. *)
+Ltac run_local_fn_once :=
+  match goal with
+  | R : FnOnce.Run _ _ _ |- _ =>
+    eapply Run.CallPrimitiveGetTraitMethod;
+    [ exact R.(FnOnce.method_call_once).(FnOnce.call_once_is_method).(IsTraitMethod.Make) | ]
+  end.
+Smpl Add run_local_fn_once : run_symbolic.
+
 Module Impl_FnOnce_for_Function1.
   Instance method_call_once (A Output : Set) `{Link A} `{Link Output} :
     FnOnce.Method_call_once
@@ -119,7 +128,7 @@ Export (hints) FnMut.
 
 Module Impl_FnMut_for_Function1.
   Instance run (A Output : Set) `{Link A} `{Link Output} :
-      FnMut.Run (Function1.t A Output) A Output.
+      FnMut.Run (Function1.t A Output) (OneElementTuple.t A) Output.
   Proof.
   Admitted.
 End Impl_FnMut_for_Function1.

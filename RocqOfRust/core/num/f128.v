@@ -4,7 +4,7 @@ Require Import RocqOfRust.RocqOfRust.
 Module f128.
   Module consts.
     Definition value_PI (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      ltac:(M.monadic UnsupportedLiteral).
+      ltac:(M.monadic (M.impossible (| "[ROR003] floating-point literal in f128::consts::PI" |))).
     
     Global Instance Instance_IsConstant_value_PI : M.IsFunction.C "core::f128::consts::PI" value_PI.
     Proof.
@@ -12,7 +12,7 @@ Module f128.
     Global Typeclasses Opaque value_PI.
     
     Definition value_TAU (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      ltac:(M.monadic UnsupportedLiteral).
+      ltac:(M.monadic (M.impossible (| "[ROR003] floating-point literal in f128::consts::TAU" |))).
     
     Global Instance Instance_IsConstant_value_TAU :
       M.IsFunction.C "core::f128::consts::TAU" value_TAU.
@@ -21,7 +21,7 @@ Module f128.
     Global Typeclasses Opaque value_TAU.
     
     Definition value_PHI (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      ltac:(M.monadic UnsupportedLiteral).
+      ltac:(M.monadic (M.impossible (| "[ROR003] floating-point literal in f128::consts::PHI" |))).
     
     Global Instance Instance_IsConstant_value_PHI :
       M.IsFunction.C "core::f128::consts::PHI" value_PHI.
@@ -30,7 +30,8 @@ Module f128.
     Global Typeclasses Opaque value_PHI.
     
     Definition value_EGAMMA (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      ltac:(M.monadic UnsupportedLiteral).
+      ltac:(M.monadic
+        (M.impossible (| "[ROR003] floating-point literal in f128::consts::EGAMMA" |))).
     
     Global Instance Instance_IsConstant_value_EGAMMA :
       M.IsFunction.C "core::f128::consts::EGAMMA" value_EGAMMA.
@@ -39,7 +40,8 @@ Module f128.
     Global Typeclasses Opaque value_EGAMMA.
     
     Definition value_FRAC_PI_2 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      ltac:(M.monadic UnsupportedLiteral).
+      ltac:(M.monadic
+        (M.impossible (| "[ROR003] floating-point literal in f128::consts::FRAC_PI_2" |))).
     
     Global Instance Instance_IsConstant_value_FRAC_PI_2 :
       M.IsFunction.C "core::f128::consts::FRAC_PI_2" value_FRAC_PI_2.
@@ -48,7 +50,8 @@ Module f128.
     Global Typeclasses Opaque value_FRAC_PI_2.
     
     Definition value_FRAC_PI_3 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      ltac:(M.monadic UnsupportedLiteral).
+      ltac:(M.monadic
+        (M.impossible (| "[ROR003] floating-point literal in f128::consts::FRAC_PI_3" |))).
     
     Global Instance Instance_IsConstant_value_FRAC_PI_3 :
       M.IsFunction.C "core::f128::consts::FRAC_PI_3" value_FRAC_PI_3.
@@ -57,7 +60,8 @@ Module f128.
     Global Typeclasses Opaque value_FRAC_PI_3.
     
     Definition value_FRAC_PI_4 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      ltac:(M.monadic UnsupportedLiteral).
+      ltac:(M.monadic
+        (M.impossible (| "[ROR003] floating-point literal in f128::consts::FRAC_PI_4" |))).
     
     Global Instance Instance_IsConstant_value_FRAC_PI_4 :
       M.IsFunction.C "core::f128::consts::FRAC_PI_4" value_FRAC_PI_4.
@@ -66,7 +70,8 @@ Module f128.
     Global Typeclasses Opaque value_FRAC_PI_4.
     
     Definition value_FRAC_PI_6 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      ltac:(M.monadic UnsupportedLiteral).
+      ltac:(M.monadic
+        (M.impossible (| "[ROR003] floating-point literal in f128::consts::FRAC_PI_6" |))).
     
     Global Instance Instance_IsConstant_value_FRAC_PI_6 :
       M.IsFunction.C "core::f128::consts::FRAC_PI_6" value_FRAC_PI_6.
@@ -75,7 +80,8 @@ Module f128.
     Global Typeclasses Opaque value_FRAC_PI_6.
     
     Definition value_FRAC_PI_8 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      ltac:(M.monadic UnsupportedLiteral).
+      ltac:(M.monadic
+        (M.impossible (| "[ROR003] floating-point literal in f128::consts::FRAC_PI_8" |))).
     
     Global Instance Instance_IsConstant_value_FRAC_PI_8 :
       M.IsFunction.C "core::f128::consts::FRAC_PI_8" value_FRAC_PI_8.
@@ -84,7 +90,8 @@ Module f128.
     Global Typeclasses Opaque value_FRAC_PI_8.
     
     Definition value_FRAC_1_PI (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      ltac:(M.monadic UnsupportedLiteral).
+      ltac:(M.monadic
+        (M.impossible (| "[ROR003] floating-point literal in f128::consts::FRAC_1_PI" |))).
     
     Global Instance Instance_IsConstant_value_FRAC_1_PI :
       M.IsFunction.C "core::f128::consts::FRAC_1_PI" value_FRAC_1_PI.
@@ -93,7 +100,8 @@ Module f128.
     Global Typeclasses Opaque value_FRAC_1_PI.
     
     Definition value_FRAC_1_SQRT_PI (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      ltac:(M.monadic UnsupportedLiteral).
+      ltac:(M.monadic
+        (M.impossible (| "[ROR003] floating-point literal in f128::consts::FRAC_1_SQRT_PI" |))).
     
     Global Instance Instance_IsConstant_value_FRAC_1_SQRT_PI :
       M.IsFunction.C "core::f128::consts::FRAC_1_SQRT_PI" value_FRAC_1_SQRT_PI.
@@ -102,7 +110,8 @@ Module f128.
     Global Typeclasses Opaque value_FRAC_1_SQRT_PI.
     
     Definition value_FRAC_1_SQRT_2PI (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      ltac:(M.monadic UnsupportedLiteral).
+      ltac:(M.monadic
+        (M.impossible (| "[ROR003] floating-point literal in f128::consts::FRAC_1_SQRT_2PI" |))).
     
     Global Instance Instance_IsConstant_value_FRAC_1_SQRT_2PI :
       M.IsFunction.C "core::f128::consts::FRAC_1_SQRT_2PI" value_FRAC_1_SQRT_2PI.
@@ -111,7 +120,8 @@ Module f128.
     Global Typeclasses Opaque value_FRAC_1_SQRT_2PI.
     
     Definition value_FRAC_2_PI (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      ltac:(M.monadic UnsupportedLiteral).
+      ltac:(M.monadic
+        (M.impossible (| "[ROR003] floating-point literal in f128::consts::FRAC_2_PI" |))).
     
     Global Instance Instance_IsConstant_value_FRAC_2_PI :
       M.IsFunction.C "core::f128::consts::FRAC_2_PI" value_FRAC_2_PI.
@@ -120,7 +130,8 @@ Module f128.
     Global Typeclasses Opaque value_FRAC_2_PI.
     
     Definition value_FRAC_2_SQRT_PI (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      ltac:(M.monadic UnsupportedLiteral).
+      ltac:(M.monadic
+        (M.impossible (| "[ROR003] floating-point literal in f128::consts::FRAC_2_SQRT_PI" |))).
     
     Global Instance Instance_IsConstant_value_FRAC_2_SQRT_PI :
       M.IsFunction.C "core::f128::consts::FRAC_2_SQRT_PI" value_FRAC_2_SQRT_PI.
@@ -129,7 +140,8 @@ Module f128.
     Global Typeclasses Opaque value_FRAC_2_SQRT_PI.
     
     Definition value_SQRT_2 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      ltac:(M.monadic UnsupportedLiteral).
+      ltac:(M.monadic
+        (M.impossible (| "[ROR003] floating-point literal in f128::consts::SQRT_2" |))).
     
     Global Instance Instance_IsConstant_value_SQRT_2 :
       M.IsFunction.C "core::f128::consts::SQRT_2" value_SQRT_2.
@@ -138,7 +150,8 @@ Module f128.
     Global Typeclasses Opaque value_SQRT_2.
     
     Definition value_FRAC_1_SQRT_2 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      ltac:(M.monadic UnsupportedLiteral).
+      ltac:(M.monadic
+        (M.impossible (| "[ROR003] floating-point literal in f128::consts::FRAC_1_SQRT_2" |))).
     
     Global Instance Instance_IsConstant_value_FRAC_1_SQRT_2 :
       M.IsFunction.C "core::f128::consts::FRAC_1_SQRT_2" value_FRAC_1_SQRT_2.
@@ -147,7 +160,8 @@ Module f128.
     Global Typeclasses Opaque value_FRAC_1_SQRT_2.
     
     Definition value_SQRT_3 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      ltac:(M.monadic UnsupportedLiteral).
+      ltac:(M.monadic
+        (M.impossible (| "[ROR003] floating-point literal in f128::consts::SQRT_3" |))).
     
     Global Instance Instance_IsConstant_value_SQRT_3 :
       M.IsFunction.C "core::f128::consts::SQRT_3" value_SQRT_3.
@@ -156,7 +170,8 @@ Module f128.
     Global Typeclasses Opaque value_SQRT_3.
     
     Definition value_FRAC_1_SQRT_3 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      ltac:(M.monadic UnsupportedLiteral).
+      ltac:(M.monadic
+        (M.impossible (| "[ROR003] floating-point literal in f128::consts::FRAC_1_SQRT_3" |))).
     
     Global Instance Instance_IsConstant_value_FRAC_1_SQRT_3 :
       M.IsFunction.C "core::f128::consts::FRAC_1_SQRT_3" value_FRAC_1_SQRT_3.
@@ -165,7 +180,7 @@ Module f128.
     Global Typeclasses Opaque value_FRAC_1_SQRT_3.
     
     Definition value_E (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      ltac:(M.monadic UnsupportedLiteral).
+      ltac:(M.monadic (M.impossible (| "[ROR003] floating-point literal in f128::consts::E" |))).
     
     Global Instance Instance_IsConstant_value_E : M.IsFunction.C "core::f128::consts::E" value_E.
     Proof.
@@ -173,7 +188,8 @@ Module f128.
     Global Typeclasses Opaque value_E.
     
     Definition value_LOG2_10 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      ltac:(M.monadic UnsupportedLiteral).
+      ltac:(M.monadic
+        (M.impossible (| "[ROR003] floating-point literal in f128::consts::LOG2_10" |))).
     
     Global Instance Instance_IsConstant_value_LOG2_10 :
       M.IsFunction.C "core::f128::consts::LOG2_10" value_LOG2_10.
@@ -182,7 +198,8 @@ Module f128.
     Global Typeclasses Opaque value_LOG2_10.
     
     Definition value_LOG2_E (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      ltac:(M.monadic UnsupportedLiteral).
+      ltac:(M.monadic
+        (M.impossible (| "[ROR003] floating-point literal in f128::consts::LOG2_E" |))).
     
     Global Instance Instance_IsConstant_value_LOG2_E :
       M.IsFunction.C "core::f128::consts::LOG2_E" value_LOG2_E.
@@ -191,7 +208,8 @@ Module f128.
     Global Typeclasses Opaque value_LOG2_E.
     
     Definition value_LOG10_2 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      ltac:(M.monadic UnsupportedLiteral).
+      ltac:(M.monadic
+        (M.impossible (| "[ROR003] floating-point literal in f128::consts::LOG10_2" |))).
     
     Global Instance Instance_IsConstant_value_LOG10_2 :
       M.IsFunction.C "core::f128::consts::LOG10_2" value_LOG10_2.
@@ -200,7 +218,8 @@ Module f128.
     Global Typeclasses Opaque value_LOG10_2.
     
     Definition value_LOG10_E (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      ltac:(M.monadic UnsupportedLiteral).
+      ltac:(M.monadic
+        (M.impossible (| "[ROR003] floating-point literal in f128::consts::LOG10_E" |))).
     
     Global Instance Instance_IsConstant_value_LOG10_E :
       M.IsFunction.C "core::f128::consts::LOG10_E" value_LOG10_E.
@@ -209,7 +228,7 @@ Module f128.
     Global Typeclasses Opaque value_LOG10_E.
     
     Definition value_LN_2 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      ltac:(M.monadic UnsupportedLiteral).
+      ltac:(M.monadic (M.impossible (| "[ROR003] floating-point literal in f128::consts::LN_2" |))).
     
     Global Instance Instance_IsConstant_value_LN_2 :
       M.IsFunction.C "core::f128::consts::LN_2" value_LN_2.
@@ -218,7 +237,8 @@ Module f128.
     Global Typeclasses Opaque value_LN_2.
     
     Definition value_LN_10 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      ltac:(M.monadic UnsupportedLiteral).
+      ltac:(M.monadic
+        (M.impossible (| "[ROR003] floating-point literal in f128::consts::LN_10" |))).
     
     Global Instance Instance_IsConstant_value_LN_10 :
       M.IsFunction.C "core::f128::consts::LN_10" value_LN_10.
@@ -266,7 +286,8 @@ Module f128.
     (*     pub const EPSILON: f128 = 1.92592994438723585305597794258492732e-34_f128; *)
     (* Ty.path "f128" *)
     Definition value_EPSILON (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      ltac:(M.monadic UnsupportedLiteral).
+      ltac:(M.monadic
+        (M.impossible (| "[ROR003] floating-point literal in f128::<impl f128>::EPSILON" |))).
     
     Global Instance AssociatedConstant_value_EPSILON :
       M.IsAssociatedFunction.C Self "EPSILON" value_EPSILON.
@@ -277,7 +298,8 @@ Module f128.
     (*     pub const MIN: f128 = -1.18973149535723176508575932662800702e+4932_f128; *)
     (* Ty.path "f128" *)
     Definition value_MIN (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      ltac:(M.monadic UnsupportedLiteral).
+      ltac:(M.monadic
+        (M.impossible (| "[ROR003] floating-point literal in f128::<impl f128>::MIN" |))).
     
     Global Instance AssociatedConstant_value_MIN : M.IsAssociatedFunction.C Self "MIN" value_MIN.
     Proof.
@@ -287,7 +309,8 @@ Module f128.
     (*     pub const MIN_POSITIVE: f128 = 3.36210314311209350626267781732175260e-4932_f128; *)
     (* Ty.path "f128" *)
     Definition value_MIN_POSITIVE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      ltac:(M.monadic UnsupportedLiteral).
+      ltac:(M.monadic
+        (M.impossible (| "[ROR003] floating-point literal in f128::<impl f128>::MIN_POSITIVE" |))).
     
     Global Instance AssociatedConstant_value_MIN_POSITIVE :
       M.IsAssociatedFunction.C Self "MIN_POSITIVE" value_MIN_POSITIVE.
@@ -298,7 +321,8 @@ Module f128.
     (*     pub const MAX: f128 = 1.18973149535723176508575932662800702e+4932_f128; *)
     (* Ty.path "f128" *)
     Definition value_MAX (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      ltac:(M.monadic UnsupportedLiteral).
+      ltac:(M.monadic
+        (M.impossible (| "[ROR003] floating-point literal in f128::<impl f128>::MAX" |))).
     
     Global Instance AssociatedConstant_value_MAX : M.IsAssociatedFunction.C Self "MAX" value_MAX.
     Proof.
@@ -358,7 +382,14 @@ Module f128.
           M.call_closure (|
             Ty.path "f128",
             BinOp.Wrap.div,
-            [ M.read (| UnsupportedLiteral |); M.read (| UnsupportedLiteral |) ]
+            [
+              M.read (|
+                M.impossible (| "[ROR003] floating-point literal in f128::<impl f128>::NAN" |)
+              |);
+              M.read (|
+                M.impossible (| "[ROR003] floating-point literal in f128::<impl f128>::NAN" |)
+              |)
+            ]
           |)
         |))).
     
@@ -376,7 +407,14 @@ Module f128.
           M.call_closure (|
             Ty.path "f128",
             BinOp.Wrap.div,
-            [ M.read (| UnsupportedLiteral |); M.read (| UnsupportedLiteral |) ]
+            [
+              M.read (|
+                M.impossible (| "[ROR003] floating-point literal in f128::<impl f128>::INFINITY" |)
+              |);
+              M.read (|
+                M.impossible (| "[ROR003] floating-point literal in f128::<impl f128>::INFINITY" |)
+              |)
+            ]
           |)
         |))).
     
@@ -395,7 +433,18 @@ Module f128.
           M.call_closure (|
             Ty.path "f128",
             BinOp.Wrap.div,
-            [ M.read (| UnsupportedLiteral |); M.read (| UnsupportedLiteral |) ]
+            [
+              M.read (|
+                M.impossible (|
+                  "[ROR003] floating-point literal in f128::<impl f128>::NEG_INFINITY"
+                |)
+              |);
+              M.read (|
+                M.impossible (|
+                  "[ROR003] floating-point literal in f128::<impl f128>::NEG_INFINITY"
+                |)
+              |)
+            ]
           |)
         |))).
     
@@ -1238,7 +1287,12 @@ Module f128.
           M.call_closure (|
             Ty.path "f128",
             BinOp.Wrap.div,
-            [ M.read (| UnsupportedLiteral |); M.read (| self |) ]
+            [
+              M.read (|
+                M.impossible (| "[ROR003] floating-point literal in f128::<impl f128>::recip" |)
+              |);
+              M.read (| self |)
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -1509,7 +1563,11 @@ Module f128.
                                     BinOp.Wrap.add,
                                     [ M.read (| a |); M.read (| b |) ]
                                   |);
-                                  M.read (| UnsupportedLiteral |)
+                                  M.read (|
+                                    M.impossible (|
+                                      "[ROR003] floating-point literal in f128::<impl f128>::midpoint"
+                                    |)
+                                  |)
                                 ]
                               |)));
                           fun γ =>
@@ -1521,12 +1579,26 @@ Module f128.
                                   M.call_closure (|
                                     Ty.path "f128",
                                     BinOp.Wrap.div,
-                                    [ M.read (| a |); M.read (| UnsupportedLiteral |) ]
+                                    [
+                                      M.read (| a |);
+                                      M.read (|
+                                        M.impossible (|
+                                          "[ROR003] floating-point literal in f128::<impl f128>::midpoint"
+                                        |)
+                                      |)
+                                    ]
                                   |);
                                   M.call_closure (|
                                     Ty.path "f128",
                                     BinOp.Wrap.div,
-                                    [ M.read (| b |); M.read (| UnsupportedLiteral |) ]
+                                    [
+                                      M.read (| b |);
+                                      M.read (|
+                                        M.impossible (|
+                                          "[ROR003] floating-point literal in f128::<impl f128>::midpoint"
+                                        |)
+                                      |)
+                                    ]
                                   |)
                                 ]
                               |)))
@@ -1888,60 +1960,66 @@ Module f128.
                   [ M.read (| M.deref (| M.read (| other |) |) |) ]
                 |)) in
             let~ _ : Ty.tuple [] :=
-              let β := left in
-              M.write (|
-                β,
-                M.call_closure (|
-                  Ty.path "i128",
-                  BinOp.Wrap.bit_xor,
-                  [
-                    M.read (| β |);
-                    M.cast
-                      (Ty.path "i128")
-                      (M.call_closure (|
-                        Ty.path "u128",
-                        BinOp.Wrap.shr,
-                        [
-                          M.cast
-                            (Ty.path "u128")
-                            (M.call_closure (|
-                              Ty.path "i128",
-                              BinOp.Wrap.shr,
-                              [ M.read (| left |); Value.Integer IntegerKind.I32 127 ]
-                            |));
-                          Value.Integer IntegerKind.I32 1
-                        ]
-                      |))
-                  ]
-                |)
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.cast
+                    (Ty.path "i128")
+                    (M.call_closure (|
+                      Ty.path "u128",
+                      BinOp.Wrap.shr,
+                      [
+                        M.cast
+                          (Ty.path "u128")
+                          (M.call_closure (|
+                            Ty.path "i128",
+                            BinOp.Wrap.shr,
+                            [ M.read (| left |); Value.Integer IntegerKind.I32 127 ]
+                          |));
+                        Value.Integer IntegerKind.I32 1
+                      ]
+                    |)))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (let β := left in
+                    M.write (|
+                      β,
+                      M.call_closure (|
+                        Ty.path "i128",
+                        BinOp.Wrap.bit_xor,
+                        [ M.read (| β |); rhs' ]
+                      |)
+                    |)))
               |) in
             let~ _ : Ty.tuple [] :=
-              let β := right in
-              M.write (|
-                β,
-                M.call_closure (|
-                  Ty.path "i128",
-                  BinOp.Wrap.bit_xor,
-                  [
-                    M.read (| β |);
-                    M.cast
-                      (Ty.path "i128")
-                      (M.call_closure (|
-                        Ty.path "u128",
-                        BinOp.Wrap.shr,
-                        [
-                          M.cast
-                            (Ty.path "u128")
-                            (M.call_closure (|
-                              Ty.path "i128",
-                              BinOp.Wrap.shr,
-                              [ M.read (| right |); Value.Integer IntegerKind.I32 127 ]
-                            |));
-                          Value.Integer IntegerKind.I32 1
-                        ]
-                      |))
-                  ]
-                |)
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.cast
+                    (Ty.path "i128")
+                    (M.call_closure (|
+                      Ty.path "u128",
+                      BinOp.Wrap.shr,
+                      [
+                        M.cast
+                          (Ty.path "u128")
+                          (M.call_closure (|
+                            Ty.path "i128",
+                            BinOp.Wrap.shr,
+                            [ M.read (| right |); Value.Integer IntegerKind.I32 127 ]
+                          |));
+                        Value.Integer IntegerKind.I32 1
+                      ]
+                    |)))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (let β := right in
+                    M.write (|
+                      β,
+                      M.call_closure (|
+                        Ty.path "i128",
+                        BinOp.Wrap.bit_xor,
+                        [ M.read (| β |); rhs' ]
+                      |)
+                    |)))
               |) in
             M.alloc (|
               Ty.path "core::cmp::Ordering",
@@ -2122,7 +2200,14 @@ Module f128.
                               M.call_closure (|
                                 Ty.path "bool",
                                 BinOp.ge,
-                                [ M.read (| limit |); M.read (| UnsupportedLiteral |) ]
+                                [
+                                  M.read (| limit |);
+                                  M.read (|
+                                    M.impossible (|
+                                      "[ROR003] floating-point literal in f128::<impl f128>::clamp_magnitude"
+                                    |)
+                                  |)
+                                ]
                               |)
                             ]
                           |)
@@ -2259,7 +2344,14 @@ Module f128.
                   (M.call_closure (|
                     Ty.path "f128",
                     M.get_associated_function (| Ty.path "f128", "copysign", [], [] |),
-                    [ M.read (| UnsupportedLiteral |); M.read (| self |) ]
+                    [
+                      M.read (|
+                        M.impossible (|
+                          "[ROR003] floating-point literal in f128::<impl f128>::signum"
+                        |)
+                      |);
+                      M.read (| self |)
+                    ]
                   |)))
             ]
           |)))
@@ -2639,7 +2731,11 @@ Module f128.
                                     BinOp.Wrap.rem,
                                     [ M.read (| self |); M.read (| rhs |) ]
                                   |);
-                                  M.read (| UnsupportedLiteral |)
+                                  M.read (|
+                                    M.impossible (|
+                                      "[ROR003] floating-point literal in f128::<impl f128>::div_euclid"
+                                    |)
+                                  |)
                                 ]
                               |)
                             |) in
@@ -2660,7 +2756,14 @@ Module f128.
                                             M.call_closure (|
                                               Ty.path "bool",
                                               BinOp.gt,
-                                              [ M.read (| rhs |); M.read (| UnsupportedLiteral |) ]
+                                              [
+                                                M.read (| rhs |);
+                                                M.read (|
+                                                  M.impossible (|
+                                                    "[ROR003] floating-point literal in f128::<impl f128>::div_euclid"
+                                                  |)
+                                                |)
+                                              ]
                                             |)
                                           |) in
                                         let _ :=
@@ -2671,14 +2774,28 @@ Module f128.
                                         M.call_closure (|
                                           Ty.path "f128",
                                           BinOp.Wrap.sub,
-                                          [ M.read (| q |); M.read (| UnsupportedLiteral |) ]
+                                          [
+                                            M.read (| q |);
+                                            M.read (|
+                                              M.impossible (|
+                                                "[ROR003] floating-point literal in f128::<impl f128>::div_euclid"
+                                              |)
+                                            |)
+                                          ]
                                         |)));
                                     fun γ =>
                                       ltac:(M.monadic
                                         (M.call_closure (|
                                           Ty.path "f128",
                                           BinOp.Wrap.add,
-                                          [ M.read (| q |); M.read (| UnsupportedLiteral |) ]
+                                          [
+                                            M.read (| q |);
+                                            M.read (|
+                                              M.impossible (|
+                                                "[ROR003] floating-point literal in f128::<impl f128>::div_euclid"
+                                              |)
+                                            |)
+                                          ]
                                         |)))
                                   ]
                                 |)
@@ -2733,7 +2850,14 @@ Module f128.
                           M.call_closure (|
                             Ty.path "bool",
                             BinOp.lt,
-                            [ M.read (| r |); M.read (| UnsupportedLiteral |) ]
+                            [
+                              M.read (| r |);
+                              M.read (|
+                                M.impossible (|
+                                  "[ROR003] floating-point literal in f128::<impl f128>::rem_euclid"
+                                |)
+                              |)
+                            ]
                           |)
                         |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in

@@ -234,7 +234,11 @@ Module Impl_derive_Inches.
                       BinOp.Wrap.mul,
                       [
                         M.cast (Ty.path "f64") (M.read (| inches |));
-                        M.read (| UnsupportedLiteral |)
+                        M.read (|
+                          M.impossible (|
+                            "[ROR003] floating-point literal in Inches::to_centimeters"
+                          |)
+                        |)
                       ]
                     |)
                   ]))
@@ -384,7 +388,11 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |) in
         let~ meter : Ty.path "derive::Centimeters" :=
-          Value.StructTuple "derive::Centimeters" [] [] [ M.read (| UnsupportedLiteral |) ] in
+          Value.StructTuple
+            "derive::Centimeters"
+            []
+            []
+            [ M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |) ] in
         let~ cmp : Ty.apply (Ty.path "&") [] [ Ty.path "str" ] :=
           M.match_operator (|
             Ty.apply (Ty.path "&") [] [ Ty.path "str" ],

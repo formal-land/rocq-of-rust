@@ -173,7 +173,10 @@ Definition origin (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :
         "box_stack_heap::Point"
         []
         []
-        [ ("x", M.read (| UnsupportedLiteral |)); ("y", M.read (| UnsupportedLiteral |)) ]))
+        [
+          ("x", M.read (| M.impossible (| "[ROR003] floating-point literal in origin" |) |));
+          ("y", M.read (| M.impossible (| "[ROR003] floating-point literal in origin" |) |))
+        ]))
   | _, _, _ => M.impossible "wrong number of arguments"
   end.
 
@@ -211,7 +214,12 @@ Definition boxed_origin (ε : list Value.t) (τ : list Ty.t) (α : list Value.t)
             "box_stack_heap::Point"
             []
             []
-            [ ("x", M.read (| UnsupportedLiteral |)); ("y", M.read (| UnsupportedLiteral |)) ]
+            [
+              ("x",
+                M.read (| M.impossible (| "[ROR003] floating-point literal in boxed_origin" |) |));
+              ("y",
+                M.read (| M.impossible (| "[ROR003] floating-point literal in boxed_origin" |) |))
+            ]
         ]
       |)))
   | _, _, _ => M.impossible "wrong number of arguments"
@@ -304,7 +312,10 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                   "box_stack_heap::Point"
                   []
                   []
-                  [ ("x", M.read (| UnsupportedLiteral |)); ("y", M.read (| UnsupportedLiteral |))
+                  [
+                    ("x",
+                      M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |));
+                    ("y", M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |))
                   ])
             ] in
         let~ boxed_rectangle :
@@ -344,8 +355,12 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                       []
                       []
                       [
-                        ("x", M.read (| UnsupportedLiteral |));
-                        ("y", M.read (| UnsupportedLiteral |))
+                        ("x",
+                          M.read (|
+                            M.impossible (| "[ROR003] floating-point literal in main" |)
+                          |));
+                        ("y",
+                          M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |))
                       ])
                 ]
             ]

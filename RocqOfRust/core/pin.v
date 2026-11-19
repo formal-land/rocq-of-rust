@@ -1237,35 +1237,40 @@ Module pin.
             |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "&mut")
-                      []
-                      [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ],
-                    M.get_trait_method (|
-                      "core::ops::deref::DerefMut",
-                      Ptr,
-                      [],
-                      [],
-                      "deref_mut",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::pin::Pin",
-                          "pointer"
+              M.let_ (|
+                ltac:(M.monadic (M.read (| value |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ],
+                          M.get_trait_method (|
+                            "core::ops::deref::DerefMut",
+                            Ptr,
+                            [],
+                            [],
+                            "deref_mut",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::pin::Pin",
+                                "pointer"
+                              |)
+                            |)
+                          ]
                         |)
-                      |)
-                    ]
-                  |)
-                |),
-                M.read (| value |)
+                      |),
+                      rhs'
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))

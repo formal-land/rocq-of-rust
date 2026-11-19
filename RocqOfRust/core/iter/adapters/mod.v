@@ -720,21 +720,29 @@ Module iter.
                                                       let r := M.copy (| R, γ0_0 |) in
                                                       M.read (|
                                                         let~ _ : Ty.tuple [] :=
-                                                          M.write (|
-                                                            M.deref (|
-                                                              M.read (|
-                                                                M.SubPointer.get_struct_record_field (|
-                                                                  M.deref (| M.read (| self |) |),
-                                                                  "core::iter::adapters::GenericShunt",
-                                                                  "residual"
-                                                                |)
-                                                              |)
-                                                            |),
-                                                            Value.StructTuple
-                                                              "core::option::Option::Some"
-                                                              []
-                                                              [ R ]
-                                                              [ M.read (| r |) ]
+                                                          M.let_ (|
+                                                            ltac:(M.monadic
+                                                              (Value.StructTuple
+                                                                "core::option::Option::Some"
+                                                                []
+                                                                [ R ]
+                                                                [ M.read (| r |) ])),
+                                                            fun rhs' =>
+                                                              ltac:(M.monadic
+                                                                (M.write (|
+                                                                  M.deref (|
+                                                                    M.read (|
+                                                                      M.SubPointer.get_struct_record_field (|
+                                                                        M.deref (|
+                                                                          M.read (| self |)
+                                                                        |),
+                                                                        "core::iter::adapters::GenericShunt",
+                                                                        "residual"
+                                                                      |)
+                                                                    |)
+                                                                  |),
+                                                                  rhs'
+                                                                |)))
                                                           |) in
                                                         M.alloc (|
                                                           Ty.apply
@@ -986,8 +994,12 @@ Module iter.
           : M :=
         let Self : Ty.t := Self I R in
         ltac:(M.monadic
-          (get_constant (|
-            "core::iter::traits::marker::InPlaceIterable::EXPAND_BY",
+          (get_trait_constant (|
+            "core::iter::traits::marker::InPlaceIterable",
+            I,
+            [],
+            [],
+            "EXPAND_BY",
             Ty.apply
               (Ty.path "core::option::Option")
               []
@@ -1007,8 +1019,12 @@ Module iter.
           : M :=
         let Self : Ty.t := Self I R in
         ltac:(M.monadic
-          (get_constant (|
-            "core::iter::traits::marker::InPlaceIterable::MERGE_BY",
+          (get_trait_constant (|
+            "core::iter::traits::marker::InPlaceIterable",
+            I,
+            [],
+            [],
+            "MERGE_BY",
             Ty.apply
               (Ty.path "core::option::Option")
               []

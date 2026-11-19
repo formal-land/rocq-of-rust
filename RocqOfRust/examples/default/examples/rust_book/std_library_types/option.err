@@ -1,0 +1,10 @@
+warning: [ROR003] floating-point literal in main
+  --> examples/rust_book/std_library_types/option.rs:31:31
+   |
+31 |     let optional_float = Some(0f32);
+   |                               ^^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: 1 warning emitted
+

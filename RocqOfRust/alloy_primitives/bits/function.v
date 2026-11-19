@@ -25,18 +25,8 @@ Module bits.
                   ltac:(M.monadic
                     (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                     let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                    let address :=
-                      M.copy (|
-                        Ty.path
-                          "Type for variables in patterns in function parameters is not handled",
-                        γ0_0
-                      |) in
-                    let selector :=
-                      M.copy (|
-                        Ty.path
-                          "Type for variables in patterns in function parameters is not handled",
-                        γ0_1
-                      |) in
+                    let address := M.copy (| A, γ0_0 |) in
+                    let selector := M.copy (| S, γ0_1 |) in
                     M.call_closure (|
                       Ty.path "alloy_primitives::bits::function::Function",
                       M.get_associated_function (|

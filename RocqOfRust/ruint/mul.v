@@ -231,74 +231,80 @@ Module mul.
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
-                          let β := overflow in
-                          M.write (|
-                            β,
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.Wrap.bit_or,
-                              [
-                                M.read (| β |);
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.gt,
-                                  [
-                                    M.read (|
-                                      M.SubPointer.get_array_field (|
-                                        M.SubPointer.get_struct_record_field (|
-                                          result,
-                                          "ruint::Uint",
-                                          "limbs"
-                                        |),
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          BinOp.Wrap.sub,
-                                          [ LIMBS; Value.Integer IntegerKind.Usize 1 ]
-                                        |)
-                                      |)
-                                    |);
-                                    M.read (|
-                                      get_associated_constant (|
-                                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                        "MASK",
-                                        Ty.path "u64"
+                          M.let_ (|
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [
+                                  M.read (|
+                                    M.SubPointer.get_array_field (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        result,
+                                        "ruint::Uint",
+                                        "limbs"
+                                      |),
+                                      M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.sub,
+                                        [ LIMBS; Value.Integer IntegerKind.Usize 1 ]
                                       |)
                                     |)
-                                  ]
-                                |)
-                              ]
-                            |)
+                                  |);
+                                  M.read (|
+                                    get_associated_constant (|
+                                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                      "MASK",
+                                      Ty.path "u64"
+                                    |)
+                                  |)
+                                ]
+                              |))),
+                            fun rhs' =>
+                              ltac:(M.monadic
+                                (let β := overflow in
+                                M.write (|
+                                  β,
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    BinOp.Wrap.bit_or,
+                                    [ M.read (| β |); rhs' ]
+                                  |)
+                                |)))
                           |) in
                         let~ _ : Ty.tuple [] :=
-                          let β :=
-                            M.SubPointer.get_array_field (|
-                              M.SubPointer.get_struct_record_field (|
-                                result,
-                                "ruint::Uint",
-                                "limbs"
-                              |),
-                              M.call_closure (|
-                                Ty.path "usize",
-                                BinOp.Wrap.sub,
-                                [ LIMBS; Value.Integer IntegerKind.Usize 1 ]
-                              |)
-                            |) in
-                          M.write (|
-                            β,
-                            M.call_closure (|
-                              Ty.path "u64",
-                              BinOp.Wrap.bit_and,
-                              [
-                                M.read (| β |);
-                                M.read (|
-                                  get_associated_constant (|
-                                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                    "MASK",
-                                    Ty.path "u64"
-                                  |)
+                          M.let_ (|
+                            ltac:(M.monadic
+                              (M.read (|
+                                get_associated_constant (|
+                                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                  "MASK",
+                                  Ty.path "u64"
                                 |)
-                              ]
-                            |)
+                              |))),
+                            fun rhs' =>
+                              ltac:(M.monadic
+                                (let β :=
+                                  M.SubPointer.get_array_field (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      result,
+                                      "ruint::Uint",
+                                      "limbs"
+                                    |),
+                                    M.call_closure (|
+                                      Ty.path "usize",
+                                      BinOp.Wrap.sub,
+                                      [ LIMBS; Value.Integer IntegerKind.Usize 1 ]
+                                    |)
+                                  |) in
+                                M.write (|
+                                  β,
+                                  M.call_closure (|
+                                    Ty.path "u64",
+                                    BinOp.Wrap.bit_and,
+                                    [ M.read (| β |); rhs' ]
+                                  |)
+                                |)))
                           |) in
                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
                       |)));
@@ -539,35 +545,38 @@ Module mul.
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
-                          let β :=
-                            M.SubPointer.get_array_field (|
-                              M.SubPointer.get_struct_record_field (|
-                                result,
-                                "ruint::Uint",
-                                "limbs"
-                              |),
-                              M.call_closure (|
-                                Ty.path "usize",
-                                BinOp.Wrap.sub,
-                                [ LIMBS; Value.Integer IntegerKind.Usize 1 ]
-                              |)
-                            |) in
-                          M.write (|
-                            β,
-                            M.call_closure (|
-                              Ty.path "u64",
-                              BinOp.Wrap.bit_and,
-                              [
-                                M.read (| β |);
-                                M.read (|
-                                  get_associated_constant (|
-                                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                    "MASK",
-                                    Ty.path "u64"
-                                  |)
+                          M.let_ (|
+                            ltac:(M.monadic
+                              (M.read (|
+                                get_associated_constant (|
+                                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                  "MASK",
+                                  Ty.path "u64"
                                 |)
-                              ]
-                            |)
+                              |))),
+                            fun rhs' =>
+                              ltac:(M.monadic
+                                (let β :=
+                                  M.SubPointer.get_array_field (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      result,
+                                      "ruint::Uint",
+                                      "limbs"
+                                    |),
+                                    M.call_closure (|
+                                      Ty.path "usize",
+                                      BinOp.Wrap.sub,
+                                      [ LIMBS; Value.Integer IntegerKind.Usize 1 ]
+                                    |)
+                                  |) in
+                                M.write (|
+                                  β,
+                                  M.call_closure (|
+                                    Ty.path "u64",
+                                    BinOp.Wrap.bit_and,
+                                    [ M.read (| β |); rhs' ]
+                                  |)
+                                |)))
                           |) in
                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
                       |)));
@@ -704,596 +713,629 @@ Module mul.
                     |)
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_array_field (|
-                      M.SubPointer.get_struct_record_field (| result, "ruint::Uint", "limbs" |),
-                      Value.Integer IntegerKind.Usize 0
-                    |),
-                    M.read (|
-                      let~ n :
-                          Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ] :=
-                        Value.StructTuple
-                          "core::num::wrapping::Wrapping"
-                          []
-                          [ Ty.path "u64" ]
-                          [
-                            M.read (|
-                              M.SubPointer.get_array_field (|
-                                M.SubPointer.get_struct_record_field (|
-                                  self,
-                                  "ruint::Uint",
-                                  "limbs"
-                                |),
-                                Value.Integer IntegerKind.Usize 0
-                              |)
-                            |)
-                          ] in
-                      let~ inv :
-                          Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ] :=
-                        M.call_closure (|
-                          Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                          M.get_trait_method (|
-                            "core::ops::bit::BitXor",
-                            Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                            [],
-                            [
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "u64" ]
-                            ],
-                            "bitxor",
-                            [],
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.read (|
+                        let~ n :
+                            Ty.apply
+                              (Ty.path "core::num::wrapping::Wrapping")
+                              []
+                              [ Ty.path "u64" ] :=
+                          Value.StructTuple
+                            "core::num::wrapping::Wrapping"
                             []
-                          |),
-                          [
-                            M.call_closure (|
+                            [ Ty.path "u64" ]
+                            [
+                              M.read (|
+                                M.SubPointer.get_array_field (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    self,
+                                    "ruint::Uint",
+                                    "limbs"
+                                  |),
+                                  Value.Integer IntegerKind.Usize 0
+                                |)
+                              |)
+                            ] in
+                        let~ inv :
+                            Ty.apply
+                              (Ty.path "core::num::wrapping::Wrapping")
+                              []
+                              [ Ty.path "u64" ] :=
+                          M.call_closure (|
+                            Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
+                            M.get_trait_method (|
+                              "core::ops::bit::BitXor",
                               Ty.apply
                                 (Ty.path "core::num::wrapping::Wrapping")
                                 []
                                 [ Ty.path "u64" ],
-                              M.get_trait_method (|
-                                "core::ops::arith::Mul",
-                                Ty.apply
-                                  (Ty.path "core::num::wrapping::Wrapping")
-                                  []
-                                  [ Ty.path "u64" ],
-                                [],
-                                [
-                                  Ty.apply
-                                    (Ty.path "core::num::wrapping::Wrapping")
-                                    []
-                                    [ Ty.path "u64" ]
-                                ],
-                                "mul",
-                                [],
-                                []
-                              |),
+                              [],
                               [
-                                M.read (| n |);
-                                M.read (|
-                                  get_constant (|
-                                    "ruint::mul::inv_ring::W3",
-                                    Ty.apply
-                                      (Ty.path "core::num::wrapping::Wrapping")
-                                      []
-                                      [ Ty.path "u64" ]
-                                  |)
-                                |)
-                              ]
-                            |);
-                            M.read (|
-                              get_constant (|
-                                "ruint::mul::inv_ring::W2",
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "u64" ]
+                              ],
+                              "bitxor",
+                              [],
+                              []
+                            |),
+                            [
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "core::num::wrapping::Wrapping")
+                                  []
+                                  [ Ty.path "u64" ],
+                                M.get_trait_method (|
+                                  "core::ops::arith::Mul",
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "u64" ],
+                                  [],
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::num::wrapping::Wrapping")
+                                      []
+                                      [ Ty.path "u64" ]
+                                  ],
+                                  "mul",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.read (| n |);
+                                  M.read (|
+                                    get_constant (|
+                                      "ruint::mul::inv_ring::W3",
+                                      Ty.apply
+                                        (Ty.path "core::num::wrapping::Wrapping")
+                                        []
+                                        [ Ty.path "u64" ]
+                                    |)
+                                  |)
+                                ]
+                              |);
+                              M.read (|
+                                get_constant (|
+                                  "ruint::mul::inv_ring::W2",
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "u64" ]
+                                |)
                               |)
-                            |)
-                          ]
-                        |) in
-                      let~ _ : Ty.tuple [] :=
-                        M.call_closure (|
-                          Ty.tuple [],
-                          M.get_trait_method (|
-                            "core::ops::arith::MulAssign",
-                            Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                            [],
-                            [
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "u64" ]
-                            ],
-                            "mul_assign",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.MutRef, inv |);
-                            M.call_closure (|
+                            ]
+                          |) in
+                        let~ _ : Ty.tuple [] :=
+                          M.call_closure (|
+                            Ty.tuple [],
+                            M.get_trait_method (|
+                              "core::ops::arith::MulAssign",
                               Ty.apply
                                 (Ty.path "core::num::wrapping::Wrapping")
                                 []
                                 [ Ty.path "u64" ],
-                              M.get_trait_method (|
-                                "core::ops::arith::Sub",
+                              [],
+                              [
+                                Ty.apply
+                                  (Ty.path "core::num::wrapping::Wrapping")
+                                  []
+                                  [ Ty.path "u64" ]
+                              ],
+                              "mul_assign",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (| Pointer.Kind.MutRef, inv |);
+                              M.call_closure (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "u64" ],
-                                [],
-                                [
-                                  Ty.apply
-                                    (Ty.path "core::num::wrapping::Wrapping")
-                                    []
-                                    [ Ty.path "u64" ]
-                                ],
-                                "sub",
-                                [],
-                                []
-                              |),
-                              [
-                                M.read (|
-                                  get_constant (|
-                                    "ruint::mul::inv_ring::W2",
-                                    Ty.apply
-                                      (Ty.path "core::num::wrapping::Wrapping")
-                                      []
-                                      [ Ty.path "u64" ]
-                                  |)
-                                |);
-                                M.call_closure (|
+                                M.get_trait_method (|
+                                  "core::ops::arith::Sub",
                                   Ty.apply
                                     (Ty.path "core::num::wrapping::Wrapping")
                                     []
                                     [ Ty.path "u64" ],
-                                  M.get_trait_method (|
-                                    "core::ops::arith::Mul",
+                                  [],
+                                  [
                                     Ty.apply
                                       (Ty.path "core::num::wrapping::Wrapping")
                                       []
-                                      [ Ty.path "u64" ],
-                                    [],
-                                    [
+                                      [ Ty.path "u64" ]
+                                  ],
+                                  "sub",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.read (|
+                                    get_constant (|
+                                      "ruint::mul::inv_ring::W2",
                                       Ty.apply
                                         (Ty.path "core::num::wrapping::Wrapping")
                                         []
                                         [ Ty.path "u64" ]
-                                    ],
-                                    "mul",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| n |); M.read (| inv |) ]
-                                |)
-                              ]
-                            |)
-                          ]
-                        |) in
-                      let~ _ : Ty.tuple [] :=
-                        M.call_closure (|
-                          Ty.tuple [],
-                          M.get_trait_method (|
-                            "core::ops::arith::MulAssign",
-                            Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                            [],
-                            [
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "u64" ]
-                            ],
-                            "mul_assign",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.MutRef, inv |);
-                            M.call_closure (|
+                                    |)
+                                  |);
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "core::num::wrapping::Wrapping")
+                                      []
+                                      [ Ty.path "u64" ],
+                                    M.get_trait_method (|
+                                      "core::ops::arith::Mul",
+                                      Ty.apply
+                                        (Ty.path "core::num::wrapping::Wrapping")
+                                        []
+                                        [ Ty.path "u64" ],
+                                      [],
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::num::wrapping::Wrapping")
+                                          []
+                                          [ Ty.path "u64" ]
+                                      ],
+                                      "mul",
+                                      [],
+                                      []
+                                    |),
+                                    [ M.read (| n |); M.read (| inv |) ]
+                                  |)
+                                ]
+                              |)
+                            ]
+                          |) in
+                        let~ _ : Ty.tuple [] :=
+                          M.call_closure (|
+                            Ty.tuple [],
+                            M.get_trait_method (|
+                              "core::ops::arith::MulAssign",
                               Ty.apply
                                 (Ty.path "core::num::wrapping::Wrapping")
                                 []
                                 [ Ty.path "u64" ],
-                              M.get_trait_method (|
-                                "core::ops::arith::Sub",
+                              [],
+                              [
+                                Ty.apply
+                                  (Ty.path "core::num::wrapping::Wrapping")
+                                  []
+                                  [ Ty.path "u64" ]
+                              ],
+                              "mul_assign",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (| Pointer.Kind.MutRef, inv |);
+                              M.call_closure (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "u64" ],
-                                [],
-                                [
-                                  Ty.apply
-                                    (Ty.path "core::num::wrapping::Wrapping")
-                                    []
-                                    [ Ty.path "u64" ]
-                                ],
-                                "sub",
-                                [],
-                                []
-                              |),
-                              [
-                                M.read (|
-                                  get_constant (|
-                                    "ruint::mul::inv_ring::W2",
-                                    Ty.apply
-                                      (Ty.path "core::num::wrapping::Wrapping")
-                                      []
-                                      [ Ty.path "u64" ]
-                                  |)
-                                |);
-                                M.call_closure (|
+                                M.get_trait_method (|
+                                  "core::ops::arith::Sub",
                                   Ty.apply
                                     (Ty.path "core::num::wrapping::Wrapping")
                                     []
                                     [ Ty.path "u64" ],
-                                  M.get_trait_method (|
-                                    "core::ops::arith::Mul",
+                                  [],
+                                  [
                                     Ty.apply
                                       (Ty.path "core::num::wrapping::Wrapping")
                                       []
-                                      [ Ty.path "u64" ],
-                                    [],
-                                    [
+                                      [ Ty.path "u64" ]
+                                  ],
+                                  "sub",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.read (|
+                                    get_constant (|
+                                      "ruint::mul::inv_ring::W2",
                                       Ty.apply
                                         (Ty.path "core::num::wrapping::Wrapping")
                                         []
                                         [ Ty.path "u64" ]
-                                    ],
-                                    "mul",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| n |); M.read (| inv |) ]
-                                |)
-                              ]
-                            |)
-                          ]
-                        |) in
-                      let~ _ : Ty.tuple [] :=
-                        M.call_closure (|
-                          Ty.tuple [],
-                          M.get_trait_method (|
-                            "core::ops::arith::MulAssign",
-                            Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                            [],
-                            [
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "u64" ]
-                            ],
-                            "mul_assign",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.MutRef, inv |);
-                            M.call_closure (|
+                                    |)
+                                  |);
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "core::num::wrapping::Wrapping")
+                                      []
+                                      [ Ty.path "u64" ],
+                                    M.get_trait_method (|
+                                      "core::ops::arith::Mul",
+                                      Ty.apply
+                                        (Ty.path "core::num::wrapping::Wrapping")
+                                        []
+                                        [ Ty.path "u64" ],
+                                      [],
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::num::wrapping::Wrapping")
+                                          []
+                                          [ Ty.path "u64" ]
+                                      ],
+                                      "mul",
+                                      [],
+                                      []
+                                    |),
+                                    [ M.read (| n |); M.read (| inv |) ]
+                                  |)
+                                ]
+                              |)
+                            ]
+                          |) in
+                        let~ _ : Ty.tuple [] :=
+                          M.call_closure (|
+                            Ty.tuple [],
+                            M.get_trait_method (|
+                              "core::ops::arith::MulAssign",
                               Ty.apply
                                 (Ty.path "core::num::wrapping::Wrapping")
                                 []
                                 [ Ty.path "u64" ],
-                              M.get_trait_method (|
-                                "core::ops::arith::Sub",
+                              [],
+                              [
+                                Ty.apply
+                                  (Ty.path "core::num::wrapping::Wrapping")
+                                  []
+                                  [ Ty.path "u64" ]
+                              ],
+                              "mul_assign",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (| Pointer.Kind.MutRef, inv |);
+                              M.call_closure (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "u64" ],
-                                [],
-                                [
-                                  Ty.apply
-                                    (Ty.path "core::num::wrapping::Wrapping")
-                                    []
-                                    [ Ty.path "u64" ]
-                                ],
-                                "sub",
-                                [],
-                                []
-                              |),
-                              [
-                                M.read (|
-                                  get_constant (|
-                                    "ruint::mul::inv_ring::W2",
-                                    Ty.apply
-                                      (Ty.path "core::num::wrapping::Wrapping")
-                                      []
-                                      [ Ty.path "u64" ]
-                                  |)
-                                |);
-                                M.call_closure (|
+                                M.get_trait_method (|
+                                  "core::ops::arith::Sub",
                                   Ty.apply
                                     (Ty.path "core::num::wrapping::Wrapping")
                                     []
                                     [ Ty.path "u64" ],
-                                  M.get_trait_method (|
-                                    "core::ops::arith::Mul",
+                                  [],
+                                  [
                                     Ty.apply
                                       (Ty.path "core::num::wrapping::Wrapping")
                                       []
-                                      [ Ty.path "u64" ],
-                                    [],
-                                    [
+                                      [ Ty.path "u64" ]
+                                  ],
+                                  "sub",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.read (|
+                                    get_constant (|
+                                      "ruint::mul::inv_ring::W2",
                                       Ty.apply
                                         (Ty.path "core::num::wrapping::Wrapping")
                                         []
                                         [ Ty.path "u64" ]
-                                    ],
-                                    "mul",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| n |); M.read (| inv |) ]
-                                |)
-                              ]
-                            |)
-                          ]
-                        |) in
-                      let~ _ : Ty.tuple [] :=
-                        M.call_closure (|
-                          Ty.tuple [],
-                          M.get_trait_method (|
-                            "core::ops::arith::MulAssign",
-                            Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                            [],
-                            [
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "u64" ]
-                            ],
-                            "mul_assign",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.MutRef, inv |);
-                            M.call_closure (|
+                                    |)
+                                  |);
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "core::num::wrapping::Wrapping")
+                                      []
+                                      [ Ty.path "u64" ],
+                                    M.get_trait_method (|
+                                      "core::ops::arith::Mul",
+                                      Ty.apply
+                                        (Ty.path "core::num::wrapping::Wrapping")
+                                        []
+                                        [ Ty.path "u64" ],
+                                      [],
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::num::wrapping::Wrapping")
+                                          []
+                                          [ Ty.path "u64" ]
+                                      ],
+                                      "mul",
+                                      [],
+                                      []
+                                    |),
+                                    [ M.read (| n |); M.read (| inv |) ]
+                                  |)
+                                ]
+                              |)
+                            ]
+                          |) in
+                        let~ _ : Ty.tuple [] :=
+                          M.call_closure (|
+                            Ty.tuple [],
+                            M.get_trait_method (|
+                              "core::ops::arith::MulAssign",
                               Ty.apply
                                 (Ty.path "core::num::wrapping::Wrapping")
                                 []
                                 [ Ty.path "u64" ],
-                              M.get_trait_method (|
-                                "core::ops::arith::Sub",
+                              [],
+                              [
+                                Ty.apply
+                                  (Ty.path "core::num::wrapping::Wrapping")
+                                  []
+                                  [ Ty.path "u64" ]
+                              ],
+                              "mul_assign",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (| Pointer.Kind.MutRef, inv |);
+                              M.call_closure (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "u64" ],
-                                [],
-                                [
-                                  Ty.apply
-                                    (Ty.path "core::num::wrapping::Wrapping")
-                                    []
-                                    [ Ty.path "u64" ]
-                                ],
-                                "sub",
-                                [],
-                                []
-                              |),
-                              [
-                                M.read (|
-                                  get_constant (|
-                                    "ruint::mul::inv_ring::W2",
-                                    Ty.apply
-                                      (Ty.path "core::num::wrapping::Wrapping")
-                                      []
-                                      [ Ty.path "u64" ]
-                                  |)
-                                |);
-                                M.call_closure (|
+                                M.get_trait_method (|
+                                  "core::ops::arith::Sub",
                                   Ty.apply
                                     (Ty.path "core::num::wrapping::Wrapping")
                                     []
                                     [ Ty.path "u64" ],
-                                  M.get_trait_method (|
-                                    "core::ops::arith::Mul",
+                                  [],
+                                  [
                                     Ty.apply
                                       (Ty.path "core::num::wrapping::Wrapping")
                                       []
-                                      [ Ty.path "u64" ],
-                                    [],
-                                    [
+                                      [ Ty.path "u64" ]
+                                  ],
+                                  "sub",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.read (|
+                                    get_constant (|
+                                      "ruint::mul::inv_ring::W2",
                                       Ty.apply
                                         (Ty.path "core::num::wrapping::Wrapping")
                                         []
                                         [ Ty.path "u64" ]
-                                    ],
-                                    "mul",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| n |); M.read (| inv |) ]
-                                |)
-                              ]
-                            |)
-                          ]
-                        |) in
-                      let~ _ : Ty.tuple [] :=
-                        M.match_operator (|
-                          Ty.tuple [],
-                          M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                          [
-                            fun γ =>
-                              ltac:(M.monadic
-                                (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
-                                let _ :=
-                                  is_constant_or_break_match (|
-                                    M.read (| γ |),
-                                    Value.Bool true
-                                  |) in
-                                M.read (|
-                                  let~ _ : Ty.tuple [] :=
-                                    M.match_operator (|
-                                      Ty.tuple [],
-                                      M.alloc (|
-                                        Ty.tuple
-                                          [
-                                            Ty.apply (Ty.path "&") [] [ Ty.path "u64" ];
-                                            Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]
-                                          ],
-                                        Value.Tuple
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.alloc (|
-                                                Ty.path "u64",
-                                                M.call_closure (|
+                                    |)
+                                  |);
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "core::num::wrapping::Wrapping")
+                                      []
+                                      [ Ty.path "u64" ],
+                                    M.get_trait_method (|
+                                      "core::ops::arith::Mul",
+                                      Ty.apply
+                                        (Ty.path "core::num::wrapping::Wrapping")
+                                        []
+                                        [ Ty.path "u64" ],
+                                      [],
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::num::wrapping::Wrapping")
+                                          []
+                                          [ Ty.path "u64" ]
+                                      ],
+                                      "mul",
+                                      [],
+                                      []
+                                    |),
+                                    [ M.read (| n |); M.read (| inv |) ]
+                                  |)
+                                ]
+                              |)
+                            ]
+                          |) in
+                        let~ _ : Ty.tuple [] :=
+                          M.match_operator (|
+                            Ty.tuple [],
+                            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                            [
+                              fun γ =>
+                                ltac:(M.monadic
+                                  (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
+                                  let _ :=
+                                    is_constant_or_break_match (|
+                                      M.read (| γ |),
+                                      Value.Bool true
+                                    |) in
+                                  M.read (|
+                                    let~ _ : Ty.tuple [] :=
+                                      M.match_operator (|
+                                        Ty.tuple [],
+                                        M.alloc (|
+                                          Ty.tuple
+                                            [
+                                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ];
+                                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]
+                                            ],
+                                          Value.Tuple
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.alloc (|
                                                   Ty.path "u64",
-                                                  M.get_associated_function (|
+                                                  M.call_closure (|
                                                     Ty.path "u64",
-                                                    "wrapping_mul",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.read (|
-                                                      M.SubPointer.get_struct_tuple_field (|
-                                                        n,
-                                                        "core::num::wrapping::Wrapping",
-                                                        0
+                                                    M.get_associated_function (|
+                                                      Ty.path "u64",
+                                                      "wrapping_mul",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.read (|
+                                                        M.SubPointer.get_struct_tuple_field (|
+                                                          n,
+                                                          "core::num::wrapping::Wrapping",
+                                                          0
+                                                        |)
+                                                      |);
+                                                      M.read (|
+                                                        M.SubPointer.get_struct_tuple_field (|
+                                                          inv,
+                                                          "core::num::wrapping::Wrapping",
+                                                          0
+                                                        |)
                                                       |)
-                                                    |);
-                                                    M.read (|
-                                                      M.SubPointer.get_struct_tuple_field (|
-                                                        inv,
-                                                        "core::num::wrapping::Wrapping",
-                                                        0
-                                                      |)
-                                                    |)
-                                                  ]
+                                                    ]
+                                                  |)
+                                                |)
+                                              |);
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.alloc (|
+                                                  Ty.path "u64",
+                                                  Value.Integer IntegerKind.U64 1
                                                 |)
                                               |)
-                                            |);
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.alloc (|
-                                                Ty.path "u64",
-                                                Value.Integer IntegerKind.U64 1
-                                              |)
-                                            |)
-                                          ]
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                                            let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                                            let left_val :=
-                                              M.copy (|
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
-                                                γ0_0
-                                              |) in
-                                            let right_val :=
-                                              M.copy (|
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
-                                                γ0_1
-                                              |) in
-                                            M.match_operator (|
-                                              Ty.tuple [],
-                                              M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                              [
-                                                fun γ =>
-                                                  ltac:(M.monadic
-                                                    (let γ :=
-                                                      M.alloc (|
-                                                        Ty.path "bool",
-                                                        M.call_closure (|
-                                                          Ty.path "bool",
-                                                          UnOp.not,
-                                                          [
-                                                            M.call_closure (|
-                                                              Ty.path "bool",
-                                                              BinOp.eq,
-                                                              [
-                                                                M.read (|
-                                                                  M.deref (|
-                                                                    M.read (| left_val |)
-                                                                  |)
-                                                                |);
-                                                                M.read (|
-                                                                  M.deref (|
-                                                                    M.read (| right_val |)
-                                                                  |)
-                                                                |)
-                                                              ]
-                                                            |)
-                                                          ]
-                                                        |)
-                                                      |) in
-                                                    let _ :=
-                                                      is_constant_or_break_match (|
-                                                        M.read (| γ |),
-                                                        Value.Bool true
-                                                      |) in
-                                                    M.never_to_any (|
-                                                      M.read (|
-                                                        let~ kind :
-                                                            Ty.path "core::panicking::AssertKind" :=
-                                                          Value.StructTuple
-                                                            "core::panicking::AssertKind::Eq"
-                                                            []
-                                                            []
-                                                            [] in
+                                            ]
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let γ0_0 :=
+                                                M.SubPointer.get_tuple_field (| γ, 0 |) in
+                                              let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                                              let left_val :=
+                                                M.copy (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                                                  γ0_0
+                                                |) in
+                                              let right_val :=
+                                                M.copy (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                                                  γ0_1
+                                                |) in
+                                              M.match_operator (|
+                                                Ty.tuple [],
+                                                M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                                [
+                                                  fun γ =>
+                                                    ltac:(M.monadic
+                                                      (let γ :=
                                                         M.alloc (|
-                                                          Ty.path "never",
+                                                          Ty.path "bool",
                                                           M.call_closure (|
-                                                            Ty.path "never",
-                                                            M.get_function (|
-                                                              "core::panicking::assert_failed",
-                                                              [],
-                                                              [ Ty.path "u64"; Ty.path "u64" ]
-                                                            |),
+                                                            Ty.path "bool",
+                                                            UnOp.not,
                                                             [
-                                                              M.read (| kind |);
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.deref (|
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
+                                                              M.call_closure (|
+                                                                Ty.path "bool",
+                                                                BinOp.eq,
+                                                                [
+                                                                  M.read (|
                                                                     M.deref (|
                                                                       M.read (| left_val |)
                                                                     |)
-                                                                  |)
-                                                                |)
-                                                              |);
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.deref (|
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
+                                                                  |);
+                                                                  M.read (|
                                                                     M.deref (|
                                                                       M.read (| right_val |)
                                                                     |)
                                                                   |)
-                                                                |)
-                                                              |);
-                                                              Value.StructTuple
-                                                                "core::option::Option::None"
-                                                                []
-                                                                [ Ty.path "core::fmt::Arguments" ]
-                                                                []
+                                                                ]
+                                                              |)
                                                             ]
                                                           |)
+                                                        |) in
+                                                      let _ :=
+                                                        is_constant_or_break_match (|
+                                                          M.read (| γ |),
+                                                          Value.Bool true
+                                                        |) in
+                                                      M.never_to_any (|
+                                                        M.read (|
+                                                          let~ kind :
+                                                              Ty.path
+                                                                "core::panicking::AssertKind" :=
+                                                            Value.StructTuple
+                                                              "core::panicking::AssertKind::Eq"
+                                                              []
+                                                              []
+                                                              [] in
+                                                          M.alloc (|
+                                                            Ty.path "never",
+                                                            M.call_closure (|
+                                                              Ty.path "never",
+                                                              M.get_function (|
+                                                                "core::panicking::assert_failed",
+                                                                [],
+                                                                [ Ty.path "u64"; Ty.path "u64" ]
+                                                              |),
+                                                              [
+                                                                M.read (| kind |);
+                                                                M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.deref (|
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.deref (|
+                                                                        M.read (| left_val |)
+                                                                      |)
+                                                                    |)
+                                                                  |)
+                                                                |);
+                                                                M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.deref (|
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.deref (|
+                                                                        M.read (| right_val |)
+                                                                      |)
+                                                                    |)
+                                                                  |)
+                                                                |);
+                                                                Value.StructTuple
+                                                                  "core::option::Option::None"
+                                                                  []
+                                                                  [ Ty.path "core::fmt::Arguments" ]
+                                                                  []
+                                                              ]
+                                                            |)
+                                                          |)
                                                         |)
-                                                      |)
-                                                    |)));
-                                                fun γ => ltac:(M.monadic (Value.Tuple []))
-                                              ]
-                                            |)))
-                                      ]
-                                    |) in
-                                  M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                                |)));
-                            fun γ => ltac:(M.monadic (Value.Tuple []))
-                          ]
-                        |) in
-                      M.SubPointer.get_struct_tuple_field (|
-                        inv,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
+                                                      |)));
+                                                  fun γ => ltac:(M.monadic (Value.Tuple []))
+                                                ]
+                                              |)))
+                                        ]
+                                      |) in
+                                    M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                                  |)));
+                              fun γ => ltac:(M.monadic (Value.Tuple []))
+                            ]
+                          |) in
+                        M.SubPointer.get_struct_tuple_field (|
+                          inv,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_array_field (|
+                            M.SubPointer.get_struct_record_field (|
+                              result,
+                              "ruint::Uint",
+                              "limbs"
+                            |),
+                            Value.Integer IntegerKind.Usize 0
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 let~ correct_limbs : Ty.path "usize" := Value.Integer IntegerKind.Usize 1 in
                 let~ _ : Ty.tuple [] :=
@@ -1416,31 +1458,38 @@ Module mul.
                     |)
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  let β :=
-                    M.SubPointer.get_array_field (|
-                      M.SubPointer.get_struct_record_field (| result, "ruint::Uint", "limbs" |),
-                      M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.sub,
-                        [ LIMBS; Value.Integer IntegerKind.Usize 1 ]
-                      |)
-                    |) in
-                  M.write (|
-                    β,
-                    M.call_closure (|
-                      Ty.path "u64",
-                      BinOp.Wrap.bit_and,
-                      [
-                        M.read (| β |);
-                        M.read (|
-                          get_associated_constant (|
-                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                            "MASK",
-                            Ty.path "u64"
-                          |)
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.read (|
+                        get_associated_constant (|
+                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                          "MASK",
+                          Ty.path "u64"
                         |)
-                      ]
-                    |)
+                      |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (let β :=
+                          M.SubPointer.get_array_field (|
+                            M.SubPointer.get_struct_record_field (|
+                              result,
+                              "ruint::Uint",
+                              "limbs"
+                            |),
+                            M.call_closure (|
+                              Ty.path "usize",
+                              BinOp.Wrap.sub,
+                              [ LIMBS; Value.Integer IntegerKind.Usize 1 ]
+                            |)
+                          |) in
+                        M.write (|
+                          β,
+                          M.call_closure (|
+                            Ty.path "u64",
+                            BinOp.Wrap.bit_and,
+                            [ M.read (| β |); rhs' ]
+                          |)
+                        |)))
                   |) in
                 M.alloc (|
                   Ty.apply

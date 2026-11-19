@@ -82,7 +82,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                 |) in
                               M.alloc (| Ty.tuple [], Value.Tuple [] |)
                             |) in
-                          M.break (||)))
+                          M.impossible (| "[ROR002] labeled loop or block exit in main" |)))
                       |)
                     |)
                   |) in

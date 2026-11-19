@@ -1726,18 +1726,19 @@ Module ascii.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.path "core::ascii::ascii_char::AsciiChar",
-                    M.get_associated_function (|
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.path "core::ascii::ascii_char::AsciiChar",
-                      "to_uppercase",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |) ]
-                  |)
+                      M.get_associated_function (|
+                        Ty.path "core::ascii::ascii_char::AsciiChar",
+                        "to_uppercase",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -1766,18 +1767,19 @@ Module ascii.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.path "core::ascii::ascii_char::AsciiChar",
-                    M.get_associated_function (|
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.path "core::ascii::ascii_char::AsciiChar",
-                      "to_lowercase",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |) ]
-                  |)
+                      M.get_associated_function (|
+                        Ty.path "core::ascii::ascii_char::AsciiChar",
+                        "to_lowercase",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))

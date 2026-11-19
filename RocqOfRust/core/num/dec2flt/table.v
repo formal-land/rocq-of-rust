@@ -82,10 +82,7 @@ Module num.
           (M.alloc (|
             Ty.apply
               (Ty.path "array")
-              [
-                M.unevaluated_const
-                  (mk_str (| "core_num_dec2flt_table_POWER_OF_FIVE_128_discriminant" |))
-              ]
+              [ Value.Integer IntegerKind.Usize 651 ]
               [ Ty.tuple [ Ty.path "u64"; Ty.path "u64" ] ],
             M.alloc (|
               Ty.apply

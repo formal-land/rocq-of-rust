@@ -801,41 +801,46 @@ Module loop_summary.
                 []
               |) in
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&mut") [] [ Ty.path "u16" ],
-                    M.get_trait_method (|
-                      "core::ops::index::IndexMut",
-                      Ty.apply
-                        (Ty.path "alloc::vec::Vec")
-                        []
-                        [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ],
-                      [],
-                      [ Ty.path "usize" ],
-                      "index_mut",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (| Pointer.Kind.MutRef, blocks |);
-                      M.call_closure (|
-                        Ty.path "usize",
-                        M.get_trait_method (|
-                          "core::convert::From",
-                          Ty.path "usize",
-                          [],
-                          [ Ty.path "move_bytecode_verifier::loop_summary::NodeId" ],
-                          "from",
-                          [],
-                          []
-                        |),
-                        [ M.read (| root_node |) ]
-                      |)
-                    ]
-                  |)
-                |),
-                M.read (| root_block |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| root_block |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&mut") [] [ Ty.path "u16" ],
+                          M.get_trait_method (|
+                            "core::ops::index::IndexMut",
+                            Ty.apply
+                              (Ty.path "alloc::vec::Vec")
+                              []
+                              [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ],
+                            [],
+                            [ Ty.path "usize" ],
+                            "index_mut",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (| Pointer.Kind.MutRef, blocks |);
+                            M.call_closure (|
+                              Ty.path "usize",
+                              M.get_trait_method (|
+                                "core::convert::From",
+                                Ty.path "usize",
+                                [],
+                                [ Ty.path "move_bytecode_verifier::loop_summary::NodeId" ],
+                                "from",
+                                [],
+                                []
+                              |),
+                              [ M.read (| root_node |) ]
+                            |)
+                          ]
+                        |)
+                      |),
+                      rhs'
+                    |)))
               |) in
             let~ _ :
                 Ty.apply
@@ -1132,183 +1137,197 @@ Module loop_summary.
                                         |) in
                                       M.read (|
                                         let~ _ : Ty.tuple [] :=
-                                          let β :=
-                                            M.deref (|
-                                              M.call_closure (|
-                                                Ty.apply (Ty.path "&mut") [] [ Ty.path "u16" ],
-                                                M.get_trait_method (|
-                                                  "core::ops::index::IndexMut",
-                                                  Ty.apply
-                                                    (Ty.path "alloc::vec::Vec")
-                                                    []
-                                                    [ Ty.path "u16"; Ty.path "alloc::alloc::Global"
-                                                    ],
-                                                  [],
-                                                  [ Ty.path "usize" ],
-                                                  "index_mut",
-                                                  [],
-                                                  []
-                                                |),
+                                          M.let_ (|
+                                            ltac:(M.monadic
+                                              (M.call_closure (|
+                                                Ty.path "u16",
+                                                BinOp.Wrap.add,
                                                 [
-                                                  M.borrow (| Pointer.Kind.MutRef, descs |);
-                                                  M.call_closure (|
-                                                    Ty.path "usize",
-                                                    M.get_trait_method (|
-                                                      "core::convert::From",
-                                                      Ty.path "usize",
-                                                      [],
-                                                      [
-                                                        Ty.path
-                                                          "move_bytecode_verifier::loop_summary::NodeId"
-                                                      ],
-                                                      "from",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [ M.read (| parent |) ]
+                                                  Value.Integer IntegerKind.U16 1;
+                                                  M.read (|
+                                                    M.deref (|
+                                                      M.call_closure (|
+                                                        Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                                                        M.get_trait_method (|
+                                                          "core::ops::index::Index",
+                                                          Ty.apply
+                                                            (Ty.path "alloc::vec::Vec")
+                                                            []
+                                                            [
+                                                              Ty.path "u16";
+                                                              Ty.path "alloc::alloc::Global"
+                                                            ],
+                                                          [],
+                                                          [ Ty.path "usize" ],
+                                                          "index",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.borrow (| Pointer.Kind.Ref, descs |);
+                                                          M.call_closure (|
+                                                            Ty.path "usize",
+                                                            M.get_trait_method (|
+                                                              "core::convert::From",
+                                                              Ty.path "usize",
+                                                              [],
+                                                              [
+                                                                Ty.path
+                                                                  "move_bytecode_verifier::loop_summary::NodeId"
+                                                              ],
+                                                              "from",
+                                                              [],
+                                                              []
+                                                            |),
+                                                            [ M.read (| node_id |) ]
+                                                          |)
+                                                        ]
+                                                      |)
+                                                    |)
                                                   |)
                                                 ]
-                                              |)
-                                            |) in
-                                          M.write (|
-                                            β,
-                                            M.call_closure (|
-                                              Ty.path "u16",
-                                              BinOp.Wrap.add,
-                                              [
-                                                M.read (| β |);
-                                                M.call_closure (|
-                                                  Ty.path "u16",
-                                                  BinOp.Wrap.add,
-                                                  [
-                                                    Value.Integer IntegerKind.U16 1;
-                                                    M.read (|
-                                                      M.deref (|
+                                              |))),
+                                            fun rhs' =>
+                                              ltac:(M.monadic
+                                                (let β :=
+                                                  M.deref (|
+                                                    M.call_closure (|
+                                                      Ty.apply
+                                                        (Ty.path "&mut")
+                                                        []
+                                                        [ Ty.path "u16" ],
+                                                      M.get_trait_method (|
+                                                        "core::ops::index::IndexMut",
+                                                        Ty.apply
+                                                          (Ty.path "alloc::vec::Vec")
+                                                          []
+                                                          [
+                                                            Ty.path "u16";
+                                                            Ty.path "alloc::alloc::Global"
+                                                          ],
+                                                        [],
+                                                        [ Ty.path "usize" ],
+                                                        "index_mut",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.borrow (| Pointer.Kind.MutRef, descs |);
                                                         M.call_closure (|
-                                                          Ty.apply
-                                                            (Ty.path "&")
-                                                            []
-                                                            [ Ty.path "u16" ],
+                                                          Ty.path "usize",
                                                           M.get_trait_method (|
-                                                            "core::ops::index::Index",
-                                                            Ty.apply
-                                                              (Ty.path "alloc::vec::Vec")
-                                                              []
-                                                              [
-                                                                Ty.path "u16";
-                                                                Ty.path "alloc::alloc::Global"
-                                                              ],
+                                                            "core::convert::From",
+                                                            Ty.path "usize",
                                                             [],
-                                                            [ Ty.path "usize" ],
-                                                            "index",
+                                                            [
+                                                              Ty.path
+                                                                "move_bytecode_verifier::loop_summary::NodeId"
+                                                            ],
+                                                            "from",
                                                             [],
                                                             []
                                                           |),
-                                                          [
-                                                            M.borrow (| Pointer.Kind.Ref, descs |);
-                                                            M.call_closure (|
-                                                              Ty.path "usize",
-                                                              M.get_trait_method (|
-                                                                "core::convert::From",
-                                                                Ty.path "usize",
-                                                                [],
-                                                                [
-                                                                  Ty.path
-                                                                    "move_bytecode_verifier::loop_summary::NodeId"
-                                                                ],
-                                                                "from",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [ M.read (| node_id |) ]
-                                                            |)
-                                                          ]
+                                                          [ M.read (| parent |) ]
                                                         |)
-                                                      |)
+                                                      ]
                                                     |)
-                                                  ]
-                                                |)
-                                              ]
-                                            |)
+                                                  |) in
+                                                M.write (|
+                                                  β,
+                                                  M.call_closure (|
+                                                    Ty.path "u16",
+                                                    BinOp.Wrap.add,
+                                                    [ M.read (| β |); rhs' ]
+                                                  |)
+                                                |)))
                                           |) in
                                         let~ _ : Ty.tuple [] :=
-                                          M.write (|
-                                            M.deref (|
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "&mut")
-                                                  []
-                                                  [
-                                                    Ty.path
-                                                      "move_bytecode_verifier::loop_summary::new::Exploration"
-                                                  ],
-                                                M.get_associated_function (|
-                                                  Ty.apply
-                                                    (Ty.path "core::option::Option")
-                                                    []
-                                                    [
+                                          M.let_ (|
+                                            ltac:(M.monadic
+                                              (Value.StructTuple
+                                                "move_bytecode_verifier::loop_summary::new::Exploration::Done"
+                                                []
+                                                []
+                                                [ M.read (| node_id |) ])),
+                                            fun rhs' =>
+                                              ltac:(M.monadic
+                                                (M.write (|
+                                                  M.deref (|
+                                                    M.call_closure (|
                                                       Ty.apply
                                                         (Ty.path "&mut")
                                                         []
                                                         [
                                                           Ty.path
                                                             "move_bytecode_verifier::loop_summary::new::Exploration"
-                                                        ]
-                                                    ],
-                                                  "unwrap",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.call_closure (|
-                                                    Ty.apply
-                                                      (Ty.path "core::option::Option")
-                                                      []
-                                                      [
+                                                        ],
+                                                      M.get_associated_function (|
                                                         Ty.apply
-                                                          (Ty.path "&mut")
+                                                          (Ty.path "core::option::Option")
                                                           []
                                                           [
-                                                            Ty.path
-                                                              "move_bytecode_verifier::loop_summary::new::Exploration"
-                                                          ]
-                                                      ],
-                                                    M.get_associated_function (|
-                                                      Ty.apply
-                                                        (Ty.path
-                                                          "alloc::collections::btree::map::BTreeMap")
+                                                            Ty.apply
+                                                              (Ty.path "&mut")
+                                                              []
+                                                              [
+                                                                Ty.path
+                                                                  "move_bytecode_verifier::loop_summary::new::Exploration"
+                                                              ]
+                                                          ],
+                                                        "unwrap",
+                                                        [],
                                                         []
-                                                        [
-                                                          Ty.path "u16";
-                                                          Ty.path
-                                                            "move_bytecode_verifier::loop_summary::new::Exploration";
-                                                          Ty.path "alloc::alloc::Global"
-                                                        ],
-                                                      "get_mut",
-                                                      [],
-                                                      [ Ty.path "u16" ]
-                                                    |),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.MutRef,
-                                                        exploration
-                                                      |);
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (|
-                                                          M.borrow (| Pointer.Kind.Ref, block |)
+                                                      |),
+                                                      [
+                                                        M.call_closure (|
+                                                          Ty.apply
+                                                            (Ty.path "core::option::Option")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "&mut")
+                                                                []
+                                                                [
+                                                                  Ty.path
+                                                                    "move_bytecode_verifier::loop_summary::new::Exploration"
+                                                                ]
+                                                            ],
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "alloc::collections::btree::map::BTreeMap")
+                                                              []
+                                                              [
+                                                                Ty.path "u16";
+                                                                Ty.path
+                                                                  "move_bytecode_verifier::loop_summary::new::Exploration";
+                                                                Ty.path "alloc::alloc::Global"
+                                                              ],
+                                                            "get_mut",
+                                                            [],
+                                                            [ Ty.path "u16" ]
+                                                          |),
+                                                          [
+                                                            M.borrow (|
+                                                              Pointer.Kind.MutRef,
+                                                              exploration
+                                                            |);
+                                                            M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (|
+                                                                M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  block
+                                                                |)
+                                                              |)
+                                                            |)
+                                                          ]
                                                         |)
-                                                      |)
-                                                    ]
-                                                  |)
-                                                ]
-                                              |)
-                                            |),
-                                            Value.StructTuple
-                                              "move_bytecode_verifier::loop_summary::new::Exploration::Done"
-                                              []
-                                              []
-                                              [ M.read (| node_id |) ]
+                                                      ]
+                                                    |)
+                                                  |),
+                                                  rhs'
+                                                |)))
                                           |) in
                                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                       |)));
@@ -1741,53 +1760,58 @@ Module loop_summary.
                                                     ]
                                                   |) in
                                                 let~ _ : Ty.tuple [] :=
-                                                  M.write (|
-                                                    M.deref (|
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "&mut")
-                                                          []
-                                                          [ Ty.path "u16" ],
-                                                        M.get_trait_method (|
-                                                          "core::ops::index::IndexMut",
-                                                          Ty.apply
-                                                            (Ty.path "alloc::vec::Vec")
-                                                            []
-                                                            [
-                                                              Ty.path "u16";
-                                                              Ty.path "alloc::alloc::Global"
-                                                            ],
-                                                          [],
-                                                          [ Ty.path "usize" ],
-                                                          "index_mut",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [
-                                                          M.borrow (|
-                                                            Pointer.Kind.MutRef,
-                                                            blocks
-                                                          |);
-                                                          M.call_closure (|
-                                                            Ty.path "usize",
-                                                            M.get_trait_method (|
-                                                              "core::convert::From",
-                                                              Ty.path "usize",
-                                                              [],
+                                                  M.let_ (|
+                                                    ltac:(M.monadic (M.read (| to_block |))),
+                                                    fun rhs' =>
+                                                      ltac:(M.monadic
+                                                        (M.write (|
+                                                          M.deref (|
+                                                            M.call_closure (|
+                                                              Ty.apply
+                                                                (Ty.path "&mut")
+                                                                []
+                                                                [ Ty.path "u16" ],
+                                                              M.get_trait_method (|
+                                                                "core::ops::index::IndexMut",
+                                                                Ty.apply
+                                                                  (Ty.path "alloc::vec::Vec")
+                                                                  []
+                                                                  [
+                                                                    Ty.path "u16";
+                                                                    Ty.path "alloc::alloc::Global"
+                                                                  ],
+                                                                [],
+                                                                [ Ty.path "usize" ],
+                                                                "index_mut",
+                                                                [],
+                                                                []
+                                                              |),
                                                               [
-                                                                Ty.path
-                                                                  "move_bytecode_verifier::loop_summary::NodeId"
-                                                              ],
-                                                              "from",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [ M.read (| to_node |) ]
-                                                          |)
-                                                        ]
-                                                      |)
-                                                    |),
-                                                    M.read (| to_block |)
+                                                                M.borrow (|
+                                                                  Pointer.Kind.MutRef,
+                                                                  blocks
+                                                                |);
+                                                                M.call_closure (|
+                                                                  Ty.path "usize",
+                                                                  M.get_trait_method (|
+                                                                    "core::convert::From",
+                                                                    Ty.path "usize",
+                                                                    [],
+                                                                    [
+                                                                      Ty.path
+                                                                        "move_bytecode_verifier::loop_summary::NodeId"
+                                                                    ],
+                                                                    "from",
+                                                                    [],
+                                                                    []
+                                                                  |),
+                                                                  [ M.read (| to_node |) ]
+                                                                |)
+                                                              ]
+                                                            |)
+                                                          |),
+                                                          rhs'
+                                                        |)))
                                                   |) in
                                                 let~ _ : Ty.tuple [] :=
                                                   M.call_closure (|
@@ -2211,12 +2235,7 @@ Module loop_summary.
                       "move_bytecode_verifier::loop_summary::NodeId",
                       0
                     |) in
-                  let ancestor :=
-                    M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
-                      γ0_0
-                    |) in
+                  let ancestor := M.copy (| Ty.path "u16", γ0_0 |) in
                   M.match_operator (|
                     Ty.path "bool",
                     β2,
@@ -2229,12 +2248,7 @@ Module loop_summary.
                               "move_bytecode_verifier::loop_summary::NodeId",
                               0
                             |) in
-                          let descendant :=
-                            M.copy (|
-                              Ty.path
-                                "Type for variables in patterns in function parameters is not handled",
-                              γ0_0
-                            |) in
+                          let descendant := M.copy (| Ty.path "u16", γ0_0 |) in
                           LogicalOp.and (|
                             M.call_closure (|
                               Ty.path "bool",
@@ -3244,33 +3258,38 @@ Module loop_summary.
                                                   |) in
                                                 M.read (|
                                                   let~ _ : Ty.tuple [] :=
-                                                    M.write (|
-                                                      M.deref (|
-                                                        M.call_closure (|
-                                                          Ty.apply
-                                                            (Ty.path "&mut")
-                                                            []
-                                                            [
-                                                              Ty.path
-                                                                "move_bytecode_verifier::loop_summary::NodeId"
-                                                            ],
-                                                          M.get_associated_function (|
-                                                            Ty.path
-                                                              "move_bytecode_verifier::loop_summary::LoopPartition",
-                                                            "parent_mut",
-                                                            [],
-                                                            []
-                                                          |),
-                                                          [
-                                                            M.borrow (|
-                                                              Pointer.Kind.MutRef,
-                                                              M.deref (| M.read (| self |) |)
-                                                            |);
-                                                            M.read (| descendant |)
-                                                          ]
-                                                        |)
-                                                      |),
-                                                      M.read (| parent |)
+                                                    M.let_ (|
+                                                      ltac:(M.monadic (M.read (| parent |))),
+                                                      fun rhs' =>
+                                                        ltac:(M.monadic
+                                                          (M.write (|
+                                                            M.deref (|
+                                                              M.call_closure (|
+                                                                Ty.apply
+                                                                  (Ty.path "&mut")
+                                                                  []
+                                                                  [
+                                                                    Ty.path
+                                                                      "move_bytecode_verifier::loop_summary::NodeId"
+                                                                  ],
+                                                                M.get_associated_function (|
+                                                                  Ty.path
+                                                                    "move_bytecode_verifier::loop_summary::LoopPartition",
+                                                                  "parent_mut",
+                                                                  [],
+                                                                  []
+                                                                |),
+                                                                [
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.MutRef,
+                                                                    M.deref (| M.read (| self |) |)
+                                                                  |);
+                                                                  M.read (| descendant |)
+                                                                ]
+                                                              |)
+                                                            |),
+                                                            rhs'
+                                                          |)))
                                                     |) in
                                                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                                 |)))
@@ -3928,35 +3947,42 @@ Module loop_summary.
                                                   ]
                                                 |) in
                                               let~ _ : Ty.tuple [] :=
-                                                M.write (|
-                                                  M.deref (|
-                                                    M.call_closure (|
-                                                      Ty.apply
-                                                        (Ty.path "&mut")
-                                                        []
-                                                        [
-                                                          Ty.path
-                                                            "move_bytecode_verifier::loop_summary::NodeId"
-                                                        ],
-                                                      M.get_associated_function (|
-                                                        Ty.path
-                                                          "move_bytecode_verifier::loop_summary::LoopPartition",
-                                                        "parent_mut",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.MutRef,
-                                                          M.deref (| M.read (| self |) |)
-                                                        |);
-                                                        M.read (|
-                                                          M.deref (| M.read (| constituent |) |)
-                                                        |)
-                                                      ]
-                                                    |)
-                                                  |),
-                                                  M.read (| head |)
+                                                M.let_ (|
+                                                  ltac:(M.monadic (M.read (| head |))),
+                                                  fun rhs' =>
+                                                    ltac:(M.monadic
+                                                      (M.write (|
+                                                        M.deref (|
+                                                          M.call_closure (|
+                                                            Ty.apply
+                                                              (Ty.path "&mut")
+                                                              []
+                                                              [
+                                                                Ty.path
+                                                                  "move_bytecode_verifier::loop_summary::NodeId"
+                                                              ],
+                                                            M.get_associated_function (|
+                                                              Ty.path
+                                                                "move_bytecode_verifier::loop_summary::LoopPartition",
+                                                              "parent_mut",
+                                                              [],
+                                                              []
+                                                            |),
+                                                            [
+                                                              M.borrow (|
+                                                                Pointer.Kind.MutRef,
+                                                                M.deref (| M.read (| self |) |)
+                                                              |);
+                                                              M.read (|
+                                                                M.deref (|
+                                                                  M.read (| constituent |)
+                                                                |)
+                                                              |)
+                                                            ]
+                                                          |)
+                                                        |),
+                                                        rhs'
+                                                      |)))
                                                 |) in
                                               let~ _ : Ty.tuple [] :=
                                                 M.write (|
@@ -4018,23 +4044,28 @@ Module loop_summary.
                 |)
               |) in
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&mut") [] [ Ty.path "u16" ],
-                    M.get_associated_function (|
-                      Ty.path "move_bytecode_verifier::loop_summary::LoopPartition",
-                      "depth_mut",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                      M.read (| head |)
-                    ]
-                  |)
-                |),
-                M.read (| depth |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| depth |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&mut") [] [ Ty.path "u16" ],
+                          M.get_associated_function (|
+                            Ty.path "move_bytecode_verifier::loop_summary::LoopPartition",
+                            "depth_mut",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                            M.read (| head |)
+                          ]
+                        |)
+                      |),
+                      rhs'
+                    |)))
               |) in
             depth
           |)))
@@ -4432,12 +4463,7 @@ Module loop_summary.
                       "move_bytecode_verifier::loop_summary::NodeId",
                       0
                     |) in
-                  let id :=
-                    M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
-                      γ0_0
-                    |) in
+                  let id := M.copy (| Ty.path "u16", γ0_0 |) in
                   M.cast (Ty.path "usize") (M.read (| id |))))
             ]
           |)))

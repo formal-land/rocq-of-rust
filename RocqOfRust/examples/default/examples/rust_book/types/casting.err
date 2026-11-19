@@ -1,0 +1,42 @@
+warning: [ROR003] floating-point literal in main
+  --> examples/rust_book/types/casting.rs:76:13
+   |
+76 |             (-100.0_f32).to_int_unchecked::<u8>()
+   |             ^^^^^^^^^^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in main
+  --> examples/rust_book/types/casting.rs:72:42
+   |
+72 |         println!(" 300.0 as u8 is : {}", 300.0_f32.to_int_unchecked::<u8>());
+   |                                          ^^^^^^^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in main
+  --> examples/rust_book/types/casting.rs:63:38
+   |
+63 |     println!("-100.0 as u8 is : {}", -100.0_f32 as u8);
+   |                                      ^^^^^^^^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in main
+  --> examples/rust_book/types/casting.rs:61:38
+   |
+61 |     println!(" 300.0 as u8 is : {}", 300.0_f32 as u8);
+   |                                      ^^^^^^^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in main
+ --> examples/rust_book/types/casting.rs:5:19
+  |
+5 |     let decimal = 65.4321_f32;
+  |                   ^^^^^^^^^^^
+  |
+  = note: Execution of this expression is unsupported
+
+warning: 5 warnings emitted
+

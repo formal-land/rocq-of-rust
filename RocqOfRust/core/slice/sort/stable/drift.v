@@ -941,51 +941,70 @@ Module slice.
                                                 |)
                                               |) in
                                             let~ _ : Ty.tuple [] :=
-                                              M.write (|
-                                                M.deref (|
-                                                  M.call_closure (|
-                                                    Ty.apply
-                                                      (Ty.path "*mut")
-                                                      []
-                                                      [
-                                                        Ty.path
-                                                          "core::slice::sort::stable::drift::DriftsortRun"
-                                                      ],
-                                                    M.get_associated_function (|
-                                                      Ty.apply
-                                                        (Ty.path "*mut")
-                                                        []
-                                                        [
-                                                          Ty.path
-                                                            "core::slice::sort::stable::drift::DriftsortRun"
-                                                        ],
-                                                      "add",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [ M.read (| runs |); M.read (| stack_len |) ]
-                                                  |)
-                                                |),
-                                                M.read (| prev_run |)
+                                              M.let_ (|
+                                                ltac:(M.monadic (M.read (| prev_run |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (M.write (|
+                                                      M.deref (|
+                                                        M.call_closure (|
+                                                          Ty.apply
+                                                            (Ty.path "*mut")
+                                                            []
+                                                            [
+                                                              Ty.path
+                                                                "core::slice::sort::stable::drift::DriftsortRun"
+                                                            ],
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path "*mut")
+                                                              []
+                                                              [
+                                                                Ty.path
+                                                                  "core::slice::sort::stable::drift::DriftsortRun"
+                                                              ],
+                                                            "add",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.read (| runs |);
+                                                            M.read (| stack_len |)
+                                                          ]
+                                                        |)
+                                                      |),
+                                                      rhs'
+                                                    |)))
                                               |) in
                                             let~ _ : Ty.tuple [] :=
-                                              M.write (|
-                                                M.deref (|
-                                                  M.call_closure (|
-                                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                                    M.get_associated_function (|
-                                                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                                      "add",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.read (| desired_depths |);
-                                                      M.read (| stack_len |)
-                                                    ]
-                                                  |)
-                                                |),
-                                                M.read (| desired_depth |)
+                                              M.let_ (|
+                                                ltac:(M.monadic (M.read (| desired_depth |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (M.write (|
+                                                      M.deref (|
+                                                        M.call_closure (|
+                                                          Ty.apply
+                                                            (Ty.path "*mut")
+                                                            []
+                                                            [ Ty.path "u8" ],
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path "*mut")
+                                                              []
+                                                              [ Ty.path "u8" ],
+                                                            "add",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.read (| desired_depths |);
+                                                            M.read (| stack_len |)
+                                                          ]
+                                                        |)
+                                                      |),
+                                                      rhs'
+                                                    |)))
                                               |) in
                                             let~ _ : Ty.tuple [] :=
                                               let β := stack_len in
@@ -1028,27 +1047,30 @@ Module slice.
                                             ]
                                           |) in
                                         let~ _ : Ty.tuple [] :=
-                                          let β := scan_idx in
-                                          M.write (|
-                                            β,
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              BinOp.Wrap.add,
-                                              [
-                                                M.read (| β |);
-                                                M.call_closure (|
-                                                  Ty.path "usize",
-                                                  M.get_associated_function (|
-                                                    Ty.path
-                                                      "core::slice::sort::stable::drift::DriftsortRun",
-                                                    "len",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [ M.read (| next_run |) ]
-                                                |)
-                                              ]
-                                            |)
+                                          M.let_ (|
+                                            ltac:(M.monadic
+                                              (M.call_closure (|
+                                                Ty.path "usize",
+                                                M.get_associated_function (|
+                                                  Ty.path
+                                                    "core::slice::sort::stable::drift::DriftsortRun",
+                                                  "len",
+                                                  [],
+                                                  []
+                                                |),
+                                                [ M.read (| next_run |) ]
+                                              |))),
+                                            fun rhs' =>
+                                              ltac:(M.monadic
+                                                (let β := scan_idx in
+                                                M.write (|
+                                                  β,
+                                                  M.call_closure (|
+                                                    Ty.path "usize",
+                                                    BinOp.Wrap.add,
+                                                    [ M.read (| β |); rhs' ]
+                                                  |)
+                                                |)))
                                           |) in
                                         let~ _ : Ty.tuple [] :=
                                           M.write (| prev_run, M.read (| next_run |) |) in

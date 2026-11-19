@@ -1,0 +1,18 @@
+warning: [ROR003] floating-point literal in random_animal
+  --> examples/rust_book/traits/returning_traits_with_dyn.rs:25:24
+   |
+25 |     if random_number < 0.5 {
+   |                        ^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in main
+  --> examples/rust_book/traits/returning_traits_with_dyn.rs:33:25
+   |
+33 |     let random_number = 0.234;
+   |                         ^^^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: 2 warnings emitted
+

@@ -931,8 +931,12 @@ Module alloc.
         | [], [ T ], [] =>
           ltac:(M.monadic
             (M.read (|
-              get_constant (|
-                "core::mem::SizedTypeProperties::LAYOUT",
+              get_trait_constant (|
+                "core::mem::SizedTypeProperties",
+                T,
+                [],
+                [],
+                "LAYOUT",
                 Ty.path "core::alloc::layout::Layout"
               |)
             |)))
@@ -2067,8 +2071,12 @@ Module alloc.
                         M.get_associated_function (| Self, "inner.array", [], [] |),
                         [
                           M.read (|
-                            get_constant (|
-                              "core::mem::SizedTypeProperties::LAYOUT",
+                            get_trait_constant (|
+                              "core::mem::SizedTypeProperties",
+                              T,
+                              [],
+                              [],
+                              "LAYOUT",
                               Ty.path "core::alloc::layout::Layout"
                             |)
                           |);

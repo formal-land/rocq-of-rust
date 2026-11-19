@@ -1966,24 +1966,27 @@ Module instructions.
                                           M.read (| γ |),
                                           Value.Bool true
                                         |) in
-                                      let β := gas_limit in
-                                      M.write (|
-                                        β,
-                                        M.call_closure (|
-                                          Ty.path "u64",
-                                          BinOp.Wrap.sub,
-                                          [
-                                            M.read (| β |);
-                                            M.call_closure (|
-                                              Ty.path "u64",
-                                              BinOp.Wrap.div,
-                                              [
-                                                M.read (| gas_limit |);
-                                                Value.Integer IntegerKind.U64 64
-                                              ]
-                                            |)
-                                          ]
-                                        |)
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (M.call_closure (|
+                                            Ty.path "u64",
+                                            BinOp.Wrap.div,
+                                            [
+                                              M.read (| gas_limit |);
+                                              Value.Integer IntegerKind.U64 64
+                                            ]
+                                          |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (let β := gas_limit in
+                                            M.write (|
+                                              β,
+                                              M.call_closure (|
+                                                Ty.path "u64",
+                                                BinOp.Wrap.sub,
+                                                [ M.read (| β |); rhs' ]
+                                              |)
+                                            |)))
                                       |)));
                                   fun γ => ltac:(M.monadic (Value.Tuple []))
                                 ]

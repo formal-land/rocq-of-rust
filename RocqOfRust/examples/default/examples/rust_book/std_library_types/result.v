@@ -148,7 +148,12 @@ Module checked.
                     M.call_closure (|
                       Ty.path "bool",
                       BinOp.eq,
-                      [ M.read (| y |); M.read (| UnsupportedLiteral |) ]
+                      [
+                        M.read (| y |);
+                        M.read (|
+                          M.impossible (| "[ROR003] floating-point literal in checked::div" |)
+                        |)
+                      ]
                     |)
                   |) in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
@@ -209,7 +214,12 @@ Module checked.
                     M.call_closure (|
                       Ty.path "bool",
                       BinOp.lt,
-                      [ M.read (| x |); M.read (| UnsupportedLiteral |) ]
+                      [
+                        M.read (| x |);
+                        M.read (|
+                          M.impossible (| "[ROR003] floating-point literal in checked::sqrt" |)
+                        |)
+                      ]
                     |)
                   |) in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
@@ -270,7 +280,12 @@ Module checked.
                     M.call_closure (|
                       Ty.path "bool",
                       BinOp.le,
-                      [ M.read (| x |); M.read (| UnsupportedLiteral |) ]
+                      [
+                        M.read (| x |);
+                        M.read (|
+                          M.impossible (| "[ROR003] floating-point literal in checked::ln" |)
+                        |)
+                      ]
                     |)
                   |) in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
@@ -669,7 +684,14 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                               M.call_closure (|
                                 Ty.path "f64",
                                 M.get_function (| "result::op", [], [] |),
-                                [ M.read (| UnsupportedLiteral |); M.read (| UnsupportedLiteral |) ]
+                                [
+                                  M.read (|
+                                    M.impossible (| "[ROR003] floating-point literal in main" |)
+                                  |);
+                                  M.read (|
+                                    M.impossible (| "[ROR003] floating-point literal in main" |)
+                                  |)
+                                ]
                               |)
                             |)
                           |)

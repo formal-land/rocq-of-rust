@@ -71,13 +71,19 @@ Module Impl_fosdem_Counter.
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                 M.read (|
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "fosdem::Counter",
-                        "value"
-                      |),
-                      M.read (| get_constant (| "fosdem::MAX_VALUE", Ty.path "u64" |) |)
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (| get_constant (| "fosdem::MAX_VALUE", Ty.path "u64" |) |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "fosdem::Counter",
+                              "value"
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
                 |)));
@@ -85,19 +91,24 @@ Module Impl_fosdem_Counter.
               ltac:(M.monadic
                 (M.read (|
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "fosdem::Counter",
-                        "value"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.add,
-                        [ M.read (| β |); M.read (| amount |) ]
-                      |)
+                    M.let_ (|
+                      ltac:(M.monadic (M.read (| amount |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "fosdem::Counter",
+                              "value"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.add,
+                              [ M.read (| β |); rhs' ]
+                            |)
+                          |)))
                     |) in
                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
                 |)))

@@ -1,0 +1,10 @@
+warning: [ROR003] floating-point literal in main
+  --> examples/custom/polymorphic_associated_function.rs:17:26
+   |
+17 |     assert_eq!(bar.data, 42.0);
+   |                          ^^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: 1 warning emitted
+

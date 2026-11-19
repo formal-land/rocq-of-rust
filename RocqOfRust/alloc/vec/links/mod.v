@@ -3,6 +3,7 @@ Require Import alloc.vec.mod.
 Require Import links.M.
 Require Import alloc.links.alloc.
 Require Import alloc.links.raw_vec.
+Require Import core.intrinsics.links.mod.
 Require Import core.links.clone.
 Require Import core.links.default.
 Require Import core.links.option.
@@ -75,6 +76,30 @@ Module Vec.
     reflexivity.
   Defined.
   Smpl Add unshelve eapply of_value : of_value.
+  Module SubPointer.
+    Definition get_len {T A : Set} `{Link T} `{Link A} : SubPointer.Runner.t (t T A)
+        (Pointer.Index.StructRecord "alloc::vec::Vec" "len") :=
+      {| SubPointer.Runner.projection x := Some x.(len);
+         SubPointer.Runner.injection x n := Some {| buf := x.(buf); len := n |} |}.
+
+    Lemma get_len_valid {T A : Set} `{Link T} `{Link A} :
+      SubPointer.Runner.Valid.t (get_len (T := T) (A := A)).
+    Proof. now constructor. Qed.
+    Smpl Add apply get_len_valid : run_sub_pointer.
+  End SubPointer.
+
+  (** Layout is supplied by the Rust target. Integer bounds in this model use
+      64-bit pointer-sized integers. *)
+  Parameter size_of : Ty.t -> Z.
+  Definition max_slice_len (size : Z) : Z :=
+    if size =? 0 then Integer.max IntegerKind.Usize else Integer.max IntegerKind.Isize / size.
+
+  Axiom max_slice_len_value : forall T : Ty.t,
+    trait_constant_value "core::mem::SizedTypeProperties" T [] [] "MAX_SLICE_LEN" =
+    Value.Integer IntegerKind.Usize (max_slice_len (size_of T)).
+
+  Definition valid_length {T A : Set} `{Link T} (v : t T A) : Prop :=
+    0 <= v.(len).(Integer.value) <= max_slice_len (size_of (Φ T)).
 End Vec.
 Export (hints) Vec.
 
@@ -170,14 +195,18 @@ Module Impl_Vec_T_A.
   Instance run_len {T A : Set} `{Link T} `{Link A} (self : '& (Self T A)) :
     Run.Trait (vec.Impl_alloc_vec_Vec_T_A.len (Φ T) (Φ A)) [] [] [φ self] usize.
   Proof.
-  Admitted.
+    constructor. unfold vec.Impl_alloc_vec_Vec_T_A.len.
+    eapply Run.Rewrite; [unfold get_trait_constant; rewrite Vec.max_slice_len_value; reflexivity |].
+    run_symbolic.
+  Defined.
   Global Opaque run_len.
 
   (* pub const fn is_empty(&self) -> bool *)
   Instance run_is_empty {T A : Set} `{Link T} `{Link A} (self : '& (Self T A)) :
     Run.Trait (vec.Impl_alloc_vec_Vec_T_A.is_empty (Φ T) (Φ A)) [] [] [φ self] bool.
   Proof.
-  Admitted.
+    constructor. run_symbolic.
+  Defined.
   Global Opaque run_is_empty.
 
   (* pub fn pop(&mut self) -> Option<T> *)

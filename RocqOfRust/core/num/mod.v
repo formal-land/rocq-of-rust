@@ -6431,15 +6431,23 @@ Module num.
                                                 M.never_to_any (|
                                                   M.read (|
                                                     let~ _ : Ty.tuple [] :=
-                                                      let β :=
-                                                        M.SubPointer.get_tuple_field (| r, 1 |) in
-                                                      M.write (|
-                                                        β,
-                                                        M.call_closure (|
-                                                          Ty.path "bool",
-                                                          BinOp.Wrap.bit_or,
-                                                          [ M.read (| β |); M.read (| overflown |) ]
-                                                        |)
+                                                      M.let_ (|
+                                                        ltac:(M.monadic (M.read (| overflown |))),
+                                                        fun rhs' =>
+                                                          ltac:(M.monadic
+                                                            (let β :=
+                                                              M.SubPointer.get_tuple_field (|
+                                                                r,
+                                                                1
+                                                              |) in
+                                                            M.write (|
+                                                              β,
+                                                              M.call_closure (|
+                                                                Ty.path "bool",
+                                                                BinOp.Wrap.bit_or,
+                                                                [ M.read (| β |); rhs' ]
+                                                              |)
+                                                            |)))
                                                       |) in
                                                     M.return_ (| M.read (| r |) |)
                                                   |)
@@ -6453,17 +6461,20 @@ Module num.
                                           M.read (| M.SubPointer.get_tuple_field (| r, 0 |) |)
                                         |) in
                                       let~ _ : Ty.tuple [] :=
-                                        let β := overflown in
-                                        M.write (|
-                                          β,
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.Wrap.bit_or,
-                                            [
-                                              M.read (| β |);
-                                              M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |)
-                                            ]
-                                          |)
+                                        M.let_ (|
+                                          ltac:(M.monadic
+                                            (M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (let β := overflown in
+                                              M.write (|
+                                                β,
+                                                M.call_closure (|
+                                                  Ty.path "bool",
+                                                  BinOp.Wrap.bit_or,
+                                                  [ M.read (| β |); rhs' ]
+                                                |)
+                                              |)))
                                         |) in
                                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                     |)));
@@ -6500,17 +6511,20 @@ Module num.
                               M.read (| M.SubPointer.get_tuple_field (| r, 0 |) |)
                             |) in
                           let~ _ : Ty.tuple [] :=
-                            let β := overflown in
-                            M.write (|
-                              β,
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.Wrap.bit_or,
-                                [
-                                  M.read (| β |);
-                                  M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |)
-                                ]
-                              |)
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (let β := overflown in
+                                  M.write (|
+                                    β,
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.Wrap.bit_or,
+                                      [ M.read (| β |); rhs' ]
+                                    |)
+                                  |)))
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)))
                       |)
@@ -8393,10 +8407,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_be_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 1 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -8430,10 +8441,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_le_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 1 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -8468,10 +8476,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_ne_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 1 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -16743,15 +16748,23 @@ Module num.
                                                 M.never_to_any (|
                                                   M.read (|
                                                     let~ _ : Ty.tuple [] :=
-                                                      let β :=
-                                                        M.SubPointer.get_tuple_field (| r, 1 |) in
-                                                      M.write (|
-                                                        β,
-                                                        M.call_closure (|
-                                                          Ty.path "bool",
-                                                          BinOp.Wrap.bit_or,
-                                                          [ M.read (| β |); M.read (| overflown |) ]
-                                                        |)
+                                                      M.let_ (|
+                                                        ltac:(M.monadic (M.read (| overflown |))),
+                                                        fun rhs' =>
+                                                          ltac:(M.monadic
+                                                            (let β :=
+                                                              M.SubPointer.get_tuple_field (|
+                                                                r,
+                                                                1
+                                                              |) in
+                                                            M.write (|
+                                                              β,
+                                                              M.call_closure (|
+                                                                Ty.path "bool",
+                                                                BinOp.Wrap.bit_or,
+                                                                [ M.read (| β |); rhs' ]
+                                                              |)
+                                                            |)))
                                                       |) in
                                                     M.return_ (| M.read (| r |) |)
                                                   |)
@@ -16765,17 +16778,20 @@ Module num.
                                           M.read (| M.SubPointer.get_tuple_field (| r, 0 |) |)
                                         |) in
                                       let~ _ : Ty.tuple [] :=
-                                        let β := overflown in
-                                        M.write (|
-                                          β,
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.Wrap.bit_or,
-                                            [
-                                              M.read (| β |);
-                                              M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |)
-                                            ]
-                                          |)
+                                        M.let_ (|
+                                          ltac:(M.monadic
+                                            (M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (let β := overflown in
+                                              M.write (|
+                                                β,
+                                                M.call_closure (|
+                                                  Ty.path "bool",
+                                                  BinOp.Wrap.bit_or,
+                                                  [ M.read (| β |); rhs' ]
+                                                |)
+                                              |)))
                                         |) in
                                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                     |)));
@@ -16812,17 +16828,20 @@ Module num.
                               M.read (| M.SubPointer.get_tuple_field (| r, 0 |) |)
                             |) in
                           let~ _ : Ty.tuple [] :=
-                            let β := overflown in
-                            M.write (|
-                              β,
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.Wrap.bit_or,
-                                [
-                                  M.read (| β |);
-                                  M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |)
-                                ]
-                              |)
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (let β := overflown in
+                                  M.write (|
+                                    β,
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.Wrap.bit_or,
+                                      [ M.read (| β |); rhs' ]
+                                    |)
+                                  |)))
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)))
                       |)
@@ -18705,10 +18724,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_be_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 2 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -18742,10 +18758,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_le_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 2 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -18780,10 +18793,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_ne_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 2 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -27055,15 +27065,23 @@ Module num.
                                                 M.never_to_any (|
                                                   M.read (|
                                                     let~ _ : Ty.tuple [] :=
-                                                      let β :=
-                                                        M.SubPointer.get_tuple_field (| r, 1 |) in
-                                                      M.write (|
-                                                        β,
-                                                        M.call_closure (|
-                                                          Ty.path "bool",
-                                                          BinOp.Wrap.bit_or,
-                                                          [ M.read (| β |); M.read (| overflown |) ]
-                                                        |)
+                                                      M.let_ (|
+                                                        ltac:(M.monadic (M.read (| overflown |))),
+                                                        fun rhs' =>
+                                                          ltac:(M.monadic
+                                                            (let β :=
+                                                              M.SubPointer.get_tuple_field (|
+                                                                r,
+                                                                1
+                                                              |) in
+                                                            M.write (|
+                                                              β,
+                                                              M.call_closure (|
+                                                                Ty.path "bool",
+                                                                BinOp.Wrap.bit_or,
+                                                                [ M.read (| β |); rhs' ]
+                                                              |)
+                                                            |)))
                                                       |) in
                                                     M.return_ (| M.read (| r |) |)
                                                   |)
@@ -27077,17 +27095,20 @@ Module num.
                                           M.read (| M.SubPointer.get_tuple_field (| r, 0 |) |)
                                         |) in
                                       let~ _ : Ty.tuple [] :=
-                                        let β := overflown in
-                                        M.write (|
-                                          β,
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.Wrap.bit_or,
-                                            [
-                                              M.read (| β |);
-                                              M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |)
-                                            ]
-                                          |)
+                                        M.let_ (|
+                                          ltac:(M.monadic
+                                            (M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (let β := overflown in
+                                              M.write (|
+                                                β,
+                                                M.call_closure (|
+                                                  Ty.path "bool",
+                                                  BinOp.Wrap.bit_or,
+                                                  [ M.read (| β |); rhs' ]
+                                                |)
+                                              |)))
                                         |) in
                                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                     |)));
@@ -27124,17 +27145,20 @@ Module num.
                               M.read (| M.SubPointer.get_tuple_field (| r, 0 |) |)
                             |) in
                           let~ _ : Ty.tuple [] :=
-                            let β := overflown in
-                            M.write (|
-                              β,
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.Wrap.bit_or,
-                                [
-                                  M.read (| β |);
-                                  M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |)
-                                ]
-                              |)
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (let β := overflown in
+                                  M.write (|
+                                    β,
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.Wrap.bit_or,
+                                      [ M.read (| β |); rhs' ]
+                                    |)
+                                  |)))
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)))
                       |)
@@ -29017,10 +29041,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_be_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 4 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -29054,10 +29075,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_le_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 4 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -29092,10 +29110,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_ne_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 4 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -37367,15 +37382,23 @@ Module num.
                                                 M.never_to_any (|
                                                   M.read (|
                                                     let~ _ : Ty.tuple [] :=
-                                                      let β :=
-                                                        M.SubPointer.get_tuple_field (| r, 1 |) in
-                                                      M.write (|
-                                                        β,
-                                                        M.call_closure (|
-                                                          Ty.path "bool",
-                                                          BinOp.Wrap.bit_or,
-                                                          [ M.read (| β |); M.read (| overflown |) ]
-                                                        |)
+                                                      M.let_ (|
+                                                        ltac:(M.monadic (M.read (| overflown |))),
+                                                        fun rhs' =>
+                                                          ltac:(M.monadic
+                                                            (let β :=
+                                                              M.SubPointer.get_tuple_field (|
+                                                                r,
+                                                                1
+                                                              |) in
+                                                            M.write (|
+                                                              β,
+                                                              M.call_closure (|
+                                                                Ty.path "bool",
+                                                                BinOp.Wrap.bit_or,
+                                                                [ M.read (| β |); rhs' ]
+                                                              |)
+                                                            |)))
                                                       |) in
                                                     M.return_ (| M.read (| r |) |)
                                                   |)
@@ -37389,17 +37412,20 @@ Module num.
                                           M.read (| M.SubPointer.get_tuple_field (| r, 0 |) |)
                                         |) in
                                       let~ _ : Ty.tuple [] :=
-                                        let β := overflown in
-                                        M.write (|
-                                          β,
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.Wrap.bit_or,
-                                            [
-                                              M.read (| β |);
-                                              M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |)
-                                            ]
-                                          |)
+                                        M.let_ (|
+                                          ltac:(M.monadic
+                                            (M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (let β := overflown in
+                                              M.write (|
+                                                β,
+                                                M.call_closure (|
+                                                  Ty.path "bool",
+                                                  BinOp.Wrap.bit_or,
+                                                  [ M.read (| β |); rhs' ]
+                                                |)
+                                              |)))
                                         |) in
                                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                     |)));
@@ -37436,17 +37462,20 @@ Module num.
                               M.read (| M.SubPointer.get_tuple_field (| r, 0 |) |)
                             |) in
                           let~ _ : Ty.tuple [] :=
-                            let β := overflown in
-                            M.write (|
-                              β,
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.Wrap.bit_or,
-                                [
-                                  M.read (| β |);
-                                  M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |)
-                                ]
-                              |)
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (let β := overflown in
+                                  M.write (|
+                                    β,
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.Wrap.bit_or,
+                                      [ M.read (| β |); rhs' ]
+                                    |)
+                                  |)))
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)))
                       |)
@@ -39329,10 +39358,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_be_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -39366,10 +39392,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_le_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -39404,10 +39427,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_ne_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -47747,15 +47767,23 @@ Module num.
                                                 M.never_to_any (|
                                                   M.read (|
                                                     let~ _ : Ty.tuple [] :=
-                                                      let β :=
-                                                        M.SubPointer.get_tuple_field (| r, 1 |) in
-                                                      M.write (|
-                                                        β,
-                                                        M.call_closure (|
-                                                          Ty.path "bool",
-                                                          BinOp.Wrap.bit_or,
-                                                          [ M.read (| β |); M.read (| overflown |) ]
-                                                        |)
+                                                      M.let_ (|
+                                                        ltac:(M.monadic (M.read (| overflown |))),
+                                                        fun rhs' =>
+                                                          ltac:(M.monadic
+                                                            (let β :=
+                                                              M.SubPointer.get_tuple_field (|
+                                                                r,
+                                                                1
+                                                              |) in
+                                                            M.write (|
+                                                              β,
+                                                              M.call_closure (|
+                                                                Ty.path "bool",
+                                                                BinOp.Wrap.bit_or,
+                                                                [ M.read (| β |); rhs' ]
+                                                              |)
+                                                            |)))
                                                       |) in
                                                     M.return_ (| M.read (| r |) |)
                                                   |)
@@ -47769,17 +47797,20 @@ Module num.
                                           M.read (| M.SubPointer.get_tuple_field (| r, 0 |) |)
                                         |) in
                                       let~ _ : Ty.tuple [] :=
-                                        let β := overflown in
-                                        M.write (|
-                                          β,
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.Wrap.bit_or,
-                                            [
-                                              M.read (| β |);
-                                              M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |)
-                                            ]
-                                          |)
+                                        M.let_ (|
+                                          ltac:(M.monadic
+                                            (M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (let β := overflown in
+                                              M.write (|
+                                                β,
+                                                M.call_closure (|
+                                                  Ty.path "bool",
+                                                  BinOp.Wrap.bit_or,
+                                                  [ M.read (| β |); rhs' ]
+                                                |)
+                                              |)))
                                         |) in
                                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                     |)));
@@ -47816,17 +47847,20 @@ Module num.
                               M.read (| M.SubPointer.get_tuple_field (| r, 0 |) |)
                             |) in
                           let~ _ : Ty.tuple [] :=
-                            let β := overflown in
-                            M.write (|
-                              β,
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.Wrap.bit_or,
-                                [
-                                  M.read (| β |);
-                                  M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |)
-                                ]
-                              |)
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (let β := overflown in
+                                  M.write (|
+                                    β,
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.Wrap.bit_or,
+                                      [ M.read (| β |); rhs' ]
+                                    |)
+                                  |)))
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)))
                       |)
@@ -49709,10 +49743,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_be_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 16 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -49746,10 +49777,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_le_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 16 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -49784,10 +49812,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_ne_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 16 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -58177,15 +58202,23 @@ Module num.
                                                 M.never_to_any (|
                                                   M.read (|
                                                     let~ _ : Ty.tuple [] :=
-                                                      let β :=
-                                                        M.SubPointer.get_tuple_field (| r, 1 |) in
-                                                      M.write (|
-                                                        β,
-                                                        M.call_closure (|
-                                                          Ty.path "bool",
-                                                          BinOp.Wrap.bit_or,
-                                                          [ M.read (| β |); M.read (| overflown |) ]
-                                                        |)
+                                                      M.let_ (|
+                                                        ltac:(M.monadic (M.read (| overflown |))),
+                                                        fun rhs' =>
+                                                          ltac:(M.monadic
+                                                            (let β :=
+                                                              M.SubPointer.get_tuple_field (|
+                                                                r,
+                                                                1
+                                                              |) in
+                                                            M.write (|
+                                                              β,
+                                                              M.call_closure (|
+                                                                Ty.path "bool",
+                                                                BinOp.Wrap.bit_or,
+                                                                [ M.read (| β |); rhs' ]
+                                                              |)
+                                                            |)))
                                                       |) in
                                                     M.return_ (| M.read (| r |) |)
                                                   |)
@@ -58199,17 +58232,20 @@ Module num.
                                           M.read (| M.SubPointer.get_tuple_field (| r, 0 |) |)
                                         |) in
                                       let~ _ : Ty.tuple [] :=
-                                        let β := overflown in
-                                        M.write (|
-                                          β,
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.Wrap.bit_or,
-                                            [
-                                              M.read (| β |);
-                                              M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |)
-                                            ]
-                                          |)
+                                        M.let_ (|
+                                          ltac:(M.monadic
+                                            (M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (let β := overflown in
+                                              M.write (|
+                                                β,
+                                                M.call_closure (|
+                                                  Ty.path "bool",
+                                                  BinOp.Wrap.bit_or,
+                                                  [ M.read (| β |); rhs' ]
+                                                |)
+                                              |)))
                                         |) in
                                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                     |)));
@@ -58246,17 +58282,20 @@ Module num.
                               M.read (| M.SubPointer.get_tuple_field (| r, 0 |) |)
                             |) in
                           let~ _ : Ty.tuple [] :=
-                            let β := overflown in
-                            M.write (|
-                              β,
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.Wrap.bit_or,
-                                [
-                                  M.read (| β |);
-                                  M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |)
-                                ]
-                              |)
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (let β := overflown in
+                                  M.write (|
+                                    β,
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.Wrap.bit_or,
+                                      [ M.read (| β |); rhs' ]
+                                    |)
+                                  |)))
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)))
                       |)
@@ -60140,10 +60179,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_be_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -60177,10 +60213,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_le_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -60215,10 +60248,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_ne_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -62970,43 +63000,50 @@ Module num.
                                     ]
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  let β := result in
-                                  M.write (|
-                                    β,
-                                    M.call_closure (|
-                                      Ty.path "u8",
-                                      BinOp.Wrap.bit_or,
-                                      [
-                                        M.read (| β |);
-                                        M.match_operator (|
-                                          Ty.path "u8",
-                                          M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                          [
-                                            fun γ =>
-                                              ltac:(M.monadic
-                                                (let γ := src_bit in
-                                                let _ :=
-                                                  is_constant_or_break_match (|
-                                                    M.read (| γ |),
-                                                    Value.Bool true
-                                                  |) in
-                                                M.read (| bit_position |)));
-                                            fun γ =>
-                                              ltac:(M.monadic (Value.Integer IntegerKind.U8 0))
-                                          ]
-                                        |)
-                                      ]
-                                    |)
+                                  M.let_ (|
+                                    ltac:(M.monadic
+                                      (M.match_operator (|
+                                        Ty.path "u8",
+                                        M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let γ := src_bit in
+                                              let _ :=
+                                                is_constant_or_break_match (|
+                                                  M.read (| γ |),
+                                                  Value.Bool true
+                                                |) in
+                                              M.read (| bit_position |)));
+                                          fun γ => ltac:(M.monadic (Value.Integer IntegerKind.U8 0))
+                                        ]
+                                      |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (let β := result in
+                                        M.write (|
+                                          β,
+                                          M.call_closure (|
+                                            Ty.path "u8",
+                                            BinOp.Wrap.bit_or,
+                                            [ M.read (| β |); rhs' ]
+                                          |)
+                                        |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  let β := mask in
-                                  M.write (|
-                                    β,
-                                    M.call_closure (|
-                                      Ty.path "u8",
-                                      BinOp.Wrap.bit_xor,
-                                      [ M.read (| β |); M.read (| next_mask_bit |) ]
-                                    |)
+                                  M.let_ (|
+                                    ltac:(M.monadic (M.read (| next_mask_bit |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (let β := mask in
+                                        M.write (|
+                                          β,
+                                          M.call_closure (|
+                                            Ty.path "u8",
+                                            BinOp.Wrap.bit_xor,
+                                            [ M.read (| β |); rhs' ]
+                                          |)
+                                        |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
                                   let β := bit_position in
@@ -63112,61 +63149,68 @@ Module num.
                                     [ M.read (| mask |) ]
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  let β := result in
-                                  M.write (|
-                                    β,
-                                    M.call_closure (|
-                                      Ty.path "u8",
-                                      BinOp.Wrap.bit_or,
-                                      [
-                                        M.read (| β |);
-                                        M.match_operator (|
-                                          Ty.path "u8",
-                                          M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                          [
-                                            fun γ =>
-                                              ltac:(M.monadic
-                                                (let γ :=
-                                                  M.alloc (|
+                                  M.let_ (|
+                                    ltac:(M.monadic
+                                      (M.match_operator (|
+                                        Ty.path "u8",
+                                        M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let γ :=
+                                                M.alloc (|
+                                                  Ty.path "bool",
+                                                  M.call_closure (|
                                                     Ty.path "bool",
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.ne,
-                                                      [
-                                                        M.call_closure (|
-                                                          Ty.path "u8",
-                                                          BinOp.Wrap.bit_and,
-                                                          [
-                                                            M.read (| self |);
-                                                            Value.Integer IntegerKind.U8 1
-                                                          ]
-                                                        |);
-                                                        Value.Integer IntegerKind.U8 0
-                                                      ]
-                                                    |)
-                                                  |) in
-                                                let _ :=
-                                                  is_constant_or_break_match (|
-                                                    M.read (| γ |),
-                                                    Value.Bool true
-                                                  |) in
-                                                M.read (| next_mask_bit |)));
-                                            fun γ =>
-                                              ltac:(M.monadic (Value.Integer IntegerKind.U8 0))
-                                          ]
-                                        |)
-                                      ]
-                                    |)
+                                                    BinOp.ne,
+                                                    [
+                                                      M.call_closure (|
+                                                        Ty.path "u8",
+                                                        BinOp.Wrap.bit_and,
+                                                        [
+                                                          M.read (| self |);
+                                                          Value.Integer IntegerKind.U8 1
+                                                        ]
+                                                      |);
+                                                      Value.Integer IntegerKind.U8 0
+                                                    ]
+                                                  |)
+                                                |) in
+                                              let _ :=
+                                                is_constant_or_break_match (|
+                                                  M.read (| γ |),
+                                                  Value.Bool true
+                                                |) in
+                                              M.read (| next_mask_bit |)));
+                                          fun γ => ltac:(M.monadic (Value.Integer IntegerKind.U8 0))
+                                        ]
+                                      |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (let β := result in
+                                        M.write (|
+                                          β,
+                                          M.call_closure (|
+                                            Ty.path "u8",
+                                            BinOp.Wrap.bit_or,
+                                            [ M.read (| β |); rhs' ]
+                                          |)
+                                        |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  let β := mask in
-                                  M.write (|
-                                    β,
-                                    M.call_closure (|
-                                      Ty.path "u8",
-                                      BinOp.Wrap.bit_xor,
-                                      [ M.read (| β |); M.read (| next_mask_bit |) ]
-                                    |)
+                                  M.let_ (|
+                                    ltac:(M.monadic (M.read (| next_mask_bit |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (let β := mask in
+                                        M.write (|
+                                          β,
+                                          M.call_closure (|
+                                            Ty.path "u8",
+                                            BinOp.Wrap.bit_xor,
+                                            [ M.read (| β |); rhs' ]
+                                          |)
+                                        |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
                                   let β := self in
@@ -65578,14 +65622,19 @@ Module num.
                                                             |)
                                                           |) in
                                                         let~ _ : Ty.tuple [] :=
-                                                          let β := r in
-                                                          M.write (|
-                                                            β,
-                                                            M.call_closure (|
-                                                              Ty.path "u8",
-                                                              BinOp.Wrap.mul,
-                                                              [ M.read (| β |); M.read (| base |) ]
-                                                            |)
+                                                          M.let_ (|
+                                                            ltac:(M.monadic (M.read (| base |))),
+                                                            fun rhs' =>
+                                                              ltac:(M.monadic
+                                                                (let β := r in
+                                                                M.write (|
+                                                                  β,
+                                                                  M.call_closure (|
+                                                                    Ty.path "u8",
+                                                                    BinOp.Wrap.mul,
+                                                                    [ M.read (| β |); rhs' ]
+                                                                  |)
+                                                                |)))
                                                           |) in
                                                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                                       |)));
@@ -69255,15 +69304,23 @@ Module num.
                                                 M.never_to_any (|
                                                   M.read (|
                                                     let~ _ : Ty.tuple [] :=
-                                                      let β :=
-                                                        M.SubPointer.get_tuple_field (| r, 1 |) in
-                                                      M.write (|
-                                                        β,
-                                                        M.call_closure (|
-                                                          Ty.path "bool",
-                                                          BinOp.Wrap.bit_or,
-                                                          [ M.read (| β |); M.read (| overflown |) ]
-                                                        |)
+                                                      M.let_ (|
+                                                        ltac:(M.monadic (M.read (| overflown |))),
+                                                        fun rhs' =>
+                                                          ltac:(M.monadic
+                                                            (let β :=
+                                                              M.SubPointer.get_tuple_field (|
+                                                                r,
+                                                                1
+                                                              |) in
+                                                            M.write (|
+                                                              β,
+                                                              M.call_closure (|
+                                                                Ty.path "bool",
+                                                                BinOp.Wrap.bit_or,
+                                                                [ M.read (| β |); rhs' ]
+                                                              |)
+                                                            |)))
                                                       |) in
                                                     M.return_ (| M.read (| r |) |)
                                                   |)
@@ -69277,17 +69334,20 @@ Module num.
                                           M.read (| M.SubPointer.get_tuple_field (| r, 0 |) |)
                                         |) in
                                       let~ _ : Ty.tuple [] :=
-                                        let β := overflown in
-                                        M.write (|
-                                          β,
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.Wrap.bit_or,
-                                            [
-                                              M.read (| β |);
-                                              M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |)
-                                            ]
-                                          |)
+                                        M.let_ (|
+                                          ltac:(M.monadic
+                                            (M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (let β := overflown in
+                                              M.write (|
+                                                β,
+                                                M.call_closure (|
+                                                  Ty.path "bool",
+                                                  BinOp.Wrap.bit_or,
+                                                  [ M.read (| β |); rhs' ]
+                                                |)
+                                              |)))
                                         |) in
                                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                     |)));
@@ -69324,17 +69384,20 @@ Module num.
                               M.read (| M.SubPointer.get_tuple_field (| r, 0 |) |)
                             |) in
                           let~ _ : Ty.tuple [] :=
-                            let β := overflown in
-                            M.write (|
-                              β,
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.Wrap.bit_or,
-                                [
-                                  M.read (| β |);
-                                  M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |)
-                                ]
-                              |)
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (let β := overflown in
+                                  M.write (|
+                                    β,
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.Wrap.bit_or,
+                                      [ M.read (| β |); rhs' ]
+                                    |)
+                                  |)))
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)))
                       |)
@@ -70470,10 +70533,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_be_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 1 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -70507,10 +70567,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_le_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 1 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -70545,10 +70602,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_ne_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 1 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -70928,13 +70982,14 @@ Module num.
           (let self := M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "u8" ], self |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.path "u8",
-                  M.get_associated_function (| Ty.path "u8", "to_ascii_uppercase", [], [] |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                |)
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
+                    Ty.path "u8",
+                    M.get_associated_function (| Ty.path "u8", "to_ascii_uppercase", [], [] |),
+                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -70959,13 +71014,14 @@ Module num.
           (let self := M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "u8" ], self |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.path "u8",
-                  M.get_associated_function (| Ty.path "u8", "to_ascii_lowercase", [], [] |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                |)
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
+                    Ty.path "u8",
+                    M.get_associated_function (| Ty.path "u8", "to_ascii_lowercase", [], [] |),
+                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -74391,43 +74447,51 @@ Module num.
                                     ]
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  let β := result in
-                                  M.write (|
-                                    β,
-                                    M.call_closure (|
-                                      Ty.path "u16",
-                                      BinOp.Wrap.bit_or,
-                                      [
-                                        M.read (| β |);
-                                        M.match_operator (|
-                                          Ty.path "u16",
-                                          M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                          [
-                                            fun γ =>
-                                              ltac:(M.monadic
-                                                (let γ := src_bit in
-                                                let _ :=
-                                                  is_constant_or_break_match (|
-                                                    M.read (| γ |),
-                                                    Value.Bool true
-                                                  |) in
-                                                M.read (| bit_position |)));
-                                            fun γ =>
-                                              ltac:(M.monadic (Value.Integer IntegerKind.U16 0))
-                                          ]
-                                        |)
-                                      ]
-                                    |)
+                                  M.let_ (|
+                                    ltac:(M.monadic
+                                      (M.match_operator (|
+                                        Ty.path "u16",
+                                        M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let γ := src_bit in
+                                              let _ :=
+                                                is_constant_or_break_match (|
+                                                  M.read (| γ |),
+                                                  Value.Bool true
+                                                |) in
+                                              M.read (| bit_position |)));
+                                          fun γ =>
+                                            ltac:(M.monadic (Value.Integer IntegerKind.U16 0))
+                                        ]
+                                      |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (let β := result in
+                                        M.write (|
+                                          β,
+                                          M.call_closure (|
+                                            Ty.path "u16",
+                                            BinOp.Wrap.bit_or,
+                                            [ M.read (| β |); rhs' ]
+                                          |)
+                                        |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  let β := mask in
-                                  M.write (|
-                                    β,
-                                    M.call_closure (|
-                                      Ty.path "u16",
-                                      BinOp.Wrap.bit_xor,
-                                      [ M.read (| β |); M.read (| next_mask_bit |) ]
-                                    |)
+                                  M.let_ (|
+                                    ltac:(M.monadic (M.read (| next_mask_bit |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (let β := mask in
+                                        M.write (|
+                                          β,
+                                          M.call_closure (|
+                                            Ty.path "u16",
+                                            BinOp.Wrap.bit_xor,
+                                            [ M.read (| β |); rhs' ]
+                                          |)
+                                        |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
                                   let β := bit_position in
@@ -74533,61 +74597,69 @@ Module num.
                                     [ M.read (| mask |) ]
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  let β := result in
-                                  M.write (|
-                                    β,
-                                    M.call_closure (|
-                                      Ty.path "u16",
-                                      BinOp.Wrap.bit_or,
-                                      [
-                                        M.read (| β |);
-                                        M.match_operator (|
-                                          Ty.path "u16",
-                                          M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                          [
-                                            fun γ =>
-                                              ltac:(M.monadic
-                                                (let γ :=
-                                                  M.alloc (|
+                                  M.let_ (|
+                                    ltac:(M.monadic
+                                      (M.match_operator (|
+                                        Ty.path "u16",
+                                        M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let γ :=
+                                                M.alloc (|
+                                                  Ty.path "bool",
+                                                  M.call_closure (|
                                                     Ty.path "bool",
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.ne,
-                                                      [
-                                                        M.call_closure (|
-                                                          Ty.path "u16",
-                                                          BinOp.Wrap.bit_and,
-                                                          [
-                                                            M.read (| self |);
-                                                            Value.Integer IntegerKind.U16 1
-                                                          ]
-                                                        |);
-                                                        Value.Integer IntegerKind.U16 0
-                                                      ]
-                                                    |)
-                                                  |) in
-                                                let _ :=
-                                                  is_constant_or_break_match (|
-                                                    M.read (| γ |),
-                                                    Value.Bool true
-                                                  |) in
-                                                M.read (| next_mask_bit |)));
-                                            fun γ =>
-                                              ltac:(M.monadic (Value.Integer IntegerKind.U16 0))
-                                          ]
-                                        |)
-                                      ]
-                                    |)
+                                                    BinOp.ne,
+                                                    [
+                                                      M.call_closure (|
+                                                        Ty.path "u16",
+                                                        BinOp.Wrap.bit_and,
+                                                        [
+                                                          M.read (| self |);
+                                                          Value.Integer IntegerKind.U16 1
+                                                        ]
+                                                      |);
+                                                      Value.Integer IntegerKind.U16 0
+                                                    ]
+                                                  |)
+                                                |) in
+                                              let _ :=
+                                                is_constant_or_break_match (|
+                                                  M.read (| γ |),
+                                                  Value.Bool true
+                                                |) in
+                                              M.read (| next_mask_bit |)));
+                                          fun γ =>
+                                            ltac:(M.monadic (Value.Integer IntegerKind.U16 0))
+                                        ]
+                                      |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (let β := result in
+                                        M.write (|
+                                          β,
+                                          M.call_closure (|
+                                            Ty.path "u16",
+                                            BinOp.Wrap.bit_or,
+                                            [ M.read (| β |); rhs' ]
+                                          |)
+                                        |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  let β := mask in
-                                  M.write (|
-                                    β,
-                                    M.call_closure (|
-                                      Ty.path "u16",
-                                      BinOp.Wrap.bit_xor,
-                                      [ M.read (| β |); M.read (| next_mask_bit |) ]
-                                    |)
+                                  M.let_ (|
+                                    ltac:(M.monadic (M.read (| next_mask_bit |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (let β := mask in
+                                        M.write (|
+                                          β,
+                                          M.call_closure (|
+                                            Ty.path "u16",
+                                            BinOp.Wrap.bit_xor,
+                                            [ M.read (| β |); rhs' ]
+                                          |)
+                                        |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
                                   let β := self in
@@ -77001,14 +77073,19 @@ Module num.
                                                             |)
                                                           |) in
                                                         let~ _ : Ty.tuple [] :=
-                                                          let β := r in
-                                                          M.write (|
-                                                            β,
-                                                            M.call_closure (|
-                                                              Ty.path "u16",
-                                                              BinOp.Wrap.mul,
-                                                              [ M.read (| β |); M.read (| base |) ]
-                                                            |)
+                                                          M.let_ (|
+                                                            ltac:(M.monadic (M.read (| base |))),
+                                                            fun rhs' =>
+                                                              ltac:(M.monadic
+                                                                (let β := r in
+                                                                M.write (|
+                                                                  β,
+                                                                  M.call_closure (|
+                                                                    Ty.path "u16",
+                                                                    BinOp.Wrap.mul,
+                                                                    [ M.read (| β |); rhs' ]
+                                                                  |)
+                                                                |)))
                                                           |) in
                                                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                                       |)));
@@ -80686,15 +80763,23 @@ Module num.
                                                 M.never_to_any (|
                                                   M.read (|
                                                     let~ _ : Ty.tuple [] :=
-                                                      let β :=
-                                                        M.SubPointer.get_tuple_field (| r, 1 |) in
-                                                      M.write (|
-                                                        β,
-                                                        M.call_closure (|
-                                                          Ty.path "bool",
-                                                          BinOp.Wrap.bit_or,
-                                                          [ M.read (| β |); M.read (| overflown |) ]
-                                                        |)
+                                                      M.let_ (|
+                                                        ltac:(M.monadic (M.read (| overflown |))),
+                                                        fun rhs' =>
+                                                          ltac:(M.monadic
+                                                            (let β :=
+                                                              M.SubPointer.get_tuple_field (|
+                                                                r,
+                                                                1
+                                                              |) in
+                                                            M.write (|
+                                                              β,
+                                                              M.call_closure (|
+                                                                Ty.path "bool",
+                                                                BinOp.Wrap.bit_or,
+                                                                [ M.read (| β |); rhs' ]
+                                                              |)
+                                                            |)))
                                                       |) in
                                                     M.return_ (| M.read (| r |) |)
                                                   |)
@@ -80708,17 +80793,20 @@ Module num.
                                           M.read (| M.SubPointer.get_tuple_field (| r, 0 |) |)
                                         |) in
                                       let~ _ : Ty.tuple [] :=
-                                        let β := overflown in
-                                        M.write (|
-                                          β,
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.Wrap.bit_or,
-                                            [
-                                              M.read (| β |);
-                                              M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |)
-                                            ]
-                                          |)
+                                        M.let_ (|
+                                          ltac:(M.monadic
+                                            (M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (let β := overflown in
+                                              M.write (|
+                                                β,
+                                                M.call_closure (|
+                                                  Ty.path "bool",
+                                                  BinOp.Wrap.bit_or,
+                                                  [ M.read (| β |); rhs' ]
+                                                |)
+                                              |)))
                                         |) in
                                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                     |)));
@@ -80755,17 +80843,20 @@ Module num.
                               M.read (| M.SubPointer.get_tuple_field (| r, 0 |) |)
                             |) in
                           let~ _ : Ty.tuple [] :=
-                            let β := overflown in
-                            M.write (|
-                              β,
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.Wrap.bit_or,
-                                [
-                                  M.read (| β |);
-                                  M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |)
-                                ]
-                              |)
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (let β := overflown in
+                                  M.write (|
+                                    β,
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.Wrap.bit_or,
+                                      [ M.read (| β |); rhs' ]
+                                    |)
+                                  |)))
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)))
                       |)
@@ -81903,10 +81994,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_be_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 2 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -81940,10 +82028,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_le_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 2 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -81978,10 +82063,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_ne_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 2 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -84637,43 +84719,51 @@ Module num.
                                     ]
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  let β := result in
-                                  M.write (|
-                                    β,
-                                    M.call_closure (|
-                                      Ty.path "u32",
-                                      BinOp.Wrap.bit_or,
-                                      [
-                                        M.read (| β |);
-                                        M.match_operator (|
-                                          Ty.path "u32",
-                                          M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                          [
-                                            fun γ =>
-                                              ltac:(M.monadic
-                                                (let γ := src_bit in
-                                                let _ :=
-                                                  is_constant_or_break_match (|
-                                                    M.read (| γ |),
-                                                    Value.Bool true
-                                                  |) in
-                                                M.read (| bit_position |)));
-                                            fun γ =>
-                                              ltac:(M.monadic (Value.Integer IntegerKind.U32 0))
-                                          ]
-                                        |)
-                                      ]
-                                    |)
+                                  M.let_ (|
+                                    ltac:(M.monadic
+                                      (M.match_operator (|
+                                        Ty.path "u32",
+                                        M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let γ := src_bit in
+                                              let _ :=
+                                                is_constant_or_break_match (|
+                                                  M.read (| γ |),
+                                                  Value.Bool true
+                                                |) in
+                                              M.read (| bit_position |)));
+                                          fun γ =>
+                                            ltac:(M.monadic (Value.Integer IntegerKind.U32 0))
+                                        ]
+                                      |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (let β := result in
+                                        M.write (|
+                                          β,
+                                          M.call_closure (|
+                                            Ty.path "u32",
+                                            BinOp.Wrap.bit_or,
+                                            [ M.read (| β |); rhs' ]
+                                          |)
+                                        |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  let β := mask in
-                                  M.write (|
-                                    β,
-                                    M.call_closure (|
-                                      Ty.path "u32",
-                                      BinOp.Wrap.bit_xor,
-                                      [ M.read (| β |); M.read (| next_mask_bit |) ]
-                                    |)
+                                  M.let_ (|
+                                    ltac:(M.monadic (M.read (| next_mask_bit |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (let β := mask in
+                                        M.write (|
+                                          β,
+                                          M.call_closure (|
+                                            Ty.path "u32",
+                                            BinOp.Wrap.bit_xor,
+                                            [ M.read (| β |); rhs' ]
+                                          |)
+                                        |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
                                   let β := bit_position in
@@ -84779,61 +84869,69 @@ Module num.
                                     [ M.read (| mask |) ]
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  let β := result in
-                                  M.write (|
-                                    β,
-                                    M.call_closure (|
-                                      Ty.path "u32",
-                                      BinOp.Wrap.bit_or,
-                                      [
-                                        M.read (| β |);
-                                        M.match_operator (|
-                                          Ty.path "u32",
-                                          M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                          [
-                                            fun γ =>
-                                              ltac:(M.monadic
-                                                (let γ :=
-                                                  M.alloc (|
+                                  M.let_ (|
+                                    ltac:(M.monadic
+                                      (M.match_operator (|
+                                        Ty.path "u32",
+                                        M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let γ :=
+                                                M.alloc (|
+                                                  Ty.path "bool",
+                                                  M.call_closure (|
                                                     Ty.path "bool",
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.ne,
-                                                      [
-                                                        M.call_closure (|
-                                                          Ty.path "u32",
-                                                          BinOp.Wrap.bit_and,
-                                                          [
-                                                            M.read (| self |);
-                                                            Value.Integer IntegerKind.U32 1
-                                                          ]
-                                                        |);
-                                                        Value.Integer IntegerKind.U32 0
-                                                      ]
-                                                    |)
-                                                  |) in
-                                                let _ :=
-                                                  is_constant_or_break_match (|
-                                                    M.read (| γ |),
-                                                    Value.Bool true
-                                                  |) in
-                                                M.read (| next_mask_bit |)));
-                                            fun γ =>
-                                              ltac:(M.monadic (Value.Integer IntegerKind.U32 0))
-                                          ]
-                                        |)
-                                      ]
-                                    |)
+                                                    BinOp.ne,
+                                                    [
+                                                      M.call_closure (|
+                                                        Ty.path "u32",
+                                                        BinOp.Wrap.bit_and,
+                                                        [
+                                                          M.read (| self |);
+                                                          Value.Integer IntegerKind.U32 1
+                                                        ]
+                                                      |);
+                                                      Value.Integer IntegerKind.U32 0
+                                                    ]
+                                                  |)
+                                                |) in
+                                              let _ :=
+                                                is_constant_or_break_match (|
+                                                  M.read (| γ |),
+                                                  Value.Bool true
+                                                |) in
+                                              M.read (| next_mask_bit |)));
+                                          fun γ =>
+                                            ltac:(M.monadic (Value.Integer IntegerKind.U32 0))
+                                        ]
+                                      |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (let β := result in
+                                        M.write (|
+                                          β,
+                                          M.call_closure (|
+                                            Ty.path "u32",
+                                            BinOp.Wrap.bit_or,
+                                            [ M.read (| β |); rhs' ]
+                                          |)
+                                        |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  let β := mask in
-                                  M.write (|
-                                    β,
-                                    M.call_closure (|
-                                      Ty.path "u32",
-                                      BinOp.Wrap.bit_xor,
-                                      [ M.read (| β |); M.read (| next_mask_bit |) ]
-                                    |)
+                                  M.let_ (|
+                                    ltac:(M.monadic (M.read (| next_mask_bit |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (let β := mask in
+                                        M.write (|
+                                          β,
+                                          M.call_closure (|
+                                            Ty.path "u32",
+                                            BinOp.Wrap.bit_xor,
+                                            [ M.read (| β |); rhs' ]
+                                          |)
+                                        |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
                                   let β := self in
@@ -87247,14 +87345,19 @@ Module num.
                                                             |)
                                                           |) in
                                                         let~ _ : Ty.tuple [] :=
-                                                          let β := r in
-                                                          M.write (|
-                                                            β,
-                                                            M.call_closure (|
-                                                              Ty.path "u32",
-                                                              BinOp.Wrap.mul,
-                                                              [ M.read (| β |); M.read (| base |) ]
-                                                            |)
+                                                          M.let_ (|
+                                                            ltac:(M.monadic (M.read (| base |))),
+                                                            fun rhs' =>
+                                                              ltac:(M.monadic
+                                                                (let β := r in
+                                                                M.write (|
+                                                                  β,
+                                                                  M.call_closure (|
+                                                                    Ty.path "u32",
+                                                                    BinOp.Wrap.mul,
+                                                                    [ M.read (| β |); rhs' ]
+                                                                  |)
+                                                                |)))
                                                           |) in
                                                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                                       |)));
@@ -90936,15 +91039,23 @@ Module num.
                                                 M.never_to_any (|
                                                   M.read (|
                                                     let~ _ : Ty.tuple [] :=
-                                                      let β :=
-                                                        M.SubPointer.get_tuple_field (| r, 1 |) in
-                                                      M.write (|
-                                                        β,
-                                                        M.call_closure (|
-                                                          Ty.path "bool",
-                                                          BinOp.Wrap.bit_or,
-                                                          [ M.read (| β |); M.read (| overflown |) ]
-                                                        |)
+                                                      M.let_ (|
+                                                        ltac:(M.monadic (M.read (| overflown |))),
+                                                        fun rhs' =>
+                                                          ltac:(M.monadic
+                                                            (let β :=
+                                                              M.SubPointer.get_tuple_field (|
+                                                                r,
+                                                                1
+                                                              |) in
+                                                            M.write (|
+                                                              β,
+                                                              M.call_closure (|
+                                                                Ty.path "bool",
+                                                                BinOp.Wrap.bit_or,
+                                                                [ M.read (| β |); rhs' ]
+                                                              |)
+                                                            |)))
                                                       |) in
                                                     M.return_ (| M.read (| r |) |)
                                                   |)
@@ -90958,17 +91069,20 @@ Module num.
                                           M.read (| M.SubPointer.get_tuple_field (| r, 0 |) |)
                                         |) in
                                       let~ _ : Ty.tuple [] :=
-                                        let β := overflown in
-                                        M.write (|
-                                          β,
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.Wrap.bit_or,
-                                            [
-                                              M.read (| β |);
-                                              M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |)
-                                            ]
-                                          |)
+                                        M.let_ (|
+                                          ltac:(M.monadic
+                                            (M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (let β := overflown in
+                                              M.write (|
+                                                β,
+                                                M.call_closure (|
+                                                  Ty.path "bool",
+                                                  BinOp.Wrap.bit_or,
+                                                  [ M.read (| β |); rhs' ]
+                                                |)
+                                              |)))
                                         |) in
                                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                     |)));
@@ -91005,17 +91119,20 @@ Module num.
                               M.read (| M.SubPointer.get_tuple_field (| r, 0 |) |)
                             |) in
                           let~ _ : Ty.tuple [] :=
-                            let β := overflown in
-                            M.write (|
-                              β,
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.Wrap.bit_or,
-                                [
-                                  M.read (| β |);
-                                  M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |)
-                                ]
-                              |)
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (let β := overflown in
+                                  M.write (|
+                                    β,
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.Wrap.bit_or,
+                                      [ M.read (| β |); rhs' ]
+                                    |)
+                                  |)))
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)))
                       |)
@@ -92153,10 +92270,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_be_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 4 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -92190,10 +92304,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_le_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 4 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -92228,10 +92339,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_ne_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 4 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -94850,43 +94958,51 @@ Module num.
                                     ]
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  let β := result in
-                                  M.write (|
-                                    β,
-                                    M.call_closure (|
-                                      Ty.path "u64",
-                                      BinOp.Wrap.bit_or,
-                                      [
-                                        M.read (| β |);
-                                        M.match_operator (|
-                                          Ty.path "u64",
-                                          M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                          [
-                                            fun γ =>
-                                              ltac:(M.monadic
-                                                (let γ := src_bit in
-                                                let _ :=
-                                                  is_constant_or_break_match (|
-                                                    M.read (| γ |),
-                                                    Value.Bool true
-                                                  |) in
-                                                M.read (| bit_position |)));
-                                            fun γ =>
-                                              ltac:(M.monadic (Value.Integer IntegerKind.U64 0))
-                                          ]
-                                        |)
-                                      ]
-                                    |)
+                                  M.let_ (|
+                                    ltac:(M.monadic
+                                      (M.match_operator (|
+                                        Ty.path "u64",
+                                        M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let γ := src_bit in
+                                              let _ :=
+                                                is_constant_or_break_match (|
+                                                  M.read (| γ |),
+                                                  Value.Bool true
+                                                |) in
+                                              M.read (| bit_position |)));
+                                          fun γ =>
+                                            ltac:(M.monadic (Value.Integer IntegerKind.U64 0))
+                                        ]
+                                      |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (let β := result in
+                                        M.write (|
+                                          β,
+                                          M.call_closure (|
+                                            Ty.path "u64",
+                                            BinOp.Wrap.bit_or,
+                                            [ M.read (| β |); rhs' ]
+                                          |)
+                                        |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  let β := mask in
-                                  M.write (|
-                                    β,
-                                    M.call_closure (|
-                                      Ty.path "u64",
-                                      BinOp.Wrap.bit_xor,
-                                      [ M.read (| β |); M.read (| next_mask_bit |) ]
-                                    |)
+                                  M.let_ (|
+                                    ltac:(M.monadic (M.read (| next_mask_bit |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (let β := mask in
+                                        M.write (|
+                                          β,
+                                          M.call_closure (|
+                                            Ty.path "u64",
+                                            BinOp.Wrap.bit_xor,
+                                            [ M.read (| β |); rhs' ]
+                                          |)
+                                        |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
                                   let β := bit_position in
@@ -94992,61 +95108,69 @@ Module num.
                                     [ M.read (| mask |) ]
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  let β := result in
-                                  M.write (|
-                                    β,
-                                    M.call_closure (|
-                                      Ty.path "u64",
-                                      BinOp.Wrap.bit_or,
-                                      [
-                                        M.read (| β |);
-                                        M.match_operator (|
-                                          Ty.path "u64",
-                                          M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                          [
-                                            fun γ =>
-                                              ltac:(M.monadic
-                                                (let γ :=
-                                                  M.alloc (|
+                                  M.let_ (|
+                                    ltac:(M.monadic
+                                      (M.match_operator (|
+                                        Ty.path "u64",
+                                        M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let γ :=
+                                                M.alloc (|
+                                                  Ty.path "bool",
+                                                  M.call_closure (|
                                                     Ty.path "bool",
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.ne,
-                                                      [
-                                                        M.call_closure (|
-                                                          Ty.path "u64",
-                                                          BinOp.Wrap.bit_and,
-                                                          [
-                                                            M.read (| self |);
-                                                            Value.Integer IntegerKind.U64 1
-                                                          ]
-                                                        |);
-                                                        Value.Integer IntegerKind.U64 0
-                                                      ]
-                                                    |)
-                                                  |) in
-                                                let _ :=
-                                                  is_constant_or_break_match (|
-                                                    M.read (| γ |),
-                                                    Value.Bool true
-                                                  |) in
-                                                M.read (| next_mask_bit |)));
-                                            fun γ =>
-                                              ltac:(M.monadic (Value.Integer IntegerKind.U64 0))
-                                          ]
-                                        |)
-                                      ]
-                                    |)
+                                                    BinOp.ne,
+                                                    [
+                                                      M.call_closure (|
+                                                        Ty.path "u64",
+                                                        BinOp.Wrap.bit_and,
+                                                        [
+                                                          M.read (| self |);
+                                                          Value.Integer IntegerKind.U64 1
+                                                        ]
+                                                      |);
+                                                      Value.Integer IntegerKind.U64 0
+                                                    ]
+                                                  |)
+                                                |) in
+                                              let _ :=
+                                                is_constant_or_break_match (|
+                                                  M.read (| γ |),
+                                                  Value.Bool true
+                                                |) in
+                                              M.read (| next_mask_bit |)));
+                                          fun γ =>
+                                            ltac:(M.monadic (Value.Integer IntegerKind.U64 0))
+                                        ]
+                                      |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (let β := result in
+                                        M.write (|
+                                          β,
+                                          M.call_closure (|
+                                            Ty.path "u64",
+                                            BinOp.Wrap.bit_or,
+                                            [ M.read (| β |); rhs' ]
+                                          |)
+                                        |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  let β := mask in
-                                  M.write (|
-                                    β,
-                                    M.call_closure (|
-                                      Ty.path "u64",
-                                      BinOp.Wrap.bit_xor,
-                                      [ M.read (| β |); M.read (| next_mask_bit |) ]
-                                    |)
+                                  M.let_ (|
+                                    ltac:(M.monadic (M.read (| next_mask_bit |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (let β := mask in
+                                        M.write (|
+                                          β,
+                                          M.call_closure (|
+                                            Ty.path "u64",
+                                            BinOp.Wrap.bit_xor,
+                                            [ M.read (| β |); rhs' ]
+                                          |)
+                                        |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
                                   let β := self in
@@ -97460,14 +97584,19 @@ Module num.
                                                             |)
                                                           |) in
                                                         let~ _ : Ty.tuple [] :=
-                                                          let β := r in
-                                                          M.write (|
-                                                            β,
-                                                            M.call_closure (|
-                                                              Ty.path "u64",
-                                                              BinOp.Wrap.mul,
-                                                              [ M.read (| β |); M.read (| base |) ]
-                                                            |)
+                                                          M.let_ (|
+                                                            ltac:(M.monadic (M.read (| base |))),
+                                                            fun rhs' =>
+                                                              ltac:(M.monadic
+                                                                (let β := r in
+                                                                M.write (|
+                                                                  β,
+                                                                  M.call_closure (|
+                                                                    Ty.path "u64",
+                                                                    BinOp.Wrap.mul,
+                                                                    [ M.read (| β |); rhs' ]
+                                                                  |)
+                                                                |)))
                                                           |) in
                                                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                                       |)));
@@ -101145,15 +101274,23 @@ Module num.
                                                 M.never_to_any (|
                                                   M.read (|
                                                     let~ _ : Ty.tuple [] :=
-                                                      let β :=
-                                                        M.SubPointer.get_tuple_field (| r, 1 |) in
-                                                      M.write (|
-                                                        β,
-                                                        M.call_closure (|
-                                                          Ty.path "bool",
-                                                          BinOp.Wrap.bit_or,
-                                                          [ M.read (| β |); M.read (| overflown |) ]
-                                                        |)
+                                                      M.let_ (|
+                                                        ltac:(M.monadic (M.read (| overflown |))),
+                                                        fun rhs' =>
+                                                          ltac:(M.monadic
+                                                            (let β :=
+                                                              M.SubPointer.get_tuple_field (|
+                                                                r,
+                                                                1
+                                                              |) in
+                                                            M.write (|
+                                                              β,
+                                                              M.call_closure (|
+                                                                Ty.path "bool",
+                                                                BinOp.Wrap.bit_or,
+                                                                [ M.read (| β |); rhs' ]
+                                                              |)
+                                                            |)))
                                                       |) in
                                                     M.return_ (| M.read (| r |) |)
                                                   |)
@@ -101167,17 +101304,20 @@ Module num.
                                           M.read (| M.SubPointer.get_tuple_field (| r, 0 |) |)
                                         |) in
                                       let~ _ : Ty.tuple [] :=
-                                        let β := overflown in
-                                        M.write (|
-                                          β,
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.Wrap.bit_or,
-                                            [
-                                              M.read (| β |);
-                                              M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |)
-                                            ]
-                                          |)
+                                        M.let_ (|
+                                          ltac:(M.monadic
+                                            (M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (let β := overflown in
+                                              M.write (|
+                                                β,
+                                                M.call_closure (|
+                                                  Ty.path "bool",
+                                                  BinOp.Wrap.bit_or,
+                                                  [ M.read (| β |); rhs' ]
+                                                |)
+                                              |)))
                                         |) in
                                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                     |)));
@@ -101214,17 +101354,20 @@ Module num.
                               M.read (| M.SubPointer.get_tuple_field (| r, 0 |) |)
                             |) in
                           let~ _ : Ty.tuple [] :=
-                            let β := overflown in
-                            M.write (|
-                              β,
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.Wrap.bit_or,
-                                [
-                                  M.read (| β |);
-                                  M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |)
-                                ]
-                              |)
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (let β := overflown in
+                                  M.write (|
+                                    β,
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.Wrap.bit_or,
+                                      [ M.read (| β |); rhs' ]
+                                    |)
+                                  |)))
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)))
                       |)
@@ -102362,10 +102505,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_be_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -102399,10 +102539,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_le_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -102437,10 +102574,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_ne_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -105049,43 +105183,51 @@ Module num.
                                     ]
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  let β := result in
-                                  M.write (|
-                                    β,
-                                    M.call_closure (|
-                                      Ty.path "u128",
-                                      BinOp.Wrap.bit_or,
-                                      [
-                                        M.read (| β |);
-                                        M.match_operator (|
-                                          Ty.path "u128",
-                                          M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                          [
-                                            fun γ =>
-                                              ltac:(M.monadic
-                                                (let γ := src_bit in
-                                                let _ :=
-                                                  is_constant_or_break_match (|
-                                                    M.read (| γ |),
-                                                    Value.Bool true
-                                                  |) in
-                                                M.read (| bit_position |)));
-                                            fun γ =>
-                                              ltac:(M.monadic (Value.Integer IntegerKind.U128 0))
-                                          ]
-                                        |)
-                                      ]
-                                    |)
+                                  M.let_ (|
+                                    ltac:(M.monadic
+                                      (M.match_operator (|
+                                        Ty.path "u128",
+                                        M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let γ := src_bit in
+                                              let _ :=
+                                                is_constant_or_break_match (|
+                                                  M.read (| γ |),
+                                                  Value.Bool true
+                                                |) in
+                                              M.read (| bit_position |)));
+                                          fun γ =>
+                                            ltac:(M.monadic (Value.Integer IntegerKind.U128 0))
+                                        ]
+                                      |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (let β := result in
+                                        M.write (|
+                                          β,
+                                          M.call_closure (|
+                                            Ty.path "u128",
+                                            BinOp.Wrap.bit_or,
+                                            [ M.read (| β |); rhs' ]
+                                          |)
+                                        |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  let β := mask in
-                                  M.write (|
-                                    β,
-                                    M.call_closure (|
-                                      Ty.path "u128",
-                                      BinOp.Wrap.bit_xor,
-                                      [ M.read (| β |); M.read (| next_mask_bit |) ]
-                                    |)
+                                  M.let_ (|
+                                    ltac:(M.monadic (M.read (| next_mask_bit |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (let β := mask in
+                                        M.write (|
+                                          β,
+                                          M.call_closure (|
+                                            Ty.path "u128",
+                                            BinOp.Wrap.bit_xor,
+                                            [ M.read (| β |); rhs' ]
+                                          |)
+                                        |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
                                   let β := bit_position in
@@ -105191,61 +105333,69 @@ Module num.
                                     [ M.read (| mask |) ]
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  let β := result in
-                                  M.write (|
-                                    β,
-                                    M.call_closure (|
-                                      Ty.path "u128",
-                                      BinOp.Wrap.bit_or,
-                                      [
-                                        M.read (| β |);
-                                        M.match_operator (|
-                                          Ty.path "u128",
-                                          M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                          [
-                                            fun γ =>
-                                              ltac:(M.monadic
-                                                (let γ :=
-                                                  M.alloc (|
+                                  M.let_ (|
+                                    ltac:(M.monadic
+                                      (M.match_operator (|
+                                        Ty.path "u128",
+                                        M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let γ :=
+                                                M.alloc (|
+                                                  Ty.path "bool",
+                                                  M.call_closure (|
                                                     Ty.path "bool",
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.ne,
-                                                      [
-                                                        M.call_closure (|
-                                                          Ty.path "u128",
-                                                          BinOp.Wrap.bit_and,
-                                                          [
-                                                            M.read (| self |);
-                                                            Value.Integer IntegerKind.U128 1
-                                                          ]
-                                                        |);
-                                                        Value.Integer IntegerKind.U128 0
-                                                      ]
-                                                    |)
-                                                  |) in
-                                                let _ :=
-                                                  is_constant_or_break_match (|
-                                                    M.read (| γ |),
-                                                    Value.Bool true
-                                                  |) in
-                                                M.read (| next_mask_bit |)));
-                                            fun γ =>
-                                              ltac:(M.monadic (Value.Integer IntegerKind.U128 0))
-                                          ]
-                                        |)
-                                      ]
-                                    |)
+                                                    BinOp.ne,
+                                                    [
+                                                      M.call_closure (|
+                                                        Ty.path "u128",
+                                                        BinOp.Wrap.bit_and,
+                                                        [
+                                                          M.read (| self |);
+                                                          Value.Integer IntegerKind.U128 1
+                                                        ]
+                                                      |);
+                                                      Value.Integer IntegerKind.U128 0
+                                                    ]
+                                                  |)
+                                                |) in
+                                              let _ :=
+                                                is_constant_or_break_match (|
+                                                  M.read (| γ |),
+                                                  Value.Bool true
+                                                |) in
+                                              M.read (| next_mask_bit |)));
+                                          fun γ =>
+                                            ltac:(M.monadic (Value.Integer IntegerKind.U128 0))
+                                        ]
+                                      |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (let β := result in
+                                        M.write (|
+                                          β,
+                                          M.call_closure (|
+                                            Ty.path "u128",
+                                            BinOp.Wrap.bit_or,
+                                            [ M.read (| β |); rhs' ]
+                                          |)
+                                        |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  let β := mask in
-                                  M.write (|
-                                    β,
-                                    M.call_closure (|
-                                      Ty.path "u128",
-                                      BinOp.Wrap.bit_xor,
-                                      [ M.read (| β |); M.read (| next_mask_bit |) ]
-                                    |)
+                                  M.let_ (|
+                                    ltac:(M.monadic (M.read (| next_mask_bit |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (let β := mask in
+                                        M.write (|
+                                          β,
+                                          M.call_closure (|
+                                            Ty.path "u128",
+                                            BinOp.Wrap.bit_xor,
+                                            [ M.read (| β |); rhs' ]
+                                          |)
+                                        |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
                                   let β := self in
@@ -107659,14 +107809,19 @@ Module num.
                                                             |)
                                                           |) in
                                                         let~ _ : Ty.tuple [] :=
-                                                          let β := r in
-                                                          M.write (|
-                                                            β,
-                                                            M.call_closure (|
-                                                              Ty.path "u128",
-                                                              BinOp.Wrap.mul,
-                                                              [ M.read (| β |); M.read (| base |) ]
-                                                            |)
+                                                          M.let_ (|
+                                                            ltac:(M.monadic (M.read (| base |))),
+                                                            fun rhs' =>
+                                                              ltac:(M.monadic
+                                                                (let β := r in
+                                                                M.write (|
+                                                                  β,
+                                                                  M.call_closure (|
+                                                                    Ty.path "u128",
+                                                                    BinOp.Wrap.mul,
+                                                                    [ M.read (| β |); rhs' ]
+                                                                  |)
+                                                                |)))
                                                           |) in
                                                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                                       |)));
@@ -111354,15 +111509,23 @@ Module num.
                                                 M.never_to_any (|
                                                   M.read (|
                                                     let~ _ : Ty.tuple [] :=
-                                                      let β :=
-                                                        M.SubPointer.get_tuple_field (| r, 1 |) in
-                                                      M.write (|
-                                                        β,
-                                                        M.call_closure (|
-                                                          Ty.path "bool",
-                                                          BinOp.Wrap.bit_or,
-                                                          [ M.read (| β |); M.read (| overflown |) ]
-                                                        |)
+                                                      M.let_ (|
+                                                        ltac:(M.monadic (M.read (| overflown |))),
+                                                        fun rhs' =>
+                                                          ltac:(M.monadic
+                                                            (let β :=
+                                                              M.SubPointer.get_tuple_field (|
+                                                                r,
+                                                                1
+                                                              |) in
+                                                            M.write (|
+                                                              β,
+                                                              M.call_closure (|
+                                                                Ty.path "bool",
+                                                                BinOp.Wrap.bit_or,
+                                                                [ M.read (| β |); rhs' ]
+                                                              |)
+                                                            |)))
                                                       |) in
                                                     M.return_ (| M.read (| r |) |)
                                                   |)
@@ -111376,17 +111539,20 @@ Module num.
                                           M.read (| M.SubPointer.get_tuple_field (| r, 0 |) |)
                                         |) in
                                       let~ _ : Ty.tuple [] :=
-                                        let β := overflown in
-                                        M.write (|
-                                          β,
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.Wrap.bit_or,
-                                            [
-                                              M.read (| β |);
-                                              M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |)
-                                            ]
-                                          |)
+                                        M.let_ (|
+                                          ltac:(M.monadic
+                                            (M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (let β := overflown in
+                                              M.write (|
+                                                β,
+                                                M.call_closure (|
+                                                  Ty.path "bool",
+                                                  BinOp.Wrap.bit_or,
+                                                  [ M.read (| β |); rhs' ]
+                                                |)
+                                              |)))
                                         |) in
                                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                     |)));
@@ -111423,17 +111589,20 @@ Module num.
                               M.read (| M.SubPointer.get_tuple_field (| r, 0 |) |)
                             |) in
                           let~ _ : Ty.tuple [] :=
-                            let β := overflown in
-                            M.write (|
-                              β,
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.Wrap.bit_or,
-                                [
-                                  M.read (| β |);
-                                  M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |)
-                                ]
-                              |)
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (let β := overflown in
+                                  M.write (|
+                                    β,
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.Wrap.bit_or,
+                                      [ M.read (| β |); rhs' ]
+                                    |)
+                                  |)))
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)))
                       |)
@@ -112571,10 +112740,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_be_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 16 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -112608,10 +112774,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_le_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 16 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -112646,10 +112809,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_ne_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 16 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -115268,43 +115428,51 @@ Module num.
                                     ]
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  let β := result in
-                                  M.write (|
-                                    β,
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      BinOp.Wrap.bit_or,
-                                      [
-                                        M.read (| β |);
-                                        M.match_operator (|
-                                          Ty.path "usize",
-                                          M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                          [
-                                            fun γ =>
-                                              ltac:(M.monadic
-                                                (let γ := src_bit in
-                                                let _ :=
-                                                  is_constant_or_break_match (|
-                                                    M.read (| γ |),
-                                                    Value.Bool true
-                                                  |) in
-                                                M.read (| bit_position |)));
-                                            fun γ =>
-                                              ltac:(M.monadic (Value.Integer IntegerKind.Usize 0))
-                                          ]
-                                        |)
-                                      ]
-                                    |)
+                                  M.let_ (|
+                                    ltac:(M.monadic
+                                      (M.match_operator (|
+                                        Ty.path "usize",
+                                        M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let γ := src_bit in
+                                              let _ :=
+                                                is_constant_or_break_match (|
+                                                  M.read (| γ |),
+                                                  Value.Bool true
+                                                |) in
+                                              M.read (| bit_position |)));
+                                          fun γ =>
+                                            ltac:(M.monadic (Value.Integer IntegerKind.Usize 0))
+                                        ]
+                                      |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (let β := result in
+                                        M.write (|
+                                          β,
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            BinOp.Wrap.bit_or,
+                                            [ M.read (| β |); rhs' ]
+                                          |)
+                                        |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  let β := mask in
-                                  M.write (|
-                                    β,
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      BinOp.Wrap.bit_xor,
-                                      [ M.read (| β |); M.read (| next_mask_bit |) ]
-                                    |)
+                                  M.let_ (|
+                                    ltac:(M.monadic (M.read (| next_mask_bit |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (let β := mask in
+                                        M.write (|
+                                          β,
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            BinOp.Wrap.bit_xor,
+                                            [ M.read (| β |); rhs' ]
+                                          |)
+                                        |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
                                   let β := bit_position in
@@ -115410,61 +115578,69 @@ Module num.
                                     [ M.read (| mask |) ]
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  let β := result in
-                                  M.write (|
-                                    β,
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      BinOp.Wrap.bit_or,
-                                      [
-                                        M.read (| β |);
-                                        M.match_operator (|
-                                          Ty.path "usize",
-                                          M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                          [
-                                            fun γ =>
-                                              ltac:(M.monadic
-                                                (let γ :=
-                                                  M.alloc (|
+                                  M.let_ (|
+                                    ltac:(M.monadic
+                                      (M.match_operator (|
+                                        Ty.path "usize",
+                                        M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let γ :=
+                                                M.alloc (|
+                                                  Ty.path "bool",
+                                                  M.call_closure (|
                                                     Ty.path "bool",
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.ne,
-                                                      [
-                                                        M.call_closure (|
-                                                          Ty.path "usize",
-                                                          BinOp.Wrap.bit_and,
-                                                          [
-                                                            M.read (| self |);
-                                                            Value.Integer IntegerKind.Usize 1
-                                                          ]
-                                                        |);
-                                                        Value.Integer IntegerKind.Usize 0
-                                                      ]
-                                                    |)
-                                                  |) in
-                                                let _ :=
-                                                  is_constant_or_break_match (|
-                                                    M.read (| γ |),
-                                                    Value.Bool true
-                                                  |) in
-                                                M.read (| next_mask_bit |)));
-                                            fun γ =>
-                                              ltac:(M.monadic (Value.Integer IntegerKind.Usize 0))
-                                          ]
-                                        |)
-                                      ]
-                                    |)
+                                                    BinOp.ne,
+                                                    [
+                                                      M.call_closure (|
+                                                        Ty.path "usize",
+                                                        BinOp.Wrap.bit_and,
+                                                        [
+                                                          M.read (| self |);
+                                                          Value.Integer IntegerKind.Usize 1
+                                                        ]
+                                                      |);
+                                                      Value.Integer IntegerKind.Usize 0
+                                                    ]
+                                                  |)
+                                                |) in
+                                              let _ :=
+                                                is_constant_or_break_match (|
+                                                  M.read (| γ |),
+                                                  Value.Bool true
+                                                |) in
+                                              M.read (| next_mask_bit |)));
+                                          fun γ =>
+                                            ltac:(M.monadic (Value.Integer IntegerKind.Usize 0))
+                                        ]
+                                      |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (let β := result in
+                                        M.write (|
+                                          β,
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            BinOp.Wrap.bit_or,
+                                            [ M.read (| β |); rhs' ]
+                                          |)
+                                        |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  let β := mask in
-                                  M.write (|
-                                    β,
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      BinOp.Wrap.bit_xor,
-                                      [ M.read (| β |); M.read (| next_mask_bit |) ]
-                                    |)
+                                  M.let_ (|
+                                    ltac:(M.monadic (M.read (| next_mask_bit |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (let β := mask in
+                                        M.write (|
+                                          β,
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            BinOp.Wrap.bit_xor,
+                                            [ M.read (| β |); rhs' ]
+                                          |)
+                                        |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
                                   let β := self in
@@ -117890,14 +118066,19 @@ Module num.
                                                             |)
                                                           |) in
                                                         let~ _ : Ty.tuple [] :=
-                                                          let β := r in
-                                                          M.write (|
-                                                            β,
-                                                            M.call_closure (|
-                                                              Ty.path "usize",
-                                                              BinOp.Wrap.mul,
-                                                              [ M.read (| β |); M.read (| base |) ]
-                                                            |)
+                                                          M.let_ (|
+                                                            ltac:(M.monadic (M.read (| base |))),
+                                                            fun rhs' =>
+                                                              ltac:(M.monadic
+                                                                (let β := r in
+                                                                M.write (|
+                                                                  β,
+                                                                  M.call_closure (|
+                                                                    Ty.path "usize",
+                                                                    BinOp.Wrap.mul,
+                                                                    [ M.read (| β |); rhs' ]
+                                                                  |)
+                                                                |)))
                                                           |) in
                                                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                                       |)));
@@ -121610,15 +121791,23 @@ Module num.
                                                 M.never_to_any (|
                                                   M.read (|
                                                     let~ _ : Ty.tuple [] :=
-                                                      let β :=
-                                                        M.SubPointer.get_tuple_field (| r, 1 |) in
-                                                      M.write (|
-                                                        β,
-                                                        M.call_closure (|
-                                                          Ty.path "bool",
-                                                          BinOp.Wrap.bit_or,
-                                                          [ M.read (| β |); M.read (| overflown |) ]
-                                                        |)
+                                                      M.let_ (|
+                                                        ltac:(M.monadic (M.read (| overflown |))),
+                                                        fun rhs' =>
+                                                          ltac:(M.monadic
+                                                            (let β :=
+                                                              M.SubPointer.get_tuple_field (|
+                                                                r,
+                                                                1
+                                                              |) in
+                                                            M.write (|
+                                                              β,
+                                                              M.call_closure (|
+                                                                Ty.path "bool",
+                                                                BinOp.Wrap.bit_or,
+                                                                [ M.read (| β |); rhs' ]
+                                                              |)
+                                                            |)))
                                                       |) in
                                                     M.return_ (| M.read (| r |) |)
                                                   |)
@@ -121632,17 +121821,20 @@ Module num.
                                           M.read (| M.SubPointer.get_tuple_field (| r, 0 |) |)
                                         |) in
                                       let~ _ : Ty.tuple [] :=
-                                        let β := overflown in
-                                        M.write (|
-                                          β,
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.Wrap.bit_or,
-                                            [
-                                              M.read (| β |);
-                                              M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |)
-                                            ]
-                                          |)
+                                        M.let_ (|
+                                          ltac:(M.monadic
+                                            (M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (let β := overflown in
+                                              M.write (|
+                                                β,
+                                                M.call_closure (|
+                                                  Ty.path "bool",
+                                                  BinOp.Wrap.bit_or,
+                                                  [ M.read (| β |); rhs' ]
+                                                |)
+                                              |)))
                                         |) in
                                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                     |)));
@@ -121679,17 +121871,20 @@ Module num.
                               M.read (| M.SubPointer.get_tuple_field (| r, 0 |) |)
                             |) in
                           let~ _ : Ty.tuple [] :=
-                            let β := overflown in
-                            M.write (|
-                              β,
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.Wrap.bit_or,
-                                [
-                                  M.read (| β |);
-                                  M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |)
-                                ]
-                              |)
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.read (| M.SubPointer.get_tuple_field (| r, 1 |) |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (let β := overflown in
+                                  M.write (|
+                                    β,
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.Wrap.bit_or,
+                                      [ M.read (| β |); rhs' ]
+                                    |)
+                                  |)))
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)))
                       |)
@@ -122823,10 +123018,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_be_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -122860,10 +123052,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_le_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -122898,10 +123087,7 @@ Module num.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [ M.unevaluated_const (mk_str (| "core_num_from_ne_bytes_discriminant" |)) ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|

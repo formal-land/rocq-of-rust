@@ -27,3 +27,7 @@ Lemma three_way_compare_eq
   }}.
 Proof.
 Admitted.
+
+Lemma assume_true (b : bool) (stack : Stack.t) (valid : b = true) :
+  {{ SimulateM.eval_f (run_assume b) stack 🌲 (Output.Success tt, stack) }}.
+Proof. subst. p. Qed.

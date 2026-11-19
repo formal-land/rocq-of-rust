@@ -1554,28 +1554,34 @@ Module block.
           let base_fee_update_fraction := M.alloc (| Ty.path "u64", base_fee_update_fraction |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_context::block::BlockEnv",
-                  "blob_excess_gas_and_price"
-                |),
-                Value.StructTuple
-                  "core::option::Option::Some"
-                  []
-                  [ Ty.path "revm_context_interface::block::blob::BlobExcessGasAndPrice" ]
-                  [
-                    M.call_closure (|
-                      Ty.path "revm_context_interface::block::blob::BlobExcessGasAndPrice",
-                      M.get_associated_function (|
+              M.let_ (|
+                ltac:(M.monadic
+                  (Value.StructTuple
+                    "core::option::Option::Some"
+                    []
+                    [ Ty.path "revm_context_interface::block::blob::BlobExcessGasAndPrice" ]
+                    [
+                      M.call_closure (|
                         Ty.path "revm_context_interface::block::blob::BlobExcessGasAndPrice",
-                        "new",
-                        [],
-                        []
+                        M.get_associated_function (|
+                          Ty.path "revm_context_interface::block::blob::BlobExcessGasAndPrice",
+                          "new",
+                          [],
+                          []
+                        |),
+                        [ M.read (| excess_blob_gas |); M.read (| base_fee_update_fraction |) ]
+                      |)
+                    ])),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_context::block::BlockEnv",
+                        "blob_excess_gas_and_price"
                       |),
-                      [ M.read (| excess_blob_gas |); M.read (| base_fee_update_fraction |) ]
-                    |)
-                  ]
+                      rhs'
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))

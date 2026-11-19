@@ -787,14 +787,19 @@ Module block.
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.read (|
                                 let~ _ : Ty.tuple [] :=
-                                  let β := output in
-                                  M.write (|
-                                    β,
-                                    M.call_closure (|
-                                      Ty.path "u128",
-                                      BinOp.Wrap.add,
-                                      [ M.read (| β |); M.read (| numerator_accum |) ]
-                                    |)
+                                  M.let_ (|
+                                    ltac:(M.monadic (M.read (| numerator_accum |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (let β := output in
+                                        M.write (|
+                                          β,
+                                          M.call_closure (|
+                                            Ty.path "u128",
+                                            BinOp.Wrap.add,
+                                            [ M.read (| β |); rhs' ]
+                                          |)
+                                        |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
                                   M.write (|

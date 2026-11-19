@@ -71,25 +71,31 @@ Module Impl_trait_flipper_Flip_for_trait_flipper_Flipper.
           M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "trait_flipper::Flipper" ], self |) in
         M.read (|
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_struct_record_field (|
-                M.deref (| M.read (| self |) |),
-                "trait_flipper::Flipper",
-                "value"
-              |),
-              M.call_closure (|
-                Ty.path "bool",
-                UnOp.not,
-                [
-                  M.read (|
+            M.let_ (|
+              ltac:(M.monadic
+                (M.call_closure (|
+                  Ty.path "bool",
+                  UnOp.not,
+                  [
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "trait_flipper::Flipper",
+                        "value"
+                      |)
+                    |)
+                  ]
+                |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
                     M.SubPointer.get_struct_record_field (|
                       M.deref (| M.read (| self |) |),
                       "trait_flipper::Flipper",
                       "value"
-                    |)
-                  |)
-                ]
-              |)
+                    |),
+                    rhs'
+                  |)))
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
         |)))

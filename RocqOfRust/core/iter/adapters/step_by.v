@@ -1896,14 +1896,19 @@ Module iter.
                                           |) in
                                         M.read (|
                                           let~ _ : Ty.tuple [] :=
-                                            let β := step in
-                                            M.write (|
-                                              β,
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                BinOp.Wrap.sub,
-                                                [ M.read (| β |); M.read (| div_n |) ]
-                                              |)
+                                            M.let_ (|
+                                              ltac:(M.monadic (M.read (| div_n |))),
+                                              fun rhs' =>
+                                                ltac:(M.monadic
+                                                  (let β := step in
+                                                  M.write (|
+                                                    β,
+                                                    M.call_closure (|
+                                                      Ty.path "usize",
+                                                      BinOp.Wrap.sub,
+                                                      [ M.read (| β |); rhs' ]
+                                                    |)
+                                                  |)))
                                             |) in
                                           nth_n
                                         |)));
@@ -1911,14 +1916,19 @@ Module iter.
                                       ltac:(M.monadic
                                         (M.read (|
                                           let~ _ : Ty.tuple [] :=
-                                            let β := n in
-                                            M.write (|
-                                              β,
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                BinOp.Wrap.sub,
-                                                [ M.read (| β |); M.read (| div_step |) ]
-                                              |)
+                                            M.let_ (|
+                                              ltac:(M.monadic (M.read (| div_step |))),
+                                              fun rhs' =>
+                                                ltac:(M.monadic
+                                                  (let β := n in
+                                                  M.write (|
+                                                    β,
+                                                    M.call_closure (|
+                                                      Ty.path "usize",
+                                                      BinOp.Wrap.sub,
+                                                      [ M.read (| β |); rhs' ]
+                                                    |)
+                                                  |)))
                                             |) in
                                           nth_step
                                         |)))
@@ -3456,9 +3466,18 @@ Module iter.
                     [ M.read (| inner_len |); M.read (| step |) ]
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (| r, "core::ops::range::Range", "end" |),
-                    M.cast (Ty.path "u8") (M.read (| yield_count |))
+                  M.let_ (|
+                    ltac:(M.monadic (M.cast (Ty.path "u8") (M.read (| yield_count |)))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            r,
+                            "core::ops::range::Range",
+                            "end"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 r
               |)))
@@ -3631,43 +3650,55 @@ Module iter.
                                 |)
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::iter::adapters::step_by::StepBy",
-                                    "iter"
-                                  |),
-                                  "core::ops::range::Range",
-                                  "start"
-                                |),
-                                M.call_closure (|
-                                  Ty.path "u8",
-                                  M.get_associated_function (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.path "u8",
-                                    "wrapping_add",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| val |); M.read (| step |) ]
-                                |)
+                                    M.get_associated_function (|
+                                      Ty.path "u8",
+                                      "wrapping_add",
+                                      [],
+                                      []
+                                    |),
+                                    [ M.read (| val |); M.read (| step |) ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::iter::adapters::step_by::StepBy",
+                                          "iter"
+                                        |),
+                                        "core::ops::range::Range",
+                                        "start"
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::iter::adapters::step_by::StepBy",
-                                    "iter"
-                                  |),
-                                  "core::ops::range::Range",
-                                  "end"
-                                |),
-                                M.call_closure (|
-                                  Ty.path "u8",
-                                  BinOp.Wrap.sub,
-                                  [ M.read (| remaining |); Value.Integer IntegerKind.U8 1 ]
-                                |)
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
+                                    Ty.path "u8",
+                                    BinOp.Wrap.sub,
+                                    [ M.read (| remaining |); Value.Integer IntegerKind.U8 1 ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::iter::adapters::step_by::StepBy",
+                                          "iter"
+                                        |),
+                                        "core::ops::range::Range",
+                                        "end"
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.alloc (|
                               Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
@@ -4566,9 +4597,18 @@ Module iter.
                     [ M.read (| inner_len |); M.read (| step |) ]
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (| r, "core::ops::range::Range", "end" |),
-                    M.cast (Ty.path "u16") (M.read (| yield_count |))
+                  M.let_ (|
+                    ltac:(M.monadic (M.cast (Ty.path "u16") (M.read (| yield_count |)))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            r,
+                            "core::ops::range::Range",
+                            "end"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 r
               |)))
@@ -4741,43 +4781,55 @@ Module iter.
                                 |)
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::iter::adapters::step_by::StepBy",
-                                    "iter"
-                                  |),
-                                  "core::ops::range::Range",
-                                  "start"
-                                |),
-                                M.call_closure (|
-                                  Ty.path "u16",
-                                  M.get_associated_function (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.path "u16",
-                                    "wrapping_add",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| val |); M.read (| step |) ]
-                                |)
+                                    M.get_associated_function (|
+                                      Ty.path "u16",
+                                      "wrapping_add",
+                                      [],
+                                      []
+                                    |),
+                                    [ M.read (| val |); M.read (| step |) ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::iter::adapters::step_by::StepBy",
+                                          "iter"
+                                        |),
+                                        "core::ops::range::Range",
+                                        "start"
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::iter::adapters::step_by::StepBy",
-                                    "iter"
-                                  |),
-                                  "core::ops::range::Range",
-                                  "end"
-                                |),
-                                M.call_closure (|
-                                  Ty.path "u16",
-                                  BinOp.Wrap.sub,
-                                  [ M.read (| remaining |); Value.Integer IntegerKind.U16 1 ]
-                                |)
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
+                                    Ty.path "u16",
+                                    BinOp.Wrap.sub,
+                                    [ M.read (| remaining |); Value.Integer IntegerKind.U16 1 ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::iter::adapters::step_by::StepBy",
+                                          "iter"
+                                        |),
+                                        "core::ops::range::Range",
+                                        "end"
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.alloc (|
                               Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u16" ],
@@ -5679,9 +5731,18 @@ Module iter.
                     [ M.read (| inner_len |); M.read (| step |) ]
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (| r, "core::ops::range::Range", "end" |),
-                    M.cast (Ty.path "u32") (M.read (| yield_count |))
+                  M.let_ (|
+                    ltac:(M.monadic (M.cast (Ty.path "u32") (M.read (| yield_count |)))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            r,
+                            "core::ops::range::Range",
+                            "end"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 r
               |)))
@@ -5854,43 +5915,55 @@ Module iter.
                                 |)
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::iter::adapters::step_by::StepBy",
-                                    "iter"
-                                  |),
-                                  "core::ops::range::Range",
-                                  "start"
-                                |),
-                                M.call_closure (|
-                                  Ty.path "u32",
-                                  M.get_associated_function (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.path "u32",
-                                    "wrapping_add",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| val |); M.read (| step |) ]
-                                |)
+                                    M.get_associated_function (|
+                                      Ty.path "u32",
+                                      "wrapping_add",
+                                      [],
+                                      []
+                                    |),
+                                    [ M.read (| val |); M.read (| step |) ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::iter::adapters::step_by::StepBy",
+                                          "iter"
+                                        |),
+                                        "core::ops::range::Range",
+                                        "start"
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::iter::adapters::step_by::StepBy",
-                                    "iter"
-                                  |),
-                                  "core::ops::range::Range",
-                                  "end"
-                                |),
-                                M.call_closure (|
-                                  Ty.path "u32",
-                                  BinOp.Wrap.sub,
-                                  [ M.read (| remaining |); Value.Integer IntegerKind.U32 1 ]
-                                |)
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
+                                    Ty.path "u32",
+                                    BinOp.Wrap.sub,
+                                    [ M.read (| remaining |); Value.Integer IntegerKind.U32 1 ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::iter::adapters::step_by::StepBy",
+                                          "iter"
+                                        |),
+                                        "core::ops::range::Range",
+                                        "end"
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.alloc (|
                               Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ],
@@ -6792,9 +6865,18 @@ Module iter.
                     [ M.read (| inner_len |); M.read (| step |) ]
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (| r, "core::ops::range::Range", "end" |),
-                    M.cast (Ty.path "u64") (M.read (| yield_count |))
+                  M.let_ (|
+                    ltac:(M.monadic (M.cast (Ty.path "u64") (M.read (| yield_count |)))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            r,
+                            "core::ops::range::Range",
+                            "end"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 r
               |)))
@@ -6967,43 +7049,55 @@ Module iter.
                                 |)
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::iter::adapters::step_by::StepBy",
-                                    "iter"
-                                  |),
-                                  "core::ops::range::Range",
-                                  "start"
-                                |),
-                                M.call_closure (|
-                                  Ty.path "u64",
-                                  M.get_associated_function (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.path "u64",
-                                    "wrapping_add",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| val |); M.read (| step |) ]
-                                |)
+                                    M.get_associated_function (|
+                                      Ty.path "u64",
+                                      "wrapping_add",
+                                      [],
+                                      []
+                                    |),
+                                    [ M.read (| val |); M.read (| step |) ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::iter::adapters::step_by::StepBy",
+                                          "iter"
+                                        |),
+                                        "core::ops::range::Range",
+                                        "start"
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::iter::adapters::step_by::StepBy",
-                                    "iter"
-                                  |),
-                                  "core::ops::range::Range",
-                                  "end"
-                                |),
-                                M.call_closure (|
-                                  Ty.path "u64",
-                                  BinOp.Wrap.sub,
-                                  [ M.read (| remaining |); Value.Integer IntegerKind.U64 1 ]
-                                |)
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
+                                    Ty.path "u64",
+                                    BinOp.Wrap.sub,
+                                    [ M.read (| remaining |); Value.Integer IntegerKind.U64 1 ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::iter::adapters::step_by::StepBy",
+                                          "iter"
+                                        |),
+                                        "core::ops::range::Range",
+                                        "end"
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.alloc (|
                               Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
@@ -7906,9 +8000,18 @@ Module iter.
                     [ M.read (| inner_len |); M.read (| step |) ]
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (| r, "core::ops::range::Range", "end" |),
-                    M.read (| M.use yield_count |)
+                  M.let_ (|
+                    ltac:(M.monadic (M.read (| M.use yield_count |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            r,
+                            "core::ops::range::Range",
+                            "end"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 r
               |)))
@@ -8083,43 +8186,55 @@ Module iter.
                                 |)
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::iter::adapters::step_by::StepBy",
-                                    "iter"
-                                  |),
-                                  "core::ops::range::Range",
-                                  "start"
-                                |),
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  M.get_associated_function (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.path "usize",
-                                    "wrapping_add",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| val |); M.read (| step |) ]
-                                |)
+                                    M.get_associated_function (|
+                                      Ty.path "usize",
+                                      "wrapping_add",
+                                      [],
+                                      []
+                                    |),
+                                    [ M.read (| val |); M.read (| step |) ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::iter::adapters::step_by::StepBy",
+                                          "iter"
+                                        |),
+                                        "core::ops::range::Range",
+                                        "start"
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::iter::adapters::step_by::StepBy",
-                                    "iter"
-                                  |),
-                                  "core::ops::range::Range",
-                                  "end"
-                                |),
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  BinOp.Wrap.sub,
-                                  [ M.read (| remaining |); Value.Integer IntegerKind.Usize 1 ]
-                                |)
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
+                                    Ty.path "usize",
+                                    BinOp.Wrap.sub,
+                                    [ M.read (| remaining |); Value.Integer IntegerKind.Usize 1 ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::iter::adapters::step_by::StepBy",
+                                          "iter"
+                                        |),
+                                        "core::ops::range::Range",
+                                        "end"
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.alloc (|
                               Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
@@ -9074,21 +9189,27 @@ Module iter.
                                 |)
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::iter::adapters::step_by::StepBy",
-                                    "iter"
-                                  |),
-                                  "core::ops::range::Range",
-                                  "end"
-                                |),
-                                M.call_closure (|
-                                  Ty.path "u8",
-                                  BinOp.Wrap.sub,
-                                  [ M.read (| remaining |); Value.Integer IntegerKind.U8 1 ]
-                                |)
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
+                                    Ty.path "u8",
+                                    BinOp.Wrap.sub,
+                                    [ M.read (| remaining |); Value.Integer IntegerKind.U8 1 ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::iter::adapters::step_by::StepBy",
+                                          "iter"
+                                        |),
+                                        "core::ops::range::Range",
+                                        "end"
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.alloc (|
                               Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
@@ -9788,21 +9909,27 @@ Module iter.
                                 |)
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::iter::adapters::step_by::StepBy",
-                                    "iter"
-                                  |),
-                                  "core::ops::range::Range",
-                                  "end"
-                                |),
-                                M.call_closure (|
-                                  Ty.path "u16",
-                                  BinOp.Wrap.sub,
-                                  [ M.read (| remaining |); Value.Integer IntegerKind.U16 1 ]
-                                |)
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
+                                    Ty.path "u16",
+                                    BinOp.Wrap.sub,
+                                    [ M.read (| remaining |); Value.Integer IntegerKind.U16 1 ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::iter::adapters::step_by::StepBy",
+                                          "iter"
+                                        |),
+                                        "core::ops::range::Range",
+                                        "end"
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.alloc (|
                               Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u16" ],
@@ -10507,21 +10634,27 @@ Module iter.
                                 |)
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::iter::adapters::step_by::StepBy",
-                                    "iter"
-                                  |),
-                                  "core::ops::range::Range",
-                                  "end"
-                                |),
-                                M.call_closure (|
-                                  Ty.path "u32",
-                                  BinOp.Wrap.sub,
-                                  [ M.read (| remaining |); Value.Integer IntegerKind.U32 1 ]
-                                |)
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
+                                    Ty.path "u32",
+                                    BinOp.Wrap.sub,
+                                    [ M.read (| remaining |); Value.Integer IntegerKind.U32 1 ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::iter::adapters::step_by::StepBy",
+                                          "iter"
+                                        |),
+                                        "core::ops::range::Range",
+                                        "end"
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.alloc (|
                               Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ],
@@ -11238,21 +11371,27 @@ Module iter.
                                 |)
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::iter::adapters::step_by::StepBy",
-                                    "iter"
-                                  |),
-                                  "core::ops::range::Range",
-                                  "end"
-                                |),
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  BinOp.Wrap.sub,
-                                  [ M.read (| remaining |); Value.Integer IntegerKind.Usize 1 ]
-                                |)
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
+                                    Ty.path "usize",
+                                    BinOp.Wrap.sub,
+                                    [ M.read (| remaining |); Value.Integer IntegerKind.Usize 1 ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::iter::adapters::step_by::StepBy",
+                                          "iter"
+                                        |),
+                                        "core::ops::range::Range",
+                                        "end"
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.alloc (|
                               Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],

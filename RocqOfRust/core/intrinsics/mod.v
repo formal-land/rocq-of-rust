@@ -1035,31 +1035,7 @@ Module intrinsics.
   *)
   Definition assume (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ b ] =>
-      ltac:(M.monadic
-        (let b := M.alloc (| Ty.path "bool", b |) in
-        M.match_operator (|
-          Ty.tuple [],
-          M.alloc (| Ty.tuple [], Value.Tuple [] |),
-          [
-            fun γ =>
-              ltac:(M.monadic
-                (let γ :=
-                  M.alloc (|
-                    Ty.path "bool",
-                    M.call_closure (| Ty.path "bool", UnOp.not, [ M.read (| b |) ] |)
-                  |) in
-                let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                M.never_to_any (|
-                  M.call_closure (|
-                    Ty.path "never",
-                    M.get_function (| "core::intrinsics::unreachable", [], [] |),
-                    []
-                  |)
-                |)));
-            fun γ => ltac:(M.monadic (Value.Tuple []))
-          ]
-        |)))
+    | [], [], [ b ] => ltac:(M.monadic (M.assume (| b |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -5418,27 +5394,12 @@ Module intrinsics.
   Global Typeclasses Opaque aggregate_raw_ptr.
   
   (* pub const fn ptr_metadata<P: ptr::Pointee<Metadata = M> + PointeeSized, M>(ptr: *const P) -> M; *)
-  Definition ptr_metadata (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ P; M_ ], [ ptr ] =>
-      ltac:(M.monadic
-        (let ptr := M.alloc (| Ty.apply (Ty.path "*const") [] [ P ], ptr |) in
-        M.never_to_any (|
-          M.read (|
-            M.loop (|
-              Ty.path "never",
-              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
-            |)
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
+  Parameter ptr_metadata : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
   Global Instance Instance_IsFunction_ptr_metadata :
     M.IsFunction.C "core::intrinsics::ptr_metadata" ptr_metadata.
   Proof.
   Admitted.
-  Global Typeclasses Opaque ptr_metadata.
   
   (* pub const unsafe fn copy_nonoverlapping<T>(src: *const T, dst: *mut T, count: usize); *)
   Definition copy_nonoverlapping (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -9305,29 +9266,32 @@ Module slice.
                                           |)
                                         |) in
                                       let~ _ : Ty.tuple [] :=
-                                        let β := offset in
-                                        M.write (|
-                                          β,
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            BinOp.Wrap.add,
-                                            [
-                                              M.read (| β |);
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                BinOp.Wrap.mul,
-                                                [
-                                                  M.read (|
-                                                    get_constant (|
-                                                      "core::slice::memchr::USIZE_BYTES",
-                                                      Ty.path "usize"
-                                                    |)
-                                                  |);
-                                                  Value.Integer IntegerKind.Usize 2
-                                                ]
-                                              |)
-                                            ]
-                                          |)
+                                        M.let_ (|
+                                          ltac:(M.monadic
+                                            (M.call_closure (|
+                                              Ty.path "usize",
+                                              BinOp.Wrap.mul,
+                                              [
+                                                M.read (|
+                                                  get_constant (|
+                                                    "core::slice::memchr::USIZE_BYTES",
+                                                    Ty.path "usize"
+                                                  |)
+                                                |);
+                                                Value.Integer IntegerKind.Usize 2
+                                              ]
+                                            |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (let β := offset in
+                                              M.write (|
+                                                β,
+                                                M.call_closure (|
+                                                  Ty.path "usize",
+                                                  BinOp.Wrap.add,
+                                                  [ M.read (| β |); rhs' ]
+                                                |)
+                                              |)))
                                         |) in
                                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                     |)));

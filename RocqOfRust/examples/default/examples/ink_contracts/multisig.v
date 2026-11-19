@@ -1939,39 +1939,59 @@ Module Impl_multisig_Multisig.
                 |))
             |) in
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_struct_record_field (| contract, "multisig::Multisig", "owners" |),
-              M.read (| owners |)
+            M.let_ (|
+              ltac:(M.monadic (M.read (| owners |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.SubPointer.get_struct_record_field (|
+                      contract,
+                      "multisig::Multisig",
+                      "owners"
+                    |),
+                    rhs'
+                  |)))
             |) in
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_struct_record_field (|
-                contract,
-                "multisig::Multisig",
-                "transaction_list"
-              |),
-              M.call_closure (|
-                Ty.path "multisig::Transactions",
-                M.get_trait_method (|
-                  "core::default::Default",
+            M.let_ (|
+              ltac:(M.monadic
+                (M.call_closure (|
                   Ty.path "multisig::Transactions",
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.path "multisig::Transactions",
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |)
+                |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.SubPointer.get_struct_record_field (|
+                      contract,
+                      "multisig::Multisig",
+                      "transaction_list"
+                    |),
+                    rhs'
+                  |)))
             |) in
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_struct_record_field (|
-                contract,
-                "multisig::Multisig",
-                "requirement"
-              |),
-              M.read (| requirement |)
+            M.let_ (|
+              ltac:(M.monadic (M.read (| requirement |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.SubPointer.get_struct_record_field (|
+                      contract,
+                      "multisig::Multisig",
+                      "requirement"
+                    |),
+                    rhs'
+                  |)))
             |) in
           contract
         |)))
@@ -3468,13 +3488,18 @@ Module Impl_multisig_Multisig.
               ]
             |) in
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_struct_record_field (|
-                M.deref (| M.read (| self |) |),
-                "multisig::Multisig",
-                "requirement"
-              |),
-              M.read (| requirement |)
+            M.let_ (|
+              ltac:(M.monadic (M.read (| requirement |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "multisig::Multisig",
+                      "requirement"
+                    |),
+                    rhs'
+                  |)))
             |) in
           let~ _ : Ty.tuple [] :=
             M.call_closure (|
@@ -3611,36 +3636,41 @@ Module Impl_multisig_Multisig.
               ]
             |) in
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply (Ty.path "&mut") [] [ Ty.path "multisig::AccountId" ],
-                  M.get_trait_method (|
-                    "core::ops::index::IndexMut",
-                    Ty.apply
-                      (Ty.path "alloc::vec::Vec")
-                      []
-                      [ Ty.path "multisig::AccountId"; Ty.path "alloc::alloc::Global" ],
-                    [],
-                    [ Ty.path "usize" ],
-                    "index_mut",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "multisig::Multisig",
-                        "owners"
+            M.let_ (|
+              ltac:(M.monadic (M.read (| new_owner |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&mut") [] [ Ty.path "multisig::AccountId" ],
+                        M.get_trait_method (|
+                          "core::ops::index::IndexMut",
+                          Ty.apply
+                            (Ty.path "alloc::vec::Vec")
+                            []
+                            [ Ty.path "multisig::AccountId"; Ty.path "alloc::alloc::Global" ],
+                          [],
+                          [ Ty.path "usize" ],
+                          "index_mut",
+                          [],
+                          []
+                        |),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "multisig::Multisig",
+                              "owners"
+                            |)
+                          |);
+                          M.cast (Ty.path "usize") (M.read (| owner_index |))
+                        ]
                       |)
-                    |);
-                    M.cast (Ty.path "usize") (M.read (| owner_index |))
-                  ]
-                |)
-              |),
-              M.read (| new_owner |)
+                    |),
+                    rhs'
+                  |)))
             |) in
           let~ _ : Ty.tuple [] :=
             M.call_closure (|
@@ -3840,13 +3870,18 @@ Module Impl_multisig_Multisig.
               ]
             |) in
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_struct_record_field (|
-                M.deref (| M.read (| self |) |),
-                "multisig::Multisig",
-                "requirement"
-              |),
-              M.read (| new_requirement |)
+            M.let_ (|
+              ltac:(M.monadic (M.read (| new_requirement |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "multisig::Multisig",
+                      "requirement"
+                    |),
+                    rhs'
+                  |)))
             |) in
           let~ _ : Ty.tuple [] :=
             M.call_closure (|
@@ -4254,41 +4289,47 @@ Module Impl_multisig_Multisig.
               |)
             |) in
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_struct_record_field (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "multisig::Multisig",
-                  "transaction_list"
-                |),
-                "multisig::Transactions",
-                "next_id"
-              |),
-              M.call_closure (|
-                Ty.path "u32",
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ],
-                  "expect",
-                  [],
-                  []
-                |),
-                [
-                  M.call_closure (|
+            M.let_ (|
+              ltac:(M.monadic
+                (M.call_closure (|
+                  Ty.path "u32",
+                  M.get_associated_function (|
                     Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ],
-                    M.get_associated_function (| Ty.path "u32", "checked_add", [], [] |),
-                    [
-                      M.read (| trans_id |);
-                      M.read (|
-                        M.use (M.alloc (| Ty.path "u32", Value.Integer IntegerKind.U32 1 |))
-                      |)
-                    ]
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| mk_str (| "Transaction ids exhausted." |) |)
-                  |)
-                ]
-              |)
+                    "expect",
+                    [],
+                    []
+                  |),
+                  [
+                    M.call_closure (|
+                      Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ],
+                      M.get_associated_function (| Ty.path "u32", "checked_add", [], [] |),
+                      [
+                        M.read (| trans_id |);
+                        M.read (|
+                          M.use (M.alloc (| Ty.path "u32", Value.Integer IntegerKind.U32 1 |))
+                        |)
+                      ]
+                    |);
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| mk_str (| "Transaction ids exhausted." |) |)
+                    |)
+                  ]
+                |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.SubPointer.get_struct_record_field (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "multisig::Multisig",
+                        "transaction_list"
+                      |),
+                      "multisig::Transactions",
+                      "next_id"
+                    |),
+                    rhs'
+                  |)))
             |) in
           let~ _ : Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ] :=
             M.call_closure (|
