@@ -880,11 +880,17 @@ Definition catch_break (ty : Ty.t) (body : M) : M :=
     ).
 
 Definition loop (ty : Ty.t) (body : M) : M :=
-  LowM.Loop
-    ty
-    (let_ (catch_continue ty body) read)
+  LowM.Loop ty
+    (catch ty (let_ body read) (fun exception =>
+      if Exception.is_continue exception then pure (Value.Tuple [])
+      else raise exception))
     (fun result =>
-      catch_break ty (LowM.Pure result)).
+      match result with
+      | inl ref => pure ref
+      | inr exception =>
+          if Exception.is_break exception then alloc (Ty.tuple []) (Value.Tuple [])
+          else raise exception
+      end).
 
 (** The type [ty] is the type of each arm. *)
 Fixpoint match_operator
