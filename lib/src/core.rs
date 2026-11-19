@@ -9,6 +9,7 @@ pub struct CliOptions {
     pub path: path::PathBuf,
     pub output: path::PathBuf,
     pub axiomatize: bool,
+    pub fold_scalar_constants: bool,
 }
 
 pub const LINE_WIDTH: usize = 80;
@@ -62,7 +63,7 @@ fn crate_root(input: &Path) -> io::Result<PathBuf> {
 
 pub fn run(opts: CliOptions) -> io::Result<()> {
     let root = crate_root(&opts.path)?;
-    let modules = create_translation_to_rocq(&root, opts.axiomatize)?;
+    let modules = create_translation_to_rocq(&root, opts.axiomatize, opts.fold_scalar_constants)?;
     let cwd = std::env::current_dir()?;
     let root_dir = root.canonicalize()?.parent().unwrap().to_owned();
     let mut sources = BTreeMap::new();
@@ -112,6 +113,7 @@ pub fn run(opts: CliOptions) -> io::Result<()> {
 fn create_translation_to_rocq(
     filename: &Path,
     axiomatize: bool,
+    fold_scalar_constants: bool,
 ) -> io::Result<HashMap<String, (String, String)>> {
     let out = process::Command::new("rustc")
         .arg("--print=sysroot")
@@ -127,6 +129,7 @@ fn create_translation_to_rocq(
 
     struct TranslateSingleFile {
         axiomatize: bool,
+        fold_scalar_constants: bool,
         translation: Option<std::collections::HashMap<String, (String, String)>>,
     }
 
@@ -140,6 +143,7 @@ fn create_translation_to_rocq(
                 &tcx,
                 TopLevelOptions {
                     axiomatize: self.axiomatize,
+                    fold_scalar_constants: self.fold_scalar_constants,
                 },
             ));
             rustc_driver::Compilation::Stop
@@ -148,6 +152,7 @@ fn create_translation_to_rocq(
 
     let mut callbacks = TranslateSingleFile {
         axiomatize,
+        fold_scalar_constants,
         translation: None,
     };
     let args = vec![

@@ -15,6 +15,9 @@ struct Translate {
     /// Axiomatize the definitions
     #[arg(long, value_name = "axiomatize", default_value_t = false)]
     axiomatize: bool,
+    /// Inline monomorphic integer and boolean constants using rustc's target values
+    #[arg(long)]
+    fold_scalar_constants: bool,
     /// Output path where to place the translation
     #[arg(long, value_name = "output_path", default_value = "rocq_translation")]
     output_path: PathBuf,
@@ -57,6 +60,7 @@ fn main() -> std::io::Result<()> {
                 path: t.path,
                 output: t.output_path,
                 axiomatize: t.axiomatize,
+                fold_scalar_constants: t.fold_scalar_constants,
             })?;
             println!("Finished.");
         }

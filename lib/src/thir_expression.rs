@@ -1407,6 +1407,26 @@ pub(crate) fn compile_expr<'a>(
             }
         }
         thir::ExprKind::NamedConst { def_id, args, .. } => {
+            // These constants are evaluated by rustc at the use site. In
+            // particular, usize::BITS depends on the compilation target.
+            // Keep symbolic lookup for generic and non-scalar constants.
+            if env.fold_scalar_constants
+                && args.is_empty()
+                && matches!(
+                    expr.ty.kind(),
+                    TyKind::Int(_) | TyKind::Uint(_) | TyKind::Bool
+                )
+            {
+                let constant = rustc_middle::ty::UnevaluatedConst::new(*def_id, args);
+                let typing_env = rustc_middle::ty::TypingEnv::fully_monomorphized();
+                if let Ok(Ok(tree)) = env
+                    .tcx
+                    .const_eval_resolve_for_typeck(typing_env, constant, expr.span)
+                {
+                    let value = Const::new_value(env.tcx, tree, expr.ty);
+                    return compile_const(env, &expr.span, generics, &value).alloc(ty);
+                }
+            }
             let path = compile_def_id(env, *def_id);
             let symbol = env.tcx.def_key(*def_id).get_opt_name();
             let parent = env.tcx.opt_parent(*def_id).unwrap();

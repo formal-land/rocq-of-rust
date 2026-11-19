@@ -22,6 +22,7 @@ use std::vec;
 
 pub(crate) struct TopLevelOptions {
     pub(crate) axiomatize: bool,
+    pub(crate) fold_scalar_constants: bool,
 }
 
 #[derive(Debug)]
@@ -1253,6 +1254,7 @@ fn compile_top_level(tcx: &TyCtxt, opts: TopLevelOptions) -> Rc<TopLevel> {
     let env = Env {
         tcx: *tcx,
         axiomatize: opts.axiomatize,
+        fold_scalar_constants: opts.fold_scalar_constants,
         hir_scope: None,
     };
     let results = get_item_ids_for_parent(&env, rustc_hir::def_id::CRATE_DEF_ID.into())

@@ -6,6 +6,9 @@ pub struct RocqOfRustArgs {
     /// Axiomatize the definitions
     #[arg(long)]
     axiomatize: bool,
+    /// Inline monomorphic integer and boolean constants using rustc's target values
+    #[arg(long)]
+    fold_scalar_constants: bool,
     /// Also generate a JSON output
     #[arg(long)]
     with_json: bool,
@@ -40,6 +43,7 @@ pub struct Args {
 pub struct Options {
     pub(crate) in_cargo: bool,
     pub(crate) axiomatize: bool,
+    pub(crate) fold_scalar_constants: bool,
     pub(crate) with_json: bool,
 }
 
@@ -50,6 +54,7 @@ impl Options {
         Options {
             in_cargo: cargo_rocq_of_rust,
             axiomatize: rocq_of_rust.axiomatize,
+            fold_scalar_constants: rocq_of_rust.fold_scalar_constants,
             with_json: rocq_of_rust.with_json,
         }
     }

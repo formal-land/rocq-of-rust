@@ -6,6 +6,7 @@ use rustc_middle::ty::TyCtxt;
 pub(crate) struct Env<'a> {
     pub(crate) tcx: TyCtxt<'a>,
     pub(crate) axiomatize: bool,
+    pub(crate) fold_scalar_constants: bool,
     pub(crate) hir_scope: Option<rustc_hir::HirId>,
 }
 

@@ -55,6 +55,7 @@ impl Callbacks for ToRocq {
     fn after_expansion<'tcx>(&mut self, compiler: &Compiler, tcx: TyCtxt<'tcx>) -> Compilation {
         let crate::options::Options {
             axiomatize,
+            fold_scalar_constants,
             with_json,
             ..
         } = self.opts;
@@ -65,7 +66,13 @@ impl Callbacks for ToRocq {
         println!("Compiling crate {current_crate_name_string:}");
 
         let crate_name = current_crate_name_string.clone();
-        let translation = translate_top_level(&tcx, TopLevelOptions { axiomatize });
+        let translation = translate_top_level(
+            &tcx,
+            TopLevelOptions {
+                axiomatize,
+                fold_scalar_constants,
+            },
+        );
 
         let mut index = String::new();
         for (file_name, (rocq, json)) in BTreeMap::from_iter(translation) {
