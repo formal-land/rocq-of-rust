@@ -1,3 +1,4 @@
+From Stdlib Require Import Arith.Wf_nat.
 Require Import links.RocqOfRust.
 
 Module Stack.
@@ -288,11 +289,16 @@ Module SimulateM.
       (stack_in : Stack.t)
       (run_f : {{ f args 🔽 B }})
       (k : B * Stack.t -> t A)
+  | Loop {R B : Set}
+      (body : Stack.t -> t (Output.t R B * Stack.t))
+      (stack : Stack.t)
+      (on_exit : Output.Exception.t R -> Stack.t -> t A)
   | Impossible {T : Set} (payload : T).
   Arguments Pure {_}.
   Arguments GetCanAccess {_ _ _}.
   Arguments Let {_ _}.
   Arguments Call {_ _ _ _ _}.
+  Arguments Loop {_ _ _}.
   Arguments Impossible {_ _}.
 
   Fixpoint let_ {A B : Set} (e1 : t A) (e2 : A -> t B) : t B :=
@@ -302,6 +308,8 @@ Module SimulateM.
       GetCanAccess Stack ref_core (fun can_access => let_ (k can_access) e2)
     | Let e k => Let e (fun value => let_ (k value) e2)
     | Call stack_in run_f k => Call stack_in run_f (fun output_stack => let_ (k output_stack) e2)
+    | Loop body stack on_exit =>
+      Loop body stack (fun exception next => let_ (on_exit exception next) e2)
     | Impossible payload => Impossible payload
     end.
 
@@ -337,8 +345,6 @@ Module SimulateM.
     | Some stack => Pure (Output.Success stack)
     | None => Pure (Output.Exception Output.Exception.BreakMatch)
     end).
-
-  Parameter TodoLoop : forall {A : Set}, t A.
 
   Fixpoint eval {R Output : Set}
       (e : LinkM.t R Output)
@@ -413,7 +419,8 @@ Module SimulateM.
       )).
     }
     { (* Loop *)
-      exact TodoLoop.
+      exact (Loop (fun current => eval _ _ e current) stack
+        (fun exception next => eval _ _ (k (Output.Exception exception)) next)).
     }
     { (* IfThenElse *)
       exact (
@@ -481,6 +488,20 @@ Module Run.
     {{ e 🌲 result }} ->
     {{ k result 🌲 value }} ->
     {{ SimulateM.Let e k 🌲 value }}
+  | LoopNext {R B : Set}
+      (body : Stack.t -> SimulateM.t (Output.t R B * Stack.t))
+      (stack next : Stack.t) (iteration : B)
+      (on_exit : Output.Exception.t R -> Stack.t -> SimulateM.t A) :
+    {{ body stack 🌲 (Output.Success iteration, next) }} ->
+    {{ SimulateM.Loop body next on_exit 🌲 value }} ->
+    {{ SimulateM.Loop body stack on_exit 🌲 value }}
+  | LoopExit {R B : Set}
+      (body : Stack.t -> SimulateM.t (Output.t R B * Stack.t))
+      (stack next : Stack.t) (exception : Output.Exception.t R)
+      (on_exit : Output.Exception.t R -> Stack.t -> SimulateM.t A) :
+    {{ body stack 🌲 (Output.Exception exception, next) }} ->
+    {{ on_exit exception next 🌲 value }} ->
+    {{ SimulateM.Loop body stack on_exit 🌲 value }}
   | Call {B : Set} `{Link B}
       {f : list Value.t -> M} {args : list Value.t}
       (stack_in : Stack.t)
@@ -496,6 +517,30 @@ Module Run.
     {{ SimulateM.Call stack_in run_f k 🌲 value }}
 
   where "{{ e 🌲 value }}" := (t value e).
+
+  (** Ordinary iterations carry the resulting stack to the next iteration.
+      The generated handlers consume continue in the body and break on exit. *)
+  Lemma loop_invariant {R B A : Set}
+      (body : Stack.t -> SimulateM.t (Output.t R B * Stack.t))
+      (on_exit : Output.Exception.t R -> Stack.t -> SimulateM.t A)
+      (invariant : Stack.t -> Prop) (remaining : Stack.t -> nat) (value : A)
+      (step : forall stack, invariant stack ->
+        (exists iteration next,
+          {{ body stack 🌲 (Output.Success iteration, next) }} /\
+          invariant next /\ (remaining next < remaining stack)%nat) \/
+        (exists exception next,
+          {{ body stack 🌲 (Output.Exception exception, next) }} /\
+          {{ on_exit exception next 🌲 value }})) :
+    forall stack, invariant stack -> {{ SimulateM.Loop body stack on_exit 🌲 value }}.
+  Proof.
+    refine (well_founded_induction (well_founded_ltof _ remaining)
+      (fun stack => invariant stack -> {{ SimulateM.Loop body stack on_exit 🌲 value }}) _).
+    intros stack IH Hinv.
+    destruct (step stack Hinv) as
+      [(iteration & next & Hbody & Hnext & Hlt) | (exception & next & Hbody & Hexit)].
+    - eapply LoopNext; [exact Hbody | exact (IH next Hlt Hnext)].
+    - eapply LoopExit; eassumption.
+  Qed.
 
   Lemma PureEq {A : Set} (value1 value2 : A) :
     value1 = value2 ->
