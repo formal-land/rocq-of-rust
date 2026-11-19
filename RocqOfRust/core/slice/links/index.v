@@ -194,3 +194,28 @@ Module Impl_IndexMut_for_Slice.
   Admitted.
 End Impl_IndexMut_for_Slice.
 Export (hints) Impl_IndexMut_for_Slice.
+
+(** Built-in slice indexing is lowered to a direct array subpointer. *)
+Module SliceSubPointer.
+  Definition get_index {A : Set} `{Link A} (i : Z) :
+    SubPointer.Runner.t (list A) (Pointer.Index.Array i) :=
+    {| SubPointer.Runner.projection xs := List.nth_error xs (Z.to_nat i);
+       SubPointer.Runner.injection xs y :=
+         match List.nth_error xs (Z.to_nat i) with
+         | Some _ => Some (List.replace_at xs (Z.to_nat i) y)
+         | None => None
+         end |}.
+
+  Lemma get_index_valid {A : Set} `{Link A} (i : Z) :
+    SubPointer.Runner.Valid.t (get_index (A := A) i).
+  Proof.
+    constructor; intros xs; with_strategy transparent [φ] cbn;
+      rewrite List.nth_error_map; destruct (List.nth_error xs (Z.to_nat i)); cbn.
+    - reflexivity.
+    - reflexivity.
+    - intro y. now rewrite List.replace_at_map_eq.
+    - reflexivity.
+  Qed.
+  Smpl Add eapply get_index_valid : run_sub_pointer.
+End SliceSubPointer.
+Export (hints) SliceSubPointer.
