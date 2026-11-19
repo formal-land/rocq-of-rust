@@ -24,12 +24,6 @@ M.IsTraitInstance
   core.slice.simulate.mod.Impl_Slice.is_empty_eq
   alloc.vec.simulate.mod.Impl_Vec_T_A.len_eq
   alloc.vec.simulate.mod.Impl_Vec_T_A.is_empty_eq
-M.SimulateM.TodoLoop
-  core.simulate.option.Impl_Option.map_eq
-  core.slice.simulate.mod.Impl_Slice.len_eq
-  core.slice.simulate.mod.Impl_Slice.is_empty_eq
-  alloc.vec.simulate.mod.Impl_Vec_T_A.len_eq
-  alloc.vec.simulate.mod.Impl_Vec_T_A.is_empty_eq
 M.Ty.path
   core.simulate.option.Impl_Option.map_eq
   core.slice.simulate.mod.Impl_Slice.len_eq
