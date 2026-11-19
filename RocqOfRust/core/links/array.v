@@ -78,6 +78,28 @@ Module ArrayPairs.
       | None => None
       end
     end.
+  Lemma nth_error_values {A : Set} `{Link A} {n} (xs : t A n) i :
+    Option.map (nth_error xs i) φ = List.nth_error (to_values xs) i.
+  Proof.
+    revert xs i. induction n as [|n IH]; intros [] [|i]; cbn; auto.
+  Qed.
+
+  Lemma replace_at_values {A : Set} `{Link A} {n} (xs : t A n) i y :
+    match replace_at xs i y with
+    | Some ys => List.nth_error (to_values xs) i <> None /\
+                 to_values ys = List.replace_at (to_values xs) i (φ y)
+    | None => List.nth_error (to_values xs) i = None
+    end.
+  Proof.
+    revert xs i. induction n as [|n IH]; intros xs i.
+    - destruct xs, i; reflexivity.
+    - destruct xs as [x tail], i as [|i]; cbn.
+      + split; congruence.
+      + specialize (IH tail i).
+        destruct (replace_at tail i y) as [ys|]; cbn in *.
+        * destruct IH as [Hin Heq]. split; [exact Hin | now rewrite Heq].
+        * exact IH.
+  Qed.
 End ArrayPairs.
 
 Record t {A : Set} {length : usize} : Set := {
@@ -378,7 +400,16 @@ Module SubPointer.
   Lemma get_index_is_valid {A : Set} `{Link A} {length : usize} (index : Z) :
     SubPointer.Runner.Valid.t (get_index A length index).
   Proof.
-  Admitted.
+    constructor; intros [xs].
+    - apply ArrayPairs.nth_error_values.
+    - intros y. with_strategy transparent [φ] cbn.
+      pose proof (ArrayPairs.replace_at_values xs (Z.to_nat index) y) as Hreplace.
+      destruct (ArrayPairs.replace_at xs (Z.to_nat index) y) as [ys|]; cbn in *.
+      + destruct Hreplace as [Hin Heq].
+        destruct (List.nth_error (ArrayPairs.to_values xs) (Z.to_nat index)); try contradiction.
+        now rewrite Heq.
+      + now rewrite Hreplace.
+  Qed.
   Smpl Add eapply get_index_is_valid : run_sub_pointer.
 End SubPointer.
 
