@@ -118,7 +118,8 @@ pub(crate) fn compile_type<'a>(
             compile_poly_fn_sig(env, span, generics, &fn_sig.with(*fn_header), false)
         }
         TyKind::Dynamic(existential_predicates, _) => {
-            let traits = existential_predicates
+            let mut auto_traits = Vec::new();
+            let mut traits: Vec<_> = existential_predicates
                 .iter()
                 .filter_map(
                     |existential_predicate| match existential_predicate.no_bound_vars() {
@@ -131,16 +132,21 @@ pub(crate) fn compile_type<'a>(
                                 Path::new(&["Trait"]),
                             ])),
                             rustc_middle::ty::ExistentialPredicate::AutoTrait(def_id) => {
-                                Some(Path::concat(&[
+                                auto_traits.push(Path::concat(&[
                                     compile_def_id(env, def_id),
                                     Path::new(&["AutoTrait"]),
-                                ]))
+                                ]));
+                                None
                             }
                             _ => None,
                         },
                     },
                 )
                 .collect();
+            // rustc's order for auto traits can change with crate metadata.
+            // Use their paths so the same dyn type always gets the same Rocq name.
+            auto_traits.sort_unstable_by(|a, b| a.segments.cmp(&b.segments));
+            traits.extend(auto_traits);
 
             Rc::new(RocqType::Dyn { traits })
         }
