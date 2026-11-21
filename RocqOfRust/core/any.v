@@ -169,13 +169,13 @@ Module any.
         (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
   End Impl_core_fmt_Debug_for_Dyn_core_any_Any_Trait_core_marker_Send_AutoTrait.
   
-  Module Impl_core_fmt_Debug_for_Dyn_core_any_Any_Trait_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait.
+  Module Impl_core_fmt_Debug_for_Dyn_core_any_Any_Trait_core_marker_Send_AutoTrait_core_marker_Sync_AutoTrait.
     Definition Self : Ty.t :=
       Ty.dyn
         [
           ("core::any::Any::Trait", []);
-          ("core::marker::Sync::AutoTrait", []);
-          ("core::marker::Send::AutoTrait", [])
+          ("core::marker::Send::AutoTrait", []);
+          ("core::marker::Sync::AutoTrait", [])
         ].
     
     (*
@@ -196,8 +196,8 @@ Module any.
                   Ty.dyn
                     [
                       ("core::any::Any::Trait", []);
-                      ("core::marker::Sync::AutoTrait", []);
-                      ("core::marker::Send::AutoTrait", [])
+                      ("core::marker::Send::AutoTrait", []);
+                      ("core::marker::Sync::AutoTrait", [])
                     ]
                 ],
               self
@@ -247,7 +247,7 @@ Module any.
         (* Trait polymorphic types *) []
         Self
         (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
-  End Impl_core_fmt_Debug_for_Dyn_core_any_Any_Trait_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait.
+  End Impl_core_fmt_Debug_for_Dyn_core_any_Any_Trait_core_marker_Send_AutoTrait_core_marker_Sync_AutoTrait.
   
   Module Impl_Dyn_core_any_Any_Trait.
     Definition Self : Ty.t := Ty.dyn [ ("core::any::Any::Trait", []) ].
@@ -1053,13 +1053,13 @@ Module any.
     Global Typeclasses Opaque downcast_unchecked_mut.
   End Impl_Dyn_core_any_Any_Trait_core_marker_Send_AutoTrait.
   
-  Module Impl_Dyn_core_any_Any_Trait_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait.
+  Module Impl_Dyn_core_any_Any_Trait_core_marker_Send_AutoTrait_core_marker_Sync_AutoTrait.
     Definition Self : Ty.t :=
       Ty.dyn
         [
           ("core::any::Any::Trait", []);
-          ("core::marker::Sync::AutoTrait", []);
-          ("core::marker::Send::AutoTrait", [])
+          ("core::marker::Send::AutoTrait", []);
+          ("core::marker::Sync::AutoTrait", [])
         ].
     
     (*
@@ -1080,8 +1080,8 @@ Module any.
                   Ty.dyn
                     [
                       ("core::any::Any::Trait", []);
-                      ("core::marker::Sync::AutoTrait", []);
-                      ("core::marker::Send::AutoTrait", [])
+                      ("core::marker::Send::AutoTrait", []);
+                      ("core::marker::Sync::AutoTrait", [])
                     ]
                 ],
               self
@@ -1106,8 +1106,8 @@ Module any.
                       Ty.dyn
                         [
                           ("core::any::Any::Trait", []);
-                          ("core::marker::Sync::AutoTrait", []);
-                          ("core::marker::Send::AutoTrait", [])
+                          ("core::marker::Send::AutoTrait", []);
+                          ("core::marker::Sync::AutoTrait", [])
                         ]
                     ])
                   (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]),
@@ -1141,8 +1141,8 @@ Module any.
                   Ty.dyn
                     [
                       ("core::any::Any::Trait", []);
-                      ("core::marker::Sync::AutoTrait", []);
-                      ("core::marker::Send::AutoTrait", [])
+                      ("core::marker::Send::AutoTrait", []);
+                      ("core::marker::Sync::AutoTrait", [])
                     ]
                 ],
               self
@@ -1167,8 +1167,8 @@ Module any.
                       Ty.dyn
                         [
                           ("core::any::Any::Trait", []);
-                          ("core::marker::Sync::AutoTrait", []);
-                          ("core::marker::Send::AutoTrait", [])
+                          ("core::marker::Send::AutoTrait", []);
+                          ("core::marker::Sync::AutoTrait", [])
                         ]
                     ])
                   (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]),
@@ -1203,8 +1203,8 @@ Module any.
                   Ty.dyn
                     [
                       ("core::any::Any::Trait", []);
-                      ("core::marker::Sync::AutoTrait", []);
-                      ("core::marker::Send::AutoTrait", [])
+                      ("core::marker::Send::AutoTrait", []);
+                      ("core::marker::Sync::AutoTrait", [])
                     ]
                 ],
               self
@@ -1229,8 +1229,8 @@ Module any.
                       Ty.dyn
                         [
                           ("core::any::Any::Trait", []);
-                          ("core::marker::Sync::AutoTrait", []);
-                          ("core::marker::Send::AutoTrait", [])
+                          ("core::marker::Send::AutoTrait", []);
+                          ("core::marker::Sync::AutoTrait", [])
                         ]
                     ])
                   (Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]),
@@ -1266,8 +1266,8 @@ Module any.
                   Ty.dyn
                     [
                       ("core::any::Any::Trait", []);
-                      ("core::marker::Sync::AutoTrait", []);
-                      ("core::marker::Send::AutoTrait", [])
+                      ("core::marker::Send::AutoTrait", []);
+                      ("core::marker::Sync::AutoTrait", [])
                     ]
                 ],
               self
@@ -1295,8 +1295,8 @@ Module any.
                           Ty.dyn
                             [
                               ("core::any::Any::Trait", []);
-                              ("core::marker::Sync::AutoTrait", []);
-                              ("core::marker::Send::AutoTrait", [])
+                              ("core::marker::Send::AutoTrait", []);
+                              ("core::marker::Sync::AutoTrait", [])
                             ]
                         ])
                       (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]),
@@ -1334,8 +1334,8 @@ Module any.
                   Ty.dyn
                     [
                       ("core::any::Any::Trait", []);
-                      ("core::marker::Sync::AutoTrait", []);
-                      ("core::marker::Send::AutoTrait", [])
+                      ("core::marker::Send::AutoTrait", []);
+                      ("core::marker::Sync::AutoTrait", [])
                     ]
                 ],
               self
@@ -1372,8 +1372,8 @@ Module any.
                                   Ty.dyn
                                     [
                                       ("core::any::Any::Trait", []);
-                                      ("core::marker::Sync::AutoTrait", []);
-                                      ("core::marker::Send::AutoTrait", [])
+                                      ("core::marker::Send::AutoTrait", []);
+                                      ("core::marker::Sync::AutoTrait", [])
                                     ]
                                 ])
                               (Ty.apply
@@ -1398,7 +1398,7 @@ Module any.
     Proof.
     Admitted.
     Global Typeclasses Opaque downcast_unchecked_mut.
-  End Impl_Dyn_core_any_Any_Trait_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait.
+  End Impl_Dyn_core_any_Any_Trait_core_marker_Send_AutoTrait_core_marker_Sync_AutoTrait.
   
   (* StructRecord
     {

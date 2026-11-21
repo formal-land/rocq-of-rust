@@ -665,13 +665,13 @@ Module error.
     Global Typeclasses Opaque downcast_mut.
   End Impl_Dyn_core_error_Error_Trait_core_marker_Send_AutoTrait.
   
-  Module Impl_Dyn_core_error_Error_Trait_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait.
+  Module Impl_Dyn_core_error_Error_Trait_core_marker_Send_AutoTrait_core_marker_Sync_AutoTrait.
     Definition Self : Ty.t :=
       Ty.dyn
         [
           ("core::error::Error::Trait", []);
-          ("core::marker::Sync::AutoTrait", []);
-          ("core::marker::Send::AutoTrait", [])
+          ("core::marker::Send::AutoTrait", []);
+          ("core::marker::Sync::AutoTrait", [])
         ].
     
     (*
@@ -692,8 +692,8 @@ Module error.
                   Ty.dyn
                     [
                       ("core::error::Error::Trait", []);
-                      ("core::marker::Sync::AutoTrait", []);
-                      ("core::marker::Send::AutoTrait", [])
+                      ("core::marker::Send::AutoTrait", []);
+                      ("core::marker::Sync::AutoTrait", [])
                     ]
                 ],
               self
@@ -718,8 +718,8 @@ Module error.
                       Ty.dyn
                         [
                           ("core::error::Error::Trait", []);
-                          ("core::marker::Sync::AutoTrait", []);
-                          ("core::marker::Send::AutoTrait", [])
+                          ("core::marker::Send::AutoTrait", []);
+                          ("core::marker::Sync::AutoTrait", [])
                         ]
                     ])
                   (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
@@ -753,8 +753,8 @@ Module error.
                   Ty.dyn
                     [
                       ("core::error::Error::Trait", []);
-                      ("core::marker::Sync::AutoTrait", []);
-                      ("core::marker::Send::AutoTrait", [])
+                      ("core::marker::Send::AutoTrait", []);
+                      ("core::marker::Sync::AutoTrait", [])
                     ]
                 ],
               self
@@ -779,8 +779,8 @@ Module error.
                       Ty.dyn
                         [
                           ("core::error::Error::Trait", []);
-                          ("core::marker::Sync::AutoTrait", []);
-                          ("core::marker::Send::AutoTrait", [])
+                          ("core::marker::Send::AutoTrait", []);
+                          ("core::marker::Sync::AutoTrait", [])
                         ]
                     ])
                   (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
@@ -815,8 +815,8 @@ Module error.
                   Ty.dyn
                     [
                       ("core::error::Error::Trait", []);
-                      ("core::marker::Sync::AutoTrait", []);
-                      ("core::marker::Send::AutoTrait", [])
+                      ("core::marker::Send::AutoTrait", []);
+                      ("core::marker::Sync::AutoTrait", [])
                     ]
                 ],
               self
@@ -841,8 +841,8 @@ Module error.
                       Ty.dyn
                         [
                           ("core::error::Error::Trait", []);
-                          ("core::marker::Sync::AutoTrait", []);
-                          ("core::marker::Send::AutoTrait", [])
+                          ("core::marker::Send::AutoTrait", []);
+                          ("core::marker::Sync::AutoTrait", [])
                         ]
                     ])
                   (Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
@@ -858,7 +858,7 @@ Module error.
     Proof.
     Admitted.
     Global Typeclasses Opaque downcast_mut.
-  End Impl_Dyn_core_error_Error_Trait_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait.
+  End Impl_Dyn_core_error_Error_Trait_core_marker_Send_AutoTrait_core_marker_Sync_AutoTrait.
   
   
   (*
