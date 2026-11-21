@@ -4197,15 +4197,22 @@ Module processor.
                                                       |)
                                                     |) in
                                                   let~ _ : Ty.tuple [] :=
-                                                    let β :=
-                                                      M.deref (| M.read (| source_lamports |) |) in
-                                                    M.write (|
-                                                      β,
-                                                      M.call_closure (|
-                                                        Ty.path "u64",
-                                                        BinOp.Wrap.sub,
-                                                        [ M.read (| β |); M.read (| amount |) ]
-                                                      |)
+                                                    M.let_ (|
+                                                      ltac:(M.monadic (M.read (| amount |))),
+                                                      fun rhs' =>
+                                                        ltac:(M.monadic
+                                                          (let β :=
+                                                            M.deref (|
+                                                              M.read (| source_lamports |)
+                                                            |) in
+                                                          M.write (|
+                                                            β,
+                                                            M.call_closure (|
+                                                              Ty.path "u64",
+                                                              BinOp.Wrap.sub,
+                                                              [ M.read (| β |); rhs' ]
+                                                            |)
+                                                          |)))
                                                     |) in
                                                   let~ destination_lamports :
                                                       Ty.apply
@@ -4241,17 +4248,22 @@ Module processor.
                                                       |)
                                                     |) in
                                                   let~ _ : Ty.tuple [] :=
-                                                    let β :=
-                                                      M.deref (|
-                                                        M.read (| destination_lamports |)
-                                                      |) in
-                                                    M.write (|
-                                                      β,
-                                                      M.call_closure (|
-                                                        Ty.path "u64",
-                                                        BinOp.Wrap.add,
-                                                        [ M.read (| β |); M.read (| amount |) ]
-                                                      |)
+                                                    M.let_ (|
+                                                      ltac:(M.monadic (M.read (| amount |))),
+                                                      fun rhs' =>
+                                                        ltac:(M.monadic
+                                                          (let β :=
+                                                            M.deref (|
+                                                              M.read (| destination_lamports |)
+                                                            |) in
+                                                          M.write (|
+                                                            β,
+                                                            M.call_closure (|
+                                                              Ty.path "u64",
+                                                              BinOp.Wrap.add,
+                                                              [ M.read (| β |); rhs' ]
+                                                            |)
+                                                          |)))
                                                     |) in
                                                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                                 |)));

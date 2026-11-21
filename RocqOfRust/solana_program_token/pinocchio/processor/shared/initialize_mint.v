@@ -2005,13 +2005,18 @@ Module processor.
                                       ]
                                     |) in
                                   let~ _ : Ty.tuple [] :=
-                                    M.write (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| mint |) |),
-                                        "pinocchio_token_interface::state::mint::Mint",
-                                        "decimals"
-                                      |),
-                                      M.read (| decimals |)
+                                    M.let_ (|
+                                      ltac:(M.monadic (M.read (| decimals |))),
+                                      fun rhs' =>
+                                        ltac:(M.monadic
+                                          (M.write (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| mint |) |),
+                                              "pinocchio_token_interface::state::mint::Mint",
+                                              "decimals"
+                                            |),
+                                            rhs'
+                                          |)))
                                     |) in
                                   let~ _ : Ty.tuple [] :=
                                     M.match_operator (|

@@ -194,11 +194,7 @@ Module processor.
             Ty.apply
               (Ty.path "&")
               []
-              [
-                Ty.apply
-                  (Ty.path "array")
-                  [ M.unevaluated_const (mk_str (| "pinocchio_pubkey_Pubkey_discriminant" |)) ]
-                  [ Ty.path "u8" ]
+              [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ]
               ],
             expected_owner
           |) in
@@ -353,8 +349,13 @@ Module processor.
                                         ]
                                       |);
                                       M.read (|
-                                        get_constant (|
-                                          "pinocchio_token_interface::state::Transmutable::LEN",
+                                        get_trait_constant (|
+                                          "pinocchio_token_interface::state::Transmutable",
+                                          Ty.path
+                                            "pinocchio_token_interface::state::multisig::Multisig",
+                                          [],
+                                          [],
+                                          "LEN",
                                           Ty.path "usize"
                                         |)
                                       |)
