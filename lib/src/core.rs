@@ -2,7 +2,7 @@ use crate::top_level::*;
 use std::collections::{BTreeMap, HashMap};
 use std::io;
 use std::path::{Path, PathBuf};
-use std::{fs, path, process, str};
+use std::{fs, path};
 
 /// CLI options
 pub struct CliOptions {
@@ -115,14 +115,6 @@ fn create_translation_to_rocq(
     axiomatize: bool,
     fold_scalar_constants: bool,
 ) -> io::Result<HashMap<String, (String, String)>> {
-    let out = process::Command::new("rustc")
-        .arg("--print=sysroot")
-        .output()?;
-    if !out.status.success() {
-        return Err(io::Error::other(String::from_utf8_lossy(&out.stderr)));
-    }
-    let sysroot = str::from_utf8(&out.stdout).unwrap().trim();
-
     println!("Starting to translate {filename:?}...");
 
     let now = std::time::Instant::now();
@@ -159,9 +151,9 @@ fn create_translation_to_rocq(
         "rustc".to_string(),
         filename.to_string_lossy().to_string(),
         "--test".to_string(),
-        format!("--sysroot={sysroot}"),
     ];
 
+    // Let the linked rustc_driver locate its own sysroot, even if the caller uses stable.
     rustc_driver::run_compiler(&args, &mut callbacks);
     let translation = callbacks
         .translation
