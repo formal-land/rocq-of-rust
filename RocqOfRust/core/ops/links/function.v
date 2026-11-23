@@ -124,3 +124,33 @@ Module Impl_FnMut_for_Function1.
   Admitted.
 End Impl_FnMut_for_Function1.
 Export (hints) Impl_FnMut_for_Function1.
+
+(*
+pub trait Fn<Args: Tuple>: FnMut<Args> {
+    extern "rust-call" fn call(&self, args: Args) -> Self::Output;
+}
+*)
+Module Fn.
+  Definition trait (Self Args : Set) `{Link Self} `{Link Args} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "core::ops::function::Fn";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [Φ Args];
+      TraitHeader.self_ty := Φ Self;
+    |}.
+
+  Class Method_call (Self Args Output : Set)
+      `{Link Self} `{Link Args} `{Link Output} : Set := {
+    call : PolymorphicFunction.t;
+    call_is_method :: IsTraitMethod.C (trait Self Args) "call" call;
+    run_call (self : '& Self) (args : Args) ::
+      Run.Trait call [] [] [ φ self; φ args ] Output;
+  }.
+
+  Class Run (Self Args Output : Set)
+      `{Link Self} `{Link Args} `{Link Output} : Set := {
+    run_FnMut_for_Self :: FnMut.Run Self Args Output;
+    method_call :: Method_call Self Args Output;
+  }.
+End Fn.
+Export (hints) Fn.

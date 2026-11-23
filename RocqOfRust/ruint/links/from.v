@@ -647,6 +647,39 @@ Module FromUintError.
 End FromUintError.
 Export (hints) FromUintError.
 
+(*
+  pub trait UintTryTo<T> {
+      #[doc(hidden)]
+      fn uint_try_to(&self) -> Result<T, FromUintError<T>>;
+  }
+*)
+Module UintTryTo.
+  Definition trait (Self T : Set) `{Link Self} `{Link T} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "ruint::from::UintTryTo";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [Φ T];
+      TraitHeader.self_ty := Φ Self;
+    |}.
+
+  Class Method_uint_try_to (Self T : Set) `{Link Self} `{Link T} : Set := {
+    uint_try_to : PolymorphicFunction.t;
+    uint_try_to_is_method ::
+      IsTraitMethod.C (trait Self T) "uint_try_to" uint_try_to;
+    run_uint_try_to (self : '& Self) ::
+      Run.Trait
+        uint_try_to
+        [] []
+        [φ self]
+        (Result.t T (FromUintError.t T));
+  }.
+
+  Class Run (Self T : Set) `{Link Self} `{Link T} : Set := {
+    method_uint_try_to :: Method_uint_try_to Self T;
+  }.
+End UintTryTo.
+Export (hints) UintTryTo.
+
 Module TryFrom_Uint_for_u64.
   Definition Self : Set :=
     u64.
@@ -679,3 +712,115 @@ Module TryFrom_Uint_for_u64.
   {}.
 End TryFrom_Uint_for_u64.
 Export (hints) TryFrom_Uint_for_u64.
+
+(* impl<const BITS: usize, const LIMBS: usize> TryFrom<&Uint<BITS, LIMBS>> for u64 *)
+Module TryFrom_ref_Uint_for_u64.
+  Definition Self : Set :=
+    u64.
+
+  Instance run_try_from
+      (BITS LIMBS : usize)
+      (value : '& (Impl_Uint.Self BITS LIMBS)) :
+    Run.Trait
+      (from.Impl_core_convert_TryFrom_ref__ruint_Uint_BITS_LIMBS_for_u64.try_from
+        (φ BITS) (φ LIMBS))
+      [] []
+      [ φ value ]
+      (Result.t Self (FromUintError.t u64)).
+  Proof.
+  Admitted.
+  Global Opaque run_try_from.
+
+  Instance method_try_from {BITS LIMBS : usize} :
+    TryFrom.Method_try_from
+      Self
+      ('& (Impl_Uint.Self BITS LIMBS))
+      (FromUintError.t u64).
+  Proof.
+    eexists.
+    { constructor.
+      eapply IsTraitMethod.Defined.
+      { apply from.Impl_core_convert_TryFrom_ref__ruint_Uint_BITS_LIMBS_for_u64.Implements. }
+      { reflexivity. }
+    }
+    { typeclasses eauto. }
+  Defined.
+
+  Instance run (BITS LIMBS : usize) :
+    TryFrom.Run
+      Self
+      ('& (Impl_Uint.Self BITS LIMBS))
+      (FromUintError.t u64) :=
+  {}.
+End TryFrom_ref_Uint_for_u64.
+Export (hints) TryFrom_ref_Uint_for_u64.
+
+(*
+  impl<const BITS: usize, const LIMBS: usize, T> UintTryTo<T> for Uint<BITS, LIMBS>
+  where
+      T: for<'a> TryFrom<&'a Self, Error = FromUintError<T>>,
+*)
+Module UintTryTo_T_for_Uint_where_TryFrom.
+  Definition Self (BITS LIMBS : usize) : Set :=
+    Uint.t BITS LIMBS.
+
+  Instance run_uint_try_to {BITS LIMBS : usize} {T : Set} `{Link T}
+      `{run : !TryFrom.Run T ('& (Self BITS LIMBS)) (FromUintError.t T)}
+      (self : '& (Self BITS LIMBS)) :
+    Run.Trait
+      (from.Impl_ruint_from_UintTryTo_where_core_convert_TryFrom_T_ref__ruint_Uint_BITS_LIMBS_T_for_ruint_Uint_BITS_LIMBS.uint_try_to
+        (φ BITS) (φ LIMBS) (Φ T))
+      [] [] [φ self]
+      (Result.t T (FromUintError.t T)).
+  Proof.
+    constructor.
+    destruct run.
+    run_symbolic.
+  Defined.
+  Global Opaque run_uint_try_to.
+
+  Instance method_uint_try_to {BITS LIMBS : usize} {T : Set} `{Link T}
+      `{!TryFrom.Run T ('& (Self BITS LIMBS)) (FromUintError.t T)} :
+    UintTryTo.Method_uint_try_to (Self BITS LIMBS) T.
+  Proof.
+    eexists.
+    { constructor.
+      eapply IsTraitMethod.Defined.
+      { apply from.Impl_ruint_from_UintTryTo_where_core_convert_TryFrom_T_ref__ruint_Uint_BITS_LIMBS_T_for_ruint_Uint_BITS_LIMBS.Implements. }
+      { reflexivity. }
+    }
+    { apply run_uint_try_to. }
+  Defined.
+
+  Instance run {BITS LIMBS : usize} {T : Set} `{Link T}
+      `{!TryFrom.Run T ('& (Self BITS LIMBS)) (FromUintError.t T)} :
+    UintTryTo.Run (Self BITS LIMBS) T :=
+  {}.
+End UintTryTo_T_for_Uint_where_TryFrom.
+Export (hints) UintTryTo_T_for_Uint_where_TryFrom.
+
+Module Impl_Uint_saturating_to.
+  Definition Self (BITS LIMBS : usize) : Set :=
+    Uint.t BITS LIMBS.
+
+  (*
+  pub fn saturating_to<T>(&self) -> T
+  where
+      Self: UintTryTo<T>,
+  *)
+  Instance run_saturating_to
+    (BITS LIMBS : usize)
+    (T : Set) `{Link T}
+    {run_UintTryTo_for_Self : UintTryTo.Run (Self BITS LIMBS) T}
+    (self : '& (Self BITS LIMBS)) :
+    Run.Trait
+      (from.Impl_ruint_Uint_BITS_LIMBS.saturating_to (φ BITS) (φ LIMBS)) [] [ Φ T ] [ φ self ]
+      T.
+  Proof.
+    (* Admitted: [FromUintError.to_value] is a [Parameter] and [FromUintError]
+       has no sub-pointers, so the pattern [Err(FromUintError::Overflow(_, _, n))]
+       cannot be executed symbolically yet. *)
+  Admitted.
+  Global Opaque run_saturating_to.
+End Impl_Uint_saturating_to.
+Export (hints) Impl_Uint_saturating_to.
