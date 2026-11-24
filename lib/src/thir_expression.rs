@@ -831,6 +831,8 @@ pub(crate) fn compile_expr<'a>(
             let lhs = compile_expr(env, generics, thir, lhs);
             let rhs = compile_expr(env, generics, thir, rhs);
 
+            // M.monadic recognizes this read/write through one bound place
+            // and elaborates it using Rust's compound-assignment evaluation order.
             Rc::new(Expr::Let {
                 name: Some("β".to_string()),
                 ty: None,

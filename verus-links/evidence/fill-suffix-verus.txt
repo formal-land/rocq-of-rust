@@ -1,0 +1,10 @@
+error: postcondition not satisfied
+  --> fill.rs:11:9
+   |
+11 |         forall|j: int| n <= j < old(xs)@.len() ==> final(xs)@[j] == old(xs)@[j],
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+22 |     while i < n {
+   |     ----------- at the end of the function body
+
+error: aborting due to 1 previous error

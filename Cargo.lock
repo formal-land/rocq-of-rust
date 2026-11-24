@@ -293,6 +293,7 @@ version = "0.1.0"
 dependencies = [
  "clap",
  "rocq_of_rust_lib",
+ "syn",
 ]
 
 [[package]]

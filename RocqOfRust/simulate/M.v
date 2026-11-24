@@ -112,6 +112,20 @@ Module Stack.
     induction H_stack; cbn; fold @alloc.
     { constructor. }
     { now constructor. }
+  Defined.
+
+  Lemma read_nth_alloc_alloc {A T : Set} (stack : t) (extra : T) (index : nat)
+      (slot : Nth.t A stack index) :
+    read (nth_alloc_alloc stack extra index slot) = read slot.
+  Proof. induction slot; [reflexivity | exact IHslot]. Qed.
+
+  Lemma write_nth_alloc_alloc {A T : Set} (stack : t) (extra : T) (index : nat)
+      (slot : Nth.t A stack index) (value : A) :
+    write (nth_alloc_alloc stack extra index slot) value = alloc (write slot value) extra.
+  Proof.
+    induction slot as [old tail | B head tail i slot IH]; [reflexivity |].
+    change (Cons head (write (nth_alloc_alloc tail extra i slot) value) =
+      Cons head (alloc (write slot value) extra)). now rewrite IH.
   Qed.
 
   Lemma length_alloc_eq {A : Set} (stack : t) (value : A) :
@@ -288,11 +302,16 @@ Module SimulateM.
       (stack_in : Stack.t)
       (run_f : {{ f args 🔽 B }})
       (k : B * Stack.t -> t A)
+  | Loop {R B : Set}
+      (body : Stack.t -> t (Output.t R B * Stack.t))
+      (stack : Stack.t)
+      (k : Output.Exception.t R -> Stack.t -> t A)
   | Impossible {T : Set} (payload : T).
   Arguments Pure {_}.
   Arguments GetCanAccess {_ _ _}.
   Arguments Let {_ _}.
   Arguments Call {_ _ _ _ _}.
+  Arguments Loop {_ _ _}.
   Arguments Impossible {_ _}.
 
   Fixpoint let_ {A B : Set} (e1 : t A) (e2 : A -> t B) : t B :=
@@ -302,6 +321,7 @@ Module SimulateM.
       GetCanAccess Stack ref_core (fun can_access => let_ (k can_access) e2)
     | Let e k => Let e (fun value => let_ (k value) e2)
     | Call stack_in run_f k => Call stack_in run_f (fun output_stack => let_ (k output_stack) e2)
+    | Loop body stack k => Loop body stack (fun exit next => let_ (k exit next) e2)
     | Impossible payload => Impossible payload
     end.
 
@@ -337,8 +357,6 @@ Module SimulateM.
     | Some stack => Pure (Output.Success stack)
     | None => Pure (Output.Exception Output.Exception.BreakMatch)
     end).
-
-  Parameter TodoLoop : forall {A : Set}, t A.
 
   Fixpoint eval {R Output : Set}
       (e : LinkM.t R Output)
@@ -413,7 +431,8 @@ Module SimulateM.
       )).
     }
     { (* Loop *)
-      exact TodoLoop.
+      exact (Loop (fun next => eval _ _ e next) stack
+        (fun exit next => eval _ _ (k (Output.Exception exit)) next)).
     }
     { (* IfThenElse *)
       exact (
@@ -494,6 +513,22 @@ Module Run.
     }})
     (H_k : {{ k (output_inter, stack_inter) 🌲 value }}) :
     {{ SimulateM.Call stack_in run_f k 🌲 value }}
+  (* [M.loop] catches a source [continue] inside the body and a source [break]
+     in its continuation. A normal body result starts another iteration. *)
+  | LoopStep {R B : Set}
+      (body : Stack.t -> SimulateM.t (Output.t R B * Stack.t))
+      (stack next : Stack.t) (item : B)
+      (k : Output.Exception.t R -> Stack.t -> SimulateM.t A) :
+    {{ body stack 🌲 (Output.Success item, next) }} ->
+    {{ SimulateM.Loop body next k 🌲 value }} ->
+    {{ SimulateM.Loop body stack k 🌲 value }}
+  | LoopExit {R B : Set}
+      (body : Stack.t -> SimulateM.t (Output.t R B * Stack.t))
+      (stack next : Stack.t) (exit : Output.Exception.t R)
+      (k : Output.Exception.t R -> Stack.t -> SimulateM.t A) :
+    {{ body stack 🌲 (Output.Exception exit, next) }} ->
+    {{ k exit next 🌲 value }} ->
+    {{ SimulateM.Loop body stack k 🌲 value }}
 
   where "{{ e 🌲 value }}" := (t value e).
 
